@@ -19,47 +19,34 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dialog_text_content_height"
             android:gravity="center"
-            android:padding="@dimen/library_delete_dialog_title_padding"
-            android:textSize="@dimen/level_two_heading_font"
-            android:text="@{dialogModel.title}"
-            android:visibility="@{StringUtils.isNullOrEmpty(dialogModel.title)?View.GONE:View.VISIBLE}" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/library_delete_dialog_title_padding"
-            android:gravity="center"
-            android:textSize="@dimen/level_two_heading_font"
-            android:text="@{dialogModel.message}" />
+            android:text="@{dialogModel.message}"
+            android:textSize="@dimen/level_two_heading_font" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_height="@dimen/dialog_button_height"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/library_delete_dialog_button_padding"
-                android:onClick="@{()->dialogModel.onPositiveClick()}"
-                android:textSize="@dimen/level_two_heading_font"
                 android:background="@drawable/selected_background"
-                android:text="@{dialogModel.positiveText}" />
+                android:gravity="center"
+                android:onClick="@{()->dialogModel.onPositiveClick()}"
+                android:text="@{dialogModel.positiveText}"
+                android:textSize="@dimen/level_two_heading_font" />
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/library_delete_dialog_button_padding"
-                android:onClick="@{()->dialogModel.onNegativeClick()}"
-                android:textSize="@dimen/level_two_heading_font"
                 android:background="@drawable/selected_background"
+                android:gravity="center"
+                android:onClick="@{()->dialogModel.onNegativeClick()}"
                 android:text="@{dialogModel.negativeText}" />
         </LinearLayout>
     </LinearLayout>

@@ -300,4 +300,5 @@
     <string name="format_format" translatable="false">Format： %s</string>
     <string name="size_format" translatable="false">Size： %s</string>
     <string name="read_format" translatable="false">Read： %s</string>
+    <string name="book_total_format">total %s</string>
 </resources>

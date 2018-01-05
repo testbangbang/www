@@ -288,4 +288,5 @@
     <string name="format_format" translatable="false">格式： %s</string>
     <string name="size_format" translatable="false">大小： %s</string>
     <string name="read_format" translatable="false">已读： %s</string>
+    <string name="book_total_format">共%s本图书</string>
 </resources>
