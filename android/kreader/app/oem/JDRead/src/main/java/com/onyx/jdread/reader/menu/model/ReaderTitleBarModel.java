@@ -5,6 +5,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
 import com.onyx.jdread.R;
+import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.menu.event.BuyBookClickEvent;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
 
@@ -25,6 +26,7 @@ public class ReaderTitleBarModel extends BaseObservable {
 
     public void backClick() {
         EventBus.getDefault().post(new CloseReaderSettingMenuEvent());
+        EventBus.getDefault().post(new CloseDocumentEvent());
     }
 
     public void buyBookClick() {
