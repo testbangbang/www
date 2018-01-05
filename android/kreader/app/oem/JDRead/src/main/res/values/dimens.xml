@@ -295,6 +295,12 @@
     <dimen name="library_list_dialog_height">350dp</dimen>
     <dimen name="library_build_button_drawable_padding">9dp</dimen>
     <dimen name="library_build_button_height">55dp</dimen>
+    <dimen name="dialog_text_content_height">135dp</dimen>
+    <dimen name="dialog_button_height">55dp</dimen>
+    <dimen name="dialog_build_edit_height">60dp</dimen>
+    <dimen name="dialog_build_edit_width">250dp</dimen>
+    <dimen name="ratingbar_light_settings_margin">30dp</dimen>
+    <dimen name="brightness_rating_ba_margin_top">130dp</dimen>
     <dimen name="item_all_category_image_width">75dp</dimen>
     <dimen name="item_all_category_image_height">95dp</dimen>
     <dimen name="recycler_view_top_categorys_height">120dp</dimen>

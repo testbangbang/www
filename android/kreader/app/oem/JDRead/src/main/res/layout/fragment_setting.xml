@@ -17,6 +17,7 @@
             android:layout_height="@dimen/setting_device_detail_height"
             android:layout_marginLeft="@dimen/setting_device_detail_margin_left"
             android:gravity="center_vertical"
+            android:onClick="@{()->settingModel.deviceConfig()}"
             android:orientation="horizontal">
 
             <ImageView
@@ -37,6 +38,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{settingModel.deviceModel}"
                     android:textColor="@android:color/black"
+                    android:lines="1"
                     android:textSize="@dimen/level_one_heading_font" />
 
                 <TextView
@@ -45,14 +47,16 @@
                     android:layout_marginTop="@dimen/setting_device_detail_describe_margin_top"
                     android:text="@{settingModel.deviceVersion}"
                     android:textColor="@android:color/black"
+                    android:lines="1"
                     android:textSize="@dimen/level_three_heading_font" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/setting_device_detail_describe_margin_top"
-                    android:text="@{settingModel.deviceSerial}"
                     android:textColor="@android:color/black"
+                    android:lines="1"
+                    android:text="@{settingModel.deviceSerial}"
                     android:textSize="@dimen/level_three_heading_font" />
             </LinearLayout>
 

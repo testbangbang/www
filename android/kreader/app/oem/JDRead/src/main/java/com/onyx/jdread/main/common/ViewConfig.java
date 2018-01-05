@@ -15,6 +15,7 @@ import com.onyx.jdread.personal.ui.PersonalTaskFragment;
 import com.onyx.jdread.personal.ui.PointsForFragment;
 import com.onyx.jdread.personal.ui.ReadPreferenceFragment;
 import com.onyx.jdread.personal.ui.TopUpRecordFragment;
+import com.onyx.jdread.setting.ui.BrightnessFragment;
 import com.onyx.jdread.setting.ui.ContactUsFragment;
 import com.onyx.jdread.setting.ui.DeviceConfigFragment;
 import com.onyx.jdread.setting.ui.DeviceInformationFragment;
@@ -78,6 +79,7 @@ public class ViewConfig {
         childViewInfo.put(DeviceInformationFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(PasswordSettingFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(ReadingToolsFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(BrightnessFragment.class.getName(),FunctionModule.SETTING);
         //personal
         childViewInfo.put(PersonalFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(PersonalExperienceFragment.class.getName(), FunctionModule.PERSONAL);
