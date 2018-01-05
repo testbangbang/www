@@ -7,7 +7,6 @@ import android.databinding.ObservableArrayList;
 import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -50,6 +49,8 @@ public class MoveToLibraryListDialog extends Dialog {
             DialogMoveToLibraryListLayoutBinding bind = DataBindingUtil.bind(View.inflate(context, R.layout.dialog_move_to_library_list_layout, null));
             bind.setDialogModel(model);
             PageRecyclerView recycler = bind.recycler;
+            DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
+            recycler.addItemDecoration(dividerItemDecoration);
             recycler.setLayoutManager(new DisableScrollGridManager(context.getApplicationContext()));
             LibraryListDialogAdapter adapter = new LibraryListDialogAdapter();
             adapter.setRowAndCol(model.row, model.col);

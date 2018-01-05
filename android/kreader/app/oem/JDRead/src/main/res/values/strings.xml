@@ -301,4 +301,8 @@
     <string name="have_bought">Have bought</string>
     <string name="self_import">Self-import document</string>
     <string name="settlement">Settlement</string>
+    <string name="author_format" translatable="false">Author： %s</string>
+    <string name="format_format" translatable="false">Format： %s</string>
+    <string name="size_format" translatable="false">Size： %s</string>
+    <string name="read_format" translatable="false">Read： %s</string>
 </resources>

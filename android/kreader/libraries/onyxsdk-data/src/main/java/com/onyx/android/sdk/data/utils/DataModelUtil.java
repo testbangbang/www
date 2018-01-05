@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.utils;
 
 import android.graphics.Bitmap;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 
 import com.facebook.common.references.CloseableReference;
 import com.liulishuo.filedownloader.i.IFileDownloadIPCCallback;
@@ -12,6 +13,7 @@ import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.apache.commons.io.FilenameUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -63,6 +65,10 @@ public class DataModelUtil {
             model.type.set(ModelType.TYPE_METADATA);
             model.idString.set(metadata.getIdString());
             model.title.set(metadata.getName());
+            model.author.set(StringUtils.isNullOrEmpty(metadata.getAuthors()) ? "" : metadata.getAuthors());
+            model.format.set(metadata.getType());
+            model.size.set(metadata.getSize());
+            model.progress.set(StringUtils.isNullOrEmpty(metadata.getProgress()) ? "" : metadata.getProgress());
             model.desc.set(metadata.getDescription());
             model.absolutePath.set(metadata.getNativeAbsolutePath());
             CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());

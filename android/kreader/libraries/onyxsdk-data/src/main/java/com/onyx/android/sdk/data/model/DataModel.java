@@ -4,6 +4,7 @@ import android.databinding.BaseObservable;
 import android.databinding.Observable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.databinding.ObservableFloat;
 import android.databinding.ObservableInt;
 import android.databinding.ObservableLong;
 import android.graphics.Bitmap;
@@ -26,7 +27,9 @@ public class DataModel extends BaseObservable {
     public final ObservableField<String> idString = new ObservableField<>();
     public final ObservableField<String> title = new ObservableField<>();
     public final ObservableField<String> author = new ObservableField<>();
-    public final ObservableField<String> size = new ObservableField<>();
+    public final ObservableField<String> format = new ObservableField<>();
+    public final ObservableFloat size = new ObservableFloat();
+    public final ObservableField<String> progress = new ObservableField<>();
     public final ObservableField<String> desc = new ObservableField<>();
     public final ObservableField<String> absolutePath = new ObservableField<>();
     public final ObservableField<String> associationId = new ObservableField<>();

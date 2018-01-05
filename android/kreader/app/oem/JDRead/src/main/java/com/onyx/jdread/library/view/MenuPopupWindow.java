@@ -32,6 +32,11 @@ public class MenuPopupWindow extends PopupWindow {
     private EventBus eventBus;
     private final int screenWidth;
     private PopMenuAdapter popMenuAdapter;
+    private boolean showItemDecoration;
+
+    public void setShowItemDecoration(boolean showItemDecoration) {
+        this.showItemDecoration = showItemDecoration;
+    }
 
     public MenuPopupWindow(Activity context, EventBus eventBus) {
         this.eventBus = eventBus;
@@ -63,6 +68,11 @@ public class MenuPopupWindow extends PopupWindow {
 
         PageRecyclerView pageRecyclerView = (PageRecyclerView) contentView.findViewById(R.id.pop_menu_recycler);
         pageRecyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        popMenuAdapter = new PopMenuAdapter();
+        if (showItemDecoration) {
+            DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
+            pageRecyclerView.addItemDecoration(dividerItemDecoration);
+        }
         popMenuAdapter = new PopMenuAdapter();
         popMenuAdapter.setItemListener(new PopMenuAdapter.ItemClickListener() {
             @Override

@@ -10,83 +10,73 @@
             type="com.onyx.android.sdk.data.model.DataModel" />
     </data>
 
-    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+    <LinearLayout
+        android:id="@+id/cover_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/imagebtn_bg"
+        android:gravity="center"
         android:onClick="@{()->model.itemClicked()}"
         android:onLongClick="@{()->model.itemLongClick()}"
-        android:padding="2dp">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/cover_panel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="@dimen/model_item_cover_width"
+            android:layout_height="@dimen/model_item_cover_height">
 
-            <RelativeLayout
-                android:layout_width="@dimen/model_item_cover_width"
-                android:layout_height="@dimen/model_item_cover_height">
-
-                <ImageView
-                    android:id="@+id/image_cover"
-                    thumbnail="@{model.coverBitmap}"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/rectangle_stroke"
-                    android:padding="@dimen/rectangle_stroke_width"
-                    android:scaleType="fitXY"
-                    android:src="@{model.coverDefault}" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{model.childCount}"
-                    android:layout_alignParentLeft="true"
-                    android:textSize="@dimen/level_two_heading_font"
-                    android:layout_alignParentBottom="true"/>
-            </RelativeLayout>
+            <ImageView
+                android:id="@+id/image_cover"
+                thumbnail="@{model.coverBitmap}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_stroke"
+                android:padding="@dimen/rectangle_stroke_width"
+                android:scaleType="fitXY"
+                android:src="@{model.coverDefault}" />
 
             <TextView
-                android:id="@+id/textView_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:text="@{model.childCount}"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <CheckBox
+                android:id="@+id/multi_select_check_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/book_item_selector"
+                android:button="@null"
+                android:checked="@={model.checked}"
+                android:onClick="@{()->model.itemClicked()}"
+                android:visibility="@{model.showCheckBox()?View.VISIBLE:View.GONE}" />
+
+            <TextView
+                android:layout_width="@dimen/select_count_circle_width"
+                android:layout_height="@dimen/select_count_circle_width"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@mipmap/ic_shelf_un_selected"
                 android:gravity="center"
-                android:lines="2"
-                android:maxLines="2"
-                android:text="@{model.title}"
-                android:textSize="19sp" />
-
-        </LinearLayout>
-
-        <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/multi_select_check_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="0dp"
-            android:checked="@={model.checked}"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:minHeight="@dimen/button_minHeight"
-            android:onClick="@{()->model.itemClicked()}"
-            android:visibility="@{model.showCheckBox()?View.VISIBLE:View.GONE}" />
+                android:onClick="@{()->model.itemClicked()}"
+                android:text="@{model.selectedCount}"
+                android:textSize="@dimen/level_two_heading_font"
+                android:visibility="@{model.showCheckCount()?View.VISIBLE:View.GONE}" />
+        </RelativeLayout>
 
         <TextView
-            android:layout_width="@dimen/select_count_circle_width"
-            android:layout_height="@dimen/select_count_circle_width"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/circle_stroke"
-            android:textSize="@dimen/level_two_heading_font"
-            android:gravity="center"
-            android:onClick="@{()->model.itemClicked()}"
-            android:text="@{model.selectedCount}"
-            android:visibility="@{model.showCheckCount()?View.VISIBLE:View.GONE}" />
+            android:id="@+id/textView_title"
+            android:layout_width="@dimen/model_item_cover_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/book_name_margin_top"
+            android:ellipsize="end"
+            android:lines="2"
+            android:maxLines="2"
+            android:text="@{model.title}"
+            android:textSize="@dimen/level_two_heading_font" />
 
-    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+    </LinearLayout>
+
 </layout>
