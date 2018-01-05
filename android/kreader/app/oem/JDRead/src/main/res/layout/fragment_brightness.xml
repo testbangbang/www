@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="brightnessModel"
+            type="com.onyx.jdread.setting.model.BrightnessModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.onyx.jdread.setting.ui.BrightnessFragment">
+
+        <include
+            layout="@layout/title_bar"
+            bind:titleModel="@{brightnessModel.titleBarModel}" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/brightness_rating_ba_margin_top"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/imagebtn_bg"
+                android:onClick="@{()->brightnessModel.closeBrightness()}"
+                android:text="@string/closed"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <RatingBar
+                android:id="@+id/ratingbar_light_settings"
+                style="@style/LightSettingsRatingBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/ratingbar_light_settings_margin"
+                android:layout_marginRight="@dimen/ratingbar_light_settings_margin"
+                android:max="@{brightnessModel.maxLight}"
+                android:numStars="@{brightnessModel.numStar}"
+                android:progress="@{brightnessModel.progress}"
+                android:progressDrawable="@drawable/light_bar_big_step"
+                android:stepSize="1.0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/imagebtn_bg"
+                android:onClick="@{()->brightnessModel.maxBrightness()}"
+                android:text="@string/brightest_brightness"
+                android:textSize="@dimen/level_one_heading_font" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>
