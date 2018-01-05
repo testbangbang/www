@@ -18,7 +18,7 @@ import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.HomeworkSubmitAction;
-import com.onyx.edu.homework.action.WifiConnectAction;
+import com.onyx.edu.homework.action.CheckWifiAction;
 import com.onyx.edu.homework.action.note.MakeHomeworkPagesAnswerActionChain;
 import com.onyx.edu.homework.databinding.DialogSubmitBinding;
 import com.onyx.edu.homework.event.SubmitEvent;
@@ -94,10 +94,13 @@ public class SubmitDialog extends OnyxBaseDialog {
             return;
         }
         onWifiConnect();
-        new WifiConnectAction().execute(getContext(), new BaseCallback() {
+        final CheckWifiAction checkWifiAction = new CheckWifiAction();
+        checkWifiAction.execute(getContext(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                submit();
+                if (checkWifiAction.isConnected()) {
+                    submit();
+                }
             }
         });
     }

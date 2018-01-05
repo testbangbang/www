@@ -10,6 +10,7 @@ import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseAction;
 import com.onyx.edu.homework.data.HomeworkState;
+import com.onyx.edu.homework.request.CheckWifiRequest;
 import com.onyx.edu.homework.request.GetHomeworkReviewsRequest;
 
 import java.util.ArrayList;
@@ -25,15 +26,37 @@ public class GetHomeworkReviewsAction extends BaseAction {
     private List<Question> questions;
     private boolean showLoading = false;
     private HomeworkState currentState;
+    private boolean checkWifi;
 
-    public GetHomeworkReviewsAction(String homeworkId, List<Question> questions, boolean show) {
+    public GetHomeworkReviewsAction(String homeworkId, List<Question> questions, boolean show, boolean wifi) {
         this.homeworkId = homeworkId;
         this.questions = questions;
         showLoading = show;
+        checkWifi = wifi;
     }
 
     @Override
     public void execute(final Context context, final BaseCallback baseCallback) {
+        if (checkWifi) {
+            if (showLoading) {
+                showLoadingDialog(context, context.getString(R.string.opening_wifi));
+            }
+            final CheckWifiRequest wifiRequest = new CheckWifiRequest();
+            wifiRequest.setContext(context.getApplicationContext());
+            getDataManager().submit(context, wifiRequest, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    if (wifiRequest.isConnected()) {
+                        getHomeworkReviews(context, baseCallback);
+                    }
+                }
+            });
+        }else {
+            getHomeworkReviews(context, baseCallback);
+        }
+    }
+
+    private void getHomeworkReviews(final Context context, final BaseCallback baseCallback) {
         if (showLoading) {
             showLoadingDialog(context, context.getString(R.string.fetching_review));
         }

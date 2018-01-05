@@ -29,7 +29,7 @@ public class HomeworkListActionChain extends BaseAction {
     @Override
     public void execute(Context context, final BaseCallback baseCallback) {
         final HomeworkListAction homeworkListAction = new HomeworkListAction(homeworkId);
-        final GetHomeworkReviewsAction answersAction = new GetHomeworkReviewsAction(homeworkId, homeworkListAction.getQuestions(), false);
+        final GetHomeworkReviewsAction answersAction = new GetHomeworkReviewsAction(homeworkId, homeworkListAction.getQuestions(), false, false);
         final CheckLocalDataAction checkLocalDataAction = new CheckLocalDataAction(homeworkListAction.getQuestions(), homeworkId);
         final ActionChain chain = new ActionChain(false);
         chain.addAction(new CloudIndexServiceAction());

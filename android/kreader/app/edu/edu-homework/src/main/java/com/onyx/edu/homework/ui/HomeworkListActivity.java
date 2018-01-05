@@ -39,6 +39,8 @@ import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
+import com.onyx.edu.homework.event.ResumeNoteEvent;
+import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -203,10 +205,12 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void getHomeworkReview() {
-        GetHomeworkReviewsAction reviewsAction = new GetHomeworkReviewsAction(getDataBundle().getHomeworkId(), questions, true);
+        getDataBundle().post(new StopNoteEvent(false));
+        GetHomeworkReviewsAction reviewsAction = new GetHomeworkReviewsAction(getDataBundle().getHomeworkId(), questions, true, true);
         reviewsAction.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                getDataBundle().post(new ResumeNoteEvent());
                 if (!getDataBundle().isReview()) {
                     Toast.makeText(HomeworkListActivity.this, R.string.not_review, Toast.LENGTH_SHORT).show();
                     return;
