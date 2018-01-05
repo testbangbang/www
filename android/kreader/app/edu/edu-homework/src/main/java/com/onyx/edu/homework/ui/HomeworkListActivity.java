@@ -21,7 +21,6 @@ import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.model.Subject;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.NetworkUtil;
@@ -32,6 +31,7 @@ import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.action.ShowAnalysisAction;
+import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.Homework;
@@ -39,8 +39,6 @@ import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
-import com.onyx.edu.homework.event.ResumeNoteEvent;
-import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -140,7 +138,15 @@ public class HomeworkListActivity extends BaseActivity {
         if (currentPage >= questions.size()) {
             return;
         }
-        new ShowAnalysisAction(questions.get(currentPage)).execute(HomeworkListActivity.this, null);
+        if (getQuestionFragment() == null) {
+            return;
+        }
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onStopSaveOption(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new ShowAnalysisAction(questions.get(currentPage)).execute(HomeworkListActivity.this, null);
+            }
+        });
     }
 
     private void nextPage(final View view) {
@@ -181,7 +187,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (getQuestionFragment() == null) {
             return;
         }
-        getQuestionFragment().saveQuestion(SaveDocumentOption.onSubmitSaveOption(), new BaseCallback() {
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onStopSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
@@ -450,18 +456,16 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showExitDialog() {
-        getDataBundle().post(new StopNoteEvent(false));
-        OnyxCustomDialog.getConfirmDialog(this, getString(R.string.exit_tips), new DialogInterface.OnClickListener() {
+        if (getQuestionFragment() == null) {
+            new ShowExitDialogAction().execute(HomeworkListActivity.this, null);
+            return;
+        }
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onStopSaveOption(), new BaseCallback() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                System.exit(0);
+            public void done(BaseRequest request, Throwable e) {
+                new ShowExitDialogAction().execute(HomeworkListActivity.this, null);
             }
-        }, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                getDataBundle().post(new ResumeNoteEvent());
-            }
-        }).show();
+        });
     }
 
     private void toggleRecordFragment() {

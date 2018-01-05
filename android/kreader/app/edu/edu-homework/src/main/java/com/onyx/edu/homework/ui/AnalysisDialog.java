@@ -3,6 +3,7 @@ package com.onyx.edu.homework.ui;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
@@ -27,6 +28,7 @@ public class AnalysisDialog extends OnyxBaseDialog {
         binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.dialog_analysis, null, false);
         setContentView(binding.getRoot());
         initView();
+        setCanceledOnTouchOutside(false);
     }
 
     private void initView() {
@@ -36,6 +38,12 @@ public class AnalysisDialog extends OnyxBaseDialog {
         if (question.analysis != null) {
             binding.analysis.setText(TextUtils.fromHtml(StringUtils.filterHtmlWrapChar(question.analysis), new Base64ImageParser(getContext())));
         }
+        binding.close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 
 

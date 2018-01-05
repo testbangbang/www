@@ -22,7 +22,7 @@ public class SaveDocumentOption {
         return new SaveDocumentOption(true, false, false, false);
     }
 
-    public static SaveDocumentOption onSubmitSaveOption() {
+    public static SaveDocumentOption onStopSaveOption() {
         return new SaveDocumentOption(false, false, true, false);
     }
 }
