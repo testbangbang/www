@@ -463,6 +463,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         final List<Shape> stash = new ArrayList<>();
         //TODO:use add all to avoid dirty stash get detach when iterating.
         stash.addAll(getNoteViewHelper().getDirtyStash());
+        if (ShapeFactory.isDFBShape(getNoteViewHelper().getCurrentShapeType())) {
+            return;
+        }
         for (Shape shape : stash) {
             shape.render(renderContext);
         }
