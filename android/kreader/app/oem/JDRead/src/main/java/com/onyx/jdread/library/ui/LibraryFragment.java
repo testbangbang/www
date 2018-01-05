@@ -316,6 +316,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onLibraryMenuEvent(LibraryMenuEvent event) {
         MenuPopupWindow menuPopupWindow = new MenuPopupWindow(getActivity(), getEventBus());
+        menuPopupWindow.setShowItemDecoration(true);
         menuPopupWindow.showPopupWindow(libraryBinding.imageMenu, dataBundle.getLibraryViewDataModel().getMenuData());
     }
 

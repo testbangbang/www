@@ -1,7 +1,6 @@
 package com.onyx.jdread.personal.ui;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -17,6 +16,10 @@ import com.onyx.jdread.databinding.PersonalNoteBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.adapter.PersonalNoteAdapter;
+import com.onyx.jdread.personal.dialog.ExportDialog;
+import com.onyx.jdread.personal.event.ExportToEmailEvent;
+import com.onyx.jdread.personal.event.ExportToImpressionEvent;
+import com.onyx.jdread.personal.event.ExportToNativeEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 
@@ -93,11 +96,24 @@ public class PersonalNoteFragment extends BaseFragment {
     }
 
     private void showExportDialog() {
-
+        ExportDialog dialog = new ExportDialog();
+        dialog.show(getActivity().getFragmentManager(), "");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
         viewEventCallBack.viewBack();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportToNativeEvent(ExportToNativeEvent event) {
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportToEmailEvent(ExportToEmailEvent event) {
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportToImpressionEvent(ExportToImpressionEvent event) {
     }
 }
