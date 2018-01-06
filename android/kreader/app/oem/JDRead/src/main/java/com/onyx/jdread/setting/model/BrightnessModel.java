@@ -37,7 +37,7 @@ public class BrightnessModel extends Observable {
         int index = Collections.binarySearch(mLightSteps, val);
         if (index == -1) {
             index = 0;
-        } 
+        }
         return index;
     }
 
