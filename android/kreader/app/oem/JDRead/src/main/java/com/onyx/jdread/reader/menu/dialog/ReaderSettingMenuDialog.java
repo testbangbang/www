@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+import android.widget.RatingBar;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -28,6 +29,7 @@ import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
 import com.onyx.jdread.reader.menu.model.ReaderTextModel;
 import com.onyx.jdread.reader.menu.model.ReaderTitleBarModel;
+import com.onyx.jdread.setting.model.BrightnessModel;
 
 
 /**
@@ -39,6 +41,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     private ReaderSettingMenuBinding binding;
     private ReaderDataHolder readerDataHolder;
     private FunctionBarModel functionBarModel;
+    private BrightnessModel brightnessModel;
     private FunctionBarAdapter functionBarAdapter;
     private ReaderSettingMenuDialogHandler readerSettingMenuDialogHandler;
 
@@ -102,7 +105,18 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initBrightnessBar(){
-        binding.readerSettingBrightnessBar.setReaderBrightnessModel(new ReaderBrightnessModel());
+        brightnessModel = new BrightnessModel();
+        binding.readerSettingBrightnessBar.setBrightnessModel(brightnessModel);
+        initEvent();
+    }
+
+    private void initEvent() {
+        binding.readerSettingBrightnessBar.ratingbarLightSettings.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                brightnessModel.setBrightness(ratingBar.getProgress());
+            }
+        });
     }
 
     private void initReaderTitleBar() {
