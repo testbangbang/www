@@ -10,6 +10,7 @@ import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
+import com.onyx.jdread.reader.menu.actions.ChangeChineseConvertTypeAction;
 import com.onyx.jdread.reader.menu.actions.GammaCorrectionAction;
 import com.onyx.jdread.reader.menu.actions.ImageReflowAction;
 import com.onyx.jdread.reader.menu.actions.ReaderSettingShowMenuAction;
@@ -163,5 +164,10 @@ public class ReaderSettingMenuDialogHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onImageReflowEvent(ImageReflowEvent event){
         new ImageReflowAction().execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onChangeChineseConvertTypeEvent(ChangeChineseConvertTypeEvent event){
+        new ChangeChineseConvertTypeAction(event.convertType).execute(readerDataHolder);
     }
 }

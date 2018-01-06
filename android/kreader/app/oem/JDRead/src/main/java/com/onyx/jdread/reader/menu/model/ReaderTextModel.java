@@ -2,9 +2,12 @@ package com.onyx.jdread.reader.menu.model;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.databinding.ObservableInt;
 
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.jdread.reader.menu.actions.SettingFontSizeAction;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
+import com.onyx.jdread.reader.menu.event.ChangeChineseConvertTypeEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingFontSizeEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemBackPdfEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemCustomizeEvent;
@@ -26,6 +29,10 @@ public class ReaderTextModel {
     private ObservableBoolean isPdf = new ObservableBoolean(false);
     private ObservableField<ReaderTypeface> currentTypeface = new ObservableField<>(boldFaceType);
     private ObservableField<ReaderFontSize> currentFontSize = new ObservableField<>(ReaderFontSize.LevelOneFontSize);
+    private ObservableField<Language> currentLanguage = new ObservableField<>(Language.Simplified);
+    public enum Language{
+        Simplified,Traditional
+    }
 
     public enum ReaderFontSize {
         LevelOneFontSize, LevelTwoFontSize, LevelThreeFontSize, LevelFourFontSize, LevelFiveFontSize, LevelSixFontSize
@@ -33,6 +40,14 @@ public class ReaderTextModel {
 
     public enum ReaderTypeface {
         boldFaceType, arialTypeface, italicsTypeface, roundBodyTypeface
+    }
+
+    public ObservableField<Language> getCurrentLanguage() {
+        return currentLanguage;
+    }
+
+    public void setCurrentLanguage(Language language) {
+        this.currentLanguage.set(language);
     }
 
     public ObservableField<ReaderTypeface> getCurrentTypeface() {
@@ -134,6 +149,19 @@ public class ReaderTextModel {
     private void setFontSize(int fontSize){
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
         event.fontSize = fontSize;
+        EventBus.getDefault().post(event);
+    }
+
+    public void onChangeChineseClick(){
+        ChangeChineseConvertTypeEvent event = new ChangeChineseConvertTypeEvent();
+        if(currentLanguage.get() == Language.Simplified){
+            event.convertType = ReaderChineseConvertType.SIMPLIFIED_TO_TRADITIONAL;
+            setCurrentLanguage(Language.Traditional);
+        }else{
+            event.convertType = ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED;
+            setCurrentLanguage(Language.Simplified);
+        }
+
         EventBus.getDefault().post(event);
     }
 }
