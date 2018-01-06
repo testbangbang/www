@@ -56,7 +56,10 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         metadata.setISBN(detailBean.getIsbn());
         metadata.setDescription(detailBean.getInfo());
         metadata.setNativeAbsolutePath(localPath);
+        metadata.setCloudId(String.valueOf(detailBean.getEbookId()));
         metadata.setLocation(localPath);
+        metadata.setCoverUrl(detailBean.getImageUrl());
+        metadata.setSize((long) detailBean.getFileSize());
         BookExtraInfoBean extraInfo = detailBean.getBookExtraInfoBean();
         if (extraInfo != null) {
             metadata.setExtraAttributes(JSONObjectParseUtils.toJson(extraInfo));

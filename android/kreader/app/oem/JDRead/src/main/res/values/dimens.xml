@@ -316,4 +316,5 @@
     <dimen name="library_list_dialog_item_padding">20dp</dimen>
     <dimen name="add_wifi_dialog_edit_padding">20dp</dimen>
     <dimen name="add_wifi_dialog_edit_margin_left">10dp</dimen>
+    <dimen name="dialog_pay_padding">10dp</dimen>
 </resources>

@@ -4,6 +4,7 @@ import android.test.ApplicationTestCase;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;

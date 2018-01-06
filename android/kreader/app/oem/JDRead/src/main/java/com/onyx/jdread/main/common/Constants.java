@@ -1,5 +1,7 @@
 package com.onyx.jdread.main.common;
 
+import android.os.Environment;
+
 /**
  * Created by 12 on 2016/12/6.
  */
@@ -42,4 +44,7 @@ public class Constants {
     public static final String HAS_CERT_VALUE = "0";
     public static final int ORDER_TYPE = 0;
     public static final String DEVICE_TYPE_A = "A";
+    public static final String PAY_URL = "pay_url";
+    public final static long APP_CACHE_MAX_SIZE = 1024 * 1024 * 8;
+    public final static String LOCAL_WEB_CACHE_PATH = Environment.getExternalStorageDirectory().getPath() + "/webcache";
 }

@@ -304,4 +304,5 @@
     <string name="security_psk">PSK</string>
     <string name="add_wifi_configuration">添加网络</string>
     <string name="network_password">密码</string>
+    <string name="no_selected">未选中任何商品</string>
 </resources>

@@ -316,4 +316,5 @@
     <string name="security_psk">PSK</string>
     <string name="add_wifi_configuration">Add wifi</string>
     <string name="network_password">Password</string>
+    <string name="no_selected">No merchandise is selected</string>
 </resources>

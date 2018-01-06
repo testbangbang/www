@@ -101,6 +101,11 @@ public class LocalDataProvider implements DataProviderBase {
         return new ArrayList<>();
     }
 
+    public List<Metadata> findCloudMetadata() {
+        List<Metadata> queryList = new Select().from(Metadata.class).where(Metadata_Table.cloudId.isNotNull()).queryList();
+        return queryList;
+    }
+
     public long count(final Context context, final QueryArgs queryArgs) {
         return new Select(Method.count()).from(Metadata.class).where(queryArgs.conditionGroup).count();
     }
