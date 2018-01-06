@@ -47,10 +47,12 @@ public class SystemSettingsActivity extends PreferenceActivity {
 
         mEnableSystemStatusBarCheckBox.setChecked(isSystemBarEnabled);
         mEnableReaderStatusBarCheckBox.setChecked(isReaderBarEnabled);
-        mEnableMultipleTabsCheckBox.setChecked(isMultipleTabsEnabled);
 
-        if (!DeviceConfig.sharedInstance(this).isSupportMultipleTabs()) {
-            getPreferenceScreen().removePreference(mEnableMultipleTabsCheckBox);
+        if (mEnableMultipleTabsCheckBox != null) {
+            mEnableMultipleTabsCheckBox.setChecked(isMultipleTabsEnabled);
+            if (!DeviceConfig.sharedInstance(this).isSupportMultipleTabs()) {
+                getPreferenceScreen().removePreference(mEnableMultipleTabsCheckBox);
+            }
         }
 
         RelativeLayout mBackFunctionLayout = (RelativeLayout) findViewById(R.id.back_function_layout);
