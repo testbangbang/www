@@ -8,6 +8,7 @@ import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.ReaderSettingFontSizeEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemBackPdfEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemCustomizeEvent;
+import com.onyx.jdread.reader.menu.event.ReaderSettingTypefaceEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -76,18 +77,28 @@ public class ReaderTextModel {
 
     public void onBoldfaceTypefaceClick() {
         setCurrentTypeface(boldFaceType);
+        setTypeface(ReaderConfig.Typeface.BOLD_FACE_TYPEFACE);
     }
 
     public void onArialTypefaceClick() {
         setCurrentTypeface(arialTypeface);
+        setTypeface(ReaderConfig.Typeface.ARIAL_TYPEFACE);
     }
 
     public void onItalicsTypefaceClick() {
         setCurrentTypeface(italicsTypeface);
+        setTypeface(ReaderConfig.Typeface.ITALICS_TYPEFACE);
     }
 
     public void onRoundBodyTypefaceClick() {
         setCurrentTypeface(roundBodyTypeface);
+        setTypeface(ReaderConfig.Typeface.ROUND_BODY_TYPEFACE);
+    }
+
+    public void setTypeface(String typeface){
+        ReaderSettingTypefaceEvent event = new ReaderSettingTypefaceEvent();
+        event.typeFace = typeface;
+        EventBus.getDefault().post(event);
     }
 
     public void onLevelOneClick() {

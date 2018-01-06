@@ -11,6 +11,7 @@ import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.menu.actions.ReaderSettingShowMenuAction;
 import com.onyx.jdread.reader.menu.actions.SettingFontSizeAction;
+import com.onyx.jdread.reader.menu.actions.SettingTypefaceAction;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingViewBack;
 import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
@@ -124,5 +125,10 @@ public class ReaderSettingMenuDialogHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event){
         new SettingFontSizeAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.fontSize).execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReaderSettingTypefaceEvent(ReaderSettingTypefaceEvent event){
+        new SettingTypefaceAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.typeFace).execute(readerDataHolder);
     }
 }
