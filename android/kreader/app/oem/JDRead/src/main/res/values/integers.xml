@@ -90,4 +90,6 @@
     <integer name="personal_book_filter_y">10</integer>
     <integer name="personal_book_row">5</integer>
     <integer name="personal_book_col">1</integer>
+    <integer name="shop_cart_row">4</integer>
+    <integer name="shop_cart_col">1</integer>
 </resources>

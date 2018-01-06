@@ -295,6 +295,17 @@
     <dimen name="library_list_dialog_height">350dp</dimen>
     <dimen name="library_build_button_drawable_padding">9dp</dimen>
     <dimen name="library_build_button_height">55dp</dimen>
+    <dimen name="shop_cart_whole_padding">10dp</dimen>
+    <dimen name="shop_cart_delete_margin_left">20dp</dimen>
+    <dimen name="shop_cart_recycler_margin_top">20dp</dimen>
+    <dimen name="shop_cart_original_amount_margin_top">10dp</dimen>
+    <dimen name="shop_cart_cash_back_margin_left">20dp</dimen>
+    <dimen name="shop_cart_combine_margin_top">30dp</dimen>
+    <dimen name="shop_cart_combine_margin_bottom">20dp</dimen>
+    <dimen name="shop_cart_settlement_width">140dp</dimen>
+    <dimen name="shop_cart_settlement_padding">10dp</dimen>
+    <dimen name="item_shop_cart_price_margin_top">20dp</dimen>
+    <dimen name="item_shop_cart_promotion_margin_padding">10dp</dimen>
     <dimen name="dialog_text_content_height">135dp</dimen>
     <dimen name="dialog_button_height">55dp</dimen>
     <dimen name="dialog_build_edit_height">60dp</dimen>

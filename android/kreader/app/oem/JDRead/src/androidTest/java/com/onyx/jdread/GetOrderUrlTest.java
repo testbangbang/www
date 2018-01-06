@@ -11,10 +11,11 @@ import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.personal.cloud.entity.GetOrderRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
-import com.onyx.jdread.personal.common.CloudApiContext;
 import com.onyx.jdread.personal.request.cloud.RxGetOrderUrlRequest;
 import com.onyx.jdread.personal.request.cloud.RxRequestSyncLoginInfo;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;

@@ -2,7 +2,7 @@ package com.onyx.jdread.personal.cloud.api;
 
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
-import com.onyx.jdread.personal.common.CloudApiContext;
+import com.onyx.jdread.shop.common.CloudApiContext;
 
 import java.util.Map;
 
