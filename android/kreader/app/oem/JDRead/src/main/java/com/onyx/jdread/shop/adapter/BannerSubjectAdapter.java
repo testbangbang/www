@@ -11,7 +11,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.BannerSubjectModelItemBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
-import com.onyx.jdread.shop.event.OnBookItemClickEvent;
+import com.onyx.jdread.shop.event.BookItemClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -80,7 +80,7 @@ public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolde
         }
         int position = (int) tag;
         if (eventBus != null && getItemVMList() != null) {
-            eventBus.post(new OnBookItemClickEvent(getItemVMList().get(position)));
+            eventBus.post(new BookItemClickEvent(getItemVMList().get(position)));
         }
     }
 

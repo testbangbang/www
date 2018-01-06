@@ -1,12 +1,16 @@
 package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
+import android.databinding.ObservableInt;
 
-import com.onyx.jdread.shop.event.OnCategoryBoyClick;
-import com.onyx.jdread.shop.event.OnCategoryGirlClick;
-import com.onyx.jdread.shop.event.OnCategoryPublishClick;
+import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
+import com.onyx.jdread.shop.event.CategoryBoyClick;
+import com.onyx.jdread.shop.event.CategoryGirlClick;
+import com.onyx.jdread.shop.event.CategoryPublishClick;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 /**
  * Created by jackdeng on 2017/12/11.
@@ -16,8 +20,12 @@ public class AllCategoryViewModel extends BaseObservable{
 
     private EventBus eventBus;
     private TitleBarViewModel titleBarViewModel;
-    private int currentPage;
-    private int totalPage;
+    public final ObservableInt currentPosition = new ObservableInt();
+    public final ObservableInt totalPage = new ObservableInt();
+    public List<CategoryListResultBean.CatListBean> allCategoryItems;
+    public List<CategoryListResultBean.CatListBean> topCategoryItems;
+    public List<CategoryListResultBean.CatListBean> bottomCategoryItems;
+    public SubjectListViewModel subjectListViewModel;
 
     public AllCategoryViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -34,32 +42,66 @@ public class AllCategoryViewModel extends BaseObservable{
     }
 
     public int getCurrentPage() {
-        return currentPage;
+        return currentPosition.get();
     }
 
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-        notifyChange();
+    public void setCurrentPage(int curPage) {
+        curPage = curPage < 1 ? 1 : curPage;
+        currentPosition.set(curPage);
     }
 
     public int getTotalPage() {
-        return totalPage;
+        return totalPage.get();
     }
 
-    public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
+    public void setTotalPage(int allPage) {
+        allPage = allPage < 1 ? 1 : allPage;
+        totalPage.set(allPage);
+    }
+
+    public List<CategoryListResultBean.CatListBean> getAllCategoryItems() {
+        return allCategoryItems;
+    }
+
+    public void setAllCategoryItems(List<CategoryListResultBean.CatListBean> allCategoryItems) {
+        this.allCategoryItems = allCategoryItems;
         notifyChange();
     }
 
+    public List<CategoryListResultBean.CatListBean> getTopCategoryItems() {
+        return topCategoryItems;
+    }
+
+    public void setTopCategoryItems(List<CategoryListResultBean.CatListBean> topCategoryItems) {
+        this.topCategoryItems = topCategoryItems;
+        notifyChange();
+    }
+
+    public List<CategoryListResultBean.CatListBean> getBottomCategoryItems() {
+        return bottomCategoryItems;
+    }
+
+    public void setBottomCategoryItems(List<CategoryListResultBean.CatListBean> bottomCategoryItems) {
+        this.bottomCategoryItems = bottomCategoryItems;
+        notifyChange();
+    }
+
+    public SubjectListViewModel getSubjectListViewModel() {
+        if (subjectListViewModel == null){
+            subjectListViewModel = new SubjectListViewModel(getEventBus());
+        }
+        return subjectListViewModel;
+    }
+
     public void onPublishClick(){
-        getEventBus().post(new OnCategoryPublishClick());
+        getEventBus().post(new CategoryPublishClick());
     }
 
     public void onBoyClick(){
-        getEventBus().post(new OnCategoryBoyClick());
+        getEventBus().post(new CategoryBoyClick());
     }
 
     public void onGirlClick(){
-        getEventBus().post(new OnCategoryGirlClick());
+        getEventBus().post(new CategoryGirlClick());
     }
 }

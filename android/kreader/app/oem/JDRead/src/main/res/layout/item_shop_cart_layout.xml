@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data class="ItemShopCartBinding">
+
+        <import type="android.view.View" />
+
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
+        <variable
+            name="itemData"
+            type="com.onyx.jdread.shop.model.ShopCartItemData" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            bind:cover="@{itemData.detail.logo}" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="8"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="middle"
+                android:singleLine="true"
+                android:text="@{itemData.detail.bookName}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_shop_cart_price_margin_top"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="middle"
+                    android:singleLine="true"
+                    android:text="@{String.valueOf(itemData.detail.jdPrice)}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rectangle_stroke"
+                        android:ellipsize="middle"
+                        android:padding="@dimen/item_shop_cart_promotion_margin_padding"
+                        android:singleLine="true"
+                        android:text="@{itemData.promotionalEntity.name}"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/level_three_heading_font"
+                        android:visibility="@{StringUtils.isNullOrEmpty(itemData.promotionalEntity.name) ? View.GONE : View.VISIBLE}" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/item_shop_cart_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@{itemData.checked}" />
+    </LinearLayout>
+</layout>

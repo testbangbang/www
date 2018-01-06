@@ -288,11 +288,15 @@
     <string name="the_default">全部(默认)</string>
     <string name="have_bought">已购买</string>
     <string name="self_import">自导入文档</string>
-    <string name="settlement">去结算</string>
+    <string name="settlement">去结算(%s)</string>
     <string name="author_format" translatable="false">作者： %s</string>
     <string name="format_format" translatable="false">格式： %s</string>
     <string name="size_format" translatable="false">大小： %s</string>
     <string name="read_format" translatable="false">已读： %s</string>
+    <string name="braces">(%s)</string>
+    <string name="original_amount">原金额:%s</string>
+    <string name="preferential">优惠:%s</string>
+    <string name="combine">合计:%s</string>
     <string name="book_total_format">共%s本图书</string>
     <string name="brightness_control">亮度调节</string>
     <string name="security_none">无</string>
@@ -300,4 +304,9 @@
     <string name="security_psk">PSK</string>
     <string name="add_wifi_configuration">添加网络</string>
     <string name="network_password">密码</string>
+    <string name="subject_list_sort_type_hot">热门</string>
+    <string name="subject_list_sort_type_sales">销量</string>
+    <string name="subject_list_sort_type_newest">最新</string>
+    <string name="subject_list_all">全部</string>
+    <string name="subject_list_just_vip">只看畅读VIP</string>
 </resources>

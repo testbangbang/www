@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.action;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.R;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -27,7 +28,8 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
     }
 
     @Override
-    public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+    public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+        showLoadingDialog(shopDataBundle, R.string.loading);
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         JSONObject body = new JSONObject();
@@ -42,7 +44,6 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
                 bookDetailViewModel.setBookDetailResultBean(bookDetailResultBean);
                 if (rxCallback != null) {
                     rxCallback.onNext(BookDetailAction.this);
-                    rxCallback.onComplete();
                 }
             }
 
@@ -51,6 +52,15 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
                 super.onError(throwable);
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
+                }
+            }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                hideLoadingDialog(shopDataBundle);
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
                 }
             }
         });

@@ -13,4 +13,9 @@ public abstract class RxCallback<T>  {
     public void onComplete() {
     }
 
+    public void onSubscribe() {
+    }
+
+    public void onFinally() {
+    }
 }

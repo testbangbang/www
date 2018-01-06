@@ -300,11 +300,15 @@
     <string name="the_default">All(default)</string>
     <string name="have_bought">Have bought</string>
     <string name="self_import">Self-import document</string>
-    <string name="settlement">Settlement</string>
+    <string name="settlement">Settlement(%s)</string>
     <string name="author_format" translatable="false">Author： %s</string>
     <string name="format_format" translatable="false">Format： %s</string>
     <string name="size_format" translatable="false">Size： %s</string>
     <string name="read_format" translatable="false">Read： %s</string>
+    <string name="braces">(%s)</string>
+    <string name="original_amount">Original amount:%s</string>
+    <string name="preferential">Preferential:%s</string>
+    <string name="combine">Total:%s</string>
     <string name="book_total_format">total %s</string>
     <string name="brightness_control">Brightness control</string>
     <string name="security_none">NONE</string>
@@ -313,4 +317,9 @@
     <string name="add_wifi_configuration">Add wifi</string>
     <string name="network_password">Password</string>
     <string name="screen_saver_key">screen_saver_key</string>
+    <string name="subject_list_sort_type_hot">Hot</string>
+    <string name="subject_list_sort_type_sales">Sales</string>
+    <string name="subject_list_sort_type_newest">Newest</string>
+    <string name="subject_list_all">All</string>
+    <string name="subject_list_just_vip">Just  look at VIP</string>
 </resources>
