@@ -94,6 +94,10 @@ public class BaseDevice {
         return 0;
     }
 
+    public float getMaxTouchPressure() {
+        return 1024;
+    }
+
     public float getEpdWidth() {
         return 0;
     }
