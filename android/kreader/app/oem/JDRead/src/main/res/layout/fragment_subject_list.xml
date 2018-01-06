@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.onyx.jdread.shop.model.SubjectListViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/fragment_book_detail_margin_top_and_bottom"
+        android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+        android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+        android:layout_marginTop="@dimen/fragment_book_detail_margin_top_and_bottom"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/layout_title_bar"
+            layout="@layout/layout_title_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            bind:titleBarViewModel="@{viewModel.titleBarViewModel}" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/recycler_view_subject_list"
+                subjectList="@{viewModel.bookList}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:visibility="@{viewModel.sortButtonIsOpen ? View.VISIBLE : View.GONE}">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/subject_list_sort_button_container_padding">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/normal_selected_background"
+                        android:onClick="@{()->viewModel.onSortTypeHotClick()}"
+                        android:padding="@dimen/subject_list_sort_button_padding"
+                        android:text="@string/subject_list_sort_type_hot" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/subject_list_sort_button_margin_left"
+                        android:background="@drawable/normal_selected_background"
+                        android:onClick="@{()->viewModel.onSortTypeSalesClick()}"
+                        android:padding="@dimen/subject_list_sort_button_padding"
+                        android:text="@string/subject_list_sort_type_sales" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/subject_list_sort_button_margin_left"
+                        android:background="@drawable/normal_selected_background"
+                        android:onClick="@{()->viewModel.onSortTypeNewestClick()}"
+                        android:padding="@dimen/subject_list_sort_button_padding"
+                        android:text="@string/subject_list_sort_type_newest" />
+
+                </LinearLayout>
+
+                <include layout="@layout/layout_line" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/subject_list_category_items_container_height"
+                android:background="@android:color/white"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:visibility="@{viewModel.allCatIsOpen ? View.VISIBLE : View.GONE}">
+
+                <com.onyx.android.sdk.ui.view.PageRecyclerView
+                    android:id="@+id/recycler_view_category_list"
+                    categoryItems="@{viewModel.categoryItems}"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1" />
+
+                <CheckBox
+                    android:id="@+id/subject_list_show_vip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/subject_list_just_vip_margin"
+                    android:button="@drawable/selected_subject_list_show_vip_bg"
+                    android:checked="false"
+                    android:text="@string/subject_list_just_vip"
+                    android:visibility="@{viewModel.isFree ? View.GONE : View.VISIBLE}" />
+
+                <include layout="@layout/layout_line" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingBottom="@dimen/book_comment_indicator_padding"
+            android:paddingTop="@dimen/book_comment_indicator_padding"
+            android:text="@{@string/book_comment_indicator_value(viewModel.currentPosition,viewModel.totalPage)}" />
+
+    </LinearLayout>
+
+</layout>

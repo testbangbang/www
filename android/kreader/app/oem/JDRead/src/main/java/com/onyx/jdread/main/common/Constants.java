@@ -23,6 +23,9 @@ public class Constants {
     public static final String SP_KEY_USER_NAME = "user_name";
     public static final String SP_KEY_LIST_PIN = "listPin";
     public static final String SP_KEY_SHOW_PASSWORD = "show_password";
+    public static final String SP_KEY_CATEGORY_ID = "category_id";
+    public static final String SP_KEY_CATEGORY_NAME = "category_name";
+    public static final String SP_KEY_CATEGORY_ISFREE = "category_isfree";
 
     public static final int BOOK_COMMENT_PAGE_SIZE = 20;
     public static final int BOOK_CATEGORY_PAGE_SIZE = 20;
@@ -47,4 +50,5 @@ public class Constants {
     public static final String PAY_URL = "pay_url";
     public final static long APP_CACHE_MAX_SIZE = 1024 * 1024 * 8;
     public final static String LOCAL_WEB_CACHE_PATH = Environment.getExternalStorageDirectory().getPath() + "/webcache";
+    public static final int CATEGORY_TYPE_FREE = 1;
 }

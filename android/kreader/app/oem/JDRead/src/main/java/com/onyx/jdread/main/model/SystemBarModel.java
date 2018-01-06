@@ -1,17 +1,19 @@
 package com.onyx.jdread.main.model;
 
+import android.databinding.ObservableBoolean;
+
 /**
  * Created by huxiaomao on 2017/12/9.
  */
 
 public class SystemBarModel {
-    private boolean isShow = true;
+    private ObservableBoolean isShow = new ObservableBoolean(true);
 
-    public boolean isShow() {
+    public ObservableBoolean getIsShow() {
         return isShow;
     }
 
-    public void setShow(boolean show) {
-        isShow = show;
+    public void setIsShow(boolean isShow) {
+        this.isShow.set(isShow);
     }
 }

@@ -89,10 +89,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public void updateMetadataExtraAttributes(Context context, Metadata metadata) {
+    public void updateMetadata(Context context, Metadata metadata) {
         metadata.beforeSave();
         Metadata findMeta = findMetadataByIdString(context, metadata.getIdString());
-        findMeta.setExtraAttributes(metadata.getExtraAttributes());
         if (findMeta.hasValidId()) {
             ContentUtils.update(OnyxMetadataProvider.CONTENT_URI, findMeta);
         }

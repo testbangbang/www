@@ -21,8 +21,16 @@ public class ReaderPageInfoModel {
         return bookName;
     }
 
+    public void setBookName(String bookName) {
+        this.bookName.set(bookName);
+    }
+
     public ObservableField<String> getReadProgress() {
         return readProgress;
+    }
+
+    public void setReadProgress(String readProgress) {
+        this.readProgress.set(readProgress);
     }
 
     public void nextChapter(){
@@ -37,7 +45,7 @@ public class ReaderPageInfoModel {
         return isShow;
     }
 
-    public void setIsShow(ObservableBoolean isShow) {
-        this.isShow = isShow;
+    public void setIsShow(boolean isShow) {
+        this.isShow.set(isShow);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.R;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -11,21 +12,28 @@ import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestCategoryList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jackdeng on 2017/12/15.
  */
 
 public class BookCategoryAction extends BaseAction<ShopDataBundle> {
 
+    private boolean isAllCategory;
     private Context context;
     private BookShopViewModel shopViewModel;
+    private List<CategoryListResultBean.CatListBean> catList;
 
-    public BookCategoryAction(Context context) {
+    public BookCategoryAction(Context context, boolean isAllCategory) {
         this.context = context;
+        this.isAllCategory = isAllCategory;
     }
 
     @Override
-    public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+    public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+        showLoadingDialog(shopDataBundle, R.string.loading);
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
@@ -38,10 +46,15 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onNext(RxRequestCategoryList request) {
                 CategoryListResultBean categoryListResultBean = request.getCategoryListResultBean();
-                shopViewModel.setCategorySubjectItems(categoryListResultBean.catList);
+                if (categoryListResultBean != null) {
+                    catList = categoryListResultBean.catList;
+                    if (!isAllCategory) {
+                        shopViewModel.setCategorySubjectItems(catList);
+                    }
+                }
+
                 if (rxCallback != null) {
                     rxCallback.onNext(BookCategoryAction.this);
-                    rxCallback.onComplete();
                 }
             }
 
@@ -52,6 +65,40 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
                     rxCallback.onError(throwable);
                 }
             }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                hideLoadingDialog(shopDataBundle);
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
+                }
+            }
         });
+    }
+
+    public List<CategoryListResultBean.CatListBean> getCatList() {
+        return catList;
+    }
+
+    public List<CategoryListResultBean.CatListBean> loadCategoryV2(List<CategoryListResultBean.CatListBean> catList, int catId) {
+        List<CategoryListResultBean.CatListBean> list = new ArrayList<>();
+        if (catList != null) {
+            for (CategoryListResultBean.CatListBean catListBean : catList) {
+                if (catId == catListBean.catId) {
+                    List<CategoryListResultBean.CatListBean.ChildListBean> childList = catListBean.childList;
+                    for (CategoryListResultBean.CatListBean.ChildListBean childListBean : childList) {
+                        CategoryListResultBean.CatListBean bean = new CategoryListResultBean.CatListBean();
+                        bean.amount = childListBean.amount;
+                        bean.catId = childListBean.catId;
+                        bean.catName = childListBean.catName;
+                        bean.catType = childListBean.catType;
+                        bean.isLeaf = childListBean.isLeaf;
+                        list.add(bean);
+                    }
+                }
+            }
+        }
+        return list;
     }
 }

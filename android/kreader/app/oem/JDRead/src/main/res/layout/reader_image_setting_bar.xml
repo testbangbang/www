@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="readerImageModel"
+            type="com.onyx.jdread.reader.menu.model.ReaderImageModel" />
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="@{readerImageModel.isShow?View.VISIBLE:View.GONE}">
 
         <View style="@style/ReaderHorizontalSeparationLine" />
 

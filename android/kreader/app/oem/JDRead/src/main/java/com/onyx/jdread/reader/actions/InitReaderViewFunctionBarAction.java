@@ -50,7 +50,7 @@ public class InitReaderViewFunctionBarAction extends BaseReaderAction {
                 JDReadApplication.getInstance().getString(R.string.reader_menu_brightness), R.mipmap.ic_read_light,new ReaderFunctionItemBrightnessEvent());
         functionBarModel.itemModels.add(brightness);
         ReaderFunctionBarItem setting = new ReaderFunctionBarItem(ViewConfig.FunctionModule.PERSONAL,PersonalFragment.class.getName(),
-                JDReadApplication.getInstance().getString(R.string.setting_name), R.mipmap.ic_read_font,new ReaderFunctionItemSettingEvent());
+                JDReadApplication.getInstance().getString(R.string.reader_format), R.mipmap.ic_read_font,new ReaderFunctionItemSettingEvent());
         functionBarModel.itemModels.add(setting);
         if (callback != null) {
             callback.onNext(functionBarModel);

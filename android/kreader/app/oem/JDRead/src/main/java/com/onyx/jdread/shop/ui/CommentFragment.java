@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.ui;
 
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,15 +13,17 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.databinding.FragmentBookCommentBinding;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.databinding.FragmentBookCommentBinding;
 import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
-import com.onyx.jdread.shop.event.OnTopBackEvent;
-import com.onyx.jdread.shop.event.OnTopRightEvent;
+import com.onyx.jdread.shop.event.TopBackEvent;
+import com.onyx.jdread.shop.event.TopRightTitleEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
@@ -69,9 +70,6 @@ public class CommentFragment extends BaseFragment {
         bookCommentBinding.setBookDetailViewModel(getBookDetailViewModel());
         getBookDetailViewModel().getTitleBarViewModel().leftText = getString(R.string.title_bar_title_book_comment);
         getBookDetailViewModel().getTitleBarViewModel().pageTag = PageTagConstants.BOOK_COMMENT;
-        getBookDetailViewModel().getTitleBarViewModel().showRightText = true;
-        getBookDetailViewModel().getTitleBarViewModel().rightText = getString(R.string.title_bar_title_book_write_comment);
-        bookCommentBinding.layoutTitleBar.titleBarRightTitle.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         initDividerItemDecoration();
         setCommentsRecycleView();
     }
@@ -149,14 +147,24 @@ public class CommentFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookDetailTopBackEvent(OnTopBackEvent event) {
+    public void onBookDetailTopBackEvent(TopBackEvent event) {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookDetailTopRightEvent(OnTopRightEvent event) {
+    public void onBookDetailTopRightEvent(TopRightTitleEvent event) {
 
+    }
+
+    @Subscribe
+    public void onLoadingDialogEvent(LoadingDialogEvent event) {
+        showLoadingDialog(getString(event.getResId()));
+    }
+
+    @Subscribe
+    public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
     }
 }
