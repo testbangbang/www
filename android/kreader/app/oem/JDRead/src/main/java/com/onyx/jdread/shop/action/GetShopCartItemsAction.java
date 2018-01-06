@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
@@ -50,7 +51,7 @@ public class GetShopCartItemsAction extends BaseAction {
                     ShoppingCartBookIdsBean.ResultBean result = resultBean.getResult();
                     String bookList = result.getBookList();
                     if (StringUtils.isNotBlank(bookList)) {
-                        String[] bookIds = string2Arr(bookList);
+                        String[] bookIds = CommonUtils.string2Arr(bookList);
                         getBookItems(bookIds);
                     }
                 }
@@ -101,17 +102,6 @@ public class GetShopCartItemsAction extends BaseAction {
             e.printStackTrace();
         }
         return json.toString();
-    }
-
-    private String[] string2Arr(String bookList) {
-        String[] bookArr;
-        if (bookList.contains(",")) {
-            bookArr = bookList.split(",");
-        } else {
-            bookArr = new String[]{bookList};
-        }
-
-        return bookArr;
     }
 
     private List<Map<String, String>> getList(String[] bookIds) {
