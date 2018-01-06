@@ -24,8 +24,6 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookDetailBinding;
 import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
-import com.onyx.jdread.shop.event.HideAllDialogEvent;
-import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
@@ -38,6 +36,8 @@ import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
+import com.onyx.jdread.reader.common.DocumentInfo;
+import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.shop.action.AddBookToSmoothCardAction;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.BookDetailAction;
@@ -51,19 +51,22 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
-import com.onyx.jdread.shop.event.BookShelfEvent;
-import com.onyx.jdread.shop.event.DownloadFinishEvent;
-import com.onyx.jdread.shop.event.DownloadStartEvent;
-import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.event.BookDetailReadNowEvent;
+import com.onyx.jdread.shop.event.BookShelfEvent;
 import com.onyx.jdread.shop.event.CopyrightCancelEvent;
 import com.onyx.jdread.shop.event.CopyrightEvent;
+import com.onyx.jdread.shop.event.DownloadFinishEvent;
+import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadWholeBookEvent;
+import com.onyx.jdread.shop.event.DownloadingEvent;
+import com.onyx.jdread.shop.event.GoShopingCartEvent;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.shop.event.RecommendItemClickEvent;
 import com.onyx.jdread.shop.event.RecommendNextPageEvent;
+import com.onyx.jdread.shop.event.ShopSmoothCardEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewCommentEvent;
-import com.onyx.jdread.shop.event.ShopSmoothCardEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.BookDownloadUtils;
@@ -273,6 +276,11 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGoShopingCartEvent(GoShopingCartEvent event) {
+        gotoShopCartFragment();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailReadNowEvent(BookDetailReadNowEvent event) {
         bookDetailBean = event.getBookDetailBean();
         BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
@@ -393,7 +401,10 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void openBook(String name, String localPath) {
-
+        DocumentInfo documentInfo = new DocumentInfo();
+        documentInfo.setBookPath(localPath);
+        documentInfo.setBookName(name);
+        OpenBookHelper.openBook(super.getContext(), documentInfo);
     }
 
     private void addToCart() {
@@ -407,12 +418,14 @@ public class BookDetailFragment extends BaseFragment {
                 }
             }
         });
-        //TODO  go SHopCartFragment;
     }
 
     public void setAddOrDelFromCart(AddOrDelFromCartBean.ResultBean result) {
-        String bookList = result.getBookList();
-        String[] bookArr = CommonUtils.string2Arr(bookList);
+        gotoShopCartFragment();
+    }
+
+    private void gotoShopCartFragment() {
+        getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
     }
 
     private void tryDownload(BookDetailResultBean.Detail bookDetailBean) {
