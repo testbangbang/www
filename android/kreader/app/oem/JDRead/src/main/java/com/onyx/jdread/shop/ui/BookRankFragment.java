@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
  */
 
 public class BookRankFragment extends BaseFragment {
+    private static final int SCROLL_TOTAL = 3;
     private FragmentBookRankBinding bookRankBinding;
     private int bookDetailSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_detail_recycle_view_space);
     private DividerItemDecoration itemDecoration;
@@ -40,6 +42,7 @@ public class BookRankFragment extends BaseFragment {
     private ArrayList<SubjectViewModel> dataList = new ArrayList<>();
     private BookModelResultBean newBookResultBean;
     private BookModelResultBean specialTodayResultBean;
+    private GPaginator paginator;
 
     @Nullable
     @Override
@@ -57,6 +60,7 @@ public class BookRankFragment extends BaseFragment {
     private void initView() {
         initDividerItemDecoration();
         setRecycleView();
+        bookRankBinding.scrollBar.setTotal(SCROLL_TOTAL);
         bookRankBinding.setRankViewModel(getRankViewModel());
         getRankViewModel().getTitleBarViewModel().leftText = getString(R.string.ranking);
     }
@@ -67,6 +71,14 @@ public class BookRankFragment extends BaseFragment {
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
+        paginator = recyclerView.getPaginator();
+        recyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPageChange(int position, int itemCount, int pageSize) {
+                int currentPage = paginator.getCurrentPage();
+                bookRankBinding.scrollBar.setFocusPosition(currentPage);
+            }
+        });
     }
 
     private void initDividerItemDecoration() {
