@@ -46,6 +46,8 @@ public class BaseShape implements Shape {
     private boolean review;
 
     private static boolean useRawInput;
+    private static float maxTouchPressure = 1024;
+
     /**
      * rectangle, circle, etc.
      * @return
@@ -447,4 +449,5 @@ public class BaseShape implements Shape {
     public static void setUseRawInput(boolean useRawInput) {
         BaseShape.useRawInput = useRawInput;
     }
+
 }

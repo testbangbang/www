@@ -19,6 +19,9 @@ public class EpdPenManager {
     public static final int PEN_PAUSE = 3;
     public static final int PEN_ERASING = 4;
 
+    public static final int STROKE_STYLE_PENCIL = 0;
+    public static final int STROKE_STYLE_BRUSH = 1;
+
     public EpdPenManager setHostView(final View view) {
         hostView = view;
         return this;
