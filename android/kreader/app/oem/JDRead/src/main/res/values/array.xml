@@ -22,7 +22,7 @@
         <item>@string/device_setting_ten_pages</item>
         <item>@string/device_setting_twenty_pages</item>
         <item>@string/device_setting_forty_pages</item>
-        <item>@string/device_setting_eighty_pages</item>
+        <item>@string/device_setting_never</item>
     </string-array>
 
     <string-array name="device_configs">

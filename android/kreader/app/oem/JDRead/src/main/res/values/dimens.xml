@@ -23,8 +23,8 @@
     <dimen name="setting_title_bar_switch_margin_right">46dp</dimen>
     <dimen name="lock_screen_recycler_margin_top">10dp</dimen>
     <dimen name="lock_screen_recycler_padding">20dp</dimen>
-    <dimen name="lock_screen_recycler_height">330dp</dimen>
-    <dimen name="refresh_whole_top">20dp</dimen>
+    <dimen name="lock_screen_recycler_height">280dp</dimen>
+    <dimen name="refresh_whole_top">28dp</dimen>
     <dimen name="refresh_whole_padding">20dp</dimen>
     <dimen name="device_config_hour_format_margin_left">20dp</dimen>
     <dimen name="device_config_clock_margin_left">10dp</dimen>
@@ -310,4 +310,7 @@
     <dimen name="switch_radius">5dp</dimen>
     <dimen name="switch_track_width">74dp</dimen>
     <dimen name="switch_track_height">32dp</dimen>
+    <dimen name="refresh_setting_explain_height">70dp</dimen>
+    <dimen name="refresh_mode_drawable_padding">10dp</dimen>
+    <dimen name="refresh_mode_explain_margin_left">28dp</dimen>
 </resources>
