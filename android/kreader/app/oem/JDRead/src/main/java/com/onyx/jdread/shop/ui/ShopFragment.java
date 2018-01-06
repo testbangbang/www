@@ -27,10 +27,10 @@ import com.onyx.jdread.shop.action.NewBookAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
-import com.onyx.jdread.shop.event.OnBookItemClickEvent;
-import com.onyx.jdread.shop.event.OnCategoryViewClick;
-import com.onyx.jdread.shop.event.OnRankViewClick;
-import com.onyx.jdread.shop.event.OnShopBakcTopClick;
+import com.onyx.jdread.shop.event.BookItemClickEvent;
+import com.onyx.jdread.shop.event.CategoryViewClick;
+import com.onyx.jdread.shop.event.RankViewClick;
+import com.onyx.jdread.shop.event.ShopBakcTopClick;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
@@ -260,7 +260,7 @@ public class ShopFragment extends BaseFragment {
     }
 
     private void getRecyclerViewCategoryData() {
-        BookCategoryAction bookCategoryAction = new BookCategoryAction(JDReadApplication.getInstance());
+        BookCategoryAction bookCategoryAction = new BookCategoryAction(JDReadApplication.getInstance(),false);
         bookCategoryAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -275,24 +275,26 @@ public class ShopFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onShopBakcTopClick(OnShopBakcTopClick event) {
+    public void onShopBakcTopClick(ShopBakcTopClick event) {
         setCurrent(R.id.book_shop_one, SCROLL_ONE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRankViewClick(OnRankViewClick event) {
-
+    public void onRankViewClick(RankViewClick event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookRankFragment.class.getName());
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCategoryViewClick(OnCategoryViewClick event) {
+    public void onCategoryViewClick(CategoryViewClick event) {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookItemClickEvent(OnBookItemClickEvent event) {
+    public void onBookItemClickEvent(BookItemClickEvent event) {
         PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());

@@ -5,7 +5,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.personal.cloud.api.GetUserInfoService;
 import com.onyx.jdread.personal.cloud.entity.UserInfoRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
-import com.onyx.jdread.personal.common.CloudApiContext;
+import com.onyx.jdread.shop.common.CloudApiContext;
 
 import retrofit2.Call;
 import retrofit2.Response;

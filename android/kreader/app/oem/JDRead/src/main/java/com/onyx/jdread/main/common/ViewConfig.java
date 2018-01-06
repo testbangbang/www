@@ -15,6 +15,7 @@ import com.onyx.jdread.personal.ui.PersonalTaskFragment;
 import com.onyx.jdread.personal.ui.PointsForFragment;
 import com.onyx.jdread.personal.ui.ReadPreferenceFragment;
 import com.onyx.jdread.personal.ui.TopUpRecordFragment;
+import com.onyx.jdread.setting.ui.BrightnessFragment;
 import com.onyx.jdread.setting.ui.ContactUsFragment;
 import com.onyx.jdread.setting.ui.DeviceConfigFragment;
 import com.onyx.jdread.setting.ui.DeviceInformationFragment;
@@ -32,8 +33,10 @@ import com.onyx.jdread.setting.ui.SystemUpdateFragment;
 import com.onyx.jdread.setting.ui.WifiFragment;
 import com.onyx.jdread.shop.ui.AllCategoryFragment;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
+import com.onyx.jdread.shop.ui.BookRankFragment;
 import com.onyx.jdread.shop.ui.CommentFragment;
 import com.onyx.jdread.shop.ui.ShopFragment;
+import com.onyx.jdread.shop.ui.SubjectListFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +61,8 @@ public class ViewConfig {
         childViewInfo.put(BookDetailFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(CommentFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(AllCategoryFragment.class.getName(), FunctionModule.SHOP);
+        childViewInfo.put(SubjectListFragment.class.getName(), FunctionModule.SHOP);
+        childViewInfo.put(BookRankFragment.class.getName(), FunctionModule.SHOP);
         //setting
         childViewInfo.put(SettingFragment.class.getName(), FunctionModule.SETTING);
         childViewInfo.put(DeviceConfigFragment.class.getName(),FunctionModule.SETTING);
@@ -74,6 +79,7 @@ public class ViewConfig {
         childViewInfo.put(DeviceInformationFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(PasswordSettingFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(ReadingToolsFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(BrightnessFragment.class.getName(),FunctionModule.SETTING);
         //personal
         childViewInfo.put(PersonalFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(PersonalExperienceFragment.class.getName(), FunctionModule.PERSONAL);

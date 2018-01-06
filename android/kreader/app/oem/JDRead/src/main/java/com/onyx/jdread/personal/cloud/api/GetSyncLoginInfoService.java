@@ -1,7 +1,7 @@
 package com.onyx.jdread.personal.cloud.api;
 
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
-import com.onyx.jdread.personal.common.CloudApiContext;
+import com.onyx.jdread.shop.common.CloudApiContext;
 
 import java.util.Map;
 

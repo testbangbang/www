@@ -27,19 +27,25 @@ public class MetadataQueryAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onNext(RxRequestMetadataQuery request) {
                 metadataResult = request.getMetadataResult();
-                hideLoadingDialog(dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onNext(MetadataQueryAction.this);
-                    rxCallback.onComplete();
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                hideLoadingDialog(dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
+                }
+            }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                hideLoadingDialog(dataBundle);
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
                 }
             }
         });

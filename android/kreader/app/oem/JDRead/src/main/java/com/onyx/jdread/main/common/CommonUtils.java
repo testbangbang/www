@@ -7,6 +7,7 @@ import android.os.Environment;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 
 import java.text.DecimalFormat;
 
@@ -76,5 +77,13 @@ public class CommonUtils {
             }
         }
         return bookArr;
+    }
+
+    public static boolean isCanNowRead(BookDetailResultBean.Detail detailBean){
+        boolean canNowRead = false;
+        if (detailBean != null) {
+            canNowRead = detailBean.isTryRead() || (detailBean.getType() == Constants.CATEGORY_TYPE_FREE);
+        }
+        return canNowRead;
     }
 }

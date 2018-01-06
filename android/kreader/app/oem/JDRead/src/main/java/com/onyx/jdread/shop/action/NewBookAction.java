@@ -20,6 +20,11 @@ public class NewBookAction extends BaseAction<ShopDataBundle> {
 
     private Context context;
     private BookShopViewModel shopViewModel;
+    private BookModelResultBean bookModelResultBean;
+
+    public BookModelResultBean getBookModelResultBean() {
+        return bookModelResultBean;
+    }
 
     public NewBookAction(Context context) {
         this.context = context;
@@ -39,14 +44,13 @@ public class NewBookAction extends BaseAction<ShopDataBundle> {
         request.execute(new RxCallback<RxRequestBookModule>() {
             @Override
             public void onNext(RxRequestBookModule request) {
-                BookModelResultBean bookModelResultBean = request.getBookModelResultBean();
+                bookModelResultBean = request.getBookModelResultBean();
                 SubjectViewModel subjectViewModel = new SubjectViewModel();
                 subjectViewModel.setModelBean(bookModelResultBean);
                 shopViewModel.setCoverSubjectOneItems(subjectViewModel);
                 shopViewModel.setBannerSubjectIems(subjectViewModel);
                 if (rxCallback != null) {
                     rxCallback.onNext(NewBookAction.this);
-                    rxCallback.onComplete();
                 }
             }
 
@@ -55,6 +59,14 @@ public class NewBookAction extends BaseAction<ShopDataBundle> {
                 super.onError(throwable);
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
+                }
+            }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
                 }
             }
         });

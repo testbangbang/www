@@ -3,9 +3,9 @@ package com.onyx.jdread.shop.model;
 import android.databinding.BaseObservable;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
-import com.onyx.jdread.shop.event.OnCategoryViewClick;
-import com.onyx.jdread.shop.event.OnRankViewClick;
-import com.onyx.jdread.shop.event.OnShopBakcTopClick;
+import com.onyx.jdread.shop.event.CategoryViewClick;
+import com.onyx.jdread.shop.event.RankViewClick;
+import com.onyx.jdread.shop.event.ShopBakcTopClick;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -143,7 +143,7 @@ public class BookShopViewModel extends BaseObservable {
     }
 
     public void onRankViewClick() {
-        getEventBus().post(new OnRankViewClick());
+        getEventBus().post(new RankViewClick());
     }
 
     public void onEnjoyReadViewClick() {
@@ -159,7 +159,7 @@ public class BookShopViewModel extends BaseObservable {
     }
 
     public void onCategoryViewClick() {
-        getEventBus().post(new OnCategoryViewClick());
+        getEventBus().post(new CategoryViewClick());
     }
 
     public void onViewAllBookViewClick() {
@@ -167,7 +167,7 @@ public class BookShopViewModel extends BaseObservable {
     }
 
     public void onBackTopViewClick() {
-        getEventBus().post(new OnShopBakcTopClick());
+        getEventBus().post(new ShopBakcTopClick());
     }
 
     public void onShoppingCartViewClick() {
