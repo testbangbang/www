@@ -33,4 +33,24 @@ public class ReaderConfig {
         public static final int FIVE_LEVEL = 125;
         public static final int SIX_LEVEL = 150;
     }
+
+    public static class PageLineSpacing{
+        public static final int MIN_LINE_SPACING = 0;
+        public static final int MAX_LINE_SPACING = 30;
+    }
+
+    public static class PageSegmentSpacing{
+        public static final int MIN_SEGMENT_SPACING = 0;
+        public static final int MAX_SEGMENT_SPACING = 30;
+    }
+
+    public static class PageLeftAndRightSpacing{
+        public static final int MIN_LEFT_AND_RIGHT_SPACING = 0;
+        public static final int MAX_LEFT_AND_RIGHT_SPACING = 30;
+    }
+
+    public static class PageUpAndDownSpacing{
+        public static final int MIN_UP_AND_DOWN_SPACING = 0;
+        public static final int MAX_UP_AND_DOWN_SPACING = 30;
+    }
 }

@@ -17,7 +17,11 @@ import com.onyx.jdread.reader.menu.actions.ReaderSettingShowMenuAction;
 import com.onyx.jdread.reader.menu.actions.ResetNavigationAction;
 import com.onyx.jdread.reader.menu.actions.ScaleToPageCropAction;
 import com.onyx.jdread.reader.menu.actions.SettingFontSizeAction;
+import com.onyx.jdread.reader.menu.actions.SettingLeftAndRightSpacingAction;
+import com.onyx.jdread.reader.menu.actions.SettingLineSpacingAction;
+import com.onyx.jdread.reader.menu.actions.SettingParagraphSpacingAction;
 import com.onyx.jdread.reader.menu.actions.SettingTypefaceAction;
+import com.onyx.jdread.reader.menu.actions.SettingUpAndDownSpacingAction;
 import com.onyx.jdread.reader.menu.actions.SwitchNavigationToComicModeAction;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingViewBack;
@@ -169,5 +173,25 @@ public class ReaderSettingMenuDialogHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChangeChineseConvertTypeEvent(ChangeChineseConvertTypeEvent event){
         new ChangeChineseConvertTypeAction(event.convertType).execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSettingParagraphSpacingEvent(SettingParagraphSpacingEvent event){
+        new SettingParagraphSpacingAction().execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSettingLeftAndRightSpacingEvent(SettingLeftAndRightSpacingEvent event){
+        new SettingLeftAndRightSpacingAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.margin).execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSettingLineSpacingEvent(SettingLineSpacingEvent event){
+        new SettingLineSpacingAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.margin).execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSettingUpAndDownSpacingEvent(SettingUpAndDownSpacingEvent event){
+        new SettingUpAndDownSpacingAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.margin).execute(readerDataHolder);
     }
 }

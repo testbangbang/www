@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.widget.RatingBar;
+import android.widget.SeekBar;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -102,6 +103,77 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void initCustomizeBar(){
         binding.readerSettingCustomizeFormatBar.setReaderCustomizeModel(new ReaderCustomizeModel());
+        initCustomizeEvent();
+    }
+
+    private void initCustomizeEvent() {
+        binding.readerSettingCustomizeFormatBar.readerLineSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                binding.readerSettingCustomizeFormatBar.getReaderCustomizeModel().setLineSpacingProgress(seekBar.getProgress());
+            }
+        });
+
+        binding.readerSettingCustomizeFormatBar.readerSegmentSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                binding.readerSettingCustomizeFormatBar.getReaderCustomizeModel().setSegmentProgress(seekBar.getProgress());
+            }
+        });
+
+        binding.readerSettingCustomizeFormatBar.readerLefAndRightSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                binding.readerSettingCustomizeFormatBar.getReaderCustomizeModel().setLeftAndRightProgress(seekBar.getProgress());
+            }
+        });
+
+        binding.readerSettingCustomizeFormatBar.readerUpAndDownSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                binding.readerSettingCustomizeFormatBar.getReaderCustomizeModel().setUpAndDownProgress(seekBar.getProgress());
+            }
+        });
     }
 
     private void initBrightnessBar(){

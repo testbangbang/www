@@ -10,11 +10,11 @@ import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
  * Created by huxiaomao on 2017/12/30.
  */
 
-public class SettingRowSpacingAction extends BaseReaderAction {
+public class SettingLineSpacingAction extends BaseReaderAction {
     private int lineSpacing;
     private ReaderTextStyle style;
 
-    public SettingRowSpacingAction(ReaderTextStyle style,int lineSpacing) {
+    public SettingLineSpacingAction(ReaderTextStyle style, int lineSpacing) {
         this.lineSpacing = lineSpacing;
         this.style = style;
     }

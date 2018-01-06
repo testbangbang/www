@@ -144,6 +144,7 @@
         <item name="android:padding">@dimen/reader_page_info_menu_reading_process_padding</item>
         <item name="android:progressDrawable">@drawable/seekbar_progress</item>
         <item name="android:thumb">@drawable/seekbar_thumb</item>
+        <item name="android:thumbOffset">0dp</item>
     </style>
 
     <style name="ReaderCustomizeFormatTitleStyle">
