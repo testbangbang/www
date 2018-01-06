@@ -30,36 +30,14 @@ import java.util.Map;
  */
 
 public class GetShopCartItemsAction extends BaseAction {
-    private ShopDataBundle bundle;
-    private RxCallback rxCallBack;
+    private String[] bookIds;
 
-    @Override
-    public void execute(ShopDataBundle dataBundle, RxCallback rxCallback) {
-        this.bundle = dataBundle;
-        this.rxCallBack = rxCallback;
-        BaseRequestBean requestBean = new BaseRequestBean();
-        requestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
-        String body = getShoppingCartBody("", Constants.CART_TYPE_GET);
-        requestBean.setBody(body);
-        final RxRequestGetServiceCartIds rq = new RxRequestGetServiceCartIds();
-        rq.setRequestBean(requestBean);
-        rq.execute(new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                ShoppingCartBookIdsBean resultBean = rq.getResultBean();
-                if (resultBean != null) {
-                    ShoppingCartBookIdsBean.ResultBean result = resultBean.getResult();
-                    String bookList = result.getBookList();
-                    if (StringUtils.isNotBlank(bookList)) {
-                        String[] bookIds = CommonUtils.string2Arr(bookList);
-                        getBookItems(bookIds);
-                    }
-                }
-            }
-        });
+    public GetShopCartItemsAction(String[] bookIds) {
+        this.bookIds = bookIds;
     }
 
-    private void getBookItems(String[] bookIds) {
+    @Override
+    public void execute(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         BaseRequestBean requestBean = new BaseRequestBean();
         requestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         List<Map<String, String>> list = getList(bookIds);
@@ -71,7 +49,7 @@ public class GetShopCartItemsAction extends BaseAction {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                ShopCartModel shopCartModel = bundle.getShopCartModel();
+                ShopCartModel shopCartModel = dataBundle.getShopCartModel();
                 BookCartItemBean.CartResultBean cartResult = rq.getCartResult();
                 if (cartResult != null) {
                     String originalPrice = Utils.keepPoints(cartResult.getOriginalPrice());
@@ -84,24 +62,13 @@ public class GetShopCartItemsAction extends BaseAction {
                     List<ShopCartItemData> shopCartItems = rq.getShopCartItems();
                     if (shopCartItems != null && shopCartItems.size() > 0) {
                         shopCartModel.setDatas(shopCartItems);
-                        if (rxCallBack != null) {
-                            rxCallBack.onNext(GetShopCartItemsAction.class);
+                        if (rxCallback != null) {
+                            rxCallback.onNext(GetShopCartItemsAction.class);
                         }
                     }
                 }
             }
         });
-    }
-
-    private String getShoppingCartBody(String bookList, String type) {
-        JSONObject json = new JSONObject();
-        try {
-            json.put(CloudApiContext.NewBookDetail.BOOK_LIST, bookList);
-            json.put(CloudApiContext.NewBookDetail.TYPE, type);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return json.toString();
     }
 
     private List<Map<String, String>> getList(String[] bookIds) {
