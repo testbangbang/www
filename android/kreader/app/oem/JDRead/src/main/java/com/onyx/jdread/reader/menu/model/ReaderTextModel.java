@@ -1,9 +1,8 @@
 package com.onyx.jdread.reader.menu.model;
 
 import android.databinding.ObservableBoolean;
-import android.databinding.ObservableInt;
+import android.databinding.ObservableField;
 
-import com.onyx.jdread.R;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemBackPdfEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemCustomizeEvent;
 
@@ -21,13 +20,31 @@ import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.r
 public class ReaderTextModel {
     private ObservableBoolean isShow = new ObservableBoolean(false);
     private ObservableBoolean isPdf = new ObservableBoolean(false);
-    private ObservableInt boldfaceTypefaceBackground = new ObservableInt(R.drawable.reader_text_item_left_selected);
-    private ObservableInt arialTypefaceBackground = new ObservableInt(R.drawable.reader_text_item_center_default);
-    private ObservableInt italicsTypefaceBackground = new ObservableInt(R.drawable.reader_text_item_center_default);
-    private ObservableInt roundBodyTypefaceBackground = new ObservableInt(R.drawable.reader_text_item_center_default);
+    private ObservableField<ReaderTypeface> currentTypeface = new ObservableField<>(boldFaceType);
+    private ObservableField<ReaderFontSize> currentFontSize = new ObservableField<>(ReaderFontSize.LevelOneFontSize);
+
+    public enum ReaderFontSize{
+        LevelOneFontSize,LevelTwoFontSize,LevelThreeFontSize,LevelFourFontSize,LevelFiveFontSize,LevelSixFontSize
+    }
 
     public enum ReaderTypeface {
         boldFaceType, arialTypeface, italicsTypeface, roundBodyTypeface
+    }
+
+    public ObservableField<ReaderTypeface> getCurrentTypeface() {
+        return currentTypeface;
+    }
+
+    public void setCurrentTypeface(ReaderTypeface typeface) {
+        this.currentTypeface.set(typeface);
+    }
+
+    public ObservableField<ReaderFontSize> getCurrentFontSize() {
+        return currentFontSize;
+    }
+
+    public void setCurrentFontSize(ReaderFontSize fontSize) {
+        this.currentFontSize.set(fontSize);
     }
 
     public ObservableBoolean getIsShow() {
@@ -55,73 +72,42 @@ public class ReaderTextModel {
     }
 
     public void onBoldfaceTypefaceClick() {
-        changeTypeface(boldFaceType);
+        setCurrentTypeface(boldFaceType);
     }
 
     public void onArialTypefaceClick() {
-        changeTypeface(arialTypeface);
+        setCurrentTypeface(arialTypeface);
     }
 
     public void onItalicsTypefaceClick() {
-        changeTypeface(italicsTypeface);
+        setCurrentTypeface(italicsTypeface);
     }
 
     public void onRoundBodyTypefaceClick() {
-        changeTypeface(roundBodyTypeface);
+        setCurrentTypeface(roundBodyTypeface);
     }
 
-    private void changeTypeface(ReaderTypeface readerTypeface) {
-        setBoldfaceTypefaceBackground(readerTypeface.equals(boldFaceType) ? true : false);
-        setArialTypefaceBackground(readerTypeface.equals(arialTypeface) ? true : false);
-        setItalicsTypefaceBackground(readerTypeface.equals(italicsTypeface) ? true : false);
-        setRoundBodyTypefaceBackground(readerTypeface.equals(roundBodyTypeface) ? true : false);
+    public void onLevelOneClick(){
+        setCurrentFontSize(ReaderFontSize.LevelOneFontSize);
     }
 
-    public ObservableInt getBoldfaceTypefaceBackground() {
-        return boldfaceTypefaceBackground;
+    public void onLevelTwoClick(){
+        setCurrentFontSize(ReaderFontSize.LevelTwoFontSize);
     }
 
-    public void setBoldfaceTypefaceBackground(boolean isSelected) {
-        if (isSelected) {
-            this.boldfaceTypefaceBackground.set(R.drawable.reader_text_item_left_selected);
-        } else {
-            this.boldfaceTypefaceBackground.set(R.drawable.reader_text_item_left_default);
-        }
+    public void onLevelThreeClick(){
+        setCurrentFontSize(ReaderFontSize.LevelThreeFontSize);
     }
 
-    public ObservableInt getArialTypefaceBackground() {
-        return arialTypefaceBackground;
+    public void onLevelFourClick(){
+        setCurrentFontSize(ReaderFontSize.LevelFourFontSize);
     }
 
-    public void setArialTypefaceBackground(boolean isSelected) {
-        if (isSelected) {
-            this.arialTypefaceBackground.set(R.drawable.reader_text_item_center_selected);
-        } else {
-            this.arialTypefaceBackground.set(R.drawable.reader_text_item_center_default);
-        }
+    public void onLevelFiveClick(){
+        setCurrentFontSize(ReaderFontSize.LevelFiveFontSize);
     }
 
-    public ObservableInt getItalicsTypefaceBackground() {
-        return italicsTypefaceBackground;
-    }
-
-    public void setItalicsTypefaceBackground(boolean isSelected) {
-        if (isSelected) {
-            this.italicsTypefaceBackground.set(R.drawable.reader_text_item_center_selected);
-        } else {
-            this.italicsTypefaceBackground.set(R.drawable.reader_text_item_center_default);
-        }
-    }
-
-    public ObservableInt getRoundBodyTypefaceBackground() {
-        return roundBodyTypefaceBackground;
-    }
-
-    public void setRoundBodyTypefaceBackground(boolean isSelected) {
-        if (isSelected) {
-            this.roundBodyTypefaceBackground.set(R.drawable.reader_text_item_center_selected);
-        } else {
-            this.roundBodyTypefaceBackground.set(R.drawable.reader_text_item_center_default);
-        }
+    public void onLevelSixClick(){
+        setCurrentFontSize(ReaderFontSize.LevelSixFontSize);
     }
 }

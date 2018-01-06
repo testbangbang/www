@@ -5,6 +5,10 @@
 
         <import type="android.view.View" />
 
+        <import type="com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface" />
+
+        <import type="com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderFontSize" />
+
         <variable
             name="readerTextModel"
             type="com.onyx.jdread.reader.menu.model.ReaderTextModel" />
@@ -31,32 +35,32 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontStyle"
+                    android:background="@{readerTextModel.currentTypeface == ReaderTypeface.boldFaceType?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
                     android:onClick="@{()->readerTextModel.onBoldfaceTypefaceClick()}"
-                    android:background="@{readerTextModel.boldfaceTypefaceBackground}"
                     android:text="@string/reader_boldface" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontStyle"
+                    android:background="@{readerTextModel.currentTypeface == ReaderTypeface.arialTypeface?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerTextModel.onArialTypefaceClick()}"
-                    android:background="@{readerTextModel.arialTypefaceBackground}"
                     android:text="@string/reader_arial" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontStyle"
+                    android:background="@{readerTextModel.currentTypeface == ReaderTypeface.italicsTypeface?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerTextModel.onItalicsTypefaceClick()}"
-                    android:background="@{readerTextModel.italicsTypefaceBackground}"
                     android:text="@string/reader_italics" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontStyle"
+                    android:background="@{readerTextModel.currentTypeface == ReaderTypeface.roundBodyTypeface?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
                     android:onClick="@{()->readerTextModel.onRoundBodyTypefaceClick()}"
-                    android:background="@{readerTextModel.roundBodyTypefaceBackground}"
                     android:text="@string/reader_round_body" />
             </LinearLayout>
 
@@ -80,36 +84,48 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerTextModel.currentFontSize == ReaderFontSize.LevelOneFontSize?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
+                    android:onClick="@{()->readerTextModel.onLevelOneClick()}"
                     android:text="@string/reader_font_size_one" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerTextModel.currentFontSize == ReaderFontSize.LevelTwoFontSize?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerTextModel.onLevelTwoClick()}"
                     android:text="@string/reader_font_size_two" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerTextModel.currentFontSize == ReaderFontSize.LevelThreeFontSize?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerTextModel.onLevelThreeClick()}"
                     android:text="@string/reader_font_size_three" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerTextModel.currentFontSize == ReaderFontSize.LevelFourFontSize?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerTextModel.onLevelFourClick()}"
                     android:text="@string/reader_font_size_four" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerTextModel.currentFontSize == ReaderFontSize.LevelFiveFontSize?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerTextModel.onLevelFiveClick()}"
                     android:text="@string/reader_font_size_five" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerTextModel.currentFontSize == ReaderFontSize.LevelSixFontSize?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
+                    android:onClick="@{()->readerTextModel.onLevelSixClick()}"
                     android:text="@string/reader_font_size_six" />
             </LinearLayout>
         </LinearLayout>
