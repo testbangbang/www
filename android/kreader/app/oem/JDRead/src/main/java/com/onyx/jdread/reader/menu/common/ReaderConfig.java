@@ -1,5 +1,7 @@
 package com.onyx.jdread.reader.menu.common;
 
+import retrofit2.http.PUT;
+
 /**
  * Created by huxiaomao on 2018/1/6.
  */
@@ -21,5 +23,14 @@ public class ReaderConfig {
         public static final String ARIAL_TYPEFACE = TYPEFACE_ROOT_PATH + "PTF55.otf";
         public static final String ITALICS_TYPEFACE = TYPEFACE_ROOT_PATH + "GEInspRg.TTF";
         public static final String ROUND_BODY_TYPEFACE = TYPEFACE_ROOT_PATH + "xingguangyijiu.ttf";
+    }
+
+    public static class TypefaceColorDepth{
+        public static final int ONE_LEVEL = 25;
+        public static final int TWO_LEVEL = 50;
+        public static final int THREE_LEVEL = 75;
+        public static final int FOUR_LEVEL = 100;
+        public static final int FIVE_LEVEL = 125;
+        public static final int SIX_LEVEL = 150;
     }
 }
