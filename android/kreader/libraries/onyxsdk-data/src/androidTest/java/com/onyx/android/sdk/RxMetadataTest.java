@@ -1109,6 +1109,33 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
         countDownLatch.await();
     }
 
+    public void test1Subscribe() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        RxRecentDataRequest recentAddRequest = new RxRecentDataRequest(new DataManager(), EventBus.getDefault());
+        RxRecentDataRequest.setAppContext(getContext());
+        recentAddRequest.execute(new RxCallback<RxRecentDataRequest>() {
+            @Override
+            public void onNext(RxRecentDataRequest dataRequest) {
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+            }
+
+            @Override
+            public void onFinally() {
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onSubscribe() {
+                assertTrue(countDownLatch.getCount() == 1);
+            }
+        });
+
+        countDownLatch.await();
+    }
+
     private void assertRecentlyRead(List<Metadata> metadataList) {
         assertFalse(CollectionUtils.isNullOrEmpty(metadataList));
         Metadata tmp = metadataList.get(0);

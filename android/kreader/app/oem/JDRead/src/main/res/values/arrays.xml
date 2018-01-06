@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="wifi_access_security">
+        <item>@string/security_none</item>
+        <item>@string/security_wep</item>
+        <item>@string/security_psk</item>
+    </string-array>
+</resources>
