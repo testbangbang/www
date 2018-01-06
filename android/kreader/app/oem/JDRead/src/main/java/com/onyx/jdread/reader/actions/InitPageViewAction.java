@@ -16,7 +16,7 @@ public class InitPageViewAction extends BaseReaderAction {
         initFirstPageViewRequest.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                new GetTextStyleAction().execute(readerDataHolder);
             }
 
             @Override

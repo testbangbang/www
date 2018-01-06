@@ -10,6 +10,7 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.menu.actions.ReaderSettingShowMenuAction;
+import com.onyx.jdread.reader.menu.actions.SettingFontSizeAction;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingViewBack;
 import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
@@ -96,10 +97,13 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemSettingEvent(ReaderFunctionItemSettingEvent event){
-        //epub show text
-        new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.textMenuGroup).execute(readerDataHolder);
-        //pdf show text
-        //new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.imageMenuGroup).execute(readerDataHolder);
+        if(readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle() != null) {
+            //epub show text
+            new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.textMenuGroup).execute(readerDataHolder);
+        }else {
+            //pdf show text
+            new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.imageMenuGroup).execute(readerDataHolder);
+        }
     }
 
     @Subscribe (threadMode = ThreadMode.MAIN)
@@ -115,5 +119,10 @@ public class ReaderSettingMenuDialogHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPageViewUpdateEvent(PageViewUpdateEvent event){
         new UpdatePageInfoAction(binding).execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event){
+        new SettingFontSizeAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.fontSize).execute(readerDataHolder);
     }
 }

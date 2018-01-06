@@ -63,11 +63,19 @@ public class ReaderHelper {
     private ReaderSearchManager searchManager;
     private ReaderFormManager formManager;
     private ReaderHitTestManager hitTestManager;
-    private String firstVisiblePagePosition;
     private ReaderLayoutManager readerLayoutManager = null;
     private BaseOptions documentOptions = new BaseOptions();
     private ImageReflowManager imageReflowManager;
     private BitmapReferenceLruCache bitmapCache;
+    private ReaderTextStyle style;
+
+    public ReaderTextStyle getStyle() {
+        return style;
+    }
+
+    public void setStyle(ReaderTextStyle style) {
+        this.style = style;
+    }
 
     public ReaderHelper() {
     }

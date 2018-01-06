@@ -3,6 +3,9 @@ package com.onyx.jdread.reader.menu.model;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 
+import com.onyx.jdread.reader.menu.actions.SettingFontSizeAction;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
+import com.onyx.jdread.reader.menu.event.ReaderSettingFontSizeEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemBackPdfEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemCustomizeEvent;
 
@@ -23,8 +26,8 @@ public class ReaderTextModel {
     private ObservableField<ReaderTypeface> currentTypeface = new ObservableField<>(boldFaceType);
     private ObservableField<ReaderFontSize> currentFontSize = new ObservableField<>(ReaderFontSize.LevelOneFontSize);
 
-    public enum ReaderFontSize{
-        LevelOneFontSize,LevelTwoFontSize,LevelThreeFontSize,LevelFourFontSize,LevelFiveFontSize,LevelSixFontSize
+    public enum ReaderFontSize {
+        LevelOneFontSize, LevelTwoFontSize, LevelThreeFontSize, LevelFourFontSize, LevelFiveFontSize, LevelSixFontSize
     }
 
     public enum ReaderTypeface {
@@ -87,27 +90,39 @@ public class ReaderTextModel {
         setCurrentTypeface(roundBodyTypeface);
     }
 
-    public void onLevelOneClick(){
+    public void onLevelOneClick() {
         setCurrentFontSize(ReaderFontSize.LevelOneFontSize);
+        setFontSize(ReaderConfig.FontSize.ONE_FONT_SIZE);
     }
 
-    public void onLevelTwoClick(){
+    public void onLevelTwoClick() {
         setCurrentFontSize(ReaderFontSize.LevelTwoFontSize);
+        setFontSize(ReaderConfig.FontSize.TWO_FONT_SIZE);
     }
 
-    public void onLevelThreeClick(){
+    public void onLevelThreeClick() {
         setCurrentFontSize(ReaderFontSize.LevelThreeFontSize);
+        setFontSize(ReaderConfig.FontSize.THREE_FONT_SIZE);
     }
 
-    public void onLevelFourClick(){
+    public void onLevelFourClick() {
         setCurrentFontSize(ReaderFontSize.LevelFourFontSize);
+        setFontSize(ReaderConfig.FontSize.FOUR_FONT_SIZE);
     }
 
-    public void onLevelFiveClick(){
+    public void onLevelFiveClick() {
         setCurrentFontSize(ReaderFontSize.LevelFiveFontSize);
+        setFontSize(ReaderConfig.FontSize.FIVE_FONT_SIZE);
     }
 
-    public void onLevelSixClick(){
+    public void onLevelSixClick() {
         setCurrentFontSize(ReaderFontSize.LevelSixFontSize);
+        setFontSize(ReaderConfig.FontSize.SIX_FONT_SIZE);
+    }
+
+    private void setFontSize(int fontSize){
+        ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
+        event.fontSize = fontSize;
+        EventBus.getDefault().post(event);
     }
 }
