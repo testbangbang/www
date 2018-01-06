@@ -1,13 +1,13 @@
-package com.onyx.jdread.main.model;
+package com.onyx.jdread.reader.menu.model;
 
 import android.databinding.ObservableBoolean;
 
 /**
- * Created by huxiaomao on 2017/12/9.
+ * Created by huxiaomao on 2018/1/4.
  */
 
-public class SystemBarModel {
-    private ObservableBoolean isShow = new ObservableBoolean(true);
+public class ReaderCustomizeModel {
+    private ObservableBoolean isShow = new ObservableBoolean(false);
 
     public ObservableBoolean getIsShow() {
         return isShow;
