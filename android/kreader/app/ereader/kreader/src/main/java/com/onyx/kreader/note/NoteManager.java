@@ -13,10 +13,12 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.scribble.asyncrequest.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -347,6 +349,11 @@ public class NoteManager {
 
     public void setCurrentShapeType(int type) {
         getNoteDrawingArgs().setCurrentShapeType(type);
+        if (type == ShapeFactory.SHAPE_BRUSH_SCRIBBLE) {
+            EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_BRUSH);
+        } else {
+            EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_PENCIL);
+        }
     }
 
     public void setCurrentShapeColor(int color) {

@@ -79,6 +79,7 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodQuadToView = null;
     private static Method sMethodGetTouchWidth = null;
     private static Method sMethodGetTouchHeight = null;
+    private static Method sMethodGetMaxTouchPressure = null;
     private static Method sMethodGetEpdWidth = null;
     private static Method sMethodGetEpdHeight = null;
     private static Method sMethodMapToView = null;
@@ -516,6 +517,15 @@ public class RK32XXDevice extends BaseDevice {
         return 0;
     }
 
+    public float getMaxTouchPressure() {
+        try {
+            Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetMaxTouchPressure, null);
+            return value.floatValue();
+        } catch (Exception e) {
+        }
+        return 2048.0f;
+    }
+
     public float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
         try {
             Float value = (Float) ReflectUtil.invokeMethodSafely(sMethodStartStroke, null, baseWidth, x, y, pressure, size, time);
@@ -749,6 +759,7 @@ public class RK32XXDevice extends BaseDevice {
             sMethodQuadToView = ReflectUtil.getMethodSafely(cls, "quadTo", View.class, float.class, float.class, int.class);
             sMethodGetTouchWidth = ReflectUtil.getMethodSafely(cls, "getTouchWidth");
             sMethodGetTouchHeight = ReflectUtil.getMethodSafely(cls, "getTouchHeight");
+            sMethodGetMaxTouchPressure = ReflectUtil.getMethodSafely(cls, "getMaxTouchPressure");
             sMethodGetEpdWidth = ReflectUtil.getMethodSafely(cls, "getEpdWidth");
             sMethodGetEpdHeight = ReflectUtil.getMethodSafely(cls, "getEpdHeight");
             sMethodMapToView = ReflectUtil.getMethodSafely(cls, "mapToView", View.class, float[].class, float[].class);
