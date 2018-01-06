@@ -120,21 +120,10 @@ public abstract class RxRequest<T extends RxRequest> implements Callable<T> {
         createObservable()
                 .observeOn(observeScheduler())
                 .subscribeOn(subscribeScheduler())
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        if (callback != null) {
-                            callback.showLoadingDialog();
-                        }
-                    }
-                })
                 .doFinally(new Action() {
                     @Override
                     public void run() throws Exception {
                         doFinally();
-                        if (callback != null) {
-                            callback.hideLoadingDialog();
-                        }
                     }})
                 .subscribe(new Consumer<T>() {
                     @Override
