@@ -17,6 +17,7 @@ public class ShopDataBundle {
     private AppBaseInfo appBaseInfo;
     private DataManager dataManager;
     private ShopCartModel shopCartModel;
+    private RankViewModel rankViewModel;
 
     private ShopDataBundle() {
 
@@ -60,6 +61,17 @@ public class ShopDataBundle {
             }
         }
         return bookDetailViewModel;
+    }
+
+    public RankViewModel getRankViewModel() {
+        if (rankViewModel == null) {
+            synchronized (RankViewModel.class) {
+                if (rankViewModel == null) {
+                    rankViewModel = new RankViewModel(getEventBus());
+                }
+            }
+        }
+        return rankViewModel;
     }
 
     public AppBaseInfo getAppBaseInfo() {

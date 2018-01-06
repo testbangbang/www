@@ -316,4 +316,17 @@
     <dimen name="library_list_dialog_item_padding">20dp</dimen>
     <dimen name="add_wifi_dialog_edit_padding">20dp</dimen>
     <dimen name="add_wifi_dialog_edit_margin_left">10dp</dimen>
+    <dimen name="item_all_category_image_width">75dp</dimen>
+    <dimen name="item_all_category_image_height">95dp</dimen>
+    <dimen name="recycler_view_top_categorys_height">120dp</dimen>
+    <dimen name="item_subject_list_cover_width">75dp</dimen>
+    <dimen name="item_subject_list_cover_height">100dp</dimen>
+    <dimen name="item_subject_list_info_marginleft">15dp</dimen>
+    <dimen name="title_bar_extra_margin_right">30dp</dimen>
+    <dimen name="subject_list_sort_button_margin_left">40dp</dimen>
+    <dimen name="subject_list_sort_button_padding">10dp</dimen>
+    <dimen name="subject_list_sort_button_container_padding">5dp</dimen>
+    <dimen name="subject_list_just_vip_margin">15dp</dimen>
+    <dimen name="subject_list_category_items_container_height">350dp</dimen>
+    <dimen name="item_subject_common_next_title_margin_top">20dp</dimen>
 </resources>

@@ -27,7 +27,7 @@ public class BookDownloadUrlAction extends BaseAction {
     }
 
     @Override
-    public void execute(final ShopDataBundle dataBundle, RxCallback rxCallback) {
+    public void execute(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(dataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
@@ -48,7 +48,9 @@ public class BookDownloadUrlAction extends BaseAction {
                     bookCertAction.execute(dataBundle, new RxCallback() {
                         @Override
                         public void onNext(Object o) {
-
+                            if (rxCallback != null) {
+                                rxCallback.onNext(BookDownloadUrlAction.this);
+                            }
                         }
                     });
                 }
@@ -57,6 +59,9 @@ public class BookDownloadUrlAction extends BaseAction {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                if (rxCallback != null) {
+                    rxCallback.onError(throwable);
+                }
             }
 
             @Override
@@ -67,6 +72,9 @@ public class BookDownloadUrlAction extends BaseAction {
                         JDReadApplication.getInstance().setLogin(false);
                         //TODO autoLogin();
                     }
+                }
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
                 }
             }
         });

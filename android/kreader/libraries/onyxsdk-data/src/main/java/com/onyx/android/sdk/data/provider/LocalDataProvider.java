@@ -109,7 +109,7 @@ public class LocalDataProvider implements DataProviderBase {
         metadata.save();
     }
 
-    public void updateMetadataExtraAttributes(final Context context, final Metadata metadata) {
+    public void updateMetadata(final Context context, final Metadata metadata) {
         metadata.update();
     }
 

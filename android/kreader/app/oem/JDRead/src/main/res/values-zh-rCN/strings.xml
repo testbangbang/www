@@ -304,4 +304,9 @@
     <string name="security_psk">PSK</string>
     <string name="add_wifi_configuration">添加网络</string>
     <string name="network_password">密码</string>
+    <string name="subject_list_sort_type_hot">热门</string>
+    <string name="subject_list_sort_type_sales">销量</string>
+    <string name="subject_list_sort_type_newest">最新</string>
+    <string name="subject_list_all">全部</string>
+    <string name="subject_list_just_vip">只看畅读VIP</string>
 </resources>
