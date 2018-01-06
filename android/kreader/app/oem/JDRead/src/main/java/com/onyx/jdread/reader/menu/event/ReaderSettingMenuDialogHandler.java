@@ -1,7 +1,5 @@
 package com.onyx.jdread.reader.menu.event;
 
-import android.databinding.ObservableBoolean;
-
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
@@ -13,8 +11,8 @@ import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.menu.actions.ReaderSettingShowMenuAction;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
-import com.onyx.jdread.reader.menu.common.ReaderSettingMenuConfig;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingViewBack;
+import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -86,22 +84,22 @@ public class ReaderSettingMenuDialogHandler {
     public void onReaderFunctionItemProgressEvent(ReaderFunctionItemProgressEvent event){
         binding.readerSettingFunctionBar.getFunctionBarModel().changeTabSelection(ViewConfig.FunctionModule.SHOP);
         //show system,title,progress,function, menu
-        new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.progressMenuGroup).execute(readerDataHolder);
+        new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.progressMenuGroup).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemBrightnessEvent(ReaderFunctionItemBrightnessEvent event){
         binding.readerSettingFunctionBar.getFunctionBarModel().changeTabSelection(ViewConfig.FunctionModule.SETTING);
         //show system,title,brightness,function, menu
-        new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.brightnessMenuGroup).execute(readerDataHolder);
+        new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.brightnessMenuGroup).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemSettingEvent(ReaderFunctionItemSettingEvent event){
         //epub show text
-        new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.textMenuGroup).execute(readerDataHolder);
+        new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.textMenuGroup).execute(readerDataHolder);
         //pdf show text
-        //new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.imageMenuGroup);
+        //new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.imageMenuGroup).execute(readerDataHolder);
     }
 
     @Subscribe (threadMode = ThreadMode.MAIN)
@@ -111,7 +109,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingMenuItemCustomizeEvent(ReaderSettingMenuItemCustomizeEvent event){
-        new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.customMenuGroup).execute(readerDataHolder);
+        new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.customMenuGroup).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
