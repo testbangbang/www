@@ -1,6 +1,7 @@
 package com.onyx.jdread.setting.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.R;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.request.RxSaveBootPicRequest;
@@ -24,6 +25,7 @@ public class SaveBootPicAction extends BaseAction<SettingBundle> {
         rxSaveBootPicRequest.execute(new RxCallback<RxSaveBootPicRequest>() {
             @Override
             public void onNext(RxSaveBootPicRequest request) {
+                PreferenceManager.setStringValue(request.getAppContext(), R.string.screen_saver_key, srcPath);
                 hideLoadingDialog(bundle);
                 if (callback != null) {
                     callback.onNext(request);
