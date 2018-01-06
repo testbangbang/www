@@ -10,7 +10,7 @@
     <dimen name="level_three_heading_font">16sp</dimen>
     <dimen name="level_four_heading_font">14sp</dimen>
     <dimen name="line_width">1dp</dimen>
-    <dimen name="wifi_view_item_padding_top">8dp</dimen>
+    <dimen name="wifi_view_item_padding_top">9dp</dimen>
     <dimen name="wifi_view_item_margin_left">10dp</dimen>
     <dimen name="wifi_view_item_margin_top">5dp</dimen>
     <dimen name="wifi_view_item_margin_right">10dp</dimen>
@@ -19,7 +19,7 @@
     <dimen name="setting_device_detail_describe_margin_left">35dp</dimen>
     <dimen name="setting_device_detail_describe_margin_top">22dp</dimen>
     <dimen name="setting_device_detail_setting_height">330dp</dimen>
-    <dimen name="setting_title_bar_padding">10dp</dimen>
+    <dimen name="setting_title_bar_padding">20dp</dimen>
     <dimen name="setting_title_bar_switch_margin_right">20dp</dimen>
     <dimen name="lock_screen_recycler_margin_top">10dp</dimen>
     <dimen name="lock_screen_recycler_padding">20dp</dimen>
@@ -300,5 +300,9 @@
     <dimen name="dialog_build_edit_height">60dp</dimen>
     <dimen name="dialog_build_edit_width">250dp</dimen>
     <dimen name="ratingbar_light_settings_margin">30dp</dimen>
-    <dimen name="brightness_rating_ba_margin_top">130dp</dimen>
+    <dimen name="brightness_rating_ba_margin_top">140dp</dimen>
+    <dimen name="library_list_dialog_recycler_padding">20dp</dimen>
+    <dimen name="library_list_dialog_item_padding">20dp</dimen>
+    <dimen name="add_wifi_dialog_edit_padding">20dp</dimen>
+    <dimen name="add_wifi_dialog_edit_margin_left">10dp</dimen>
 </resources>

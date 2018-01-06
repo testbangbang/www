@@ -307,4 +307,9 @@
     <string name="read_format" translatable="false">Read： %s</string>
     <string name="book_total_format">total %s</string>
     <string name="brightness_control">Brightness control</string>
+    <string name="security_none">NONE</string>
+    <string name="security_wep">WEP</string>
+    <string name="security_psk">PSK</string>
+    <string name="add_wifi_configuration">Add wifi</string>
+    <string name="network_password">Password</string>
 </resources>

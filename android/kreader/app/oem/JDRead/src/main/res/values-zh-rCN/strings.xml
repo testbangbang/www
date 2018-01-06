@@ -295,4 +295,9 @@
     <string name="read_format" translatable="false">已读： %s</string>
     <string name="book_total_format">共%s本图书</string>
     <string name="brightness_control">亮度调节</string>
+    <string name="security_none">无</string>
+    <string name="security_wep">WEP</string>
+    <string name="security_psk">PSK</string>
+    <string name="add_wifi_configuration">添加网络</string>
+    <string name="network_password">密码</string>
 </resources>
