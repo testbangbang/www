@@ -1236,6 +1236,14 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         dialog.dismiss();
                     }
                 }, null);
+        customDialog.setOnCloseListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (shouldResume()){
+                    getNoteViewHelper().resumeDrawing();
+                }
+            }
+        });
         customDialog.show();
     }
 }
