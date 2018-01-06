@@ -20,7 +20,7 @@
     <dimen name="setting_device_detail_describe_margin_top">22dp</dimen>
     <dimen name="setting_device_detail_setting_height">330dp</dimen>
     <dimen name="setting_title_bar_padding">20dp</dimen>
-    <dimen name="setting_title_bar_switch_margin_right">20dp</dimen>
+    <dimen name="setting_title_bar_switch_margin_right">46dp</dimen>
     <dimen name="lock_screen_recycler_margin_top">10dp</dimen>
     <dimen name="lock_screen_recycler_padding">20dp</dimen>
     <dimen name="lock_screen_recycler_height">330dp</dimen>
@@ -305,4 +305,9 @@
     <dimen name="library_list_dialog_item_padding">20dp</dimen>
     <dimen name="add_wifi_dialog_edit_padding">20dp</dimen>
     <dimen name="add_wifi_dialog_edit_margin_left">10dp</dimen>
+    <dimen name="switch_thumb_width">37dp</dimen>
+    <dimen name="switch_thumb_height">31dp</dimen>
+    <dimen name="switch_radius">5dp</dimen>
+    <dimen name="switch_track_width">74dp</dimen>
+    <dimen name="switch_track_height">32dp</dimen>
 </resources>
