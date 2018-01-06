@@ -3,6 +3,7 @@ package com.onyx.android.eschool.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.onyx.android.eschool.action.ContentImportAction;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
+import com.onyx.android.eschool.events.GroupSelectEvent;
 import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.eschool.utils.ResourceUtils;
@@ -24,8 +26,13 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,6 +40,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.OnClick;
 
@@ -42,6 +50,8 @@ import butterknife.OnClick;
 public class HomeActivity extends BaseActivity {
     private static boolean checkedOnBootComplete = false;
     private long lastGcTs = 0;
+
+    private NeoAccountBase currentAccount;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +94,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mergeDisplayUpdate();
         final View view = findViewById(android.R.id.content);
         loadAuthToken(new BaseCallback() {
             @Override
@@ -93,6 +104,11 @@ public class HomeActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void mergeDisplayUpdate() {
+        Device.currentDevice().mergeDisplayUpdate(
+                DeviceConfig.sharedInstance(getApplicationContext()).getMergeUpdateTimeout(), UpdateMode.GC_CLEAR);
     }
 
     @Override
@@ -200,7 +216,8 @@ public class HomeActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountAvailableEvent(AccountAvailableEvent event) {
-        StudentAccount.sendUserInfoSettingIntent(HomeActivity.this, event.getAccount());
+        currentAccount = event.getAccount();
+        updateAccountInfo(event.getAccount(), StudentPreferenceManager.getCloudGroupSelected(getApplicationContext()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -219,5 +236,51 @@ public class HomeActivity extends BaseActivity {
             EpdController.invalidate(findViewById(android.R.id.content), UpdateMode.GC);
             lastGcTs = System.currentTimeMillis();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGroupSelectEvent(GroupSelectEvent event) {
+        updateAccountInfo(currentAccount, event.index);
+    }
+
+    private void updateAccountInfo(NeoAccountBase account, int selectGroupIndex) {
+        account = switchAccountGroup(account, selectGroupIndex);
+        if (account == null) {
+            return;
+        }
+        translateAccountRole(account);
+        StudentAccount.sendUserInfoSettingIntent(getApplicationContext(), account);
+        updateScreenAccountInfo(account);
+    }
+
+    private void translateAccountRole(@NonNull NeoAccountBase account) {
+        int resId = ResourceUtils.getStringResIdByName(getApplicationContext(), account.role);
+        if (resId <= 0) {
+            return;
+        }
+        account.role = getString(resId);
+    }
+
+    private void updateScreenAccountInfo(NeoAccountBase account) {
+        final GenerateAccountInfoRequest generateAccountInfoRequest = new GenerateAccountInfoRequest(account,
+                DeviceConfig.sharedInstance(getApplicationContext()).getInfoShowConfig());
+        SchoolApp.getSchoolCloudStore().submitRequest(getApplicationContext(), generateAccountInfoRequest, null);
+    }
+
+    private NeoAccountBase switchAccountGroup(NeoAccountBase currentAccount, int selectGroupIndex) {
+        if (currentAccount == null || CollectionUtils.isNullOrEmpty(currentAccount.groups)) {
+            return null;
+        }
+        if (selectGroupIndex >= CollectionUtils.getSize(currentAccount.groups)) {
+            selectGroupIndex = 0;
+        }
+        NeoAccountBase account = JSONObjectParseUtils.parseObject(JSONObjectParseUtils.toJson(currentAccount),
+                NeoAccountBase.class);
+        if (account == null) {
+            return null;
+        }
+        account.groups = new ArrayList<>();
+        account.groups.add(currentAccount.groups.get(selectGroupIndex));
+        return account;
     }
 }

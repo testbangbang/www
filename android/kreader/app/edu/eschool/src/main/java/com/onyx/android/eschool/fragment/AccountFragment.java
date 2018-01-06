@@ -1,6 +1,7 @@
 package com.onyx.android.eschool.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
@@ -13,16 +14,19 @@ import android.widget.TextView;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.events.AccountAvailableEvent;
+import com.onyx.android.eschool.events.GroupSelectEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
+import com.onyx.android.eschool.utils.ResourceUtils;
+import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.ui.utils.PageTurningDetector;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,6 +43,8 @@ public class AccountFragment extends Fragment {
 
     @Bind(R.id.student_name)
     TextView studentName;
+    @Bind(R.id.student_role)
+    TextView studentRole;
     @Bind(R.id.student_grade)
     TextView studentGrade;
     @Bind(R.id.student_phone_number)
@@ -61,6 +67,7 @@ public class AccountFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
         ButterKnife.bind(this, view);
         initView((ViewGroup) view);
+        loadData();
         return view;
     }
 
@@ -70,8 +77,11 @@ public class AccountFragment extends Fragment {
     }
 
     private void initView(ViewGroup viewGroup) {
+    }
+
+    private void loadData() {
         final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
-        SchoolApp.getSchoolCloudStore().submitRequest(getContext(), accountLoadRequest, new BaseCallback() {
+        SchoolApp.getSchoolCloudStore().submitRequest(getContext().getApplicationContext(), accountLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || accountLoadRequest.getAccount() == null) {
@@ -105,8 +115,21 @@ public class AccountFragment extends Fragment {
             return;
         }
         studentName.setText(account.getName());
-        studentGrade.setText("年级：" + account.getFirstGroup());
-        studentPhone.setText("电话：" + account.getPhone());
+        studentRole.setText(getString(R.string.role_colon) + getAccountRole(account));
+        studentGrade.setText(getString(R.string.grade_colon) + getGroupName(account));
+        studentPhone.setText(getString(R.string.phone_colon) + account.getPhone());
+    }
+
+    private String getGroupName(NeoAccountBase account) {
+        return StringUtils.getBlankStr(account.getGroupName(StudentPreferenceManager.getCloudGroupSelected(getContext())));
+    }
+
+    private String getAccountRole(@NonNull NeoAccountBase account) {
+        int resId = ResourceUtils.getStringResIdByName(getContext(), account.role);
+        if (resId <= 0) {
+            return account.role;
+        }
+        return getString(resId);
     }
 
     private boolean isViewInValid() {
@@ -183,5 +206,10 @@ public class AccountFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountAvailableEvent(AccountAvailableEvent event) {
         updateView(event.getAccount());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGroupSelectEvent(GroupSelectEvent event) {
+        loadData();
     }
 }

@@ -1180,4 +1180,12 @@ public class RK32XXDevice extends BaseDevice {
     public void enableElectromagneticTp(boolean enable) {
         invokeDeviceControllerMethod(null, sMethodEnableElectromagneticTp, enable);
     }
+
+    public String getWaveformPath() {
+        return "/vendor/waveform/waveform.wbf";
+    }
+
+    public String getWaveformMD5Path() {
+        return "/vendor/waveform/waveform.wbf.md5";
+    }
 }

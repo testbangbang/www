@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data.model.v2;
 
+import android.support.annotation.Nullable;
+
 import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.converter.ListStringConverter;
 import com.onyx.android.sdk.data.model.BaseData;
@@ -17,7 +19,7 @@ import java.util.List;
 public class NeoAccountBase extends BaseData {
 
     public static final String DELIMITER = ",";
-
+    public String _id;
     public String name;
     public String orgName;
     @Column(typeConverter = ListStringConverter.class)
@@ -31,6 +33,7 @@ public class NeoAccountBase extends BaseData {
 
     public String info;
     public String library;
+    public String role;
 
     @JSONField(serialize = false, deserialize = false)
     public String getFirstGroup() {
@@ -40,12 +43,30 @@ public class NeoAccountBase extends BaseData {
         return groups.get(0).replaceAll(DELIMITER, "");
     }
 
+    @Nullable
+    public String getGroupName(int index) {
+        if (CollectionUtils.isNullOrEmpty(groups)) {
+            return null;
+        }
+        if (index >= CollectionUtils.getSize(groups)) {
+            index = 0;
+        }
+        return groups.get(index).replaceAll(DELIMITER, "");
+    }
+
     public String getPhone() {
         return StringUtils.getBlankStr(phone);
     }
 
     public String getName() {
         return StringUtils.getBlankStr(name);
+    }
+
+    public String getNameAppendRole() {
+        if (StringUtils.isNullOrEmpty(role)) {
+            return getName();
+        }
+        return getName() + "(" + role + ")";
     }
 
     @JSONField(serialize = false, deserialize = false)

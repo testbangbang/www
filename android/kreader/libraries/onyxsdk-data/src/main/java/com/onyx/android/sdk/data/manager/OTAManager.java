@@ -41,6 +41,9 @@ public class OTAManager {
     public static final String CLOUD_PATH_SDCARD = getCloudSdcardPath();
     public static final String LOCAL_PATH_EXTSD = getLocalExtsdPath();
 
+    public static final String WAVEFORM_PATH = com.onyx.android.sdk.device.Device.currentDevice().getWaveformPath();
+    public static final String WAVEFORM_MD5_PATH = com.onyx.android.sdk.device.Device.currentDevice().getWaveformMD5Path();
+
     /**
      * Temp empty implement here.
     */

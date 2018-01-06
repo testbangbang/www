@@ -268,7 +268,7 @@ public class QueryBuilder {
         }
     }
 
-    public static Condition matchLike(final Property<String> property, String match) {
+    public static <T> Condition matchLike(final Property<T> property, String match) {
         if (StringUtils.isNullOrEmpty(match)) {
             return null;
         }
@@ -339,7 +339,7 @@ public class QueryBuilder {
         return args;
     }
 
-    private static OrderBy ascDescOrder(OrderBy orderBy, boolean asc) {
+    public static OrderBy ascDescOrder(OrderBy orderBy, boolean asc) {
         if (asc) {
             orderBy.ascending();
         } else {

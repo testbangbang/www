@@ -38,12 +38,14 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
@@ -1003,7 +1005,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (value <= 0) {
             value = DialogScreenRefresh.DEFAULT_INTERVAL_COUNT;
         }
-        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this, value));
+        int settingValue = LegacySdkDataUtils.getScreenUpdateGCInterval(this, value);
+        if (settingValue < DialogScreenRefresh.DEFAULT_INTERVAL_COUNT) {
+            settingValue = value;
+            LegacySdkDataUtils.setScreenUpdateGCInterval(getApplicationContext(), settingValue);
+        }
+        ReaderDeviceManager.prepareInitialUpdate(settingValue);
     }
 
     private void prepareFrontLight() {
@@ -1213,6 +1220,15 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void quitApplication(final QuitEvent event) {
         onBackPressed();
+        mergeDisplayUpdate();
+    }
+
+    private void mergeDisplayUpdate() {
+        boolean isInFastUpdateMode = DialogScreenRefresh.isInFastUpdateMode(LegacySdkDataUtils.getScreenUpdateGCInterval(
+                getApplicationContext(), DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
+        Device.currentDevice().mergeDisplayUpdate(
+                DeviceConfig.sharedInstance(getApplicationContext()).getMergeUpdateTimeout(isInFastUpdateMode),
+                UpdateMode.GC_CLEAR);
     }
 
     @Subscribe

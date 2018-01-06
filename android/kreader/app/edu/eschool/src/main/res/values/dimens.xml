@@ -23,6 +23,7 @@
     <dimen name="tab_item_text_padding_right">8dp</dimen>
     <dimen name="tab_item_text_padding_bottom">8dp</dimen>
     <dimen name="book_item_text_size">26sp</dimen>
+    <dimen name="book_item_date_text_size">24sp</dimen>
     <dimen name="book_item_text_margin_right">19dp</dimen>
     <dimen name="book_item_cover_image_width">232dp</dimen>
     <dimen name="book_item_cover_image_height">320dp</dimen>
@@ -32,4 +33,33 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="menu_item_text_size">28sp</dimen>
+
+    <dimen name="account_fragment_padding">28dp</dimen>
+    <dimen name="account_fragment_avatar_size">210dp</dimen>
+    <dimen name="account_fragment_avatar_margin">36dp</dimen>
+    <dimen name="account_fragment_name_size">30sp</dimen>
+    <dimen name="account_fragment_text_size">28sp</dimen>
+    <dimen name="account_fragment_text_margin">30dp</dimen>
+    <dimen name="account_fragment_first_divider_marin_top">35dp</dimen>
+
+    <dimen name="place_holder_layout_height">62dp</dimen>
+    <dimen name="place_holder_layout_padding_left_right">4dp</dimen>
+    <dimen name="place_holder_layout_padding_top">10dp</dimen>
+
+    <dimen name="library_parent_ref_layout_height">@dimen/place_holder_layout_height</dimen>
+    <dimen name="library_parent_ref_layout_padding_left_right">@dimen/place_holder_layout_padding_left_right</dimen>
+
+    <dimen name="subject_radio_group_min_height">54dp</dimen>
+    <dimen name="subject_radio_group_margin_right">10dp</dimen>
+
+    <dimen name="button_find_homework_margin_left_right">4dp</dimen>
+    <dimen name="button_find_homework_text_size">23sp</dimen>
+
+    <dimen name="custom_radio_button_margin_left_right">12dp</dimen>
+    <dimen name="custom_radio_button_padding_left_right">6dp</dimen>
+    <dimen name="custom_radio_button_min_height">54dp</dimen>
+    <dimen name="custom_radio_button_min_width">106dp</dimen>
+    <dimen name="custom_radio_button_text_size">24sp</dimen>
+    <dimen name="custom_radio_image_min_height">52dp</dimen>
 </resources>

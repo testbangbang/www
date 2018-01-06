@@ -109,6 +109,12 @@ public class ViewDocumentUtils {
         return new ComponentName(packageName, className);
     }
 
+    public static ComponentName getHomeworkAppComponent() {
+        String packageName = "com.onyx.edu.homework";
+        String className = packageName + ".ui.HomeworkListActivity";
+        return new ComponentName(packageName, className);
+    }
+
     public static ComponentName getEduReaderComponentName(Context context) {
         return getReaderComponentName(context, getEduReaderComponentName());
     }

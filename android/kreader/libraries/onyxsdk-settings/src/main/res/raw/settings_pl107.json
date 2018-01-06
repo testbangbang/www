@@ -16,5 +16,6 @@
     "com.onyx.test",
     "com.onyx.android.production.test",
     "com.onyx.android.screenmanager"
-  ]
+  ],
+  "show_test_apps": false
 }

@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.v2.Course;
+import com.onyx.android.sdk.data.model.v2.GroupContainer;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
@@ -50,6 +51,12 @@ public interface ContentService {
     Call<ProductResult<CloudMetadata>> loadBookList(@Path(Constant.ID_TAG) final String libraryId,
                                                     @Query(Constant.WHERE_TAG) final String param);
 
+    @GET("librarys/getMySource")
+    Call<ResponseBody> getMySource(@Query(Constant.WHERE_TAG) final String param);
+
     @GET("books/{id}")
     Call<CloudMetadata> loadBook(@Path(Constant.ID_TAG) final String idString);
+
+    @GET("groups/myGroupsWithLibrary")
+    Call<List<GroupContainer>> getMyGroupContainerList();
 }

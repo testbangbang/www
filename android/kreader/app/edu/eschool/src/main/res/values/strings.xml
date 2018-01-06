@@ -20,6 +20,8 @@
     <string name="name_colon">Name：</string>
     <string name="student_id_colon">ID：</string>
     <string name="grade_colon">Grade：</string>
+    <string name="phone_colon">Phone：</string>
+    <string name="role_colon">Role：</string>
     <string name="publisher">Publisher</string>
     <string name="primary_school">Primary School</string>
     <string name="secondary_school">Secondary School</string>
@@ -112,4 +114,23 @@
     <string name="cloud_content_import_success">Import successful</string>
     <string name="cloud_content_import_failed">Import failed</string>
 
+    <string name="blank" translatable="false" />
+    <string name="app_no_installed">Homework-App is not installed</string>
+
+    <string name="online_library_id_error">Online library ID has exception</string>
+    <string name="online_library_load_error">Online library got the exception</string>
+    <string name="online_library_load_empty">Online library got the empty</string>
+    <string name="online_group_load_error">Online grouping got the exception</string>
+
+    <string name="date_format">MM-dd HH:mm</string>
+    <string translatable="false" name="append_content_format">(%s)</string>
+
+    <string name="student">Student</string>
+    <string name="parent">Parent</string>
+    <string name="teacher">Teacher</string>
+    <string name="admin">Admin</string>
+    <string name="user">User</string>
+
+    <string name="find_homework">Find homework</string>
+    <string name="wrong_question_record">Wrong question</string>
 </resources>

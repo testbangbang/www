@@ -47,6 +47,11 @@ public class ReaderDeviceManager {
         }
     }
 
+    public static void forceExitAnimationUpdate(boolean clear) {
+        EpdController.applyApplicationFastMode(APP, false, clear);
+        inFastUpdateMode = false;
+    }
+
     public static void toggleAnimationUpdate(boolean clear) {
         EpdController.applyApplicationFastMode(APP, !inFastUpdateMode, clear);
         inFastUpdateMode = !inFastUpdateMode;

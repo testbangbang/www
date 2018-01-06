@@ -19,6 +19,8 @@
     <string name="name_colon">姓名：</string>
     <string name="student_id_colon">学号：</string>
     <string name="grade_colon">年级：</string>
+    <string name="phone_colon">电话：</string>
+    <string name="role_colon">身份：</string>
     <string name="publisher">出版社</string>
     <string name="primary_school">小学</string>
     <string name="secondary_school">初中</string>
@@ -106,4 +108,21 @@
     <string name="cloud_content_import_success">导入成功</string>
     <string name="cloud_content_import_failed">导入失败</string>
 
+    <string name="app_no_installed">作业app未安装</string>
+
+    <string name="online_library_id_error">在线书库id异常</string>
+    <string name="online_library_load_error">获取书库异常</string>
+    <string name="online_library_load_empty">在线书库为空</string>
+    <string name="online_group_load_error">获取分组异常</string>
+
+    <string name="date_format">MM月dd日HH时mm分</string>
+
+    <string name="student">学生</string>
+    <string name="parent">父母</string>
+    <string name="teacher">教师</string>
+    <string name="admin">管理员</string>
+    <string name="user">用户</string>
+
+    <string name="find_homework">找作业</string>
+    <string name="wrong_question_record">错题本</string>
 </resources>

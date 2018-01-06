@@ -5,11 +5,16 @@ import com.onyx.android.sdk.data.model.AppProduct;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.model.ProductResult;
+import com.onyx.android.sdk.data.model.common.PanelInfo;
+import com.onyx.android.sdk.data.model.common.WaveformResult;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -38,4 +43,7 @@ public interface OnyxOTAService {
 
     @GET("apk/{id}")
     Call<AppProduct> getMarketApp(@Path(Constant.ID_TAG) final String guid);
+
+    @POST("waveform/update")
+    Call<WaveformResult> fetchWaveformUpdate(@Body PanelInfo panelInfo);
 }

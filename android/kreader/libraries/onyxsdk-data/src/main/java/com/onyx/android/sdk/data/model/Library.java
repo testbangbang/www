@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.model;
 
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Index;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -67,4 +68,11 @@ public class Library extends BaseData {
         this.extraAttributes = extraAttributes;
     }
 
+    public static boolean isValid(Library library) {
+        if (library == null || StringUtils.isNullOrEmpty(library.getIdString()) ||
+                StringUtils.isNullOrEmpty(library.getName())) {
+            return false;
+        }
+        return true;
+    }
 }
