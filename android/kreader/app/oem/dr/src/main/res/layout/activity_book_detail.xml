@@ -89,7 +89,7 @@
                 android:layout_marginLeft="@dimen/book_detail_button_margin"
                 android:background="@drawable/text_view_background"
                 android:padding="@dimen/book_detail_button_padding"
-                android:text="@string/pay"
+                android:text="@string/buy"
                 android:textColor="@color/black"
                 android:textSize="@dimen/level_two_font_size" />
 

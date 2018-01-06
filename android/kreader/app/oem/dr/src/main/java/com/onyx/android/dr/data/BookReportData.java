@@ -13,6 +13,7 @@ import com.onyx.android.dr.request.cloud.GetBookReportListRequest;
 import com.onyx.android.dr.request.cloud.GetBookReportRequest;
 import com.onyx.android.dr.request.cloud.GetSharedImpressionRequest;
 import com.onyx.android.dr.request.cloud.GetSharedInformalRequest;
+import com.onyx.android.dr.request.cloud.RemoveCommentRequest;
 import com.onyx.android.dr.request.cloud.ShareBookReportRequest;
 import com.onyx.android.dr.request.local.ReaderResponseInsert;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -55,6 +56,10 @@ public class BookReportData {
     }
 
     public void addComment(AddCommentRequest rq, BaseCallback callback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), rq, callback);
+    }
+
+    public void deleteComment(RemoveCommentRequest rq, BaseCallback callback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), rq, callback);
     }
 

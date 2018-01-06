@@ -23,6 +23,7 @@ import com.onyx.android.dr.request.cloud.GetBookReportListRequest;
 import com.onyx.android.dr.request.cloud.GetBookReportRequest;
 import com.onyx.android.dr.request.cloud.GetSharedImpressionRequest;
 import com.onyx.android.dr.request.cloud.GetSharedInformalRequest;
+import com.onyx.android.dr.request.cloud.RemoveCommentRequest;
 import com.onyx.android.dr.request.cloud.RequestGetInformalEssay;
 import com.onyx.android.dr.request.local.InformalEssayExport;
 import com.onyx.android.dr.util.DRPreferenceManager;
@@ -373,6 +374,15 @@ public class BookReportPresenter {
             public void done(BaseRequest request, Throwable e) {
                 CreateBookReportResult result = rq.getResult();
                 bookReportView.addCommentResult(result);
+            }
+        });
+    }
+
+    public void deleteComment(String impressionId, String commentId) {
+        final RemoveCommentRequest rq = new RemoveCommentRequest(impressionId, commentId);
+        bookReportData.deleteComment(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
             }
         });
     }

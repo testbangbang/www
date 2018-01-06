@@ -87,6 +87,16 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/title_bar_right_amend"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/title_bar_right_container_margin_right"
+                android:background="@drawable/rectangle_stroke"
+                android:padding="@dimen/title_bar_right_menu_padding"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/title_bar_right_select_time"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

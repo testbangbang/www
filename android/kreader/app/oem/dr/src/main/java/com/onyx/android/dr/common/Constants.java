@@ -212,4 +212,7 @@ public class Constants {
 
     public static final String KREADER_PACKAGE_NAME = "com.onyx.kreader";
     public static final String STATISTICS_ACTIVITY_FULL_PATH = "com.onyx.kreader.ui.statistics.StatisticsActivity";
+
+    public static final String USER_NAME_ACTION = "com.onyx.android.dr.user.name";
+    public static final String USER_NAME_TAG = "userName";
 }

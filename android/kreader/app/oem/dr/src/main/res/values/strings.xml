@@ -755,4 +755,6 @@
     <string name="register_date">Register Date: </string>
     <string name="language_hint">language: </string>
     <string name="good_sententce_title">good sententce content</string>
+    <string name="has_buy">already purchase</string>
+    <string name="amend">amend</string>
 </resources>

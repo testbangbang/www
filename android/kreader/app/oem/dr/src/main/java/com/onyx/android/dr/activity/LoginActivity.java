@@ -27,6 +27,7 @@ import com.onyx.android.dr.event.SignUpEvent;
 import com.onyx.android.dr.presenter.LoginPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.RegularUtil;
+import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.CustomPopupWindow;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
@@ -154,6 +155,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     private boolean isUserShowPassword = false;
     private boolean isRegisterShowPassword = false;
     private boolean isSignUpShowPassword = false;
+    private String account = "";
 
     @Override
     protected Integer getLayoutId() {
@@ -594,7 +596,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
             return;
         }
-        String account = editTextAccount.getText().toString();
+        account = editTextAccount.getText().toString();
         String password = editTextPassword.getText().toString();
         if (StringUtils.isNullOrEmpty(account)) {
             CommonNotices.showMessage(this, getString(R.string.account_can_not_be_empty));
@@ -632,6 +634,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         loginPresenter.getMyGroup();
         ActivityManager.startMainActivity(this);
         dismissAllProgressDialog();
+        Utils.sendUserNameBroadcast(this, account);
         finish();
     }
 
