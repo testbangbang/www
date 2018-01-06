@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.onyx.jdread.JDReadApplication;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by li on 2017/12/25.
  */
@@ -60,5 +62,10 @@ public class Utils {
         InputMethodManager imm = (InputMethodManager) JDReadApplication.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
         view.requestFocus();
+    }
+
+    public static String keepPoints(double value) {
+        DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+        return decimalFormat.format(value);
     }
 }

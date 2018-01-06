@@ -4,8 +4,8 @@ import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.personal.cloud.api.GetSyncLoginInfoService;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
-import com.onyx.jdread.personal.common.CloudApiContext;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
 
 import retrofit2.Call;
 import retrofit2.Response;

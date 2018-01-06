@@ -7,9 +7,9 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.personal.cloud.entity.GetOrderRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
-import com.onyx.jdread.personal.common.CloudApiContext;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxGetOrderUrlRequest;
+import com.onyx.jdread.shop.common.CloudApiContext;
 
 import java.util.List;
 

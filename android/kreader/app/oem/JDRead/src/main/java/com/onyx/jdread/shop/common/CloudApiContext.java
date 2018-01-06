@@ -20,9 +20,12 @@ import okhttp3.OkHttpClient;
 
 public class CloudApiContext {
     public static final String JD_BOOK_SHOP_URL = "http://tob-gw.jd.com/";
-    public static final String JD_BASE_URL = "https://tob-gw.jd.com/";
+    public static final String JD_BASE_URL = "https://gw-e.jd.com/";
     public static final String JD_BOOK_VERIFY_URL = "http://rights.e.jd.com/";
     public static final String JD_SMOOTH_READ_URL = "https://cread.jd.com/";
+    public static final String JD_BOOK_ORDER_URL = "https://order-e.jd.com/";
+    public static final String JD_BOOK_STATISTIC_URL = "https://sns-e.jd.com/";
+
 
     public static class NewBookDetail {
         public static final String BOOK_SPECIAL_PRICE_TYPE = "specialPrice";
@@ -37,6 +40,10 @@ public class CloudApiContext {
         public static final String ADD_BOOK_TO_SMOOTH_CARD = "addNewReadInfo";
         public static final String ADD_BOOKS_TO_SMOOTH_CARD = "addNewReadInfoBatch";
         public static final String SHOPPING_CART = "shoppingCart";
+        public static final String USER_BASIC_INFO = "userBasicInfo";
+        public static final String SYNC_LOGIN_INFO = "SyncLoginInfo";
+        public static final String GET_TOKEN = "genToken";
+        public static final String READ_TOTAL_BOOK = "userReadEBookScale";
     }
 
     public static class AddToSmooth {
@@ -129,6 +136,20 @@ public class CloudApiContext {
         public static final String UUID = "uuid";
         public static final String EBOOK_ID = "ebookId";
         public static final String USER_ID = "userId";
+    }
+
+    public static class GotoOrder {
+        public static final String ORDER_ORDERSTEP1_ACTION = "order_orderStep1.action?";
+        public static final String TOKENKEY = "tokenKey=";
+        public static final String NUM = "num";
+        public static final String PURCHASE_QUANTITY = "1";
+        public static final String ID = "Id";
+        public static final String THESKUS = "TheSkus";
+        public static final String SINGLE_UNION_ID = "singleUnionId";
+        public static final String SINGLE_SUB_UNION_ID = "singleSubUnionId";
+        public static final String IS_SUPPORT_JS = "isSupportJs";
+        public static final String BOOLEAN = "true";
+        public static final String CART = "cart";
     }
 
     public static String getJDBooxBaseUrl() {
