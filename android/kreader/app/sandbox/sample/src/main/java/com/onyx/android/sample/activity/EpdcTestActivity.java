@@ -99,9 +99,11 @@ public class EpdcTestActivity extends AppCompatActivity {
     private void epdcDrawLine() {
         int x1 = TestUtils.randInt(1, surfaceView.getWidth() - 1);
         int y1 = TestUtils.randInt(1, surfaceView.getHeight() - 1);
-        int x2 = x1 + TestUtils.randInt(1, 20);
-        int y2 = y1 + TestUtils.randInt(1, 20);
-        int width = TestUtils.randInt(1, 3);
+        int rw = TestUtils.randInt(2, 100);
+        int rh = TestUtils.randInt(2, 100);
+        int y2 = y1 + rw;
+        int x2 = x1 + rh;
+        int width = TestUtils.randInt(1, 30);
         EpdController.moveTo(surfaceView, x1, y1, width);
         EpdController.quadTo(surfaceView, x2, y2, UpdateMode.DU);
 
