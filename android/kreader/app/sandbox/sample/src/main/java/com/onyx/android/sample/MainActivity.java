@@ -1,6 +1,8 @@
 package com.onyx.android.sample;
 
 import android.content.Intent;
+import android.os.Build;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.Button;
 import com.onyx.android.sample.activity.CalligraphyActivity;
 import com.onyx.android.sample.activity.EnvironmentDemoActivity;
 import com.onyx.android.sample.activity.EpdDemoActivity;
+import com.onyx.android.sample.activity.EpdcTestActivity;
 import com.onyx.android.sample.fragment.RectangleUpdateFragment;
 import com.onyx.android.sample.activity.RefreshTestActivity;
 import com.onyx.android.sample.activity.FrontLightDemoActivity;
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonRefreshTest;
     @Bind(R.id.button_image_diff)
     Button buttonImageDiff;
+    @Bind(R.id.button_epdc_test)
+    Button buttonEdpcTest;
 
 
 
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonScribbleState.setOnClickListener(this);
         buttonRefreshTest.setOnClickListener(this);
         buttonImageDiff.setOnClickListener(this);
+        buttonEdpcTest.setOnClickListener(this);
         final View view = findViewById(android.R.id.content);
         EpdController.enablePost(view, 1);
     }
@@ -107,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, ImageDiffActivity.class));
         } else if (v.equals(buttonRefreshTest)) {
             startActivity(new Intent(this, RefreshTestActivity.class));
+        } else if (v.equals(buttonEdpcTest)) {
+            startActivity(new Intent(this, EpdcTestActivity.class));
         }
     }
 

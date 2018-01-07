@@ -64,7 +64,7 @@ public class ScribbleStylusSurfaceViewDemoActivity extends AppCompatActivity imp
                         .setStrokeWidth(3.0f)
                         .setUseRawInput(true)
                         .setLimitRect(limit, exclude)
-                        .startRawDrawing();
+                        .createRawDrawing();
             }
         });
     }
