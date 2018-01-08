@@ -21,7 +21,7 @@ public class SwitchNavigationToComicModeAction extends BaseReaderAction {
         RectF limit = new RectF(0, 0, 0, 0);
         args.rowsRightToLeft(NavigationArgs.Type.ALL, 2, 2, limit);
         ChangeLayoutParameter parameter = new ChangeLayoutParameter(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
-        new ChangeLayoutRequest(readerDataHolder,parameter).execute(new RxCallback() {
+        new ChangeLayoutRequest(readerDataHolder,parameter,null).execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
 
