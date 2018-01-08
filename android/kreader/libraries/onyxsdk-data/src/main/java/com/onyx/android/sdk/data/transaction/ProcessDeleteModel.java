@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.transaction;
 
 import com.onyx.android.sdk.data.model.BaseData;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 
 /**
@@ -9,7 +10,7 @@ import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTr
 public class ProcessDeleteModel<T extends BaseData> implements ProcessModelTransaction.ProcessModel<T> {
 
     @Override
-    public void processModel(T model) {
+    public void processModel(T model, DatabaseWrapper wrapper) {
         model.delete();
     }
 }

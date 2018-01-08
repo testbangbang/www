@@ -40,7 +40,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
-import com.raizlabs.android.dbflow.sql.language.Condition;
+import com.raizlabs.android.dbflow.sql.language.SQLOperator;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.eventbus.EventBus;
@@ -149,7 +149,7 @@ public class SchoolApp extends MultiDexApplication {
     private void startMetadataPathScan(final String storageId, final HashSet<String> filePathSet) {
         QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.CreationTime, SortOrder.Desc);
         queryArgs.propertyList.add(Metadata_Table.nativeAbsolutePath);
-        Condition condition;
+        SQLOperator condition;
         if (StringUtils.isNullOrEmpty(storageId)) {
             condition = Metadata_Table.storageId.isNull();
         } else {

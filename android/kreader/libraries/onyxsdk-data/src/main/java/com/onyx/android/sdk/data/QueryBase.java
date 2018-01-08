@@ -6,7 +6,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 
@@ -29,7 +29,7 @@ public class QueryBase implements Serializable {
     public String query;
 
     @JSONField(serialize = false, deserialize = false)
-    public ConditionGroup conditionGroup = ConditionGroup.clause();
+    public OperatorGroup conditionGroup = OperatorGroup.clause();
     @JSONField(serialize = false, deserialize = false)
     public List<IProperty> propertyList = new ArrayList<>();
     @JSONField(serialize = false, deserialize = false)

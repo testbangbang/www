@@ -9,8 +9,8 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Operator;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
@@ -55,7 +55,7 @@ public class NoteDataProvider {
     public static List<NoteModel> loadNoteList(final Context context, final String parentUniqueId,
                                                @SortBy.SortByDef int sortBy, @AscDescOrder.AscDescOrderDef int ascOrder) {
         Select select = new Select();
-        Condition condition;
+        Operator condition;
         if (StringUtils.isNullOrEmpty(parentUniqueId)) {
             condition = NoteModel_Table.parentUniqueId.isNull();
         } else {
@@ -88,7 +88,7 @@ public class NoteDataProvider {
      */
     public static List<NoteModel> loadAllNoteLibraryList() {
         Select select = new Select();
-        Condition condition;
+        Operator condition;
         condition = NoteModel_Table.type.eq(NoteModel.TYPE_LIBRARY);
         Where<NoteModel> where = select.from(NoteModel.class).where(condition);
         return where.queryList();
