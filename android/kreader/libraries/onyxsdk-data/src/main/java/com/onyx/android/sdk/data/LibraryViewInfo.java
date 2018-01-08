@@ -10,7 +10,7 @@ import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -102,8 +102,8 @@ public class LibraryViewInfo implements Serializable {
         return EnvironmentUtil.getRemovableSDCardCid();
     }
 
-    private ConditionGroup storageIdCondition() {
-        ConditionGroup conditionGroup = ConditionGroup.clause()
+    private OperatorGroup storageIdCondition() {
+        OperatorGroup conditionGroup = OperatorGroup.clause()
                 .or(Metadata_Table.storageId.isNull());
         String cid = getSdcardCid();
         if (StringUtils.isNotBlank(cid)) {

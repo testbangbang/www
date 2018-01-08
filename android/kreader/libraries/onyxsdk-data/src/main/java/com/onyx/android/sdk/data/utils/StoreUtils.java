@@ -7,11 +7,10 @@ import com.onyx.android.sdk.data.transaction.ProcessSaveModel;
 import com.onyx.android.sdk.data.transaction.ProcessUpdateModel;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.Condition;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
-import com.raizlabs.android.dbflow.sql.language.SQLCondition;
+import com.raizlabs.android.dbflow.sql.language.SQLOperator;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
@@ -57,7 +56,7 @@ public class StoreUtils {
         ProcessModelTransaction<T> processModelTransaction =
                 new ProcessModelTransaction.Builder<>(new ProcessModelTransaction.ProcessModel<T>() {
                     @Override
-                    public void processModel(T model) {
+                    public void processModel(T model, DatabaseWrapper wrapper) {
                         if (process == PROCESS_SAVE) {
                             model.save();
                         } else if (process == PROCESS_DELETE) {
@@ -172,7 +171,7 @@ public class StoreUtils {
         return where.queryList();
     }
 
-    static public <T extends BaseModel> T queryDataSingle(final Class<T> clazz, SQLCondition... conditions) {
+    static public <T extends BaseModel> T queryDataSingle(final Class<T> clazz, SQLOperator... conditions) {
         return SQLite.select().from(clazz).where().andAll(conditions).querySingle();
     }
 
@@ -188,7 +187,7 @@ public class StoreUtils {
         return new Select(Method.count()).from(clazz).count();
     }
 
-    static public <T extends BaseModel> long queryDataCount(final Class<T> clazz, Condition... condition) {
+    static public <T extends BaseModel> long queryDataCount(final Class<T> clazz, SQLOperator... condition) {
         Where where = new Select(Method.count()).from(clazz).where();
         if (condition != null && condition.length > 0) {
             where.andAll(condition);
@@ -196,7 +195,7 @@ public class StoreUtils {
         return where.count();
     }
 
-    static public <T extends BaseModel> long queryDataCount(final Class<T> clazz, ConditionGroup conditionGroup) {
+    static public <T extends BaseModel> long queryDataCount(final Class<T> clazz, OperatorGroup conditionGroup) {
         Where where = new Select(Method.count()).from(clazz).where().and(conditionGroup);
         return where.count();
     }

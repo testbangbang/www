@@ -42,6 +42,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
@@ -212,7 +213,7 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
         ProcessModelTransaction<DeviceBind> processModelTransaction =
                 new ProcessModelTransaction.Builder<>(new ProcessModelTransaction.ProcessModel<DeviceBind>() {
                     @Override
-                    public void processModel(DeviceBind model) {
+                    public void processModel(DeviceBind model, DatabaseWrapper wrapper) {
                         model.save();
                     }
                 }).processListener(listener).add(deviceBind).build();
