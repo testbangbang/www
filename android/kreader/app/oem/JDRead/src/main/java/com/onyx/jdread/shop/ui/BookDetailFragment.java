@@ -29,10 +29,13 @@ import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.action.UserLoginAction;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.CancelUserLoginDialogEvent;
 import com.onyx.jdread.personal.event.UserLoginEvent;
+import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
@@ -50,9 +53,11 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.PageTagConstants;
 import com.onyx.jdread.shop.event.BookDetailReadNowEvent;
 import com.onyx.jdread.shop.event.BookShelfEvent;
+import com.onyx.jdread.shop.event.BuyBookSuccessEvent;
 import com.onyx.jdread.shop.event.CopyrightCancelEvent;
 import com.onyx.jdread.shop.event.CopyrightEvent;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
@@ -80,6 +85,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by jackdeng on 2017/12/16.
@@ -246,6 +252,8 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadWholeBookEvent(DownloadWholeBookEvent event) {
         bookDetailBean = event.getBookDetailBean();
+        BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
+        bookDetailBean.setBookExtraInfoBean(extraInfoBean);
         if (!JDReadApplication.getInstance().getLogin()) {
             LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
         } else {
@@ -277,7 +285,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
-        gotoShopCartFragment();
+        if (bookDetailBean != null) {
+            addToCart(bookDetailBean.getEbookId());
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -361,12 +371,12 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
 
-        if (isWholeBook && DownLoadHelper.isDownloaded(downloadTaskState) && new File(localPath).exists()) {
+        if (DownLoadHelper.isDownloaded(downloadTaskState) && new File(localPath).exists()) {
             openBook(bookDetailBean.getName(), localPath);
             return;
         }
 
-        if (bookDetailBean.isFree()) {
+        if (bookDetailBean.isFree() && !bookDetailBean.isUserFluentReadAddToCard()) {
             addBookToSmoothCardList(bookDetailBean, true);
             return;
         }
@@ -384,8 +394,12 @@ public class BookDetailFragment extends BaseFragment {
             }
         }
 
+        if (bookDetailBean.isUserCanFluentRead () || bookDetailBean.isAlreadyBuy()) {
+            BookDownloadUtils.download(bookDetailBean,getShopDataBundle());
+        }
+
         if (!bookDetailBean.isUserCanFluentRead ()) {
-            addToCart();
+            showPayDialog(bookDetailBean.getEbookId());
             return;
         }
     }
@@ -407,7 +421,29 @@ public class BookDetailFragment extends BaseFragment {
         OpenBookHelper.openBook(super.getContext(), documentInfo);
     }
 
-    private void addToCart() {
+    private void showPayDialog(long ebookId){
+        ArrayList<String> bookIds = new ArrayList<>();
+        bookIds.add(String.valueOf(ebookId));
+        final GetOrderUrlAction orderUrlAction = new GetOrderUrlAction(bookIds);
+        orderUrlAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                GetOrderUrlResultBean orderUrlResultBean = PersonalDataBundle.getInstance().getOrderUrlResultBean();
+                if (orderUrlResultBean != null) {
+                    String url = CloudApiContext.JD_BOOK_ORDER_URL + CloudApiContext.GotoOrder.ORDER_ORDERSTEP1_ACTION;
+                    String tokenKey = CloudApiContext.GotoOrder.TOKENKEY;
+                    String payUrl = url + tokenKey + orderUrlResultBean.getTokenKey();
+                    PayFragment payFragment = new PayFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.PAY_URL, payUrl);
+                    payFragment.setArguments(bundle);
+                    payFragment.show(getActivity().getFragmentManager(), "");
+                }
+            }
+        });
+    }
+
+    private void addToCart(long ebookId) {
         final AddOrDeleteCartAction addOrDeleteCartAction = new AddOrDeleteCartAction(new String[]{String.valueOf(ebookId)}, Constants.CART_TYPE_ADD);
         addOrDeleteCartAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
@@ -577,5 +613,15 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
         hideLoadingDialog();
+    }
+
+    @Subscribe
+    public void onBuyBookSuccessEvent(BuyBookSuccessEvent event) {
+        BookDownloadUtils.download(bookDetailBean,getShopDataBundle());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginResultEvent(UserLoginResultEvent event) {
+        getBookDetailData();
     }
 }

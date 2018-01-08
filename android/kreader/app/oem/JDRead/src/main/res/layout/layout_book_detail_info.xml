@@ -184,6 +184,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:visibility="@{CommonUtils.showBuyBookButton(bookDetailViewModel.bookDetailResultBean.detail) ? View.VISIBLE : View.GONE}"
                         android:id="@+id/book_detail_buy_book"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -202,6 +203,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="@{!bookDetailViewModel.bookDetailResultBean.detail.isFree ? View.VISIBLE : View.GONE}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/book_detail_button_margin"

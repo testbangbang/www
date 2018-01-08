@@ -2,9 +2,7 @@ package com.onyx.jdread.shop.ui;
 
 import android.app.DialogFragment;
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.net.http.SslError;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -72,9 +69,7 @@ public class PayFragment extends DialogFragment {
         settings.setAppCacheEnabled(true);
         settings.setBuiltInZoomControls(true);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            binding.payWebView.addJavascriptInterface(new WebViewInteraction(), WebViewInteraction.INTERACTION_NAME);
-        }
+        binding.payWebView.addJavascriptInterface(new WebViewInteraction(), WebViewInteraction.INTERACTION_NAME);
         binding.payWebView.removeJavascriptInterface("searchBoxJavaBridge_");
     }
 
