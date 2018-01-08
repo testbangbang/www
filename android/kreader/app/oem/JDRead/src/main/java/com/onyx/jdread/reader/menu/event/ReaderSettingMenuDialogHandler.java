@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.menu.event;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
@@ -41,11 +42,13 @@ public class ReaderSettingMenuDialogHandler {
     private ReaderSettingMenuBinding binding;
     private ReaderDataHolder readerDataHolder;
     private ReaderTextStyle style;
+    private ImageReflowSettings settings;
 
-    public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder,ReaderSettingViewBack readerSettingViewBack,ReaderTextStyle style) {
+    public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder,ReaderSettingViewBack readerSettingViewBack,ReaderTextStyle style,ImageReflowSettings settings) {
         this.readerDataHolder = readerDataHolder;
         this.readerSettingViewBack = readerSettingViewBack;
         this.style = style;
+        this.settings = settings;
     }
 
     public void setBinding(ReaderSettingMenuBinding binding) {
@@ -170,7 +173,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onImageReflowEvent(ImageReflowEvent event){
-        new ImageReflowAction().execute(readerDataHolder);
+        new ImageReflowAction(settings).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

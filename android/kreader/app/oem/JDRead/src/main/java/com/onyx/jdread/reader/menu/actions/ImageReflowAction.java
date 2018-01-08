@@ -14,25 +14,20 @@ import com.onyx.jdread.reader.menu.request.ChangeLayoutRequest;
  */
 
 public class ImageReflowAction extends BaseReaderAction {
+    private ImageReflowSettings settings;
+
+    public ImageReflowAction(ImageReflowSettings settings) {
+        this.settings = settings;
+    }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        updateSetting(readerDataHolder);
-
         ChangeLayoutParameter parameter = new ChangeLayoutParameter(PageConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
-        new ChangeLayoutRequest(readerDataHolder,parameter).execute(new RxCallback() {
+        new ChangeLayoutRequest(readerDataHolder,parameter,settings).execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
 
             }
         });
-    }
-
-    private void updateSetting(ReaderDataHolder readerDataHolder){
-        ImageReflowSettings settings = readerDataHolder.getReader().getReaderHelper().getImageReflowManager().getSettings();
-        settings.dev_width = readerDataHolder.getReaderViewHelper().getPageViewWidth();
-        settings.dev_height = readerDataHolder.getReaderViewHelper().getPageViewHeight();
-        settings.justification = 3;
-        readerDataHolder.getReader().getReaderHelper().getImageReflowManager().notifySettingsUpdated();
     }
 }

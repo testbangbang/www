@@ -10,6 +10,7 @@ import android.widget.RatingBar;
 import android.widget.SeekBar;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -46,13 +47,12 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     private BrightnessModel brightnessModel;
     private FunctionBarAdapter functionBarAdapter;
     private ReaderSettingMenuDialogHandler readerSettingMenuDialogHandler;
-    private ReaderTextStyle style;
 
-    public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity, ReaderTextStyle readerTextStyle) {
+    public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity, ReaderTextStyle style,ImageReflowSettings settings) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.readerDataHolder = readerDataHolder;
-        this.style = readerTextStyle;
-        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(readerDataHolder,this,style);
+
+        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(readerDataHolder,this,style,settings);
     }
 
     @Override

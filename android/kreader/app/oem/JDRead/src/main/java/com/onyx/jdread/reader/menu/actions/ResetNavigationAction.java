@@ -17,7 +17,7 @@ public class ResetNavigationAction extends BaseReaderAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
         ChangeLayoutParameter parameter = new ChangeLayoutParameter(PageConstants.SINGLE_PAGE, new NavigationArgs());
-        new ChangeLayoutRequest(readerDataHolder,parameter).execute(new RxCallback() {
+        new ChangeLayoutRequest(readerDataHolder,parameter,null).execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
 

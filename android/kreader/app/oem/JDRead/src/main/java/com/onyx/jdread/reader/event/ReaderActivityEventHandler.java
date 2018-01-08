@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.reader.actions.GetTextStyleAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
@@ -26,8 +27,9 @@ public class ReaderActivityEventHandler {
     private ReaderViewModel readerViewModel;
     private ReaderViewBack readerViewBack;
     private ReaderTextStyle style;
+    private ImageReflowSettings settings;
 
-    public ReaderActivityEventHandler(ReaderViewModel readerViewModel,ReaderViewBack readerViewBack) {
+    public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
         this.readerViewBack = readerViewBack;
     }
@@ -40,10 +42,15 @@ public class ReaderActivityEventHandler {
         this.style = style;
     }
 
-    private GetPageViewInfoCallback callback = new GetPageViewInfoCallback(){
+    private GetPageViewInfoCallback callback = new GetPageViewInfoCallback() {
         @Override
         public void setStyle(ReaderTextStyle readerTextStyle) {
             style = readerTextStyle;
+        }
+
+        @Override
+        public void setImageReflowSettings(ImageReflowSettings imageReflowSettings) {
+            settings = imageReflowSettings;
         }
     };
 
@@ -91,23 +98,23 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onShowReaderSettingMenuEvent(ShowReaderSettingMenuEvent event) {
-        if(readerViewBack != null){
+        if (readerViewBack != null) {
             Activity activity = readerViewBack.getContext();
-            if(activity == null){
+            if (activity == null) {
                 return;
             }
-            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity,style);
+            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity, style, settings);
             readerSettingMenuDialog.show();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPageViewUpdateEvent(PageViewUpdateEvent event){
+    public void onPageViewUpdateEvent(PageViewUpdateEvent event) {
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onInitPageViewInfoEvent(InitPageViewInfoEvent event){
+    public void onInitPageViewInfoEvent(InitPageViewInfoEvent event) {
         new GetTextStyleAction(callback).execute(readerViewModel.getReaderDataHolder());
     }
 }
