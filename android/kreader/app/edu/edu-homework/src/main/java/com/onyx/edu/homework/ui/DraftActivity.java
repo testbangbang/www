@@ -42,16 +42,13 @@ public class DraftActivity extends BaseActivity {
     }
 
     private void initView(final Question question) {
-        int questionIndex = Math.max(question.QuesType - 1, 0);
-        String questionType = getResources().getStringArray(R.array.question_type_list)[questionIndex];
-        binding.questionType.setText(getString(R.string.question_type_str, questionType));
-        binding.content.setText(TextUtils.fromHtml(question.content, new Base64ImageParser(this), null));
         initFragment();
         DataBundle.getInstance().register(this);
     }
 
     private void initFragment() {
         DataBundle.getInstance().resetNoteViewHelper();
+        DataBundle.getInstance().getNoteViewHelper().setDrawText(question.content);
         scribbleFragment = ScribbleFragment.newInstance(question);
         getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
         toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_BOTTOM);
