@@ -9,8 +9,11 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ReaderSettingModel {
+    public enum ReaderSystemMenuGroup {
+        progressMenuGroup, brightnessMenuGroup,textMenuGroup,imageMenuGroup,customMenuGroup
+    }
 
-    public void dismissZoneClick(){
+    public void dismissZoneClick() {
         EventBus.getDefault().post(new CloseReaderSettingMenuEvent());
     }
 }

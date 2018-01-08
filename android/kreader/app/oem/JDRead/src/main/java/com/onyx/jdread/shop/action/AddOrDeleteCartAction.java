@@ -73,17 +73,6 @@ public class AddOrDeleteCartAction extends BaseAction {
         });
     }
 
-    private String getShoppingCartBody(String bookList, String type) {
-        JSONObject json = new JSONObject();
-        try {
-            json.put(CloudApiContext.NewBookDetail.BOOK_LIST, bookList);
-            json.put(CloudApiContext.NewBookDetail.TYPE, type);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return json.toString();
-    }
-
     public AddOrDelFromCartBean.ResultBean getResult() {
         return result;
     }

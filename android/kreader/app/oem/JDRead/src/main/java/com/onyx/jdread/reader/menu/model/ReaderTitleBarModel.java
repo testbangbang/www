@@ -19,6 +19,7 @@ public class ReaderTitleBarModel extends BaseObservable {
     private ObservableBoolean isBuy = new ObservableBoolean(true);
     private ObservableBoolean isSearchContext = new ObservableBoolean(true);
     private ObservableInt bookMarkImageId = new ObservableInt(R.mipmap.ic_read_bm_normal);
+    private ObservableBoolean isShow = new ObservableBoolean(true);
 
     public ReaderTitleBarModel() {
 
@@ -63,5 +64,13 @@ public class ReaderTitleBarModel extends BaseObservable {
 
     public void setBookMarkImageId(ObservableInt bookMarkImageId) {
         this.bookMarkImageId = bookMarkImageId;
+    }
+
+    public ObservableBoolean getIsShow() {
+        return isShow;
+    }
+
+    public void setIsShow(boolean isShow) {
+        this.isShow.set(isShow);
     }
 }

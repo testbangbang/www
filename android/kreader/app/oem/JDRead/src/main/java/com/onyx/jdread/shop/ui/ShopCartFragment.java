@@ -16,13 +16,24 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ShopCartBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.CommonUtils;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.adapter.ShopCartAdapter;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
+import com.onyx.jdread.shop.action.GetShopCartIdsAction;
 import com.onyx.jdread.shop.action.GetShopCartItemsAction;
+import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 import com.onyx.jdread.shop.model.ShopCartModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.util.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,7 +69,20 @@ public class ShopCartFragment extends BaseFragment {
 
     private void initData() {
         shopCartModel = ShopDataBundle.getInstance().getShopCartModel();
-        final GetShopCartItemsAction action = new GetShopCartItemsAction();
+        final GetShopCartIdsAction getShopCartIdsAction = new GetShopCartIdsAction();
+        getShopCartIdsAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                String[] bookIds = getShopCartIdsAction.getBookIds();
+                if (bookIds != null && bookIds.length > 0) {
+                    getItems(bookIds);
+                }
+            }
+        });
+    }
+
+    private void getItems(String[] bookIds) {
+        GetShopCartItemsAction action = new GetShopCartItemsAction(bookIds);
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -99,6 +123,89 @@ public class ShopCartFragment extends BaseFragment {
                 shopCartModel.setPageSize((position / pageSize + 1) + "/" + pages);
             }
         });
+
+        binding.shopCartDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteItems();
+            }
+        });
+
+        binding.shopCartSettlement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                settlement();
+            }
+        });
+    }
+
+    private void settlement() {
+        if (shopCartAdapter == null) {
+            return;
+        }
+        List<ShopCartItemData> data = shopCartAdapter.getData();
+        if (data != null && data.size() > 0) {
+            List<String> ids = new ArrayList<>();
+            for (ShopCartItemData item :data) {
+                if (item.isChecked()) {
+                    ids.add(item.detail.bookId + "");
+                }
+            }
+            if (ids.size() == 0) {
+                ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.no_selected));
+                return;
+            }
+            final GetOrderUrlAction orderUrlAction = new GetOrderUrlAction(ids);
+            orderUrlAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+                @Override
+                public void onNext(Object o) {
+                    GetOrderUrlResultBean orderUrlResultBean = PersonalDataBundle.getInstance().getOrderUrlResultBean();
+                    if (orderUrlResultBean != null) {
+                        String url = CloudApiContext.JD_BOOK_ORDER_URL + CloudApiContext.GotoOrder.ORDER_ORDERSTEP1_ACTION;
+                        String tokenKey = CloudApiContext.GotoOrder.TOKENKEY;
+                        String payUrl = url + tokenKey + orderUrlResultBean.getTokenKey();
+                        PayFragment payFragment = new PayFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Constants.PAY_URL, payUrl);
+                        payFragment.setArguments(bundle);
+                        payFragment.show(getActivity().getFragmentManager(), "");
+                    }
+                }
+            });
+        }
+    }
+
+    private void deleteItems() {
+        if (shopCartAdapter == null) {
+            return;
+        }
+        List<ShopCartItemData> data = shopCartAdapter.getData();
+        if (data != null && data.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (ShopCartItemData item :data) {
+                if (item.isChecked()) {
+                    sb.append(item.detail.bookId + ",");
+                }
+            }
+            if (sb.length() == 0) {
+                ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.no_selected));
+                return;
+            }
+            String s = sb.deleteCharAt(sb.length() - 1).toString();
+            String[] ids = CommonUtils.string2Arr(s);
+            final AddOrDeleteCartAction addOrDeleteCartAction = new AddOrDeleteCartAction(ids, Constants.CART_TYPE_DEL);
+            addOrDeleteCartAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
+                @Override
+                public void onNext(Object o) {
+                    AddOrDelFromCartBean.ResultBean result = addOrDeleteCartAction.getResult();
+                    if (result != null) {
+                        String bookList = result.getBookList();
+                        String[] lists = CommonUtils.string2Arr(bookList);
+                        getItems(lists);
+                    }
+                }
+            });
+        }
     }
 
     private void setAmount() {

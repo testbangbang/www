@@ -52,6 +52,7 @@
                     android:checked="@={model.selectedAll}" />
 
                 <ImageView
+                    android:id="@+id/shop_cart_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/shop_cart_delete_margin_left"
@@ -118,6 +119,7 @@
                 android:textSize="@dimen/level_one_heading_font" />
 
             <TextView
+                android:id="@+id/shop_cart_settlement"
                 android:layout_width="@dimen/shop_cart_settlement_width"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rectangle_stroke"
