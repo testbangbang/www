@@ -26,7 +26,6 @@ import com.onyx.android.sdk.ui.data.MenuItem;
 import com.onyx.android.sdk.ui.data.MenuManager;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.BR;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -34,11 +33,6 @@ import com.onyx.edu.homework.action.note.ClearAllFreeShapesAction;
 import com.onyx.edu.homework.action.note.DocumentAddNewPageAction;
 import com.onyx.edu.homework.action.note.DocumentDeletePageAction;
 import com.onyx.edu.homework.action.note.DocumentFlushAction;
-import com.onyx.edu.homework.action.note.DocumentSaveAction;
-import com.onyx.edu.homework.action.note.GotoNextPageAction;
-import com.onyx.edu.homework.action.note.GotoPrevPageAction;
-import com.onyx.edu.homework.action.note.NoteBackgroundChangeAction;
-import com.onyx.edu.homework.action.note.NoteStrokeWidthChangeAction;
 import com.onyx.edu.homework.action.note.RedoAction;
 import com.onyx.edu.homework.action.note.UndoAction;
 import com.onyx.edu.homework.base.BaseFragment;
@@ -67,11 +61,13 @@ public class NoteToolFragment extends BaseFragment {
 
     private MenuManager menuManager;
     private FragmentNoteToolBinding binding;
+    private int subMenuVerb = RelativeLayout.ALIGN_PARENT_BOTTOM;
 
-    public static NoteToolFragment newInstance(RelativeLayout subMenuLayout, int initPageCount) {
+    public static NoteToolFragment newInstance(RelativeLayout subMenuLayout, int initPageCount, int subMenuVerb) {
         NoteToolFragment fragment = new NoteToolFragment();
         fragment.setSubMenuLayout(subMenuLayout);
         fragment.setInitPageCount(initPageCount);
+        fragment.setSubMenuVerb(subMenuVerb);
         return fragment;
     }
 
@@ -400,16 +396,33 @@ public class NoteToolFragment extends BaseFragment {
         subMenuLayout.setVisibility(View.VISIBLE);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        lp.addRule(subMenuVerb);
         menuManager.addSubMenu(subMenuLayout,
                 DataBundle.getInstance().getEventBus(),
                 getSubLayoutId(parentId),
                 BR.item,
                 lp,
                 getSubItems(parentId));
+        setSubMenuLineVisibility(menuManager.getSubMenu().getRootView());
         menuManager.getSubMenu().
                 unCheckAll().
                 check(getChosenSubMenuId(parentId));
+    }
+
+    private void setSubMenuLineVisibility(View root) {
+        int dividerId = R.id.bottom_divider_line;
+        switch (subMenuVerb) {
+            case RelativeLayout.ALIGN_PARENT_TOP:
+                dividerId = R.id.bottom_divider_line;
+                break;
+            case RelativeLayout.ALIGN_PARENT_BOTTOM:
+                dividerId = R.id.top_divider_line;
+                break;
+        }
+        View line = root.findViewById(dividerId);
+        if (line != null) {
+            line.setVisibility(View.VISIBLE);
+        }
     }
 
     public SparseArray<List<Integer>> buildSubMenuIds() {
@@ -514,6 +527,10 @@ public class NoteToolFragment extends BaseFragment {
 
     public void setInitPageCount(int initPageCount) {
         this.initPageCount = initPageCount;
+    }
+
+    public void setSubMenuVerb(int subMenuVerb) {
+        this.subMenuVerb = subMenuVerb;
     }
 
     public NoteViewHelper getNoteViewHelper() {

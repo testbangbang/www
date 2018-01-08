@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -195,7 +196,7 @@ public class QuestionFragment extends BaseFragment {
         getDataBundle().getNoteViewHelper().setDrawText(!question.isChoiceQuestion() ? question.content : null);
         scribbleFragment = ScribbleFragment.newInstance(question);
         getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
-        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1);
+        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_TOP);
         getChildFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
     }
 
