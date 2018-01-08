@@ -6,8 +6,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="readerCustomizeModel"
-            type="com.onyx.jdread.reader.menu.model.ReaderCustomizeModel" />
+            name="readerMarginModel"
+            type="com.onyx.jdread.reader.menu.model.ReaderMarginModel" />
     </data>
 
     <LinearLayout
@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:orientation="vertical"
-        android:visibility="@{readerCustomizeModel.isShow?View.VISIBLE:View.GONE}">
+        android:visibility="@{readerMarginModel.isShow?View.VISIBLE:View.GONE}">
 
         <View
             android:layout_width="match_parent"
@@ -32,16 +32,18 @@
 
             <ImageView
                 style="@style/ReaderCustomizeMinusStyle"
+                android:onClick="@{()->readerMarginModel.onLineSpacingMinusClick()}"
                 android:src="@mipmap/ic_read_minus" />
 
             <SeekBar
                 android:id="@+id/reader_line_spacing"
                 style="@style/ReaderCustomizeFormatSeekBarStyle"
-                android:max="@{readerCustomizeModel.maxLineSpacing}"
-                android:progress="@{readerCustomizeModel.lineSpacingProgress}"/>
+                android:max="@{readerMarginModel.maxLineSpacing}"
+                android:progress="@{readerMarginModel.lineSpacingProgress}"/>
 
             <ImageView
                 style="@style/ReaderCustomizePlusStyle"
+                android:onClick="@{()->readerMarginModel.onLineSpacingPlusClick()}"
                 android:src="@mipmap/ic_read_plus" />
 
         </LinearLayout>
@@ -54,16 +56,18 @@
 
             <ImageView
                 style="@style/ReaderCustomizeMinusStyle"
+                android:onClick="@{()->readerMarginModel.onLineSegmentMinusClick()}"
                 android:src="@mipmap/ic_read_minus" />
 
             <SeekBar
                 android:id="@+id/reader_segment_spacing"
-                android:max="@{readerCustomizeModel.maxSegmentSpacing}"
-                android:progress="@{readerCustomizeModel.segmentProgress}"
+                android:max="@{readerMarginModel.maxSegmentSpacing}"
+                android:progress="@{readerMarginModel.segmentProgress}"
                 style="@style/ReaderCustomizeFormatSeekBarStyle" />
 
             <ImageView
                 style="@style/ReaderCustomizePlusStyle"
+                android:onClick="@{()->readerMarginModel.onLineSegmentPlusClick()}"
                 android:src="@mipmap/ic_read_plus" />
 
         </LinearLayout>
@@ -76,16 +80,18 @@
 
             <ImageView
                 style="@style/ReaderCustomizeMinusStyle"
+                android:onClick="@{()->readerMarginModel.onLineLeftAndRightMinusClick()}"
                 android:src="@mipmap/ic_read_minus" />
 
             <SeekBar
                 android:id="@+id/reader_lef_and_right_spacing"
-                android:max="@{readerCustomizeModel.maxLeftAndRightSpacing}"
-                android:progress="@{readerCustomizeModel.leftAndRightProgress}"
+                android:max="@{readerMarginModel.maxLeftAndRightSpacing}"
+                android:progress="@{readerMarginModel.leftAndRightProgress}"
                 style="@style/ReaderCustomizeFormatSeekBarStyle" />
 
             <ImageView
                 style="@style/ReaderCustomizePlusStyle"
+                android:onClick="@{()->readerMarginModel.onLineLeftAndRightPlusClick()}"
                 android:src="@mipmap/ic_read_plus" />
 
         </LinearLayout>
@@ -98,16 +104,18 @@
 
             <ImageView
                 style="@style/ReaderCustomizeMinusStyle"
+                android:onClick="@{()->readerMarginModel.onLineUpAndDownMinusClick()}"
                 android:src="@mipmap/ic_read_minus" />
 
             <SeekBar
                 android:id="@+id/reader_up_and_down_spacing"
-                android:max="@{readerCustomizeModel.maxUpAndDownSpacing}"
-                android:progress="@{readerCustomizeModel.upAndDownProgress}"
+                android:max="@{readerMarginModel.maxUpAndDownSpacing}"
+                android:progress="@{readerMarginModel.upAndDownProgress}"
                 style="@style/ReaderCustomizeFormatSeekBarStyle" />
 
             <ImageView
                 style="@style/ReaderCustomizePlusStyle"
+                android:onClick="@{()->readerMarginModel.onLineUpAndDownPlusClick()}"
                 android:src="@mipmap/ic_read_plus" />
 
         </LinearLayout>

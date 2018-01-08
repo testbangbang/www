@@ -40,6 +40,6 @@ public class ReaderSettingShowMenuAction extends BaseReaderAction {
 
         binding.readerSettingImageSettingBar.getReaderImageModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.imageMenuGroup == menuGroup ? true : false);
 
-        binding.readerSettingCustomizeFormatBar.getReaderCustomizeModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.customMenuGroup == menuGroup ? true : false);
+        binding.readerSettingCustomizeFormatBar.getReaderMarginModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.customMenuGroup == menuGroup ? true : false);
     }
 }
