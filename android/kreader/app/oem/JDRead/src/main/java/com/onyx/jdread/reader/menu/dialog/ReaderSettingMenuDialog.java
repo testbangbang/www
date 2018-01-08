@@ -52,7 +52,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.readerDataHolder = readerDataHolder;
         this.style = readerTextStyle;
-        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(readerDataHolder,this);
+        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(readerDataHolder,this,style);
     }
 
     @Override

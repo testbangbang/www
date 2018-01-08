@@ -42,9 +42,10 @@ public class ReaderSettingMenuDialogHandler {
     private ReaderDataHolder readerDataHolder;
     private ReaderTextStyle style;
 
-    public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder,ReaderSettingViewBack readerSettingViewBack) {
+    public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder,ReaderSettingViewBack readerSettingViewBack,ReaderTextStyle style) {
         this.readerDataHolder = readerDataHolder;
         this.readerSettingViewBack = readerSettingViewBack;
+        this.style = style;
     }
 
     public void setBinding(ReaderSettingMenuBinding binding) {

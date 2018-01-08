@@ -20,7 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 public class ReaderImageModel {
     private ObservableBoolean isShow = new ObservableBoolean(false);
     private ObservableField<ImageShowMode> currentImageMode = new ObservableField<>(ImageShowMode.defaultMode);
-    private ObservableInt currentFontColorDepth = new ObservableInt(ReaderConfig.TypefaceColorDepth.ONE_LEVEL);
+    private ObservableInt currentFontColorDepth = new ObservableInt(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
 
     public enum ImageShowMode {
         defaultMode, comicMode
@@ -64,27 +64,27 @@ public class ReaderImageModel {
     }
 
     public void onOneFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.ONE_LEVEL);
+        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
     }
 
     public void onTwoFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.TWO_LEVEL);
+        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_TWO);
     }
 
     public void onThreeFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.THREE_LEVEL);
+        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_THREE);
     }
 
     public void onFourFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.FOUR_LEVEL);
+        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FOUR);
     }
 
     public void onFiveFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.FIVE_LEVEL);
+        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FIVE);
     }
 
     public void onSixFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.SIX_LEVEL);
+        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_SIX);
     }
 
     private void setFontColorDepth(int textGamma){

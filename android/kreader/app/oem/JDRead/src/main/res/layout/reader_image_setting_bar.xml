@@ -74,7 +74,7 @@
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
                     android:onClick="@{()->readerImageModel.onOneFontColorDepthClick()}"
-                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.ONE_LEVEL?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
+                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.LEVEL_ONE?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
                     android:text="@string/reader_font_size_one" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
@@ -82,7 +82,7 @@
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
                     android:onClick="@{()->readerImageModel.onTwoFontColorDepthClick()}"
-                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.TWO_LEVEL?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.LEVEL_TWO?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:text="@string/reader_font_size_two" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
@@ -90,7 +90,7 @@
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
                     android:onClick="@{()->readerImageModel.onThreeFontColorDepthClick()}"
-                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.THREE_LEVEL?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.LEVEL_THREE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:text="@string/reader_font_size_three" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
@@ -98,7 +98,7 @@
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
                     android:onClick="@{()->readerImageModel.onFourFontColorDepthClick()}"
-                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.FOUR_LEVEL?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.LEVEL_FOUR?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:text="@string/reader_font_size_four" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
@@ -106,7 +106,7 @@
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
                     android:onClick="@{()->readerImageModel.onFiveFontColorDepthClick()}"
-                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.FIVE_LEVEL?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.LEVEL_FIVE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:text="@string/reader_font_size_five" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
@@ -114,7 +114,7 @@
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
                     android:onClick="@{()->readerImageModel.onSixFontColorDepthClick()}"
-                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.SIX_LEVEL?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
+                    android:background="@{readerImageModel.currentFontColorDepth == TypefaceColorDepth.LEVEL_SIX?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
                     android:text="@string/reader_font_size_six" />
             </LinearLayout>
         </LinearLayout>

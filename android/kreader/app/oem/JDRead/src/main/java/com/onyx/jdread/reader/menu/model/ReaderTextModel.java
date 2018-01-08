@@ -118,32 +118,32 @@ public class ReaderTextModel {
 
     public void onLevelOneClick() {
         setCurrentFontSize(ReaderFontSize.LevelOneFontSize);
-        setFontSize(ReaderConfig.FontSize.ONE_FONT_SIZE);
+        setFontSize(ReaderConfig.FontSize.FONT_SIZE_X_SMALL);
     }
 
     public void onLevelTwoClick() {
         setCurrentFontSize(ReaderFontSize.LevelTwoFontSize);
-        setFontSize(ReaderConfig.FontSize.TWO_FONT_SIZE);
+        setFontSize(ReaderConfig.FontSize.FONT_SIZE_SMALL);
     }
 
     public void onLevelThreeClick() {
         setCurrentFontSize(ReaderFontSize.LevelThreeFontSize);
-        setFontSize(ReaderConfig.FontSize.THREE_FONT_SIZE);
+        setFontSize(ReaderConfig.FontSize.FONT_SIZE_MEDIUM);
     }
 
     public void onLevelFourClick() {
         setCurrentFontSize(ReaderFontSize.LevelFourFontSize);
-        setFontSize(ReaderConfig.FontSize.FOUR_FONT_SIZE);
+        setFontSize(ReaderConfig.FontSize.FONT_SIZE_LARGE);
     }
 
     public void onLevelFiveClick() {
         setCurrentFontSize(ReaderFontSize.LevelFiveFontSize);
-        setFontSize(ReaderConfig.FontSize.FIVE_FONT_SIZE);
+        setFontSize(ReaderConfig.FontSize.FONT_SIZE_X_LARGE);
     }
 
     public void onLevelSixClick() {
         setCurrentFontSize(ReaderFontSize.LevelSixFontSize);
-        setFontSize(ReaderConfig.FontSize.SIX_FONT_SIZE);
+        setFontSize(ReaderConfig.FontSize.FONT_SIZE_XX_LARGE);
     }
 
     private void setFontSize(int fontSize){

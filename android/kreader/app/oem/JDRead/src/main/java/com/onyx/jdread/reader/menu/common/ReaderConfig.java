@@ -10,12 +10,12 @@ public class ReaderConfig {
     public static final String TYPEFACE_ROOT_PATH = "/sdcard/fonts/";
 
     public static class FontSize {
-        public static final int ONE_FONT_SIZE = 12;
-        public static final int TWO_FONT_SIZE = 18;
-        public static final int THREE_FONT_SIZE = 24;
-        public static final int FOUR_FONT_SIZE = 30;
-        public static final int FIVE_FONT_SIZE = 36;
-        public static final int SIX_FONT_SIZE = 42;
+        public static final int FONT_SIZE_X_SMALL = 12;
+        public static final int FONT_SIZE_SMALL = 18;
+        public static final int FONT_SIZE_MEDIUM = 24;
+        public static final int FONT_SIZE_LARGE = 30;
+        public static final int FONT_SIZE_X_LARGE = 36;
+        public static final int FONT_SIZE_XX_LARGE = 42;
     }
 
     public static class Typeface {
@@ -26,12 +26,12 @@ public class ReaderConfig {
     }
 
     public static class TypefaceColorDepth{
-        public static final int ONE_LEVEL = 25;
-        public static final int TWO_LEVEL = 50;
-        public static final int THREE_LEVEL = 75;
-        public static final int FOUR_LEVEL = 100;
-        public static final int FIVE_LEVEL = 125;
-        public static final int SIX_LEVEL = 150;
+        public static final int LEVEL_ONE = 25;
+        public static final int LEVEL_TWO = 50;
+        public static final int LEVEL_THREE = 75;
+        public static final int LEVEL_FOUR = 100;
+        public static final int LEVEL_FIVE = 125;
+        public static final int LEVEL_SIX = 150;
     }
 
     public static class PageLineSpacing{
