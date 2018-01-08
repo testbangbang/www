@@ -3,6 +3,8 @@ package com.onyx.jdread.main.model;
 import android.databinding.BaseObservable;
 import android.databinding.ObservableField;
 
+import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
+
 import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -11,6 +13,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class TitleBarModel extends BaseObservable {
     public final ObservableField<String> title = new ObservableField<>();
+    public final ObservableField<String> rightTitle = new ObservableField<>();
 
     public final ObservableField<Object> backEvent = new ObservableField<>();
 
@@ -22,5 +25,9 @@ public class TitleBarModel extends BaseObservable {
 
     public void back() {
         eventBus.post(backEvent.get());
+    }
+
+    public void rightTitleClicked(){
+        eventBus.post(new TitleBarRightTitleEvent());
     }
 }

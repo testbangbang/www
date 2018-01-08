@@ -6,10 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentReadingToolsBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.setting.adapter.DeviceInfoAdapter;
 import com.onyx.jdread.setting.event.AssociatedEmailToolsEvent;
@@ -41,7 +40,7 @@ public class ReadingToolsFragment extends BaseFragment {
     }
 
     private void initRecycler() {
-        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
         binding.readingToolsRecycler.addItemDecoration(dividerItemDecoration);
         deviceInfoAdapter = new DeviceInfoAdapter();
         deviceInfoAdapter.setRowAndCol(getResources().getInteger(R.integer.reading_tools_row), getResources().getInteger(R.integer.reading_tools_col));
