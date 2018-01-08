@@ -63,15 +63,15 @@ public class ShapeDataProvider {
         shapeModel.save();
     }
 
-    public static void svaeShapeListInBackground(final Context context,
+    public static void saveShapeListInBackground(final Context context,
                                                  final Collection<ShapeModel> list,
                                                  final DataProviderCallback callback) {
         final DatabaseDefinition database= FlowManager.getDatabase(ShapeDatabase.NAME);
         ProcessModelTransaction<ShapeModel> processModelTransaction =
                 new ProcessModelTransaction.Builder<>(new ProcessModelTransaction.ProcessModel<ShapeModel>() {
                     @Override
-                    public void processModel(ShapeModel model) {
-                        model.save();
+                    public void processModel(ShapeModel shapeModel, DatabaseWrapper wrapper) {
+                        shapeModel.save();
                     }
                 }).processListener(new ProcessModelTransaction.OnModelProcessListener<ShapeModel>() {
                     @Override
