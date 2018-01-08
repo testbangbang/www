@@ -24,7 +24,6 @@ import com.onyx.android.sdk.data.utils.RetrofitUtils;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 

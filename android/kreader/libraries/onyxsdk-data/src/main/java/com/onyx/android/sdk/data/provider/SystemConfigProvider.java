@@ -7,7 +7,7 @@ import com.onyx.android.sdk.data.db.table.OnyxSystemConfigProvider;
 import com.onyx.android.sdk.data.model.v2.SystemKeyValueItem;
 import com.onyx.android.sdk.data.model.v2.SystemKeyValueItem_Table;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 /**
@@ -53,7 +53,7 @@ public class SystemConfigProvider {
     public static SystemKeyValueItem queryKeyValueItem(Context context, String key) {
         try {
             return ContentUtils.querySingle(OnyxSystemConfigProvider.CONTENT_URI, SystemKeyValueItem.class,
-                    ConditionGroup.clause().and(SystemKeyValueItem_Table.key.eq(key)), null);
+                    OperatorGroup.clause().and(SystemKeyValueItem_Table.key.eq(key)), null);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -70,8 +70,8 @@ public class ShapeDataProvider {
         ProcessModelTransaction<ShapeModel> processModelTransaction =
                 new ProcessModelTransaction.Builder<>(new ProcessModelTransaction.ProcessModel<ShapeModel>() {
                     @Override
-                    public void processModel(ShapeModel model) {
-                        model.save();
+                    public void processModel(ShapeModel shapeModel, DatabaseWrapper wrapper) {
+                        shapeModel.save();
                     }
                 }).processListener(new ProcessModelTransaction.OnModelProcessListener<ShapeModel>() {
                     @Override

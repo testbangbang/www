@@ -27,12 +27,13 @@ import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.Condition;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.Operator;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
@@ -58,7 +59,7 @@ public class RemoteDataProvider implements DataProviderBase {
         Metadata metadata = null;
         try {
             metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
-                    Metadata.class, ConditionGroup.clause().and(Metadata_Table.idString.eq(idString)), null);
+                    Metadata.class, OperatorGroup.clause().and(Metadata_Table.idString.eq(idString)), null);
         } catch (Exception e) {
         } finally {
             return MetadataUtils.ensureObject(metadata);
@@ -69,7 +70,7 @@ public class RemoteDataProvider implements DataProviderBase {
         Metadata metadata = null;
         try {
             metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
-                    Metadata.class, ConditionGroup.clause().and(Metadata_Table.nativeAbsolutePath.eq(path)), null);
+                    Metadata.class, OperatorGroup.clause().and(Metadata_Table.nativeAbsolutePath.eq(path)), null);
         } catch (Exception e) {
         } finally {
             return MetadataUtils.ensureObject(metadata);
@@ -112,7 +113,9 @@ public class RemoteDataProvider implements DataProviderBase {
                 hashTag = FileUtils.computeMD5(new File(path));
             }
             metadata = ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
-                    Metadata.class, ConditionGroup.clause().and(Metadata_Table.hashTag.eq(hashTag)), null);
+                    Metadata.class, OperatorGroup.clause()
+                            .or(Metadata_Table.hashTag.eq(hashTag))
+                            .or(Metadata_Table.nativeAbsolutePath.eq(path)), null);
         } catch (Exception e) {
         } finally {
             return MetadataUtils.ensureObject(metadata);
@@ -161,7 +164,7 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public List<Annotation> loadAnnotations(String application, String associationId, int pageNumber, OrderBy orderBy) {
-        ConditionGroup conditionGroup = ConditionGroup.clause()
+        OperatorGroup conditionGroup = OperatorGroup.clause()
                 .and(Annotation_Table.idString.eq(associationId))
                 .and(Annotation_Table.application.eq(application))
                 .and(Annotation_Table.pageNumber.eq(pageNumber));
@@ -173,7 +176,7 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public List<Annotation> loadAnnotations(String application, String associationId, OrderBy orderBy) {
-        ConditionGroup conditionGroup = ConditionGroup.clause()
+        OperatorGroup conditionGroup = OperatorGroup.clause()
                 .and(Annotation_Table.idString.eq(associationId))
                 .and(Annotation_Table.application.eq(application));
         return ContentUtils.queryList(OnyxAnnotationProvider.CONTENT_URI,
@@ -201,7 +204,7 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public Bookmark loadBookmark(String application, String associationId, int pageNumber) {
-        ConditionGroup conditionGroup = ConditionGroup.clause()
+        OperatorGroup conditionGroup = OperatorGroup.clause()
                 .and(Bookmark_Table.idString.eq(associationId))
                 .and(Bookmark_Table.application.eq(application))
                 .and(Bookmark_Table.pageNumber.eq(pageNumber));
@@ -213,7 +216,7 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public List<Bookmark> loadBookmarks(String application, String associationId, OrderBy orderBy) {
-        ConditionGroup conditionGroup = ConditionGroup.clause()
+        OperatorGroup conditionGroup = OperatorGroup.clause()
                 .and(Bookmark_Table.idString.eq(associationId))
                 .and(Bookmark_Table.application.eq(application));
         return ContentUtils.queryList(OnyxBookmarkProvider.CONTENT_URI,
@@ -233,11 +236,11 @@ public class RemoteDataProvider implements DataProviderBase {
         ContentUtils.delete(OnyxBookmarkProvider.CONTENT_URI, bookmark);
     }
 
-    private Condition getNullOrEqualCondition(Property<String> property, String compare) {
+    private Operator getNullOrEqualCondition(Property<String> property, String compare) {
         return compare == null ? property.isNull() : property.eq(compare);
     }
 
-    private Condition getNotNullOrEqualCondition(Property<String> property, String compare) {
+    private Operator getNotNullOrEqualCondition(Property<String> property, String compare) {
         return compare == null ? property.isNotNull() : property.eq(compare);
     }
 
@@ -245,17 +248,19 @@ public class RemoteDataProvider implements DataProviderBase {
     public Library loadLibrary(String uniqueId) {
         return ContentUtils.querySingle(OnyxLibraryProvider.CONTENT_URI,
                 Library.class,
-                ConditionGroup.clause().and(Library_Table.idString.eq(uniqueId)),
+                OperatorGroup.clause().and(Library_Table.idString.eq(uniqueId)),
                 null);
     }
 
     @Override
     public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
-        Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
+        Operator condition = getNullOrEqualCondition(Library_Table.parentUniqueId, queryArgs.libraryUniqueId);
+        QueryArgs libraryQueryArgs = new QueryArgs(queryArgs.sortBy, queryArgs.order).appendFilter(queryArgs.filter);
+        QueryBuilder.generateQueryArgs(libraryQueryArgs);
         return ContentUtils.queryList(OnyxLibraryProvider.CONTENT_URI,
                 Library.class,
-                ConditionGroup.clause().and(condition),
-                null);
+                OperatorGroup.clause().and(condition),
+                libraryQueryArgs.getOrderByQueryWithLimitOffset());
     }
 
     @Override
@@ -299,7 +304,7 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     public Thumbnail getThumbnailEntry(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind) {
-        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
+        OperatorGroup group = OperatorGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind));
         return ContentUtils.querySingle(context.getContentResolver(),
                 OnyxThumbnailProvider.CONTENT_URI,
@@ -318,7 +323,7 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     public boolean removeThumbnailBitmap(Context context, String associationId, OnyxThumbnail.ThumbnailKind kind) {
-        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
+        OperatorGroup group = OperatorGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind));
         int row = FlowManager.getContext().getContentResolver().delete(OnyxThumbnailProvider.CONTENT_URI,
                 group.getQuery(),
@@ -335,7 +340,7 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     public List<Thumbnail> loadThumbnail(Context context, String associationId) {
-        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId));
+        OperatorGroup group = OperatorGroup.clause().and(Thumbnail_Table.idString.eq(associationId));
         return ContentUtils.queryList(context.getContentResolver(),
                 OnyxThumbnailProvider.CONTENT_URI,
                 Thumbnail.class,
@@ -357,7 +362,7 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public void deleteMetadataCollection(Context context, String libraryUniqueId, String associationId) {
-        ConditionGroup group = ConditionGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId));
+        OperatorGroup group = OperatorGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId));
         if (StringUtils.isNotBlank(associationId)) {
             group.and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         }
@@ -369,14 +374,14 @@ public class RemoteDataProvider implements DataProviderBase {
     @Override
     public void deleteMetadataCollection(Context context, String libraryUniqueId) {
         FlowManager.getContext().getContentResolver().delete(OnyxMetadataCollectionProvider.CONTENT_URI,
-                ConditionGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId)).getQuery(),
+                OperatorGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId)).getQuery(),
                 null);
     }
 
     @Override
     public void deleteMetadataCollectionByDocId(Context context, String docId) {
         FlowManager.getContext().getContentResolver().delete(OnyxMetadataCollectionProvider.CONTENT_URI,
-                ConditionGroup.clause().and(MetadataCollection_Table.documentUniqueId.eq(docId)).getQuery(),
+                OperatorGroup.clause().and(MetadataCollection_Table.documentUniqueId.eq(docId)).getQuery(),
                 null);
     }
 
@@ -388,7 +393,7 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public MetadataCollection loadMetadataCollection(Context context, String libraryUniqueId, String associationId) {
-        ConditionGroup group = ConditionGroup.clause()
+        OperatorGroup group = OperatorGroup.clause()
                 .and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId))
                 .and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         return ContentUtils.querySingle(OnyxMetadataCollectionProvider.CONTENT_URI,
@@ -399,7 +404,7 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public List<MetadataCollection> loadMetadataCollection(Context context, String libraryUniqueId) {
-        ConditionGroup group = ConditionGroup.clause()
+        OperatorGroup group = OperatorGroup.clause()
                 .and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId));
         return ContentUtils.queryList(OnyxMetadataCollectionProvider.CONTENT_URI,
                 MetadataCollection.class,
@@ -409,7 +414,7 @@ public class RemoteDataProvider implements DataProviderBase {
 
     @Override
     public MetadataCollection findMetadataCollection(Context context, String associationId) {
-        ConditionGroup group = ConditionGroup.clause()
+        OperatorGroup group = OperatorGroup.clause()
                 .and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         return ContentUtils.querySingle(OnyxMetadataCollectionProvider.CONTENT_URI,
                 MetadataCollection.class,

@@ -7,7 +7,6 @@ import com.onyx.android.edu.db.typeconverter.SectionConverter;
 import com.onyx.android.edu.db.typeconverter.SubjectConverter;
 import com.onyx.android.edu.db.typeconverter.TextbookConverter;
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.util.List;
