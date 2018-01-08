@@ -44,8 +44,9 @@ import com.onyx.edu.manager.view.dialog.DialogHolder;
 import com.onyx.edu.manager.view.ui.DividerDecoration;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
@@ -312,7 +313,7 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
         ProcessModelTransaction<DeviceBind> processModelTransaction =
                 new ProcessModelTransaction.Builder<>(new ProcessModelTransaction.ProcessModel<DeviceBind>() {
                     @Override
-                    public void processModel(DeviceBind model) {
+                    public void processModel(DeviceBind model, DatabaseWrapper wrapper) {
                         model.save();
                     }
                 }).processListener(listener).add(deviceBind).build();
@@ -323,7 +324,7 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
 
     private void loadDeviceBindCount(final BaseCallback baseCallback) {
         final DeviceBindLoadRequest countRequest = new DeviceBindLoadRequest(
-                ConditionGroup.clause().and(DeviceBind_Table.tag.eq(currentBatchTag)),
+                OperatorGroup.clause().and(DeviceBind_Table.tag.eq(currentBatchTag)),
                 false);
         getDataManager().submit(this, countRequest, new BaseCallback() {
             @Override

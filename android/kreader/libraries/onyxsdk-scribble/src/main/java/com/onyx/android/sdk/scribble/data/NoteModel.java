@@ -239,9 +239,9 @@ public class NoteModel extends BaseModel {
         updatedAt = new Date();
     }
 
-    public void save() {
+    public boolean save() {
         beforeSave();
-        super.save();
+        return super.save();
     }
 
     public static float getDefaultStrokeWidth() {
@@ -305,6 +305,4 @@ public class NoteModel extends BaseModel {
         library.setTitle(title);
         return library;
     }
-
-
 }
