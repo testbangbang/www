@@ -48,7 +48,8 @@ import java.util.List;
  */
 
 public class ApkUtils {
-    private static CustomDialog dialog;
+    private static CustomDialog apkDialog;
+
     public static String getSoftwareBuildName() {
         PackageInfo packageInfo = getPackageInfo();
         String[] versions = null;
@@ -209,23 +210,27 @@ public class ApkUtils {
         View inflate = View.inflate(context, R.layout.apk_update_view, null);
         TextView updateMsg = (TextView) inflate.findViewById(R.id.apk_update_message);
         final TextView progressBar = (TextView) inflate.findViewById(R.id.apk_progress);
-        dialog = builder.setContentView(inflate).setTitle(context.getString(R.string.find_a_new_version))
+        apkDialog = builder.setContentView(inflate).setTitle(context.getString(R.string.find_a_new_version))
                 .setPositiveButton(context.getString(R.string.start_updating), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         downloadAPK(context, url, message);
                         CommonNotices.showMessage(context, context.getString(R.string.start_updating));
-                        dialog.dismiss();
+                        if (apkDialog.isShowing()){
+                            apkDialog.cancel();
+                        }
                     }
                 }).setNegativeButton(context.getString(R.string.cancel_updating), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         CommonNotices.showMessage(context, context.getString(R.string.cancel_updating));
-                        dialog.dismiss();
+                        if (apkDialog.isShowing()){
+                            apkDialog.cancel();
+                        }
                     }
                 }).create();
         updateMsg.setText(message);
-        Window window = dialog.getWindow();
+        Window window = apkDialog.getWindow();
         if (window != null) {
             window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
@@ -233,7 +238,7 @@ public class ApkUtils {
         params.height = (int)context.getResources().getDimension(R.dimen.new_apk_dialog_height);
         params.width = (int)context.getResources().getDimension(R.dimen.new_apk_dialog_width);
         window.setAttributes(params);
-        dialog.show();
+        apkDialog.show();
     }
 
     private static void downloadAPK(Context context, String url, String message) {
