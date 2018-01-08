@@ -38,14 +38,8 @@ public class RxLoadPicByPathRequest extends RxBaseFSRequest {
         }
         File config = new File(dir, "config.txt");
         if (config.exists()) {
-            BufferedReader br = new BufferedReader(new FileReader(config));
-            StringBuffer buffer = new StringBuffer();
-            String line;
-            while ((line = br.readLine()) != null) {
-                buffer.append(line);
-            }
             String checkedPath = PreferenceManager.getStringValue(getAppContext(), R.string.screen_saver_key, null);
-            List<ScreenSaversBean> beans = JSONObject.parseArray(buffer.toString(), ScreenSaversBean.class);
+            List<ScreenSaversBean> beans = JSONObject.parseArray(FileUtils.readContentOfFile(config), ScreenSaversBean.class);
             for (ScreenSaversBean bean : beans) {
                 ScreenSaversModel.ItemModel itemModel = new ScreenSaversModel.ItemModel();
                 String path = dir + File.separator + bean.getPath();
