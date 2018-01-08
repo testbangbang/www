@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import com.hanvon.core.Algorithm;
 
 /**
  * Created by zhuzeng on 9/15/16.
@@ -24,7 +23,6 @@ public class RenderContext {
         if (!useExternal) {
             return;
         }
-        Algorithm.initializeEx(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
     public void flushRenderingBuffer(final Bitmap bitmap) {

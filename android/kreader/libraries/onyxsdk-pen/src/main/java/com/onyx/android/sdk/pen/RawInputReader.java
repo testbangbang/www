@@ -233,6 +233,8 @@ class RawInputReader {
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing, boolean releaseOutLimitRegion) {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
+        mapToView(touchPoint);
+
         if (touchPointList != null && touchPointList.size() > 0) {
             invokeTouchPointListReceived(touchPointList, erasing);
         }

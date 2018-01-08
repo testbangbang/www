@@ -11,7 +11,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
 
-import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
@@ -214,7 +213,6 @@ public class BaseNoteRequest extends BaseRequest {
         if (!useExternal) {
             return;
         }
-        Algorithm.initializeEx(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
     private void flushRenderingBuffer(final Bitmap bitmap) {

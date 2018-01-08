@@ -2,7 +2,6 @@ package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.Path;
 
-import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
@@ -11,8 +10,6 @@ import com.onyx.android.sdk.scribble.utils.ShapeUtils;
  * One stroke
  */
 public class NormalPencilShape extends EPDShape {
-
-    private static boolean useHwColorPaint = false;
 
     public int getType() {
         return ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
@@ -31,11 +28,7 @@ public class NormalPencilShape extends EPDShape {
     }
 
     public void render(final RenderContext renderContext) {
-        if (useHwColorPaint) {
-            renderByHWColorPaint();
-        } else {
-            renderByDefault(renderContext);
-        }
+        renderByDefault(renderContext);
     }
 
     private void renderByDefault(final RenderContext renderContext) {
@@ -49,18 +42,6 @@ public class NormalPencilShape extends EPDShape {
             return;
         }
         renderContext.canvas.drawPath(path, renderContext.paint);
-    }
-
-    private void renderByHWColorPaint() {
-        Algorithm.setPen(0, 3, 6, 3, 12);
-        Algorithm.setSimulatePressure(true);
-
-        float[] points = new float[2048];
-        int[] rect = new int[4];
-        for(TouchPoint touchPoint : getNormalizedPoints().getPoints()) {
-            Algorithm.drawLineEx((int) touchPoint.x, (int) touchPoint.y, touchPoint.pressure / 1024f, rect, points);
-        }
-        Algorithm.drawLineEx(-1, -1, 0, rect, points);
     }
 
 }
