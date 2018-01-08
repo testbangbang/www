@@ -11,36 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:padding="14dp"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:textSize="@dimen/question_content_text_size"
-                android:textColor="@android:color/black"
-                android:id="@+id/question_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:ellipsize="middle"
-                android:maxLines="10"
-                android:layout_marginLeft="6dp"
-                android:textSize="@dimen/question_content_text_size"
-                android:textColor="@android:color/black"
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <View
-            android:background="@android:color/black"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
-
         <FrameLayout
             android:layout_weight="1"
             android:orientation="vertical"
