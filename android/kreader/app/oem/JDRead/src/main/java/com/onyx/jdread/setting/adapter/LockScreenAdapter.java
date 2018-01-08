@@ -54,7 +54,7 @@ public class LockScreenAdapter extends PageRecyclerView.PageAdapter implements V
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
         ItemRefreshBinding binding = viewHolder.getBinding();
-        binding.setShow(values[position] == currentScreenTimeout);
+        binding.setShow(values[position].equals(currentScreenTimeout));
         viewHolder.bindTo(times[position]);
     }
 

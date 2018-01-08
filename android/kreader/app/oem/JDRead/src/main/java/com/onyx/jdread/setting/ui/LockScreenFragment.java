@@ -12,6 +12,7 @@ import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.LockScreenBinding;
 import com.onyx.jdread.setting.adapter.LockScreenAdapter;
@@ -54,7 +55,7 @@ public class LockScreenFragment extends BaseFragment {
 
     private void initView() {
         binding.lockScreenRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
         binding.lockScreenRecycler.addItemDecoration(dividerItemDecoration);
         lockScreenAdapter = new LockScreenAdapter();
         binding.lockScreenRecycler.setAdapter(lockScreenAdapter);

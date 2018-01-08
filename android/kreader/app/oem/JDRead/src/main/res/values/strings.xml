@@ -316,9 +316,13 @@
     <string name="security_psk">PSK</string>
     <string name="add_wifi_configuration">Add wifi</string>
     <string name="network_password">Password</string>
+    <string name="screen_saver_key">screen_saver_key</string>
+    <string name="no_selected">No merchandise is selected</string>
     <string name="subject_list_sort_type_hot">Hot</string>
     <string name="subject_list_sort_type_sales">Sales</string>
     <string name="subject_list_sort_type_newest">Newest</string>
     <string name="subject_list_all">All</string>
     <string name="subject_list_just_vip">Just  look at VIP</string>
+    <string name="password_setting_hint">Please enter the 4-12 digit password</string>
+    <string name="password_setting_phone_hint">Please enter phone number</string>
 </resources>
