@@ -107,6 +107,7 @@ public class NoteViewHelper {
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl reviewBitmapWrapper = new ReaderBitmapImpl();
+    private StaticLayout textLayout;
     private Rect softwareLimitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
@@ -293,11 +294,14 @@ public class NoteViewHelper {
     }
 
     public StaticLayout getTextLayout(String text, int width) {
-        TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
-        tp.setColor(Color.BLACK);
-        tp.setTextSize(DRAW_TEXT_SIZE);
-        return new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getAppContext()), null),tp,width - (DRAW_TEXT_PADDING * 2),
-                Layout.Alignment.ALIGN_NORMAL, 1f,DRAW_TEXT_SPACING_ADD,false);
+        if (textLayout == null) {
+            TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
+            tp.setColor(Color.BLACK);
+            tp.setTextSize(DRAW_TEXT_SIZE);
+            textLayout =  new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getAppContext()), null),tp,width - (DRAW_TEXT_PADDING * 2),
+                    Layout.Alignment.ALIGN_NORMAL, 1f,DRAW_TEXT_SPACING_ADD,false);
+        }
+        return textLayout;
     }
 
     private void setCallback(final InputCallback c) {
@@ -539,10 +543,15 @@ public class NoteViewHelper {
         }
     }
 
+    private void releaseTextLayout() {
+        textLayout = null;
+    }
+
     public void reset() {
         getNoteDocument().close(getAppContext());
         quit();
         recycleBitmap();
+        releaseTextLayout();
     }
 
     private final Runnable generateRunnable(final BaseNoteRequest request) {

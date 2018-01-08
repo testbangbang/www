@@ -3,6 +3,7 @@ package com.onyx.edu.homework.ui;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -53,7 +54,7 @@ public class DraftActivity extends BaseActivity {
         DataBundle.getInstance().resetNoteViewHelper();
         scribbleFragment = ScribbleFragment.newInstance(question);
         getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
-        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1);
+        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_BOTTOM);
         getSupportFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
     }
 
