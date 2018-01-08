@@ -11,6 +11,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.DeviceConfigBinding;
 import com.onyx.jdread.main.model.TitleBarModel;
@@ -71,7 +72,7 @@ public class DeviceConfigFragment extends BaseFragment {
 
     private void initView() {
         binding.deviceConfigRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
         binding.deviceConfigRecycler.addItemDecoration(dividerItemDecoration);
         deviceConfigAdapter = new DeviceConfigAdapter(SettingBundle.getInstance().getEventBus());
         binding.deviceConfigRecycler.setAdapter(deviceConfigAdapter);

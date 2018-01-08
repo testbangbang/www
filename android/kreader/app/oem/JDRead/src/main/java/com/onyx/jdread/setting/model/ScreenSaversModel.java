@@ -29,6 +29,7 @@ public class ScreenSaversModel extends Observable {
 
     public static class ItemModel extends BaseObservable {
         public final ObservableField<String> picPath = new ObservableField<>();
+        public final ObservableField<String> name = new ObservableField<>();
         public final ObservableBoolean isChecked = new ObservableBoolean(false);
 
         public void onClick(){

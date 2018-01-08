@@ -33,6 +33,11 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/setting_title_bar_switch_margin_right"
             android:layout_toLeftOf="@+id/setting_title_add"
+            android:textOff=" "
+            android:textOn="@string/on"
+            android:thumb="@drawable/thumb_selector"
+            android:track="@drawable/track_selector"
+            android:switchMinWidth="@dimen/switch_track_width"
             android:visibility="@{titleModel.toggle ? View.VISIBLE : View.GONE}" />
 
         <ImageView

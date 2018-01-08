@@ -29,7 +29,7 @@
     <string name="sample_clock">13:00</string>
     <string name="date_time">日期时间</string>
     <string name="screen_saver">屏幕保护</string>
-    <string name="password">密码设置</string>
+    <string name="password_setting">密码设置</string>
     <string name="read_tool">阅读工具</string>
     <string name="device_information">设备信息</string>
     <string name="update_package_downloaded">更新包已下载</string>
@@ -274,7 +274,6 @@
     <string name="impression_note">印象笔记</string>
     <string name="phone_number_edit_hint">手机号用于密码找回,请确保真实有效</string>
     <string name="confirm_password">确认密码</string>
-    <string name="password_setting">密码设置</string>
     <string name="encrypted">已加密</string>
     <string name="unlock_the_password">解除密码</string>
     <string name="password_format_error">密码格式错误,请输入%1$d-%2$d位数字</string>
@@ -310,4 +309,7 @@
     <string name="subject_list_sort_type_newest">最新</string>
     <string name="subject_list_all">全部</string>
     <string name="subject_list_just_vip">只看畅读VIP</string>
+    <string name="password_setting_hint">请输入4-12位数字密码</string>
+    <string name="password_setting_phone_hint">请输入手机号</string>
+    <string name="password">密码</string>
 </resources>
