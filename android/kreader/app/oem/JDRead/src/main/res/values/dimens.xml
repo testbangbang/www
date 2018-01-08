@@ -342,4 +342,7 @@
     <dimen name="subject_list_just_vip_margin">15dp</dimen>
     <dimen name="subject_list_category_items_container_height">350dp</dimen>
     <dimen name="item_subject_common_next_title_margin_top">20dp</dimen>
+    <dimen name="password_setting_confirm_width">380dp</dimen>
+    <dimen name="password_setting_drawable_padding">12dp</dimen>
+    <dimen name="password_setting_content_margin_top" />
 </resources>

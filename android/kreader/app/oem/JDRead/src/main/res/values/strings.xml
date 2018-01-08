@@ -323,4 +323,6 @@
     <string name="subject_list_sort_type_newest">Newest</string>
     <string name="subject_list_all">All</string>
     <string name="subject_list_just_vip">Just  look at VIP</string>
+    <string name="password_setting_hint">Please enter the 4-12 digit password</string>
+    <string name="password_setting_phone_hint">Please enter phone number</string>
 </resources>

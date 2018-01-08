@@ -28,7 +28,7 @@
     <string-array name="device_configs">
         <item>@string/date_time</item>
         <item>@string/screen_saver</item>
-        <item>@string/password</item>
+        <item>@string/password_setting</item>
         <item>@string/read_tool</item>
         <item>@string/device_information</item>
         <item>@string/system_update</item>
