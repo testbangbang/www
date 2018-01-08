@@ -277,7 +277,7 @@
     <dimen name="activity_screen_lock_padding">100dp</dimen>
     <dimen name="activity_screen_lock_margin_top">100dp</dimen>
     <dimen name="lock_screen_password_margin_top">30dp</dimen>
-    <dimen name="reading_tools_recycler_height">267dp</dimen>
+    <dimen name="reading_tools_recycler_height">280dp</dimen>
     <dimen name="dialog_export_close_padding">10dp</dimen>
     <dimen name="dialog_export_to_margin">20dp</dimen>
     <dimen name="personal_book_title_padding">10dp</dimen>
@@ -344,5 +344,5 @@
     <dimen name="item_subject_common_next_title_margin_top">20dp</dimen>
     <dimen name="password_setting_confirm_width">380dp</dimen>
     <dimen name="password_setting_drawable_padding">12dp</dimen>
-    <dimen name="password_setting_content_margin_top" />
+    <dimen name="password_setting_content_margin_top">100dp</dimen>
 </resources>
