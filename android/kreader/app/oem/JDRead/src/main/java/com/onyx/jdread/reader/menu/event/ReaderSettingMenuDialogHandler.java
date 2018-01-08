@@ -5,6 +5,7 @@ import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
+import com.onyx.jdread.reader.actions.GotoPageAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.common.GammaInfo;
@@ -199,5 +200,10 @@ public class ReaderSettingMenuDialogHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingUpAndDownSpacingEvent(SettingUpAndDownSpacingEvent event){
         new SettingUpAndDownSpacingAction(style,event.margin).execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGotoPageEvent(GotoPageEvent event){
+        new GotoPageAction(event.page).execute(readerDataHolder);
     }
 }

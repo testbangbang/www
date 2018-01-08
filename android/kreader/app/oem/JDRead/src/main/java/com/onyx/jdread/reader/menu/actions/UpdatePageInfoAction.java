@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.menu.actions;
 
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.common.ReaderPageInfoFormat;
@@ -23,5 +24,11 @@ public class UpdatePageInfoAction extends BaseReaderAction {
 
         float progress = ReaderPageInfoFormat.getReadProgress(readerDataHolder);
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setReadProgress(progress + "%");
+
+        int currentPage = PagePositionUtils.getPageNumber(readerDataHolder.getReader().getReaderViewHelper().getReaderViewInfo().getFirstVisiblePage().getName());
+        int total = readerDataHolder.getReader().getReaderHelper().getNavigator().getTotalPage();
+
+        binding.readerSettingPageInfoBar.getReaderPageInfoModel().setPageTotal(total);
+        binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(currentPage);
     }
 }

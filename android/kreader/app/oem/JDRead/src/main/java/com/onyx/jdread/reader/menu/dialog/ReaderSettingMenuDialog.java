@@ -89,6 +89,26 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     private void initReaderPageInfoBar(){
         binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel());
         new UpdatePageInfoAction(binding).execute(readerDataHolder);
+        initReaderPageInfoEvent();
+    }
+
+    private void initReaderPageInfoEvent(){
+        binding.readerSettingPageInfoBar.readerPageInfoMenuReadProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(seekBar.getProgress());
+            }
+        });
     }
 
     private void initSystemBar() {

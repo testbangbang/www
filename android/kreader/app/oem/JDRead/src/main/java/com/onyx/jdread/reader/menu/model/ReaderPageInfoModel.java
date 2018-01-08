@@ -2,7 +2,9 @@ package com.onyx.jdread.reader.menu.model;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.databinding.ObservableInt;
 
+import com.onyx.jdread.reader.menu.event.GotoPageEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemNextChapterEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemPreviousChapterEvent;
 
@@ -15,6 +17,8 @@ import org.greenrobot.eventbus.EventBus;
 public class ReaderPageInfoModel {
     private ObservableField<String> bookName = new ObservableField<>();
     private ObservableField<String> readProgress = new ObservableField<>();
+    private ObservableInt pageTotal = new ObservableInt(0);
+    private ObservableInt currentPage = new ObservableInt(0);
     private ObservableBoolean isShow = new ObservableBoolean(true);
 
     public ObservableField<String> getBookName() {
@@ -31,6 +35,25 @@ public class ReaderPageInfoModel {
 
     public void setReadProgress(String readProgress) {
         this.readProgress.set(readProgress);
+    }
+
+    public ObservableInt getPageTotal() {
+        return pageTotal;
+    }
+
+    public void setPageTotal(int pageTotal) {
+        this.pageTotal.set(pageTotal);
+    }
+
+    public ObservableInt getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage.set(currentPage);
+        GotoPageEvent event = new GotoPageEvent();
+        event.page = currentPage;
+        EventBus.getDefault().post(event);
     }
 
     public void nextChapter(){
