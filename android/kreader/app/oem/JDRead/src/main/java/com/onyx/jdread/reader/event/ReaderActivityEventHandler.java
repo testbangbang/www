@@ -3,10 +3,13 @@ package com.onyx.jdread.reader.event;
 import android.app.Activity;
 import android.content.Context;
 
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.reader.actions.GetTextStyleAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
+import com.onyx.jdread.reader.common.GetPageViewInfoCallback;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.model.ReaderViewModel;
@@ -22,11 +25,27 @@ import org.greenrobot.eventbus.ThreadMode;
 public class ReaderActivityEventHandler {
     private ReaderViewModel readerViewModel;
     private ReaderViewBack readerViewBack;
+    private ReaderTextStyle style;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel,ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
         this.readerViewBack = readerViewBack;
     }
+
+    public ReaderTextStyle getStyle() {
+        return style;
+    }
+
+    public void setStyle(ReaderTextStyle style) {
+        this.style = style;
+    }
+
+    private GetPageViewInfoCallback callback = new GetPageViewInfoCallback(){
+        @Override
+        public void setStyle(ReaderTextStyle readerTextStyle) {
+            style = readerTextStyle;
+        }
+    };
 
     public void registerListener() {
         if (!EventBus.getDefault().isRegistered(this)) {
@@ -77,7 +96,7 @@ public class ReaderActivityEventHandler {
             if(activity == null){
                 return;
             }
-            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity);
+            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity,style);
             readerSettingMenuDialog.show();
         }
     }
@@ -85,5 +104,10 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPageViewUpdateEvent(PageViewUpdateEvent event){
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onInitPageViewInfoEvent(InitPageViewInfoEvent event){
+        new GetTextStyleAction(callback).execute(readerViewModel.getReaderDataHolder());
     }
 }

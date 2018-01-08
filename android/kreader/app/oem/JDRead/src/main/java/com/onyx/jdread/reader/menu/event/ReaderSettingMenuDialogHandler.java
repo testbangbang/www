@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.menu.event;
 
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
@@ -39,6 +40,7 @@ public class ReaderSettingMenuDialogHandler {
     private ReaderSettingViewBack readerSettingViewBack;
     private ReaderSettingMenuBinding binding;
     private ReaderDataHolder readerDataHolder;
+    private ReaderTextStyle style;
 
     public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder,ReaderSettingViewBack readerSettingViewBack) {
         this.readerDataHolder = readerDataHolder;
@@ -135,12 +137,12 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event){
-        new SettingFontSizeAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.fontSize).execute(readerDataHolder);
+        new SettingFontSizeAction(style,event.fontSize).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingTypefaceEvent(ReaderSettingTypefaceEvent event){
-        new SettingTypefaceAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.typeFace).execute(readerDataHolder);
+        new SettingTypefaceAction(style,event.typeFace).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -182,16 +184,16 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingLeftAndRightSpacingEvent(SettingLeftAndRightSpacingEvent event){
-        new SettingLeftAndRightSpacingAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.margin).execute(readerDataHolder);
+        new SettingLeftAndRightSpacingAction(style,event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingLineSpacingEvent(SettingLineSpacingEvent event){
-        new SettingLineSpacingAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.margin).execute(readerDataHolder);
+        new SettingLineSpacingAction(style,event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingUpAndDownSpacingEvent(SettingUpAndDownSpacingEvent event){
-        new SettingUpAndDownSpacingAction(readerDataHolder.getReader().getReaderHelper().getStyle(),event.margin).execute(readerDataHolder);
+        new SettingUpAndDownSpacingAction(style,event.margin).execute(readerDataHolder);
     }
 }
