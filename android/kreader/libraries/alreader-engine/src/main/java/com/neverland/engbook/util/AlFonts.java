@@ -24,7 +24,9 @@ public class AlFonts {
 	
 	private final HashMap<Long, AlTypefaces> collTPF = new HashMap<>();
 	private final FontMetricsInt font_metrics = new FontMetricsInt();
-	private final static String SPACE_SPECIAL_STRCHAR = " ";
+	// work around the issue of different width of space character with different fonts
+	// use Chinese character to compute the space width we want, which is half of chinese character width
+	private final static String SPACE_SPECIAL_STRCHAR = "中";
 	private final static char SPACE_SPECIAL_CHAR = ' ';
 	private final static String HYPH_SPECIAL_STRCHAR = "-";
 	private final static char HYPH_SPECIAL_CHAR = '-';
@@ -142,7 +144,7 @@ public class AlFonts {
 			
 			if (fparam.style == AlStyles.SL_SIZE_NORMAL/*0*/) {
 				if (calc.mainWidth[SPACE_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH) 
-					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
+					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) (calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR) / 4); // 4 is chosen by practice
 				fparam.space_width_current = calc.mainWidth[SPACE_SPECIAL_CHAR];
 
 				if (calc.mainWidth[HYPH_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
@@ -153,7 +155,7 @@ public class AlFonts {
 					calc.mainWidth[EM_SPECIAL_CHAR] = (char) text_size;//(char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
 				fparam.em_width_current = calc.mainWidth[EM_SPECIAL_CHAR];
 			} else {
-				fparam.space_width_current = (int) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
+				fparam.space_width_current = (int) (calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR) / 4);
 				fparam.hyph_width_current = (int) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
 				fparam.em_width_current = text_size;//(int) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
 			}
