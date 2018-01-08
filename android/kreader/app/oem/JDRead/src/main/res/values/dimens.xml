@@ -328,6 +328,7 @@
     <dimen name="screen_savers_item_height">162dp</dimen>
     <dimen name="screen_savers_item_text_margin">12dp</dimen>
     <dimen name="screen_saver_selected_width">3dp</dimen>
+    <dimen name="dialog_pay_padding">10dp</dimen>
     <dimen name="item_all_category_image_width">75dp</dimen>
     <dimen name="item_all_category_image_height">95dp</dimen>
     <dimen name="recycler_view_top_categorys_height">120dp</dimen>
