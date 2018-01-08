@@ -400,4 +400,9 @@ public final class ContentItemView extends LinearLayout {
         ImageView view = (ImageView) getChildAt(0).findViewById(getDataLayoutMapping().get(key));
         view.setBackgroundResource(backgroundResID);
     }
+
+    public void setViewBackgroundByID(String key, int backgroundResID) throws NullPointerException {
+        View view = getChildAt(0).findViewById(getDataLayoutMapping().get(key));
+        view.setBackgroundResource(backgroundResID);
+    }
 }
