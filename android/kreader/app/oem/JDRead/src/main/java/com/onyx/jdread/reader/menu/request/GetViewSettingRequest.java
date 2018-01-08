@@ -9,17 +9,17 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  * Created by huxiaomao on 2017/12/30.
  */
 
-public class GetDocumentSettingRequest extends ReaderBaseRequest {
+public class GetViewSettingRequest extends ReaderBaseRequest {
     private ReaderDataHolder readerDataHolder;
     private ReaderTextStyle style;
     private ImageReflowSettings settings;
 
-    public GetDocumentSettingRequest(ReaderDataHolder readerDataHolder) {
+    public GetViewSettingRequest(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
     }
 
     @Override
-    public GetDocumentSettingRequest call() throws Exception {
+    public GetViewSettingRequest call() throws Exception {
         ReaderTextStyle srcStyle = readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle();
         style = ReaderTextStyle.copy(srcStyle);
 

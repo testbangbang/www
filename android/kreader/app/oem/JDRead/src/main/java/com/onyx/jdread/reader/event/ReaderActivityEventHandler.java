@@ -1,16 +1,13 @@
 package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
-import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.reader.actions.GetTextStyleAction;
+import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
-import com.onyx.jdread.reader.common.GetPageViewInfoCallback;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.model.ReaderViewModel;
@@ -41,18 +38,6 @@ public class ReaderActivityEventHandler {
     public void setStyle(ReaderTextStyle style) {
         this.style = style;
     }
-
-    private GetPageViewInfoCallback callback = new GetPageViewInfoCallback() {
-        @Override
-        public void setStyle(ReaderTextStyle readerTextStyle) {
-            style = readerTextStyle;
-        }
-
-        @Override
-        public void setImageReflowSettings(ImageReflowSettings imageReflowSettings) {
-            settings = imageReflowSettings;
-        }
-    };
 
     public void registerListener() {
         if (!EventBus.getDefault().isRegistered(this)) {
@@ -115,6 +100,12 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInitPageViewInfoEvent(InitPageViewInfoEvent event) {
-        new GetTextStyleAction(callback).execute(readerViewModel.getReaderDataHolder());
+        new GetViewSettingAction().execute(readerViewModel.getReaderDataHolder());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateViewSettingEvent(UpdateViewSettingEvent event){
+        style = event.getStyle();
+        settings = event.getSettings();
     }
 }
