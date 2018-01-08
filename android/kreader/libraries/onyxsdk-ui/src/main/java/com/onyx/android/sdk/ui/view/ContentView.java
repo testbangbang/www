@@ -1337,4 +1337,24 @@ public class ContentView extends RelativeLayout {
         customPageInfo.setLayoutParams(customPageInfoParams);
         functionLayout.setLayoutParams(functionLayoutParams);
     }
+
+    /**
+     * get child item view list, if view not load, here will return empty list.
+     * @return
+     */
+    public List<ContentItemView> getChildContentViewList(){
+        List<ContentItemView> resultItemViewList = new ArrayList<>();
+        if (gridLayout.getChildCount() != 0) {
+            for (int i = 0; i < gridLayout.getChildCount(); i++) {
+                View view = gridLayout.getChildAt(i);
+                if (view instanceof ContentItemView) {
+                    ContentItemView itemView = (ContentItemView) view;
+                    if (!itemView.getData().isDummyObject()) {
+                        resultItemViewList.add(itemView);
+                    }
+                }
+            }
+        }
+        return resultItemViewList;
+    }
 }
