@@ -6,23 +6,22 @@ import android.net.Uri;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.evernote.client.android.EvernoteSession;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.MimeTypeUtils;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.main.common.AppBaseInfo;
-import com.onyx.jdread.main.common.ManagerActivityUtils;
-import com.onyx.jdread.main.data.database.JDReadDatabase;
-import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.DataBundle;
-import com.raizlabs.android.dbflow.config.DatabaseHolder;
+import com.onyx.jdread.main.common.AppBaseInfo;
+import com.onyx.jdread.main.common.ManagerActivityUtils;
+import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
@@ -42,6 +41,9 @@ public class JDReadApplication extends MultiDexApplication {
     private List<String> mtpBuffer = new ArrayList<>();
     private boolean isUserLogin;
     private AppBaseInfo appBaseInfo;
+    private EvernoteSession evernoteSession;
+    private static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.SANDBOX;
+    private static final boolean SUPPORT_APP_LINKED_NOTEBOOKS = true;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -58,7 +60,7 @@ public class JDReadApplication extends MultiDexApplication {
 
     private void lockScreen() {
         String passWord = PreferenceManager.getStringValue(instance, R.string.password_key, "");
-        if (StringUtils.isNotBlank(passWord)){
+        if (StringUtils.isNotBlank(passWord)) {
             ManagerActivityUtils.lockScreen(instance);
         }
     }
@@ -74,6 +76,16 @@ public class JDReadApplication extends MultiDexApplication {
         OnyxDownloadManager.getInstance();
         initEventListener();
         initDownloadManager();
+        initEverNote();
+    }
+
+    private void initEverNote() {
+        evernoteSession = new EvernoteSession.Builder(this)
+                .setEvernoteService(EVERNOTE_SERVICE)
+                .setSupportAppLinkedNotebooks(SUPPORT_APP_LINKED_NOTEBOOKS)
+                .setLocale(getResources().getConfiguration().locale)
+                .build("hehai123", "73cbd5e4cdeb8bd2")
+                .asSingleton();
     }
 
     private void initDownloadManager() {
@@ -155,5 +167,9 @@ public class JDReadApplication extends MultiDexApplication {
                 e.printStackTrace();
             }
         }
+    }
+
+    public EvernoteSession getEvernoteSession() {
+        return evernoteSession;
     }
 }
