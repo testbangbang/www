@@ -25,7 +25,7 @@ public class ChangeLayoutRequest extends ReaderBaseRequest {
         updateSetting(readerDataHolder);
         readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().setSavePosition(true);
         readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().setCurrentLayout(parameter.getLayout(), parameter.getNavigationArgs());
-        readerDataHolder.getReader().getReaderViewHelper().updatePageView(readerDataHolder);
+        readerDataHolder.getReader().getReaderViewHelper().updatePageView(readerDataHolder,createReaderViewInfo());
         return this;
     }
 

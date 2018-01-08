@@ -22,7 +22,7 @@ public class GotoPageRequest extends ReaderBaseRequest {
         if (!readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().gotoPage(page)) {
             throw ReaderException.outOfRange();
         }
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder);
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,createReaderViewInfo());
         return this;
     }
 }

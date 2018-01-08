@@ -6,4 +6,8 @@ package com.onyx.jdread.reader.menu.event;
 
 public class GotoPageEvent {
     public int page;
+
+    public GotoPageEvent(int page) {
+        this.page = page;
+    }
 }

@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.event;
 import android.app.Activity;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
@@ -11,6 +12,7 @@ import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.model.ReaderViewModel;
+import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,6 +27,7 @@ public class ReaderActivityEventHandler {
     private ReaderViewBack readerViewBack;
     private ReaderTextStyle style;
     private ImageReflowSettings settings;
+    private ReaderViewInfo readerViewInfo;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -88,7 +91,7 @@ public class ReaderActivityEventHandler {
             if (activity == null) {
                 return;
             }
-            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity, style, settings);
+            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity, style, settings,readerViewInfo);
             readerSettingMenuDialog.show();
         }
     }
@@ -107,5 +110,16 @@ public class ReaderActivityEventHandler {
     public void onUpdateViewSettingEvent(UpdateViewSettingEvent event){
         style = event.getStyle();
         settings = event.getSettings();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateReaderViewInfoEvent(UpdateReaderViewInfoEvent event){
+        readerViewInfo = event.getReaderViewInfo();
+    }
+
+    public static void updateReaderViewInfo(ReaderBaseRequest request){
+        UpdateReaderViewInfoEvent event = new UpdateReaderViewInfoEvent();
+        event.setReaderViewInfo(request.getReaderViewInfo());
+        EventBus.getDefault().post(event);
     }
 }

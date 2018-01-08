@@ -51,8 +51,7 @@ public class ReaderPageInfoModel {
 
     public void setCurrentPage(int currentPage) {
         this.currentPage.set(currentPage);
-        GotoPageEvent event = new GotoPageEvent();
-        event.page = currentPage;
+        GotoPageEvent event = new GotoPageEvent(currentPage);
         EventBus.getDefault().post(event);
     }
 

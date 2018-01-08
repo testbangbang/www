@@ -4,6 +4,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.request.GammaCorrectionRequest;
 
 /**
@@ -19,10 +20,11 @@ public class GammaCorrectionAction extends BaseReaderAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        new GammaCorrectionRequest(readerDataHolder,gammaInfo).execute(new RxCallback() {
+        final GammaCorrectionRequest request = new GammaCorrectionRequest(readerDataHolder,gammaInfo);
+        request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                ReaderActivityEventHandler.updateReaderViewInfo(request);
             }
         });
     }
