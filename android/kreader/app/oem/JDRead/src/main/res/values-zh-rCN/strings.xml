@@ -314,4 +314,5 @@
     <string name="password">密码</string>
     <string name="feedback_history">反馈记录</string>
     <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
+    <string name="buy_book_success">购买成功 </string>
 </resources>

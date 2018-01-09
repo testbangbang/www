@@ -3,10 +3,10 @@
 
     <item
         android:id="@android:id/background"
-        android:drawable="@mipmap/ic_star_grey"/>
+        android:drawable="@mipmap/ic_star_hollow"/>
 
     <item
         android:id="@android:id/progress"
-        android:drawable="@mipmap/ic_star_red"/>
+        android:drawable="@mipmap/ic_star_solid"/>
 
 </layer-list>

@@ -36,7 +36,7 @@ public class RxRequestGetBookCommentList extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        GetBookCommentListService service = init(CloudApiContext.getJdBaseUrl());
+        GetBookCommentListService service = init(CloudApiContext.getJDBooxBaseUrl());
         Call<BookCommentsResultBean> call = getCall(service);
         bookCommentsResultBean = done(call);
         checkQuestResult();

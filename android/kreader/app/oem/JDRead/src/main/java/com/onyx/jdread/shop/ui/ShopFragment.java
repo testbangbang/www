@@ -14,12 +14,12 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.BaseFragment;
-import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.databinding.FragmentBookShopBinding;
 import com.onyx.jdread.databinding.FragmentBookShopOneBinding;
 import com.onyx.jdread.databinding.FragmentBookShopThreeBinding;
 import com.onyx.jdread.databinding.FragmentBookShopTwoBinding;
+import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.action.BookImportantRecommendAction;
 import com.onyx.jdread.shop.action.BookSpecialTodayAction;
@@ -29,6 +29,7 @@ import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryViewClick;
+import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
 import com.onyx.jdread.shop.model.BookShopViewModel;
@@ -299,6 +300,11 @@ public class ShopFragment extends BaseFragment {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGoShopingCartEvent(GoShopingCartEvent event) {
+        getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
     }
 
     public ShopDataBundle getShopDataBundle() {
