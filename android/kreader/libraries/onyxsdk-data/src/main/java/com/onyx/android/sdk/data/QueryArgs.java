@@ -7,7 +7,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 
@@ -31,7 +31,7 @@ public class QueryArgs implements Serializable {
     public int limit = Integer.MAX_VALUE;
 
     @JSONField(serialize = false, deserialize = false)
-    public ConditionGroup conditionGroup = ConditionGroup.clause();
+    public OperatorGroup conditionGroup = OperatorGroup.clause();
     @JSONField(serialize = false, deserialize = false)
     public List<IProperty> propertyList = new ArrayList<>();
     @JSONField(serialize = false, deserialize = false)
@@ -71,7 +71,7 @@ public class QueryArgs implements Serializable {
         }
     }
 
-    public static QueryArgs queryBy(final ConditionGroup conditionGroup,
+    public static QueryArgs queryBy(final OperatorGroup conditionGroup,
                                     final OrderBy orderBy) {
         QueryArgs queryArgs = new QueryArgs();
         queryArgs.conditionGroup = conditionGroup;
@@ -79,7 +79,7 @@ public class QueryArgs implements Serializable {
         return queryArgs;
     }
 
-    public static QueryArgs queryBy(final ConditionGroup conditionGroup,
+    public static QueryArgs queryBy(final OperatorGroup conditionGroup,
                                     final List<OrderBy> orderByList) {
         QueryArgs queryArgs = new QueryArgs();
         queryArgs.conditionGroup = conditionGroup;
@@ -87,7 +87,7 @@ public class QueryArgs implements Serializable {
         return queryArgs;
     }
 
-    public static QueryArgs queryBy(final ConditionGroup conditionGroup,
+    public static QueryArgs queryBy(final OperatorGroup conditionGroup,
                                     final OrderBy orderBy,
                                     int offset, int limit) {
         QueryArgs queryArgs = queryBy(conditionGroup, orderBy);
@@ -96,7 +96,7 @@ public class QueryArgs implements Serializable {
         return queryArgs;
     }
 
-    public static QueryArgs queryBy(final ConditionGroup conditionGroup,
+    public static QueryArgs queryBy(final OperatorGroup conditionGroup,
                                     final List<OrderBy> orderByList,
                                     int offset, int limit) {
         QueryArgs queryArgs = queryBy(conditionGroup, orderByList);
@@ -105,7 +105,7 @@ public class QueryArgs implements Serializable {
         return queryArgs;
     }
 
-    public static QueryArgs queryBy(final ConditionGroup conditionGroup) {
+    public static QueryArgs queryBy(final OperatorGroup conditionGroup) {
         QueryArgs queryArgs = new QueryArgs();
         queryArgs.conditionGroup = conditionGroup;
         return queryArgs;
@@ -116,12 +116,12 @@ public class QueryArgs implements Serializable {
         return this;
     }
 
-    public QueryArgs andWith(ConditionGroup otherGroup) {
+    public QueryArgs andWith(OperatorGroup otherGroup) {
         conditionGroup.and(otherGroup);
         return this;
     }
 
-    public QueryArgs orWith(ConditionGroup otherGroup) {
+    public QueryArgs orWith(OperatorGroup otherGroup) {
         conditionGroup.or(otherGroup);
         return this;
     }
