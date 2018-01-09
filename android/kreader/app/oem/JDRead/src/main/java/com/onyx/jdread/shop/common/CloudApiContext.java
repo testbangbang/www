@@ -44,10 +44,14 @@ public class CloudApiContext {
         public static final String SYNC_LOGIN_INFO = "SyncLoginInfo";
         public static final String GET_TOKEN = "genToken";
         public static final String READ_TOTAL_BOOK = "userReadEBookScale";
+        public static final String NEW_BOUGHT_BOOK_ORDER = "newBuyedEbookOrderList";
     }
 
     public static class AddToSmooth {
         public static final String EBOOK_ID = "ebook_id";
+        public static final String CURRENT_PAGE = "currentPage";
+        public static final String PAGE_SIZE = "pageSize";
+        public static final String SMOOTH_READ_BOOK_LIST = "myNewCardReadBook";
     }
 
     public static class BookShopModuleList {
