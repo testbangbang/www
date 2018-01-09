@@ -181,7 +181,7 @@ public class ReaderHelper {
         return null;
     }
 
-    private ReaderPlugin getPlugin() {
+    public ReaderPlugin getPlugin() {
         return plugin;
     }
 
@@ -397,5 +397,9 @@ public class ReaderHelper {
 
     private void saveReaderTextStyle(final ReaderTextStyle style) {
 
+    }
+
+    public String getDocumentMd5() {
+        return documentMd5;
     }
 }

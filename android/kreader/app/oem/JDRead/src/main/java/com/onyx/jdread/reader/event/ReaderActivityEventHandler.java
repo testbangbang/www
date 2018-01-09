@@ -9,6 +9,7 @@ import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
+import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.model.ReaderViewModel;
@@ -28,6 +29,8 @@ public class ReaderActivityEventHandler {
     private ReaderTextStyle style;
     private ImageReflowSettings settings;
     private ReaderViewInfo readerViewInfo;
+    private ReaderUserDataInfo readerUserDataInfo;
+    private ReaderSettingMenuDialog readerSettingMenuDialog;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -91,7 +94,8 @@ public class ReaderActivityEventHandler {
             if (activity == null) {
                 return;
             }
-            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity, style, settings,readerViewInfo);
+            readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity,
+                    style, settings,readerViewInfo,readerUserDataInfo);
             readerSettingMenuDialog.show();
         }
     }
@@ -103,13 +107,20 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInitPageViewInfoEvent(InitPageViewInfoEvent event) {
-        new GetViewSettingAction().execute(readerViewModel.getReaderDataHolder());
+        new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateViewSettingEvent(UpdateViewSettingEvent event){
         style = event.getStyle();
         settings = event.getSettings();
+        readerUserDataInfo = event.getReaderUserDataInfo();
+        if(readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()){
+            readerSettingMenuDialog.getReaderSettingMenuDialogHandler().setReaderUserDataInfo(readerUserDataInfo);
+            readerSettingMenuDialog.getReaderSettingMenuDialogHandler().setSettings(settings);
+            readerSettingMenuDialog.getReaderSettingMenuDialogHandler().setStyle(style);
+            readerSettingMenuDialog.updateBookmarkState();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

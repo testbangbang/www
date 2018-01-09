@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.actions;
 
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.UpdateViewSettingEvent;
@@ -12,12 +13,15 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class GetViewSettingAction extends BaseReaderAction {
-    public GetViewSettingAction() {
+    private ReaderViewInfo readerViewInfo;
+
+    public GetViewSettingAction(ReaderViewInfo readerViewInfo) {
+        this.readerViewInfo = readerViewInfo;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        final GetViewSettingRequest request = new GetViewSettingRequest(readerDataHolder);
+        final GetViewSettingRequest request = new GetViewSettingRequest(readerViewInfo, readerDataHolder);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -26,10 +30,11 @@ public class GetViewSettingAction extends BaseReaderAction {
         });
     }
 
-    public void notifySaveViewSetting(GetViewSettingRequest request){
+    public void notifySaveViewSetting(GetViewSettingRequest request) {
         UpdateViewSettingEvent event = new UpdateViewSettingEvent();
         event.setStyle(request.getStyle());
         event.setSettings(request.getSettings());
+        event.setReaderUserDataInfo(request.getReaderUserDataInfo());
         EventBus.getDefault().post(event);
     }
 }
