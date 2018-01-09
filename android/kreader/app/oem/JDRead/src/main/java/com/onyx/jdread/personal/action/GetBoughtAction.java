@@ -32,9 +32,7 @@ public class GetBoughtAction extends BaseAction {
             public void onNext(Object o) {
                 if (rxCallback != null) {
                     boughtBooks = rq.getBoughtBooks();
-                    if (boughtBooks != null) {
-                        rxCallback.onNext(GetBoughtAction.class);
-                    }
+                    rxCallback.onNext(GetBoughtAction.class);
                 }
             }
         });

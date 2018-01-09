@@ -33,9 +33,7 @@ public class GetUnlimitedAction extends BaseAction {
             public void onNext(Object o) {
                 if (rxCallback != null) {
                     unlimitedBooks = rq.getUnlimitedBooks();
-                    if (unlimitedBooks != null) {
-                        rxCallback.onNext(GetUnlimitedAction.class);
-                    }
+                    rxCallback.onNext(GetUnlimitedAction.class);
                 }
             }
         });

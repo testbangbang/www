@@ -253,7 +253,9 @@ public class PersonalBookFragment extends BaseFragment {
             @Override
             public void onNext(Object o) {
                 List<Metadata> unlimitedBooks = unlimitedAction.getUnlimitedBooks();
-                compareLocalMetadata(unlimitedBooks);
+                if (unlimitedBooks != null && unlimitedBooks.size() > 0) {
+                    compareLocalMetadata(unlimitedBooks);
+                }
             }
         });
     }
@@ -264,7 +266,9 @@ public class PersonalBookFragment extends BaseFragment {
             @Override
             public void onNext(Object o) {
                 List<Metadata> boughtBooks = boughtAction.getBoughtBooks();
-                compareLocalMetadata(boughtBooks);
+                if (boughtBooks != null && boughtBooks.size() > 0) {
+                    compareLocalMetadata(boughtBooks);
+                }
             }
         });
     }
