@@ -34,12 +34,12 @@ public class ReaderSettingShowMenuAction extends BaseReaderAction {
         binding.readerSettingFunctionBar.getFunctionBarModel().setIsShow(isSystemMenuShow);
 
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.progressMenuGroup == menuGroup ? true : false);
-        binding.readerSettingBrightnessBar.getReaderBrightnessModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.brightnessMenuGroup == menuGroup ? true : false);
+        binding.readerSettingBrightnessBar.getBrightnessModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.brightnessMenuGroup == menuGroup ? true : false);
 
         binding.readerSettingTextSettingBar.getReaderTextModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.textMenuGroup == menuGroup ? true : false);
 
         binding.readerSettingImageSettingBar.getReaderImageModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.imageMenuGroup == menuGroup ? true : false);
 
-        binding.readerSettingCustomizeFormatBar.getReaderCustomizeModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.customMenuGroup == menuGroup ? true : false);
+        binding.readerSettingCustomizeFormatBar.getReaderMarginModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.customMenuGroup == menuGroup ? true : false);
     }
 }

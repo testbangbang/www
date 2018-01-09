@@ -20,7 +20,7 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import okhttp3.ResponseBody;
@@ -137,7 +137,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
     private T loadLocalAccount() {
         T account = null;
         try {
-            account = ContentUtils.querySingle(providerUri, clazzType, ConditionGroup.clause(), null);
+            account = ContentUtils.querySingle(providerUri, clazzType, OperatorGroup.clause(), null);
         } catch (Exception e) {
             e.printStackTrace();
         }

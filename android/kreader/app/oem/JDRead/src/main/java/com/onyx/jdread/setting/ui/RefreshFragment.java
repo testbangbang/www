@@ -13,6 +13,7 @@ import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.RefreshBinding;
 import com.onyx.jdread.setting.adapter.RefreshAdapter;
@@ -72,7 +73,7 @@ public class RefreshFragment extends BaseFragment {
 
     private void initView() {
         binding.refreshRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
         binding.refreshRecycler.addItemDecoration(dividerItemDecoration);
         refreshAdapter = new RefreshAdapter();
         binding.refreshRecycler.setAdapter(refreshAdapter);

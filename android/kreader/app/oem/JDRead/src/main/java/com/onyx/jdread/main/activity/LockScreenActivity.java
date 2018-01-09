@@ -42,6 +42,7 @@ public class LockScreenActivity extends AppCompatActivity {
     @Subscribe
     public void onPasswordIsCorrectEvent(PasswordIsCorrectEvent event) {
         ManagerActivityUtils.startMainActivity(this);
+        finish();
     }
 
     @Override

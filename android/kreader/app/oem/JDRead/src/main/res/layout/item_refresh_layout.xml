@@ -31,7 +31,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/wifi"
+            android:src="@mipmap/ic_setting_check"
             android:visibility="@{show ? View.VISIBLE : View.GONE}" />
     </LinearLayout>
 </layout>

@@ -9,6 +9,8 @@
 
         <import type="com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderFontSize" />
 
+        <import type="com.onyx.jdread.reader.menu.model.ReaderTextModel.Language"/>
+
         <variable
             name="readerTextModel"
             type="com.onyx.jdread.reader.menu.model.ReaderTextModel" />
@@ -69,7 +71,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="20dp"
                 android:background="@drawable/rectangle_stroke_corners"
-                android:text="@string/reader_traditional" />
+                android:onClick="@{()->readerTextModel.onChangeChineseClick()}"
+                android:text="@{readerTextModel.currentLanguage == Language.Simplified?@string/reader_traditional:@string/reader_simplified}" />
         </LinearLayout>
 
         <LinearLayout style="@style/ReaderTextSettingLayoutStyle">

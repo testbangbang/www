@@ -1,15 +1,18 @@
 package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
-import android.content.Context;
 
-import com.onyx.jdread.JDReadApplication;
+import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.model.ReaderViewModel;
+import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -22,10 +25,21 @@ import org.greenrobot.eventbus.ThreadMode;
 public class ReaderActivityEventHandler {
     private ReaderViewModel readerViewModel;
     private ReaderViewBack readerViewBack;
+    private ReaderTextStyle style;
+    private ImageReflowSettings settings;
+    private ReaderViewInfo readerViewInfo;
 
-    public ReaderActivityEventHandler(ReaderViewModel readerViewModel,ReaderViewBack readerViewBack) {
+    public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
         this.readerViewBack = readerViewBack;
+    }
+
+    public ReaderTextStyle getStyle() {
+        return style;
+    }
+
+    public void setStyle(ReaderTextStyle style) {
+        this.style = style;
     }
 
     public void registerListener() {
@@ -72,18 +86,40 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onShowReaderSettingMenuEvent(ShowReaderSettingMenuEvent event) {
-        if(readerViewBack != null){
+        if (readerViewBack != null) {
             Activity activity = readerViewBack.getContext();
-            if(activity == null){
+            if (activity == null) {
                 return;
             }
-            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity);
+            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity, style, settings,readerViewInfo);
             readerSettingMenuDialog.show();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPageViewUpdateEvent(PageViewUpdateEvent event){
+    public void onPageViewUpdateEvent(PageViewUpdateEvent event) {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onInitPageViewInfoEvent(InitPageViewInfoEvent event) {
+        new GetViewSettingAction().execute(readerViewModel.getReaderDataHolder());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateViewSettingEvent(UpdateViewSettingEvent event){
+        style = event.getStyle();
+        settings = event.getSettings();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateReaderViewInfoEvent(UpdateReaderViewInfoEvent event){
+        readerViewInfo = event.getReaderViewInfo();
+    }
+
+    public static void updateReaderViewInfo(ReaderBaseRequest request){
+        UpdateReaderViewInfoEvent event = new UpdateReaderViewInfoEvent();
+        event.setReaderViewInfo(request.getReaderViewInfo());
+        EventBus.getDefault().post(event);
     }
 }

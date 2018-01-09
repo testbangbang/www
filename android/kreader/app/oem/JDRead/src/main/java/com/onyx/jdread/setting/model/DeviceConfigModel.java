@@ -26,7 +26,7 @@ public class DeviceConfigModel {
     private Map<String, DeviceConfigEvent> configEvents = new HashMap<String, DeviceConfigEvent>() {
         {
             put(JDReadApplication.getInstance().getResources().getString(R.string.screen_saver), new ScreenSaverEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.password), new PasswordEvent());
+            put(JDReadApplication.getInstance().getResources().getString(R.string.password_setting), new PasswordEvent());
             put(JDReadApplication.getInstance().getResources().getString(R.string.read_tool), new ReadToolEvent());
             put(JDReadApplication.getInstance().getResources().getString(R.string.device_information), new DeviceInformationEvent());
             put(JDReadApplication.getInstance().getResources().getString(R.string.system_update), new SystemUpdateEvent());

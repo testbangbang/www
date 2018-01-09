@@ -1,8 +1,5 @@
 package com.onyx.jdread.reader.request;
 
-import android.graphics.Bitmap;
-import android.graphics.RectF;
-
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 /**
@@ -23,6 +20,6 @@ public class UpdateViewPageRequest extends ReaderBaseRequest {
     }
 
     public void updatePageView(){
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder);
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,createReaderViewInfo());
     }
 }

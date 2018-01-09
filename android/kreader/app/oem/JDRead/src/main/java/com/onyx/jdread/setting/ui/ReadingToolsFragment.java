@@ -6,11 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
+import com.evernote.client.android.login.EvernoteLoginFragment;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentReadingToolsBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.manager.EvernoteManager;
 import com.onyx.jdread.setting.adapter.DeviceInfoAdapter;
 import com.onyx.jdread.setting.event.AssociatedEmailToolsEvent;
 import com.onyx.jdread.setting.event.AssociatedNotesToolsEvent;
@@ -26,7 +29,7 @@ import org.greenrobot.eventbus.Subscribe;
  * Created by hehai on 18-1-2.
  */
 
-public class ReadingToolsFragment extends BaseFragment {
+public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginFragment.ResultCallback{
 
     private FragmentReadingToolsBinding binding;
     private ReadingToolsModel readingToolsModel;
@@ -41,7 +44,7 @@ public class ReadingToolsFragment extends BaseFragment {
     }
 
     private void initRecycler() {
-        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
         binding.readingToolsRecycler.addItemDecoration(dividerItemDecoration);
         deviceInfoAdapter = new DeviceInfoAdapter();
         deviceInfoAdapter.setRowAndCol(getResources().getInteger(R.integer.reading_tools_row), getResources().getInteger(R.integer.reading_tools_col));
@@ -79,7 +82,7 @@ public class ReadingToolsFragment extends BaseFragment {
 
     @Subscribe
     public void onAssociatedNotesToolsEvent(AssociatedNotesToolsEvent event) {
-
+        EvernoteManager.getEvernoteSession(JDReadApplication.getInstance()).authenticate(getActivity());
     }
 
     @Subscribe
@@ -90,5 +93,10 @@ public class ReadingToolsFragment extends BaseFragment {
     @Subscribe
     public void onDictionaryToolsEvent(DictionaryToolsEvent event) {
 
+    }
+
+    @Override
+    public void onLoginFinished(boolean successful) {
+        ToastUtil.showToast("login success");
     }
 }

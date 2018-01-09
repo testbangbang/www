@@ -87,6 +87,7 @@
         <item name="android:paddingTop">@dimen/reader_text_setting_format_padding_top</item>
         <item name="android:paddingBottom">@dimen/reader_text_setting_format_padding_bottom</item>
         <item name="android:gravity">center</item>
+        <item name="android:clickable">true</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
     </style>
@@ -143,6 +144,7 @@
         <item name="android:padding">@dimen/reader_page_info_menu_reading_process_padding</item>
         <item name="android:progressDrawable">@drawable/seekbar_progress</item>
         <item name="android:thumb">@drawable/seekbar_thumb</item>
+        <item name="android:thumbOffset">0dp</item>
     </style>
 
     <style name="ReaderCustomizeFormatTitleStyle">
@@ -234,10 +236,9 @@
         <item name="android:textSize">@dimen/level_two_heading_font</item>
     </style>
 
-    <style name="PasswordEditTextStyle">
-        <item name="android:layout_width">match_parent</item>
+    <style name="PasswordEditTextStyle" parent="@style/Base.Widget.AppCompat.EditText">
+        <item name="android:layout_width">@dimen/password_setting_edit_width</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/rectangle_stroke</item>
         <item name="android:padding">@dimen/edit_text_padding</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
     </style>
@@ -250,4 +251,6 @@
         <item name="android:background">@drawable/imagebtn_bg</item>
         <item name="android:clickable">true</item>
     </style>
+
+    <dimen name="password_setting_edit_width">402dp</dimen>
 </resources>

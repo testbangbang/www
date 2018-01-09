@@ -20,11 +20,5 @@
             android:layout_height="@dimen/device_config_recycler_height"
             android:padding="@dimen/device_config_recycler_padding" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line_width"
-            android:background="@color/divider_color"
-            android:layout_marginLeft="@dimen/device_config_recycler_padding"
-            android:layout_marginRight="@dimen/device_config_recycler_padding"/>
     </LinearLayout>
 </layout>

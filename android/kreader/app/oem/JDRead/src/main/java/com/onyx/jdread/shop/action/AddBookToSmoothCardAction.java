@@ -41,6 +41,19 @@ public class AddBookToSmoothCardAction extends BaseAction {
         RxRequestAddBookToSmoothCard rq = new RxRequestAddBookToSmoothCard(bookDetailBean);
         rq.setRequestBean(requestBean);
         rq.execute(new RxCallback<RxRequestAddBookToSmoothCard>() {
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                showLoadingDialog(dataBundle, R.string.loading);
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog(dataBundle);
+            }
+
             @Override
             public void onNext(RxRequestAddBookToSmoothCard rq) {
                 addBookToSmoothCardResultBean = rq.getAddBookToSmoothCardBookBean();

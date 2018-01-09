@@ -21,8 +21,8 @@
     <string name="refresh_mode">Speed refresh mode</string>
     <string name="refresh_mode_tips">The function of the laboratory greatly improved the page speed, but the shadow was more obvious</string>
     <string name="view_history_version">View history version</string>
-    <string name="updatable_version">Updatable version</string>
-    <string name="current_version">Current version</string>
+    <string name="updatable_version">Updatable version: </string>
+    <string name="current_version">Current version: </string>
     <string name="system_update">System update</string>
     <string name="device_config">Device config</string>
     <string name="hour_format">24-hour format</string>
@@ -316,6 +316,7 @@
     <string name="security_psk">PSK</string>
     <string name="add_wifi_configuration">Add wifi</string>
     <string name="network_password">Password</string>
+    <string name="screen_saver_key">screen_saver_key</string>
     <string name="no_selected">No merchandise is selected</string>
     <string name="subject_list_sort_type_hot">Hot</string>
     <string name="subject_list_sort_type_sales">Sales</string>
@@ -325,4 +326,9 @@
     <string name="downloading_progress">Downloading %d</string>
     <string name="paused">Paused %d</string>
     <string name="total_book">Total%d</string>
+    <string name="password_setting_hint">Please enter the 4-12 digit password</string>
+    <string name="password_setting_phone_hint">Please enter phone number</string>
+    <string name="feedback_history">Feedback history</string>
+    <string name="device_reset_prompt">The device will immediately go to reset, continue?</string>
+    <string name="buy_book_success">Book purchase success </string>
 </resources>

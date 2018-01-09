@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentDeviceInformationBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
+import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.setting.adapter.DeviceInfoAdapter;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
@@ -38,7 +40,7 @@ public class DeviceInformationFragment extends BaseFragment {
     }
 
     private void initRecycler() {
-        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
         binding.deviceInfoRecycler.addItemDecoration(dividerItemDecoration);
         deviceInfoAdapter = new DeviceInfoAdapter();
         binding.deviceInfoRecycler.setAdapter(deviceInfoAdapter);
@@ -70,11 +72,30 @@ public class DeviceInformationFragment extends BaseFragment {
 
     @Subscribe
     public void onCopyrightNoticeEvent(CopyrightNoticeEvent event) {
-        viewEventCallBack.viewBack();
+
     }
 
     @Subscribe
     public void onResetDeviceEvent(ResetDeviceEvent event) {
-        viewEventCallBack.viewBack();
+        LibraryDeleteDialog.DialogModel model = new LibraryDeleteDialog.DialogModel();
+        model.message.set(getString(R.string.device_reset_prompt));
+        LibraryDeleteDialog.Builder builder = new LibraryDeleteDialog.Builder(JDReadApplication.getInstance(), model);
+        final LibraryDeleteDialog dialog = builder.create();
+        model.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                dialog.dismiss();
+            }
+        });
+
+        model.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                dialog.dismiss();
+                // TODO: 18-1-8 reset
+            }
+        });
+
+        dialog.show();
     }
 }

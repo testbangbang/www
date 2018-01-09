@@ -23,6 +23,19 @@ public class MetadataQueryAction extends BaseAction<ShopDataBundle> {
     public void execute(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         RxRequestMetadataQuery rxRequestMetadataQuery = new RxRequestMetadataQuery(dataBundle.getDataManager(), bookId);
         rxRequestMetadataQuery.execute(new RxCallback<RxRequestMetadataQuery>() {
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                showLoadingDialog(dataBundle, R.string.loading);
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog(dataBundle);
+            }
+
             @Override
             public void onNext(RxRequestMetadataQuery request) {
                 metadataResult = request.getMetadataResult();
