@@ -3906,7 +3906,7 @@ public class AlBookEng{
                     } else {
 						if (tword.text[0] >= 0x3000 && ((tword.need_flags & InternalConst.AL_ONEWORD_FLAG_NOINSERTALL) != 0)) {
 							int wwlen = word_len, wchina = tword.count;
-							while ((--wchina) > 8 && wwlen > oi.allWidth + (fontParam.space_width_standart << 4)) {
+							while ((--wchina) > 8 && wwlen > oi.allWidth) {
 								tword.hyph[wchina] = '8';
 								wwlen -= tword.width[wchina];
 							}
