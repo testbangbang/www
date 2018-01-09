@@ -1,9 +1,10 @@
-package com.onyx.jdread.shop.common;
+package com.onyx.jdread.main.common;
 
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.servie.ReadContentService;
 import com.onyx.jdread.shop.request.JavaNetCookieJar;
 import com.onyx.jdread.shop.request.PersistentCookieStore;
 
@@ -13,6 +14,8 @@ import java.net.CookiePolicy;
 import java.net.HttpCookie;
 
 import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by huxiaomao on 2016/12/2.
@@ -189,5 +192,14 @@ public class CloudApiContext {
                 .cookieJar(new JavaNetCookieJar(addCookie()))
                 .build();
         return client;
+    }
+
+    public static ReadContentService getService(String baseUrl) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(CloudApiContext.getClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(ReadContentService.class);
     }
 }

@@ -6,12 +6,8 @@ import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestAddOrDeleteCart;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by jackdeng on 2017/12/29.

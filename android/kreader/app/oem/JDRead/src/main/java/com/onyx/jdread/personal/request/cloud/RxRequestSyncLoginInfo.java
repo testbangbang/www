@@ -2,15 +2,13 @@ package com.onyx.jdread.personal.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.personal.cloud.api.GetSyncLoginInfoService;
+import com.onyx.jdread.main.common.CloudApiContext;
+import com.onyx.jdread.main.servie.ReadContentService;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
 
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by jackdeng on 2017/12/26.
@@ -30,7 +28,7 @@ public class RxRequestSyncLoginInfo extends RxBaseCloudRequest {
 
     @Override
     public Object call() throws Exception {
-        GetSyncLoginInfoService service = init(CloudApiContext.getJdBaseUrl());
+        ReadContentService service = CloudApiContext.getService(CloudApiContext.getJdBaseUrl());
         Call<SyncLoginInfoBean> call = getCall(service);
         Response<SyncLoginInfoBean> response = call.execute();
         if (response != null) {
@@ -48,18 +46,8 @@ public class RxRequestSyncLoginInfo extends RxBaseCloudRequest {
         }
     }
 
-    private Call<SyncLoginInfoBean> getCall(GetSyncLoginInfoService service) {
+    private Call<SyncLoginInfoBean> getCall(ReadContentService service) {
         return service.getSyncLoginInfo(CloudApiContext.NewBookDetail.SYNC_LOGIN_INFO,
                 requestBean.getAppBaseInfo().getRequestParamsMap());
     }
-
-    private GetSyncLoginInfoService init(String url) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(CloudApiContext.getClient())
-                .build();
-        return retrofit.create(GetSyncLoginInfoService.class);
-    }
-
 }

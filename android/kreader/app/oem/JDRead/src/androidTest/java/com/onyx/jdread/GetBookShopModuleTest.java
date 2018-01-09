@@ -5,7 +5,7 @@ import android.test.ApplicationTestCase;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.main.common.CloudApiContext;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookDetail;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookModule;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookModuleList;

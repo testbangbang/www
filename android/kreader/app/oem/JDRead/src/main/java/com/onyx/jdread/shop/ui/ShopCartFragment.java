@@ -27,7 +27,7 @@ import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.GetShopCartIdsAction;
 import com.onyx.jdread.shop.action.GetShopCartItemsAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.main.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 import com.onyx.jdread.shop.model.ShopCartModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;

@@ -2,15 +2,13 @@ package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.shop.cloud.api.GetCategoryListService;
+import com.onyx.jdread.main.servie.ReadContentService;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.main.common.CloudApiContext;
 
 import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by hehai on 17-3-30.
@@ -34,11 +32,10 @@ public class RxRequestCategoryList extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        GetCategoryListService getCommonService = init(CloudApiContext.getJDBooxBaseUrl());
+        ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
         Call<CategoryListResultBean> call = getCall(getCommonService);
         categoryListResultBean = done(call);
         checkQuestResult();
-
     }
 
     private CategoryListResultBean done(Call<CategoryListResultBean> call) {
@@ -55,19 +52,10 @@ public class RxRequestCategoryList extends RxBaseCloudRequest {
         }
     }
 
-    private Call<CategoryListResultBean> getCall(GetCategoryListService getCommonService) {
+    private Call<CategoryListResultBean> getCall(ReadContentService getCommonService) {
         return getCommonService.getCategoryList(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
                 CloudApiContext.CategoryList.CATEGORY_LIST,
                 baseRequestBean.getBody()
         );
-    }
-
-    private GetCategoryListService init(String URL) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
-                .client(EnhancedCall.getClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        return retrofit.create(GetCategoryListService.class);
     }
 }

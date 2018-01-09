@@ -2,23 +2,16 @@ package com.onyx.jdread.shop.action;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.ShoppingCartBookIdsBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.main.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 import com.onyx.jdread.shop.model.ShopCartModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestGetCartItems;
-import com.onyx.jdread.shop.request.cloud.RxRequestGetServiceCartIds;
 import com.onyx.jdread.util.Utils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;

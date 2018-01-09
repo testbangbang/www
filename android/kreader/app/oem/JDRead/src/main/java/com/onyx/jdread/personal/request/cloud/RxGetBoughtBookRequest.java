@@ -2,19 +2,17 @@ package com.onyx.jdread.personal.request.cloud;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.personal.cloud.api.GetBoughtService;
+import com.onyx.jdread.main.common.CloudApiContext;
+import com.onyx.jdread.main.servie.ReadContentService;
 import com.onyx.jdread.personal.cloud.entity.ReadUnlimitedRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtBookResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.JDBook;
-import com.onyx.jdread.shop.common.CloudApiContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by li on 2018/1/8.
@@ -34,7 +32,7 @@ public class RxGetBoughtBookRequest extends RxBaseCloudRequest {
 
     @Override
     public Object call() throws Exception {
-        GetBoughtService service = init(CloudApiContext.JD_BASE_URL);
+        ReadContentService service = CloudApiContext.getService(CloudApiContext.JD_BASE_URL);
         Call<BoughtBookResultBean> call = getCall(service);
         Response<BoughtBookResultBean> response = call.execute();
         if (response.isSuccessful()) {
@@ -50,7 +48,7 @@ public class RxGetBoughtBookRequest extends RxBaseCloudRequest {
         }
         if (resultBean != null && resultBean.code == 0) {
             List<JDBook> resultList = resultBean.resultList;
-            for (JDBook book :resultList) {
+            for (JDBook book : resultList) {
                 Metadata metadata = new Metadata();
                 metadata.setName(book.name);
                 metadata.setAuthors(book.author);
@@ -64,18 +62,9 @@ public class RxGetBoughtBookRequest extends RxBaseCloudRequest {
         }
     }
 
-    private Call<BoughtBookResultBean> getCall(GetBoughtService service) {
+    private Call<BoughtBookResultBean> getCall(ReadContentService service) {
         return service.getBoughtBook(CloudApiContext.NewBookDetail.NEW_BOUGHT_BOOK_ORDER,
                 requestBean.getBody(),
                 requestBean.getAppBaseInfo().getRequestParamsMap());
-    }
-
-    private GetBoughtService init(String url) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .client(CloudApiContext.getClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        return retrofit.create(GetBoughtService.class);
     }
 }

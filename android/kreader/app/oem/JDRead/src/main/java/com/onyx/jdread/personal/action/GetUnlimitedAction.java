@@ -7,7 +7,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.personal.cloud.entity.ReadUnlimitedRequestBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxGetUnlimitedRequest;
-import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.main.common.CloudApiContext;
 
 import java.util.List;
 

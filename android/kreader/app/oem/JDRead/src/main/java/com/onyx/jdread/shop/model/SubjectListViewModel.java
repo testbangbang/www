@@ -6,7 +6,7 @@ import android.databinding.ObservableInt;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.main.common.CloudApiContext;
 import com.onyx.jdread.shop.event.SubjectListSortTypeChangeEvent;
 
 import org.greenrobot.eventbus.EventBus;

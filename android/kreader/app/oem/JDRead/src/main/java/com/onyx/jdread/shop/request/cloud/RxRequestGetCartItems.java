@@ -1,22 +1,18 @@
 package com.onyx.jdread.shop.request.cloud;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.shop.cloud.api.GetShoppingCartItemsService;
+import com.onyx.jdread.main.common.CloudApiContext;
+import com.onyx.jdread.main.servie.ReadContentService;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SimplifiedDetail;
-import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by li on 2018/1/5.
@@ -41,7 +37,7 @@ public class RxRequestGetCartItems extends RxBaseCloudRequest {
 
     @Override
     public Object call() throws Exception {
-        GetShoppingCartItemsService service = init(CloudApiContext.JD_BOOK_ORDER_URL);
+        ReadContentService service = CloudApiContext.getService(CloudApiContext.JD_BOOK_ORDER_URL);
         Call<BookCartItemBean> call = getCall(service);
         Response<BookCartItemBean> response = call.execute();
         if (response.isSuccessful()) {
@@ -54,19 +50,10 @@ public class RxRequestGetCartItems extends RxBaseCloudRequest {
         return this;
     }
 
-    private Call<BookCartItemBean> getCall(GetShoppingCartItemsService service) {
+    private Call<BookCartItemBean> getCall(ReadContentService service) {
         return service.getBookCartItem(CloudApiContext.GotoOrder.CART,
                 requestBean.getBody(),
                 requestBean.getAppBaseInfo().getRequestParamsMap());
-    }
-
-    private GetShoppingCartItemsService init(String url) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(CloudApiContext.getClient())
-                .build();
-        return retrofit.create(GetShoppingCartItemsService.class);
     }
 
     private void handleResult(BookCartItemBean.CartResultBean cartResult) {
