@@ -310,4 +310,7 @@
     <string name="subject_list_sort_type_newest">最新</string>
     <string name="subject_list_all">全部</string>
     <string name="subject_list_just_vip">只看畅读VIP</string>
+    <string name="downloading_progress">下载中 %d</string>
+    <string name="paused">已暂停 %d</string>
+    <string name="total_book">共%d本书</string>
 </resources>

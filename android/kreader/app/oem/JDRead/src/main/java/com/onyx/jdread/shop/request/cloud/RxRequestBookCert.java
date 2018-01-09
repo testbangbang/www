@@ -59,6 +59,7 @@ public class RxRequestBookCert extends RxBaseCloudRequest {
         String bookName = bookDetailBean.getDownLoadUrl().substring(bookDetailBean.getDownLoadUrl().lastIndexOf("/") + 1);
         String localPath = CommonUtils.getJDBooksPath() + File.separator + bookName;
         DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.getDownLoadUrl(), localPath, bookName);
+        downloadAction.setBookDetailBean(bookDetailBean);
         downloadAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {

@@ -6,6 +6,14 @@
         <variable
             name="filterName"
             type="String" />
+
+        <variable
+            name="books"
+            type="int"/>
+
+        <variable
+            name="page"
+            type="String"/>
     </data>
 
     <LinearLayout
@@ -73,7 +81,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="120"
+                    android:text="@{@string/total_book(books)}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
@@ -81,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="1/2"
+                    android:text="@{page}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
             </RelativeLayout>

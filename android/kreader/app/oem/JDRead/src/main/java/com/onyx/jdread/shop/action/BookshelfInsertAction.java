@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
@@ -65,7 +66,7 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         metadata.setDescription(detailBean.getInfo());
         metadata.setNativeAbsolutePath(localPath);
         metadata.setCloudId(String.valueOf(detailBean.getEbookId()));
-        metadata.setLocation(localPath);
+        metadata.setLocation(StringUtils.isNullOrEmpty(detailBean.getDownLoadUrl()) ? detailBean.getTryEpubDownUrl() : detailBean.getDownLoadUrl());
         metadata.setCoverUrl(detailBean.getImageUrl());
         metadata.setSize((long) detailBean.getFileSize());
         BookExtraInfoBean extraInfo = detailBean.getBookExtraInfoBean();

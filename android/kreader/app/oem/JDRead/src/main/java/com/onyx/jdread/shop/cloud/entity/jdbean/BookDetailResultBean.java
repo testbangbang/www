@@ -61,7 +61,7 @@ public class BookDetailResultBean {
     }
 
     public static class Detail {
-
+        private Object tag;
         private boolean EBook;
         private String acreditInst;
         private boolean addToCart;
@@ -111,6 +111,14 @@ public class BookDetailResultBean {
         private BookExtraInfoBean bookExtraInfoBean;
         private String key;
         private String random;
+
+        public Object getTag() {
+            return tag;
+        }
+
+        public void setTag(Object tag) {
+            this.tag = tag;
+        }
 
         public String getKey() {
             return key;
