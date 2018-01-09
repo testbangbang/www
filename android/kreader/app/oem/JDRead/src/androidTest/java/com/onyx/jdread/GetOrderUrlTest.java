@@ -14,7 +14,7 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.request.cloud.RxGetOrderUrlRequest;
 import com.onyx.jdread.personal.request.cloud.RxRequestSyncLoginInfo;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.main.common.CloudApiContext;
+import com.onyx.jdread.shop.common.CloudApiContext;
 
 import java.util.ArrayList;
 import java.util.List;

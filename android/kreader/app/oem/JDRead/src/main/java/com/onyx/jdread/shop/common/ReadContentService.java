@@ -1,4 +1,4 @@
-package com.onyx.jdread.main.servie;
+package com.onyx.jdread.shop.common;
 
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtBookResultBean;
@@ -21,7 +21,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ShoppingCartBookIdsBean;
-import com.onyx.jdread.main.common.CloudApiContext;
+import com.onyx.jdread.shop.common.CloudApiContext;
 
 import java.util.Map;
 

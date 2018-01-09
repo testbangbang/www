@@ -23,7 +23,7 @@ import com.onyx.jdread.shop.action.BookCategoryLevel2BooksAction;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
-import com.onyx.jdread.main.common.CloudApiContext;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryItemClickEvent;
 import com.onyx.jdread.shop.event.SubjectListSortTypeChangeEvent;

@@ -1,8 +1,8 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.main.common.CloudApiContext;
-import com.onyx.jdread.main.servie.ReadContentService;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModuleListResultBean;

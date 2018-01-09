@@ -6,7 +6,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
-import com.onyx.jdread.main.common.CloudApiContext;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 import com.onyx.jdread.shop.model.ShopCartModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;

@@ -8,7 +8,7 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ShoppingCartBookIdsBean;
-import com.onyx.jdread.main.common.CloudApiContext;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestGetCartItems;

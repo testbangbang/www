@@ -1,8 +1,8 @@
 package com.onyx.jdread.personal.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.main.common.CloudApiContext;
-import com.onyx.jdread.main.servie.ReadContentService;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.personal.cloud.entity.GetReadInfoRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
 

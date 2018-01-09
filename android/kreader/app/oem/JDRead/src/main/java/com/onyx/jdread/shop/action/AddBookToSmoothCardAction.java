@@ -10,7 +10,7 @@ import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddBookToSmoothCardBookBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
-import com.onyx.jdread.main.common.CloudApiContext;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestAddBookToSmoothCard;
 import com.onyx.jdread.shop.utils.BookDownloadUtils;
