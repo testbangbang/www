@@ -11,21 +11,22 @@
     </data>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/device_info_item_padding"
-        android:gravity="center_vertical">
+        android:layout_width="match_parent"
+        android:onClick="@{()->itemModel.onClick()}"
+        android:layout_height="match_parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:text="@{itemModel.text}"
-            android:textSize="@dimen/level_two_heading_font" />
+            android:textSize="@dimen/level_one_heading_font" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:src="@mipmap/ic_read_next"
             android:visibility="@{itemModel.clickable?View.VISIBLE:View.GONE}" />
     </RelativeLayout>
