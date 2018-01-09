@@ -91,9 +91,6 @@ public class QuestionFragment extends BaseFragment {
 
     private void initView(final Question question) {
         initViewVisibility();
-        int questionIndex = Math.max(question.QuesType - 1, 0);
-        String questionType = getResources().getStringArray(R.array.question_type_list)[questionIndex];
-        binding.questionType.setText(getString(R.string.question_type_str, questionType));
         Spanned content = question.isChoiceQuestion() ? TextUtils.fromHtml(question.content, new Base64ImageParser(getActivity()), null)
                 : null;
         binding.content.setText(content);
@@ -114,7 +111,6 @@ public class QuestionFragment extends BaseFragment {
 
     private void initViewVisibility() {
         binding.content.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
-        binding.questionType.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
         binding.draft.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
 
         boolean showScribble = !question.isChoiceQuestion();

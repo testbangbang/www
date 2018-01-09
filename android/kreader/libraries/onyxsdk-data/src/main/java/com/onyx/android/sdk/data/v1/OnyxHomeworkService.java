@@ -1,6 +1,6 @@
 package com.onyx.android.sdk.data.v1;
 
-import com.onyx.android.sdk.data.model.homework.HomeworkRequestModel;
+import com.onyx.android.sdk.data.model.homework.Homework;
 import com.onyx.android.sdk.data.model.homework.HomeworkReviewResult;
 import com.onyx.android.sdk.data.model.homework.HomeworkSubmitBody;
 
@@ -23,8 +23,8 @@ import retrofit2.http.Query;
 
 public interface OnyxHomeworkService {
 
-    @GET("homeworks/{id}" )
-    Call<HomeworkRequestModel> getHomeworks(@Path("id") String id);
+    @GET("homeworks/{id}/forDevice" )
+    Call<Homework> getHomeworks(@Path("id") String id);
 
     @Multipart
     @POST("homeworks/{id}/anwser")
