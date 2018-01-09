@@ -5,11 +5,10 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.model.homework.Homework;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.ShapeState;
-import com.onyx.edu.homework.data.Homework;
-import com.onyx.edu.homework.data.HomeworkInfo;
 import com.onyx.edu.homework.data.HomeworkState;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,7 +39,7 @@ public class DataBundle {
 
     private CloudManager cloudManager;
     private DataManager dataManager;
-    private HomeworkInfo homeworkInfo = new HomeworkInfo();
+    private Homework homework;
     private EventBus eventBus;
     private NoteViewHelper noteViewHelper;
     private HomeworkState state = HomeworkState.DOING;
@@ -58,15 +57,22 @@ public class DataBundle {
 
     @Nullable
     public String getHomeworkId() {
-        return homeworkInfo.homeworkId;
+        return getHomework()._id;
     }
 
     public void setHomeworkId(String id) {
-        homeworkInfo.setHomeworkId(id);
+        getHomework().setHomeworkId(id);
     }
 
-    public HomeworkInfo getHomeworkInfo() {
-        return homeworkInfo;
+    public void setHomework(Homework homework) {
+        this.homework = homework;
+    }
+
+    public Homework getHomework() {
+        if (homework == null) {
+            homework = new Homework();
+        }
+        return homework;
     }
 
     public EventBus getEventBus() {
