@@ -168,7 +168,6 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:visibility="@{CommonUtils.isCanNowRead(bookDetailViewModel.bookDetailResultBean.detail) ? View.VISIBLE : View.GONE}"
                         android:id="@+id/book_detail_now_read"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -184,7 +183,6 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:visibility="@{CommonUtils.showBuyBookButton(bookDetailViewModel.bookDetailResultBean.detail) ? View.VISIBLE : View.GONE}"
                         android:id="@+id/book_detail_buy_book"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

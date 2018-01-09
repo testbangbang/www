@@ -82,7 +82,7 @@ public class CommonUtils {
     public static boolean isCanNowRead(BookDetailResultBean.Detail detailBean){
         boolean canNowRead = false;
         if (detailBean != null) {
-            canNowRead = detailBean.isTryRead() || detailBean.isFree();
+            canNowRead = detailBean.isTryRead();
         }
         return canNowRead;
     }
