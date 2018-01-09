@@ -26,7 +26,7 @@ public class BookImportantRecommendAction extends BaseAction<ShopDataBundle> {
     }
 
     @Override
-    public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+    public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
@@ -42,6 +42,7 @@ public class BookImportantRecommendAction extends BaseAction<ShopDataBundle> {
                 BookModelResultBean bookModelResultBean = request.getBookModelResultBean();
                 SubjectViewModel subjectViewModel = new SubjectViewModel();
                 subjectViewModel.setModelBean(bookModelResultBean);
+                subjectViewModel.setEventBus(shopDataBundle.getEventBus());
                 shopViewModel.setCoverSubjectFourItems(subjectViewModel);
                 if (rxCallback != null) {
                     rxCallback.onNext(BookImportantRecommendAction.this);

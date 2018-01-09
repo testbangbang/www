@@ -32,6 +32,7 @@ import com.onyx.jdread.shop.event.CategoryViewClick;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
+import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
@@ -64,8 +65,13 @@ public class ShopFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         bookShopBinding = FragmentBookShopBinding.inflate(inflater, container, false);
         initView();
+        initLibrary();
         initData();
         return bookShopBinding.getRoot();
+    }
+
+    private void initLibrary() {
+        getEventBus().register(this);
     }
 
     private void initData() {
@@ -100,7 +106,6 @@ public class ShopFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getEventBus().register(this);
     }
 
     @Override
@@ -305,6 +310,15 @@ public class ShopFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
         getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onViewAllClickEvent(ViewAllClickEvent event) {
+        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
+        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_FID, event.fid);
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+        }
     }
 
     public ShopDataBundle getShopDataBundle() {

@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.model;
 import android.databinding.BaseObservable;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelResultBean;
+import com.onyx.jdread.shop.event.ViewAllClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -55,10 +56,10 @@ public class SubjectViewModel extends BaseObservable{
     }
 
     public void onViewAllClick() {
-
+        getEventBus().post(new ViewAllClickEvent(modelBean.moduleBookChild.fid, modelBean.moduleBookChild.showName));
     }
 
     public void onNextViewAllClick() {
-
+        getEventBus().post(new ViewAllClickEvent(modelBeanNext.moduleBookChild.fid, modelBeanNext.moduleBookChild.showName));
     }
 }

@@ -65,8 +65,13 @@ public class AllCategoryFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         allCategoryBinding = FragmentBookAllCategoryBinding.inflate(inflater, container, false);
         initView();
+        initLibrary();
         initData();
         return allCategoryBinding.getRoot();
+    }
+
+    private void initLibrary() {
+        getEventBus().register(this);
     }
 
     private void initData() {
@@ -173,7 +178,6 @@ public class AllCategoryFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getEventBus().register(this);
     }
 
     @Override

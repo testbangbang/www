@@ -115,8 +115,13 @@ public class BookDetailFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         bookDetailBinding = FragmentBookDetailBinding.inflate(inflater, container, false);
         initView();
+        initLibrary();
         initData();
         return bookDetailBinding.getRoot();
+    }
+
+    private void initLibrary() {
+        getEventBus().register(this);
     }
 
     private void initData() {
@@ -185,7 +190,6 @@ public class BookDetailFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getEventBus().register(this);
     }
 
     @Override

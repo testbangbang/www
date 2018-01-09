@@ -7,6 +7,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -136,6 +137,12 @@ public class AppInformationUtils {
 
     public static boolean isHaveDeviceIdGranted() {
         return isHaveGranted(PERMISSION_READ_PHONE_STATE);
+    }
+
+    public static String getIpAddress() {
+        WifiManager wm = (WifiManager) JDReadApplication.getInstance().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        return ip;
     }
 
 }

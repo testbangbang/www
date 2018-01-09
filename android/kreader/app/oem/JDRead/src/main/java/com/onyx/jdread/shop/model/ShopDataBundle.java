@@ -18,6 +18,7 @@ public class ShopDataBundle {
     private DataManager dataManager;
     private ShopCartModel shopCartModel;
     private RankViewModel rankViewModel;
+    private ViewAllViewModel viewAllViewModel;
 
     private ShopDataBundle() {
 
@@ -72,6 +73,17 @@ public class ShopDataBundle {
             }
         }
         return rankViewModel;
+    }
+
+    public ViewAllViewModel getViewAllViewModel() {
+        if (viewAllViewModel == null) {
+            synchronized (ViewAllViewModel.class) {
+                if (viewAllViewModel == null) {
+                    viewAllViewModel = new ViewAllViewModel(getEventBus());
+                }
+            }
+        }
+        return viewAllViewModel;
     }
 
     public AppBaseInfo getAppBaseInfo() {

@@ -67,8 +67,13 @@ public class SubjectListFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         subjectListBinding = FragmentSubjectListBinding.inflate(inflater, container, false);
         initView();
+        initLibrary();
         initData();
         return subjectListBinding.getRoot();
+    }
+
+    private void initLibrary() {
+        getEventBus().register(this);
     }
 
     private void initData() {
@@ -189,7 +194,6 @@ public class SubjectListFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getEventBus().register(this);
     }
 
     @Override

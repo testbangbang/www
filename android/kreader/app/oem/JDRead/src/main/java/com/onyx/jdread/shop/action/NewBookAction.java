@@ -31,7 +31,7 @@ public class NewBookAction extends BaseAction<ShopDataBundle> {
     }
 
     @Override
-    public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+    public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
@@ -46,6 +46,7 @@ public class NewBookAction extends BaseAction<ShopDataBundle> {
             public void onNext(RxRequestBookModule request) {
                 bookModelResultBean = request.getBookModelResultBean();
                 SubjectViewModel subjectViewModel = new SubjectViewModel();
+                subjectViewModel.setEventBus(shopDataBundle.getEventBus());
                 subjectViewModel.setModelBean(bookModelResultBean);
                 shopViewModel.setCoverSubjectOneItems(subjectViewModel);
                 shopViewModel.setBannerSubjectIems(subjectViewModel);

@@ -26,6 +26,8 @@ public class Constants {
     public static final String SP_KEY_CATEGORY_ID = "category_id";
     public static final String SP_KEY_CATEGORY_NAME = "category_name";
     public static final String SP_KEY_CATEGORY_ISFREE = "category_isfree";
+    public static final String SP_KEY_SUBJECT_NAME = "subject_name";
+    public static final String SP_KEY_SUBJECT_FID = "subject_fid";
 
     public static final int BOOK_COMMENT_PAGE_SIZE = 20;
     public static final int BOOK_CATEGORY_PAGE_SIZE = 20;
