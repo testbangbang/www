@@ -6,8 +6,7 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
-import com.onyx.android.sdk.utils.BitmapUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 /**
@@ -23,7 +22,7 @@ public class PingDatabaseRequest  extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         try {
             EduAccount account = ContentUtils.querySingle(EduAccountProvider.CONTENT_URI,
-                    EduAccount.class, ConditionGroup.clause(), null);
+                    EduAccount.class, OperatorGroup.clause(), null);
         } catch (Exception e) {
             e.printStackTrace();
         }

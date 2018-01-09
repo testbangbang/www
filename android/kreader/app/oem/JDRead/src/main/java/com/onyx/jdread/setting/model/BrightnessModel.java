@@ -1,5 +1,6 @@
 package com.onyx.jdread.setting.model;
 
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
 import com.onyx.android.sdk.api.device.FrontLightController;
@@ -21,8 +22,17 @@ public class BrightnessModel extends Observable {
     public final ObservableInt progress = new ObservableInt();
     public final ObservableInt maxLight = new ObservableInt();
     public final ObservableInt numStar = new ObservableInt();
+    public final ObservableBoolean isShow = new ObservableBoolean(false);
 
     private final List<Integer> mLightSteps;
+
+    public ObservableBoolean getIsShow() {
+        return isShow;
+    }
+
+    public void setIsShow(boolean isShow){
+        this.isShow.set(isShow);
+    }
 
     public BrightnessModel() {
         titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.brightness_control));

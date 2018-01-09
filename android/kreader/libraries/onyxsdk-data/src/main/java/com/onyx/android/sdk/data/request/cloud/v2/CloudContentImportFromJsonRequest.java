@@ -27,7 +27,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
@@ -90,7 +90,7 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
         for (int i = 0; i < 3; i++) {
             try {
                 ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
-                        Metadata.class, ConditionGroup.clause(), null);
+                        Metadata.class, OperatorGroup.clause(), null);
                 StoreUtils.queryDataList(CloudGroup.class);
             } catch (Exception e) {
                 TestUtils.sleep(300);

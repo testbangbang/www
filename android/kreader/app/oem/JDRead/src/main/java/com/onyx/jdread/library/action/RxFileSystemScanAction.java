@@ -14,7 +14,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.library.model.DataBundle;
-import com.raizlabs.android.dbflow.sql.language.Condition;
+import com.raizlabs.android.dbflow.sql.language.Operator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,7 +66,7 @@ public class RxFileSystemScanAction extends BaseAction<DataBundle> {
                                        final String storageId, final HashSet<String> filePathSet) {
         QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.CreationTime, SortOrder.Desc);
         queryArgs.propertyList.add(Metadata_Table.nativeAbsolutePath);
-        Condition condition;
+        Operator condition;
         if (StringUtils.isNullOrEmpty(storageId)) {
             condition = Metadata_Table.storageId.isNull();
         } else {

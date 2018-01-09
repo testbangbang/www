@@ -1,9 +1,10 @@
 package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
-import android.content.Context;
 
-import com.onyx.jdread.JDReadApplication;
+import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
@@ -22,10 +23,20 @@ import org.greenrobot.eventbus.ThreadMode;
 public class ReaderActivityEventHandler {
     private ReaderViewModel readerViewModel;
     private ReaderViewBack readerViewBack;
+    private ReaderTextStyle style;
+    private ImageReflowSettings settings;
 
-    public ReaderActivityEventHandler(ReaderViewModel readerViewModel,ReaderViewBack readerViewBack) {
+    public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
         this.readerViewBack = readerViewBack;
+    }
+
+    public ReaderTextStyle getStyle() {
+        return style;
+    }
+
+    public void setStyle(ReaderTextStyle style) {
+        this.style = style;
     }
 
     public void registerListener() {
@@ -72,18 +83,29 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onShowReaderSettingMenuEvent(ShowReaderSettingMenuEvent event) {
-        if(readerViewBack != null){
+        if (readerViewBack != null) {
             Activity activity = readerViewBack.getContext();
-            if(activity == null){
+            if (activity == null) {
                 return;
             }
-            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity);
+            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity, style, settings);
             readerSettingMenuDialog.show();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPageViewUpdateEvent(PageViewUpdateEvent event){
+    public void onPageViewUpdateEvent(PageViewUpdateEvent event) {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onInitPageViewInfoEvent(InitPageViewInfoEvent event) {
+        new GetViewSettingAction().execute(readerViewModel.getReaderDataHolder());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateViewSettingEvent(UpdateViewSettingEvent event){
+        style = event.getStyle();
+        settings = event.getSettings();
     }
 }
