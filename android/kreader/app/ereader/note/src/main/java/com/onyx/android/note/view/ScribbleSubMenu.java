@@ -2,15 +2,18 @@ package com.onyx.android.note.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
 import com.onyx.android.note.utils.NoteAppConfig;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
@@ -159,10 +162,32 @@ public class ScribbleSubMenu extends RelativeLayout {
         updateSubMenuIndicatorByCurrentStatus(category, isLineLayoutMode);
         setFocusable(true);
         setVisibility(View.VISIBLE);
+        updateWritingExcludeRegion();
     }
 
     public void dismiss() {
         dismiss(true);
+    }
+
+    private void updateWritingExcludeRegion(){
+        post(new Runnable() {
+            @Override
+            public void run() {
+                Rect excludeRect;
+                Rect[] excludeRects = new Rect[1];
+                switch (getVisibility()) {
+                    case VISIBLE:
+                        excludeRect = new Rect(mMenuContentView.getLeft(), mMenuContentView.getTop(),
+                                mMenuContentView.getRight(), mMenuContentView.getBottom());
+                        break;
+                    default:
+                        excludeRect = new Rect();
+                        break;
+                }
+                excludeRects[0] = excludeRect;
+                EpdController.setScreenHandWritingRegionExclude(NoteApplication.getInstance().getNoteViewHelper().getView(), excludeRects);
+            }
+        });
     }
 
     /**
@@ -173,6 +198,7 @@ public class ScribbleSubMenu extends RelativeLayout {
             mMenuCallback.onCancel();
         }
         setVisibility(GONE);
+        updateWritingExcludeRegion();
     }
 
     private void updateButtonIndicator(GObject menuItem) {
