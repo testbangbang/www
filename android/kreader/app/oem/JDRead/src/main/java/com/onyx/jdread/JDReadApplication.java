@@ -76,16 +76,6 @@ public class JDReadApplication extends MultiDexApplication {
         OnyxDownloadManager.getInstance();
         initEventListener();
         initDownloadManager();
-        initEverNote();
-    }
-
-    private void initEverNote() {
-        evernoteSession = new EvernoteSession.Builder(this)
-                .setEvernoteService(EVERNOTE_SERVICE)
-                .setSupportAppLinkedNotebooks(SUPPORT_APP_LINKED_NOTEBOOKS)
-                .setLocale(getResources().getConfiguration().locale)
-                .build("hehai123", "73cbd5e4cdeb8bd2")
-                .asSingleton();
     }
 
     private void initDownloadManager() {

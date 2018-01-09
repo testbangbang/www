@@ -13,6 +13,7 @@ import com.onyx.jdread.databinding.FragmentReadingToolsBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.manager.EvernoteManager;
 import com.onyx.jdread.setting.adapter.DeviceInfoAdapter;
 import com.onyx.jdread.setting.event.AssociatedEmailToolsEvent;
 import com.onyx.jdread.setting.event.AssociatedNotesToolsEvent;
@@ -81,7 +82,7 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
 
     @Subscribe
     public void onAssociatedNotesToolsEvent(AssociatedNotesToolsEvent event) {
-        JDReadApplication.getInstance().getEvernoteSession().authenticate(getActivity());
+        EvernoteManager.getEvernoteSession(JDReadApplication.getInstance()).authenticate(getActivity());
     }
 
     @Subscribe
