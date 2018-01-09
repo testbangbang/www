@@ -1,7 +1,7 @@
 package com.onyx.edu.homework.data;
 
-import com.onyx.android.sdk.data.model.HomeworkRequestModel;
 import com.onyx.android.sdk.data.model.Subject;
+import com.onyx.android.sdk.data.model.homework.HomeworkRequestModel;
 
 import java.util.Date;
 

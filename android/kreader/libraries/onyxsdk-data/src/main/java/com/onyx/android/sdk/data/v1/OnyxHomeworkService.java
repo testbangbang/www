@@ -1,17 +1,14 @@
 package com.onyx.android.sdk.data.v1;
 
-import com.onyx.android.sdk.data.model.HomeworkRequestModel;
-import com.onyx.android.sdk.data.model.HomeworkReviewResult;
-import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
-import com.onyx.android.sdk.data.model.HomeworkSubmitBody;
+import com.onyx.android.sdk.data.model.homework.HomeworkRequestModel;
+import com.onyx.android.sdk.data.model.homework.HomeworkReviewResult;
+import com.onyx.android.sdk.data.model.homework.HomeworkSubmitBody;
 
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;

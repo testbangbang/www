@@ -1,12 +1,9 @@
 package com.onyx.edu.homework.request;
 
 import com.onyx.android.sdk.data.CloudManager;
-import com.onyx.android.sdk.data.model.HomeworkRequestModel;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.HomeworkRequestModel;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
-
-import java.util.List;
 
 import retrofit2.Response;
 

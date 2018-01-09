@@ -4,8 +4,8 @@ import android.graphics.Rect;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.HomeworkSubmitAnswer;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.base.NoteActionChain;

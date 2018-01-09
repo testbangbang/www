@@ -9,8 +9,8 @@ import android.view.View;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.HomeworkSubmitAnswer;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;

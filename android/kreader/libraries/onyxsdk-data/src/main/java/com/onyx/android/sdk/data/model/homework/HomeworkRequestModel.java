@@ -1,4 +1,6 @@
-package com.onyx.android.sdk.data.model;
+package com.onyx.android.sdk.data.model.homework;
+
+import com.onyx.android.sdk.data.model.Subject;
 
 import java.util.Date;
 import java.util.List;

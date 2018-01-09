@@ -4,10 +4,8 @@ import android.content.Context;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.HomeworkRequestModel;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.edu.homework.DataBundle;
-import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.ActionChain;
 import com.onyx.edu.homework.base.BaseAction;
 
