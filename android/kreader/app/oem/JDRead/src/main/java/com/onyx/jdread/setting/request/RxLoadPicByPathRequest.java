@@ -1,13 +1,18 @@
 package com.onyx.jdread.setting.request;
 
+import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.rxrequest.data.fs.RxBaseFSRequest;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.R;
+import com.onyx.jdread.setting.model.ScreenSaversBean;
 import com.onyx.jdread.setting.model.ScreenSaversModel;
-import com.onyx.jdread.setting.utils.Constants;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,19 +36,19 @@ public class RxLoadPicByPathRequest extends RxBaseFSRequest {
         if (StringUtils.isNullOrEmpty(dir) || !file.exists() || file.isFile()) {
             return this;
         }
-
-        File current = new File(Constants.STANDBY_PIC_DIRECTORY + Constants.STANDBY_PIC_NAME);
-        String md5 = "";
-        if (current.exists()) {
-            md5 = FileUtils.computeMD5(current);
-        }
-        File[] files = file.listFiles();
-        for (File f : files) {
-            if (FileUtils.getFileExtension(f).equalsIgnoreCase("png")) {
+        File config = new File(dir, "config.txt");
+        if (config.exists()) {
+            String checkedPath = PreferenceManager.getStringValue(getAppContext(), R.string.screen_saver_key, null);
+            List<ScreenSaversBean> beans = JSONObject.parseArray(FileUtils.readContentOfFile(config), ScreenSaversBean.class);
+            for (ScreenSaversBean bean : beans) {
                 ScreenSaversModel.ItemModel itemModel = new ScreenSaversModel.ItemModel();
-                itemModel.picPath.set(f.getAbsolutePath());
-                itemModel.isChecked.set(FileUtils.computeMD5(f).equals(md5));
-                pics.add(itemModel);
+                String path = dir + File.separator + bean.getPath();
+                if (FileUtils.fileExist(path)) {
+                    itemModel.picPath.set(path);
+                    itemModel.name.set(bean.getDisplay());
+                    itemModel.isChecked.set(StringUtils.isNotBlank(checkedPath) ? checkedPath.equals(path) : bean.isChecked());
+                    pics.add(itemModel);
+                }
             }
         }
         return this;

@@ -3,7 +3,7 @@ package com.onyx.android.sdk.data.converter;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
-import com.raizlabs.android.dbflow.sql.language.property.BaseProperty;
+import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 /**
  * Created by suicheng on 2017/5/5.
@@ -41,7 +41,7 @@ public class QueryArgsFilter implements ValueFilter {
         }
     }
 
-    public static String getName(BaseProperty property) {
+    public static String getName(Property property) {
         return property.getNameAlias().newBuilder().shouldAddIdentifierToName(false).build().name();
     }
 }

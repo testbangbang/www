@@ -26,7 +26,7 @@ public class GammaCorrectionRequest extends ReaderBaseRequest {
             float gamma = ImageUtils.getGammaCorrectionBySelection(gammaInfo.getTextGamma());
             readerDataHolder.getReader().getReaderHelper().getRenderer().setTextGamma(gamma);
         }
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder);
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,createReaderViewInfo());
         return this;
     }
 }

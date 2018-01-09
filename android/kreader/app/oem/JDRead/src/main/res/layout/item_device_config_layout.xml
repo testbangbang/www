@@ -69,6 +69,11 @@
                 android:id="@+id/item_data_format"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textOff=""
+                android:textOn="@string/on"
+                android:switchMinWidth="@dimen/switch_track_width"
+                android:thumb="@drawable/thumb_selector"
+                android:track="@drawable/track_selector"
                 android:visibility="@{model.hasToggle ? View.VISIBLE : View.GONE}" />
 
             <ImageView

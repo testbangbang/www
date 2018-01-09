@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/activity_screen_lock_margin_top"
         android:orientation="vertical"
-        android:padding="@dimen/activity_screen_lock_padding"
+        android:gravity="center_horizontal"
         tools:context=".main.activity.LockScreenActivity">
 
         <TextView
@@ -29,7 +29,10 @@
             android:text="@={screenLockModel.passwordEdit}" />
 
         <TextView
-            style="@style/PasswordEditTextStyle"
+            android:layout_width="@dimen/password_setting_confirm_width"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/edit_text_padding"
             android:layout_marginTop="@dimen/unlock_password_text_margin_top"
             android:gravity="center"
             android:onClick="@{()->screenLockModel.unlockScreen()}"

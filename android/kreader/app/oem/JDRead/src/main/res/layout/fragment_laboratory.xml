@@ -43,7 +43,7 @@
                     android:layout_alignParentRight="true"
                     android:checked="@={laboratoryModel.showBack}"
                     android:onClick="@{()->laboratoryModel.toggleBackTab()}"
-                    android:switchMinWidth="0dp"
+                    android:switchMinWidth="@dimen/switch_track_width"
                     android:textOff=" "
                     android:textOn="@string/on"
                     android:thumb="@drawable/thumb_selector"

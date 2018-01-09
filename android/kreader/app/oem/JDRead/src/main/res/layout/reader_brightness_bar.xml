@@ -6,8 +6,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="readerBrightnessModel"
-            type="com.onyx.jdread.reader.menu.model.ReaderBrightnessModel" />
+            name="brightnessModel"
+            type="com.onyx.jdread.setting.model.BrightnessModel" />
     </data>
 
     <LinearLayout
@@ -15,68 +15,53 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:orientation="vertical"
-        android:visibility="@{readerBrightnessModel.isShow?View.VISIBLE:View.GONE}">
+        android:visibility="@{brightnessModel.isShow?View.VISIBLE:View.GONE}">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/black" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="12" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/reader_page_info_menu_margin_bottom"
+            android:padding="20dp"
             android:gravity="center"
             android:orientation="horizontal">
 
-
             <TextView
-                android:id="@+id/reader_page_info_menu_prev_chapter"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/reader_page_info_menu_prev_chapter_padding_left"
-                android:layout_marginRight="@dimen/reader_page_info_menu_prev_chapter_padding_right"
-                android:layout_weight="2"
                 android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:gravity="center"
-                android:maxLines="1"
-                android:text="@string/off_brightness"
+                android:onClick="@{()->brightnessModel.closeBrightness()}"
+                android:padding="10dp"
+                android:text="@string/closed"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textSize="@dimen/level_one_heading_font" />
 
-            <SeekBar
-                android:id="@+id/reader_page_info_menu_read_progress"
-                android:layout_width="0dp"
+            <RatingBar
+                android:id="@+id/ratingbar_light_settings"
+                style="@style/LightSettingsRatingBarStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
-                android:background="@drawable/focused_bg"
-                android:max="20"
-                android:maxHeight="@dimen/menu_seek_bar_height"
-                android:minHeight="@dimen/menu_seek_bar_height"
-                android:padding="@dimen/reader_page_info_menu_reading_process_padding"
-                android:progressDrawable="@drawable/seekbar_progress"
-                android:thumb="@drawable/seekbar_thumb" />
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/ratingbar_light_settings_margin"
+                android:layout_marginRight="@dimen/ratingbar_light_settings_margin"
+                android:max="@{brightnessModel.maxLight}"
+                android:numStars="@{brightnessModel.numStar}"
+                android:progress="@{brightnessModel.progress}"
+                android:progressDrawable="@drawable/light_bar_big_step"
+                android:stepSize="1.0" />
 
             <TextView
-                android:id="@+id/reader_page_info_menu_next_chapter"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/reader_page_info_menu_next_chapter_padding_left"
-                android:layout_marginRight="@dimen/reader_page_info_menu_next_chapter_padding_right"
-                android:layout_weight="2"
                 android:background="@drawable/imagebtn_bg"
-                android:gravity="center"
-                android:maxLines="1"
+                android:onClick="@{()->brightnessModel.maxBrightness()}"
+                android:padding="10dp"
                 android:text="@string/brightest_brightness"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textSize="@dimen/level_one_heading_font" />
 
         </LinearLayout>
     </LinearLayout>

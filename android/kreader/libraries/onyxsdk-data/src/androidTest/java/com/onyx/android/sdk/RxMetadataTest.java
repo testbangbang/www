@@ -45,7 +45,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
@@ -774,7 +774,7 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
                 values.put(MetadataCollection_Table.libraryUniqueId.getNameAlias().name(), (String) null);
                 FlowManager.getContext().getContentResolver().update(OnyxMetadataCollectionProvider.CONTENT_URI,
                         values,
-                        ConditionGroup.clause().and(MetadataCollection_Table.libraryUniqueId.is(library.getIdString())).getQuery(),
+                        OperatorGroup.clause().and(MetadataCollection_Table.libraryUniqueId.is(library.getIdString())).getQuery(),
                         null);
             } else if (providerBase instanceof LocalDataProvider) {
                 SQLite.update(MetadataCollection.class)
