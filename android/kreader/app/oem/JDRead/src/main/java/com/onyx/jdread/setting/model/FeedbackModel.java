@@ -25,6 +25,7 @@ public class FeedbackModel extends Observable {
     public FeedbackModel() {
         titleBarModel.backEvent.set(new BackToHelpFragmentEvent());
         titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.feedback));
+        titleBarModel.rightTitle.set(JDReadApplication.getInstance().getString(R.string.feedback_history));
     }
 
     public void commitFeedback() {

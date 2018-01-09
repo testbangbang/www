@@ -21,8 +21,8 @@
     <string name="refresh_mode">极速刷新模式</string>
     <string name="refresh_mode_tips">实验室功能，大幅提高翻页速度，但残影较明显</string>
     <string name="view_history_version">查看历史版本</string>
-    <string name="updatable_version">可更新版本</string>
-    <string name="current_version">当前版本</string>
+    <string name="updatable_version">可更新版本：</string>
+    <string name="current_version">当前版本：</string>
     <string name="system_update">系统更新</string>
     <string name="device_config">设备设置</string>
     <string name="hour_format">24小时格式</string>
@@ -279,7 +279,7 @@
     <string name="password_format_error">密码格式错误,请输入%1$d-%2$d位数字</string>
     <string name="wrong_password">密码错误</string>
     <string name="reading_tools">阅读工具</string>
-    <string name="dictionary">词典</string>
+    <string name="dictionary">辞典</string>
     <string name="translation">翻译</string>
     <string name="associated_with_the_impression_notes">关联印象笔记</string>
     <string name="associated_with_the_email">关联电子邮箱</string>
@@ -312,5 +312,7 @@
     <string name="password_setting_hint">请输入4-12位数字密码</string>
     <string name="password_setting_phone_hint">请输入手机号</string>
     <string name="password">密码</string>
+    <string name="feedback_history">反馈记录</string>
+    <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
     <string name="buy_book_success">购买成功 </string>
 </resources>

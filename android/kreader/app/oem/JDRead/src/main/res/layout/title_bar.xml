@@ -2,27 +2,45 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
         <variable
             name="titleModel"
-            type="com.onyx.jdread.main.model.TitleBarModel"/>
+            type="com.onyx.jdread.main.model.TitleBarModel" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:background="@android:color/white"
-        android:padding="@dimen/setting_title_bar_padding"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/setting_title_bar_padding">
 
         <TextView
             style="@style/global_activities_back_btn_category_tittle"
             android:background="@drawable/imagebtn_bg"
-            android:gravity="center_vertical"
-            android:onClick="@{()->titleModel.back()}"
-            android:drawablePadding="@dimen/title_bar_drawable_padding"
-            android:text="@{titleModel.title}"
             android:clickable="true"
-            android:drawableLeft="@mipmap/ic_read_back" />
-    </LinearLayout>
+            android:drawableLeft="@mipmap/ic_read_back"
+            android:drawablePadding="@dimen/title_bar_drawable_padding"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/level_one_heading_font"
+            android:onClick="@{()->titleModel.back()}"
+            android:text="@{titleModel.title}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font"
+            android:clickable="true"
+            android:text="@{titleModel.rightTitle}"
+            android:onClick="@{()->titleModel.rightTitleClicked()}"
+            android:visibility="@{StringUtils.isNotBlank(titleModel.rightTitle) ? View.VISIBLE : View.GONE}" />
+    </RelativeLayout>
 </layout>

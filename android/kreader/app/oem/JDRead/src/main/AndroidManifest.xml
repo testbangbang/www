@@ -42,6 +42,9 @@
             android:name=".main.activity.LockScreenActivity"
             android:theme="@style/ActivityFullscreen" />
 
+        <activity android:name ="com.evernote.client.android.EvernoteOAuthActivity"/>
+        <activity android:name ="com.evernote.client.android.login.EvernoteLoginActivity"/>
+
         <receiver android:name=".main.receiver.UsbStateReceiver">
             <intent-filter android:priority="800">
                 <action android:name="android.hardware.usb.action.USB_STATE" />

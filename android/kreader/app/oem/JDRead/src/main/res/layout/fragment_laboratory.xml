@@ -27,20 +27,21 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/quick_back_button"
-                    android:textSize="@dimen/level_two_heading_font" />
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/level_one_heading_font" />
 
                 <Switch
                     android:id="@+id/switch_show_quick_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:checked="@={laboratoryModel.showBack}"
                     android:onClick="@{()->laboratoryModel.toggleBackTab()}"
                     android:switchMinWidth="@dimen/switch_track_width"
@@ -53,16 +54,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/switch_show_quick_button_text_margin"
+                android:layout_marginRight="@dimen/quick_back_button_explanation_margin_right"
                 android:lineSpacingExtra="@dimen/switch_show_quick_button_text_margin"
                 android:text="@string/quick_back_button_explanation"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@drawable/bg_dotted_line"
-                android:layerType="software" />
+                style="@style/DottedLineStyle"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"/>
         </LinearLayout>
 
     </LinearLayout>

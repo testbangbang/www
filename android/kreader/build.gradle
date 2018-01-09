@@ -98,5 +98,7 @@ ext {
     //ui
     flexboxVersion='0.3.0'
 
+    evernoteVersion = '2.0.0-RC4'
+
 }
 

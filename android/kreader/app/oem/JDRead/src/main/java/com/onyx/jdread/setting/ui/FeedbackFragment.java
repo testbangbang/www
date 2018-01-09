@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentFeedbackBinding;
+import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
 import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
 import com.onyx.jdread.setting.model.FeedbackModel;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -52,5 +53,10 @@ public class FeedbackFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToHelpFragmentEvent(BackToHelpFragmentEvent event) {
         viewEventCallBack.viewBack();
+    }
+
+    @Subscribe
+    public void onTitleBarRightTitleEvent(TitleBarRightTitleEvent event){
+        // TODO: 18-1-8
     }
 }
