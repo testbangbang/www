@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.events;
 
 
 import android.content.Context;
+import android.os.SystemClock;
 
 import com.onyx.android.sdk.statistics.OnyxStatistics;
 import com.onyx.android.sdk.statistics.StatisticsBase;
@@ -58,7 +59,7 @@ public class EventReceiver {
     }
 
     private void updateLastTimestamp() {
-        lastTimestamp = System.currentTimeMillis();
+        lastTimestamp = SystemClock.elapsedRealtime();
     }
 
     @Subscribe
@@ -91,6 +92,7 @@ public class EventReceiver {
         if (!isEnable()) {
             return;
         }
+        updateLastTimestamp();
         statisticsManager.onActivityResume(event.getContext());
     }
 
@@ -99,7 +101,7 @@ public class EventReceiver {
         if (!isEnable()) {
             return;
         }
-        event.setDuration((System.currentTimeMillis() - lastTimestamp));
+        event.setDuration((SystemClock.elapsedRealtime() - lastTimestamp));
         updateLastTimestamp();
         statisticsManager.onPageChangedEvent(event.getContext(), event.getLastPage(), event.getCurrentPage(), event.getDuration());
     }
