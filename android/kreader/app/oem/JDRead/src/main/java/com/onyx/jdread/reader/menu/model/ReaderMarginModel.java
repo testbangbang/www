@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by huxiaomao on 2018/1/4.
  */
 
-public class ReaderCustomizeModel {
+public class ReaderMarginModel {
     public final ObservableInt lineSpacingProgress = new ObservableInt(0);
     public final ObservableInt maxLineSpacing = new ObservableInt(ReaderConfig.PageLineSpacing.MAX_LINE_SPACING);
 
@@ -76,5 +76,69 @@ public class ReaderCustomizeModel {
         SettingUpAndDownSpacingEvent event = new SettingUpAndDownSpacingEvent();
         event.margin = progress;
         EventBus.getDefault().post(event);
+    }
+
+    public void onLineSpacingMinusClick(){
+        if(lineSpacingProgress.get() > 0){
+            int lineSpacing = lineSpacingProgress.get();
+            lineSpacingProgress.set(--lineSpacing);
+            setLineSpacingProgress(lineSpacing);
+        }
+    }
+
+    public void onLineSpacingPlusClick(){
+        if(lineSpacingProgress.get() < ReaderConfig.PageLineSpacing.MAX_LINE_SPACING){
+            int lineSpacing = lineSpacingProgress.get();
+            lineSpacingProgress.set(++lineSpacing);
+            setLineSpacingProgress(lineSpacing);
+        }
+    }
+
+    public void onLineSegmentMinusClick(){
+        if(segmentProgress.get() > 0){
+            int lineSpacing = segmentProgress.get();
+            segmentProgress.set(--lineSpacing);
+            setSegmentProgress(lineSpacing);
+        }
+    }
+
+    public void onLineSegmentPlusClick(){
+        if(segmentProgress.get() < ReaderConfig.PageLineSpacing.MAX_LINE_SPACING){
+            int lineSpacing = segmentProgress.get();
+            segmentProgress.set(++lineSpacing);
+            setSegmentProgress(lineSpacing);
+        }
+    }
+
+    public void onLineLeftAndRightMinusClick(){
+        if(leftAndRightProgress.get() > 0){
+            int lineSpacing = leftAndRightProgress.get();
+            leftAndRightProgress.set(--lineSpacing);
+            setLeftAndRightProgress(lineSpacing);
+        }
+    }
+
+    public void onLineLeftAndRightPlusClick(){
+        if(leftAndRightProgress.get() < ReaderConfig.PageLineSpacing.MAX_LINE_SPACING){
+            int lineSpacing = leftAndRightProgress.get();
+            leftAndRightProgress.set(++lineSpacing);
+            setLeftAndRightProgress(lineSpacing);
+        }
+    }
+
+    public void onLineUpAndDownMinusClick(){
+        if(upAndDownProgress.get() > 0){
+            int lineSpacing = upAndDownProgress.get();
+            upAndDownProgress.set(--lineSpacing);
+            setUpAndDownProgress(lineSpacing);
+        }
+    }
+
+    public void onLineUpAndDownPlusClick(){
+        if(upAndDownProgress.get() < ReaderConfig.PageLineSpacing.MAX_LINE_SPACING){
+            int lineSpacing = upAndDownProgress.get();
+            upAndDownProgress.set(++lineSpacing);
+            setUpAndDownProgress(lineSpacing);
+        }
     }
 }

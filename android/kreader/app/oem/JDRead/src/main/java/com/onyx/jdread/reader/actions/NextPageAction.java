@@ -7,6 +7,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
+import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.request.NextScreenRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -18,11 +19,12 @@ import org.greenrobot.eventbus.EventBus;
 public class NextPageAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        NextScreenRequest nextScreenRequest = new NextScreenRequest(readerDataHolder);
-        nextScreenRequest.execute(new RxCallback() {
+        final NextScreenRequest request = new NextScreenRequest(readerDataHolder);
+        request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
                 EventBus.getDefault().post(new PageViewUpdateEvent());
+                ReaderActivityEventHandler.updateReaderViewInfo(request);
             }
         });
     }

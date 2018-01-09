@@ -20,7 +20,7 @@ public class SettingTextStyleRequest extends ReaderBaseRequest {
     @Override
     public SettingTextStyleRequest call() throws Exception {
         readerDataHolder.getReader().getReaderHelper().getTextStyleManager().setStyle(style);
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder);
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,createReaderViewInfo());
         return this;
     }
 }

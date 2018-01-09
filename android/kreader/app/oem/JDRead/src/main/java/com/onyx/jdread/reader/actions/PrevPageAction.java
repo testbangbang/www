@@ -7,6 +7,8 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
+import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
+import com.onyx.jdread.reader.event.UpdateReaderViewInfoEvent;
 import com.onyx.jdread.reader.request.PreviousScreenRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -18,11 +20,12 @@ import org.greenrobot.eventbus.EventBus;
 public class PrevPageAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        PreviousScreenRequest previousScreenRequest = new PreviousScreenRequest(readerDataHolder);
-        previousScreenRequest.execute(new RxCallback() {
+        final PreviousScreenRequest request = new PreviousScreenRequest(readerDataHolder);
+        request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
                 EventBus.getDefault().post(new PageViewUpdateEvent());
+                ReaderActivityEventHandler.updateReaderViewInfo(request);
             }
         });
     }

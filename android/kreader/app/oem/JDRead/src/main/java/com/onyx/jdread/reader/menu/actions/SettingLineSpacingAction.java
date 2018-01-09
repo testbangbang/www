@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 
 /**
@@ -15,7 +16,7 @@ public class SettingLineSpacingAction extends BaseReaderAction {
     private ReaderTextStyle style;
 
     public SettingLineSpacingAction(ReaderTextStyle style, int lineSpacing) {
-        this.lineSpacing = lineSpacing;
+        this.lineSpacing = lineSpacing + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
         this.style = style;
     }
 
@@ -23,9 +24,11 @@ public class SettingLineSpacingAction extends BaseReaderAction {
     public void execute(ReaderDataHolder readerDataHolder) {
         ReaderTextStyle.Percentage oldLineSpacing = style.getLineSpacing();
         oldLineSpacing.setPercent(lineSpacing);
-        new SettingTextStyleRequest(readerDataHolder,style).execute(new RxCallback() {
+        final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder,style);
+        request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                ReaderActivityEventHandler.updateReaderViewInfo(request);
             }
 
             @Override

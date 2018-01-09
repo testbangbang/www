@@ -2,21 +2,30 @@ package com.onyx.jdread.reader.actions;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
-import com.onyx.jdread.reader.event.UpdateReaderViewInfoEvent;
-import com.onyx.jdread.reader.request.UpdateViewPageRequest;
+import com.onyx.jdread.reader.request.GotoPageRequest;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
- * Created by huxiaomao on 2017/12/30.
+ * Created by huxiaomao on 2018/1/8.
  */
 
-public class UpdateViewPageAction extends BaseReaderAction {
+public class GotoPageAction extends BaseReaderAction {
+    private int page;
+
+    public GotoPageAction(int page) {
+        this.page = page;
+    }
+
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        final UpdateViewPageRequest request = new UpdateViewPageRequest(readerDataHolder);
+        final GotoPageRequest request = new GotoPageRequest(readerDataHolder,page);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                EventBus.getDefault().post(new PageViewUpdateEvent());
                 ReaderActivityEventHandler.updateReaderViewInfo(request);
             }
         });

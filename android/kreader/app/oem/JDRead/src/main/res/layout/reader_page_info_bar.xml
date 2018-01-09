@@ -65,6 +65,8 @@
 
             <SeekBar
                 android:id="@+id/reader_page_info_menu_read_progress"
+                android:max="@{readerPageInfoModel.pageTotal}"
+                android:progress="@{readerPageInfoModel.currentPage}"
                 style="@style/ReaderPageInfoChapterSeekBarStyle" />
 
             <TextView

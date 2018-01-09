@@ -23,7 +23,6 @@ public class ReaderViewHelper {
     private Paint paint = new Paint();
     private static final int DEFAULT_MULTIPLEX = 1;
     public float dpiMultiplex = 1.0f;
-    public ReaderViewInfo readerViewInfo;
 
     public ReaderViewHelper() {
         initData();
@@ -35,10 +34,6 @@ public class ReaderViewHelper {
         paint.setAntiAlias(false);
         paint.setFilterBitmap(false);
         paint.setStrokeWidth(0);
-    }
-
-    public final ReaderViewInfo getReaderViewInfo() {
-        return readerViewInfo;
     }
 
     public SurfaceView getReadPageView() {
@@ -57,15 +52,10 @@ public class ReaderViewHelper {
         return readPageView.getHeight();
     }
 
-    public ReaderViewInfo createReaderViewInfo() {
-        readerViewInfo = new ReaderViewInfo();
-        return readerViewInfo;
-    }
-
-    public void updatePageView(ReaderDataHolder readerDataHolder) {
+    public void updatePageView(ReaderDataHolder readerDataHolder,ReaderViewInfo readerViewInfo) {
         try {
             ReaderDrawContext context = ReaderDrawContext.create(false);
-            readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().drawVisiblePages(readerDataHolder.getReader(), context, createReaderViewInfo());
+            readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().drawVisiblePages(readerDataHolder.getReader(), context, readerViewInfo);
             draw(context.renderingBitmap.getBitmap());
         } catch (Exception e) {
             e.printStackTrace();
