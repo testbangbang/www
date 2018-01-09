@@ -168,7 +168,7 @@ public class ScribbleSubMenu extends RelativeLayout {
     /**
      * @param isCancel if no submenu item was previous selected -> true,otherwise false.
      */
-    private void dismiss(boolean isCancel) {
+    public void dismiss(boolean isCancel) {
         if (mMenuCallback != null && isCancel) {
             mMenuCallback.onCancel();
         }

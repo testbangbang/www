@@ -129,6 +129,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        hidePotentialShowSubMenu();
         wakeLockHolder.releaseWakeLock();
     }
 
@@ -199,30 +200,35 @@ public class ScribbleActivity extends BaseScribbleActivity {
         prevPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onPrevPage();
             }
         });
         nextPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onNextPage();
             }
         });
         undoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onUndo();
             }
         });
         redoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onRedo();
             }
         });
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onSave(false, true);
             }
         });
@@ -245,6 +251,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         settingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 showExportMenu();
             }
         });
@@ -255,6 +262,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (e == null) {
+                            hidePotentialShowSubMenu();
                             showGotoPageDialog();
                         }
                     }
@@ -305,6 +313,36 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void gcInvalidate() {
         EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
+    }
+
+    @Override
+    protected void onAddNewPage() {
+        hidePotentialShowSubMenu();
+        super.onAddNewPage();
+    }
+
+    @Override
+    protected void onDeletePage() {
+        hidePotentialShowSubMenu();
+        super.onDeletePage();
+    }
+
+    @Override
+    protected void onPrevPage() {
+        hidePotentialShowSubMenu();
+        super.onPrevPage();
+    }
+
+    @Override
+    protected void onNextPage() {
+        hidePotentialShowSubMenu();
+        super.onNextPage();
+    }
+
+    private void hidePotentialShowSubMenu(){
+        if (getScribbleSubMenu().isShow()) {
+            getScribbleSubMenu().dismiss(false);
+        }
     }
 
     private void initSpanTextView() {
