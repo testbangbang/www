@@ -16,9 +16,9 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.receiver.NetworkConnectChangedReceiver;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.Question;
-import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.model.Subject;
+import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.data.model.homework.QuestionReview;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -34,7 +34,7 @@ import com.onyx.edu.homework.action.ShowAnalysisAction;
 import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
-import com.onyx.edu.homework.data.Homework;
+import com.onyx.edu.homework.data.HomeworkIntent;
 import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
@@ -58,7 +58,7 @@ public class HomeworkListActivity extends BaseActivity {
     private ActivityHomeworkListBinding binding;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
     private List<Question> questions;
-    private Homework homework;
+    private HomeworkIntent homeworkIntent;
     private RecordFragment recordFragment;
     private QuestionFragment questionFragment;
     private int currentPage = 0;
@@ -228,34 +228,31 @@ public class HomeworkListActivity extends BaseActivity {
         if (StringUtils.isNullOrEmpty(extraData)) {
             return;
         }
-        homework = JSON.parseObject(extraData, Homework.class);
+        homeworkIntent = JSON.parseObject(extraData, HomeworkIntent.class);
     }
 
     private void homeworkRequest() {
-        if (!checkWifi(true)) {
-            return;
-        }
-        if (homework == null || homework.child == null) {
+        if (homeworkIntent == null || homeworkIntent.child == null) {
             showMessage(R.string.no_find_homework);
             return;
         }
-        String libraryId = homework.child._id;
+        String libraryId = homeworkIntent.child._id;
         if (StringUtils.isNullOrEmpty(libraryId)) {
             showMessage(R.string.no_find_homework);
             return;
         }
-        DataBundle.getInstance().setHomeworkId(homework.child._id);
         showMessage(R.string.loading_questions);
         final HomeworkListActionChain actionChain = new HomeworkListActionChain(libraryId);
         actionChain.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                initToolbarTitle();
                 questions = actionChain.getQuestions();
-                if (e != null && CollectionUtils.isNullOrEmpty(questions)) {
-                    Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                //check can get homework, if not open wifi
+                if (CollectionUtils.isNullOrEmpty(questions)) {
+                    checkWifi(true);
                     return;
                 }
+                initToolbarTitle();
                 hideMessage();
                 updateViewState();
                 showTotalScore();
@@ -266,9 +263,9 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void initToolbarTitle() {
-        String title = homework.child.title;
-        Subject subject = getDataBundle().getHomeworkInfo().subject;
-        Date beginTime = getDataBundle().getHomeworkInfo().beginTime;
+        String title = homeworkIntent.child.title;
+        Subject subject = getDataBundle().getHomework().subject;
+        Date beginTime = getDataBundle().getHomework().beginTime;
         if (subject != null && !StringUtils.isNullOrEmpty(subject.name)) {
             title += "  " + getString(R.string.subject, subject.name);
         }

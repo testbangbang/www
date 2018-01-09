@@ -1,10 +1,14 @@
 package com.onyx.edu.homework.db;
 
+import com.onyx.android.sdk.data.model.Subject;
+import com.onyx.android.sdk.data.model.homework.Homework;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+
+import java.sql.Date;
 
 /**
  * Created by lxm on 2017/12/11.
@@ -22,6 +26,18 @@ public class HomeworkModel extends BaseModel {
     @Column
     private int state;
 
+    @Column
+    private Date beginTime;
+
+    @Column
+    private Date endTime;
+
+    @Column(typeConverter = ConverterSubject.class)
+    private Subject subject;
+
+    @Column
+    private String title;
+
     public String getUniqueId() {
         return uniqueId;
     }
@@ -38,9 +54,51 @@ public class HomeworkModel extends BaseModel {
         this.state = state;
     }
 
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public static HomeworkModel create(String uniqueId) {
         HomeworkModel model = new HomeworkModel();
         model.setUniqueId(uniqueId);
         return model;
+    }
+
+    public void loadFromHomeworkRequestModel(Homework requestModel) {
+        if (requestModel == null) {
+            return;
+        }
+        setBeginTime(requestModel.beginTime);
+        setEndTime(requestModel.endTime);
+        setSubject(requestModel.subject);
+        setTitle(requestModel.title);
     }
 }

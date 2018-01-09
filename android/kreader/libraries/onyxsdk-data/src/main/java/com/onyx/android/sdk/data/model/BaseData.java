@@ -89,15 +89,15 @@ public class BaseData extends BaseModel {
     }
 
     @Override
-    public void save() {
+    public boolean save() {
         beforeSave();
-        super.save();
+        return super.save();
     }
 
     @Override
-    public void save(DatabaseWrapper databaseWrapper) {
+    public boolean save(DatabaseWrapper databaseWrapper) {
         beforeSave();
-        super.save(databaseWrapper);
+        return super.save(databaseWrapper);
     }
 
     public static final String generateUniqueId() {

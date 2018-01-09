@@ -1,7 +1,7 @@
 package com.onyx.edu.homework.db;
 
 import com.alibaba.fastjson.JSON;
-import com.onyx.android.sdk.data.model.QuestionReview;
+import com.onyx.android.sdk.data.model.homework.QuestionReview;
 import com.raizlabs.android.dbflow.converter.TypeConverter;
 
 /**

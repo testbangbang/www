@@ -1,7 +1,6 @@
-package com.onyx.android.sdk.data.model;
+package com.onyx.android.sdk.data.model.homework;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by lxm on 2017/11/24.

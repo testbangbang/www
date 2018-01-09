@@ -3,11 +3,9 @@ package com.onyx.edu.homework.request;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.edu.homework.db.DBDataProvider;
 import com.onyx.edu.homework.db.QuestionModel;
 

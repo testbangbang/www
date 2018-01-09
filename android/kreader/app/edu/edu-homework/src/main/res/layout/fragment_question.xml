@@ -19,14 +19,6 @@
             android:layout_height="0dp">
 
             <TextView
-                android:textSize="@dimen/question_content_text_size"
-                android:textColor="@android:color/black"
-                android:id="@+id/question_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_toRightOf="@+id/question_type"
                 android:ellipsize="end"
                 android:layout_marginLeft="6dp"
                 android:textSize="@dimen/question_content_text_size"

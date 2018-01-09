@@ -7,9 +7,7 @@ import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
-import com.onyx.android.sdk.data.model.Question;
-import com.onyx.android.sdk.utils.Base64ImageParser;
-import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseActivity;
@@ -17,7 +15,6 @@ import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.ActivityAnswerBinding;
 import com.onyx.edu.homework.event.CloseScribbleEvent;
 import com.onyx.edu.homework.event.SaveNoteEvent;
-import com.onyx.edu.homework.utils.TextUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 

@@ -20,11 +20,10 @@ import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.Question;
-import com.onyx.android.sdk.data.model.QuestionOption;
+import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.data.model.homework.QuestionOption;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.utils.Base64ImageParser;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -92,9 +91,6 @@ public class QuestionFragment extends BaseFragment {
 
     private void initView(final Question question) {
         initViewVisibility();
-        int questionIndex = Math.max(question.QuesType - 1, 0);
-        String questionType = getResources().getStringArray(R.array.question_type_list)[questionIndex];
-        binding.questionType.setText(getString(R.string.question_type_str, questionType));
         Spanned content = question.isChoiceQuestion() ? TextUtils.fromHtml(question.content, new Base64ImageParser(getActivity()), null)
                 : null;
         binding.content.setText(content);
@@ -115,7 +111,6 @@ public class QuestionFragment extends BaseFragment {
 
     private void initViewVisibility() {
         binding.content.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
-        binding.questionType.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
         binding.draft.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
 
         boolean showScribble = !question.isChoiceQuestion();

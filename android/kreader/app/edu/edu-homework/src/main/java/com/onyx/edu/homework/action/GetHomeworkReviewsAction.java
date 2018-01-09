@@ -4,8 +4,7 @@ import android.content.Context;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseAction;
@@ -13,7 +12,6 @@ import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.request.CheckWifiRequest;
 import com.onyx.edu.homework.request.GetHomeworkReviewsRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

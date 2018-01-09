@@ -20,9 +20,9 @@ import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.raizlabs.android.dbflow.sql.language.Condition;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Operator;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
@@ -111,7 +111,7 @@ public class PushNotificationLoadRequest extends BaseCloudRequest {
 
     private QueryResult<PushNotification> fetchFromLocal() {
         Where<PushNotification> where = new Select().from(PushNotification.class).where();
-        ConditionGroup condition = getIdsCondition();
+        OperatorGroup condition = getIdsCondition();
         if (condition != null) {
             where.and(condition);
         }
@@ -200,10 +200,10 @@ public class PushNotificationLoadRequest extends BaseCloudRequest {
         }
     }
 
-    private void clearPushNotification(Condition... conditions) {
+    private void clearPushNotification(Operator... conditions) {
         Where<PushNotification> where = new Delete().from(PushNotification.class).where();
         if (conditions != null && conditions.length > 0) {
-            for (Condition condition : conditions) {
+            for (Operator condition : conditions) {
                 where.and(condition);
             }
         }
@@ -230,7 +230,7 @@ public class PushNotificationLoadRequest extends BaseCloudRequest {
                 args.order == SortOrder.Asc);
     }
 
-    private ConditionGroup getIdsCondition() {
+    private OperatorGroup getIdsCondition() {
         return DataManagerHelper.getPropertyOrCondition(idList, PushNotification_Table.productId);
     }
 }

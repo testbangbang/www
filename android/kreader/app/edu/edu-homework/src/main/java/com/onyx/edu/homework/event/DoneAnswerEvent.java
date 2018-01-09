@@ -1,6 +1,6 @@
 package com.onyx.edu.homework.event;
 
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.Question;
 
 /**
  * Created by lxm on 2017/12/9.
