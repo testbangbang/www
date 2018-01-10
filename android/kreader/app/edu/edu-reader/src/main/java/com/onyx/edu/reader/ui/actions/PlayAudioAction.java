@@ -1,12 +1,13 @@
 package com.onyx.edu.reader.ui.actions;
 
+import android.util.Base64;
+
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.reader.api.ReaderRichMedia;
-import com.onyx.android.sdk.reader.host.request.SaveAudioDataToFileRequest;
+import com.onyx.android.sdk.reader.host.request.Base64ByteArrayRequest;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 
 /**
@@ -14,6 +15,8 @@ import java.io.IOException;
  */
 
 public class PlayAudioAction extends BaseAction {
+
+    public static final String AUDIO_BASE64_PRE = "data:audio/amr;base64,";
 
     private ReaderRichMedia richMedia;
 
@@ -27,18 +30,20 @@ public class PlayAudioAction extends BaseAction {
             readerDataHolder.getMediaManager().stop();
             return;
         }
-        final SaveAudioDataToFileRequest fileRequest = new SaveAudioDataToFileRequest(richMedia.getData());
-        readerDataHolder.submitNonRenderRequest(fileRequest, new BaseCallback() {
+
+        final Base64ByteArrayRequest byteArrayRequest = new Base64ByteArrayRequest(richMedia.getData());
+        readerDataHolder.submitNonRenderRequest(byteArrayRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                playAudio(readerDataHolder, fileRequest.getFileDescriptor());
+                String url = AUDIO_BASE64_PRE + byteArrayRequest.getBase64();
+                playAudio(readerDataHolder, url);
             }
         });
     }
 
-    private void playAudio(final ReaderDataHolder readerDataHolder, FileDescriptor fileDescriptor) {
+    private void playAudio(final ReaderDataHolder readerDataHolder, String url) {
         try {
-            readerDataHolder.getMediaManager().play(fileDescriptor);
+            readerDataHolder.getMediaManager().play(url);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
