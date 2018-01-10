@@ -283,7 +283,9 @@ public class AlHyph {
 
 	@Override
 	public void finalize() throws Throwable {
-		unload();
+		// finalize method is called at random time from a different thread by JVM,
+		// so it not safe to unload here
+		//unload();
 		super.finalize();
 	}
 
