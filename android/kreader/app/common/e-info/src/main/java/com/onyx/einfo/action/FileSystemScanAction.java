@@ -16,7 +16,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.einfo.holder.LibraryDataHolder;
-import com.raizlabs.android.dbflow.sql.language.Condition;
+import com.raizlabs.android.dbflow.sql.language.Operator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -73,7 +73,7 @@ public class FileSystemScanAction extends BaseAction<LibraryDataHolder> {
                                        final String storageId, final HashSet<String> filePathSet) {
         QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.CreationTime, SortOrder.Desc);
         queryArgs.propertyList.add(Metadata_Table.nativeAbsolutePath);
-        Condition condition;
+        Operator condition;
         if (StringUtils.isNullOrEmpty(storageId)) {
             condition = Metadata_Table.storageId.isNull();
         } else {

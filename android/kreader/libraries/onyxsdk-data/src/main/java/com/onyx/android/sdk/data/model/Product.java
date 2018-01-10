@@ -95,8 +95,8 @@ public class Product extends BaseData {
      * TransactionManager.getInstance().saveOnSaveQueue(Collection<T> models);
      */
     @Override
-    public void save() {
-        super.save();
+    public boolean save() {
+        return super.save();
     }
 
     public Link getDownloadLink(final String type, final String provider) {
