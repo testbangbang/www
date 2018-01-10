@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -31,6 +32,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle.Percentage;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.ui.view.AlignTextView;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
+import com.onyx.android.sdk.ui.view.OnyxCheckBox;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
 import com.onyx.android.sdk.ui.view.OnyxRadioButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -277,6 +279,7 @@ public class DialogTextStyle extends DialogBase {
         SingletonSharedPreference.setLastLeftMargin(originalStyle.getPageMargin().getLeftMargin().getPercent());
         SingletonSharedPreference.setLastRightMargin(originalStyle.getPageMargin().getRightMargin().getPercent());
         SingletonSharedPreference.setLastLineSpacing(originalStyle.getLineSpacing().getPercent());
+        SingletonSharedPreference.setLastHyphenEnable(originalStyle.isHyphenEnabled());
     }
 
     private View initFontFaceView(final DeviceUtils.FontType fontType) {
@@ -699,6 +702,16 @@ public class DialogTextStyle extends DialogBase {
             });
         }
 
+        OnyxCheckBox hyphenEnableCheckBox = fontSpacingViewHolder.getView(R.id.text_style_hyphen_enable);
+        hyphenEnableCheckBox.setChecked(getReaderStyle().isHyphenEnabled());
+        hyphenEnableCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SingletonSharedPreference.setLastHyphenEnable(isChecked);
+                getReaderStyle().setHyphenEnabled(isChecked);
+                updateReaderStyle(getReaderStyle());
+            }
+        });
 
         return view;
     }

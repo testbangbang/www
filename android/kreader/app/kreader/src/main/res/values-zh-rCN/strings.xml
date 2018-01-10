@@ -301,4 +301,5 @@
   <string name="network_data">联网数据</string>
   <string name="local_data">本地数据</string>
     <string name="file_not_exists">文件不存在!</string>
+  <string name="show_hyphenation">显示连词符</string>
 </resources>
