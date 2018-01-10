@@ -51,7 +51,7 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -213,12 +213,12 @@ public class LibraryActivity extends BaseActivity {
         pageIndicator.updateCurrentPage(totalCount);
     }
 
-    private ConditionGroup getExcludeDirCondition() {
+    private OperatorGroup getExcludeDirCondition() {
         List<String> list = DeviceConfig.sharedInstance(this).getBookExcludeDirectories();
         if (CollectionUtils.isNullOrEmpty(list)) {
             return null;
         }
-        ConditionGroup group = ConditionGroup.clause();
+        OperatorGroup group = OperatorGroup.clause();
         for (String name : list) {
             group.and(QueryBuilder.matchNotLike(Metadata_Table.nativeAbsolutePath,
                     EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath() + File.separator + name));
