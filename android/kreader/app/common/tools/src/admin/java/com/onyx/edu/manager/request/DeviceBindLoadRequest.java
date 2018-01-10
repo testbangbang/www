@@ -8,9 +8,9 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.model.v2.DeviceBind_Table;
 import com.onyx.android.sdk.data.request.data.db.BaseDBRequest;
-import com.raizlabs.android.dbflow.sql.language.Condition;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.Operator;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 
@@ -24,9 +24,9 @@ public class DeviceBindLoadRequest extends BaseDBRequest {
 
     private boolean onlyCount = false;
     private QueryResult<DeviceBind> queryResult;
-    private ConditionGroup condition;
+    private OperatorGroup condition;
 
-    public DeviceBindLoadRequest(ConditionGroup condition, boolean onlyCount) {
+    public DeviceBindLoadRequest(OperatorGroup condition, boolean onlyCount) {
         this.condition = condition;
         this.onlyCount = onlyCount;
     }

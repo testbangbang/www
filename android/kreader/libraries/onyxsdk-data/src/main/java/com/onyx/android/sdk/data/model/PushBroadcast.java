@@ -20,11 +20,11 @@ public class PushBroadcast extends BaseData {
     public boolean isReaded;
 
     @Override
-    public void save() {
+    public boolean save() {
         Date date = new Date();
         setCreatedAt(date);
         setUpdatedAt(date);
-        super.save();
+        return super.save();
     }
 
     public static int queryUnReadedBroadcast() {

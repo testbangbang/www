@@ -6,8 +6,8 @@ import com.onyx.android.sdk.data.model.v2.PushNotification;
 import com.onyx.android.sdk.data.model.v2.PushNotification_Table;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class PushNotificationDeleteRequest extends BaseCloudRequest {
                 .and(getIdsCondition()).execute();
     }
 
-    private ConditionGroup getIdsCondition() {
+    private OperatorGroup getIdsCondition() {
         return DataManagerHelper.getPropertyOrCondition(idList, PushNotification_Table.productId);
     }
 }

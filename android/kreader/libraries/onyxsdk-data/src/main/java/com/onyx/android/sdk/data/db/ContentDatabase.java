@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.Metadata_Table;
+import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.model.Thumbnail_Table;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.model.v2.DeviceBind_Table;
@@ -52,16 +55,51 @@ public class ContentDatabase {
     }
 
     @Migration(version = 4, database = ContentDatabase.class)
-    public static class Version4Migration extends AlterTableMigration<Metadata> {
-        public Version4Migration(Class<Metadata> table) {
+    public static class Version4MetadataMigration extends AlterTableMigration<Metadata> {
+        public Version4MetadataMigration(Class<Metadata> table) {
+            super(table);
+        }
+
+        @Override
+        public void onPreMigrate() {
+            addColumn(SQLiteType.INTEGER, Metadata_Table.ordinal.getNameAlias().name());
+        }
+    }
+
+    @Migration(version = 4, database = ContentDatabase.class)
+    public static class Version4CloudMetadataMigration extends AlterTableMigration<CloudMetadata> {
+        public Version4CloudMetadataMigration(Class<CloudMetadata> table) {
+            super(table);
+        }
+
+        @Override
+        public void onPreMigrate() {
+            addColumn(SQLiteType.INTEGER, CloudMetadata_Table.ordinal.getNameAlias().name());
+        }
+    }
+
+    @Migration(version = 4, database = ContentDatabase.class)
+    public static class Version4DeviceBindMigration extends AlterTableMigration<DeviceBind> {
+        public Version4DeviceBindMigration(Class<DeviceBind> table) {
             super(table);
         }
 
         @Override
         public void onPreMigrate() {
             addColumn(SQLiteType.TEXT, DeviceBind_Table.tag.getNameAlias().name());
-            addColumn(SQLiteType.TEXT, Metadata_Table.ordinal.getNameAlias().name());
-            addColumn(SQLiteType.TEXT, CloudMetadata_Table.ordinal.getNameAlias().name());
+        }
+    }
+
+    @Migration(version = 4, database = ContentDatabase.class)
+    public static class Version4ThumbnailMigration extends AlterTableMigration<Thumbnail> {
+        public Version4ThumbnailMigration(Class<Thumbnail> table) {
+            super(table);
+        }
+
+        @Override
+        public void onPreMigrate() {
+            addColumn(SQLiteType.TEXT, Thumbnail_Table.originContentPath.getNameAlias().name());
+            addColumn(SQLiteType.TEXT, Thumbnail_Table._data.getNameAlias().name());
         }
     }
 

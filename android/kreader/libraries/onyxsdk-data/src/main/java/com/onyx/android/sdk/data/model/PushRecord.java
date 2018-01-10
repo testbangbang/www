@@ -38,7 +38,7 @@ public class PushRecord extends BaseData {
     }
 
     @Override
-    public void save() {
-        super.save();
+    public boolean save() {
+        return super.save();
     }
 }

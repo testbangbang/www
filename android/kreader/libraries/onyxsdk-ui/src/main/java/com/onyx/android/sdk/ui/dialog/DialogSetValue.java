@@ -107,12 +107,13 @@ public class DialogSetValue extends OnyxAlertDialog {
                     public void onClick(View v) {
                         try {
                             int editTextValue = Integer.parseInt(mValueControlEditText.getText().toString());
-                            if (mValueControlSeekBar.getProgress() + seekBarMinValue ==
-                                    editTextValue) {
-                                callback.done(true, mValueControlSeekBar.getProgress());
-                                dismiss();
+                            if (mValueControlSeekBar.getProgress() + seekBarMinValue == editTextValue) {
+                                dismissWithCallback();
                             } else {
-                                setSeekBarValue(editTextValue);
+                                boolean success = setSeekBarValue(editTextValue);
+                                if (success) {
+                                    dismissWithCallback();
+                                }
                             }
                         } catch (Exception e) {
                             mValueControlEditText.setError(illegalErrorString);
@@ -126,6 +127,11 @@ public class DialogSetValue extends OnyxAlertDialog {
                     }
                 }));
         super.onCreate(savedInstanceState);
+    }
+
+    private void dismissWithCallback() {
+        callback.done(true, mValueControlSeekBar.getProgress());
+        dismiss();
     }
 
     private void initViews(View parentView) {
