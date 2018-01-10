@@ -791,6 +791,7 @@ public class PinyinIME extends InputMethodService {
 
     private void updateComposingText(boolean visible) {
         if (!visible) {
+            setCandidatesViewShown(false);
             mComposingView.setVisibility(View.INVISIBLE);
         } else {
             mComposingView.setDecodingInfo(mDecInfo, mImeState);

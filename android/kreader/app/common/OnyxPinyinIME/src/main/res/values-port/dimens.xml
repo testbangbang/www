@@ -15,5 +15,10 @@
 -->
 <resources>
     <dimen name="candidate_margin_left_right">3dip</dimen>
-    <dimen name="composing_height">18dip</dimen>
+    <dimen name="composing_height">24dip</dimen>
+    <dimen name="key_height">57.5dp</dimen>
+    <dimen name="candidates_area_height">50dp</dimen>
+    <dimen name="normal_key_text_size">42px</dimen>
+    <dimen name="function_key_text_size">42px</dimen>
+    <dimen name="candidate_text_size">42px</dimen>
 </resources>
