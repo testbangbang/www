@@ -29,9 +29,9 @@ public class ReaderMediaManager {
         getMediaPlayer().reset();
     }
 
-    public void play(FileDescriptor fd) throws IOException {
+    public void play(String url) throws IOException {
         getMediaPlayer().reset();
-        getMediaPlayer().setDataSource(fd);
+        getMediaPlayer().setDataSource(url);
         getMediaPlayer().prepare();
         getMediaPlayer().start();
     }
