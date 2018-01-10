@@ -2,11 +2,13 @@ package com.onyx.android.note.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
@@ -18,6 +20,7 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.request.shape.UpdateScreenWritingExcludeRegionRequest;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
@@ -117,7 +120,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         });
         createAdapter();
         parentLayout.addView(this, setMenuPosition(isShowStatusBar));
-        this.setVisibility(View.GONE);
+        setVisibility(View.GONE);
     }
 
     public
@@ -165,10 +168,38 @@ public class ScribbleSubMenu extends RelativeLayout {
         dismiss(true);
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        updateWritingExcludeRegion();
+    }
+
+    private void updateWritingExcludeRegion(){
+        post(new Runnable() {
+            @Override
+            public void run() {
+                Rect excludeRect;
+                switch (getVisibility()) {
+                    case VISIBLE:
+                        excludeRect = new Rect(mMenuContentView.getLeft(), mMenuContentView.getTop(),
+                                mMenuContentView.getRight(), mMenuContentView.getBottom());
+                        break;
+                    default:
+                        excludeRect = new Rect();
+                        break;
+                }
+                UpdateScreenWritingExcludeRegionRequest updateScreenWritingExcludeRegionRequest =
+                        new UpdateScreenWritingExcludeRegionRequest(excludeRect);
+                NoteApplication.getInstance().getNoteViewHelper().submit(getContext(),
+                        updateScreenWritingExcludeRegionRequest, null);
+            }
+        });
+    }
+
     /**
      * @param isCancel if no submenu item was previous selected -> true,otherwise false.
      */
-    private void dismiss(boolean isCancel) {
+    public void dismiss(boolean isCancel) {
         if (mMenuCallback != null && isCancel) {
             mMenuCallback.onCancel();
         }
