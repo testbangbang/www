@@ -2,6 +2,7 @@ package com.onyx.android.eschool.manager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.AuthTokenAction;
@@ -25,7 +26,6 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
-import com.raizlabs.android.dbflow.annotation.NotNull;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -49,7 +49,7 @@ public class PushManager {
         this.actionContext = actionContext;
     }
 
-    public void addPushTypeFilterCallback(@NotNull String type, @NotNull PushCallback callback) {
+    public void addPushTypeFilterCallback(@NonNull String type, @NonNull PushCallback callback) {
         pushTypeFilterMap.put(type, callback);
     }
 

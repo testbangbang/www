@@ -82,14 +82,14 @@ public class ReaderNoteDataProvider {
         database.endTransaction();
     }
 
-    public static void svaeShapeListInBackground(final Context context,
+    public static void saveShapeListInBackground(final Context context,
                                                  final Collection<ReaderNoteShapeModel> list,
                                                  final DataProviderCallback callback) {
         final DatabaseDefinition database= FlowManager.getDatabase(ReaderNoteDatabase.NAME);
         ProcessModelTransaction<ReaderNoteShapeModel> processModelTransaction =
                 new ProcessModelTransaction.Builder<>(new ProcessModelTransaction.ProcessModel<ReaderNoteShapeModel>() {
                     @Override
-                    public void processModel(ReaderNoteShapeModel model) {
+                    public void processModel(ReaderNoteShapeModel model, DatabaseWrapper wrapper) {
                         model.save();
                     }
                 }).processListener(new ProcessModelTransaction.OnModelProcessListener<ReaderNoteShapeModel>() {
