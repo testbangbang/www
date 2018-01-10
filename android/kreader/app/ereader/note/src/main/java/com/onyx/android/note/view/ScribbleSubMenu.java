@@ -13,7 +13,6 @@ import com.onyx.android.note.R;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
 import com.onyx.android.note.utils.NoteAppConfig;
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GAdapter;
@@ -21,6 +20,7 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.request.shape.UpdateScreenWritingExcludeRegionRequest;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
@@ -120,7 +120,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         });
         createAdapter();
         parentLayout.addView(this, setMenuPosition(isShowStatusBar));
-        this.setVisibility(View.GONE);
+        setVisibility(View.GONE);
     }
 
     public
@@ -162,11 +162,16 @@ public class ScribbleSubMenu extends RelativeLayout {
         updateSubMenuIndicatorByCurrentStatus(category, isLineLayoutMode);
         setFocusable(true);
         setVisibility(View.VISIBLE);
-        updateWritingExcludeRegion();
     }
 
     public void dismiss() {
         dismiss(true);
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        updateWritingExcludeRegion();
     }
 
     private void updateWritingExcludeRegion(){
@@ -174,7 +179,6 @@ public class ScribbleSubMenu extends RelativeLayout {
             @Override
             public void run() {
                 Rect excludeRect;
-                Rect[] excludeRects = new Rect[1];
                 switch (getVisibility()) {
                     case VISIBLE:
                         excludeRect = new Rect(mMenuContentView.getLeft(), mMenuContentView.getTop(),
@@ -184,8 +188,10 @@ public class ScribbleSubMenu extends RelativeLayout {
                         excludeRect = new Rect();
                         break;
                 }
-                excludeRects[0] = excludeRect;
-                EpdController.setScreenHandWritingRegionExclude(NoteApplication.getInstance().getNoteViewHelper().getView(), excludeRects);
+                UpdateScreenWritingExcludeRegionRequest updateScreenWritingExcludeRegionRequest =
+                        new UpdateScreenWritingExcludeRegionRequest(excludeRect);
+                NoteApplication.getInstance().getNoteViewHelper().submit(getContext(),
+                        updateScreenWritingExcludeRegionRequest, null);
             }
         });
     }
@@ -198,7 +204,6 @@ public class ScribbleSubMenu extends RelativeLayout {
             mMenuCallback.onCancel();
         }
         setVisibility(GONE);
-        updateWritingExcludeRegion();
     }
 
     private void updateButtonIndicator(GObject menuItem) {
