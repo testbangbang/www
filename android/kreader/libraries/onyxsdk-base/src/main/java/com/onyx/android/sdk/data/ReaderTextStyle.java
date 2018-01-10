@@ -242,6 +242,7 @@ public class ReaderTextStyle {
     private CharacterIndent indent = DEFAULT_CHARACTER_INDENT;
     private Percentage lineSpacing = DEFAULT_LINE_SPACING;
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
+    private boolean hyphenEnabled = true;
 
     public static float limitFontSize(float newSize) {
         final float minSize = MIN_FONT_SIZE.getValue();
@@ -306,7 +307,8 @@ public class ReaderTextStyle {
 
     public static ReaderTextStyle create(String fontface, SPUnit fontSize, Percentage lineSpacing,
                                          Percentage leftMargin, Percentage topMargin,
-                                         Percentage rightMargin, Percentage bottomMargin) {
+                                         Percentage rightMargin, Percentage bottomMargin,
+                                         boolean hyphenEnabled) {
         ReaderTextStyle style = new ReaderTextStyle();
         style.fontFace = fontface;
         style.fontSize = fontSize;
@@ -315,6 +317,7 @@ public class ReaderTextStyle {
         style.pageMargin.setTopMargin(topMargin);
         style.pageMargin.setRightMargin(rightMargin);
         style.pageMargin.setBottomMargin(bottomMargin);
+        style.hyphenEnabled = hyphenEnabled;
         return style;
     }
 
@@ -329,6 +332,7 @@ public class ReaderTextStyle {
         copy.indent = CharacterIndent.create(style.indent.getIndent());
         copy.lineSpacing = Percentage.create(style.lineSpacing.getPercent());
         copy.pageMargin = PageMargin.copy(style.pageMargin);
+        copy.hyphenEnabled = style.hyphenEnabled;
         return copy;
     }
 
@@ -398,5 +402,13 @@ public class ReaderTextStyle {
 
     public void setPageMargin(PageMargin pageMargin) {
         this.pageMargin = pageMargin;
+    }
+
+    public boolean isHyphenEnabled() {
+        return hyphenEnabled;
+    }
+
+    public void setHyphenEnabled(boolean hyphenEnabled) {
+        this.hyphenEnabled = hyphenEnabled;
     }
 }

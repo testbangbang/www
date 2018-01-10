@@ -61,6 +61,7 @@ public class BaseOptions {
     transient static public final String PAGE_TOP_MARGIN = "page_top_margin";
     transient static public final String PAGE_RIGHT_MARGIN = "page_right_margin";
     transient static public final String PAGE_BOTTOM_MARGIN = "page_bottom_margin";
+    transient static public final String HYPHEN_ENABLED = "hyphen_enabled";
     transient static public final String REFLOW_SETTINGS = "reflow_settings";
     transient static public final String WAVEFORM_MODE = "waveform";
     transient static public final String RESET_SCALE = "reset_scale";
@@ -530,6 +531,17 @@ public class BaseOptions {
 
     public void setBottomMargin(int value) {
         backend.putInt(PAGE_BOTTOM_MARGIN, value);
+    }
+
+    public boolean isHyphenEnabled() {
+        if (backend.hasKey(HYPHEN_ENABLED)) {
+            return backend.getBoolean(HYPHEN_ENABLED);
+        }
+        return true;
+    }
+
+    public void setHyphenEnabled(boolean enabled) {
+        backend.putBoolean(HYPHEN_ENABLED, enabled);
     }
 
     public void setReflowOptions(final String settings) {
