@@ -18,10 +18,10 @@
   skb_cache_flag="true"
   qwerty="true"
   qwerty_uppercase="true"
-  width="10%p"
+  width="10.02%p"
   height="25%p"
-  key_ymargin="1.2%p"
-  key_xmargin="1.0%p"
+  key_ymargin="2.8%p"
+  key_xmargin="0.8%p"
   key_type="0"
   repeat="false"
   balloon="true">

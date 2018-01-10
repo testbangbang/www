@@ -18,6 +18,7 @@ package com.onyx.pinyinime;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -122,18 +123,13 @@ public class Environment {
             mScreenWidth = d.getWidth();
             mScreenHeight = d.getHeight();
 
-            int scale;
-            if (mScreenHeight > mScreenWidth) {
-                mKeyHeight = (int) (mScreenHeight * KEY_HEIGHT_RATIO_PORTRAIT);
-                mCandidatesAreaHeight = (int) (mScreenHeight * CANDIDATES_AREA_HEIGHT_RATIO_PORTRAIT);
-                scale = mScreenWidth;
-            } else {
-                mKeyHeight = (int) (mScreenHeight * KEY_HEIGHT_RATIO_LANDSCAPE);
-                mCandidatesAreaHeight = (int) (mScreenHeight * CANDIDATES_AREA_HEIGHT_RATIO_LANDSCAPE);
-                scale = mScreenHeight;
-            }
-            mNormalKeyTextSize = (int) (scale * NORMAL_KEY_TEXT_SIZE_RATIO);
-            mFunctionKeyTextSize = (int) (scale * FUNCTION_KEY_TEXT_SIZE_RATIO);
+            Resources res = context.getResources();
+            mKeyHeight = res.getDimensionPixelSize(R.dimen.key_height);
+            mCandidatesAreaHeight = res.getDimensionPixelSize(R.dimen.candidates_area_height);
+            mNormalKeyTextSize = res.getDimensionPixelSize(R.dimen.normal_key_text_size);
+            mFunctionKeyTextSize = res.getDimensionPixelSize(R.dimen.function_key_text_size);
+
+            int scale = mScreenHeight > mScreenWidth ?  mScreenWidth : mScreenWidth;
             mNormalBalloonTextSize = (int) (scale * NORMAL_BALLOON_TEXT_SIZE_RATIO);
             mFunctionBalloonTextSize = (int) (scale * FUNCTION_BALLOON_TEXT_SIZE_RATIO);
             mKeyBalloonWidthPlus = (int) (scale * KEY_BALLOON_WIDTH_PLUS_RATIO);

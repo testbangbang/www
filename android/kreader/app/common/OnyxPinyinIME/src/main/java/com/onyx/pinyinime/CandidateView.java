@@ -224,6 +224,9 @@ public class CandidateView extends View {
 
     private int mLocationTmp[] = new int[2];
 
+    private boolean shouldDrawVerticalSeparator = false;
+    private boolean shouldDrawActiveHighlight = false;
+
     public CandidateView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -244,6 +247,7 @@ public class CandidateView extends View {
         mNormalCandidateColor = mImeCandidateColor;
         mActiveCandidateColor = r.getColor(R.color.active_candidate_color);
 
+        mCandidateTextSize = r.getDimensionPixelSize(R.dimen.candidate_text_size);
         mCandidatesPaint = new Paint();
         mCandidatesPaint.setAntiAlias(true);
 
@@ -284,10 +288,8 @@ public class CandidateView extends View {
 
         if (mDecInfo.candidatesFromApp()) {
             mNormalCandidateColor = mRecommendedCandidateColor;
-            mCandidateTextSize = mRecommendedCandidateTextSize;
         } else {
             mNormalCandidateColor = mImeCandidateColor;
-            mCandidateTextSize = mImeCandidateTextSize;
         }
         if (mCandidatesPaint.getTextSize() != mCandidateTextSize) {
             mCandidatesPaint.setTextSize(mCandidateTextSize);
@@ -379,7 +381,6 @@ public class CandidateView extends View {
         mImeCandidateTextSize = textSize;
         mRecommendedCandidateTextSize = textSize * 3 / 4;
         if (null == mDecInfo) {
-            mCandidateTextSize = mImeCandidateTextSize;
             mCandidatesPaint.setTextSize(mCandidateTextSize);
             mFmiCandidates = mCandidatesPaint.getFontMetricsInt();
             mSuspensionPointsWidth =
@@ -402,8 +403,8 @@ public class CandidateView extends View {
         mFmiFootnote = mFootnotePaint.getFontMetricsInt();
 
         // When the size is changed, the first page will be displayed.
-        mPageNo = 0;
-        mActiveCandInPage = 0;
+        // mPageNo = 0;
+        // mActiveCandInPage = 0;
     }
 
     private boolean calculatePage(int pageNo) {
@@ -520,7 +521,7 @@ public class CandidateView extends View {
 
             float itemTotalWidth = candidateWidth + 2 * candMargin;
 
-            if (mActiveCandInPage == i && mEnableActiveHighlight) {
+            if (mActiveCandInPage == i && mEnableActiveHighlight && shouldDrawActiveHighlight) {
                 mActiveCellRect.set(xPos, getPaddingTop() + 1, xPos
                         + itemTotalWidth, getHeight() - getPaddingBottom() - 1);
                 mActiveCellDrawable.setBounds((int) mActiveCellRect.left,
@@ -582,6 +583,9 @@ public class CandidateView extends View {
     }
 
     private float drawVerticalSeparator(Canvas canvas, float xPos) {
+        if (!shouldDrawVerticalSeparator) {
+            return 0;
+        }
         mSeparatorDrawable.setBounds((int) xPos, getPaddingTop(), (int) xPos
                 + mSeparatorDrawable.getIntrinsicWidth(), getMeasuredHeight()
                 - getPaddingBottom());
