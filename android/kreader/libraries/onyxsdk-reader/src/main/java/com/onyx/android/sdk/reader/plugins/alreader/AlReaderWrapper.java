@@ -21,7 +21,6 @@ import com.neverland.engbook.forpublic.AlRect;
 import com.neverland.engbook.forpublic.AlTapInfo;
 import com.neverland.engbook.forpublic.AlTextOnScreen;
 import com.neverland.engbook.forpublic.EngBookMyType;
-import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlStyles;
@@ -161,6 +160,7 @@ public class AlReaderWrapper {
                 style.getPageMargin().getTopMargin(),
                 style.getPageMargin().getRightMargin(),
                 style.getPageMargin().getBottomMargin());
+        updateHyphenEnabled(style.isHyphenEnabled());
         bookEng.setNewProfileParameters(profile);
         textStyle = style;
 
@@ -265,6 +265,10 @@ public class AlReaderWrapper {
         profile.setMarginTop(top.getPercent());
         profile.setMarginRight(right.getPercent());
         profile.setMarginBottom(bottom.getPercent());
+    }
+
+    public void updateHyphenEnabled(final boolean enabled) {
+        profile.hyphenEnabled = enabled;
     }
 
     public void draw(final Bitmap bitmap, final int width, final int height) {

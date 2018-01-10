@@ -117,6 +117,7 @@ public class RestoreRequest extends BaseReaderRequest {
         int topMargin = getTopMargin();
         int rightMargin = getRightMargin();
         int bottomMargin = getBottomMargin();
+        boolean hyphenEnabled = isHyphenEnabled();
 
         ReaderTextStyle style = ReaderTextStyle.create(fontface,
                 ReaderTextStyle.SPUnit.create(fontSize),
@@ -124,7 +125,8 @@ public class RestoreRequest extends BaseReaderRequest {
                 ReaderTextStyle.Percentage.create(leftMargin),
                 ReaderTextStyle.Percentage.create(topMargin),
                 ReaderTextStyle.Percentage.create(rightMargin),
-                ReaderTextStyle.Percentage.create(bottomMargin));
+                ReaderTextStyle.Percentage.create(bottomMargin),
+                hyphenEnabled);
         reader.getReaderLayoutManager().setStyle(style);
     }
 
@@ -190,6 +192,10 @@ public class RestoreRequest extends BaseReaderRequest {
             bottomMargin = SingletonSharedPreference.getLastBottomMargin(bottomMargin);
         }
         return bottomMargin;
+    }
+
+    private boolean isHyphenEnabled() {
+        return baseOptions.isHyphenEnabled();
     }
 
     private ReaderTextStyle.PageMargin getDefaultPageMargin(Context context) {

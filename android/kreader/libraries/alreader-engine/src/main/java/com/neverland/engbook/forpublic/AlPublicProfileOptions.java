@@ -96,6 +96,8 @@ public class AlPublicProfileOptions {
      */
     public boolean		        notesOnPage = false;
 
+	public boolean		        hyphenEnabled = true;
+
 	/**
 	 * значение 3 отступов для стилей
 	 * 0..99 - в пикселях

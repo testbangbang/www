@@ -19,6 +19,7 @@ public class AlPreferenceOptions {
 	public boolean		notesOnPage;
 	public boolean 		isASRoll;
 	public boolean		useSoftHyphen;
+	public boolean		hyphenEnabled;
 
 	public boolean		useAutoPageSize;
 	public boolean		needCalcAutoPageSize;
