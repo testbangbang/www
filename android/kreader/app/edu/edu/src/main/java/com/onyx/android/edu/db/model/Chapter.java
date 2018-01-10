@@ -4,7 +4,6 @@ import com.onyx.android.edu.db.dataprovider.QuizDataProvider;
 import com.onyx.android.edu.db.manage.AppDatabase;
 import com.onyx.android.edu.db.typeconverter.QuizIdMapConverter;
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ModelContainer;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.util.List;
