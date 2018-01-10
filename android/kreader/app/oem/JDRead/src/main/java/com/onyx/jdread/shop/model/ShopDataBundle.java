@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.model;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.jdread.main.common.AppBaseInfo;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -18,6 +19,7 @@ public class ShopDataBundle {
     private DataManager dataManager;
     private ShopCartModel shopCartModel;
     private RankViewModel rankViewModel;
+    private BookDetailResultBean.Detail bookDetail;
     private ViewAllViewModel viewAllViewModel;
 
     private ShopDataBundle() {
@@ -113,5 +115,13 @@ public class ShopDataBundle {
             shopCartModel = new ShopCartModel();
         }
         return shopCartModel;
+    }
+
+    public void setBookDetail(BookDetailResultBean.Detail bookDetail) {
+        this.bookDetail = bookDetail;
+    }
+
+    public BookDetailResultBean.Detail getBookDetail() {
+        return bookDetail;
     }
 }

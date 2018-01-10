@@ -1,19 +1,17 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.shop.cloud.api.GetBookModuleListService;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModuleListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ModulesBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by jackdeng on 2017/12/12.
@@ -43,7 +41,7 @@ public class RxRequestBookModuleList extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        GetBookModuleListService getCommonService = init(CloudApiContext.getJDBooxBaseUrl());
+        ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
         Call<BookModuleListResultBean> call = getCall(getCommonService);
         bookModuleListResultBean = done(call);
         checkQuestResult();
@@ -68,19 +66,10 @@ public class RxRequestBookModuleList extends RxBaseCloudRequest {
         }
     }
 
-    private Call<BookModuleListResultBean> getCall(GetBookModuleListService getCommonService) {
+    private Call<BookModuleListResultBean> getCall(ReadContentService getCommonService) {
         return getCommonService.getBookShopModuleList(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
                 CloudApiContext.BookShopModuleList.API_GET_MAIN_THEME_INFO,
                 baseRequestBean.getBody()
         );
-    }
-
-    private GetBookModuleListService init(String URL) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
-                .client(EnhancedCall.getClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        return retrofit.create(GetBookModuleListService.class);
     }
 }
