@@ -15,6 +15,7 @@ import com.onyx.android.sdk.reader.api.ReaderFormRadioButton;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioGroup;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
@@ -57,6 +58,7 @@ public class ReaderUserDataInfo {
     private Map<String, List<ReaderSelection>> pageLinkMap = new HashMap<>();
     private Map<String, List<ReaderImage>> pageImageMap = new HashMap<>();
     private Map<String, List<ReaderFormField>> formFieldMap = new HashMap<>();
+    private Map<String, List<ReaderRichMedia>> richMediaMap = new HashMap<>();
 
     public void setDocumentPath(final String path) {
         documentPath = path;
@@ -375,6 +377,14 @@ public class ReaderUserDataInfo {
         return formFieldMap.get(pageInfo.getName());
     }
 
+    public boolean hasRichMedias(final PageInfo pageInfo) {
+        return richMediaMap.containsKey(pageInfo.getName());
+    }
+
+    public List<ReaderRichMedia> getRichMedias(final PageInfo pageInfo) {
+        return richMediaMap.get(pageInfo.getName());
+    }
+
     public boolean loadFormFields(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for (PageInfo pageInfo : visiblePages) {
             List<ReaderFormField> fields = new ArrayList<>();
@@ -393,6 +403,22 @@ public class ReaderUserDataInfo {
                 }
                 formFieldMap.put(pageInfo.getName(), fields);
             }
+        }
+        return true;
+    }
+
+    public boolean loadReaderRichMedia(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
+        for (PageInfo pageInfo : visiblePages) {
+            List<ReaderRichMedia> richMedias = reader.getNavigator().getRichMedias(pageInfo.getPosition());
+            if (CollectionUtils.isNullOrEmpty(richMedias)) {
+                continue;
+            }
+            List<ReaderRichMedia> medias = new ArrayList<>();
+            for (ReaderRichMedia richMedia : richMedias) {
+                translateToScreen(pageInfo, richMedia.getRectangle());
+                medias.add(richMedia);
+            }
+            richMediaMap.put(pageInfo.getName(), medias);
         }
         return true;
     }
