@@ -15,7 +15,7 @@
 -->
 <resources>
     <color name="label_color">@android:color/black</color>
-    <color name="label_color_hl0">@android:color/white</color>
+    <color name="label_color_hl0">@android:color/black</color>
     <color name="balloon_color">#ff000000</color>
     <color name="candidate_color">#ff000000</color>
     <color name="active_candidate_color">#ff000000</color>

@@ -21,4 +21,7 @@
     <dimen name="normal_key_text_size">42px</dimen>
     <dimen name="function_key_text_size">42px</dimen>
     <dimen name="candidate_text_size">42px</dimen>
+    <dimen name="key_bg_border_width">1dp</dimen>
+    <dimen name="key_hl_bg_height">4px</dimen>
+    <dimen name="key_hl_bg_radius">1dp</dimen>
 </resources>
