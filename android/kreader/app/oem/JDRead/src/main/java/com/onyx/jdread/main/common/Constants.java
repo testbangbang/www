@@ -31,6 +31,7 @@ public class Constants {
 
     public static final int BOOK_COMMENT_PAGE_SIZE = 20;
     public static final int BOOK_CATEGORY_PAGE_SIZE = 20;
+    public static final String BOOK_PAGE_SIZE = "20";
     public static final int PAGE_STEP = 1;
     public static final String BOOK_FORMAT = ".JEB";
     public static final String LOGIN_CODE_SUCCESS = "0";

@@ -6,7 +6,6 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
-import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookModule;
 
@@ -31,7 +30,6 @@ public class BookModelAction extends BaseAction<ShopDataBundle> {
 
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
-        shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
