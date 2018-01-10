@@ -2,15 +2,13 @@ package com.onyx.jdread.shop.request.cloud;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.shop.cloud.api.GetCategoryLevel2BooksService;
+import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryLevel2BooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 
 import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by hehai on 17-3-30.
@@ -42,7 +40,7 @@ public class RxRequestCategoryLevel2Books extends RxBaseCloudRequest {
 
     private void executeCloudRequest() {
         setBaseRequestBeanParams();
-        GetCategoryLevel2BooksService getCommonService = init(CloudApiContext.getJDBooxBaseUrl());
+        ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
         Call<CategoryLevel2BooksResultBean> call = getCall(getCommonService);
         categoryLevel2BooksResultBean = done(call);
         checkQuestResult();
@@ -72,18 +70,9 @@ public class RxRequestCategoryLevel2Books extends RxBaseCloudRequest {
         }
     }
 
-    private Call<CategoryLevel2BooksResultBean> getCall(GetCategoryLevel2BooksService getCommonService) {
+    private Call<CategoryLevel2BooksResultBean> getCall(ReadContentService getCommonService) {
         return getCommonService.getCategoryLevel2BookList(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
                 CloudApiContext.CategoryLevel2BookList.CATEGORY_LEVEL2_BOOK_LIST,
                 baseRequestBean.getBody());
-    }
-
-    private GetCategoryLevel2BooksService init(String URL) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
-                .client(EnhancedCall.getClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        return retrofit.create(GetCategoryLevel2BooksService.class);
     }
 }

@@ -13,6 +13,8 @@ import java.net.CookiePolicy;
 import java.net.HttpCookie;
 
 import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by huxiaomao on 2016/12/2.
@@ -189,5 +191,14 @@ public class CloudApiContext {
                 .cookieJar(new JavaNetCookieJar(addCookie()))
                 .build();
         return client;
+    }
+
+    public static ReadContentService getService(String baseUrl) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(CloudApiContext.getClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(ReadContentService.class);
     }
 }
