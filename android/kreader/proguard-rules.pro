@@ -131,3 +131,6 @@
 -dontwarn com.onyx.android.sdk.wifi.**
 
 
+-dontwarn com.evernote.**
+-keep class com.evernote.** { *; }
+-dontwarn org.**

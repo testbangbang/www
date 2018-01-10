@@ -4,9 +4,13 @@
 
     <data class="ItemPersonalBookBinding">
 
+        <import type="com.onyx.jdread.util.Utils" />
+
+        <import type="android.view.View" />
+
         <variable
-            name="url"
-            type="String" />
+            name="metadata"
+            type="com.onyx.android.sdk.data.model.Metadata" />
     </data>
 
     <LinearLayout
@@ -20,7 +24,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:scaleType="centerCrop"
-            bind:personalImage="@{url}" />
+            bind:personalImage="@{metadata.coverUrl}" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -36,7 +40,7 @@
                 android:ellipsize="middle"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="saogjaogo"
+                android:text="@{metadata.name}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
@@ -47,7 +51,7 @@
                 android:ellipsize="middle"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="sgagjig"
+                android:text="@{metadata.authors}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
@@ -58,7 +62,7 @@
                 android:ellipsize="middle"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="joiarhagj"
+                android:text="@{Utils.bookSizeFormat(metadata.size)}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
         </LinearLayout>
@@ -72,14 +76,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@mipmap/ic_cloud_download" />
+                android:src="@mipmap/ic_cloud_download"
+                android:visibility="@{Utils.hasDownload(metadata.extraAttributes) ? View.GONE : View.VISIBLE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:text="@{Utils.updateState(metadata.extraAttributes)}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:visibility="@{Utils.hasDownload(metadata.extraAttributes) ? View.VISIBLE : View.GONE}" />
         </FrameLayout>
     </LinearLayout>
 </layout>

@@ -137,6 +137,13 @@ public class ShopCartFragment extends BaseFragment {
                 settlement();
             }
         });
+
+        binding.shopCartTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewEventCallBack.viewBack();
+            }
+        });
     }
 
     private void settlement() {

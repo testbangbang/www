@@ -29,13 +29,25 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
 
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
-        showLoadingDialog(shopDataBundle, R.string.loading);
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         final RxRequestCategoryLevel2Books request = new RxRequestCategoryLevel2Books();
         request.setBaseRequestBean(baseRequestBean, currentPage, catId, sortType);
         request.execute(new RxCallback<RxRequestCategoryLevel2Books>() {
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                showLoadingDialog(shopDataBundle, R.string.loading);
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog(shopDataBundle);
+            }
+
             @Override
             public void onNext(RxRequestCategoryLevel2Books request) {
                 categoryLevel2BooksResultBean = request.getCategoryLevel2BooksResultBean();
@@ -59,7 +71,6 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onComplete() {
                 super.onComplete();
-                hideLoadingDialog(shopDataBundle);
                 if (rxCallback != null) {
                     rxCallback.onComplete();
                 }

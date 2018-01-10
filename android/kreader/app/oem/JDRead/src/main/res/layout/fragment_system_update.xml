@@ -23,19 +23,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="@dimen/system_update_whole_padding">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{model.systemUpdateData.versionTitle}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+            android:paddingLeft="@dimen/system_update_whole_padding"
+            android:paddingRight="@dimen/system_update_whole_padding">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/system_update_version_title_height"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{model.systemUpdateData.versionTitle}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -55,10 +57,9 @@
             </LinearLayout>
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line_width"
-                android:layout_marginTop="@dimen/system_update_divider_margin_top"
-                android:background="@color/divider_color" />
+                style="@style/DottedLineStyle"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp" />
 
             <TextView
                 android:layout_width="wrap_content"

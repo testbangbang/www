@@ -20,6 +20,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.SystemUpdateBinding;
 import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
+import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.action.CheckApkUpdateAction;
 import com.onyx.jdread.setting.action.DownloadPackageAction;
@@ -126,6 +127,7 @@ public class SystemUpdateFragment extends BaseFragment {
     private void initData() {
         TitleBarModel titleModel = new TitleBarModel(SettingBundle.getInstance().getEventBus());
         titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.system_update));
+        titleModel.rightTitle.set(getString(R.string.view_history_version));
         titleModel.backEvent.set(new BackToDeviceConfigFragment());
         binding.systemUpdateSettingBar.setTitleModel(titleModel);
 
@@ -284,5 +286,10 @@ public class SystemUpdateFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToDeviceConfigFragment(BackToDeviceConfigFragment event) {
         viewEventCallBack.viewBack();
+    }
+    
+    @Subscribe
+    public void onTitleBarRightTitleEvent(TitleBarRightTitleEvent event){
+        // TODO: 18-1-8
     }
 }

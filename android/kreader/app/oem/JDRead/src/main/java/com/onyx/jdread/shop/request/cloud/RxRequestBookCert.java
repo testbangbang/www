@@ -3,13 +3,13 @@ package com.onyx.jdread.shop.request.cloud;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.main.common.CommonUtils;
+import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.action.DownloadAction;
-import com.onyx.jdread.shop.cloud.api.GetBookCertService;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import java.io.File;
@@ -17,8 +17,6 @@ import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by 12 on 2017/4/8.
@@ -59,6 +57,7 @@ public class RxRequestBookCert extends RxBaseCloudRequest {
         String bookName = bookDetailBean.getDownLoadUrl().substring(bookDetailBean.getDownLoadUrl().lastIndexOf("/") + 1);
         String localPath = CommonUtils.getJDBooksPath() + File.separator + bookName;
         DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.getDownLoadUrl(), localPath, bookName);
+        downloadAction.setBookDetailBean(bookDetailBean);
         downloadAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -68,7 +67,7 @@ public class RxRequestBookCert extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() throws IOException {
-        GetBookCertService service = init(CloudApiContext.JD_BOOK_VERIFY_URL);
+        ReadContentService service = CloudApiContext.getService(CloudApiContext.JD_BOOK_VERIFY_URL);
         Call<CertBean> call = getCall(service);
         Response<CertBean> response = call.execute();
         if (response != null) {
@@ -76,16 +75,7 @@ public class RxRequestBookCert extends RxBaseCloudRequest {
         }
     }
 
-    private Call<CertBean> getCall(GetBookCertService service) {
+    private Call<CertBean> getCall(ReadContentService service) {
         return service.getBookCert(CloudApiContext.Cert.GET_CERT, requestBean.getAppBaseInfo().getRequestParamsMap(), requestBean.getBody());
-    }
-
-    private GetBookCertService init(String url) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(CloudApiContext.getClient())
-                .build();
-        return retrofit.create(GetBookCertService.class);
     }
 }

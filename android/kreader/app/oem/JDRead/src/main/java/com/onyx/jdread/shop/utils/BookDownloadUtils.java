@@ -18,8 +18,8 @@ public class BookDownloadUtils {
     private static final String TAG = BookDownloadUtils.class.getSimpleName();
 
     public static void download(final BookDetailResultBean.Detail bookDetailBean, ShopDataBundle dataBundle) {
+        bookDetailBean.getBookExtraInfoBean().isWholeBook = true;
         if (StringUtils.isNullOrEmpty(bookDetailBean.getDownLoadUrl())) {
-            bookDetailBean.getBookExtraInfoBean().isWholeBook = true;
             BookDownloadUrlAction downloadUrlAction = new BookDownloadUrlAction(bookDetailBean);
             downloadUrlAction.execute(dataBundle, new RxCallback() {
                 @Override

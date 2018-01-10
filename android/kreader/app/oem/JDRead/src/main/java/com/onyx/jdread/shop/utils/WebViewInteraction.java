@@ -5,6 +5,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import com.onyx.jdread.shop.event.BuyBookSuccessEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by li on 2018/1/6.
  */
@@ -41,6 +45,7 @@ public class WebViewInteraction {
     @JavascriptInterface
     public void clearShoppingCart(String buiedBookIds) {
         Log.i(TAG,"clearShoppingCart()");
+        EventBus.getDefault().post(new BuyBookSuccessEvent(buiedBookIds));
     }
 
     @JavascriptInterface

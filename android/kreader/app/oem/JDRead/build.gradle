@@ -79,4 +79,5 @@ dependencies {
     compile files('libs/nanohttpd-2.3.2-SNAPSHOT.jar')
     compile "com.google.zxing:core:$rootProject.zxingVersion"
     compile "com.squareup.retrofit2:converter-gson:$rootProject.convertergsonVersion"
+    compile "com.evernote:android-sdk:$rootProject.evernoteVersion"
 }

@@ -26,9 +26,10 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/fragment_help_item_height"
+                android:paddingLeft="@dimen/fragment_content_padding"
+                android:paddingRight="@dimen/fragment_content_padding"
                 android:onClick="@{()->helpModel.gotoManual()}"
-                android:padding="@dimen/fragment_content_padding"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -49,9 +50,10 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/fragment_help_item_height"
+                android:paddingLeft="@dimen/fragment_content_padding"
+                android:paddingRight="@dimen/fragment_content_padding"
                 android:onClick="@{()->helpModel.gotoFeedBack()}"
-                android:padding="@dimen/fragment_content_padding"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -72,9 +74,10 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/fragment_help_item_height"
                 android:onClick="@{()->helpModel.gotoContactUs()}"
-                android:padding="@dimen/fragment_content_padding"
+                android:paddingLeft="@dimen/fragment_content_padding"
+                android:paddingRight="@dimen/fragment_content_padding"
                 android:gravity="center_vertical">
 
                 <TextView

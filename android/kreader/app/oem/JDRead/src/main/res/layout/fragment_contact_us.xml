@@ -18,25 +18,18 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/fragment_help_item_height"
             android:paddingLeft="@dimen/fragment_content_padding"
             android:paddingRight="@dimen/fragment_content_padding"
             android:paddingTop="@dimen/fragment_content_padding"
             android:text="@string/consumer_hotline"
             android:textSize="@dimen/level_two_heading_font" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/fragment_content_padding"
-            android:text="@string/consumer_hotline_comments"
-            android:textSize="@dimen/level_three_heading_font" />
-
         <View style="@style/DottedLineStyle" />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/fragment_help_item_height"
             android:padding="@dimen/fragment_content_padding"
             android:text="@string/official_qq_group"
             android:textSize="@dimen/level_two_heading_font" />
@@ -45,7 +38,7 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/fragment_help_item_height"
             android:padding="@dimen/fragment_content_padding"
             android:text="@string/official_email"
             android:textSize="@dimen/level_two_heading_font" />

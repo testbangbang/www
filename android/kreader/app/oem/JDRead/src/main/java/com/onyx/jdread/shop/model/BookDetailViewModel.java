@@ -9,6 +9,7 @@ import com.onyx.jdread.shop.event.BookDetailReadNowEvent;
 import com.onyx.jdread.shop.event.CopyrightCancelEvent;
 import com.onyx.jdread.shop.event.CopyrightEvent;
 import com.onyx.jdread.shop.event.DownloadWholeBookEvent;
+import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.RecommendNextPageEvent;
 import com.onyx.jdread.shop.event.ViewCommentEvent;
 
@@ -98,7 +99,7 @@ public class BookDetailViewModel extends BaseObservable {
     }
 
     public void onShoppingCartClick() {
-
+        getEventBus().post(new GoShopingCartEvent());
     }
 
     public void onViewDirectoryClick() {

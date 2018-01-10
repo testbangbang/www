@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.action;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -10,6 +11,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
 import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
@@ -27,6 +29,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
     private String url;
     private String filePath;
     private Object tag;
+    private BookDetailResultBean.Detail bookDetailBean;
 
     public DownloadAction(Context context, String url, String filePath, Object tag) {
         this.context = context;
@@ -65,6 +68,9 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void progress(BaseRequest request, ProgressInfo info) {
+                if (bookDetailBean != null) {
+                    dataBundle.setBookDetail(bookDetailBean);
+                }
                 ProgressInfoModel infoModel = new ProgressInfoModel();
                 infoModel.soFarBytes = info.soFarBytes;
                 infoModel.totalBytes = info.totalBytes;
@@ -108,5 +114,9 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
 
     private OnyxDownloadManager getDownLoaderManager() {
         return OnyxDownloadManager.getInstance();
+    }
+
+    public void setBookDetailBean(BookDetailResultBean.Detail bookDetailBean) {
+        this.bookDetailBean = bookDetailBean;
     }
 }

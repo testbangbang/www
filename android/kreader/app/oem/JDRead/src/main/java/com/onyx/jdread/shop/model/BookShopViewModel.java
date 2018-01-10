@@ -4,6 +4,7 @@ import android.databinding.BaseObservable;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.CategoryViewClick;
+import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
 
@@ -171,7 +172,7 @@ public class BookShopViewModel extends BaseObservable {
     }
 
     public void onShoppingCartViewClick() {
-
+        getEventBus().post(new GoShopingCartEvent());
     }
 
     public void onSearchViewClick() {
