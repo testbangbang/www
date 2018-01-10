@@ -29,7 +29,6 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
 
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
-        showLoadingDialog(shopDataBundle, R.string.loading);
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         JSONObject body = new JSONObject();
@@ -38,6 +37,19 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
         final RxRequestBookDetail rq = new RxRequestBookDetail();
         rq.setBaseRequestBean(baseRequestBean);
         rq.execute(new RxCallback<RxRequestBookDetail>() {
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                showLoadingDialog(shopDataBundle, R.string.loading);
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog(shopDataBundle);
+            }
+
             @Override
             public void onNext(RxRequestBookDetail request) {
                 bookDetailResultBean = request.getBookDetailResultBean();
@@ -58,7 +70,6 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onComplete() {
                 super.onComplete();
-                hideLoadingDialog(shopDataBundle);
                 if (rxCallback != null) {
                     rxCallback.onComplete();
                 }

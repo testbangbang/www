@@ -309,9 +309,13 @@
     <string name="subject_list_sort_type_newest">最新</string>
     <string name="subject_list_all">全部</string>
     <string name="subject_list_just_vip">只看畅读VIP</string>
+    <string name="downloading_progress">下载中 %d</string>
+    <string name="paused">已暂停 %d</string>
+    <string name="total_book">共%d本书</string>
     <string name="password_setting_hint">请输入4-12位数字密码</string>
     <string name="password_setting_phone_hint">请输入手机号</string>
     <string name="password">密码</string>
     <string name="feedback_history">反馈记录</string>
     <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
+    <string name="buy_book_success">购买成功 </string>
 </resources>

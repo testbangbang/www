@@ -13,4 +13,5 @@ include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
         ':libraries:onyxsdk-qrcodescanner',
         ':app:common:tools',
         ':app:oem:JDRead',
-        ':app:oem:apkupdate'
+        ':app:oem:apkupdate',
+        ':app:common:OnyxPinyinIME'

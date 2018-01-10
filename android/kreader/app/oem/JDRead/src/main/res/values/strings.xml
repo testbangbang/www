@@ -323,6 +323,9 @@
     <string name="subject_list_sort_type_newest">Newest</string>
     <string name="subject_list_all">All</string>
     <string name="subject_list_just_vip">Just  look at VIP</string>
+    <string name="downloading_progress">Downloading %d</string>
+    <string name="paused">Paused %d</string>
+    <string name="total_book">Total%d</string>
     <string name="password_setting_hint">Please enter the 4-12 digit password</string>
     <string name="password_setting_phone_hint">Please enter phone number</string>
     <string name="feedback_history">Feedback history</string>
@@ -334,4 +337,5 @@
     <string name="bind_to_email">bind to email</string>
     <string name="bind_to_email_failed">bind_to_email_failed</string>
     <string name="send_succeed">send_succeed</string>
+    <string name="buy_book_success">Book purchase success </string>
 </resources>

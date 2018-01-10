@@ -33,7 +33,6 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
 
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
-        showLoadingDialog(shopDataBundle, R.string.loading);
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
@@ -43,6 +42,19 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
         final RxRequestCategoryList request = new RxRequestCategoryList();
         request.setBaseRequestBean(baseRequestBean);
         request.execute(new RxCallback<RxRequestCategoryList>() {
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                showLoadingDialog(shopDataBundle, R.string.loading);
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog(shopDataBundle);
+            }
+
             @Override
             public void onNext(RxRequestCategoryList request) {
                 CategoryListResultBean categoryListResultBean = request.getCategoryListResultBean();
@@ -69,7 +81,6 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onComplete() {
                 super.onComplete();
-                hideLoadingDialog(shopDataBundle);
                 if (rxCallback != null) {
                     rxCallback.onComplete();
                 }

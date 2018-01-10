@@ -1,10 +1,12 @@
 package com.onyx.jdread.reader.menu.event;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
+import com.onyx.jdread.reader.actions.GotoPageAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.common.GammaInfo;
@@ -43,12 +45,21 @@ public class ReaderSettingMenuDialogHandler {
     private ReaderDataHolder readerDataHolder;
     private ReaderTextStyle style;
     private ImageReflowSettings settings;
+    private ReaderViewInfo readerViewInfo;
 
     public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder,ReaderSettingViewBack readerSettingViewBack,ReaderTextStyle style,ImageReflowSettings settings) {
         this.readerDataHolder = readerDataHolder;
         this.readerSettingViewBack = readerSettingViewBack;
         this.style = style;
         this.settings = settings;
+    }
+
+    public void setReaderViewInfo(ReaderViewInfo readerViewInfo) {
+        this.readerViewInfo = readerViewInfo;
+    }
+
+    public ReaderViewInfo getReaderViewInfo() {
+        return readerViewInfo;
     }
 
     public void setBinding(ReaderSettingMenuBinding binding) {
@@ -136,7 +147,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPageViewUpdateEvent(PageViewUpdateEvent event){
-        new UpdatePageInfoAction(binding).execute(readerDataHolder);
+        new UpdatePageInfoAction(binding,readerViewInfo).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -168,7 +179,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScaleToPageCropEvent(ScaleToPageCropEvent event){
-        new ScaleToPageCropAction().execute(readerDataHolder);
+        new ScaleToPageCropAction(readerViewInfo).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -199,5 +210,10 @@ public class ReaderSettingMenuDialogHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingUpAndDownSpacingEvent(SettingUpAndDownSpacingEvent event){
         new SettingUpAndDownSpacingAction(style,event.margin).execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGotoPageEvent(GotoPageEvent event){
+        new GotoPageAction(event.page).execute(readerDataHolder);
     }
 }

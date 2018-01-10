@@ -10,6 +10,7 @@ import android.widget.RatingBar;
 import android.widget.SeekBar;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -25,8 +26,7 @@ import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuDialogHandler;
-import com.onyx.jdread.reader.menu.model.ReaderBrightnessModel;
-import com.onyx.jdread.reader.menu.model.ReaderCustomizeModel;
+import com.onyx.jdread.reader.menu.model.ReaderMarginModel;
 import com.onyx.jdread.reader.menu.model.ReaderImageModel;
 import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
@@ -48,11 +48,12 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     private FunctionBarAdapter functionBarAdapter;
     private ReaderSettingMenuDialogHandler readerSettingMenuDialogHandler;
 
-    public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity, ReaderTextStyle style,ImageReflowSettings settings) {
+    public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity, ReaderTextStyle style, ImageReflowSettings settings, ReaderViewInfo readerViewInfo) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.readerDataHolder = readerDataHolder;
 
         readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(readerDataHolder,this,style,settings);
+        readerSettingMenuDialogHandler.setReaderViewInfo(readerViewInfo);
     }
 
     @Override
@@ -89,7 +90,27 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void initReaderPageInfoBar(){
         binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel());
-        new UpdatePageInfoAction(binding).execute(readerDataHolder);
+        new UpdatePageInfoAction(binding,readerSettingMenuDialogHandler.getReaderViewInfo()).execute(readerDataHolder);
+        initReaderPageInfoEvent();
+    }
+
+    private void initReaderPageInfoEvent(){
+        binding.readerSettingPageInfoBar.readerPageInfoMenuReadProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(seekBar.getProgress());
+            }
+        });
     }
 
     private void initSystemBar() {
@@ -105,7 +126,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initCustomizeBar(){
-        binding.readerSettingCustomizeFormatBar.setReaderCustomizeModel(new ReaderCustomizeModel());
+        binding.readerSettingCustomizeFormatBar.setReaderMarginModel(new ReaderMarginModel());
         initCustomizeEvent();
     }
 
@@ -123,7 +144,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                binding.readerSettingCustomizeFormatBar.getReaderCustomizeModel().setLineSpacingProgress(seekBar.getProgress());
+                binding.readerSettingCustomizeFormatBar.getReaderMarginModel().setLineSpacingProgress(seekBar.getProgress());
             }
         });
 
@@ -140,7 +161,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                binding.readerSettingCustomizeFormatBar.getReaderCustomizeModel().setSegmentProgress(seekBar.getProgress());
+                binding.readerSettingCustomizeFormatBar.getReaderMarginModel().setSegmentProgress(seekBar.getProgress());
             }
         });
 
@@ -157,7 +178,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                binding.readerSettingCustomizeFormatBar.getReaderCustomizeModel().setLeftAndRightProgress(seekBar.getProgress());
+                binding.readerSettingCustomizeFormatBar.getReaderMarginModel().setLeftAndRightProgress(seekBar.getProgress());
             }
         });
 
@@ -174,7 +195,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                binding.readerSettingCustomizeFormatBar.getReaderCustomizeModel().setUpAndDownProgress(seekBar.getProgress());
+                binding.readerSettingCustomizeFormatBar.getReaderMarginModel().setUpAndDownProgress(seekBar.getProgress());
             }
         });
     }

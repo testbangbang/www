@@ -4,11 +4,9 @@ import android.test.ApplicationTestCase;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ShoppingCartBookIdsBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopCartItemData;
