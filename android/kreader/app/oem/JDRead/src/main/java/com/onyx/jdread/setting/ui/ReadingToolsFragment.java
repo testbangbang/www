@@ -1,5 +1,6 @@
 package com.onyx.jdread.setting.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ import org.greenrobot.eventbus.Subscribe;
  * Created by hehai on 18-1-2.
  */
 
-public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginFragment.ResultCallback{
+public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginFragment.ResultCallback {
 
     private FragmentReadingToolsBinding binding;
     private ReadingToolsModel readingToolsModel;
@@ -77,7 +78,9 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
 
     @Subscribe
     public void onAssociatedEmailToolsEvent(AssociatedEmailToolsEvent event) {
-
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+        startActivity(intent);
     }
 
     @Subscribe
