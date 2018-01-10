@@ -978,6 +978,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
             adapter.addObject(createFunctionItem(R.drawable.ic_enter, ScribbleMenuCategory.ENTER));
             adapter.addObject(createFunctionItem(R.drawable.ic_keyboard, ScribbleMenuCategory.KEYBOARD));
         }
+
+        adapter.addObject(createFunctionItem(R.drawable.ic_shape_pencil, ScribbleMenuCategory.NORMAL_PEN_STYLE));
+        adapter.addObject(createFunctionItem(R.drawable.ic_shape_brush, ScribbleMenuCategory.BRUSH_PEN_STYLE));
+
         if (getNoteViewHelper().supportColor(this)){
             adapter.addObject(createFunctionItem(R.drawable.ic_color, ScribbleMenuCategory.COLOR));
         }
@@ -1155,6 +1159,28 @@ public class ScribbleActivity extends BaseScribbleActivity {
     protected void updateDataInfo(final BaseNoteRequest request) {
         super.updateDataInfo(request);
         getScribbleSubMenu().setCurShapeDataInfo(shapeDataInfo);
+        onPenStyleSelected(shapeDataInfo.getCurrentShapeType());
+    }
+
+    private void onPenStyleSelected(int shapeType) {
+        @ScribbleMenuCategory.ScribbleMenuCategoryDef int menuCategory = ScribbleMenuCategory.NORMAL_PEN_STYLE;
+        switch (shapeType) {
+            case ShapeFactory.SHAPE_PENCIL_SCRIBBLE:
+                menuCategory = ScribbleMenuCategory.NORMAL_PEN_STYLE;
+                break;
+            case ShapeFactory.SHAPE_BRUSH_SCRIBBLE:
+                menuCategory = ScribbleMenuCategory.BRUSH_PEN_STYLE;
+                break;
+        }
+        GObject item = functionContentView.getCurrentAdapter().searchFirstByTag(GAdapterUtil.TAG_UNIQUE_ID, menuCategory);
+        List<ContentItemView> contentItemViews = functionContentView.getChildContentViewList();
+        for (ContentItemView contentItemView : contentItemViews) {
+            if (contentItemView.getData() == item) {
+                contentItemView.setViewBackgroundByID(GAdapterUtil.TAG_IMAGE_RESOURCE, R.drawable.main_item_select_bg);
+            }else {
+                contentItemView.setViewBackgroundByID(GAdapterUtil.TAG_IMAGE_RESOURCE, R.drawable.main_item_unselect_bg);
+            }
+        }
     }
 
     private GObject createFunctionItem(final int functionIconRes,
@@ -1222,6 +1248,18 @@ public class ScribbleActivity extends BaseScribbleActivity {
             case ScribbleMenuCategory.ERASER:
                 showEraseAllConfirmDialog();
                 return true;
+            case ScribbleMenuCategory.NORMAL_PEN_STYLE: {
+                int shapeType = ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
+                onPenStyleSelected(shapeType);
+                onNoteShapeChanged(true, true, shapeType, null);
+                return true;
+            }
+            case ScribbleMenuCategory.BRUSH_PEN_STYLE: {
+                int shapeType = ShapeFactory.SHAPE_BRUSH_SCRIBBLE;
+                onPenStyleSelected(shapeType);
+                onNoteShapeChanged(true, true, shapeType, null);
+                return true;
+            }
         }
         return false;
     }

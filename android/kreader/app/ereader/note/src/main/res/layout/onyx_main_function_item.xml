@@ -7,9 +7,9 @@
 
     <ImageView
         android:id="@+id/item_img"
-        android:layout_width="@dimen/onyx_note_item_img_size"
-        android:layout_height="@dimen/onyx_note_item_img_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitXY" />
 
 </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
