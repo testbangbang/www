@@ -20,6 +20,7 @@ import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
+import com.onyx.jdread.reader.event.ShowReaderCatalogMenuEvent;
 import com.onyx.jdread.reader.menu.actions.ChangeChineseConvertTypeAction;
 import com.onyx.jdread.reader.menu.actions.GammaCorrectionAction;
 import com.onyx.jdread.reader.menu.actions.ImageReflowAction;
@@ -108,6 +109,10 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCloseReaderSettingMenuEvent(CloseReaderSettingMenuEvent event) {
+        closeDialog();
+    }
+
+    private void closeDialog(){
         readerSettingViewBack.getContent().dismiss();
     }
 
@@ -128,8 +133,9 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemCatalogEvent(ReaderFunctionItemCatalogEvent event) {
-        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(), "Catalog");
-        //start activity
+        //catalog
+        closeDialog();
+        EventBus.getDefault().post(new ShowReaderCatalogMenuEvent());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
@@ -73,7 +73,8 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">@dimen/reader_text_setting_font_size_padding_top</item>
-        <item name="android:paddingBottom">@dimen/reader_text_setting_font_size_padding_bottom</item>
+        <item name="android:paddingBottom">@dimen/reader_text_setting_font_size_padding_bottom
+        </item>
         <item name="android:gravity">center</item>
         <item name="android:clickable">true</item>
         <item name="android:textColor">@android:color/black</item>
@@ -127,7 +128,8 @@
         <item name="android:layout_marginBottom">@dimen/reader_page_info_menu_margin_bottom</item>
         <item name="android:gravity">center</item>
         <item name="android:paddingTop">@dimen/reader_customize_format_layout_padding_top</item>
-        <item name="android:paddingBottom">@dimen/reader_customize_format_layout_padding_bottom</item>
+        <item name="android:paddingBottom">@dimen/reader_customize_format_layout_padding_bottom
+        </item>
         <item name="android:paddingLeft">@dimen/reader_customize_format_layout_padding_left</item>
         <item name="android:paddingRight">@dimen/reader_customize_format_layout_padding_right</item>
         <item name="android:orientation">horizontal</item>
@@ -150,7 +152,8 @@
     <style name="ReaderCustomizeFormatTitleStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginRight">@dimen/reader_customize_format_title_margin_right</item>
+        <item name="android:layout_marginRight">@dimen/reader_customize_format_title_margin_right
+        </item>
         <item name="android:layout_weight">1</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
@@ -162,7 +165,8 @@
         <item name="android:padding">@dimen/reader_customize_minus_style_padding</item>
         <item name="android:clickable">true</item>
         <item name="android:background">@drawable/imagebtn_bg</item>
-        <item name="android:layout_marginRight">@dimen/reader_customize_minus_style_margin_right</item>
+        <item name="android:layout_marginRight">@dimen/reader_customize_minus_style_margin_right
+        </item>
     </style>
 
     <style name="ReaderCustomizePlusStyle">
@@ -178,7 +182,9 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
-        <item name="android:drawablePadding">@dimen/reader_image_setting_style_change_layout_drawable_padding</item>
+        <item name="android:drawablePadding">
+            @dimen/reader_image_setting_style_change_layout_drawable_padding
+        </item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
         <item name="android:clickable">true</item>
@@ -253,4 +259,42 @@
     </style>
 
     <dimen name="password_setting_edit_width">402dp</dimen>
+
+    <style name="ReaderBookInfoTabStyle">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="dialog_no_title" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/square_bg</item>
+        <item name="colorAccent">@android:color/background_dark</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:windowElevation" tools:targetApi="M">0dp</item>
+    </style>
+
+    <style name="ReaderBookInfoBookmarkItemTitleStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textSize">@dimen/level_three_heading_font</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
+
+    <style name="ReaderBookInfoBookmarkItemStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_three_heading_font</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
 </resources>

@@ -312,4 +312,17 @@
     <string name="password_setting_hint">请输入4-12位数字密码</string>
     <string name="password_setting_phone_hint">请输入手机号</string>
     <string name="password">密码</string>
+    <string name="reader_book_info_bookmark">书签</string>
+    <string name="reader_book_info_note">笔记</string>
+    <string name="delete_bookmark">是否删除书签？</string>
+    <string name="delete_book_note">是否删除笔记？</string>
+    <string name="empty">空</string>
+    <string name="Annotation">标注</string>
+    <string name="save_annotation">保存</string>
+    <string name="close">关闭</string>
+    <string name="update">更新</string>
+    <string name="sure_delete">是否确定删除</string>
+    <string name="page_search" formatted="false">%d 页</string>
+    <string name="reader_content">原文:</string>
+    <string name="reader_read_progress">进度:</string>
 </resources>

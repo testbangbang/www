@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="noteModel"
+            type="com.onyx.jdread.reader.catalog.model.NoteModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/imagebtn_bg"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/ReaderBookInfoBookmarkItemTitleStyle"
+                android:layout_weight="7"
+                android:text="@{noteModel.chapter}" />
+
+            <TextView
+                style="@style/ReaderBookInfoBookmarkItemTitleStyle"
+                android:layout_weight="3"
+                android:text="@{noteModel.data}" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/ReaderBookInfoBookmarkItemStyle"
+            android:text="@{noteModel.note}" />
+
+        <TextView
+            style="@style/ReaderBookInfoBookmarkItemStyle"
+            android:text="@{noteModel.content}" />
+
+        <View
+            android:id="@+id/split_line"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/dash_line"
+            android:layerType="software" />
+
+    </LinearLayout>
+</layout>

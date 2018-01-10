@@ -11,6 +11,8 @@ import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
+import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
+import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
@@ -98,6 +100,19 @@ public class ReaderActivityEventHandler {
                     style, settings,readerViewInfo,readerUserDataInfo);
             readerSettingMenuDialog.show();
         }
+    }
+
+    @Subscribe
+    public void onShowReaderCatalogMenuEvent(ShowReaderCatalogMenuEvent event){
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+        ReaderBookInfoDialog readerBookInfoDialog = new ReaderBookInfoDialog(activity,readerViewModel.getReaderDataHolder(),
+                readerViewInfo,
+                readerUserDataInfo,
+                ReaderBookInfoDialogConfig.CATALOG_MODE);
+        readerBookInfoDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

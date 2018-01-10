@@ -26,6 +26,7 @@ import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
+import com.onyx.jdread.reader.menu.event.GotoPageEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuDialogHandler;
 import com.onyx.jdread.reader.menu.model.ReaderMarginModel;
 import com.onyx.jdread.reader.menu.model.ReaderImageModel;
@@ -34,6 +35,8 @@ import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
 import com.onyx.jdread.reader.menu.model.ReaderTextModel;
 import com.onyx.jdread.reader.menu.model.ReaderTitleBarModel;
 import com.onyx.jdread.setting.model.BrightnessModel;
+
+import org.greenrobot.eventbus.EventBus;
 
 
 /**
@@ -82,13 +85,12 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         initTextBar();
         initImageBar();
         initCustomizeBar();
-
-        readerSettingMenuDialogHandler.setBinding(binding);
     }
 
     private void initView() {
         binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.reader_setting_menu, null, false);
         setContentView(binding.getRoot());
+        readerSettingMenuDialogHandler.setBinding(binding);
     }
 
     private void initReaderSettingMenu(){
@@ -116,6 +118,8 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(seekBar.getProgress());
+                GotoPageEvent event = new GotoPageEvent(seekBar.getProgress());
+                EventBus.getDefault().post(event);
             }
         });
     }
