@@ -451,6 +451,8 @@ public class AlBookEng{
             preferences.notesOnPage = prof.notesOnPage;
         }
 
+        preferences.hyphenEnabled = prof.hyphenEnabled;
+
 		profiles.specialModeMadRoll = false;
 		profiles.specialModeRoll = false;
 		if (preferences.calcPagesModeRequest == TAL_SCREEN_PAGES_COUNT.SIZE) {
@@ -3832,7 +3834,7 @@ public class AlBookEng{
 						break;
 				} while (true);
 				
-				if ((tword.style[0] & AlStyles.SL_HYPH) != 0) {
+				if (preferences.hyphenEnabled && (tword.style[0] & AlStyles.SL_HYPH) != 0) {
 					tword.complete = tword.count;
 					wlen = word_len;			
 					do  {
@@ -4035,7 +4037,7 @@ public class AlBookEng{
 				}
 				//
 				
-				if ((tword.style[0] & AlStyles.SL_HYPH) != 0 && hyph_last_word) {
+				if (preferences.hyphenEnabled && (tword.style[0] & AlStyles.SL_HYPH) != 0 && hyph_last_word) {
 
 					
 
