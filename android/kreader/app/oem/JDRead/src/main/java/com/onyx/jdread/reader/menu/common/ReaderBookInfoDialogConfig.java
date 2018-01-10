@@ -25,18 +25,6 @@ public class ReaderBookInfoDialogConfig {
     public static final int BOOKMARK_MODE = 2;
     public static final int NOTE_MODE = 3;
 
-    public static int getPageSize(Context context, int mode) {
-        switch (mode) {
-            case CATALOG_MODE:
-                return context.getResources().getInteger(R.integer.book_info_dialog_catalog_row);
-            case BOOKMARK_MODE:
-                return context.getResources().getInteger(R.integer.book_info_dialog_mark_row);
-            case NOTE_MODE:
-                return context.getResources().getInteger(R.integer.book_info_dialog_note_row);
-        }
-        return 0;
-    }
-
     public static ArrayList<TreeRecyclerView.TreeNode> buildTreeNodesFromToc(ReaderDocumentTableOfContent toc) {
         ArrayList<TreeRecyclerView.TreeNode> nodes = new ArrayList<>();
         if (toc != null && toc.getRootEntry().getChildren() != null) {
@@ -70,21 +58,16 @@ public class ReaderBookInfoDialogConfig {
 
                     @Override
                     public void onUpdateAnnotation(String note) {
-//                        readerPresenter.getBookOperate().updateAnnotation(annotation, note,
-//                                new UpdateAnnotationResultEvent().setPosition(position).setAnnotation(annotation));
                     }
 
                     @Override
                     public void onRemoveAnnotation() {
-//                        readerPresenter.getBookOperate().deleteAnnotation(annotation,
-//                                new DeleteAnnotationResultEvent().setPosition(position));
                     }
                 });
         dlg.show();
     }
 
     public static void onJump(final String pagePosition) {
-        //readerPresenter.getBookOperate().GotoPositionAction(pagePosition, false);
     }
 
     public static void onDelete(final Context context, final int position, final int mode) {
@@ -95,11 +78,7 @@ public class ReaderBookInfoDialogConfig {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (mode == BOOKMARK_MODE) {
-                            //parent.getReaderPresenter().getBookOperate().removeBookmark(new DeleteBookmarkResultEvent().setPosition(position));
                         } else {
-//                            Annotation annotation = parent.getAnnotationList().get(position);
-//                            parent.getReaderPresenter().getBookOperate().deleteAnnotation(annotation,
-//                                    new DeleteAnnotationResultEvent().setPosition(position));
                         }
                     }
                 }, null).show();

@@ -5,25 +5,16 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
-import com.onyx.android.sdk.ui.dialog.DialogChoose;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
-import com.onyx.android.sdk.utils.DateTimeUtil;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderBookInfoBinding;
 import com.onyx.jdread.main.model.TitleBarModel;
@@ -40,7 +31,6 @@ import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,8 +119,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
 
     private void initCatalogView(final ReaderUserDataInfo readerUserDataInfo) {
         readerDocumentTableOfContent = readerUserDataInfo.getTableOfContent();
-        final int row = ReaderBookInfoDialogConfig.getPageSize(getContext(),
-                ReaderBookInfoDialogConfig.CATALOG_MODE);
+        final int row = getContext().getResources().getInteger(R.integer.book_info_dialog_catalog_row);
         ArrayList<TreeRecyclerView.TreeNode> rootNodes = ReaderBookInfoDialogConfig.buildTreeNodesFromToc(readerDocumentTableOfContent);
         binding.bookInfoCatalogContent.setDefaultPageKeyBinding();
         binding.bookInfoCatalogContent.bindTree(rootNodes, new TreeRecyclerView.Callback() {
@@ -141,7 +130,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
                     return;
                 }
                 if (PagePositionUtils.isValidPosition(entry.getPosition())) {
-                    //readerPresenter.getBookOperate().GotoPositionAction(entry.getPosition(), false);
+
                 }
             }
 
@@ -181,56 +170,14 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         binding.bookInfoBookmarkContent.setDefaultPageKeyBinding();
         BookmarkAdapter adapter = new BookmarkAdapter();
         binding.bookInfoBookmarkContent.setAdapter(adapter);
-        binding.getReaderBookInfoModel().setBookmarks(readerDocumentTableOfContent,bookmarkList);
-        //binding.bookInfoBookmarkContent.setOnPagingListener(this);
+        binding.getReaderBookInfoModel().setBookmarks(readerDocumentTableOfContent, bookmarkList);
     }
 
     private void initAnnotationsView(ReaderUserDataInfo readerUserDataInfo) {
-        final int row = ReaderBookInfoDialogConfig.getPageSize(getContext(),
-                ReaderBookInfoDialogConfig.NOTE_MODE);
         binding.bookInfoNoteContent.setDefaultPageKeyBinding();
         NoteAdapter adapter = new NoteAdapter();
         binding.bookInfoNoteContent.setAdapter(adapter);
         binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotations());
-//        binding.bookInfoNoteContent.setAdapter(new PageRecyclerView.PageAdapter() {
-//            @Override
-//            public int getRowCount() {
-//                return row;
-//            }
-//
-//            @Override
-//            public int getColumnCount() {
-//                return 1;
-//            }
-//
-//            @Override
-//            public int getDataCount() {
-//                return annotationList.size();
-//            }
-//
-//            @Override
-//            public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-//                SimpleListViewItemViewHolder simpleListViewItemViewHolder = new SimpleListViewItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_table_of_content_list_item_view, parent, false));
-//                simpleListViewItemViewHolder.setDialogViewId(R.string.delete_book_note);
-//                return simpleListViewItemViewHolder;
-//            }
-//
-//            @Override
-//            public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-//                Annotation annotation = annotationList.get(position);
-//                ((SimpleListViewItemViewHolder) holder).bindView(annotation.getNote(),
-//                        annotation.getQuote(),
-//                        PagePositionUtils.fromPageNumber(annotation.getPageNumber()),
-//                        annotation.getPosition(),
-//                        annotation.getCreatedAt().getTime(),
-//                        position,
-//                        false);
-//
-//                if (binding.bookInfoNoteContent.getVisibility() == View.VISIBLE) {
-//                    onPageChanged();
-//                }
-//            }
-//        });
         binding.bookInfoNoteContent.setOnPagingListener(this);
     }
 
@@ -304,28 +251,4 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
             binding.getReaderBookInfoModel().setPageInfo(format);
         }
     }
-
-//    @Subscribe
-//    public void onDeleteAnnotationResultEvent(DeleteAnnotationResultEvent event) {
-//        int position = event.getPosition();
-//        annotationList.remove(position);
-//        bookInfoNoteContent.notifyDataSetChanged();
-//        onPageChanged();
-//    }
-
-//    @Subscribe
-//    public void onDeleteBookmarkResultEvent(DeleteBookmarkResultEvent event) {
-//        int position = event.getPosition();
-//        bookmarkList.remove(position);
-//        bookInfoBookMarkContent.notifyDataSetChanged();
-//        onPageChanged();
-//    }
-
-//    @Subscribe
-//    public void onUpdateAnnotationResultEvent(UpdateAnnotationResultEvent event) {
-//        int position = event.getPosition();
-//        Annotation annotation = event.getAnnotation();
-//        annotationList.set(position, annotation);
-//        bookInfoNoteContent.notifyDataSetChanged();
-//    }
 }
