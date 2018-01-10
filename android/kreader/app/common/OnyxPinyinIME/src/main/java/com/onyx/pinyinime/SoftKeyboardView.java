@@ -21,10 +21,12 @@ import com.onyx.pinyinime.SoftKeyboard.KeyRow;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.FontMetricsInt;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Vibrator;
 import android.util.AttributeSet;
@@ -118,6 +120,10 @@ public class SoftKeyboardView extends View {
     private FontMetricsInt mFmi;
     private boolean mDimSkb;
 
+    private int keyBgBorderWidth;
+    private int keyHlBgHeight;
+    private int keyHlBgRadius;
+
     public SoftKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -126,6 +132,11 @@ public class SoftKeyboardView extends View {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mFmi = mPaint.getFontMetricsInt();
+
+        Resources res = context.getResources();
+        keyBgBorderWidth = res.getDimensionPixelSize(R.dimen.key_bg_border_width);
+        keyHlBgHeight = res.getDimensionPixelSize(R.dimen.key_hl_bg_height);
+        keyHlBgRadius = res.getDimensionPixelSize(R.dimen.key_hl_bg_radius);
     }
 
     public boolean setSoftKeyboard(SoftKeyboard softSkb) {
@@ -438,22 +449,20 @@ public class SoftKeyboardView extends View {
 
     private void drawSoftKey(Canvas canvas, SoftKey softKey, int keyXMargin,
             int keyYMargin) {
-        Drawable bg;
-        int textColor;
-        if (mKeyPressed && softKey == mSoftKeyDown) {
-            bg = softKey.getKeyHlBg();
-            textColor = softKey.getColorHl();
-        } else {
-            bg = softKey.getKeyBg();
-            textColor = softKey.getColor();
-        }
-
+        Drawable bg = softKey.getKeyBg();
+        int textColor = softKey.getColor();
+        int left = softKey.mLeft + keyXMargin;
+        int top = softKey.mTop + keyYMargin;
+        int right = softKey.mRight - keyXMargin;
+        int bottom = softKey.mBottom - keyYMargin;
         if (null != bg) {
-            bg.setBounds(softKey.mLeft + keyXMargin, softKey.mTop + keyYMargin,
-                    softKey.mRight - keyXMargin, softKey.mBottom - keyYMargin);
+            bg.setBounds(left, top, right, bottom);
             bg.draw(canvas);
         }
-
+        if (mKeyPressed && softKey == mSoftKeyDown) {
+            mPaint.setColor(textColor);
+            canvas.drawRoundRect(new RectF(left, bottom - keyBgBorderWidth, right, bottom + keyHlBgHeight), keyHlBgRadius,keyHlBgRadius, mPaint);
+        }
         String keyLabel = softKey.getKeyLabel();
         Drawable keyIcon = softKey.getKeyIcon();
         if (null != keyIcon) {
