@@ -32,6 +32,7 @@ public class SingletonSharedPreference {
     private final static String SCREEN_ORIENTATION = "screen_orientation";
     private final static String MULTIPLE_TAB_STATE = "multiple_tab_state";
     private final static String MULTIPLE_TAB_VISIBILITY = "multiple_tab_visibility";
+    private final static String HYPHEN_ENABLE = "hyphen_enable";
 
     private static Context sContext;
     private static SharedPreferences.Editor sDefaultEditor;
@@ -357,6 +358,14 @@ public class SingletonSharedPreference {
 
     public static int getLastLineSpacing(int defaultValue) {
         return getPrefs().getInt(LAST_LINE_SPACING, defaultValue);
+    }
+
+    public static void setLastHyphenEnable(boolean enable) {
+        setBooleanValue(HYPHEN_ENABLE, enable);
+    }
+
+    public static boolean isLastHyphenEnable(boolean defaultValue) {
+        return getBooleanByStringResource(HYPHEN_ENABLE, defaultValue);
     }
 
     public static void setScreenOrientation(int screenOrientation) {

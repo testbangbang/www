@@ -368,4 +368,5 @@
     <string name="network_data">Network data</string>
     <string name="local_data">Local data</string>
     <string name="file_not_exists">File not exists!</string>
+    <string name="show_hyphenation">Show hyphenation</string>
 </resources>

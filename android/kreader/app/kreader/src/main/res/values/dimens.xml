@@ -105,4 +105,6 @@
     <dimen name="distribution_layout_height">50dp</dimen>
     <dimen name="dialog_dict_top_layout_margin">10dp</dimen>
     <dimen name="setting_list_divider_height">1dp</dimen>
+    <dimen name="dialog_text_style_margin_top">20dp</dimen>
+    <dimen name="dialog_text_style_hyphen_margin_left">5dp</dimen>
 </resources>

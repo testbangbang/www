@@ -195,7 +195,11 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     private boolean isHyphenEnabled() {
-        return baseOptions.isHyphenEnabled();
+        boolean enable = baseOptions.isHyphenEnabled();
+        if (useSameSettings) {
+            enable = SingletonSharedPreference.isLastHyphenEnable(true);
+        }
+        return enable;
     }
 
     private ReaderTextStyle.PageMargin getDefaultPageMargin(Context context) {

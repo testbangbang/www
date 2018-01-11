@@ -300,6 +300,7 @@
     <string name="auto_crop_for_each_block">Автообрезка каждого блока после ручной настройки</string>
     <string name="network_data">Данные сети</string>
     <string name="local_data">Локальные данные</string>
+    <string name="show_hyphenation">Показывать переносы</string>
 </resources>
 
 

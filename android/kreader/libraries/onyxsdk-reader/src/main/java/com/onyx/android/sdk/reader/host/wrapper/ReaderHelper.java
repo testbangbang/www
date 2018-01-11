@@ -439,5 +439,6 @@ public class ReaderHelper {
         getDocumentOptions().setTopMargin(style.getPageMargin().getTopMargin().getPercent());
         getDocumentOptions().setRightMargin(style.getPageMargin().getRightMargin().getPercent());
         getDocumentOptions().setBottomMargin(style.getPageMargin().getBottomMargin().getPercent());
+        getDocumentOptions().setHyphenEnabled(style.isHyphenEnabled());
     }
 }
