@@ -1,3 +1,4 @@
+#include "com_onyx_android_sdk_scribble_utils_Algorithm.h"
 
 #include <vector>
 #include <android/bitmap.h>
@@ -13,7 +14,7 @@
 
 #include "log.h"
 
-JNIEXPORT jfloat JNICALL Java_com_hanvon_core_Algorithm_distance
+JNIEXPORT jfloat JNICALL Java_com_onyx_android_sdk_scribble_utils_Algorithm_distance
   (JNIEnv *env, jclass thiz, jfloat x1, jfloat y1, jfloat x2, jfloat y2, jfloat x, jfloat y) {
     float A = x - x1;
     float B = y - y1;
