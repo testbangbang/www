@@ -349,4 +349,8 @@
     <dimen name="quick_back_button_explanation_margin_right">110dp</dimen>
     <dimen name="fragment_help_item_height">70dp</dimen>
     <dimen name="manual_qr_code_text_margin_top">20dp</dimen>
+    <dimen name="dialog_associated_edit_width">300dp</dimen>
+    <dimen name="dialog_associated_edit_height">60dp</dimen>
+    <dimen name="dialog_associated_edit_margin_top">50dp</dimen>
+    <dimen name="dialog_associated_email_button_margin_top">80dp</dimen>
 </resources>

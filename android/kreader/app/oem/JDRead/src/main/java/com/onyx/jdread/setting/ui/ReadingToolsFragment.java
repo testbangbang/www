@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.evernote.client.android.login.EvernoteLoginFragment;
+import com.onyx.android.sdk.utils.PreferenceManager;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentReadingToolsBinding;
@@ -15,6 +17,7 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.manager.EvernoteManager;
+import com.onyx.jdread.manager.SendEmailManager;
 import com.onyx.jdread.setting.adapter.DeviceInfoAdapter;
 import com.onyx.jdread.setting.event.AssociatedEmailToolsEvent;
 import com.onyx.jdread.setting.event.AssociatedNotesToolsEvent;
@@ -23,6 +26,7 @@ import com.onyx.jdread.setting.event.DictionaryToolsEvent;
 import com.onyx.jdread.setting.event.TranslationToolsEvent;
 import com.onyx.jdread.setting.model.ReadingToolsModel;
 import com.onyx.jdread.setting.model.SettingBundle;
+import com.onyx.jdread.setting.view.AssociatedEmailDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -78,9 +82,15 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
 
     @Subscribe
     public void onAssociatedEmailToolsEvent(AssociatedEmailToolsEvent event) {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_APP_EMAIL);
-        startActivity(intent);
+        AssociatedEmailDialog.DialogModel model = new AssociatedEmailDialog.DialogModel();
+        String email = PreferenceManager.getStringValue(JDReadApplication.getInstance(), R.string.email_address_key, null);
+        boolean bound = StringUtils.isNotBlank(email);
+        model.title.set(bound ? getString(R.string.unbind_to_email) : getString(R.string.bind_to_email));
+        model.emailAddress.set(email);
+        model.bound.set(bound);
+        AssociatedEmailDialog.Builder builder = new AssociatedEmailDialog.Builder(JDReadApplication.getInstance(), model);
+        AssociatedEmailDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Subscribe
