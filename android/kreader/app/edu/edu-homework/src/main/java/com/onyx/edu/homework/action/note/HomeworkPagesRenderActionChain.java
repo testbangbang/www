@@ -7,7 +7,7 @@ import com.android.annotations.NonNull;
 import com.android.annotations.Nullable;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.base.NoteActionChain;
@@ -27,12 +27,14 @@ public class HomeworkPagesRenderActionChain extends BaseNoteAction {
     private int pageCount = -1;
     private Map<String, List<String>> unRenderPageUniqueMap;
     private List<Question> questions;
+    private Rect size;
 
-    public HomeworkPagesRenderActionChain(String docId, List<Question> questions, int pageCount) {
+    public HomeworkPagesRenderActionChain(String docId, List<Question> questions, Rect s, int pageCount) {
         this.docIds = new ArrayList<>();
         docIds.add(docId);
         this.questions = questions;
         this.pageCount = pageCount;
+        size = s;
     }
 
     @Override
@@ -41,6 +43,7 @@ public class HomeworkPagesRenderActionChain extends BaseNoteAction {
         GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds);
         final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(),
                 questions,
+                size,
                 pageCount,
                 false);
         chain.addAction(pageUniqueIdsAction);

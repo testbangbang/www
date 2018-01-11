@@ -206,6 +206,7 @@ public class BaseNoteRequest extends BaseRequest {
                 drawBackground(canvas, paint, parent.getNoteDocument().getBackground(),
                         parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
             }
+            drawReviewBitmap(canvas, parent);
             prepareRenderingBuffer(bitmap);
 
             final Matrix renderMatrix = new Matrix();
@@ -222,6 +223,14 @@ public class BaseNoteRequest extends BaseRequest {
             flushRenderingBuffer(bitmap);
             drawRandomTestPath(canvas, paint);
         }
+    }
+
+    private void drawReviewBitmap(Canvas canvas, NoteViewHelper noteViewHelper) {
+        Bitmap bitmap = noteViewHelper.getReviewBitmap();
+        if (bitmap == null) {
+            return;
+        }
+        canvas.drawBitmap(bitmap, 0, 0, null);
     }
 
     private void drawTextView(final Canvas canvas, final NoteViewHelper parent, int pagePosition) {

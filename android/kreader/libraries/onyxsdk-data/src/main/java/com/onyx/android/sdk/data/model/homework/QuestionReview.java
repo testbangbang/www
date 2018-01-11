@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.data.model;
+package com.onyx.android.sdk.data.model.homework;
 
 import java.io.Serializable;
 import java.util.List;

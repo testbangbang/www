@@ -16,11 +16,11 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.receiver.NetworkConnectChangedReceiver;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.Question;
-import com.onyx.android.sdk.data.model.QuestionReview;
+import com.onyx.android.sdk.data.model.Subject;
+import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.data.model.homework.QuestionReview;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.NetworkUtil;
@@ -31,9 +31,11 @@ import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.action.ShowAnalysisAction;
+import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
-import com.onyx.edu.homework.data.Homework;
+import com.onyx.edu.homework.data.HomeworkIntent;
+import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
@@ -56,7 +58,7 @@ public class HomeworkListActivity extends BaseActivity {
     private ActivityHomeworkListBinding binding;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
     private List<Question> questions;
-    private Homework homework;
+    private HomeworkIntent homeworkIntent;
     private RecordFragment recordFragment;
     private QuestionFragment questionFragment;
     private int currentPage = 0;
@@ -76,6 +78,7 @@ public class HomeworkListActivity extends BaseActivity {
         super.onDestroy();
         unregisterReceiver();
         DataBundle.getInstance().unregister(this);
+        DataBundle.getInstance().quit();
     }
 
     private void initView() {
@@ -137,7 +140,15 @@ public class HomeworkListActivity extends BaseActivity {
         if (currentPage >= questions.size()) {
             return;
         }
-        new ShowAnalysisAction(questions.get(currentPage)).execute(HomeworkListActivity.this, null);
+        if (getQuestionFragment() == null) {
+            return;
+        }
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onStopSaveOption(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new ShowAnalysisAction(questions.get(currentPage)).execute(HomeworkListActivity.this, null);
+            }
+        });
     }
 
     private void nextPage(final View view) {
@@ -148,7 +159,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (next >= questions.size() || getQuestionFragment() == null) {
             return;
         }
-        getQuestionFragment().saveQuestion(new BaseCallback() {
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 currentPage = Math.min(next, questions.size() - 1);
@@ -165,7 +176,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (prev < 0 || getQuestionFragment() == null) {
             return;
         }
-        getQuestionFragment().saveQuestion(new BaseCallback() {
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 currentPage = Math.max(prev, 0);
@@ -175,23 +186,31 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showSubmitDialog() {
-        checkWifi(false);
-        getDataBundle().post(new StopNoteEvent(false));
-        SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        if (getQuestionFragment() == null) {
+            return;
+        }
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onStopSaveOption(), new BaseCallback() {
             @Override
-            public void onDismiss(DialogInterface dialog) {
-                reloadQuestionFragment(currentPage);
+            public void done(BaseRequest request, Throwable e) {
+                SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        reloadQuestionFragment(currentPage);
+                    }
+                });
+                dialog.show();
             }
         });
-        dialog.show();
     }
 
     private void getHomeworkReview() {
-        GetHomeworkReviewsAction reviewsAction = new GetHomeworkReviewsAction(getDataBundle().getHomeworkId(), questions, true);
+        getDataBundle().post(new StopNoteEvent(false));
+        GetHomeworkReviewsAction reviewsAction = new GetHomeworkReviewsAction(getDataBundle().getHomeworkId(), questions, true, true);
         reviewsAction.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                getDataBundle().post(new ResumeNoteEvent());
                 if (!getDataBundle().isReview()) {
                     Toast.makeText(HomeworkListActivity.this, R.string.not_review, Toast.LENGTH_SHORT).show();
                     return;
@@ -209,34 +228,31 @@ public class HomeworkListActivity extends BaseActivity {
         if (StringUtils.isNullOrEmpty(extraData)) {
             return;
         }
-        homework = JSON.parseObject(extraData, Homework.class);
+        homeworkIntent = JSON.parseObject(extraData, HomeworkIntent.class);
     }
 
     private void homeworkRequest() {
-        if (!checkWifi(true)) {
-            return;
-        }
-        if (homework == null || homework.child == null) {
+        if (homeworkIntent == null || homeworkIntent.child == null) {
             showMessage(R.string.no_find_homework);
             return;
         }
-        String libraryId = homework.child._id;
+        String libraryId = homeworkIntent.child._id;
         if (StringUtils.isNullOrEmpty(libraryId)) {
             showMessage(R.string.no_find_homework);
             return;
         }
-        DataBundle.getInstance().setHomeworkId(homework.child._id);
         showMessage(R.string.loading_questions);
         final HomeworkListActionChain actionChain = new HomeworkListActionChain(libraryId);
         actionChain.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                initToolbarTitle();
                 questions = actionChain.getQuestions();
-                if (e != null && CollectionUtils.isNullOrEmpty(questions)) {
-                    Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                //check can get homework, if not open wifi
+                if (CollectionUtils.isNullOrEmpty(questions)) {
+                    checkWifi(true);
                     return;
                 }
+                initToolbarTitle();
                 hideMessage();
                 updateViewState();
                 showTotalScore();
@@ -247,11 +263,11 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void initToolbarTitle() {
-        String title = homework.child.title;
-        String subject = getDataBundle().getHomeworkInfo().subject;
-        Date beginTime = getDataBundle().getHomeworkInfo().beginTime;
-        if (!StringUtils.isNullOrEmpty(subject)) {
-            title += "  " + getString(R.string.subject, subject);
+        String title = homeworkIntent.child.title;
+        Subject subject = getDataBundle().getHomework().subject;
+        Date beginTime = getDataBundle().getHomework().beginTime;
+        if (subject != null && !StringUtils.isNullOrEmpty(subject.name)) {
+            title += "  " + getString(R.string.subject, subject.name);
         }
         if (beginTime != null) {
             String time = DateTimeUtil.formatDate(beginTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
@@ -441,18 +457,16 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showExitDialog() {
-        getDataBundle().post(new StopNoteEvent(false));
-        OnyxCustomDialog.getConfirmDialog(this, getString(R.string.exit_tips), new DialogInterface.OnClickListener() {
+        if (getQuestionFragment() == null) {
+            new ShowExitDialogAction().execute(HomeworkListActivity.this, null);
+            return;
+        }
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onStopSaveOption(), new BaseCallback() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                System.exit(0);
+            public void done(BaseRequest request, Throwable e) {
+                new ShowExitDialogAction().execute(HomeworkListActivity.this, null);
             }
-        }, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                getDataBundle().post(new ResumeNoteEvent());
-            }
-        }).show();
+        });
     }
 
     private void toggleRecordFragment() {
@@ -460,7 +474,7 @@ public class HomeworkListActivity extends BaseActivity {
             return;
         }
         if (recordFragment == null) {
-            getQuestionFragment().saveQuestion(new BaseCallback() {
+            getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     showRecordFragment();

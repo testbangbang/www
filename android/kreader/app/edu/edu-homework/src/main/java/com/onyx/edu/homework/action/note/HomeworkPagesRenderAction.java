@@ -9,9 +9,8 @@ import com.android.annotations.Nullable;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.request.HomeworkPagesRenderRequest;
 
@@ -34,21 +33,25 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
     private List<Question> questions;
     private int pageCount = -1;
     private int documentRenderCount = 0;
+    private Rect size;
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
                                      List<Question> questions,
+                                     Rect s,
                                      int pageCount,
                                      boolean saveAsFile) {
         this.pageUniqueMap = pageUniqueMap;
         this.saveAsFile = saveAsFile;
         this.pageCount = pageCount;
         this.questions = questions;
+        size = s;
     }
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
                                      List<Question> questions,
+                                     Rect s,
                                      boolean saveAsFile) {
-        this(pageUniqueMap, questions, -1, saveAsFile);
+        this(pageUniqueMap, questions, s, -1, saveAsFile);
     }
 
     @Override
@@ -66,7 +69,7 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         }
         final String docId = documentIds.get(0);
         Question question = getQuestion(docId);
-        if (question == null || !question.doneAnswer) {
+        if (question == null || !question.doneAnswer || question.isChoiceQuestion()) {
             documentIds.remove(docId);
             documentRenderCount = 0;
             renderPageBitmap(noteViewHelper, baseCallback);
@@ -77,9 +80,6 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
 
         String pageUniqueId = pageUniqueIds.remove(0);
         List<PageInfo> pageInfoList = new ArrayList<>();
-        int width = (int) getAppContext().getResources().getDimension(R.dimen.scribble_view_width);
-        int height = (int) getAppContext().getResources().getDimension(R.dimen.scribble_view_height);
-        Rect size =  new Rect(0, 0, width, height);
         PageInfo pageInfo = new PageInfo(pageUniqueId, size.width(), size.height());
         pageInfo.updateDisplayRect(new RectF(0, 0, size.width(), size.height()));
         pageInfoList.add(pageInfo);

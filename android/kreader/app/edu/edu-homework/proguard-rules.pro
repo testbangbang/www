@@ -27,7 +27,6 @@
 
 -keepnames class com.onyx.edu.homework.data.Homework { *; }
 -keepnames class com.onyx.edu.homework.data.HomeworkDetail { *; }
--keepnames class com.onyx.edu.homework.data.HomeworkInfo { *; }
 
 -keepnames class com.onyx.android.sdk.scribble.data.PageNameList { *; }
 -keepnames class com.onyx.android.sdk.scribble.data.ShapeExtraAttributes { *; }

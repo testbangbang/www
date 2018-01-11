@@ -1,6 +1,8 @@
 package com.onyx.edu.homework.db;
 
-import com.onyx.android.sdk.data.model.QuestionReview;
+import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.data.model.homework.QuestionOption;
+import com.onyx.android.sdk.data.model.homework.QuestionReview;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -35,6 +37,24 @@ public class QuestionModel extends BaseModel {
 
     @Column(typeConverter = ConverterQuestionReview.class)
     private QuestionReview review;
+
+    @Column
+    private String content;
+
+    @Column
+    private String answerContent;
+
+    @Column
+    private String analysis;
+
+    @Column
+    private int type;
+
+    @Column
+    private int difficulty;
+
+    @Column(typeConverter = ConverterListQuestionOption.class)
+    private List options;
 
     public String getUniqueId() {
         return uniqueId;
@@ -84,11 +104,72 @@ public class QuestionModel extends BaseModel {
         this.review = review;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getAnswerContent() {
+        return answerContent;
+    }
+
+    public void setAnswerContent(String answerContent) {
+        this.answerContent = answerContent;
+    }
+
+    public String getAnalysis() {
+        return analysis;
+    }
+
+    public void setAnalysis(String analysis) {
+        this.analysis = analysis;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public List<QuestionOption> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<QuestionOption> options) {
+        this.options = options;
+    }
+
     public static QuestionModel create(String uniqueId, String questionId, String homeworkId) {
         QuestionModel model = new QuestionModel();
         model.setQuestionId(questionId);
         model.setUniqueId(uniqueId);
         model.setHomeworkId(homeworkId);
         return model;
+    }
+
+    public void loadFromQuestion(Question question) {
+        if (question == null) {
+            return;
+        }
+        setContent(question.content);
+        setAnswerContent(question.answers);
+        setAnalysis(question.analysis);
+        setType(question.QuesType);
+        setDifficulty(question.difficulty);
+        setOptions(question.options);
+        setAnswer(question.correctOptions);
     }
 }

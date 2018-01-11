@@ -1,15 +1,16 @@
 package com.onyx.edu.homework.action;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.HomeworkRequestModel;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.DataBundle;
-import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.ActionChain;
 import com.onyx.edu.homework.base.BaseAction;
+import com.onyx.edu.homework.ui.HomeworkListActivity;
 
 import java.util.List;
 
@@ -27,21 +28,21 @@ public class HomeworkListActionChain extends BaseAction {
     }
 
     @Override
-    public void execute(Context context, final BaseCallback baseCallback) {
+    public void execute(final Context context, final BaseCallback baseCallback) {
         final HomeworkListAction homeworkListAction = new HomeworkListAction(homeworkId);
-        final GetHomeworkReviewsAction answersAction = new GetHomeworkReviewsAction(homeworkId, homeworkListAction.getQuestions(), false);
-        final CheckLocalDataAction checkLocalDataAction = new CheckLocalDataAction(homeworkListAction.getQuestions(), homeworkId);
+        final GetHomeworkReviewsAction answersAction = new GetHomeworkReviewsAction(homeworkId, homeworkListAction.getQuestions(), false, false);
         final ActionChain chain = new ActionChain(false);
         chain.addAction(new CloudIndexServiceAction());
         chain.addAction(new GetTokenFromLocalAction());
         chain.addAction(homeworkListAction);
         chain.addAction(answersAction);
-        chain.addAction(checkLocalDataAction);
         chain.execute(context, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                DataBundle.getInstance().setState(checkLocalDataAction.getCurrentState());
-                questions = checkLocalDataAction.getQuestions();
+                questions = homeworkListAction.getQuestions();
+                if (e != null && CollectionUtils.isNullOrEmpty(questions)) {
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
                 baseCallback.done(request, e);
             }
         });

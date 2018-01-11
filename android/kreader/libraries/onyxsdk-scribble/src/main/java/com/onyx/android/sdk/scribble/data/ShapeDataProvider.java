@@ -34,6 +34,11 @@ public class ShapeDataProvider {
     }
 
     public static List<ShapeModel> loadShapeList(final Context context,
+                                                 final String documentUniqueId) {
+        return loadShapeList(context, documentUniqueId, null, null, null);
+    }
+
+    public static List<ShapeModel> loadShapeList(final Context context,
                                                  final String documentUniqueId,
                                                  final String pageUniqueId,
                                                  final String subPageName) {
@@ -46,7 +51,10 @@ public class ShapeDataProvider {
                                                  final String subPageName,
                                                  final String groupId) {
         Select select = new Select();
-        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ShapeModel_Table.pageUniqueId.eq(pageUniqueId));
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId));
+        if (StringUtils.isNotBlank(pageUniqueId)) {
+            where = where.and(ShapeModel_Table.pageUniqueId.eq(pageUniqueId));
+        }
         if (StringUtils.isNotBlank(subPageName)) {
             where = where.and(ShapeModel_Table.subPageName.eq(subPageName));
         }
@@ -122,8 +130,8 @@ public class ShapeDataProvider {
         ProcessModelTransaction<ShapeModel> processModelTransaction =
                 new ProcessModelTransaction.Builder<>(new ProcessModelTransaction.ProcessModel<ShapeModel>() {
                     @Override
-                    public void processModel(ShapeModel model) {
-                        model.save();
+                    public void processModel(ShapeModel shapeModel, DatabaseWrapper wrapper) {
+                        shapeModel.save();
                     }
                 }).processListener(new ProcessModelTransaction.OnModelProcessListener<ShapeModel>() {
                     @Override

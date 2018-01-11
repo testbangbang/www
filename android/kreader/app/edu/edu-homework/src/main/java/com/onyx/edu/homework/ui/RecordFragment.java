@@ -13,8 +13,8 @@ import android.widget.ImageView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.Question;
-import com.onyx.android.sdk.data.model.QuestionOption;
+import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.data.model.homework.QuestionOption;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -217,7 +217,13 @@ public class RecordFragment extends BaseFragment {
         if (question.isChoiceQuestion() || !question.doneAnswer) {
             return;
         }
-        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(), questions, 3);
+        int width = (int) getContext().getResources().getDimension(R.dimen.record_scribble_view_width);
+        int height = (int) getContext().getResources().getDimension(R.dimen.record_scribble_view_height);
+        Rect size =  new Rect(0, 0, width, height);
+        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(),
+                questions,
+                size,
+                3);
         pageAction.execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

@@ -8,16 +8,13 @@ import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.sql.language.Condition;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.Operator;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
-import com.raizlabs.android.dbflow.sql.language.SQLCondition;
+import com.raizlabs.android.dbflow.sql.language.SQLOperator;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
-import com.raizlabs.android.dbflow.sql.language.property.BaseProperty;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
-import com.raizlabs.android.dbflow.sql.language.property.IntProperty;
-import com.raizlabs.android.dbflow.sql.language.property.LongProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.util.ArrayList;
@@ -133,7 +130,7 @@ public class CloudQueryBuilder {
         return args;
     }
 
-    public static IntProperty getMetadataReadingStatusProperty() {
+    public static Property<Integer> getMetadataReadingStatusProperty() {
         return CloudMetadata_Table.readingStatus;
     }
 
@@ -173,7 +170,7 @@ public class CloudQueryBuilder {
         return CloudMetadata_Table.cloudId;
     }
 
-    public static LongProperty getMetadataSizeProperty() {
+    public static Property<Long> getMetadataSizeProperty() {
         return CloudMetadata_Table.size;
     }
 
@@ -185,7 +182,7 @@ public class CloudQueryBuilder {
         return CloudMetadata_Table.lastAccess;
     }
 
-    public static IntProperty getMetadataOrdinalProperty() {
+    public static Property<Integer> getMetadataOrdinalProperty() {
         return CloudMetadata_Table.ordinal;
     }
 
@@ -197,50 +194,50 @@ public class CloudQueryBuilder {
         return CloudMetadataCollection_Table.libraryUniqueId;
     }
 
-    public static ConditionGroup newBookListCondition() {
-        return ConditionGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.NEW));
+    public static OperatorGroup newBookListCondition() {
+        return OperatorGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.NEW));
     }
 
-    public static ConditionGroup finishReadCondition() {
-        return ConditionGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.FINISHED));
+    public static OperatorGroup finishReadCondition() {
+        return OperatorGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.FINISHED));
     }
 
-    public static ConditionGroup recentReadingCondition() {
-        return ConditionGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.READING));
+    public static OperatorGroup recentReadingCondition() {
+        return OperatorGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.READING));
     }
 
-    public static ConditionGroup recentAddCondition() {
-        return ConditionGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.NEW));
+    public static OperatorGroup recentAddCondition() {
+        return OperatorGroup.clause().and(getMetadataReadingStatusProperty().eq(Metadata.ReadingStatus.NEW));
     }
 
-    public static ConditionGroup orTypeCondition(Set<String> fileTypes) {
+    public static OperatorGroup orTypeCondition(Set<String> fileTypes) {
         if (CollectionUtils.isNullOrEmpty(fileTypes)) {
-            return ConditionGroup.clause();
+            return OperatorGroup.clause();
         }
-        ConditionGroup group = ConditionGroup.clause();
-        List<SQLCondition> sqlConditions = new ArrayList<>();
+        OperatorGroup group = OperatorGroup.clause();
+        List<SQLOperator> sqlConditions = new ArrayList<>();
         for (String type : fileTypes) {
             sqlConditions.add(getMetadataTypeProperty().eq(type));
         }
         return group.orAll(sqlConditions);
     }
 
-    public static ConditionGroup orTagsCondition(Set<String> tags) {
+    public static OperatorGroup orTagsCondition(Set<String> tags) {
         if (CollectionUtils.isNullOrEmpty(tags)) {
-            return ConditionGroup.clause();
+            return OperatorGroup.clause();
         }
-        List<SQLCondition> sqlConditions = new ArrayList<>();
+        List<SQLOperator> sqlConditions = new ArrayList<>();
         for (String tag : tags) {
             sqlConditions.add(matchLike(getMetadataTagsProperty(), tag));
         }
-        return ConditionGroup.clause().orAll(sqlConditions);
+        return OperatorGroup.clause().orAll(sqlConditions);
     }
 
-    public static ConditionGroup orSearchCondition(String search) {
+    public static OperatorGroup orSearchCondition(String search) {
         if (StringUtils.isNullOrEmpty(search)) {
-            return ConditionGroup.clause();
+            return OperatorGroup.clause();
         }
-        return ConditionGroup.clause().or(matchLike(getMetadataTitleProperty(), search))
+        return OperatorGroup.clause().or(matchLike(getMetadataTitleProperty(), search))
                 .or(matchLike(getMetadataNameProperty(), search)).or(matchLike(getMetadataAuthorsProperty(), search));
     }
 
@@ -269,26 +266,26 @@ public class CloudQueryBuilder {
         return OrderBy.fromProperty(property);
     }
 
-    public static void andWith(final ConditionGroup parent, final ConditionGroup child) {
+    public static void andWith(final OperatorGroup parent, final OperatorGroup child) {
         if (parent != null && child != null) {
             parent.and(child);
         }
     }
 
-    public static Condition matchLike(final Property<String> property, String match) {
+    public static Operator<String> matchLike(final Property<String> property, String match) {
         if (StringUtils.isNullOrEmpty(match)) {
             return null;
         }
         return property.like("%" + match + "%");
     }
 
-    public static ConditionGroup matchLikeSet(final Property<String> property, final Set<String> set) {
+    public static OperatorGroup matchLikeSet(final Property<String> property, final Set<String> set) {
         if (set == null || set.size() <= 0) {
             return null;
         }
-        final ConditionGroup conditionGroup = ConditionGroup.clause();
+        final OperatorGroup conditionGroup = OperatorGroup.clause();
         for (String string : set) {
-            Condition condition = matchLike(property, string);
+            Operator condition = matchLike(property, string);
             if (condition == null) {
                 continue;
             }
@@ -297,26 +294,26 @@ public class CloudQueryBuilder {
         return conditionGroup;
     }
 
-    public static ConditionGroup matchEqualSet(final Property<String> property, final Set<String> set) {
+    public static OperatorGroup matchEqualSet(final Property<String> property, final Set<String> set) {
         if (set == null || set.size() <= 0) {
             return null;
         }
-        final ConditionGroup conditionGroup = ConditionGroup.clause();
+        final OperatorGroup conditionGroup = OperatorGroup.clause();
         for (String string : set) {
             conditionGroup.or(property.eq(string));
         }
         return conditionGroup;
     }
 
-    private static Condition getNullOrEqualCondition(Property<String> property, String compare) {
+    private static Operator getNullOrEqualCondition(Property<String> property, String compare) {
         return compare == null ? property.isNull() : property.eq(compare);
     }
 
-    private static Condition getNotNullOrEqualCondition(Property<String> property, String value) {
+    private static Operator getNotNullOrEqualCondition(Property<String> property, String value) {
         return value == null ? property.isNotNull() : property.eq(value);
     }
 
-    private static Condition.In inCondition(Property property, Where in, boolean isIn) {
+    private static Operator.In inCondition(Property property, Where in, boolean isIn) {
         return isIn ? property.in(in) : property.notIn(in);
     }
 
@@ -355,8 +352,8 @@ public class CloudQueryBuilder {
         return orderBy;
     }
 
-    public static BaseProperty getPropertyFromSortBy(SortBy sortBy) {
-        BaseProperty property = getMetadataNameProperty();
+    public static Property getPropertyFromSortBy(SortBy sortBy) {
+        Property property = getMetadataNameProperty();
         switch (sortBy) {
             case None:
             case Name:
@@ -424,8 +421,8 @@ public class CloudQueryBuilder {
                 .from(CloudMetadataCollection.class)
                 .where(getNotNullOrEqualCondition(getMetadataCollectionLibraryIdProperty().withTable(),
                         queryArgs.libraryUniqueId));
-        Condition.In inCondition = inCondition(getMetadataCloudIdProperty().withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
-        ConditionGroup group = ConditionGroup.clause().and(inCondition);
+        Operator.In inCondition = inCondition(getMetadataCloudIdProperty().withTable(), whereCollection, StringUtils.isNotBlank(queryArgs.libraryUniqueId));
+        OperatorGroup group = OperatorGroup.clause().and(inCondition);
         if (queryArgs.conditionGroup.size() > 0) {
             queryArgs.conditionGroup = group.and(queryArgs.conditionGroup);
         } else {

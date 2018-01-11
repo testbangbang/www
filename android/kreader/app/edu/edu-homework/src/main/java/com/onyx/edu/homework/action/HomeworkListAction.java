@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.HomeworkRequestModel;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.Homework;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.base.BaseAction;
 import com.onyx.edu.homework.request.HomeworkListRequest;
@@ -29,14 +29,16 @@ public class HomeworkListAction extends BaseAction {
     @Override
     public void execute(Context context, final BaseCallback baseCallback) {
         final HomeworkListRequest listRequest = new HomeworkListRequest(libraryId);
+        listRequest.setContext(context.getApplicationContext());
         getCloudManager().submitRequest(context, listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                HomeworkRequestModel homeworkRequestModel = listRequest.getHomeworkRequestModel();
-                if (homeworkRequestModel != null) {
-                    questions.addAll(homeworkRequestModel.questions);
+                DataBundle.getInstance().setState(listRequest.getHomeworkState());
+                Homework homework = listRequest.getHomework();
+                if (homework != null) {
+                    questions.addAll(homework.questions);
                 }
-                DataBundle.getInstance().getHomeworkInfo().loadFromHomeworkRequestModel(homeworkRequestModel);
+                DataBundle.getInstance().setHomework(homework);
                 baseCallback.done(request, e);
             }
         });

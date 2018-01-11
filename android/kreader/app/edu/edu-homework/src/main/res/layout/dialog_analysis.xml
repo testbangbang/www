@@ -49,5 +49,24 @@
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/divider_line"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/analysis"
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
+        <TextView
+            android:layout_margin="6dp"
+            android:gravity="center"
+            android:layout_below="@+id/divider_line"
+            android:id="@+id/close"
+            android:text="@string/close"
+            android:textSize="@dimen/homework_text_size"
+            android:textColor="@color/text_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 </layout>

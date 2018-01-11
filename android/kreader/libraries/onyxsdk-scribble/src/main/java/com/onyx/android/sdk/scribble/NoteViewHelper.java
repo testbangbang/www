@@ -106,6 +106,8 @@ public class NoteViewHelper {
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
+    private ReaderBitmapImpl reviewBitmapWrapper = new ReaderBitmapImpl();
+    private StaticLayout textLayout;
     private Rect softwareLimitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
@@ -118,6 +120,7 @@ public class NoteViewHelper {
     private LineLayoutArgs lineLayoutArgs;
     private Shape currentShape = null;
     private Shape cursorShape = null;
+    private int shapeState;
     private String drawText;
     private boolean shortcutErasing = false;
     private int viewPosition[] = {0, 0};
@@ -163,6 +166,10 @@ public class NoteViewHelper {
 
     public void setShapeDataInfo(ShapeDataInfo shapeDataInfo) {
         this.shapeDataInfo = shapeDataInfo;
+    }
+
+    public void updateShapeState(int state) {
+        this.shapeState = state;
     }
 
     public SurfaceView getView() {
@@ -287,11 +294,14 @@ public class NoteViewHelper {
     }
 
     public StaticLayout getTextLayout(String text, int width) {
-        TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
-        tp.setColor(Color.BLACK);
-        tp.setTextSize(DRAW_TEXT_SIZE);
-        return new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getAppContext()), null),tp,width - (DRAW_TEXT_PADDING * 2),
-                Layout.Alignment.ALIGN_NORMAL, 1f,DRAW_TEXT_SPACING_ADD,false);
+        if (textLayout == null) {
+            TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
+            tp.setColor(Color.BLACK);
+            tp.setTextSize(DRAW_TEXT_SIZE);
+            textLayout =  new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getAppContext()), null),tp,width - (DRAW_TEXT_PADDING * 2),
+                    Layout.Alignment.ALIGN_NORMAL, 1f,DRAW_TEXT_SPACING_ADD,false);
+        }
+        return textLayout;
     }
 
     private void setCallback(final InputCallback c) {
@@ -414,6 +424,11 @@ public class NoteViewHelper {
         EpdController.setStrokeColor(color);
     }
 
+    public void updateReviewBitmap(Bitmap src) {
+        reviewBitmapWrapper.recycleBitmap();
+        reviewBitmapWrapper.attach(src);
+    }
+
     public void updateDrawingArgs(final NoteDrawingArgs drawingArgs) {
         setStrokeColor(drawingArgs.strokeColor);
         setStrokeWidth(drawingArgs.strokeWidth);
@@ -493,6 +508,10 @@ public class NoteViewHelper {
         return renderBitmapWrapper.getBitmap();
     }
 
+    public Bitmap getReviewBitmap() {
+        return reviewBitmapWrapper.getBitmap();
+    }
+
     // copy from render bitmap to view bitmap.
     public void copyBitmap() {
         if (renderBitmapWrapper == null) {
@@ -519,12 +538,20 @@ public class NoteViewHelper {
         if (renderBitmapWrapper != null) {
             renderBitmapWrapper.recycleBitmap();
         }
+        if (reviewBitmapWrapper != null) {
+            reviewBitmapWrapper.recycleBitmap();
+        }
+    }
+
+    private void releaseTextLayout() {
+        textLayout = null;
     }
 
     public void reset() {
         getNoteDocument().close(getAppContext());
         quit();
         recycleBitmap();
+        releaseTextLayout();
     }
 
     private final Runnable generateRunnable(final BaseNoteRequest request) {
@@ -611,6 +638,7 @@ public class NoteViewHelper {
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteDocument().getStrokeColor());
         shape.setGroupId(getNoteDocument().getGroupId());
+        shape.setShapeState(shapeState);
         shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
         return shape;
     }

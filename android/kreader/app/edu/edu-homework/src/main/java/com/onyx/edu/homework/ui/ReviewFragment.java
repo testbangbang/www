@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;

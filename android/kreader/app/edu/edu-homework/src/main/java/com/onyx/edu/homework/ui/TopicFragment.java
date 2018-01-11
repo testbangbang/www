@@ -5,12 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.Spanned;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.utils.Base64ImageParser;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
