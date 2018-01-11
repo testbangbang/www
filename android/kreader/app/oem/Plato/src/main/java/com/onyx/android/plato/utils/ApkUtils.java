@@ -185,7 +185,7 @@ public class ApkUtils {
         View inflate = View.inflate(context, R.layout.apk_update_view, null);
         TextView updateMsg = (TextView) inflate.findViewById(R.id.apk_update_message);
         final TextView progressBar = (TextView) inflate.findViewById(R.id.apk_progress);
-        dialog = builder.setContentView(inflate).setTitle(context.getString(R.string.find_a_new_version))
+        CustomDialog dialog = builder.setContentView(inflate).setTitle(context.getString(R.string.find_a_new_version))
                 .setPositiveButton(context.getString(R.string.start_updating), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
