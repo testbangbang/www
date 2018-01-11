@@ -3,7 +3,7 @@ package com.onyx.android.note;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import com.hanvon.core.Algorithm;
+import com.onyx.android.sdk.scribble.utils.Algorithm;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>

@@ -1,6 +1,6 @@
-package com.hanvon.core;
+package com.onyx.android.sdk.scribble.utils;
 
-//javah -classpath ./build/intermediates/classes/debug/:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/hanvon/core -jni com.hanvon.core.Algorithm
+//javah -classpath ./build/intermediates/classes/debug/:/opt/adt-bundle-linux/sdk/platforms/android-8/android.jar:./com/hanvon/core -jni com.onyx.android.sdk.scribble.utils.Algorithm
 public class Algorithm {
 
     static {
