@@ -124,12 +124,12 @@ public class PowerManagerFragment extends Fragment {
         final SettingPageAdapter<TimeoutItemViewHolder, TimeoutItem> adapter = new SettingPageAdapter<TimeoutItemViewHolder, TimeoutItem>() {
             @Override
             public int getRowCount() {
-                return 2;
+                return 6;
             }
 
             @Override
             public int getColumnCount() {
-                return 3;
+                return 1;
             }
 
             @Override
