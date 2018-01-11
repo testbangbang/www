@@ -337,8 +337,8 @@
     <string name="buy_book_success">Book purchase success </string>
     <string name="email_address_hint">Email address</string>
     <string name="email_address_wrong">Please input the correct email address</string>
-    <string name="unbind_to_email">取消绑定</string>
+    <string name="unbind_to_email">Unbind to email</string>
     <string name="email_address_format">Email: %s</string>
-    <string name="email_bound">电子邮箱已关联</string>
-    <string name="confirm_bind">确认关联</string>
+    <string name="email_bound">Email bound</string>
+    <string name="confirm_bind">Confirm bind</string>
 </resources>
