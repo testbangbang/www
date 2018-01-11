@@ -2,17 +2,13 @@ package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
 
-import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.common.ReaderViewInfo;
-import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
-import com.onyx.jdread.reader.common.ReaderUserDataInfo;
+import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
-import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
@@ -28,23 +24,11 @@ import org.greenrobot.eventbus.ThreadMode;
 public class ReaderActivityEventHandler {
     private ReaderViewModel readerViewModel;
     private ReaderViewBack readerViewBack;
-    private ReaderTextStyle style;
-    private ImageReflowSettings settings;
-    private ReaderViewInfo readerViewInfo;
-    private ReaderUserDataInfo readerUserDataInfo;
     private ReaderSettingMenuDialog readerSettingMenuDialog;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
         this.readerViewBack = readerViewBack;
-    }
-
-    public ReaderTextStyle getStyle() {
-        return style;
-    }
-
-    public void setStyle(ReaderTextStyle style) {
-        this.style = style;
     }
 
     public void registerListener() {
@@ -96,8 +80,7 @@ public class ReaderActivityEventHandler {
             if (activity == null) {
                 return;
             }
-            readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity,
-                    style, settings,readerViewInfo,readerUserDataInfo);
+            readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity);
             readerSettingMenuDialog.show();
         }
     }
@@ -109,8 +92,6 @@ public class ReaderActivityEventHandler {
             return;
         }
         ReaderBookInfoDialog readerBookInfoDialog = new ReaderBookInfoDialog(activity,readerViewModel.getReaderDataHolder(),
-                readerViewInfo,
-                readerUserDataInfo,
                 ReaderBookInfoDialogConfig.CATALOG_MODE);
         readerBookInfoDialog.show();
     }
@@ -127,20 +108,17 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateViewSettingEvent(UpdateViewSettingEvent event){
-        style = event.getStyle();
-        settings = event.getSettings();
-        readerUserDataInfo = event.getReaderUserDataInfo();
+        readerViewModel.getReaderDataHolder().setStyle(event.getStyle());
+        readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
+        readerViewModel.getReaderDataHolder().setReaderUserDataInfo(event.getReaderUserDataInfo());
         if(readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()){
-            readerSettingMenuDialog.getReaderSettingMenuDialogHandler().setReaderUserDataInfo(readerUserDataInfo);
-            readerSettingMenuDialog.getReaderSettingMenuDialogHandler().setSettings(settings);
-            readerSettingMenuDialog.getReaderSettingMenuDialogHandler().setStyle(style);
             readerSettingMenuDialog.updateBookmarkState();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateReaderViewInfoEvent(UpdateReaderViewInfoEvent event){
-        readerViewInfo = event.getReaderViewInfo();
+        readerViewModel.getReaderDataHolder().setReaderViewInfo(event.getReaderViewInfo());
     }
 
     public static void updateReaderViewInfo(ReaderBaseRequest request){

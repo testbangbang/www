@@ -46,9 +46,9 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     private ReaderBookInfoDialogHandler readerBookInfoDialogHandler;
     private int mode;
 
-    public ReaderBookInfoDialog(@NonNull Context context, ReaderDataHolder readerDataHolder, ReaderViewInfo readerViewInfo, ReaderUserDataInfo readerUserDataInfo, int mode) {
+    public ReaderBookInfoDialog(@NonNull Context context, ReaderDataHolder readerDataHolder, int mode) {
         super(context, android.R.style.Theme_NoTitleBar_Fullscreen);
-        initEventHandler(readerDataHolder, readerViewInfo, readerUserDataInfo);
+        initEventHandler(readerDataHolder);
         this.mode = mode;
     }
 
@@ -62,10 +62,8 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         initData();
     }
 
-    private void initEventHandler(ReaderDataHolder readerDataHolder, ReaderViewInfo readerViewInfo, ReaderUserDataInfo readerUserDataInfo) {
+    private void initEventHandler(ReaderDataHolder readerDataHolder) {
         readerBookInfoDialogHandler = new ReaderBookInfoDialogHandler(readerDataHolder);
-        readerBookInfoDialogHandler.setReaderViewInfo(readerViewInfo);
-        readerBookInfoDialogHandler.setReaderUserDataInfo(readerUserDataInfo);
         readerBookInfoDialogHandler.setReaderBookInfoViewBack(this);
     }
 
@@ -76,7 +74,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     private void initData() {
         initTitleBar();
         binding.setReaderBookInfoModel(new ReaderBookInfoModel());
-        new GetDocumentInfoAction(readerBookInfoDialogHandler.getReaderUserDataInfo()).execute(readerBookInfoDialogHandler.getReaderDataHolder());
+        new GetDocumentInfoAction().execute(readerBookInfoDialogHandler.getReaderDataHolder());
     }
 
     private void initView() {
@@ -107,8 +105,8 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     }
 
     @Override
-    public void updateView(ReaderUserDataInfo readerUserDataInfo) {
-        initTabData(readerUserDataInfo);
+    public void updateView() {
+        initTabData(readerBookInfoDialogHandler.getReaderDataHolder().getReaderUserDataInfo());
     }
 
     private void initTabData(ReaderUserDataInfo readerUserDataInfo) {
@@ -182,7 +180,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     }
 
     public String getCurrentPagePosition() {
-        return readerBookInfoDialogHandler.getReaderViewInfo().getFirstVisiblePage().getPositionSafely();
+        return readerBookInfoDialogHandler.getReaderDataHolder().getReaderViewInfo().getFirstVisiblePage().getPositionSafely();
     }
 
     private TreeRecyclerView.TreeNode findTreeNodeByTag(List<TreeRecyclerView.TreeNode> nodeList, ReaderDocumentTableOfContentEntry entry) {

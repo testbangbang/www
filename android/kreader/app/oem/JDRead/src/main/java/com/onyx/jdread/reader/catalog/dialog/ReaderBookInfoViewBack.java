@@ -10,5 +10,5 @@ import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 
 public interface ReaderBookInfoViewBack {
     Dialog getContent();
-    void updateView(ReaderUserDataInfo readerUserDataInfo);
+    void updateView();
 }

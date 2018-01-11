@@ -4,7 +4,6 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.JDReadApplication;
@@ -15,7 +14,6 @@ import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ToggleBookmarkAction;
 import com.onyx.jdread.reader.common.GammaInfo;
-import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
@@ -53,42 +51,12 @@ public class ReaderSettingMenuDialogHandler {
     private ReaderSettingViewBack readerSettingViewBack;
     private ReaderSettingMenuBinding binding;
     private ReaderDataHolder readerDataHolder;
-    private ReaderTextStyle style;
-    private ImageReflowSettings settings;
-    private ReaderViewInfo readerViewInfo;
-    private ReaderUserDataInfo readerUserDataInfo;
     private boolean sideNoting = false;
     private int sideNotePage = 0;
 
-    public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder, ReaderSettingViewBack readerSettingViewBack, ReaderTextStyle style, ImageReflowSettings settings) {
+    public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder, ReaderSettingViewBack readerSettingViewBack) {
         this.readerDataHolder = readerDataHolder;
         this.readerSettingViewBack = readerSettingViewBack;
-        this.style = style;
-        this.settings = settings;
-    }
-
-    public void setReaderViewInfo(ReaderViewInfo readerViewInfo) {
-        this.readerViewInfo = readerViewInfo;
-    }
-
-    public ReaderViewInfo getReaderViewInfo() {
-        return readerViewInfo;
-    }
-
-    public ReaderUserDataInfo getReaderUserDataInfo() {
-        return readerUserDataInfo;
-    }
-
-    public void setStyle(ReaderTextStyle style) {
-        this.style = style;
-    }
-
-    public void setSettings(ImageReflowSettings settings) {
-        this.settings = settings;
-    }
-
-    public void setReaderUserDataInfo(ReaderUserDataInfo readerUserDataInfo) {
-        this.readerUserDataInfo = readerUserDataInfo;
     }
 
     public void setBinding(ReaderSettingMenuBinding binding) {
@@ -181,17 +149,17 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPageViewUpdateEvent(PageViewUpdateEvent event) {
-        new UpdatePageInfoAction(binding, readerViewInfo).execute(readerDataHolder);
+        new UpdatePageInfoAction(binding, readerDataHolder.getReaderViewInfo()).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event) {
-        new SettingFontSizeAction(style, event.fontSize).execute(readerDataHolder);
+        new SettingFontSizeAction(readerDataHolder.getStyle(), event.fontSize).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingTypefaceEvent(ReaderSettingTypefaceEvent event) {
-        new SettingTypefaceAction(style, event.typeFace).execute(readerDataHolder);
+        new SettingTypefaceAction(readerDataHolder.getStyle(), event.typeFace).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -213,12 +181,12 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScaleToPageCropEvent(ScaleToPageCropEvent event) {
-        new ScaleToPageCropAction(readerViewInfo).execute(readerDataHolder);
+        new ScaleToPageCropAction(readerDataHolder.getReaderViewInfo()).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onImageReflowEvent(ImageReflowEvent event) {
-        new ImageReflowAction(settings).execute(readerDataHolder);
+        new ImageReflowAction(readerDataHolder.getSettings()).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -233,17 +201,17 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingLeftAndRightSpacingEvent(SettingLeftAndRightSpacingEvent event) {
-        new SettingLeftAndRightSpacingAction(style, event.margin).execute(readerDataHolder);
+        new SettingLeftAndRightSpacingAction(readerDataHolder.getStyle(), event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingLineSpacingEvent(SettingLineSpacingEvent event) {
-        new SettingLineSpacingAction(style, event.margin).execute(readerDataHolder);
+        new SettingLineSpacingAction(readerDataHolder.getStyle(), event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingUpAndDownSpacingEvent(SettingUpAndDownSpacingEvent event) {
-        new SettingUpAndDownSpacingAction(style, event.margin).execute(readerDataHolder);
+        new SettingUpAndDownSpacingAction(readerDataHolder.getStyle(), event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -261,11 +229,11 @@ public class ReaderSettingMenuDialogHandler {
     }
 
     private void removeBookmark() {
-        new ToggleBookmarkAction(ToggleBookmarkAction.ToggleSwitch.Off,readerUserDataInfo,getFirstVisiblePageWithBookmark()).execute(readerDataHolder);
+        new ToggleBookmarkAction(ToggleBookmarkAction.ToggleSwitch.Off,readerDataHolder.getReaderUserDataInfo(),getFirstVisiblePageWithBookmark()).execute(readerDataHolder);
     }
 
     private void addBookmark() {
-        new ToggleBookmarkAction(ToggleBookmarkAction.ToggleSwitch.On,readerUserDataInfo,getFirstPageInfo()).execute(readerDataHolder);
+        new ToggleBookmarkAction(ToggleBookmarkAction.ToggleSwitch.On,readerDataHolder.getReaderUserDataInfo(),getFirstPageInfo()).execute(readerDataHolder);
     }
 
     public boolean hasBookmark() {
@@ -274,7 +242,7 @@ public class ReaderSettingMenuDialogHandler {
 
     public PageInfo getFirstVisiblePageWithBookmark() {
         for (PageInfo pageInfo : getVisiblePages()) {
-            if (getReaderUserDataInfo().hasBookmark(pageInfo)) {
+            if (readerDataHolder.getReaderUserDataInfo().hasBookmark(pageInfo)) {
                 return pageInfo;
             }
         }
@@ -282,7 +250,7 @@ public class ReaderSettingMenuDialogHandler {
     }
 
     public final PageInfo getFirstPageInfo() {
-        return getReaderViewInfo().getFirstVisiblePage();
+        return readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
     }
 
     public final List<PageInfo> getVisiblePages() {
@@ -325,7 +293,7 @@ public class ReaderSettingMenuDialogHandler {
     }
 
     public boolean supportScalable() {
-        return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
+        return readerDataHolder.getReaderViewInfo() != null && readerDataHolder.getReaderViewInfo().supportScalable;
     }
 
     public int getSubPageIndex() {

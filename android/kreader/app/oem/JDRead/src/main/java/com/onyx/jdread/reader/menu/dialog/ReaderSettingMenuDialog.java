@@ -52,14 +52,11 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     private FunctionBarAdapter functionBarAdapter;
     private ReaderSettingMenuDialogHandler readerSettingMenuDialogHandler;
 
-    public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity, ReaderTextStyle style,
-                                   ImageReflowSettings settings, ReaderViewInfo readerViewInfo, ReaderUserDataInfo readerUserDataInfo) {
+    public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.readerDataHolder = readerDataHolder;
 
-        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(readerDataHolder,this,style,settings);
-        readerSettingMenuDialogHandler.setReaderViewInfo(readerViewInfo);
-        readerSettingMenuDialogHandler.setReaderUserDataInfo(readerUserDataInfo);
+        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(readerDataHolder,this);
     }
 
     public ReaderSettingMenuDialogHandler getReaderSettingMenuDialogHandler() {
@@ -99,7 +96,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void initReaderPageInfoBar(){
         binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel());
-        new UpdatePageInfoAction(binding,readerSettingMenuDialogHandler.getReaderViewInfo()).execute(readerDataHolder);
+        new UpdatePageInfoAction(binding,readerDataHolder.getReaderViewInfo()).execute(readerDataHolder);
         initReaderPageInfoEvent();
     }
 

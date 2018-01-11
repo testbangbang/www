@@ -13,19 +13,17 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class GetDocumentInfoAction extends BaseReaderAction {
-    private ReaderUserDataInfo readerUserDataInfo;
 
-    public GetDocumentInfoAction(ReaderUserDataInfo readerUserDataInfo) {
-        this.readerUserDataInfo = readerUserDataInfo;
+    public GetDocumentInfoAction() {
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        final GetDocumentInfoRequest request = new GetDocumentInfoRequest(readerUserDataInfo, readerDataHolder);
+        final GetDocumentInfoRequest request = new GetDocumentInfoRequest(readerDataHolder);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                GetDocumentInfoResultEvent event = new GetDocumentInfoResultEvent(request.getResult());
+                GetDocumentInfoResultEvent event = new GetDocumentInfoResultEvent();
                 EventBus.getDefault().post(event);
             }
         });

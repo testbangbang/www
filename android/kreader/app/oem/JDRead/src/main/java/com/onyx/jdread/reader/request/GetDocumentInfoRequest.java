@@ -10,11 +10,9 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
  */
 
 public class GetDocumentInfoRequest extends ReaderBaseRequest {
-    private ReaderUserDataInfo readerUserDataInfo;
     private ReaderDataHolder readerDataHolder;
 
-    public GetDocumentInfoRequest(ReaderUserDataInfo readerUserDataInfo, ReaderDataHolder readerDataHolder) {
-        this.readerUserDataInfo = readerUserDataInfo;
+    public GetDocumentInfoRequest(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
     }
 
@@ -24,13 +22,9 @@ public class GetDocumentInfoRequest extends ReaderBaseRequest {
         String displayName = readerDataHolder.getReader().getReaderHelper().getPlugin().displayName();
         String md5 = readerDataHolder.getReader().getReaderHelper().getDocumentMd5();
 
-        readerUserDataInfo.loadDocumentTableOfContent(JDReadApplication.getInstance().getApplicationContext(), document);
-        readerUserDataInfo.loadDocumentAnnotations(JDReadApplication.getInstance().getApplicationContext(), displayName, md5);
-        readerUserDataInfo.loadDocumentBookmarks(JDReadApplication.getInstance().getApplicationContext(), displayName, md5);
+        readerDataHolder.getReaderUserDataInfo().loadDocumentTableOfContent(JDReadApplication.getInstance().getApplicationContext(), document);
+        readerDataHolder.getReaderUserDataInfo().loadDocumentAnnotations(JDReadApplication.getInstance().getApplicationContext(), displayName, md5);
+        readerDataHolder.getReaderUserDataInfo().loadDocumentBookmarks(JDReadApplication.getInstance().getApplicationContext(), displayName, md5);
         return this;
-    }
-
-    public ReaderUserDataInfo getResult(){
-        return readerUserDataInfo;
     }
 }
