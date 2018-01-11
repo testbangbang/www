@@ -330,5 +330,12 @@
     <string name="password_setting_phone_hint">Please enter phone number</string>
     <string name="feedback_history">Feedback history</string>
     <string name="device_reset_prompt">The device will immediately go to reset, continue?</string>
+    <string name="email_host_key">email_host_key</string>
+    <string name="email_address_key">email_address_key</string>
+    <string name="email_psw_key">email_psw_key</string>
+    <string name="email_port_key">email_port_key</string>
+    <string name="bind_to_email">bind to email</string>
+    <string name="bind_to_email_failed">bind_to_email_failed</string>
+    <string name="send_succeed">send_succeed</string>
     <string name="buy_book_success">Book purchase success </string>
 </resources>
