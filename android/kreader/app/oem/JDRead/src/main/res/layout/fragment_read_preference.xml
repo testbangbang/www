@@ -23,7 +23,8 @@
             android:layout_marginTop="@dimen/personal_read_preference_dec_margin"
             android:text="@string/select_interested_type"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_two_heading_font" />
+            android:textSize="@dimen/level_two_heading_font"
+            android:visibility="gone"/>
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/read_preference_recycler"
@@ -42,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="@dimen/personal_read_preference_save_margin"
-            android:background="@drawable/rectangle_stroke"
+            android:background="@drawable/rectangle_stroke_corners"
             android:gravity="center"
             android:padding="@dimen/personal_read_preference_save_padding"
             android:text="@string/save"

@@ -72,18 +72,10 @@ public class PersonalNoteFragment extends BaseFragment {
     }
 
     private void initListener() {
-        binding.personalNoteExportFlag.setOnClickListener(new View.OnClickListener() {
+        binding.personalNoteCheckAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.setExport(true);
                 personalNoteAdapter.showBox(true);
-            }
-        });
-
-        binding.personalNoteSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO: 2018/1/3
             }
         });
 

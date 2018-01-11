@@ -14,42 +14,47 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="middle"
-                android:singleLine="true"
-                android:text="book name"
+                android:text="2018-1-2 09:09:09"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textSize="@dimen/level_three_heading_font" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/item_consumption_record_date_margin_top"
-                android:text="2018-1-2 09:09:09"
+                android:ellipsize="middle"
+                android:singleLine="true"
+                android:text="book name"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_two_heading_font" />
         </LinearLayout>
 
-        <TextView
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="456"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="right"
-            android:text="123"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="456"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_consumption_record_date_margin_top"
+                android:text="123"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
+        </LinearLayout>
     </LinearLayout>
 </layout>

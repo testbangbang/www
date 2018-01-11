@@ -3,11 +3,6 @@
 
     <data class="PersonalNoteBinding">
 
-        <import type="android.view.View" />
-
-        <variable
-            name="export"
-            type="boolean" />
     </data>
 
     <LinearLayout
@@ -25,50 +20,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:padding="@dimen/personal_note_export_padding">
 
                 <TextView
-                    android:id="@+id/personal_note_export_flag"
+                    android:id="@+id/personal_note_check_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@mipmap/ic_cart"
+                    android:drawableLeft="@mipmap/ic_me_check_all"
+                    android:drawablePadding="@dimen/personal_note_export_drawable_padding"
+                    android:gravity="center_vertical"
+                    android:text="@string/select_all"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_one_heading_font" />
+
+                <TextView
+                    android:id="@+id/personal_note_export"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/personal_note_export_margin_left"
+                    android:drawableLeft="@mipmap/ic_me_export"
                     android:drawablePadding="@dimen/personal_note_export_drawable_padding"
                     android:gravity="center_vertical"
                     android:text="@string/export_note"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font"
-                    android:visibility="@{export ? View.GONE : View.VISIBLE}" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:visibility="@{export ? View.VISIBLE : View.GONE}">
-
-                    <CheckBox
-                        android:id="@+id/personal_note_select"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <ImageView
-                        android:id="@+id/personal_note_export"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/personal_note_export_drawable_margin_left"
-                        android:src="@mipmap/ic_cart" />
-                </LinearLayout>
-            </FrameLayout>
+                    android:textSize="@dimen/level_one_heading_font" />
+            </LinearLayout>
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="@dimen/personal_note_recycler_padding">
+            android:paddingLeft="@dimen/personal_note_recycler_padding"
+            android:paddingRight="@dimen/personal_note_recycler_padding">
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/personal_note_recycler"
@@ -81,13 +71,28 @@
                 android:layout_height="@dimen/line_width"
                 android:background="@color/divider_color" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
+                android:layout_marginBottom="@dimen/personal_note_page_margin_top"
                 android:layout_marginTop="@dimen/personal_note_page_margin_top"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/book_total"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1/4"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </layout>

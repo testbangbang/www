@@ -94,6 +94,7 @@
     <string name="read_preference">Reading preference</string>
     <string name="gift_center">Gift center</string>
     <string name="log_out">Log out</string>
+    <string name="login_immediately">Login immediately</string>
     <string name="unsigned_in">Unsigned</string>
     <string name="phone_number_format_error">Phone number format is wrong</string>
     <string name="consumer_hotline">Phone: 400-XXX-XXXX</string>
@@ -331,4 +332,7 @@
     <string name="feedback_history">Feedback history</string>
     <string name="device_reset_prompt">The device will immediately go to reset, continue?</string>
     <string name="buy_book_success">Book purchase success </string>
+    <string name="buy_read_vip">Buy Read VIP</string>
+    <string name="not_open_vip">Not open to read VIP</string>
+    <string name="read_vip_instructions">Read VIP instructions</string>
 </resources>

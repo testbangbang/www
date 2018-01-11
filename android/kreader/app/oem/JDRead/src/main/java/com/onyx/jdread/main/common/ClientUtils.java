@@ -19,7 +19,7 @@ public class ClientUtils {
     public synchronized static ClientInfo getClientInfo() {
         if (null == clientInfo) {
             clientInfo = new ClientInfo();
-            clientInfo.setDwAppID((short) 103);
+            clientInfo.setDwAppID((short) 389);
             clientInfo.setAppName(JDReadApplication.getInstance().getResources().getString(R.string.app_name));
             clientInfo.setClientType("android");
             clientInfo.setUuid(AppInformationUtils.readDeviceUUID());

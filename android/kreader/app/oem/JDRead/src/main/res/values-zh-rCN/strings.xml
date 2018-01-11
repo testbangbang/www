@@ -87,6 +87,7 @@
     <string name="read_preference">阅读偏好</string>
     <string name="gift_center">礼品中心</string>
     <string name="log_out">退出登录</string>
+    <string name="login_immediately">立即登录</string>
     <string name="unsigned_in">未签到</string>
     <string name="manual">使用手册</string>
     <string name="feedback">问题反馈</string>
@@ -318,4 +319,7 @@
     <string name="feedback_history">反馈记录</string>
     <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
     <string name="buy_book_success">购买成功 </string>
+    <string name="buy_read_vip">购买畅读VIP</string>
+    <string name="not_open_vip">还未开通畅读VIP</string>
+    <string name="read_vip_instructions">畅读VIP须知</string>
 </resources>
