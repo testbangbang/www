@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
@@ -26,12 +27,12 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
     private Bitmap renderBitmap;
     private boolean saveAsFile;
     private String filePath;
-    private String drawText;
+    private TextLayoutArgs textLayoutArgs;
 
     public HomeworkPagesRenderRequest(final String id,
                                       final List<PageInfo> pages,
                                       final Rect size,
-                                      final String text,
+                                      final TextLayoutArgs args,
                                       final boolean saveAsFile) {
         setDocUniqueId(id);
         setAbortPendingTasks(false);
@@ -40,12 +41,12 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
         setPauseInputProcessor(true);
         setResumeInputProcessor(false);
         this.saveAsFile = saveAsFile;
-        this.drawText = text;
+        this.textLayoutArgs = args;
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
         parent.reset();
-        parent.setDrawText(drawText);
+        parent.setTextLayoutArgs(textLayoutArgs);
         ensureDocumentOpened(parent);
         updateShapeDataInfo(parent);
         loadShapeData(parent);

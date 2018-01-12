@@ -9,16 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.text.Html;
-import android.text.Layout;
 import android.text.StaticLayout;
-import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -31,9 +23,7 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
-import com.onyx.android.sdk.utils.Base64ImageParser;
 import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
@@ -234,12 +224,10 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     private void drawTextView(final Canvas canvas, final NoteViewHelper parent, int pagePosition) {
-        String text = parent.getDrawText();
-        if (StringUtils.isNullOrEmpty(text)) {
+        StaticLayout sl = parent.createTextLayout(getViewportSize().width());
+        if (sl == null) {
             return;
         }
-
-        StaticLayout sl = parent.getTextLayout(text, getViewportSize().width());
         int minPageCount = (int) Math.ceil((float)sl.getHeight() / getViewportSize().height());
         parent.getNoteDocument().setMinPageCount(minPageCount);
         int pageTop = getViewportSize().height() * pagePosition;
@@ -247,7 +235,7 @@ public class BaseNoteRequest extends BaseRequest {
             return;
         }
         canvas.save();
-        canvas.translate(NoteViewHelper.DRAW_TEXT_PADDING, -getTextTop(sl, pageTop));
+        canvas.translate(parent.getTextLayoutArgs().textPadding, -getTextTop(sl, pageTop));
         sl.draw(canvas);
         canvas.restore();
     }

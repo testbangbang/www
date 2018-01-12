@@ -48,11 +48,10 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
     }
 
     private int calculateMinPageCount(final NoteViewHelper parent) {
-        String text = parent.getDrawText();
-        if (StringUtils.isNullOrEmpty(text)) {
+        StaticLayout sl = parent.createTextLayout(parent.getViewportSize().width());
+        if (sl == null) {
             return 1;
         }
-        StaticLayout sl = parent.getTextLayout(text, parent.getViewportSize().width());
         return (int) Math.ceil((float)sl.getHeight() / getViewportSize().height());
     }
 }

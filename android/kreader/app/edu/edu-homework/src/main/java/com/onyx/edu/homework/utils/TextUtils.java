@@ -6,6 +6,8 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.android.sdk.utils.StringUtils;
 
 /**
@@ -35,6 +37,10 @@ public class TextUtils {
     public static TextView setLinkMovementMethod(TextView view) {
         view.setMovementMethod(LinkMovementMethod.getInstance());
         return view;
+    }
+
+    public static float getTextSpacingAdd(Question question) {
+        return question.isFillQuestion() ? TextLayoutArgs.DRAW_FILL_TEXT_SPACING_ADD : TextLayoutArgs.DRAW_DEFAULT_TEXT_SPACING_ADD;
     }
 
 }

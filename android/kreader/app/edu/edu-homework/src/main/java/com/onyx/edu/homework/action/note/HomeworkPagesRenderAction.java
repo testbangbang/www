@@ -11,8 +11,10 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.request.HomeworkPagesRenderRequest;
+import com.onyx.edu.homework.utils.TextUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,11 +85,14 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         PageInfo pageInfo = new PageInfo(pageUniqueId, size.width(), size.height());
         pageInfo.updateDisplayRect(new RectF(0, 0, size.width(), size.height()));
         pageInfoList.add(pageInfo);
-        String drawText = !question.isChoiceQuestion() ? question.content : null;
+        TextLayoutArgs textLayoutArgs = null;
+        if (!question.isChoiceQuestion()) {
+            textLayoutArgs = TextLayoutArgs.create(question.content, TextUtils.getTextSpacingAdd(question));
+        }
         final HomeworkPagesRenderRequest renderRequest = new HomeworkPagesRenderRequest(docId,
                 pageInfoList,
                 size,
-                drawText,
+                textLayoutArgs,
                 saveAsFile);
         noteViewHelper.submit(getAppContext(), renderRequest, new BaseCallback() {
             @Override

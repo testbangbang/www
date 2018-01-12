@@ -23,6 +23,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.data.model.homework.QuestionOption;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.android.sdk.utils.Base64ImageParser;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
@@ -188,7 +189,9 @@ public class QuestionFragment extends BaseFragment {
             return;
         }
         getDataBundle().resetNoteViewHelper();
-        getDataBundle().getNoteViewHelper().setDrawText(!question.isChoiceQuestion() ? question.content : null);
+        if (!question.isChoiceQuestion()) {
+            getDataBundle().getNoteViewHelper().setTextLayoutArgs(TextLayoutArgs.create(question.content, TextUtils.getTextSpacingAdd(question)));
+        }
         scribbleFragment = ScribbleFragment.newInstance(question);
         getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
         toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_TOP);

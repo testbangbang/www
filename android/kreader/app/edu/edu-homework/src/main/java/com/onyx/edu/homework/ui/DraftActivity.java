@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseActivity;
@@ -15,6 +16,7 @@ import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.ActivityAnswerBinding;
 import com.onyx.edu.homework.event.CloseScribbleEvent;
 import com.onyx.edu.homework.event.SaveNoteEvent;
+import com.onyx.edu.homework.utils.TextUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -45,7 +47,7 @@ public class DraftActivity extends BaseActivity {
 
     private void initFragment() {
         DataBundle.getInstance().resetNoteViewHelper();
-        DataBundle.getInstance().getNoteViewHelper().setDrawText(question.content);
+        DataBundle.getInstance().getNoteViewHelper().setTextLayoutArgs(TextLayoutArgs.create(question.content, TextUtils.getTextSpacingAdd(question)));
         scribbleFragment = ScribbleFragment.newInstance(question);
         getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
         toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_BOTTOM);
