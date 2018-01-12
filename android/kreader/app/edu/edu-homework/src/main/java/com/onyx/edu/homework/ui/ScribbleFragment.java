@@ -32,6 +32,7 @@ import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -455,6 +456,7 @@ public class ScribbleFragment extends BaseFragment {
                 if (!isVisible()) {
                     return;
                 }
+                Debug.d(getClass(), "onSystemUIChanged type:" + type + "---open:" + open);
                 if (open) {
                     onSystemUIOpened();
                 } else {

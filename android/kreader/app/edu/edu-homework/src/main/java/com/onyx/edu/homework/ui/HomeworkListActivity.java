@@ -37,6 +37,7 @@ import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.HomeworkIntent;
 import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
+import com.onyx.edu.homework.event.CloseSubMenuEvent;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
@@ -453,6 +454,7 @@ public class HomeworkListActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        getDataBundle().post(new CloseSubMenuEvent());
         showExitDialog();
     }
 
