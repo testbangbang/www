@@ -175,7 +175,7 @@ public class ReaderNoteDataProvider {
         ProcessModelTransaction<ReaderNoteShapeModel> processModelTransaction =
                 new ProcessModelTransaction.Builder<>(new ProcessModelTransaction.ProcessModel<ReaderNoteShapeModel>() {
                     @Override
-                    public void processModel(ReaderNoteShapeModel model) {
+                    public void processModel(ReaderNoteShapeModel model, DatabaseWrapper wrapper) {
                         model.save();
                     }
                 }).processListener(new ProcessModelTransaction.OnModelProcessListener<ReaderNoteShapeModel>() {

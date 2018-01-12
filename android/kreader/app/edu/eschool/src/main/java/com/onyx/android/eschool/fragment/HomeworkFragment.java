@@ -48,7 +48,7 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -300,7 +300,7 @@ public class HomeworkFragment extends Fragment {
         args.limit = limit;
         args.offset = offset;
         args.query = JSONObjectParseUtils.toJson(query);
-        args.conditionGroup = ConditionGroup.clause().and(QueryBuilder.matchLike(Homework_Table.child, query.getSubject()));
+        args.conditionGroup = OperatorGroup.clause().and(QueryBuilder.matchLike(Homework_Table.child, query.getSubject()));
         return args;
     }
 

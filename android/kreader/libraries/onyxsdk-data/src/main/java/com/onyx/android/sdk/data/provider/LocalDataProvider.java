@@ -11,9 +11,9 @@ import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
+import com.raizlabs.android.dbflow.sql.language.Operator;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -167,11 +167,11 @@ public class LocalDataProvider implements DataProviderBase {
         bookmark.delete();
     }
 
-    private Condition getNullOrEqualCondition(Property<String> property, String compare) {
+    private Operator getNullOrEqualCondition(Property<String> property, String compare) {
         return compare == null ? property.isNull() : property.eq(compare);
     }
 
-    private Condition getNotNullOrEqualCondition(Property<String> property, String compare) {
+    private Operator getNotNullOrEqualCondition(Property<String> property, String compare) {
         return compare == null ? property.isNotNull() : property.eq(compare);
     }
 
@@ -182,7 +182,7 @@ public class LocalDataProvider implements DataProviderBase {
 
     @Override
     public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
-        Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
+        Operator condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
         return new Select().from(Library.class).where(condition).queryList();
     }
 

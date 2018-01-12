@@ -7,7 +7,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 
@@ -26,6 +26,15 @@ import static com.onyx.android.sdk.data.model.common.FetchPolicy.CLOUD_MEM_DB;
 public class QueryArgs extends QueryBase {
     private static final String TAG = QueryArgs.class.getSimpleName();
 
+    public int offset = 0;
+    public int limit = Integer.MAX_VALUE;
+
+    @JSONField(serialize = false, deserialize = false)
+    public OperatorGroup conditionGroup = OperatorGroup.clause();
+    @JSONField(serialize = false, deserialize = false)
+    public List<IProperty> propertyList = new ArrayList<>();
+    @JSONField(serialize = false, deserialize = false)
+    public List<OrderBy> orderByList = new ArrayList<>();
     public String libraryUniqueId = null;
     public BookFilter filter = BookFilter.ALL;
 
@@ -54,7 +63,7 @@ public class QueryArgs extends QueryBase {
         }
     }
 
-    public static QueryArgs queryBy(final ConditionGroup conditionGroup,
+    public static QueryArgs queryBy(final OperatorGroup conditionGroup,
                                     final OrderBy orderBy) {
         QueryArgs queryArgs = new QueryArgs();
         queryArgs.conditionGroup = conditionGroup;
@@ -62,7 +71,7 @@ public class QueryArgs extends QueryBase {
         return queryArgs;
     }
 
-    public static QueryArgs queryBy(final ConditionGroup conditionGroup,
+    public static QueryArgs queryBy(final OperatorGroup conditionGroup,
                                     final List<OrderBy> orderByList) {
         QueryArgs queryArgs = new QueryArgs();
         queryArgs.conditionGroup = conditionGroup;
@@ -70,7 +79,7 @@ public class QueryArgs extends QueryBase {
         return queryArgs;
     }
 
-    public static QueryArgs queryBy(final ConditionGroup conditionGroup,
+    public static QueryArgs queryBy(final OperatorGroup conditionGroup,
                                     final OrderBy orderBy,
                                     int offset, int limit) {
         QueryArgs queryArgs = queryBy(conditionGroup, orderBy);
@@ -79,7 +88,7 @@ public class QueryArgs extends QueryBase {
         return queryArgs;
     }
 
-    public static QueryArgs queryBy(final ConditionGroup conditionGroup,
+    public static QueryArgs queryBy(final OperatorGroup conditionGroup,
                                     final List<OrderBy> orderByList,
                                     int offset, int limit) {
         QueryArgs queryArgs = queryBy(conditionGroup, orderByList);
@@ -88,7 +97,7 @@ public class QueryArgs extends QueryBase {
         return queryArgs;
     }
 
-    public static QueryArgs queryBy(final ConditionGroup conditionGroup) {
+    public static QueryArgs queryBy(final OperatorGroup conditionGroup) {
         QueryArgs queryArgs = new QueryArgs();
         queryArgs.conditionGroup = conditionGroup;
         return queryArgs;
@@ -99,12 +108,12 @@ public class QueryArgs extends QueryBase {
         return this;
     }
 
-    public QueryArgs andWith(ConditionGroup otherGroup) {
+    public QueryArgs andWith(OperatorGroup otherGroup) {
         conditionGroup.and(otherGroup);
         return this;
     }
 
-    public QueryArgs orWith(ConditionGroup otherGroup) {
+    public QueryArgs orWith(OperatorGroup otherGroup) {
         conditionGroup.or(otherGroup);
         return this;
     }

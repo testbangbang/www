@@ -23,7 +23,9 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.io.File;
@@ -144,10 +146,6 @@ public class DataManagerHelper {
         return list;
     }
 
-    public static void clearLibrary(DataProviderBase dataProvider) {
-        dataProvider.clearLibrary();
-    }
-
     public static OnyxThumbnail.ThumbnailKind getDefaultThumbnailKind() {
         return OnyxThumbnail.ThumbnailKind.Large;
     }
@@ -235,27 +233,6 @@ public class DataManagerHelper {
         }
         Collections.reverse(parentLibraryList);
         return parentLibraryList;
-    }
-
-    public static List<Library> fetchLibraryLibraryList(Context context, DataProviderBase dataProvider, QueryArgs queryArgs) {
-        List<Library> libraryList = dataProvider.loadAllLibrary(queryArgs.libraryUniqueId, queryArgs);
-        if (!FetchPolicy.isDataFromMemDb(queryArgs.fetchPolicy, NetworkUtil.isWiFiConnected(context))) {
-            DataManagerHelper.saveLibraryListToLocal(dataProvider, libraryList);
-        }
-        return libraryList;
-    }
-
-    public static void saveLibraryListToLocal(DataProviderBase dataProvider, List<Library> libraryList) {
-        if (CollectionUtils.isNullOrEmpty(libraryList)) {
-            return;
-        }
-        final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
-        database.beginTransaction();
-        for (Library library : libraryList) {
-            dataProvider.addLibrary(library);
-        }
-        database.setTransactionSuccessful();
-        database.endTransaction();
     }
 
     public static void updateCloudCacheList(List<Metadata> cacheList, QueryResult<Metadata> result, QueryArgs queryArgs) {
@@ -355,5 +332,41 @@ public class DataManagerHelper {
         }
         database.setTransactionSuccessful();
         database.endTransaction();
+    }
+
+    public static List<Library> fetchLibraryLibraryList(Context context, DataProviderBase dataProvider, QueryArgs queryArgs) {
+        List<Library> libraryList = dataProvider.loadAllLibrary(queryArgs.libraryUniqueId, queryArgs);
+        if (!FetchPolicy.isDataFromMemDb(queryArgs.fetchPolicy, NetworkUtil.isWiFiConnected(context))) {
+            DataManagerHelper.saveLibraryListToLocal(dataProvider, libraryList);
+        }
+        return libraryList;
+    }
+
+    public static void saveLibraryListToLocal(DataProviderBase dataProvider, List<Library> libraryList) {
+        if (CollectionUtils.isNullOrEmpty(libraryList)) {
+            return;
+        }
+        final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for (Library library : libraryList) {
+            dataProvider.addLibrary(library);
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public static void clearLibrary(DataProviderBase dataProvider) {
+        dataProvider.clearLibrary();
+    }
+
+    public static OperatorGroup getPropertyOrCondition(List<String> valueList, Property<String> property) {
+        if (CollectionUtils.isNullOrEmpty(valueList)) {
+            return null;
+        }
+        OperatorGroup condition = OperatorGroup.clause();
+        for (String value : valueList) {
+            condition.or(property.eq(value));
+        }
+        return condition;
     }
 }

@@ -17,7 +17,6 @@ import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import java.io.FileInputStream;
