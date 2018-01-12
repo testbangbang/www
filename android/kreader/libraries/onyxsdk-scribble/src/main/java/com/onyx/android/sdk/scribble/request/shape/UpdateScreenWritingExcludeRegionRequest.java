@@ -13,10 +13,10 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 public class UpdateScreenWritingExcludeRegionRequest extends BaseNoteRequest {
     private Rect excludeRegion;
 
-    public UpdateScreenWritingExcludeRegionRequest(Rect excludeRegion) {
+    public UpdateScreenWritingExcludeRegionRequest(Rect excludeRegion, boolean resume) {
         this.excludeRegion = excludeRegion;
-        setPauseInputProcessor(false);
-        setResumeInputProcessor(false);
+        setPauseInputProcessor(true);
+        setResumeInputProcessor(resume);
     }
 
     @Override
