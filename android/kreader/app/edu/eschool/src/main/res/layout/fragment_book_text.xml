@@ -5,12 +5,27 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/parent_library_ref"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/library_parent_ref_layout_height"
-        android:layout_marginLeft="@dimen/library_parent_ref_layout_padding_left_right"
-        android:layout_marginRight="@dimen/library_parent_ref_layout_padding_left_right"
-        android:orientation="horizontal" />
+        android:layout_height="@dimen/place_holder_layout_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/place_holder_layout_padding_left_right"
+        android:paddingRight="@dimen/place_holder_layout_padding_left_right">
+
+        <include
+            android:id="@+id/root_library_view"
+            layout="@layout/parent_library_ref_item"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:id="@+id/parent_library_ref"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/library_parent_ref_layout_padding_left_right"
+            android:layout_marginLeft="@dimen/library_parent_ref_layout_padding_left_right"
+            android:orientation="horizontal" />
+
+    </LinearLayout>
 
     <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
         android:id="@+id/content_pageView"
