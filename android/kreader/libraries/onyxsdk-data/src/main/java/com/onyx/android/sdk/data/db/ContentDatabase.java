@@ -102,18 +102,4 @@ public class ContentDatabase {
             addColumn(SQLiteType.TEXT, Thumbnail_Table._data.getNameAlias().name());
         }
     }
-
-    @Migration(version = 2, priority = 0, database = ContentDatabase.class)
-    public static class IndexMigration2 extends IndexMigration<Metadata> {
-
-        public IndexMigration2(@NonNull Class<Metadata> onTable) {
-            super(onTable);
-        }
-
-        @NonNull
-        @Override
-        public String getName() {
-            return Metadata_Table.nativeAbsolutePath.getNameAlias().name();
-        }
-    }
 }
