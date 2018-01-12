@@ -95,6 +95,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     private int backTitleIconID = R.drawable.icon_back_white;
     private int currentTitleIconID = 0;
     private boolean isShowTabLayoutAndNewMessageView = true;
+    private boolean isShowPersonalCenterSetting = false;
     private int oldTabPosition = 0;
     private int oldPageID = ChildViewID.FRAGMENT_MAIN;
     private MainPresenter mainPresenter;
@@ -177,7 +178,17 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             case R.id.ll_main_activity_title_container:
                 onClickTitleContainer();
                 break;
+            case R.id.personal_center_setting:
+                openDeviceSettingFragment();
+                break;
         }
+    }
+
+    private void openDeviceSettingFragment() {
+        switchCurrentFragment(ChildViewID.FRAGMENT_DEVICE_SETTING);
+        currentPageID = ChildViewID.FRAGMENT_DEVICE_SETTING;
+        userCenterFragmentTitle = getString(R.string.user_center_title_setting);
+        mainBinding.titleContainer.setVisibility(View.GONE);
     }
 
     private void onClickTitleContainer() {
@@ -204,22 +215,24 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     private void setTitleAndIcon() {
         switch (currentPageID) {
             case ChildViewID.FRAGMENT_CHANGE_PASSWORD:
-                changeTitleParams(false, backTitleIconID, changePasswordFragmentTitle);
+                changeTitleParams(false, false, backTitleIconID, changePasswordFragmentTitle);
                 break;
             case ChildViewID.FRAGMENT_USER_CENTER:
-                changeTitleParams(false, backTitleIconID, userCenterFragmentTitle);
+                changeTitleParams(false, true, backTitleIconID, userCenterFragmentTitle);
                 break;
             default:
-                changeTitleParams(true, userCenterTitleIconID, mainFragmentTitle);
+                changeTitleParams(true, false, userCenterTitleIconID, mainFragmentTitle);
                 break;
         }
         mainBinding.setIsShowTabLayoutAndNewMessageView(isShowTabLayoutAndNewMessageView);
+        mainBinding.setIsShowPersonalCenterSetting(isShowPersonalCenterSetting);
         mainBinding.ivMainActivityTitleIcon.setImageResource(currentTitleIconID);
         mainBinding.setTitle(currentTitle);
     }
 
-    private void changeTitleParams(boolean isShowTabLayoutAndNewMessageView, int currentTitleIconID, String currentTitle) {
+    private void changeTitleParams(boolean isShowTabLayoutAndNewMessageView, boolean isShowPersonalCenterSetting, int currentTitleIconID, String currentTitle) {
         this.isShowTabLayoutAndNewMessageView = isShowTabLayoutAndNewMessageView;
+        this.isShowPersonalCenterSetting = isShowPersonalCenterSetting;
         this.currentTitleIconID = currentTitleIconID;
         this.currentTitle = currentTitle;
     }
@@ -430,6 +443,10 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 break;
             case ChildViewID.FRAGMENT_USER_CENTER:
                 onToMainFragmentEvent(null);
+                break;
+            case ChildViewID.FRAGMENT_DEVICE_SETTING:
+                mainBinding.titleContainer.setVisibility(View.VISIBLE);
+                onToUserCenterEventEvent(null);
                 break;
         }
         setTitleAndIcon();

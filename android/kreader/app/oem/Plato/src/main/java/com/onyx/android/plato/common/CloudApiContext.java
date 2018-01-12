@@ -22,6 +22,8 @@ public class CloudApiContext {
     public static String BASE_URL = "http://116.62.152.51:9001/";
     public static final String APPEND_URL = "http://owiju9mp2.bkt.clouddn.com/";
     public static final String UPLOAD_URL = "http://116.62.152.51:9033/";
+    public static final String DOWNLOAD_URL = "downloadUrl";
+    public static final String UPDATE_MESSAGE = "message";
     private static ConcurrentHashMap<String, Retrofit> retrofitMap = new ConcurrentHashMap<>();
 
     public static final Retrofit getRetrofit(final String baseUrl) {

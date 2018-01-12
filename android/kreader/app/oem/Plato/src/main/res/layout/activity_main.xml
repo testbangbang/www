@@ -19,6 +19,14 @@
             type="boolean" />
 
         <variable
+            name="isShowPersonalCenterSetting"
+            type="boolean" />
+
+        <variable
+            name="isShowTitleContainer"
+            type="boolean" />
+
+        <variable
             name="title"
             type="String" />
 
@@ -41,6 +49,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/title_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/black"
@@ -82,6 +91,17 @@
                 android:onClick="@{listener::onClick}"
                 android:src="@{haveNew?@drawable/ic_prompt_dot:@drawable/ic_prompt}"
                 android:visibility="@{isShowTabLayoutAndNewMessageView ? View.VISIBLE : View.GONE}" />
+
+            <ImageView
+                android:id="@+id/personal_center_setting"
+                android:layout_width="@dimen/message_image_width"
+                android:layout_height="@dimen/message_image_width"
+                android:onClick="@{listener::onClick}"
+                android:src="@drawable/icon_user_center"
+                android:visibility="@{isShowPersonalCenterSetting ? View.VISIBLE : View.GONE}"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/main_activity_tab"

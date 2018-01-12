@@ -69,6 +69,7 @@
     <string name="device_setting_model">Model</string>
     <string name="device_setting_save_electricity_30">Can save 30% of the electricity</string>
     <string name="device_setting_save_electricity_20">Can save 20% of the electricity</string>
+    <string name="device_setting_save_electricity_10">Can save 10% of the electricity</string>
     <string name="device_setting_version_number">Version number</string>
     <string name="device_setting_serial_number">Serial number</string>
     <string name="device_setting_wifi_mac_address">WIFI MAC address</string>
@@ -225,4 +226,6 @@
     <string name="part_two_undeveloped">Part two, undeveloped</string>
     <string name="input_ip_address_hint">Please input IP address.</string>
     <string name="ip_address">illustrate: http://116.62.152.51:9001/</string>
+    <string name="user_center_title_setting">setting</string>
+    <string name="update_application_not_install">Update the application is not installed, please upgrade the latest system</string>
 </resources>

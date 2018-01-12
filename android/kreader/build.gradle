@@ -95,5 +95,6 @@ ext {
 
     radarchartviewVersion = '0.1.0'
     convertergsonVersion = '2.0.2'
+    fileDownloadVersion = '1.4.0'
 }
 

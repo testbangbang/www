@@ -11,21 +11,11 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.onyx.android.sdk.data.OnyxDownloadManager;
-import com.onyx.android.sdk.data.manager.OTAManager;
-import com.onyx.android.sdk.data.model.ApplicationUpdate;
-import com.onyx.android.sdk.data.model.Device;
-import com.onyx.android.sdk.data.request.cloud.ApplicationUpdateRequest;
-import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
-import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
-import com.onyx.android.sdk.data.utils.DownloadUtils;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.PackageUtils;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.common.Constants;
-import com.onyx.android.plato.event.ApkDownloadSucceedEvent;
+import com.onyx.android.plato.common.ManagerActivityUtils;
 import com.onyx.android.plato.event.HaveNewVersionApkEvent;
 import com.onyx.android.plato.event.HaveNewVersionEvent;
 import com.onyx.android.plato.event.HideLoadingProgressEvent;
@@ -36,6 +26,14 @@ import com.onyx.android.plato.requests.requestTool.BaseCallback;
 import com.onyx.android.plato.requests.requestTool.BaseRequest;
 import com.onyx.android.plato.requests.requestTool.SunRequestManager;
 import com.onyx.android.plato.view.CustomDialog;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
+import com.onyx.android.sdk.data.manager.OTAManager;
+import com.onyx.android.sdk.data.model.ApplicationUpdate;
+import com.onyx.android.sdk.data.model.Device;
+import com.onyx.android.sdk.data.request.cloud.ApplicationUpdateRequest;
+import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.PackageUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -48,7 +46,7 @@ import java.util.List;
  */
 
 public class ApkUtils {
-    private static CustomDialog dialog;
+    private static CustomDialog apkDialog;
 
     public static String getSoftwareBuildName() {
         PackageInfo packageInfo = getPackageInfo();
@@ -180,61 +178,36 @@ public class ApkUtils {
         return update;
     }
 
-    public static void showNewApkDialog(final Context context, String message, final String url) {
+    public static void showNewApkDialog(final Context context, final String message, final String url) {
         final CustomDialog.Builder builder = new CustomDialog.Builder(context);
         View inflate = View.inflate(context, R.layout.apk_update_view, null);
         TextView updateMsg = (TextView) inflate.findViewById(R.id.apk_update_message);
         final TextView progressBar = (TextView) inflate.findViewById(R.id.apk_progress);
-        CustomDialog dialog = builder.setContentView(inflate).setTitle(context.getString(R.string.find_a_new_version))
+        apkDialog = builder.setContentView(inflate).setTitle(context.getString(R.string.find_a_new_version))
                 .setPositiveButton(context.getString(R.string.start_updating), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        downloadAPK(url, progressBar);
+                        downloadAPK(context, url, message);
                         CommonNotices.show(context.getString(R.string.start_updating));
+                        apkDialog.cancel();
                     }
                 }).setNegativeButton(context.getString(R.string.cancel_updating), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         CommonNotices.show(context.getString(R.string.cancel_updating));
-                        dialog.dismiss();
+                        apkDialog.cancel();
                     }
                 }).create();
         updateMsg.setText(message);
-        Window window = dialog.getWindow();
+        Window window = apkDialog.getWindow();
         if (window != null) {
             window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
-        dialog.show();
+        apkDialog.show();
     }
 
-    private static void downloadAPK(String url, final TextView progressBar) {
-        final DownloadUtils.DownloadCallback downloadCallback = new DownloadUtils.DownloadCallback() {
-            @Override
-            public void stateChanged(int state, long finished, long total, long precentage) {
-                progressBar.setText(precentage + "%");
-                if (precentage == 100 && dialog.isShowing()) {
-                    dialog.dismiss();
-                }
-            }
-        };
-        FileUtils.deleteFile(Constants.APK_DOWNLOAD_PATH);
-        CloudFileDownloadRequest downloadRequest = OnyxDownloadManager.getInstance().createDownloadRequest(url, Constants.APK_DOWNLOAD_PATH, Constants.APK_NAME);
-        BaseDownloadTask download = OnyxDownloadManager.getInstance().download(downloadRequest, new com.onyx.android.sdk.common.request.BaseCallback() {
-            @Override
-            public void done(com.onyx.android.sdk.common.request.BaseRequest request, Throwable e) {
-                if (e == null) {
-                    EventBus.getDefault().post(new ApkDownloadSucceedEvent());
-                }
-            }
-
-            @Override
-            public void progress(com.onyx.android.sdk.common.request.BaseRequest request, ProgressInfo info) {
-                if (downloadCallback != null) {
-                    downloadCallback.stateChanged(0, info.soFarBytes, info.totalBytes, (long) info.progress);
-                }
-            }
-        });
-        OnyxDownloadManager.getInstance().startDownload(download);
+    private static void downloadAPK(Context context,String url, String message) {
+        ManagerActivityUtils.startInstallApkActivity(context,url,message);
     }
 
     private static void downloadUpdate(String url) {

@@ -69,6 +69,7 @@
     <string name="device_setting_model">型号</string>
     <string name="device_setting_save_electricity_30">可节省30%电量</string>
     <string name="device_setting_save_electricity_20">可节省20%电量</string>
+    <string name="device_setting_save_electricity_10">可节省10%电量</string>
     <string name="device_setting_language_settings_title">设置系统语言</string>
     <string name="device_setting_version_number">版本号</string>
     <string name="device_setting_serial_number">序列号</string>
@@ -227,4 +228,6 @@
     <string name="part_two_undeveloped">第二部分功能，暂未开发</string>
     <string name="input_ip_address_hint">请输入IP地址</string>
     <string name="ip_address">举例：http://116.62.152.51:9001/</string>
+    <string name="user_center_title_setting">设置</string>
+    <string name="update_application_not_install">更新应用没有安装，请升级最新的系统</string>
 </resources>
