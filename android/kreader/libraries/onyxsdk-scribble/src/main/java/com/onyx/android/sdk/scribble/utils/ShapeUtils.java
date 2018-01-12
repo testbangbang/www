@@ -9,8 +9,10 @@ import android.view.MotionEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -23,6 +25,18 @@ public class ShapeUtils {
     public static final float[] outerPolygonCoef = new float[maxIterations + 1];
     private static boolean iterationInited = false;
 
+    public static RectF getBoundingRect(final List<Shape> shapes) {
+        RectF rect = null;
+        for (Shape sp : shapes) {
+            if (rect == null) {
+                rect = new RectF(sp.getBoundingRect());
+            } else {
+                rect.union(sp.getBoundingRect());
+            }
+        }
+        rect.inset(-30, -30);
+        return rect;
+    }
 
     public static TouchPoint normalize(float scale, float pageX, float pageY, final MotionEvent touchPoint) {
         return new TouchPoint(
