@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentRefreshRequest;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
@@ -29,17 +30,18 @@ public class CloudContentRefreshAction extends BaseAction<LibraryDataHolder> {
         dataHolder.getCloudManager().submitRequest(dataHolder.getContext(), refreshRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                QueryResult<Metadata> result = refreshRequest.getProductResult();
-                if (e != null || result == null || result.hasException()) {
+                QueryResult<Metadata> metadataResult = refreshRequest.getProductResult();
+                QueryResult<Library> libraryResult = refreshRequest.getLibraryResult();
+                if (e != null || metadataResult == null || metadataResult.hasException()) {
                     ToastUtils.showToast(request.getContext(), R.string.refresh_fail);
-                    BaseCallback.invoke(baseCallback, request, e != null ? e : getResultException(result));
+                    BaseCallback.invoke(baseCallback, request, e != null ? e : getResultException(metadataResult));
                     return;
                 }
-                if (result.isContentEmpty()) {
+                if (!QueryResult.isValidQueryResult(libraryResult) && !QueryResult.isValidQueryResult(metadataResult)) {
                     ToastUtils.showToast(request.getContext(), R.string.refresh_content_empty);
                 }
-                libraryDataModel = LibraryViewInfo.buildLibraryDataModel(result, refreshRequest.getThumbnailMap());
-                BaseCallback.invoke(baseCallback, request, e);
+                libraryDataModel = LibraryDataModel.create(metadataResult, libraryResult, refreshRequest.getThumbnailMap());
+                BaseCallback.invoke(baseCallback, request, null);
             }
         });
     }
