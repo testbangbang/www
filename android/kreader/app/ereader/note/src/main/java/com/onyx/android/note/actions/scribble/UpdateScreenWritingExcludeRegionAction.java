@@ -12,7 +12,6 @@ import com.onyx.android.sdk.scribble.request.shape.UpdateScreenWritingExcludeReg
  */
 
 public class UpdateScreenWritingExcludeRegionAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
-    private UpdateScreenWritingExcludeRegionRequest updateExcludeRegionRequest;
 
     public UpdateScreenWritingExcludeRegionAction(Rect excludeRect, boolean resumeDrawing) {
         this.resumeDrawing = resumeDrawing;
@@ -24,7 +23,8 @@ public class UpdateScreenWritingExcludeRegionAction<T extends BaseScribbleActivi
 
     @Override
     public void execute(T activity, BaseCallback callback) {
-        updateExcludeRegionRequest = new UpdateScreenWritingExcludeRegionRequest(excludeRect, resumeDrawing);
+        UpdateScreenWritingExcludeRegionRequest updateExcludeRegionRequest =
+                new UpdateScreenWritingExcludeRegionRequest(excludeRect, resumeDrawing);
         activity.submitRequest(updateExcludeRegionRequest, callback);
     }
 }
