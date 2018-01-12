@@ -1,0 +1,17 @@
+<resources>
+    <string name="start">开始</string>
+    <string name="pause">暂停</string>
+    <string name="delete">删除</string>
+    <string name="tasks_manager_demo_title">任务管理实例</string>
+    <string name="tasks_manager_demo_name" formatted="false">任务: %d</string>
+    <string name="tasks_manager_demo_status_loading">状态: 下载...</string>
+    <string name="tasks_manager_demo_status_pending">状态: 准备</string>
+    <string name="tasks_manager_demo_status_started">状态: 开始</string>
+    <string name="tasks_manager_demo_status_connected">状态: 连接</string>
+    <string name="tasks_manager_demo_status_progress">状态: 进度</string>
+    <string name="tasks_manager_demo_status_downloading" formatted="false">状态: 下载了 %d</string>
+    <string name="tasks_manager_demo_status_error">状态: 出错</string>
+    <string name="tasks_manager_demo_status_paused">状态: 暂停</string>
+    <string name="tasks_manager_demo_status_completed">状态: 完成</string>
+    <string name="tasks_manager_demo_status_not_downloaded">状态: 没下载过</string>
+</resources>
