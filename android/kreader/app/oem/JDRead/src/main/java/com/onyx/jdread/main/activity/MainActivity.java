@@ -44,8 +44,6 @@ import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
-import com.onyx.jdread.personal.ui.LoginFragment;
-import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.shop.ui.ShopFragment;
 
 import org.greenrobot.eventbus.EventBus;

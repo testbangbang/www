@@ -44,8 +44,8 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
         WindowManager.LayoutParams params = window.getAttributes();
         int screenWidth = Utils.getScreenWidth(JDReadApplication.getInstance());
         int screenHeight = Utils.getScreenHeight(JDReadApplication.getInstance());
-        params.width = (int) (screenWidth * 0.8);
-        params.height = (int) (screenHeight * 0.4);
+        params.width = (int) (screenWidth * Utils.getValuesFloat(R.integer.export_dialog_width_rate));
+        params.height = (int) (screenHeight * Utils.getValuesFloat(R.integer.export_dialog_height_rate));
         window.setAttributes(params);
     }
 

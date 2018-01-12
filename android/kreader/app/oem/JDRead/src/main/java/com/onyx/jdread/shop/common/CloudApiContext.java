@@ -27,6 +27,7 @@ public class CloudApiContext {
     public static final String JD_SMOOTH_READ_URL = "https://cread.jd.com/";
     public static final String JD_BOOK_ORDER_URL = "https://order-e.jd.com/";
     public static final String JD_BOOK_STATISTIC_URL = "https://sns-e.jd.com/";
+    public static final String JD_NEW_BASE_URL = "https://eink-api.jd.com/eink/api/";
 
 
     public static class NewBookDetail {

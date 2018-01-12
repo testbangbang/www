@@ -51,4 +51,6 @@ public class Constants {
     public final static long APP_CACHE_MAX_SIZE = 1024 * 1024 * 8;
     public final static String LOCAL_WEB_CACHE_PATH = Environment.getExternalStorageDirectory().getPath() + "/webcache";
     public static final int CATEGORY_TYPE_FREE = 1;
+    public static final String ENCRYPTION_DIR = "drdrop";
+    public static final String ENCRYPTION_NAME = "dataread.jdr";
 }

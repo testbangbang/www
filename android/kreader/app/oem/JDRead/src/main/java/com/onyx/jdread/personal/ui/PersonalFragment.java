@@ -18,6 +18,8 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.adapter.PersonalAdapter;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
+import com.onyx.jdread.personal.common.EncryptHelper;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.GiftCenterEvent;
 import com.onyx.jdread.personal.event.PersonalAccountEvent;
@@ -25,6 +27,7 @@ import com.onyx.jdread.personal.event.PersonalBookEvent;
 import com.onyx.jdread.personal.event.PersonalNoteEvent;
 import com.onyx.jdread.personal.event.PersonalTaskEvent;
 import com.onyx.jdread.personal.event.ReadPreferenceEvent;
+import com.onyx.jdread.personal.event.UserInfoEvent;
 import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalModel;
@@ -89,16 +92,14 @@ public class PersonalFragment extends BaseFragment {
 
     private void initData() {
         binding.setIsLogin(JDReadApplication.getInstance().getLogin());
-        String imgUrl = LoginHelper.getImgUrl();
-        String userName = LoginHelper.getUserName();
-        if (StringUtils.isNotBlank(imgUrl) && StringUtils.isNotBlank(userName)) {
-            binding.setImageUrl(imgUrl);
-            binding.setUserName(userName);
+        if (binding.getIsLogin()) {
+            LoginHelper.getUserInfo(PersonalDataBundle.getInstance());
         }
         PersonalModel personalModel = PersonalDataBundle.getInstance().getPersonalModel();
         if (personalAdapter != null) {
             personalAdapter.setData(personalModel.getPersonalData(), personalModel.getEvents());
         }
+        EncryptHelper.getSaltValue(PersonalDataBundle.getInstance(), null);
     }
 
     private void initView() {
@@ -106,11 +107,6 @@ public class PersonalFragment extends BaseFragment {
         binding.personalRecycler.addItemDecoration(new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL));
         personalAdapter = new PersonalAdapter(PersonalDataBundle.getInstance().getEventBus());
         binding.personalRecycler.setAdapter(personalAdapter);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGiftCenterEvent(GiftCenterEvent event) {
-        showLogin(GiftCenterFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -123,6 +119,19 @@ public class PersonalFragment extends BaseFragment {
                 binding.setIsLogin(true);
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserInfoEvent(UserInfoEvent event) {
+        UserInfo userInfo = event.getUserInfo();
+        PersonalDataBundle.getInstance().setUserInfo(userInfo);
+        binding.setImageUrl(userInfo.yun_small_image_url);
+        binding.setUserName(userInfo.nickname);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGiftCenterEvent(GiftCenterEvent event) {
+        showLogin(GiftCenterFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

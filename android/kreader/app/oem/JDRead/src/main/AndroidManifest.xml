@@ -26,6 +26,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".main.activity.MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/ActivityFullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

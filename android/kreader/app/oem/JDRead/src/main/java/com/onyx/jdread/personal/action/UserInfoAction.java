@@ -7,6 +7,7 @@ import com.onyx.jdread.personal.cloud.entity.UserInfoRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxRequestUserInfo;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,22 +17,14 @@ import org.json.JSONObject;
  */
 
 public class UserInfoAction extends BaseAction {
-
-    private String pin;
     private UserInfoBean userInfoBean;
-
-    public UserInfoAction(String pin) {
-        this.pin = pin;
-    }
 
     @Override
     public void execute(PersonalDataBundle dataBundle, final RxCallback rxCallback) {
-        UserInfoRequestBean requestBean = new UserInfoRequestBean();
-        requestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
-        String userInfoJsonBody = getUserInfoJsonBody(pin);
-        requestBean.setBody(userInfoJsonBody);
+        JDAppBaseInfo requestBean = new JDAppBaseInfo();
         final RxRequestUserInfo rq = new RxRequestUserInfo();
         rq.setUserInfoRequestBean(requestBean);
+        rq.setSaltValue(dataBundle.getSalt());
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

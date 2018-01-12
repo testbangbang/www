@@ -15,11 +15,12 @@ import jd.wjlogin_sdk.model.ClientInfo;
 public class ClientUtils {
     private static ClientInfo clientInfo;
     private static WJLoginHelper helper;
+    private final static short APP_ID = 389;
 
     public synchronized static ClientInfo getClientInfo() {
         if (null == clientInfo) {
             clientInfo = new ClientInfo();
-            clientInfo.setDwAppID((short) 389);
+            clientInfo.setDwAppID(APP_ID);
             clientInfo.setAppName(JDReadApplication.getInstance().getResources().getString(R.string.app_name));
             clientInfo.setClientType("android");
             clientInfo.setUuid(AppInformationUtils.readDeviceUUID());

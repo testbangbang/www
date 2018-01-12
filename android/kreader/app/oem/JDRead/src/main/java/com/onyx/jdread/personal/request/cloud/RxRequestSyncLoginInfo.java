@@ -2,7 +2,9 @@ package com.onyx.jdread.personal.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.shop.cloud.entity.SyncRequestBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
@@ -15,11 +17,11 @@ import retrofit2.Response;
  */
 
 public class RxRequestSyncLoginInfo extends RxBaseCloudRequest {
-    private BaseRequestBean requestBean;
+    private JDAppBaseInfo requestBean;
     private SyncLoginInfoBean syncLoginInfoBean;
 
-    public void setRequestBean(BaseRequestBean requestBean) {
-        this.requestBean = requestBean;
+    public void setRequestBean(JDAppBaseInfo baseInfo) {
+        this.requestBean = baseInfo;
     }
 
     public SyncLoginInfoBean getSyncLoginInfoBean() {
@@ -28,7 +30,7 @@ public class RxRequestSyncLoginInfo extends RxBaseCloudRequest {
 
     @Override
     public Object call() throws Exception {
-        ReadContentService service = CloudApiContext.getService(CloudApiContext.getJdBaseUrl());
+        ReadContentService service = CloudApiContext.getService(CloudApiContext.JD_NEW_BASE_URL);
         Call<SyncLoginInfoBean> call = getCall(service);
         Response<SyncLoginInfoBean> response = call.execute();
         if (response != null) {
@@ -47,7 +49,6 @@ public class RxRequestSyncLoginInfo extends RxBaseCloudRequest {
     }
 
     private Call<SyncLoginInfoBean> getCall(ReadContentService service) {
-        return service.getSyncLoginInfo(CloudApiContext.NewBookDetail.SYNC_LOGIN_INFO,
-                requestBean.getAppBaseInfo().getRequestParamsMap());
+        return service.getSyncLoginInfo(requestBean.getRequestParamsMap());
     }
 }
