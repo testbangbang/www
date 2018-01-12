@@ -18,6 +18,8 @@
         android:padding="@dimen/banner_subject_model_item_padding">
 
         <TextView
+            android:gravity="center"
+            android:ellipsize="middle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/text_no_stoke_background"

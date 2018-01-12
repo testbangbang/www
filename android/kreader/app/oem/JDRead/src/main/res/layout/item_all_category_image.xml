@@ -30,17 +30,6 @@
                 android:scaleType="fitXY"
                 bind:cover="@{categoryBean.image_url}" />
 
-            <TextView
-                android:id="@+id/textView_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/text_no_stoke_background"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:lines="1"
-                android:text="@{categoryBean.name}"
-                android:textSize="@dimen/level_three_heading_font" />
-
         </LinearLayout>
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>

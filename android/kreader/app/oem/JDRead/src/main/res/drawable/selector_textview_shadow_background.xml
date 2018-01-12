@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_checked="true">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+            <item>
+                <shape>
+                    <solid android:color="@android:color/black" />
+                </shape>
+            </item>
+
+            <item android:bottom="@dimen/shadow_selector_padding_bottom">
+                <shape>
+                    <solid android:color="@android:color/white" />
+                </shape>
+            </item>
+
+        </layer-list>
+    </item>
+
+    <item>
+        <shape>
+            <solid android:color="@android:color/white" />
+        </shape>
+    </item>
+
+</selector>

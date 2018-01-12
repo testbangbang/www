@@ -28,7 +28,6 @@ public class AllCategoryViewModel extends BaseObservable{
     public final ObservableField<String> titleThree = new ObservableField();
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems;
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> topCategoryItems;
-    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> bottomCategoryItems;
     public SubjectListViewModel subjectListViewModel;
 
     public AllCategoryViewModel(EventBus eventBus) {
@@ -78,15 +77,6 @@ public class AllCategoryViewModel extends BaseObservable{
 
     public void setTopCategoryItems(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> topCategoryItems) {
         this.topCategoryItems = topCategoryItems;
-        notifyChange();
-    }
-
-    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getBottomCategoryItems() {
-        return bottomCategoryItems;
-    }
-
-    public void setBottomCategoryItems(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> bottomCategoryItems) {
-        this.bottomCategoryItems = bottomCategoryItems;
         notifyChange();
     }
 

@@ -1,7 +1,7 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
@@ -52,8 +52,11 @@ public class RxRequestCategoryList extends RxBaseCloudRequest {
             for (int i = 0; i < categoryListResultBean.data.size(); i++) {
                 adjustLevelTwoList.clear();
                 CategoryListResultBean.CategoryBeanLevelOne categoryBeanLevelOne = categoryListResultBean.data.get(i);
+                categoryBeanLevelOne.cateLevel = Constants.CATEGORY_LEVEL_ONE;
                 for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo : categoryBeanLevelOne.sub_category) {
+                    categoryBeanLevelTwo.cateLevel = Constants.CATEGORY_LEVEL_TWO;
                     for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelThree : categoryBeanLevelTwo.sub_category) {
+                        categoryBeanLevelThree.cateLevel = Constants.CATEGORY_LEVEL_TWO;
                         adjustLevelTwoList.add(categoryBeanLevelThree);
                     }
                 }

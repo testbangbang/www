@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
@@ -19,12 +20,12 @@ import java.util.List;
 
 public class BookCategoryAction extends BaseAction<ShopDataBundle> {
 
-    private boolean isAllCategory;
+    private boolean isMainCategory;
     private BookShopViewModel shopViewModel;
     private List<CategoryListResultBean.CategoryBeanLevelOne> levelOneData;
 
-    public BookCategoryAction(boolean isAllCategory) {
-        this.isAllCategory = isAllCategory;
+    public BookCategoryAction(boolean isMainCategory) {
+        this.isMainCategory = isMainCategory;
     }
 
     @Override
@@ -33,7 +34,6 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
         BaseRequestInfo baseRequestBean = new BaseRequestInfo();
         JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
         jdAppBaseInfo.setTime(String.valueOf(System.currentTimeMillis()));
-        jdAppBaseInfo.setTid(String.valueOf(System.currentTimeMillis()));
         baseRequestBean.setAppBaseInfo(jdAppBaseInfo);
         final RxRequestCategoryList request = new RxRequestCategoryList();
         request.setBaseRequestBean(baseRequestBean);
@@ -58,7 +58,7 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
                     levelOneData = categoryListResultBean.data;
                 }
                 if (levelOneData != null) {
-                    if (!isAllCategory) {
+                    if (isMainCategory) {
                         shopViewModel.setCategorySubjectItems(levelOneData.get(0).sub_category);
                     }
                 }
@@ -88,6 +88,20 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
 
     public List<CategoryListResultBean.CategoryBeanLevelOne> getCategoryBeanLevelOneList() {
         return levelOneData == null ? new ArrayList<CategoryListResultBean.CategoryBeanLevelOne>() : levelOneData;
+    }
+
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getCateTwo(){
+        List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> cateTwoList = new ArrayList<>();
+        for (CategoryListResultBean.CategoryBeanLevelOne cateOne : getCategoryBeanLevelOneList()){
+            CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = new CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo();
+            categoryBeanLevelTwo.cateLevel = Constants.CATEGORY_LEVEL_ONE;
+            categoryBeanLevelTwo.id = cateOne.id;
+            categoryBeanLevelTwo.image_url = cateOne.image_url;
+            categoryBeanLevelTwo.name = cateOne.name;
+            categoryBeanLevelTwo.sub_category = cateOne.sub_category;
+            cateTwoList.add(categoryBeanLevelTwo);
+        }
+        return cateTwoList;
     }
 
     public List<String> getTitleList() {

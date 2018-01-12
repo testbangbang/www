@@ -38,7 +38,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,7 +81,7 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     private void getCategoryData() {
-        bookCategoryAction = new BookCategoryAction(true);
+        bookCategoryAction = new BookCategoryAction(false);
         bookCategoryAction.execute(getShopDataBundle(), new RxCallback<BookCategoryAction>() {
             @Override
             public void onNext(BookCategoryAction bookCategoryAction) {
@@ -108,10 +107,8 @@ public class AllCategoryFragment extends BaseFragment {
             getAllCategoryViewModel().setAllCategoryItems(categorySubjectItems);
             if (categorySubjectItems.size() <= col) {
                 getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems);
-                getAllCategoryViewModel().setBottomCategoryItems(new ArrayList<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo>());
             } else {
                 getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems.subList(Constants.SHOP_MAIN_INDEX_ZERO, col));
-                getAllCategoryViewModel().setBottomCategoryItems(categorySubjectItems.subList(col, categorySubjectItems.size()));
             }
             updateContentView(getAllCategoryViewModel().getAllCategoryItems());
             recyclerView.gotoPage(0);
@@ -136,6 +133,7 @@ public class AllCategoryFragment extends BaseFragment {
                 if (paginator != null) {
                     setCurrentPage(paginator.getCurrentPage());
                 }
+                getAllCategoryViewModel().setTopCategoryItems(getAllCategoryViewModel().getAllCategoryItems().subList(position,position + col));
             }
         });
 
@@ -250,9 +248,9 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     public void changeCategoryButtonState() {
-        allCategoryBinding.titleBoyShadow.setVisibility(currentType == TYPE_INDEX_ONE ? View.VISIBLE : View.INVISIBLE);
-        allCategoryBinding.titleGirlShadow.setVisibility(currentType == TYPE_INDEX_TWO ? View.VISIBLE : View.INVISIBLE);
-        allCategoryBinding.titlePublisherShadow.setVisibility(currentType == TYPE_INDEX_ZERO ? View.VISIBLE : View.INVISIBLE);
+        allCategoryBinding.titleOne.setChecked(currentType == TYPE_INDEX_ZERO);
+        allCategoryBinding.titleTwo.setChecked(currentType == TYPE_INDEX_ONE);
+        allCategoryBinding.titleThree.setChecked(currentType == TYPE_INDEX_TWO);
     }
 
     @Subscribe

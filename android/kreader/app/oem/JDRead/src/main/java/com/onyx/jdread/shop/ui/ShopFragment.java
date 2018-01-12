@@ -257,7 +257,7 @@ public class ShopFragment extends BaseFragment {
     }
 
     private void getCategoryData() {
-        BookCategoryAction bookCategoryAction = new BookCategoryAction(false);
+        BookCategoryAction bookCategoryAction = new BookCategoryAction(true);
         bookCategoryAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
