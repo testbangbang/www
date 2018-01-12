@@ -51,4 +51,7 @@ public class Constants {
 
     public static final String PRACTICE = "practice";
     public static final String CORRECT = "correct";
+
+    public static final long PASSWORD_MIN_LENTH = 6;
+    public static final int PASSWORD_MAX_LENTH = 18;
 }

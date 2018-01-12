@@ -16,7 +16,7 @@ import java.io.File;
 
 public class ApkUpdate {
     private static final String TAG = ApkUpdate.class.getSimpleName();
-    public static final String APK_NAME = "SuperSReader.apk";
+    public static final String APK_NAME = "Plato.apk";
     public static final String APK_DOWNLOAD_PATH = Device.currentDevice.getExternalStorageDirectory() + File.separator + APK_NAME;
 
     public static int downloadAPK(String url, DownloadCallback callback) {

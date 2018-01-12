@@ -33,8 +33,8 @@ android {
 }
 
 dependencies {
-    compile (name:'onyxsdk-base-release', ext:'aar')
     compile project(':libraries:onyxdownloadservice')
+    compile project(':libraries:onyxsdk-base')
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }

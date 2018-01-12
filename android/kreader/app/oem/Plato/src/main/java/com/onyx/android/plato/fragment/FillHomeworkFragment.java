@@ -205,14 +205,12 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     private void submitAnswer() {
         if (fillHomeworkAdapter != null) {
-//            List<PracticeAnswerBean> list = new ArrayList<>();
             List<QuestionViewBean> questionList = fillHomeworkAdapter.getQuestionList();
             String[] answerArray = new String[questionList.size()];
             for (QuestionViewBean bean : questionList) {
                 PracticeAnswerBean answerBean = new PracticeAnswerBean();
                 answerBean.id = bean.getId();
                 answerArray = new String[]{bean.getUserAnswer()};
-//                list.add(answerBean);
             }
             homeworkPresenter.submitAnswer(answerArray, id);
         }

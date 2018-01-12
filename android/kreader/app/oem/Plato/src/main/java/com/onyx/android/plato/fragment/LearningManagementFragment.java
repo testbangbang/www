@@ -2,7 +2,6 @@ package com.onyx.android.plato.fragment;
 
 
 import android.databinding.ViewDataBinding;
-import android.support.annotation.NonNull;
 
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
@@ -10,7 +9,6 @@ import com.onyx.android.plato.adapter.CourseAdapter;
 import com.onyx.android.plato.adapter.KnowledgeProgressAdapter;
 import com.onyx.android.plato.cloud.bean.GetSubjectAbilityResultBean;
 import com.onyx.android.plato.cloud.bean.KnowledgeProgressResult;
-import com.onyx.android.plato.cloud.bean.SubjectBean;
 import com.onyx.android.plato.databinding.FragmentGoalAdvancedBinding;
 import com.onyx.android.plato.interfaces.GoalAdvancedView;
 import com.onyx.android.plato.presenter.GoalAdvancedPresenter;
@@ -19,7 +17,6 @@ import com.onyx.android.plato.view.DividerItemDecoration;
 import com.onyx.android.plato.view.RosePieChart;
 import com.onyx.android.plato.view.RosePieChart.PieEntry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -43,19 +40,6 @@ public class LearningManagementFragment extends BaseFragment implements GoalAdva
         if (goalAdvancedPresenter == null) {
             goalAdvancedPresenter = new GoalAdvancedPresenter(this);
         }
-    }
-
-    @NonNull
-    private List<PieEntry> convertAbilityBeanToPieEntry(GetSubjectAbilityResultBean.AbilityBean abilityBean) {
-        List<PieEntry> pieData = new ArrayList<>();
-        for (int i = 0; i < abilityBean.modules.size(); i++) {
-            GetSubjectAbilityResultBean.AbilityBean.ModulesBean modulesBean = abilityBean.modules.get(i);
-            PieEntry pieEntry = new PieEntry();
-            pieEntry.setName(modulesBean.name);
-            pieEntry.setValue(modulesBean.score);
-            pieData.add(pieEntry);
-        }
-        return pieData;
     }
 
     @Override
@@ -83,25 +67,15 @@ public class LearningManagementFragment extends BaseFragment implements GoalAdva
         goalAdvancedBinding.goalAdvancedTermRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         goalAdvancedBinding.goalAdvancedTermRecyclerView.addItemDecoration(dividerItemDecoration);
         CourseAdapter termAdapter = new CourseAdapter(termColumnCount, termRowCount);
-        termAdapter.setData(coverToSubjectBean(term));
+        termAdapter.setData(goalAdvancedPresenter.coverToSubjectBean(term));
         goalAdvancedBinding.goalAdvancedTermRecyclerView.setAdapter(termAdapter);
-    }
-
-    private List<SubjectBean> coverToSubjectBean(String[] source) {
-        List<SubjectBean> list = new ArrayList();
-        for (int i = 0; i < source.length; i++) {
-            SubjectBean bean = new SubjectBean();
-            bean.name = source[i];
-            list.add(bean);
-        }
-        return list;
     }
 
     private void initCourseRecyclerView() {
         goalAdvancedBinding.goalAdvancedCourseRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         goalAdvancedBinding.goalAdvancedCourseRecyclerView.addItemDecoration(dividerItemDecoration);
         CourseAdapter courseAdapter = new CourseAdapter();
-        courseAdapter.setData(coverToSubjectBean(course));
+        courseAdapter.setData(goalAdvancedPresenter.coverToSubjectBean(course));
         goalAdvancedBinding.goalAdvancedCourseRecyclerView.setAdapter(courseAdapter);
     }
 
@@ -129,7 +103,7 @@ public class LearningManagementFragment extends BaseFragment implements GoalAdva
     @Override
     public void setSubjectAbilityData(GetSubjectAbilityResultBean.AbilityBean abilityBean) {
         if (abilityBean != null) {
-            List<PieEntry> pieData = convertAbilityBeanToPieEntry(abilityBean);
+            List<PieEntry> pieData = goalAdvancedPresenter.convertAbilityBeanToPieEntry(abilityBean);
             goalAdvancedBinding.goalAdvancedPieChart.setPieEntries(pieData);
             goalAdvancedBinding.setAbilityBean(abilityBean);
         }

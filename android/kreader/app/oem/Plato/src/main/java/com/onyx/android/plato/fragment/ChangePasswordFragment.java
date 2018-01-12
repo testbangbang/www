@@ -152,11 +152,11 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
             CommonNotices.show(getString(R.string.password_format_error_tips));
             return false;
         }
-        if (changePasswordRequestBean.newPassword.length() < 6 || changePasswordRequestBean.newPassword.length() > 18) {
+        if (changePasswordRequestBean.newPassword.length() < Constants.PASSWORD_MIN_LENTH || changePasswordRequestBean.newPassword.length() > Constants.PASSWORD_MAX_LENTH) {
             CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.password_length_less_than_normal));
             return false;
         }
-        if (changePasswordRequestBean.finalPassword.length() < 6 || changePasswordRequestBean.finalPassword.length() > 18) {
+        if (changePasswordRequestBean.finalPassword.length() < Constants.PASSWORD_MIN_LENTH || changePasswordRequestBean.finalPassword.length() > Constants.PASSWORD_MAX_LENTH) {
             CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.password_length_less_than_normal));
             return false;
         }
