@@ -36,6 +36,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
+import com.onyx.edu.homework.HomeworkApp;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.note.ChangePenStateAction;
 import com.onyx.edu.homework.action.note.DocumentCheckAction;
@@ -157,7 +158,7 @@ public class ScribbleFragment extends BaseFragment {
             return;
         }
         String url = question.review.attachmentUrl.get(page);
-        Glide.with(getContext()).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+        Glide.with(HomeworkApp.instance).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 getNoteViewHelper().updateReviewBitmap(resource);
