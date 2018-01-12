@@ -11,7 +11,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.AllCategoryNormalItemBinding;
 import com.onyx.jdread.databinding.CategorySubjectModelItemBinding;
-import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.CategoryAdapterRawDataChangeEvent;
 import com.onyx.jdread.shop.event.CategoryItemClickEvent;
 
@@ -23,7 +23,7 @@ import java.util.List;
  * Created by jackdeng on 2017/12/12.
  */
 
-public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CatListBean, CatListBean> {
+public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> {
 
     private static final int TYPE_MAINMODEL = 1;
     private static final int TYPE_ALL_CAT_NORMAL = 2;
@@ -80,7 +80,7 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
 
     @Override
     public void onPageBindViewHolder(PageRecyclerView.ViewHolder holder, int position) {
-        final CatListBean catListBean = getItemVMList().get(position);
+        final CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = getItemVMList().get(position);
         if (holder instanceof ModelViewHolder) {
             ModelViewHolder viewHolder = (ModelViewHolder) holder;
             viewHolder.itemView.setOnClickListener(this);
@@ -95,7 +95,7 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
     }
 
     @Override
-    public void setRawData(List<CatListBean> rawData, Context context) {
+    public void setRawData(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> rawData, Context context) {
         super.setRawData(rawData, context);
         setItemVMList(rawData);
         notifyDataSetChanged();
@@ -129,8 +129,8 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
             return bind;
         }
 
-        public void bindTo(CatListBean catListBean) {
-            bind.setCategoryListBean(catListBean);
+        public void bindTo(CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean) {
+            bind.setCategoryBean(catListBean);
             bind.executePendingBindings();
         }
     }
@@ -148,8 +148,8 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
             return bind;
         }
 
-        public void bindTo(CatListBean catListBean) {
-            bind.setCategoryListBean(catListBean);
+        public void bindTo(CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean) {
+            bind.setCategoryBean(catListBean);
             bind.executePendingBindings();
         }
     }

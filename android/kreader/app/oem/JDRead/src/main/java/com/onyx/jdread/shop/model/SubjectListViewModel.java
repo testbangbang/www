@@ -27,7 +27,7 @@ public class SubjectListViewModel extends BaseObservable {
     public final ObservableBoolean sortButtonIsOpen =new ObservableBoolean();
     public final ObservableBoolean allCatIsOpen =new ObservableBoolean();
     public final ObservableBoolean isFree =new ObservableBoolean();
-    public List<CategoryListResultBean.CatListBean> categoryItems;
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryItems;
 
     public SubjectListViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -70,11 +70,11 @@ public class SubjectListViewModel extends BaseObservable {
         notifyChange();
     }
 
-    public List<CategoryListResultBean.CatListBean> getCategoryItems() {
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getCategoryItems() {
         return categoryItems;
     }
 
-    public void setCategoryItems(List<CategoryListResultBean.CatListBean> categoryItems) {
+    public void setCategoryItems(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryItems) {
         this.categoryItems = categoryItems;
         notifyChange();
     }

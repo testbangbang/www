@@ -5,8 +5,8 @@
     <data class="CategorySubjectModelItemBinding">
 
         <variable
-            name="categoryListBean"
-            type="com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean" />
+            name="categoryBean"
+            type="com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo" />
 
     </data>
 
@@ -24,7 +24,7 @@
             android:drawableRight="@mipmap/ic_go_view_all"
             android:drawablePadding="@dimen/view_all_drawable_padding"
             android:background="@drawable/text_no_stoke_background"
-            android:text="@{categoryListBean.shortName}"
+            android:text="@{categoryBean.name}"
             android:textSize="@dimen/level_three_heading_font"/>
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>

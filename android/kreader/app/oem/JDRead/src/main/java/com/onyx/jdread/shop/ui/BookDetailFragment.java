@@ -121,7 +121,9 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void initLibrary() {
-        getEventBus().register(this);
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
     }
 
     private void initData() {

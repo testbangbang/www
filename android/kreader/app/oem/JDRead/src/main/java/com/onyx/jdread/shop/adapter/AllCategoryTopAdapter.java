@@ -10,7 +10,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.AllCategoryImageItemBinding;
-import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.CategoryItemClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -21,7 +21,7 @@ import java.util.List;
  * Created by jackdeng on 2018/1/2.
  */
 
-public class AllCategoryTopAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CatListBean, CatListBean> {
+public class AllCategoryTopAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> {
 
     private EventBus eventBus;
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_top_recycle_view_row);
@@ -63,7 +63,7 @@ public class AllCategoryTopAdapter extends PageAdapter<PageRecyclerView.ViewHold
 
     @Override
     public void onPageBindViewHolder(PageRecyclerView.ViewHolder holder, int position) {
-        final CatListBean catListBean = getItemVMList().get(position);
+        final CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = getItemVMList().get(position);
         AllCategoryImageViewHolder viewHolder = (AllCategoryImageViewHolder) holder;
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
@@ -71,7 +71,7 @@ public class AllCategoryTopAdapter extends PageAdapter<PageRecyclerView.ViewHold
     }
 
     @Override
-    public void setRawData(List<CatListBean> rawData, Context context) {
+    public void setRawData(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> rawData, Context context) {
         super.setRawData(rawData, context);
         setItemVMList(rawData);
         notifyDataSetChanged();
@@ -102,8 +102,8 @@ public class AllCategoryTopAdapter extends PageAdapter<PageRecyclerView.ViewHold
             return bind;
         }
 
-        public void bindTo(CatListBean catListBean) {
-            bind.setCategoryListBean(catListBean);
+        public void bindTo(CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean) {
+            bind.setCategoryBean(catListBean);
             bind.executePendingBindings();
         }
     }

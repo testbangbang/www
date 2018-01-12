@@ -9,13 +9,13 @@ import java.util.List;
  */
 
 public class CategoryAdapterRawDataChangeEvent {
-    private List<CategoryListResultBean.CatListBean> data;
+    private List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> data;
 
-    public CategoryAdapterRawDataChangeEvent(List<CategoryListResultBean.CatListBean> data) {
+    public CategoryAdapterRawDataChangeEvent(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> data) {
         this.data = data;
     }
 
-    public List<CategoryListResultBean.CatListBean> getData() {
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getData() {
         return data;
     }
 }

@@ -5,10 +5,12 @@ package com.onyx.jdread.shop.event;
  */
 
 public class ViewAllClickEvent {
-    public int fid;
+    public int modelId;
+    public int modelType;
     public String subjectName;
-    public ViewAllClickEvent(int fid, String subjectName) {
-        this.fid = fid;
+    public ViewAllClickEvent(int modelId, int modelType, String subjectName) {
+        this.modelId = modelId;
+        this.modelType = modelType;
         this.subjectName = subjectName;
     }
 }

@@ -1,7 +1,7 @@
 package com.onyx.jdread.shop.cloud.entity;
 
 
-import com.onyx.jdread.main.common.JDAppBaseInfo;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
 import java.util.Map;
 

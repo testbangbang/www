@@ -5,8 +5,8 @@
     <data class="AllCategoryNormalItemBinding">
 
         <variable
-            name="categoryListBean"
-            type="com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean" />
+            name="categoryBean"
+            type="com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo" />
 
     </data>
 
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/text_no_stoke_background"
-            android:text="@{categoryListBean.catName}"
+            android:text="@{categoryBean.name}"
             android:textSize="@dimen/level_three_heading_font"/>
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>

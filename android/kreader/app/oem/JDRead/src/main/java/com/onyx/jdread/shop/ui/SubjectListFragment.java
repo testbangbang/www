@@ -73,7 +73,9 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     private void initLibrary() {
-        getEventBus().register(this);
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
     }
 
     private void initData() {
@@ -105,7 +107,7 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     private void setCategoryV2Data() {
-        List<CategoryListResultBean.CatListBean> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
+        List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
         getSubjectListViewModel().setCategoryItems(allCategoryItems);
         getSubjectListViewModel().isFree.set(typeFree);
     }
@@ -219,9 +221,9 @@ public class SubjectListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
-        CategoryListResultBean.CatListBean categoryBean = event.getCategoryBean();
-        this.catid = categoryBean.catId;
-        this.currentCatName = categoryBean.catName;
+        CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
+        this.catid = categoryBean.id;
+        this.currentCatName = categoryBean.name;
         this.currentPage = 1;
         this.sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_HOT;
         getSubjectListViewModel().getTitleBarViewModel().leftText = currentCatName;

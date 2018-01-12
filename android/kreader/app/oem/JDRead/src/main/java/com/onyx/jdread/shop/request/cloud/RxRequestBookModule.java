@@ -1,11 +1,11 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
+import com.onyx.jdread.shop.cloud.entity.BookModelRequestBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
-import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelResultBean;
 
 import retrofit2.Call;
 
@@ -15,15 +15,15 @@ import retrofit2.Call;
 
 public class RxRequestBookModule extends RxBaseCloudRequest {
 
-    private BaseRequestBean baseRequestBean;
-    private BookModelResultBean bookModelResultBean;
+    private BookModelRequestBean requestBean;
+    private BookModelBooksResultBean bookModelResultBean;
 
-    public BookModelResultBean getBookModelResultBean() {
+    public BookModelBooksResultBean getBookModelResultBean() {
         return bookModelResultBean;
     }
 
-    public void setBaseRequestBean(BaseRequestBean baseRequestBean) {
-        this.baseRequestBean = baseRequestBean;
+    public void setRequestBean(BookModelRequestBean requestBean) {
+        this.requestBean = requestBean;
     }
 
     @Override
@@ -34,17 +34,17 @@ public class RxRequestBookModule extends RxBaseCloudRequest {
 
     private void executeCloudRequest() {
         ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
-        Call<BookModelResultBean> call = getCall(getCommonService);
+        Call<BookModelBooksResultBean> call = getCall(getCommonService);
         bookModelResultBean = done(call);
     }
 
-    private BookModelResultBean done(Call<BookModelResultBean> call) {
-        EnhancedCall<BookModelResultBean> enhancedCall = new EnhancedCall<>(call);
-        return enhancedCall.execute(call, BookModelResultBean.class);
+    private BookModelBooksResultBean done(Call<BookModelBooksResultBean> call) {
+        EnhancedCall<BookModelBooksResultBean> enhancedCall = new EnhancedCall<>(call);
+        return enhancedCall.execute(call, BookModelBooksResultBean.class);
     }
 
-    private Call<BookModelResultBean> getCall(ReadContentService getCommonService) {
-        return getCommonService.getBookShopModule(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
-                CloudApiContext.BookShopModule.MODULE_CHILD_INFO, baseRequestBean.getBody());
+    private Call<BookModelBooksResultBean> getCall(ReadContentService getCommonService) {
+        return getCommonService.getBookShopModule(requestBean.getfType(), requestBean.getModuleId(),
+                requestBean.getAppBaseInfo().getRequestParamsMap(), requestBean.getQueryArgsMap());
     }
 }

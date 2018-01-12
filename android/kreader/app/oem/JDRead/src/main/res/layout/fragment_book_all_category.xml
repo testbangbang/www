@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:onClick="@{()->categoryViewModel.onPublishClick()}"
+                android:onClick="@{()->categoryViewModel.onTitleOneClick()}"
                 android:orientation="vertical">
 
                 <TextView
@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/all_category_title_publish"
+                    android:text="@{categoryViewModel.titleOne}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
 
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:onClick="@{()->categoryViewModel.onBoyClick()}"
+                android:onClick="@{()->categoryViewModel.onTitleTwoClick()}"
                 android:orientation="vertical">
 
                 <TextView
@@ -72,7 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/all_category_title_boy"
+                    android:text="@{categoryViewModel.titleTwo}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
 
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:onClick="@{()->categoryViewModel.onGirlClick()}"
+                android:onClick="@{()->categoryViewModel.onTitleThreeClick()}"
                 android:orientation="vertical">
 
                 <TextView
@@ -99,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/all_category_title_girl"
+                    android:text="@{categoryViewModel.titleThree}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
 

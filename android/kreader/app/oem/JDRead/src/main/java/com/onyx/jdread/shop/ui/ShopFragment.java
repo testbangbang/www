@@ -21,20 +21,22 @@ import com.onyx.jdread.databinding.FragmentBookShopTwoBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCategoryAction;
-import com.onyx.jdread.shop.action.BookImportantRecommendAction;
-import com.onyx.jdread.shop.action.BookSpecialTodayAction;
-import com.onyx.jdread.shop.action.NewBookAction;
+import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookShopMainConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryViewClick;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
+import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
+import com.onyx.jdread.shop.model.BannerViewModel;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -71,14 +73,14 @@ public class ShopFragment extends BaseFragment {
     }
 
     private void initLibrary() {
-        getEventBus().register(this);
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
     }
 
     private void initData() {
-        getRecyclerViewSubjectOneData();
-        getRecyclerViewSubjectTwoData();
-        getRecyclerViewSubjectFourData();
-        getRecyclerViewCategoryData();
+        getShopMainConfigData();
+        getCategoryData();
     }
 
     private void initView() {
@@ -219,43 +221,32 @@ public class ShopFragment extends BaseFragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private void getRecyclerViewSubjectOneData() {
-        NewBookAction newBookAction = new NewBookAction(JDReadApplication.getInstance());
-        newBookAction.execute(getShopDataBundle(), new RxCallback() {
+    private void getShopMainConfigData() {
+        ShopMainConfigAction configAction = new ShopMainConfigAction();
+        configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
             @Override
-            public void onNext(Object o) {
+            public void onNext(ShopMainConfigAction configAction) {
+                BookShopMainConfigResultBean resultBean = configAction.getResultBean();
+                BannerViewModel banerViewModel = new BannerViewModel();
+                banerViewModel.setEventBus(getEventBus());
+                banerViewModel.setDataBean(resultBean.data);
+                getBookShopViewModel().setBannerSubjectIems(banerViewModel);
 
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                super.onError(throwable);
-
-            }
-        });
-    }
-
-    public void getRecyclerViewSubjectTwoData() {
-         BookSpecialTodayAction bookSpecialTodayAction = new BookSpecialTodayAction(JDReadApplication.getInstance());
-        bookSpecialTodayAction.execute(getShopDataBundle(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                super.onError(throwable);
-            }
-        });
-    }
-
-    public void getRecyclerViewSubjectFourData() {
-        BookImportantRecommendAction bookImportantRecommendAction = new BookImportantRecommendAction(JDReadApplication.getInstance());
-        bookImportantRecommendAction.execute(getShopDataBundle(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-
+                SubjectViewModel subjectViewModelOne = new SubjectViewModel();
+                subjectViewModelOne.setEventBus(getEventBus());
+                subjectViewModelOne.setIndex(Constants.SHOP_MAIN_INDEX_THREE);
+                subjectViewModelOne.setDataBean(resultBean.data);
+                SubjectViewModel subjectViewModelTwo = new SubjectViewModel();
+                subjectViewModelTwo.setEventBus(getEventBus());
+                subjectViewModelTwo.setIndex(Constants.SHOP_MAIN_INDEX_FOUR);
+                subjectViewModelTwo.setDataBean(resultBean.data);
+                SubjectViewModel subjectViewModelFour = new SubjectViewModel();
+                subjectViewModelFour.setEventBus(getEventBus());
+                subjectViewModelFour.setIndex(Constants.SHOP_MAIN_INDEX_FIVE);
+                subjectViewModelFour.setDataBean(resultBean.data);
+                getBookShopViewModel().setCoverSubjectOneItems(subjectViewModelOne);
+                getBookShopViewModel().setCoverSubjectTwoItems(subjectViewModelTwo);
+                getBookShopViewModel().setCoverSubjectFourItems(subjectViewModelFour);
             }
 
             @Override
@@ -265,8 +256,8 @@ public class ShopFragment extends BaseFragment {
         });
     }
 
-    private void getRecyclerViewCategoryData() {
-        BookCategoryAction bookCategoryAction = new BookCategoryAction(JDReadApplication.getInstance(),false);
+    private void getCategoryData() {
+        BookCategoryAction bookCategoryAction = new BookCategoryAction(false);
         bookCategoryAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -313,9 +304,15 @@ public class ShopFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShopMainViewAllBookEvent(ShopMainViewAllBookEvent event) {
+        getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
         PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_FID, event.fid);
+        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, event.modelId);
+        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, event.modelType);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
         }

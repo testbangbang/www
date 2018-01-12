@@ -20,6 +20,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.DataBundle;
 import com.onyx.jdread.main.common.AppBaseInfo;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -41,6 +42,7 @@ public class JDReadApplication extends MultiDexApplication {
     private List<String> mtpBuffer = new ArrayList<>();
     private boolean isUserLogin;
     private AppBaseInfo appBaseInfo;
+    private JDAppBaseInfo jdAppBaseInfo;
     private EvernoteSession evernoteSession;
     private static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.SANDBOX;
     private static final boolean SUPPORT_APP_LINKED_NOTEBOOKS = true;
@@ -146,6 +148,17 @@ public class JDReadApplication extends MultiDexApplication {
             }
         }
         return appBaseInfo;
+    }
+
+    public JDAppBaseInfo getJDAppBaseInfo() {
+        if (jdAppBaseInfo == null) {
+            synchronized (JDAppBaseInfo.class) {
+                if (jdAppBaseInfo == null) {
+                    jdAppBaseInfo = new JDAppBaseInfo();
+                }
+            }
+        }
+        return jdAppBaseInfo;
     }
 
     static public void initContentProvider(final Context context) {

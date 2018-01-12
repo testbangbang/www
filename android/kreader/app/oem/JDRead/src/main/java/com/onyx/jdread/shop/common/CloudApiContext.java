@@ -4,6 +4,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.shop.cloud.cache.EnhancedCacheInterceptor;
 import com.onyx.jdread.shop.request.JavaNetCookieJar;
 import com.onyx.jdread.shop.request.PersistentCookieStore;
 
@@ -21,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class CloudApiContext {
-    public static final String JD_BOOK_SHOP_URL = "http://tob-gw.jd.com/";
+    public static final String JD_BOOK_SHOP_URL = "https://eink-api.jd.com/eink/api/";
     public static final String JD_BASE_URL = "https://gw-e.jd.com/";
     public static final String JD_BOOK_VERIFY_URL = "http://rights.e.jd.com/";
     public static final String JD_SMOOTH_READ_URL = "https://cread.jd.com/";
@@ -68,14 +69,12 @@ public class CloudApiContext {
         public static final String MODULE_ID = "moduleId";
         public static final String RETURN_MESSAGE = "returnMessage";
         public static final String MODULE_CHILD_INFO = "getReversionModuleData";
-        public static final int TODAY_SPECIAL_ID = 11;
-        public static final int TODAY_SPECIAL_MODULE_TYPE = 10;
-        public static final int NEW_BOOK_DELIVERY_ID = 18;
-        public static final int NEW_BOOK_DELIVERY_MODULE_TYPE = 6;
-        public static final int FREE_JOURNALS_ID = 181;
-        public static final int FREE_JOURNALS_MODULE_TYPE = 6;
-        public static final int IMPORTANT_RECOMMEND_ID = 91;
-        public static final int IMPORTANT_RECOMMEND_MODULE_TYPE = 6;
+        public static final int TODAY_SPECIAL_ID = 1;
+        public static final int TODAY_SPECIAL_MODULE_TYPE =1;
+        public static final int NEW_BOOK_DELIVERY_ID = 6;
+        public static final int NEW_BOOK_DELIVERY_MODULE_TYPE = 1;
+        public static final int IMPORTANT_RECOMMEND_ID = 1;
+        public static final int IMPORTANT_RECOMMEND_MODULE_TYPE = 1;
     }
 
     public static class CategoryList {
@@ -113,10 +112,10 @@ public class CloudApiContext {
     public static class SearchBook {
         public static final String SORT_TYPE = "sortType";
         public static final String SORT_SALE_DESC = "sort_sale_desc";
-        public static final String PAGE_SIZE = "pageSize";
+        public static final String PAGE_SIZE = "page_size";
         public static final int PAGE_SIZE_COUNT = 20;
         public static final String BOOK_TYPE = "bookType";
-        public static final String CURRENT_PAGE = "currentPage";
+        public static final String CURRENT_PAGE = "page";
         public static final String KEY_WORD = "keyword";
         public static final String SEARCH_PAPER_BOOK = "searchPaperBook";
         public static final String SEARCH_BOOK_V2 = "searchBookV2";
@@ -188,6 +187,7 @@ public class CloudApiContext {
 
     public static OkHttpClient getClient() {
         OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new EnhancedCacheInterceptor())
                 .cookieJar(new JavaNetCookieJar(addCookie()))
                 .build();
         return client;

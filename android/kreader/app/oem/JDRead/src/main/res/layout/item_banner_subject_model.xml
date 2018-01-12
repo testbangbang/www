@@ -5,8 +5,8 @@
     <data class="BannerSubjectModelItemBinding">
 
         <variable
-            name="bookBean"
-            type="com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean" />
+            name="advBean"
+            type="com.onyx.jdread.shop.cloud.entity.jdbean.BookShopMainConfigResultBean.DataBean.AdvBean" />
 
     </data>
 
@@ -27,7 +27,7 @@
                 android:layout_width="@dimen/banner_subject_model_item_width"
                 android:layout_height="@dimen/banner_subject_model_item_height"
                 android:scaleType="fitXY"
-                bind:cover="@{bookBean.imageUrl}" />
+                bind:cover="@{advBean.pic_address}" />
 
         </LinearLayout>
 

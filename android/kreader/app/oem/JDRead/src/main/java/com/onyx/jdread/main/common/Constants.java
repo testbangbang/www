@@ -27,8 +27,10 @@ public class Constants {
     public static final String SP_KEY_CATEGORY_NAME = "category_name";
     public static final String SP_KEY_CATEGORY_ISFREE = "category_isfree";
     public static final String SP_KEY_SUBJECT_NAME = "subject_name";
-    public static final String SP_KEY_SUBJECT_FID = "subject_fid";
+    public static final String SP_KEY_SUBJECT_MODEL_ID = "subject_model_id";
+    public static final String SP_KEY_SUBJECT_MODEL_TYPE = "subject_model_type";
 
+    public static final int BOOK_SHOP_DEFAULT_CID = 11;
     public static final int BOOK_COMMENT_PAGE_SIZE = 20;
     public static final int BOOK_CATEGORY_PAGE_SIZE = 20;
     public static final String BOOK_PAGE_SIZE = "20";
@@ -53,5 +55,17 @@ public class Constants {
     public static final String PAY_URL = "pay_url";
     public final static long APP_CACHE_MAX_SIZE = 1024 * 1024 * 8;
     public final static String LOCAL_WEB_CACHE_PATH = Environment.getExternalStorageDirectory().getPath() + "/webcache";
-    public static final int CATEGORY_TYPE_FREE = 1;
+    public static final int SHOP_MAIN_INDEX_ZERO = 0;
+    public static final int SHOP_MAIN_INDEX_ONE = 1;
+    public static final int SHOP_MAIN_INDEX_TWO = 2;
+    public static final int SHOP_MAIN_INDEX_THREE = 3;
+    public static final int SHOP_MAIN_INDEX_FOUR = 4;
+    public static final int SHOP_MAIN_INDEX_FIVE = 5;
+    public static final int SHOP_MAIN_INDEX_SIX = 6;
+    public static final int SHOP_MAIN_INDEX_SEVEN = 7;
+    public static final int SHOP_MAIN_INDEX_EIGHT = 8;
+    public static final int SHOP_MAIN_INDEX_NINE = 9;
+    public static final int SHOP_MAIN_INDEX_TEN = 10;
+    public static final int SHOP_MAIN_INDEX_ELEVEN = 11;
+    public static final int SHOP_MAIN_INDEX_TWELVE = 12;
 }

@@ -69,7 +69,9 @@ public class BookRankFragment extends BaseFragment {
     }
 
     private void initLibrary() {
-        getEventBus().register(this);
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
     }
 
     private void initData() {
@@ -205,7 +207,7 @@ public class BookRankFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
         PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_FID, event.fid);
+        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, event.modelId);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
         }

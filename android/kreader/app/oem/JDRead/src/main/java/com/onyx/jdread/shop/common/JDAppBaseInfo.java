@@ -1,9 +1,11 @@
-package com.onyx.jdread.main.common;
+package com.onyx.jdread.shop.common;
 
 import android.os.Build;
 
 import com.jingdong.app.reader.data.DrmTools;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.main.common.AppInformationUtils;
+import com.onyx.jdread.main.common.Constants;
 
 import java.net.URLEncoder;
 import java.util.HashMap;

@@ -110,8 +110,7 @@
                     android:layout_margin="@dimen/subject_list_just_vip_margin"
                     android:button="@drawable/selected_subject_list_show_vip_bg"
                     android:checked="false"
-                    android:text="@string/subject_list_just_vip"
-                    android:visibility="@{viewModel.isFree ? View.GONE : View.VISIBLE}" />
+                    android:text="@string/subject_list_just_vip" />
 
                 <include layout="@layout/layout_line" />
 

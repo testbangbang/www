@@ -18,16 +18,6 @@ public class BookModelBooksResultBean {
         public int total;
         public int page;
         public int page_size;
-        public List<ItemsBean> items;
-
-        public static class ItemsBean {
-
-            public int ebook_id;
-            public String name;
-            public String author;
-            public String image_url;
-            public String large_image_url;
-            public String info;
-        }
+        public List<ResultBookBean> items;
     }
 }

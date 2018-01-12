@@ -19,8 +19,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookModelAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelResultBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
@@ -46,7 +45,8 @@ public class ViewAllBooksFragment extends BaseFragment {
     private PageRecyclerView recyclerView;
     private GPaginator paginator;
     private int currentPage = 1;
-    private int fid;
+    private int modelId;
+    private int modelType;
 
     @Nullable
     @Override
@@ -59,31 +59,26 @@ public class ViewAllBooksFragment extends BaseFragment {
     }
 
     private void initLibrary() {
-        getEventBus().register(this);
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
     }
 
     private void initData() {
         String title= PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, "");
-        fid = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_FID, -1);
+        modelId = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
+        modelType = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
         getTitleBarViewModel().leftText = title;
         getBooksData(currentPage);
     }
 
     private void getBooksData(int currentPage) {
-        int modelType = 0;
-        if (fid == CloudApiContext.BookShopModule.NEW_BOOK_DELIVERY_ID) {
-            modelType = CloudApiContext.BookShopModule.NEW_BOOK_DELIVERY_MODULE_TYPE;
-        } else if (fid == CloudApiContext.BookShopModule.TODAY_SPECIAL_ID) {
-            modelType = CloudApiContext.BookShopModule.TODAY_SPECIAL_MODULE_TYPE;
-        } else if (fid == CloudApiContext.BookShopModule.IMPORTANT_RECOMMEND_ID) {
-            modelType = CloudApiContext.BookShopModule.IMPORTANT_RECOMMEND_MODULE_TYPE;
-        }
-        BookModelAction booksAction = new BookModelAction(fid,modelType);
+        BookModelAction booksAction = new BookModelAction(modelId,modelType,currentPage);
         booksAction.execute(getShopDataBundle(), new RxCallback<BookModelAction>() {
             @Override
             public void onNext(BookModelAction booksAction) {
-                BookModelResultBean bookModelResultBean = booksAction.getBookModelResultBean();
-                getViewAllViewModel().setBookList(bookModelResultBean.resultList);
+                BookModelBooksResultBean bookModelResultBean = booksAction.getBookModelResultBean();
+                getViewAllViewModel().setBookList(bookModelResultBean.data.items);
                 updateContentView();
             }
         });

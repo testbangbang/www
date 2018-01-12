@@ -25,7 +25,7 @@
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/recycler_view_banner"
-            bannerSubjectItems="@{viewModel.bannerSubjectIems.modelBean.resultList}"
+            bannerSubjectItems="@{viewModel.bannerSubjectIems.bannerList}"
             android:layout_width="match_parent"
             android:layout_height="@dimen/book_shop_banner_recycler_height"
             android:layout_marginBottom="@dimen/book_shop_banner_recycler_margin_top_and_bottom"
@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_no_stoke_background"
-                    android:text="@{viewModel.coverSubjectOneItems.modelBean.moduleBookChild.showName}"
+                    android:text="@{viewModel.coverSubjectOneItems.modelBean.show_name}"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
@@ -65,7 +65,7 @@
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/recycler_view_cover_subject_one"
-                subjectItems="@{viewModel.coverSubjectOneItems.modelBean.resultList}"
+                subjectItems="@{viewModel.coverSubjectOneItems.modelBean.bookList}"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/book_shop_recycler_height"
                 android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
@@ -87,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_no_stoke_background"
-                    android:text="@{viewModel.coverSubjectTwoItems.modelBean.moduleBookChild.showName}"
+                    android:text="@{viewModel.coverSubjectTwoItems.modelBean.show_name}"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
@@ -107,7 +107,7 @@
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/recycler_view_cover_subject_two_back_up"
-                subjectItems="@{viewModel.coverSubjectTwoItems.modelBean.resultList}"
+                subjectItems="@{viewModel.coverSubjectTwoItems.modelBean.bookList}"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/book_shop_recycler_height"
                 android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />

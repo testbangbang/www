@@ -2,23 +2,46 @@ package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
 
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookShopMainConfigResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jackdeng on 2017/12/11.
  */
 
-public class SubjectViewModel extends BaseObservable{
+public class SubjectViewModel extends BaseObservable {
 
     private EventBus eventBus;
-    private BookModelResultBean modelBean;
-
-    private BookModelResultBean modelBeanNext;
-
+    private BookShopMainConfigResultBean.DataBean dataBean;
+    private BookShopMainConfigResultBean.DataBean.ModulesBean modelBean;
+    private BookShopMainConfigResultBean.DataBean.ModulesBean modelBeanNext;
     private boolean showNextTitle;
+    private int index;
+
+    public BookShopMainConfigResultBean.DataBean getDataBean() {
+        return dataBean;
+    }
+
+    public void setDataBean(BookShopMainConfigResultBean.DataBean dataBean) {
+        this.dataBean = dataBean;
+        if (dataBean.ebook != null && dataBean.modules != null) {
+            ArrayList<ResultBookBean> bookList = new ArrayList<>();
+            BookShopMainConfigResultBean.DataBean.ModulesBean modulesBean = dataBean.modules.get(getIndex());
+            List<BookShopMainConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
+            for (BookShopMainConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
+                ResultBookBean bookBean = dataBean.ebook.get(itemsBean.id);
+                bookList.add(bookBean);
+            }
+            modulesBean.bookList = bookList;
+            setModelBean(modulesBean);
+        }
+    }
 
     public EventBus getEventBus() {
         return eventBus;
@@ -26,6 +49,14 @@ public class SubjectViewModel extends BaseObservable{
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public boolean isShowNextTitle() {
@@ -37,29 +68,29 @@ public class SubjectViewModel extends BaseObservable{
         notifyChange();
     }
 
-    public BookModelResultBean getModelBeanNext() {
+    public BookShopMainConfigResultBean.DataBean.ModulesBean getModelBeanNext() {
         return modelBeanNext;
     }
 
-    public void setModelBeanNext(BookModelResultBean modelBeanNext) {
+    private void setModelBeanNext(BookShopMainConfigResultBean.DataBean.ModulesBean modelBeanNext) {
         this.modelBeanNext = modelBeanNext;
         notifyChange();
     }
 
-    public BookModelResultBean getModelBean() {
+    public BookShopMainConfigResultBean.DataBean.ModulesBean getModelBean() {
         return modelBean;
     }
 
-    public void setModelBean(BookModelResultBean modelBean) {
+    private void setModelBean(BookShopMainConfigResultBean.DataBean.ModulesBean modelBean) {
         this.modelBean = modelBean;
         notifyChange();
     }
 
     public void onViewAllClick() {
-        getEventBus().post(new ViewAllClickEvent(modelBean.moduleBookChild.fid, modelBean.moduleBookChild.showName));
+        getEventBus().post(new ViewAllClickEvent(modelBean.id, modelBean.f_type, modelBean.show_name));
     }
 
     public void onNextViewAllClick() {
-        getEventBus().post(new ViewAllClickEvent(modelBeanNext.moduleBookChild.fid, modelBeanNext.moduleBookChild.showName));
+        getEventBus().post(new ViewAllClickEvent(modelBeanNext.id, modelBeanNext.f_type, modelBeanNext.show_name));
     }
 }
