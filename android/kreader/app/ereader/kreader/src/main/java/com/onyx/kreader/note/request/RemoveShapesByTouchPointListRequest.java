@@ -14,6 +14,7 @@ import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNotePage;
 
@@ -73,7 +74,7 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
 
         HashMap<String, RectF> dirtyRect = new HashMap<>();
         for (Map.Entry<String, List<Shape>> entry : removedShapes.entrySet()) {
-            dirtyRect.put(entry.getKey(), getBoundingRect(entry.getValue()));
+            dirtyRect.put(entry.getKey(), ShapeUtils.getBoundingRect(entry.getValue()));
         }
         for (PageInfo pageInfo : getVisiblePages()) {
             final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(),

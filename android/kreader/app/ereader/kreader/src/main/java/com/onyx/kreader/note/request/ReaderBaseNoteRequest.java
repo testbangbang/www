@@ -218,19 +218,6 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         return noteDataInfo;
     }
 
-    public RectF getBoundingRect(final List<Shape> shapes) {
-        RectF rect = null;
-        for (Shape sp : shapes) {
-            if (rect == null) {
-                rect = new RectF(sp.getBoundingRect());
-            } else {
-                rect.union(sp.getBoundingRect());
-            }
-        }
-        rect.inset(-30, -30);
-        return rect;
-    }
-
     public boolean renderVisiblePages(final NoteManager parent,
                                       ReaderBitmapReferenceImpl docBitmap,
                                       HashMap<String, RectF> dirtyRects) {
