@@ -34,7 +34,9 @@ public class ShapeUtils {
                 rect.union(sp.getBoundingRect());
             }
         }
-        rect.inset(-30, -30);
+        if (rect != null) {
+            rect.inset(-30, -30);
+        }
         return rect;
     }
 
