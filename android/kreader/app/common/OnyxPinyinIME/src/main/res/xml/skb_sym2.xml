@@ -19,7 +19,7 @@
   width="10%p"
   height="25%p"
   key_type="0"
-  key_xmargin="0.8%p"
+  key_xmargin="1.0%p"
   key_ymargin="2.8%p"
   repeat="false"
   balloon="true">
@@ -43,7 +43,7 @@
   </row>
 
   <row width="10.205%p">
-    <key code="-5" width="14.286%p" key_type="3" label="ALT"/>
+    <key code="-5" width="14.286%p" key_type="1" label="\?123"/>
     <key label="™"/>
     <key label="‘">
       <toggle_state state_id="@string/toggle_en_sym2" label="‘"/>
@@ -56,12 +56,13 @@
   </row>
 
   <row width="14.696%p" key_type="1">
-    <key code="-2" label="中 符" width="20%p" repeat="true">
+    <key id="8" />
+    <key code="-2" label="中 符" width="15.307%p" repeat="true">
       <toggle_state state_id="@string/toggle_en_sym2" label="英 符" code="-2"/>
     </key>
-    <key code="-3" key_type="3" label="\?123"/>
+    <key code="-3" key_type="1" label="ABC" width="15.307%p"/>
     <key code="62" key_type="5" width="30.608%p"/>
-    <key label="……" key_type="0">
+    <key label="……" key_type="0" width="10.205%p">
       <toggle_state state_id="@string/toggle_en_sym2" label="…"/>
     </key>
     <key id="1"/>
