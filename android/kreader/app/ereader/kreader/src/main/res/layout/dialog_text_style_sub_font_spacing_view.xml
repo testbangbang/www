@@ -9,7 +9,7 @@
         <TextView
             android:id="@+id/text_view_spacing_title"
             android:textSize="@dimen/dialog_common_text_size"
-            android:layout_width="80dp"
+            android:layout_width="@dimen/dialog_text_style_sub_font_spacing_view_title_width"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignTop="@+id/layout_line_spacing"
@@ -56,7 +56,7 @@
         <TextView
             android:id="@+id/text_view_margin_title"
             android:textSize="@dimen/dialog_common_text_size"
-            android:layout_width="80dp"
+            android:layout_width="@dimen/dialog_text_style_sub_font_spacing_view_title_width"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignTop="@+id/layout_page_margin"
@@ -105,7 +105,7 @@
     <TextView
         android:id="@+id/text_view_indentation"
         android:textSize="@dimen/dialog_common_text_size"
-        android:layout_width="80dp"
+        android:layout_width="@dimen/dialog_text_style_sub_font_spacing_view_title_width"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
         android:layout_alignParentLeft="true"

@@ -73,4 +73,5 @@
     <dimen name="dialog_tab_host_menu_button_text_size">16sp</dimen>
     <dimen name="dialog_tab_host_menu_item_view_text_size">16sp</dimen>
     <dimen name="dialog_tab_host_menu_window_width">240dp</dimen>
+    <dimen name="dialog_text_style_sub_font_spacing_view_title_width">80dp</dimen>
 </resources>
