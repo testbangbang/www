@@ -61,7 +61,6 @@ public class UnfinishedFragment extends BaseFragment implements HomeworkView, Vi
 
     @Override
     protected void initListener() {
-
     }
 
     @Override

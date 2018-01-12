@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/item_remind_time_margin_top"
-                android:text="@{StringUtil.isCorrect(data.correctTime) ? @string/homework_item_correct_format(TimeUtils.getDate(data.correctTime)) : @string/homework_item_deadline_format(TimeUtils.getDate(data.deadline))}"
+                android:text="@{StringUtil.isCorrect(data.type) ? @string/homework_item_correct_format(TimeUtils.getDate(data.correctTime)) : @string/homework_item_deadline_format(TimeUtils.getDate(data.deadline))}"
                 android:textSize="@dimen/level_three_heading_font" />
         </LinearLayout>
     </LinearLayout>

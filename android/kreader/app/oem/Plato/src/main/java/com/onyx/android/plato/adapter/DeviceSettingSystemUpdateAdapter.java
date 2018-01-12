@@ -75,8 +75,8 @@ public class DeviceSettingSystemUpdateAdapter extends PageRecyclerView.PageAdapt
         view.tvSetting.setText(systemVersionInformation.information);
         if (systemVersionInformation.isChild) {
             view.ivDetails.setVisibility(View.VISIBLE);
-            view.itemView.setOnClickListener(this);
             view.itemView.setTag(systemVersionInformation.title);
+            view.itemView.setOnClickListener(this);
         } else {
             view.ivDetails.setVisibility(View.GONE);
             view.itemView.setTag(null);

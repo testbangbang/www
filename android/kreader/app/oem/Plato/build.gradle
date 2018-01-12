@@ -37,6 +37,9 @@ android {
             abortOnError false
         }
     }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
 }
 apt {
     arguments {

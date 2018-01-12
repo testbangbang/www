@@ -69,6 +69,7 @@
     <string name="device_setting_model">Model</string>
     <string name="device_setting_save_electricity_30">Can save 30% of the electricity</string>
     <string name="device_setting_save_electricity_20">Can save 20% of the electricity</string>
+    <string name="device_setting_save_electricity_10">Can save 10% of the electricity</string>
     <string name="device_setting_version_number">Version number</string>
     <string name="device_setting_serial_number">Serial number</string>
     <string name="device_setting_wifi_mac_address">WIFI MAC address</string>
@@ -157,7 +158,7 @@
     <string name="change_password_old_password_title">Enter old password :</string>
     <string name="change_password_old_password_title_tips">(Please verify the old password first)</string>
     <string name="change_password_new_password_title">Enter new password :</string>
-    <string name="change_password_new_password_title_tips">(The minimum length is 6 characters)</string>
+    <string name="change_password_new_password_title_tips">(The password length is 6-18)</string>
     <string name="change_password_final_password_title">Enter the new password again :</string>
     <string name="change_password_passwords_match_error">Two new passwords do not match</string>
     <string name="change_password_success_tips">Change password success</string>
@@ -221,5 +222,10 @@
     <string name="input_mistake">Input wrong reason</string>
     <string name="input_mistake_tip">Tip: error analysis, up to four words</string>
     <string name="verify_original_password_error">Verify the original password error</string>
-    <string name="password_length_less_than_normal">The password length is less than 6</string>
+    <string name="password_length_less_than_normal">The password length is less than 6 or more than 18</string>
+    <string name="part_two_undeveloped">Part two, undeveloped</string>
+    <string name="input_ip_address_hint">Please input IP address.</string>
+    <string name="ip_address">illustrate: http://116.62.152.51:9001/</string>
+    <string name="user_center_title_setting">setting</string>
+    <string name="update_application_not_install">Update the application is not installed, please upgrade the latest system</string>
 </resources>

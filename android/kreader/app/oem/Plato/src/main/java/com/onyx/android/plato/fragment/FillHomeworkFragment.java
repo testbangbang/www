@@ -16,7 +16,6 @@ import com.onyx.android.plato.cloud.bean.QuestionViewBean;
 import com.onyx.android.plato.cloud.bean.ReportListBean;
 import com.onyx.android.plato.cloud.bean.StudyReportDetailBean;
 import com.onyx.android.plato.cloud.bean.SubjectBean;
-import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
 import com.onyx.android.plato.databinding.FillHomeworkBinding;
 import com.onyx.android.plato.event.BackToHomeworkFragmentEvent;
@@ -40,7 +39,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,7 +64,6 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     @Override
     protected void loadData() {
-
     }
 
     @Override
@@ -75,9 +72,9 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         fillHomeworkBinding.fillHomeworkRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         fillHomeworkBinding.fillHomeworkRecycler.addItemDecoration(dividerItemDecoration);
+        fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.file_homework_record));
         fillHomeworkBinding.fillHomeworkTitleBar.setTitle(String.format(getResources().getString(R.string.homework_unfinished_title_format),
                 StringUtil.transitionHomeworkType(type), title));
-        fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.file_homework_record));
         fillHomeworkAdapter = new FillHomeworkAdapter();
         fillHomeworkBinding.fillHomeworkRecycler.setAdapter(fillHomeworkAdapter);
         homeworkRecordAdapter = new HomeworkRecordAdapter();
@@ -177,6 +174,8 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         this.practiceId = practiceId;
         this.type = type;
         this.title = title;
+        fillHomeworkBinding.fillHomeworkTitleBar.setTitle(String.format(getResources().getString(R.string.homework_unfinished_title_format),
+                StringUtil.transitionHomeworkType(type), title));
         if (homeworkPresenter == null || correctPresenter == null || fillHomeworkPresenter == null) {
             homeworkPresenter = new HomeworkPresenter(this);
             correctPresenter = new CorrectPresenter(this);
@@ -206,19 +205,14 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     private void submitAnswer() {
         if (fillHomeworkAdapter != null) {
-            List<PracticeAnswerBean> list = new ArrayList<>();
             List<QuestionViewBean> questionList = fillHomeworkAdapter.getQuestionList();
+            String[] answerArray = new String[questionList.size()];
             for (QuestionViewBean bean : questionList) {
-                if (StringUtil.isNullOrEmpty(bean.getUserAnswer())) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.submit_all_questions));
-                    return;
-                }
                 PracticeAnswerBean answerBean = new PracticeAnswerBean();
                 answerBean.id = bean.getId();
-                answerBean.answer = bean.getUserAnswer();
-                list.add(answerBean);
+                answerArray = new String[]{bean.getUserAnswer()};
             }
-            homeworkPresenter.submitAnswer(list, id);
+            homeworkPresenter.submitAnswer(answerArray, id);
         }
     }
 

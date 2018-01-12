@@ -10,14 +10,15 @@
     <string-array name="device_setting_automatic_shutdown_time_explain">
         <item>@string/device_setting_save_electricity_30</item>
         <item>@string/device_setting_save_electricity_20</item>
+        <item>@string/device_setting_save_electricity_10</item>
         <item></item>
     </string-array>
-    <string-array translatable="false" name="special_locale_codes">
+    <string-array name="special_locale_codes" translatable="false">
         <item>zh_CN</item>
         <item>zh_TW</item>
     </string-array>
 
-    <string-array translatable="false" name="special_locale_names">
+    <string-array name="special_locale_names" translatable="false">
         <item>中文 (简体)</item>
         <item>中文 (繁體)</item>
     </string-array>

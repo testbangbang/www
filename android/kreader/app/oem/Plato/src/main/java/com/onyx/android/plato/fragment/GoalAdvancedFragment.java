@@ -43,7 +43,6 @@ public class GoalAdvancedFragment extends BaseFragment implements GoalAdvancedVi
         if (goalAdvancedPresenter == null) {
             goalAdvancedPresenter = new GoalAdvancedPresenter(this);
         }
-        goalAdvancedPresenter.getSubjectAbility(null,null,null);
     }
 
     @NonNull

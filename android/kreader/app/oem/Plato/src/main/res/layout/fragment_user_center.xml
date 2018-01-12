@@ -46,7 +46,6 @@
 
         <include layout="@layout/layout_divide_line" />
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,7 +94,6 @@
                 android:id="@+id/tv_user_center_fragment_phone_number_value"
                 style="@style/user_center_text_style"
                 android:layout_width="match_parent"
-                android:drawableRight="@drawable/icon_go"
                 android:paddingRight="@dimen/user_center_right_icon_padding_right"
                 android:text="@{userInfo.mobile}" />
         </LinearLayout>

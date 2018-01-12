@@ -46,7 +46,6 @@ public class ScribbleHandler extends BaseHandler {
         }
     };
 
-
     @Override
     public void onActivate(HandlerArgs args) {
         super.onActivate(args);

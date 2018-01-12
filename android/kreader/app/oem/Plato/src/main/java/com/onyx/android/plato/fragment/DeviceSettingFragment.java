@@ -8,10 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
-
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.adapter.DeviceSettingAdapter;
@@ -29,7 +25,7 @@ import com.onyx.android.plato.databinding.DeviceSettingFragmentBinding;
 import com.onyx.android.plato.devicesetting.SystemLanguage;
 import com.onyx.android.plato.event.DeviceSettingViewBaseEvent;
 import com.onyx.android.plato.event.LoadConfigDataEvent;
-import com.onyx.android.plato.event.ToMainFragmentEvent;
+import com.onyx.android.plato.event.OnBackPressEvent;
 import com.onyx.android.plato.interfaces.DeviceSettingView;
 import com.onyx.android.plato.presenter.DeviceSettingPresenter;
 import com.onyx.android.plato.utils.ApkUtils;
@@ -41,6 +37,8 @@ import com.onyx.android.plato.view.CustomDialog;
 import com.onyx.android.plato.view.DisableScrollGridManager;
 import com.onyx.android.plato.view.DividerItemDecoration;
 import com.onyx.android.plato.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -438,7 +436,7 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
                 updateDeviceSettingPage(R.id.setting_device_information);
                 return true;
         }
-        EventBus.getDefault().post(new ToMainFragmentEvent());
+        EventBus.getDefault().post(new OnBackPressEvent(ChildViewID.FRAGMENT_DEVICE_SETTING));
         return true;
     }
 

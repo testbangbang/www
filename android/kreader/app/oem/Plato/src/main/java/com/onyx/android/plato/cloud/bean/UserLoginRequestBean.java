@@ -10,6 +10,7 @@ public class UserLoginRequestBean extends BaseObservable{
     public String account;
     public String password;
     public boolean isKeepPassword;
+    public boolean isShowPassword;
 
     public String getAccount() {
         return account;
@@ -35,6 +36,15 @@ public class UserLoginRequestBean extends BaseObservable{
 
     public void setIsKeepPassword(boolean isKeepPassword) {
         this.isKeepPassword = isKeepPassword;
+        notifyChange();
+    }
+
+    public boolean isShowPassword() {
+        return isShowPassword;
+    }
+
+    public void setShowPassword(boolean showPassword) {
+        isShowPassword = showPassword;
         notifyChange();
     }
 }
