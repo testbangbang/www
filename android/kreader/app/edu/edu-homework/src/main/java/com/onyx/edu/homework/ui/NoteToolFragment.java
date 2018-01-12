@@ -38,6 +38,7 @@ import com.onyx.edu.homework.action.note.UndoAction;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentNoteToolBinding;
+import com.onyx.edu.homework.event.CloseSubMenuEvent;
 import com.onyx.edu.homework.event.PageChangeEvent;
 import com.onyx.edu.homework.event.SaveNoteEvent;
 import com.onyx.edu.homework.event.UpdatePagePositionEvent;
@@ -110,7 +111,7 @@ public class NoteToolFragment extends BaseFragment {
                 return;
             case MenuId.ERASER:
                 eraserPage();
-                return;
+                break;
             case MenuId.ADD_PAGE:
                 addPage();
                 break;
@@ -134,7 +135,7 @@ public class NoteToolFragment extends BaseFragment {
                 break;
         }
         if (!MenuId.isSubMenuId(event.getMenuId())) {
-            hideSubMenu();
+            hideSubMenu(null);
             return;
         }
         if (MenuId.isSubMenuId(event.getMenuId()) && handleSubMenuEvent(event.getMenuId())) {
@@ -341,12 +342,16 @@ public class NoteToolFragment extends BaseFragment {
         flushDocument(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                hideSubMenu();
+                hideSubMenu(null);
             }
         });
     }
 
-    private void hideSubMenu() {
+    @Subscribe
+    public void hideSubMenu(CloseSubMenuEvent event) {
+        if (subMenuLayout == null) {
+            return;
+        }
         subMenuLayout.removeAllViews();
         subMenuLayout.setVisibility(View.GONE);
     }

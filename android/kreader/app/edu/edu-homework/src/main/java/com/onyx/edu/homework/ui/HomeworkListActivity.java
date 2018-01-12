@@ -37,6 +37,7 @@ import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.HomeworkIntent;
 import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
+import com.onyx.edu.homework.event.CloseSubMenuEvent;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
@@ -162,7 +163,7 @@ public class HomeworkListActivity extends BaseActivity {
         getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                currentPage = Math.min(next, questions.size() - 1);
+                setCurrentPage(next);
                 reloadQuestionFragment(currentPage);
             }
         });
@@ -179,7 +180,7 @@ public class HomeworkListActivity extends BaseActivity {
         getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                currentPage = Math.max(prev, 0);
+                setCurrentPage(prev);
                 reloadQuestionFragment(currentPage);
             }
         });
@@ -425,7 +426,14 @@ public class HomeworkListActivity extends BaseActivity {
         if (event.hideRecord) {
             hideRecordFragment(true);
         }
-        reloadQuestionFragment(event.page);
+        setCurrentPage(event.page);
+        reloadQuestionFragment(currentPage);
+    }
+
+    public void setCurrentPage(int page) {
+        page = Math.max(0, page);
+        page = Math.min(page, questions == null ? 0 : questions.size() - 1);
+        this.currentPage = page;
     }
 
     public void reloadQuestionFragment(int position) {
@@ -453,6 +461,7 @@ public class HomeworkListActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        getDataBundle().post(new CloseSubMenuEvent());
         showExitDialog();
     }
 

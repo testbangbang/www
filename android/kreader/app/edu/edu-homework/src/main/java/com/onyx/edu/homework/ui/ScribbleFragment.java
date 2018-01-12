@@ -32,8 +32,11 @@ import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
+import com.onyx.edu.homework.HomeworkApp;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.note.ChangePenStateAction;
 import com.onyx.edu.homework.action.note.DocumentCheckAction;
@@ -150,12 +153,12 @@ public class ScribbleFragment extends BaseFragment {
         if (!getDataBundle().isReview()
                 || question.isChoiceQuestion()
                 || question.review == null
-                || question.review.attachmentUrl == null) {
+                || CollectionUtils.isNullOrEmpty(question.review.attachmentUrl)) {
             BaseCallback.invoke(callback, null, null);
             return;
         }
         String url = question.review.attachmentUrl.get(page);
-        Glide.with(this).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+        Glide.with(HomeworkApp.instance).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 getNoteViewHelper().updateReviewBitmap(resource);
@@ -455,6 +458,7 @@ public class ScribbleFragment extends BaseFragment {
                 if (!isVisible()) {
                     return;
                 }
+                Debug.d(getClass(), "onSystemUIChanged type:" + type + "---open:" + open);
                 if (open) {
                     onSystemUIOpened();
                 } else {

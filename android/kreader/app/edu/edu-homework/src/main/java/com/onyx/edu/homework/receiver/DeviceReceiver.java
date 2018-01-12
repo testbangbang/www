@@ -53,8 +53,6 @@ public class DeviceReceiver extends BroadcastReceiver {
         filter.addAction(SYSTEM_UI_DIALOG_CLOSE_ACTION);
         filter.addAction(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? Intent.ACTION_SCREEN_ON : SYSTEM_WAKE_UP);
         filter.addAction(SYSTEM_HOME);
-        filter.addAction(STATUS_BAR_ICON_REFRESH_START_ACTION);
-        filter.addAction(STATUS_BAR_ICON_REFRESH_FINISH_ACTION);
         filter.addAction(SYSTEM_UI_SCREEN_SHOT_START_ACTION);
         filter.addAction(SYSTEM_UI_SCREEN_SHOT_END_ACTION);
         return filter;

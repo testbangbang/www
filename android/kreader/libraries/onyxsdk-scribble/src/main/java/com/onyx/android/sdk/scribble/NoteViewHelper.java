@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -27,6 +28,7 @@ import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -62,11 +64,6 @@ public class NoteViewHelper {
     private static final int PEN_DRAWING = 2;
     private static final int PEN_PAUSE = 3;
     private static final int PEN_ERASING = 4;
-
-
-    public static final int DRAW_TEXT_SIZE = 40;
-    public static final int DRAW_TEXT_PADDING = 10;
-    public static final float DRAW_TEXT_SPACING_ADD = 10f;
 
     public static abstract class InputCallback {
 
@@ -118,10 +115,10 @@ public class NoteViewHelper {
     private DeviceConfig deviceConfig;
     private MappingConfig mappingConfig;
     private LineLayoutArgs lineLayoutArgs;
+    private TextLayoutArgs textLayoutArgs;
     private Shape currentShape = null;
     private Shape cursorShape = null;
     private int shapeState;
-    private String drawText;
     private boolean shortcutErasing = false;
     private int viewPosition[] = {0, 0};
     private float src[] = {0, 0};
@@ -181,15 +178,15 @@ public class NoteViewHelper {
         removeLayoutListener();
         quitDrawing();
         setLineLayoutMode(false);
-        setDrawText(null);
+        setTextLayoutArgs(null);
     }
 
-    public void setDrawText(String drawText) {
-        this.drawText = drawText;
+    public void setTextLayoutArgs(TextLayoutArgs textLayoutArgs) {
+        this.textLayoutArgs = textLayoutArgs;
     }
 
-    public String getDrawText() {
-        return drawText;
+    public TextLayoutArgs getTextLayoutArgs() {
+        return textLayoutArgs;
     }
 
     public Context getAppContext() {
@@ -293,13 +290,13 @@ public class NoteViewHelper {
         return globalLayoutListener;
     }
 
-    public StaticLayout getTextLayout(String text, int width) {
-        if (textLayout == null) {
+    public @Nullable StaticLayout createTextLayout(int width) {
+        if (textLayout == null && textLayoutArgs != null && !textLayoutArgs.isNull()) {
             TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
             tp.setColor(Color.BLACK);
-            tp.setTextSize(DRAW_TEXT_SIZE);
-            textLayout =  new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getAppContext()), null),tp,width - (DRAW_TEXT_PADDING * 2),
-                    Layout.Alignment.ALIGN_NORMAL, 1f,DRAW_TEXT_SPACING_ADD,false);
+            tp.setTextSize(textLayoutArgs.textSize);
+            textLayout =  new StaticLayout(Html.fromHtml(textLayoutArgs.text, new Base64ImageParser(getAppContext()), null),tp,width - (textLayoutArgs.textPadding * 2),
+                    Layout.Alignment.ALIGN_NORMAL, textLayoutArgs.textSpacingMult,textLayoutArgs.textSpacingAdd,false);
         }
         return textLayout;
     }
