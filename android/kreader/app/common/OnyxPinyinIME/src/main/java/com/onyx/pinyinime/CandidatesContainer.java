@@ -161,6 +161,7 @@ public class CandidatesContainer extends RelativeLayout implements
      * Current page number in display.
      */
     private int mCurrentPage = -1;
+    private boolean useAnimation = false;
 
     public CandidatesContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -313,7 +314,6 @@ public class CandidatesContainer extends RelativeLayout implements
         CandidateView cvNext = (CandidateView) mFlipper.getChildAt(childNext);
         mCurrentPage++;
         if (animLeftRight) activeCandInPage = 0;
-
         cvNext.showPage(mCurrentPage, activeCandInPage, enableActiveHighlight);
         loadAnimation(animLeftRight, true);
         startAnimation();
@@ -387,6 +387,9 @@ public class CandidatesContainer extends RelativeLayout implements
     }
 
     public void loadAnimation(boolean animLeftRight, boolean forward) {
+        if (!useAnimation) {
+            return;
+        }
         if (animLeftRight) {
             if (forward) {
                 if (null == mInAnimPushLeft) {

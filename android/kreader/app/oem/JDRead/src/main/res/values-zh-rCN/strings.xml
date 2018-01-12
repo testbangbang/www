@@ -326,4 +326,11 @@
     <string name="thirty">￥30.00</string>
     <string name="fifty">￥50.00</string>
     <string name="ninety">￥90.00</string>
+    <string name="email_address_hint">电子邮箱地址</string>
+    <string name="email_address_wrong">请输入正确的电子邮箱地址</string>
+    <string name="bind_to_email">关联电子邮箱</string>
+    <string name="unbind_to_email">取消绑定</string>
+    <string name="email_address_format">电子邮箱地址：%s</string>
+    <string name="email_bound">电子邮箱已关联</string>
+    <string name="confirm_bind">确认关联</string>
 </resources>

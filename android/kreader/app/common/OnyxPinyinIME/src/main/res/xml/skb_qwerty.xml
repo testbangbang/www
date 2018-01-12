@@ -18,9 +18,9 @@
   skb_cache_flag="true"
   qwerty="true"
   qwerty_uppercase="true"
-  width="10%p"
+  width="10.02%p"
   height="25%p"
-  key_ymargin="1.2%p"
+  key_ymargin="2.8%p"
   key_xmargin="1.0%p"
   key_type="0"
   repeat="false"
@@ -37,17 +37,16 @@
   </row>
 
   <row width="10.205%p">
-    <key label="，" width="14.286%p" icon="@drawable/comma_full_icon"
-      icon_popup="@drawable/comma_full_popup_icon">
+    <key label="，" width="14.286%p" >
       <toggle_state state_id="@string/toggle_smiley" code="-6"
         icon="@drawable/smiley_icon" icon_popup="@drawable/smiley_popup_icon"
         key_type="2"/>
       <toggle_state state_id="@string/toggle_en_lower" code="-1"
         icon="@drawable/shift_off_icon"
-        icon_popup="@drawable/shift_off_popup_icon" key_type="2"/>
+        icon_popup="@drawable/shift_off_popup_icon" key_type="1"/>
       <toggle_state state_id="@string/toggle_en_upper" code="-1"
         icon="@drawable/shift_on_icon"
-        icon_popup="@drawable/shift_on_popup_icon" key_type="3"/>
+        icon_popup="@drawable/shift_on_popup_icon" key_type="1"/>
       <toggle_state state_id="@string/toggle_cn_cand" label="'"
         key_type="1"/>
     </key>
@@ -56,19 +55,20 @@
     <key id="3"/>
   </row>
 
-  <row width="20%p" row_id="@string/toggle_row_cn">
+  <row width="10.205%p" row_id="@string/toggle_row_cn">
+    <key id="8" />
     <key id="6"/>
     <key id="4"/>
-    <key code="62" key_type="5" width="30.608%p"/>
-    <key label="。" width="14.696%p" icon="@drawable/period_full_icon"
-      icon_popup="@drawable/period_full_popup_icon"/>
+    <key code="62" key_type="5" width="30.615%p"/>
+    <key label="。" width="10.205%p" />
     <key id="1"/>
   </row>
 
-  <row width="20%p" row_id="@string/toggle_row_en" start_pos_y="75%p">
+  <row width="10.205%p" row_id="@string/toggle_row_en" start_pos_y="75%p">
+    <key id="8" />
     <key id="6"/>
     <key id="4"/>
-    <key code="62" key_type="5" width="30.608%p"/>
+    <key code="62" key_type="5" width="30.615%p"/>
     <key id="7"/>
     <key id="1"/>
   </row>

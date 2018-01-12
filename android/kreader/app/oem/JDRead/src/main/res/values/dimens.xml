@@ -359,4 +359,8 @@
     <dimen name="item_gift_center_width">85dp</dimen>
     <dimen name="item_preference_padding">10dp</dimen>
     <dimen name="personal_note_export_margin_left">46dp</dimen>
+    <dimen name="dialog_associated_edit_width">300dp</dimen>
+    <dimen name="dialog_associated_edit_height">60dp</dimen>
+    <dimen name="dialog_associated_edit_margin_top">50dp</dimen>
+    <dimen name="dialog_associated_email_button_margin_top">80dp</dimen>
 </resources>

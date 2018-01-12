@@ -185,6 +185,10 @@ public class SoftKey {
         return false;
     }
 
+    public boolean isDismissKey() {
+        return mKeyCode == -4;
+    }
+
     public boolean needBalloon() {
         return (mKeyMask & KEYMASK_BALLOON) != 0;
     }

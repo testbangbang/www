@@ -263,6 +263,9 @@ public class SkbContainer extends RelativeLayout implements OnTouchListener {
         int keyHeight = mEnvironment.getKeyHeight();
         int skbHeight = mEnvironment.getSkbHeight();
 
+        int skbWidth = screenWidth - getPaddingLeft() - getPaddingRight();
+        skbHeight = skbHeight - getPaddingTop() - getPaddingBottom();
+
         Resources r = getContext().getResources();
         if (null == mSkbFlipper) {
             mSkbFlipper = (ViewFlipper) findViewById(R.id.alpha_floatable);
@@ -275,27 +278,27 @@ public class SkbContainer extends RelativeLayout implements OnTouchListener {
         switch (mSkbLayout) {
         case R.xml.skb_qwerty:
             majorSkb = skbPool.getSoftKeyboard(R.xml.skb_qwerty,
-                    R.xml.skb_qwerty, screenWidth, skbHeight, getContext());
+                    R.xml.skb_qwerty, skbWidth, skbHeight, getContext());
             break;
 
         case R.xml.skb_sym1:
             majorSkb = skbPool.getSoftKeyboard(R.xml.skb_sym1, R.xml.skb_sym1,
-                    screenWidth, skbHeight, getContext());
+                    skbWidth, skbHeight, getContext());
             break;
 
         case R.xml.skb_sym2:
             majorSkb = skbPool.getSoftKeyboard(R.xml.skb_sym2, R.xml.skb_sym2,
-                    screenWidth, skbHeight, getContext());
+                    skbWidth, skbHeight, getContext());
             break;
 
         case R.xml.skb_smiley:
             majorSkb = skbPool.getSoftKeyboard(R.xml.skb_smiley,
-                    R.xml.skb_smiley, screenWidth, skbHeight, getContext());
+                    R.xml.skb_smiley, skbWidth, skbHeight, getContext());
             break;
 
         case R.xml.skb_phone:
             majorSkb = skbPool.getSoftKeyboard(R.xml.skb_phone,
-                    R.xml.skb_phone, screenWidth, skbHeight, getContext());
+                    R.xml.skb_phone, skbWidth, skbHeight, getContext());
             break;
         default:
         }

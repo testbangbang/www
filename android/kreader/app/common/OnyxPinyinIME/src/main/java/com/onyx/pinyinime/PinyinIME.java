@@ -791,6 +791,7 @@ public class PinyinIME extends InputMethodService {
 
     private void updateComposingText(boolean visible) {
         if (!visible) {
+            setCandidatesViewShown(false);
             mComposingView.setVisibility(View.INVISIBLE);
         } else {
             mComposingView.setDecodingInfo(mDecInfo, mImeState);
@@ -964,7 +965,11 @@ public class PinyinIME extends InputMethodService {
 
     public void responseSoftKeyEvent(SoftKey sKey) {
         if (null == sKey) return;
-
+        if (sKey.isDismissKey()) {
+            resetToIdleState(false);
+            requestHideSelf(0);
+            return;
+        }
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
 
