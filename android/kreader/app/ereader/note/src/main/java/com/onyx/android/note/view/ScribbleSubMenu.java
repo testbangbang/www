@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
@@ -20,7 +19,6 @@ import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.android.sdk.scribble.request.shape.UpdateScreenWritingExcludeRegionRequest;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 
@@ -53,7 +51,7 @@ public class ScribbleSubMenu extends RelativeLayout {
 
         public abstract void onLayoutStateChanged();
 
-        public abstract void onCancel();
+        public abstract void onVisibilityChanged(final Rect excludeRect,final boolean redrawPage , int visibility);
     }
 
     private final MenuCallback mMenuCallback;
@@ -179,19 +177,18 @@ public class ScribbleSubMenu extends RelativeLayout {
             @Override
             public void run() {
                 Rect excludeRect;
+                boolean redrawPage = true;
                 switch (getVisibility()) {
                     case VISIBLE:
                         excludeRect = new Rect(mMenuContentView.getLeft(), mMenuContentView.getTop(),
                                 mMenuContentView.getRight(), mMenuContentView.getBottom());
+                        redrawPage = false;
                         break;
                     default:
                         excludeRect = new Rect();
                         break;
                 }
-                UpdateScreenWritingExcludeRegionRequest updateScreenWritingExcludeRegionRequest =
-                        new UpdateScreenWritingExcludeRegionRequest(excludeRect);
-                NoteApplication.getInstance().getNoteViewHelper().submit(getContext(),
-                        updateScreenWritingExcludeRegionRequest, null);
+                mMenuCallback.onVisibilityChanged(excludeRect, redrawPage, getVisibility());
             }
         });
     }
@@ -200,9 +197,9 @@ public class ScribbleSubMenu extends RelativeLayout {
      * @param isCancel if no submenu item was previous selected -> true,otherwise false.
      */
     public void dismiss(boolean isCancel) {
-        if (mMenuCallback != null && isCancel) {
-            mMenuCallback.onCancel();
-        }
+//        if (mMenuCallback != null && isCancel) {
+//            mMenuCallback.onCancel();
+//        }
         setVisibility(GONE);
     }
 

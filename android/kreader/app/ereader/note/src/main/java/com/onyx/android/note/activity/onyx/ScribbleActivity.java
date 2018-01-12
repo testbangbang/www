@@ -43,6 +43,7 @@ import com.onyx.android.note.actions.scribble.PenColorChangeAction;
 import com.onyx.android.note.actions.scribble.RedoAction;
 import com.onyx.android.note.actions.scribble.RemoveByGroupIdAction;
 import com.onyx.android.note.actions.scribble.UndoAction;
+import com.onyx.android.note.actions.scribble.UpdateScreenWritingExcludeRegionAction;
 import com.onyx.android.note.activity.BaseScribbleActivity;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
@@ -810,13 +811,22 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         }
 
                         @Override
-                        public void onCancel() {
-                            syncWithCallback(true, true, null);
+                        public void onLayoutStateChanged() {
                         }
 
                         @Override
-                        public void onLayoutStateChanged() {
-
+                        public void onVisibilityChanged(final Rect excludeRect, final boolean redrawPage, int visibility) {
+                            boolean resume = visibility != View.VISIBLE && shouldResume();
+                            UpdateScreenWritingExcludeRegionAction<ScribbleActivity> action = new
+                                    UpdateScreenWritingExcludeRegionAction<>(excludeRect, resume);
+                            action.execute(ScribbleActivity.this, new BaseCallback() {
+                                @Override
+                                public void done(BaseRequest request, Throwable e) {
+                                    if (redrawPage) {
+                                        drawPage();
+                                    }
+                                }
+                            });
                         }
                     }, R.id.divider, true
             );
