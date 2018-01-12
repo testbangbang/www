@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private FunctionBarModel functionBarModel;
     private FunctionBarAdapter functionBarAdapter;
+    private SystemBarModel systemBarModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +98,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initSystemBar() {
-        binding.mainSystemBar.setSystemBarModel(new SystemBarModel());
+        systemBarModel = new SystemBarModel();
+        binding.mainSystemBar.setSystemBarModel(systemBarModel);
+        systemBarModel.registerReceiver(JDReadApplication.getInstance());
     }
 
     private void initFunctionBar() {
@@ -148,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
+        systemBarModel.unRegisterReceiver(JDReadApplication.getInstance());
         super.onDestroy();
     }
 
