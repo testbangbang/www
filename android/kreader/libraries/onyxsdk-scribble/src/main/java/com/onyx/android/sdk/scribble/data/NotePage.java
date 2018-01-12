@@ -235,10 +235,12 @@ public class NotePage {
         }
     }
 
-    public void removeShapesByTouchPointList(final TouchPointList touchPointList, final float radius) {
+    public ArrayList<Shape> removeShapesByTouchPointList(final TouchPointList touchPointList, final float radius) {
+        ArrayList<Shape> shapes = new ArrayList<>();
         if (touchPointList == null) {
-            return;
+            return shapes;
         }
+
         Map<String, Shape> hitShapes = new HashMap<>();
         for(Shape shape : shapeList) {
             if (!shape.isFreePosition()) {
@@ -253,8 +255,12 @@ public class NotePage {
         }
 
         for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            hitTestAndRemoveShape(entry, touchPointList, radius);
+            if (hitTestAndRemoveShape(entry, touchPointList, radius)) {
+                shapes.add(entry.getValue());
+            }
         }
+
+        return shapes;
     }
 
     @Nullable

@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
+import com.onyx.android.sdk.utils.Debug;
 
 /**
  * Created by zhuzeng on 4/21/16.
@@ -33,6 +34,7 @@ public class BrushScribbleShape extends EPDShape  {
     // render path with width list and generate path list.
     public void render(final RenderContext renderContext) {
         if (renderContext.clipRect != null && !RectF.intersects(renderContext.clipRect, getBoundingRect())) {
+            Debug.e(getClass(), "not in clip region, skipped");
             return;
         }
 

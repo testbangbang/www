@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.SurfaceView;
 
@@ -13,7 +14,9 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,8 +42,11 @@ public class ShapeRemoveByPointListRequest extends BaseNoteRequest {
         if (stash != null) {
             helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(stash);
         }
-        helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, 1.0f);
-        renderCurrentPage(helper);
+
+        ArrayList<Shape> shapes = helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, 1.0f);
+        RectF dirtyRect = ShapeUtils.getBoundingRect(shapes);
+        renderCurrentPage(helper, dirtyRect);
+
         updateShapeDataInfo(helper);
         Log.e("############", "erase takes: " + benchmarkEnd());
         renderToScreen(helper);
