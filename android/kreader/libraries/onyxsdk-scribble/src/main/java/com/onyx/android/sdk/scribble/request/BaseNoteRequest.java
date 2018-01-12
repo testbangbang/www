@@ -377,8 +377,11 @@ public class BaseNoteRequest extends BaseRequest {
         canvas.drawPath(path, paint);
     }
 
-    public void currentPageAsVisiblePage(final NoteViewHelper helper) {
+    private void currentPageAsVisiblePage(final NoteViewHelper helper) {
         final NotePage notePage = helper.getNoteDocument().getCurrentPage(getContext());
+        if (notePage == null) {
+            return;
+        }
         getVisiblePages().clear();
         PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
         pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height()));
