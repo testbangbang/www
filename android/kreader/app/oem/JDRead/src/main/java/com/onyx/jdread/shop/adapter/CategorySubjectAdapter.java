@@ -12,7 +12,6 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.AllCategoryNormalItemBinding;
 import com.onyx.jdread.databinding.CategorySubjectModelItemBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
-import com.onyx.jdread.shop.event.CategoryAdapterRawDataChangeEvent;
 import com.onyx.jdread.shop.event.CategoryItemClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -99,9 +98,6 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
         super.setRawData(rawData, context);
         setItemVMList(rawData);
         notifyDataSetChanged();
-        if (eventBus != null) {
-            eventBus.post(new CategoryAdapterRawDataChangeEvent(getItemVMList()));
-        }
     }
 
     @Override

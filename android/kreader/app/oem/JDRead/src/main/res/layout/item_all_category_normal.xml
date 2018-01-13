@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:bind="http://schemas.android.com/apk/res-auto">
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data class="AllCategoryNormalItemBinding">
 
@@ -13,18 +13,19 @@
     <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         android:padding="@dimen/banner_subject_model_item_padding">
 
         <TextView
-            android:gravity="center"
-            android:ellipsize="middle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/text_no_stoke_background"
+            android:ellipsize="middle"
+            android:gravity="center"
+            android:maxLines="2"
             android:text="@{categoryBean.name}"
-            android:textSize="@dimen/level_three_heading_font"/>
+            android:textSize="@dimen/level_three_heading_font" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 

@@ -82,10 +82,9 @@ public interface ReadContentService {
                                              @Query(AppBaseInfo.BODY_KEY) String body,
                                              @QueryMap Map<String, String> map);
 
-    @POST("client.action")
-    Call<CategoryLevel2BooksResultBean> getCategoryLevel2BookList(@QueryMap Map<String, String> map,
-                                                                  @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                                  @Query(AppBaseInfo.BODY_KEY) String body);
+    @GET("search")
+    Call<CategoryLevel2BooksResultBean> getCategoryLevel2BookList(@QueryMap Map<String, String> baseInfoMap,
+                                                                  @QueryMap Map<String, String> queryMap);
 
     @GET("category")
     Call<CategoryListResultBean> getCategoryList(@QueryMap Map<String, String> baseInfoMap);

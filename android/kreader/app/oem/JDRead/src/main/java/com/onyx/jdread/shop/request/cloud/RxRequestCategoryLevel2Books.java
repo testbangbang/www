@@ -1,12 +1,14 @@
 package com.onyx.jdread.shop.request.cloud;
 
-import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
+import com.onyx.jdread.shop.cloud.entity.CategoryLevel2BooksRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryLevel2BooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.ReadContentService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 
@@ -15,21 +17,15 @@ import retrofit2.Call;
  */
 
 public class RxRequestCategoryLevel2Books extends RxBaseCloudRequest {
-    private BaseRequestBean baseRequestBean;
-    private int sortType;
-    private int currentPage;
-    private int catId;
+    private CategoryLevel2BooksRequestBean requestBean;
     private CategoryLevel2BooksResultBean categoryLevel2BooksResultBean;
 
     public CategoryLevel2BooksResultBean getCategoryLevel2BooksResultBean() {
         return categoryLevel2BooksResultBean;
     }
 
-    public void setBaseRequestBean(BaseRequestBean baseRequestBean, int currentPage, int catId, int sortType) {
-        this.baseRequestBean = baseRequestBean;
-        this.currentPage = currentPage;
-        this.catId = catId;
-        this.sortType = sortType;
+    public void setRequestBean(CategoryLevel2BooksRequestBean requestBean) {
+        this.requestBean = requestBean;
     }
 
     @Override
@@ -47,16 +43,14 @@ public class RxRequestCategoryLevel2Books extends RxBaseCloudRequest {
     }
 
     private void setBaseRequestBeanParams() {
-        if (baseRequestBean != null) {
-            JSONObject body = new JSONObject();
-            body.put(CloudApiContext.CategoryLevel2BookList.SORT_TYPE, sortType);
-            body.put(CloudApiContext.CategoryLevel2BookList.PAGE_SIZE, CloudApiContext.CategoryLevel2BookList.PAGE_SIZE_DEFAULT_VALUES);
-            body.put(CloudApiContext.CategoryLevel2BookList.CAT_ID, catId);
-            body.put(CloudApiContext.CategoryLevel2BookList.CURRENT_PAGE, currentPage);
-            body.put(CloudApiContext.CategoryLevel2BookList.SORT_KEY, CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES);
-            body.put(CloudApiContext.CategoryLevel2BookList.CLIENT_PLATFORM, CloudApiContext.CategoryLevel2BookList.CLIENT_PLATFORM_DEFAULT_VALUES);
-            body.put(CloudApiContext.CategoryLevel2BookList.ROOT_ID, CloudApiContext.CategoryLevel2BookList.ROOT_ID_DEFAULT_VALUES);
-            baseRequestBean.setBody(body.toJSONString());
+        if (requestBean != null) {
+            Map<String, String> queryArgs = new HashMap<>();
+            queryArgs.put(CloudApiContext.SearchBook.SEARCH_TYPE, requestBean.search_type);
+            queryArgs.put(CloudApiContext.SearchBook.CATE_ID, requestBean.cid);
+            queryArgs.put(CloudApiContext.SearchBook.SORT, requestBean.sort);
+            queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, requestBean.page);
+            queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, requestBean.page_size);
+            requestBean.setQueryArgsMap(queryArgs);
         }
     }
 
@@ -71,8 +65,6 @@ public class RxRequestCategoryLevel2Books extends RxBaseCloudRequest {
     }
 
     private Call<CategoryLevel2BooksResultBean> getCall(ReadContentService getCommonService) {
-        return getCommonService.getCategoryLevel2BookList(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
-                CloudApiContext.CategoryLevel2BookList.CATEGORY_LEVEL2_BOOK_LIST,
-                baseRequestBean.getBody());
+        return getCommonService.getCategoryLevel2BookList(requestBean.getAppBaseInfo().getRequestParamsMap(),requestBean.getQueryArgsMap());
     }
 }

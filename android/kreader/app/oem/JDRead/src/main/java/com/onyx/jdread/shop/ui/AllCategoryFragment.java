@@ -21,7 +21,6 @@ import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
-import com.onyx.jdread.shop.event.CategoryAdapterRawDataChangeEvent;
 import com.onyx.jdread.shop.event.CategoryItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryTitleOneClick;
 import com.onyx.jdread.shop.event.CategoryTitleThreeClick;
@@ -240,11 +239,6 @@ public class AllCategoryFragment extends BaseFragment {
             PreferenceManager.setStringValue(getContextJD(), Constants.SP_KEY_CATEGORY_NAME, categoryBean.name);
             getViewEventCallBack().gotoView(SubjectListFragment.class.getName());
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCategoryAdapterRawDataChangeEvent(CategoryAdapterRawDataChangeEvent event) {
-        updateContentView(getAllCategoryViewModel().getAllCategoryItems());
     }
 
     public void changeCategoryButtonState() {
