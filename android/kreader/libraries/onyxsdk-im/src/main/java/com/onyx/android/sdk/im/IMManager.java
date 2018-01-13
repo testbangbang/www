@@ -13,7 +13,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import io.socket.emitter.Emitter;
@@ -33,7 +33,7 @@ public class IMManager {
 
     private boolean pushEnable = false;
     private boolean socketEnable = false;
-    private Set<String> messageIdSets = new HashSet<>();
+    private Set<String> messageIdSets = new LinkedHashSet<>();
     private IMConfig config;
     private EventBus eventBus = new EventBus();
 
@@ -52,37 +52,37 @@ public class IMManager {
         return this;
     }
 
-    public void close(Context context) {
-        stopPushService(context);
-        stopSocketService(context);
+    public void close(Context appContext) {
+        stopPushService(appContext);
+        stopSocketService(appContext);
         messageIdSets.clear();
     }
 
-    public IMManager startPushService(Context activityContext) {
+    public IMManager startPushService(Context appContext) {
         this.pushEnable = true;
-        startPushServiceImpl(activityContext);
+        startPushServiceImpl(appContext);
         return this;
     }
 
-    public IMManager stopPushService(Context activityContext) {
+    public IMManager stopPushService(Context appContext) {
         this.pushEnable = false;
-        stopPushServiceImpl(activityContext);
+        stopPushServiceImpl(appContext);
         return this;
     }
 
-    public IMManager startSocketService(Context context) {
+    public IMManager startSocketService(Context appContext) {
         this.socketEnable = true;
-        startSocketIOClient(context);
+        startSocketIOClient(appContext);
         return this;
     }
 
-    public IMManager stopSocketService(Context context) {
+    public IMManager stopSocketService(Context appContext) {
         this.socketEnable = false;
-        stopSocketIOClient(context);
+        stopSocketIOClient(appContext);
         return this;
     }
 
-    private void startSocketIOClient(Context context) {
+    private void startSocketIOClient(Context appContext) {
         if (config == null || StringUtils.isNullOrEmpty(config.getServerUri())) {
             return;
         }
@@ -113,7 +113,7 @@ public class IMManager {
         return socketIOClient;
     }
 
-    private void stopSocketIOClient(Context context) {
+    private void stopSocketIOClient(Context appContext) {
         if (socketIOClient == null) {
             return;
         }
@@ -137,11 +137,11 @@ public class IMManager {
         basePushService.start(appContext);
     }
 
-    private void stopPushServiceImpl(Context activityContext) {
+    private void stopPushServiceImpl(Context appContext) {
         if (basePushService == null) {
             return;
         }
-        basePushService.stop(activityContext);
+        basePushService.stop(appContext);
         basePushService = null;
     }
 
