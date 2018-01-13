@@ -305,12 +305,17 @@ public class BaseNoteRequest extends BaseRequest {
             dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
         }
         Rect src = new Rect(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
-        if (dirtyRect != null) {
-            dest = RectUtils.toRect(dirtyRect);
-        }
         if (DeviceConfig.isColorDevice()) {
             canvas.drawBitmap(bitmap, 0, 0, paint);
         } else {
+            if (dirtyRect != null) {
+                float zx = dest.width() / (float)src.width();
+                float zy = dest.height() / (float)src.height();
+                float dx = dirtyRect.left / zx;
+                float dy = dirtyRect.top / zy;
+                src = RectUtils.toRect(new RectF(dx, dy, dx + dirtyRect.width() / zx, dy + dirtyRect.height() / zy));
+                dest = RectUtils.toRect(dirtyRect);
+            }
             canvas.drawBitmap(bitmap, src, dest, paint);
         }
         if (!bitmap.isRecycled()) {
