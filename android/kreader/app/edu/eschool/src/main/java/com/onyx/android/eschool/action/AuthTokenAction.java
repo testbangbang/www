@@ -10,7 +10,6 @@ import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
 import com.onyx.android.eschool.events.HardwareErrorEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
-import com.onyx.android.eschool.manager.LeanCloudManager;
 import com.onyx.android.eschool.net.AuthenticatorImpl;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -28,6 +27,7 @@ import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+import com.onyx.android.sdk.im.push.LeanCloudManager;
 import com.onyx.android.sdk.utils.NetworkUtil;
 
 import org.greenrobot.eventbus.EventBus;

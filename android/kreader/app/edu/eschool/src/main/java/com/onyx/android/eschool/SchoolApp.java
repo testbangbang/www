@@ -8,16 +8,17 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.onyx.android.eschool.action.ActionContext;
 import com.onyx.android.eschool.action.ContentImportAction;
 import com.onyx.android.eschool.action.MediaScanAction;
+import com.onyx.android.eschool.activity.HomeActivity;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
-import com.onyx.android.eschool.manager.LeanCloudManager;
+import com.onyx.android.eschool.manager.PushMessageHandler;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
@@ -27,13 +28,17 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.request.data.db.FilesAddToMetadataRequest;
 import com.onyx.android.sdk.data.request.data.db.FilesDiffFromMetadataRequest;
-import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.request.data.db.FilesRemoveFromMetadataRequest;
+import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.request.data.fs.FileSystemScanRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.EnvironmentUtil;
+import com.onyx.android.sdk.im.IMConfig;
+import com.onyx.android.sdk.im.IMManager;
+import com.onyx.android.sdk.im.event.MessageEvent;
+import com.onyx.android.sdk.im.push.LeanCloudManager;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -44,6 +49,8 @@ import com.raizlabs.android.dbflow.sql.language.Operator;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -67,6 +74,8 @@ public class SchoolApp extends MultiDexApplication {
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private HashSet<String> mediaFilesSet = new LinkedHashSet<>();
 
+    private PushMessageHandler messageHandler;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -84,6 +93,7 @@ public class SchoolApp extends MultiDexApplication {
     public void onTerminate() {
         terminateCloudStore();
         deviceReceiver.enable(this, false);
+        IMManager.getInstance().getEventBus().unregister(this);
         super.onTerminate();
     }
 
@@ -96,6 +106,7 @@ public class SchoolApp extends MultiDexApplication {
             initEventListener();
             initFrescoLoader();
             initLeanCloud();
+            initPushManager();
             initSystemInBackground();
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
@@ -300,8 +311,20 @@ public class SchoolApp extends MultiDexApplication {
     }
 
     private void initLeanCloud() {
-        LeanCloudManager.initialize(this, DeviceConfig.sharedInstance(this).getLeanCloudApplicationId(),
-                DeviceConfig.sharedInstance(this).getLeanCloudClientKey());
+        String leanCloudAppId = DeviceConfig.sharedInstance(this).getLeanCloudApplicationId();
+        String leanCloudClientKey = DeviceConfig.sharedInstance(this).getLeanCloudClientKey();
+        initIMManager(leanCloudAppId, leanCloudClientKey);
+    }
+
+    private void initIMManager(String appId, String clientKey) {
+        final IMConfig imInitArgs = new IMConfig(appId, clientKey);
+        imInitArgs.setPushCallbackActivity(HomeActivity.class);
+        IMManager.getInstance().init(imInitArgs).startPushService(getApplicationContext());
+        IMManager.getInstance().getEventBus().register(this);
+    }
+
+    private void initPushManager() {
+        getPushMessageHandler();
     }
 
     public void initCloudStore() {
@@ -339,7 +362,6 @@ public class SchoolApp extends MultiDexApplication {
         return cloudConf;
     }
 
-
     static public DataManager getDataManager() {
         return getLibraryDataHolder().getDataManager();
     }
@@ -354,5 +376,18 @@ public class SchoolApp extends MultiDexApplication {
 
     public String getSdcardCid() {
         return EnvironmentUtil.getRemovableSDCardCid();
+    }
+
+    public PushMessageHandler getPushMessageHandler() {
+        if (messageHandler == null) {
+            messageHandler = new PushMessageHandler(ActionContext.create(getApplicationContext(),
+                    getSchoolCloudStore().getCloudManager(), getDataManager()));
+        }
+        return messageHandler;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPushMessageEvent(MessageEvent messageEvent) {
+        getPushMessageHandler().processMessage(messageEvent.message);
     }
 }

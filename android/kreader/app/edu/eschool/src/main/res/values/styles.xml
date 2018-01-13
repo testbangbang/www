@@ -1,11 +1,7 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="@style/OnyxAppCompat">
     </style>
 
     <style name="ToolBarStyle.Transparent.TextLarge" parent="@style/OnyxToolBarStyle">
@@ -28,5 +24,20 @@
         <item name="tabSelectedTextColor">@android:color/black</item>
     </style>
 
+    <style name="TextAppearance.AppCompat.Subhead" parent="Base.TextAppearance.AppCompat.Subhead" tools:override="true">
+        <item name="android:textSize">23sp</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="@style/OnyxAppCompat.AlertDialog">
+        <item name="android:windowTitleStyle">@style/WindowTitleStyle</item>
+    </style>
+
+    <style name="WindowTitleStyle" parent="@style/Base.DialogWindowTitle.AppCompat">
+        <item name="android:textAppearance">@style/WindowTitleAppearanceStyle</item>
+    </style>
+
+    <style name="WindowTitleAppearanceStyle" parent="@style/TextAppearance.AppCompat.Title">
+        <item name="android:textSize">24sp</item>
+    </style>
 
 </resources>
