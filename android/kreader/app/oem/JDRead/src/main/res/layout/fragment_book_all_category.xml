@@ -109,6 +109,7 @@
             android:layout_marginTop="@dimen/recycler_view_all_categorys_margin_top" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:layout_marginTop="@dimen/all_category_recycle_view_overlap_height"
             android:id="@+id/recycler_view_all_categorys"
             categoryItems="@{categoryViewModel.allCategoryItems}"
             android:layout_width="match_parent"
@@ -117,6 +118,8 @@
             android:layout_weight="1" />
 
         <TextView
+            android:layout_marginTop="@dimen/recycle_view_indicator_margin_top"
+            android:layout_marginBottom="@dimen/all_category_recycle_view_overlap_height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
