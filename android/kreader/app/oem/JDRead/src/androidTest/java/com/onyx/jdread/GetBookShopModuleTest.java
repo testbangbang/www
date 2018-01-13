@@ -11,7 +11,7 @@ import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.BookModelRequestBean;
 import com.onyx.jdread.shop.cloud.entity.ShopMainConfigRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookShopMainConfigResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
@@ -111,7 +111,7 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
         rq.execute(new RxCallback<RxRequestShopMainConfig>() {
             @Override
             public void onNext(RxRequestShopMainConfig request) {
-                BookShopMainConfigResultBean resultBean = request.getResultBean();
+                BookModelConfigResultBean resultBean = request.getResultBean();
                 assertNotNull(resultBean.data.modules);
                 assertNotNull(resultBean.data.adv);
                 Log.d(TAG, "adv: " + resultBean.data.adv);

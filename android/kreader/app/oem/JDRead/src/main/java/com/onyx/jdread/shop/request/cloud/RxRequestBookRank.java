@@ -2,7 +2,7 @@ package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
-import com.onyx.jdread.shop.cloud.entity.ShopMainConfigRequestBean;
+import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
@@ -13,16 +13,16 @@ import retrofit2.Call;
  * Created by jackdeng on 2017/12/8.
  */
 
-public class RxRequestShopMainConfig extends RxBaseCloudRequest {
+public class RxRequestBookRank extends RxBaseCloudRequest {
 
-    private ShopMainConfigRequestBean requestBean;
+    private BaseRequestInfo requestBean;
     private BookModelConfigResultBean resultBean;
 
     public BookModelConfigResultBean getResultBean() {
         return resultBean;
     }
 
-    public void setRequestBean(ShopMainConfigRequestBean requestBean) {
+    public void setRequestBean(BaseRequestInfo requestBean) {
         this.requestBean = requestBean;
     }
 
@@ -44,7 +44,6 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
     }
 
     private Call<BookModelConfigResultBean> getCall(ReadContentService getCommonService) {
-        return getCommonService.getShopMainConfig(requestBean.getCid(),
-                requestBean.getAppBaseInfo().getRequestParamsMap());
+        return getCommonService.getBookRank(requestBean.getAppBaseInfo().getRequestParamsMap());
     }
 }

@@ -5,9 +5,11 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.ShopMainConfigRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookShopMainConfigResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
+import com.onyx.jdread.shop.model.BannerViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestShopMainConfig;
 
 /**
@@ -16,9 +18,9 @@ import com.onyx.jdread.shop.request.cloud.RxRequestShopMainConfig;
 
 public class ShopMainConfigAction extends BaseAction {
 
-    private BookShopMainConfigResultBean resultBean;
+    private BookModelConfigResultBean resultBean;
 
-    public BookShopMainConfigResultBean getResultBean() {
+    public BookModelConfigResultBean getResultBean() {
         return resultBean;
     }
 
@@ -48,6 +50,7 @@ public class ShopMainConfigAction extends BaseAction {
             @Override
             public void onNext(RxRequestShopMainConfig request) {
                 resultBean = request.getResultBean();
+                setResult(dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onNext(ShopMainConfigAction.this);
                 }
@@ -69,5 +72,27 @@ public class ShopMainConfigAction extends BaseAction {
                 }
             }
         });
+    }
+
+    private void setResult(ShopDataBundle dataBundle) {
+        BookModelConfigResultBean resultBean = getResultBean();
+        if (resultBean != null) {
+            BannerViewModel banerViewModel = new BannerViewModel();
+            banerViewModel.setEventBus(dataBundle.getEventBus());
+            banerViewModel.setDataBean(resultBean.data);
+            dataBundle.getShopViewModel().setBannerSubjectIems(banerViewModel);
+            SubjectViewModel subjectViewModelOne = new SubjectViewModel();
+            subjectViewModelOne.setEventBus(dataBundle.getEventBus());
+            subjectViewModelOne.setDataBean(resultBean.data, Constants.SHOP_MAIN_INDEX_THREE);
+            SubjectViewModel subjectViewModelTwo = new SubjectViewModel();
+            subjectViewModelTwo.setEventBus(dataBundle.getEventBus());
+            subjectViewModelTwo.setDataBean(resultBean.data, Constants.SHOP_MAIN_INDEX_FOUR);
+            SubjectViewModel subjectViewModelFour = new SubjectViewModel();
+            subjectViewModelFour.setEventBus(dataBundle.getEventBus());
+            subjectViewModelFour.setDataBean(resultBean.data, Constants.SHOP_MAIN_INDEX_FIVE);
+            dataBundle.getShopViewModel().setCoverSubjectOneItems(subjectViewModelOne);
+            dataBundle.getShopViewModel().setCoverSubjectTwoItems(subjectViewModelTwo);
+            dataBundle.getShopViewModel().setCoverSubjectFourItems(subjectViewModelFour);
+        }
     }
 }

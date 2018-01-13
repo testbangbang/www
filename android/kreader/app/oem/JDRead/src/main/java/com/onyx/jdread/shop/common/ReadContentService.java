@@ -15,9 +15,8 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDownloadUrlResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModuleListResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookShopMainConfigResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryLevel2BooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
@@ -71,11 +70,6 @@ public interface ReadContentService {
     Call<BookModuleListResultBean> getBookShopModuleList(@QueryMap Map<String, String> map,
                                                          @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
                                                          @Query(AppBaseInfo.BODY_KEY) String body);
-
-    @POST("client.action")
-    Call<BookModelResultBean> getBookShopModule(@QueryMap Map<String, String> map,
-                                                @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                @Query(AppBaseInfo.BODY_KEY) String body);
 
     @POST("client.action")
     Call<BoughtBookResultBean> getBoughtBook(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
@@ -138,6 +132,9 @@ public interface ReadContentService {
                                                      @QueryMap Map<String, String> baseInfoMap,
                                                      @QueryMap Map<String, String> queryMap);
     @GET("channel/{cid}")
-    Call<BookShopMainConfigResultBean> getShopMainConfig(@Path("cid")int cid,
-                                                         @QueryMap Map<String, String> baseInfoMap);
+    Call<BookModelConfigResultBean> getShopMainConfig(@Path("cid")int cid,
+                                                      @QueryMap Map<String, String> baseInfoMap);
+
+    @GET("rank/modules")
+    Call<BookModelConfigResultBean> getBookRank(@QueryMap Map<String, String> baseInfoMap);
 }

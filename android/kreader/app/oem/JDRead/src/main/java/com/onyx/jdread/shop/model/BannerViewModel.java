@@ -3,7 +3,7 @@ package com.onyx.jdread.shop.model;
 import android.databinding.BaseObservable;
 
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookShopMainConfigResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -16,27 +16,27 @@ import java.util.List;
 
 public class BannerViewModel extends BaseObservable {
 
-    private BookShopMainConfigResultBean.DataBean dataBean;
-    private List<BookShopMainConfigResultBean.DataBean.AdvBean> bannerList;
+    private BookModelConfigResultBean.DataBean dataBean;
+    private List<BookModelConfigResultBean.DataBean.AdvBean> bannerList;
     private EventBus eventBus;
 
-    public BookShopMainConfigResultBean.DataBean getDataBean() {
+    public BookModelConfigResultBean.DataBean getDataBean() {
         return dataBean;
     }
 
-    public void setDataBean(BookShopMainConfigResultBean.DataBean dataBean) {
+    public void setDataBean(BookModelConfigResultBean.DataBean dataBean) {
         this.dataBean = dataBean;
         parseAdvBeanList(dataBean);
     }
 
-    private void parseAdvBeanList(BookShopMainConfigResultBean.DataBean dataBean) {
+    private void parseAdvBeanList(BookModelConfigResultBean.DataBean dataBean) {
         bannerList = new ArrayList<>();
         if (dataBean.modules != null && dataBean.ebook != null) {
-            List<BookShopMainConfigResultBean.DataBean.ModulesBean> bannerModules = dataBean.modules.subList(0, Constants.SHOP_MAIN_INDEX_TWO);
-            for (BookShopMainConfigResultBean.DataBean.ModulesBean modulesBean : bannerModules) {
-                List<BookShopMainConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
-                for (BookShopMainConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
-                    BookShopMainConfigResultBean.DataBean.AdvBean advBean = dataBean.adv.get(itemsBean.id);
+            List<BookModelConfigResultBean.DataBean.ModulesBean> bannerModules = dataBean.modules.subList(0, Constants.SHOP_MAIN_INDEX_TWO);
+            for (BookModelConfigResultBean.DataBean.ModulesBean modulesBean : bannerModules) {
+                List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
+                for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
+                    BookModelConfigResultBean.DataBean.AdvBean advBean = dataBean.adv.get(itemsBean.id);
                     bannerList.add(advBean);
                 }
             }
@@ -52,11 +52,11 @@ public class BannerViewModel extends BaseObservable {
         this.eventBus = eventBus;
     }
 
-    public List<BookShopMainConfigResultBean.DataBean.AdvBean> getBannerList() {
+    public List<BookModelConfigResultBean.DataBean.AdvBean> getBannerList() {
         return bannerList;
     }
 
-    private void setBannerList(List<BookShopMainConfigResultBean.DataBean.AdvBean> bannerList) {
+    private void setBannerList(List<BookModelConfigResultBean.DataBean.AdvBean> bannerList) {
         this.bannerList = bannerList;
         notifyChange();
     }

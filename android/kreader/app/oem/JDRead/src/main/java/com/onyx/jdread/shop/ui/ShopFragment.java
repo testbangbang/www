@@ -25,7 +25,6 @@ import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookShopMainConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryViewClick;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
@@ -33,10 +32,8 @@ import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
 import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
-import com.onyx.jdread.shop.model.BannerViewModel;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -226,27 +223,7 @@ public class ShopFragment extends BaseFragment {
         configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
-                BookShopMainConfigResultBean resultBean = configAction.getResultBean();
-                BannerViewModel banerViewModel = new BannerViewModel();
-                banerViewModel.setEventBus(getEventBus());
-                banerViewModel.setDataBean(resultBean.data);
-                getBookShopViewModel().setBannerSubjectIems(banerViewModel);
 
-                SubjectViewModel subjectViewModelOne = new SubjectViewModel();
-                subjectViewModelOne.setEventBus(getEventBus());
-                subjectViewModelOne.setIndex(Constants.SHOP_MAIN_INDEX_THREE);
-                subjectViewModelOne.setDataBean(resultBean.data);
-                SubjectViewModel subjectViewModelTwo = new SubjectViewModel();
-                subjectViewModelTwo.setEventBus(getEventBus());
-                subjectViewModelTwo.setIndex(Constants.SHOP_MAIN_INDEX_FOUR);
-                subjectViewModelTwo.setDataBean(resultBean.data);
-                SubjectViewModel subjectViewModelFour = new SubjectViewModel();
-                subjectViewModelFour.setEventBus(getEventBus());
-                subjectViewModelFour.setIndex(Constants.SHOP_MAIN_INDEX_FIVE);
-                subjectViewModelFour.setDataBean(resultBean.data);
-                getBookShopViewModel().setCoverSubjectOneItems(subjectViewModelOne);
-                getBookShopViewModel().setCoverSubjectTwoItems(subjectViewModelTwo);
-                getBookShopViewModel().setCoverSubjectFourItems(subjectViewModelFour);
             }
 
             @Override

@@ -70,4 +70,5 @@ public class Constants {
     public static final int SHOP_MAIN_INDEX_TWELVE = 12;
     public static final int CATEGORY_LEVEL_ONE = 1;
     public static final int CATEGORY_LEVEL_TWO = 2;
+    public static final int RANK_LIST_SIZE = 6;
 }

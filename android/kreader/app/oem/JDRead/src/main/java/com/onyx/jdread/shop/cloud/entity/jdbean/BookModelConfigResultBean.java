@@ -9,7 +9,7 @@ import java.util.List;
  * Created by jackdeng on 2018/1/10.
  */
 
-public class BookShopMainConfigResultBean {
+public class BookModelConfigResultBean {
 
     public DataBean data;
     public int result_code;

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.PreferenceManager;
@@ -17,6 +18,7 @@ import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.shop.action.BookRankAction;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
@@ -58,6 +60,18 @@ public class BookRankFragment extends BaseFragment {
     }
 
     private void initData() {
+        BookRankAction rankAction = new BookRankAction();
+        rankAction.execute(getShopDataBundle(), new RxCallback<BookRankAction>() {
+            @Override
+            public void onNext(BookRankAction rankAction) {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+        });
     }
 
     private void initView() {
@@ -134,6 +148,7 @@ public class BookRankFragment extends BaseFragment {
     public void onViewAllClickEvent(ViewAllClickEvent event) {
         PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
         PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, event.modelId);
+        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, event.modelType);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
         }

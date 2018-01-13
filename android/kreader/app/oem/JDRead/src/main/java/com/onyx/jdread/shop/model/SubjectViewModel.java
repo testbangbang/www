@@ -2,7 +2,7 @@ package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
 
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookShopMainConfigResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
 
@@ -18,23 +18,23 @@ import java.util.List;
 public class SubjectViewModel extends BaseObservable {
 
     private EventBus eventBus;
-    private BookShopMainConfigResultBean.DataBean dataBean;
-    private BookShopMainConfigResultBean.DataBean.ModulesBean modelBean;
-    private BookShopMainConfigResultBean.DataBean.ModulesBean modelBeanNext;
+    private BookModelConfigResultBean.DataBean dataBean;
+    private BookModelConfigResultBean.DataBean.ModulesBean modelBean;
+    private BookModelConfigResultBean.DataBean.ModulesBean modelBeanNext;
     private boolean showNextTitle;
     private int index;
 
-    public BookShopMainConfigResultBean.DataBean getDataBean() {
+    public BookModelConfigResultBean.DataBean getDataBean() {
         return dataBean;
     }
 
-    public void setDataBean(BookShopMainConfigResultBean.DataBean dataBean) {
+    public void setDataBean(BookModelConfigResultBean.DataBean dataBean, int index) {
         this.dataBean = dataBean;
         if (dataBean.ebook != null && dataBean.modules != null) {
             ArrayList<ResultBookBean> bookList = new ArrayList<>();
-            BookShopMainConfigResultBean.DataBean.ModulesBean modulesBean = dataBean.modules.get(getIndex());
-            List<BookShopMainConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
-            for (BookShopMainConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
+            BookModelConfigResultBean.DataBean.ModulesBean modulesBean = dataBean.modules.get(index);
+            List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
+            for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
                 ResultBookBean bookBean = dataBean.ebook.get(itemsBean.id);
                 bookList.add(bookBean);
             }
@@ -51,14 +51,6 @@ public class SubjectViewModel extends BaseObservable {
         this.eventBus = eventBus;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
     public boolean isShowNextTitle() {
         return showNextTitle;
     }
@@ -68,20 +60,20 @@ public class SubjectViewModel extends BaseObservable {
         notifyChange();
     }
 
-    public BookShopMainConfigResultBean.DataBean.ModulesBean getModelBeanNext() {
+    public BookModelConfigResultBean.DataBean.ModulesBean getModelBeanNext() {
         return modelBeanNext;
     }
 
-    private void setModelBeanNext(BookShopMainConfigResultBean.DataBean.ModulesBean modelBeanNext) {
+    private void setModelBeanNext(BookModelConfigResultBean.DataBean.ModulesBean modelBeanNext) {
         this.modelBeanNext = modelBeanNext;
         notifyChange();
     }
 
-    public BookShopMainConfigResultBean.DataBean.ModulesBean getModelBean() {
+    public BookModelConfigResultBean.DataBean.ModulesBean getModelBean() {
         return modelBean;
     }
 
-    private void setModelBean(BookShopMainConfigResultBean.DataBean.ModulesBean modelBean) {
+    private void setModelBean(BookModelConfigResultBean.DataBean.ModulesBean modelBean) {
         this.modelBean = modelBean;
         notifyChange();
     }
