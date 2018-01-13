@@ -965,7 +965,11 @@ public class PinyinIME extends InputMethodService {
 
     public void responseSoftKeyEvent(SoftKey sKey) {
         if (null == sKey) return;
-
+        if (sKey.isDismissKey()) {
+            resetToIdleState(false);
+            requestHideSelf(0);
+            return;
+        }
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
 
