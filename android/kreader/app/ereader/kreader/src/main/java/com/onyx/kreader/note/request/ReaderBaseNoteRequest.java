@@ -365,6 +365,11 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         Rect src = new Rect(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
         Rect dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
         if (clipRect != null) {
+            float zx = dest.width() / (float)src.width();
+            float zy = dest.height() / (float)src.height();
+            float dx = clipRect.left / zx;
+            float dy = clipRect.top / zy;
+            src = RectUtils.toRect(new RectF(dx, dy, dx + clipRect.width() / zx, dy + clipRect.height() / zy));
             dest = RectUtils.toRect(clipRect);
         }
         canvas.drawBitmap(bitmap, src, dest, paint);
