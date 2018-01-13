@@ -30,7 +30,7 @@ public class BookRankAction extends BaseAction<ShopDataBundle> {
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         BaseRequestInfo requestBean = new BaseRequestInfo();
         JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        jdAppBaseInfo.setTime(String.valueOf(System.currentTimeMillis()));
+        jdAppBaseInfo.setTime();
         requestBean.setAppBaseInfo(jdAppBaseInfo);
         RxRequestBookRank request = new RxRequestBookRank();
         request.setRequestBean(requestBean);

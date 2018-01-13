@@ -153,9 +153,9 @@ public class JDAppBaseInfo {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime() {
+        this.time = String.valueOf(System.currentTimeMillis());
         requestParamsMap.put(TIME_KEY,time);
-        this.time = time;
     }
 
     public String getTid() {

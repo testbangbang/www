@@ -91,11 +91,11 @@ public class BookDetailViewModel extends BaseObservable {
     }
 
     public void onNowReadClick() {
-        getEventBus().post(new BookDetailReadNowEvent(bookDetailResultBean.detail));
+        getEventBus().post(new BookDetailReadNowEvent(bookDetailResultBean.data));
     }
 
     public void onDownBookClick() {
-        getEventBus().post(new DownloadWholeBookEvent(bookDetailResultBean.detail));
+        getEventBus().post(new DownloadWholeBookEvent(bookDetailResultBean.data));
     }
 
     public void onShoppingCartClick() {

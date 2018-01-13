@@ -143,8 +143,6 @@
     <string name="book_detail_downloading">正在下载</string>
     <string name="book_detail_try_read">试读本书</string>
     <string name="book_detail_download_add_shelf">试读文件已开始下载并加入书架</string>
-    <string name="book_detail_go_shelf">去书架</string>
-    <string name="book_detail_stay">再逛逛</string>
     <string name="book_detail_dialog_fluent">立即畅读(本书支持畅读)</string>
     <string name="book_detail_dialog_buy">直接购买</string>
     <string name="book_detail_dialog_add_cart">加入购物车，稍后购买</string>

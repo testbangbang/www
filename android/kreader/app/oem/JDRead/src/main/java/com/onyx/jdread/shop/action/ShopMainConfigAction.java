@@ -28,7 +28,7 @@ public class ShopMainConfigAction extends BaseAction {
     public void execute(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         ShopMainConfigRequestBean requestBean = new ShopMainConfigRequestBean();
         JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        jdAppBaseInfo.setTime(String.valueOf(System.currentTimeMillis()));
+        jdAppBaseInfo.setTime();
         requestBean.setAppBaseInfo(jdAppBaseInfo);
         requestBean.setCid(Constants.BOOK_SHOP_DEFAULT_CID);
         RxRequestShopMainConfig request = new RxRequestShopMainConfig();

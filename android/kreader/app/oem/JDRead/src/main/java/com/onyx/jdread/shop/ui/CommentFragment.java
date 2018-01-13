@@ -112,6 +112,7 @@ public class CommentFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        initLibrary();
     }
 
     @Override
@@ -171,6 +172,12 @@ public class CommentFragment extends BaseFragment {
 
     @Subscribe
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
         hideLoadingDialog();
     }
 }

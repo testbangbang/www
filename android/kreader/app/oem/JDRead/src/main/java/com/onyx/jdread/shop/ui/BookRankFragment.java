@@ -107,6 +107,7 @@ public class BookRankFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        initLibrary();
     }
 
     @Override
@@ -160,5 +161,11 @@ public class BookRankFragment extends BaseFragment {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        hideLoadingDialog();
     }
 }

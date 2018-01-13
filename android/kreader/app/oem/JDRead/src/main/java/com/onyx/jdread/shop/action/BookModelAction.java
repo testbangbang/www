@@ -39,7 +39,7 @@ public class BookModelAction extends BaseAction<ShopDataBundle> {
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         BookModelRequestBean requestBean = new BookModelRequestBean();
         JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        jdAppBaseInfo.setTime(String.valueOf(System.currentTimeMillis()));
+        jdAppBaseInfo.setTime();
         requestBean.setAppBaseInfo(jdAppBaseInfo);
         requestBean.setfType(modelType);
         requestBean.setModuleId(modelId);

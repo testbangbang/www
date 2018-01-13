@@ -105,6 +105,7 @@ public class ShopFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        initLibrary();
     }
 
     @Override
@@ -269,7 +270,7 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
+        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
@@ -299,4 +300,9 @@ public class ShopFragment extends BaseFragment {
         return ShopDataBundle.getInstance();
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        hideLoadingDialog();
+    }
 }

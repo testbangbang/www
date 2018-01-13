@@ -38,7 +38,7 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
         shopViewModel = shopDataBundle.getShopViewModel();
         CategoryLevel2BooksRequestBean requestBean = new CategoryLevel2BooksRequestBean();
         JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        jdAppBaseInfo.setTime(String.valueOf(System.currentTimeMillis()));
+        jdAppBaseInfo.setTime();
         requestBean.setAppBaseInfo(jdAppBaseInfo);
         requestBean.search_type = SEARCH_TYPE_BOOK_SHOP;
         requestBean.cid = String.valueOf(catId);

@@ -33,7 +33,7 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestInfo baseRequestBean = new BaseRequestInfo();
         JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        jdAppBaseInfo.setTime(String.valueOf(System.currentTimeMillis()));
+        jdAppBaseInfo.setTime();
         baseRequestBean.setAppBaseInfo(jdAppBaseInfo);
         final RxRequestCategoryList request = new RxRequestCategoryList();
         request.setBaseRequestBean(baseRequestBean);

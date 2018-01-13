@@ -147,8 +147,6 @@
     <string name="book_detail_downloading">Downloading</string>
     <string name="book_detail_try_read">Try read the book</string>
     <string name="book_detail_download_add_shelf">Trying to read file has started to download and add a bookcase</string>
-    <string name="book_detail_go_shelf">Go book shelf</string>
-    <string name="book_detail_stay">Stay</string>
     <string name="book_detail_dialog_fluent">Smooth Reading immediately(the book supported)</string>
     <string name="book_detail_dialog_buy">Direct purchase</string>
     <string name="book_detail_dialog_add_cart">Add to cart, buy later</string>

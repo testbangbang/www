@@ -149,6 +149,7 @@ public class ViewAllBooksFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        initLibrary();
     }
 
     @Override
@@ -179,6 +180,12 @@ public class ViewAllBooksFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
         hideLoadingDialog();
     }
 }

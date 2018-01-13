@@ -58,10 +58,6 @@ public interface ReadContentService {
                                                      @QueryMap Map<String, String> map);
 
     @POST("client.action")
-    Call<BookDetailResultBean> getBookDetail(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                             @Query(AppBaseInfo.BODY_KEY) String body);
-
-    @POST("client.action")
     Call<BookDownloadUrlResultBean> getBookDownloadUrl(@QueryMap Map<String, String> map,
                                                        @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
                                                        @Query(AppBaseInfo.BODY_KEY) String body);
@@ -137,4 +133,8 @@ public interface ReadContentService {
 
     @GET("rank/modules")
     Call<BookModelConfigResultBean> getBookRank(@QueryMap Map<String, String> baseInfoMap);
+
+    @GET("ebook/{bookId}")
+    Call<BookDetailResultBean> getBookDetail(@Path("bookId")long bookId,
+                                             @QueryMap Map<String, String> baseInfoMap);
 }

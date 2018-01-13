@@ -196,6 +196,7 @@ public class SubjectListFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        initLibrary();
     }
 
     @Override
@@ -291,6 +292,12 @@ public class SubjectListFragment extends BaseFragment {
 
     @Subscribe
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
         hideLoadingDialog();
     }
 }
