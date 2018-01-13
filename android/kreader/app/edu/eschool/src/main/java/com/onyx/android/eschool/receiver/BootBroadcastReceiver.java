@@ -10,12 +10,12 @@ import android.util.Log;
 
 import com.google.zxing.WriterException;
 import com.onyx.android.eschool.device.DeviceConfig;
-import com.onyx.android.eschool.manager.LeanCloudManager;
 import com.onyx.android.eschool.utils.QRCodeUtil;
 import com.onyx.android.sdk.data.model.common.DeviceInfoShowConfig;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.im.push.LeanCloudManager;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.ShellUtils;
