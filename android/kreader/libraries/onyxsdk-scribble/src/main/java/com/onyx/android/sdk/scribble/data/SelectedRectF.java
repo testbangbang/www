@@ -11,7 +11,7 @@ import java.util.List;
  * Created by solskjaer49 on 2017/9/15 18:31.
  */
 
-public class SelectedRectF {
+public class SelectedRectF extends RectF{
     private final int detectionRange = 10;
 
     public ShapeTransformAction getTouchPointHitTest(PointF touchPoint) {
