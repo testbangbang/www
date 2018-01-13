@@ -8,11 +8,7 @@ import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.data.ChangeLayoutParameter;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
-import com.onyx.jdread.reader.event.UpdateReaderViewInfoEvent;
 import com.onyx.jdread.reader.menu.request.ChangeLayoutRequest;
-import com.onyx.jdread.reader.request.ReaderBaseRequest;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2018/1/1.

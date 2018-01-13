@@ -4,7 +4,10 @@ import android.view.SurfaceView;
 
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderDocument;
+import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
@@ -40,6 +43,15 @@ public class ReaderDataHolder {
             handlerManger = new HandlerManger(this);
         }
         return handlerManger;
+    }
+
+    public ReaderDocument openDocument(final String path, final BaseOptions baseOptions, final ReaderPluginOptions pluginOptions) throws Exception{
+        documentOpenState = DocumentOpenState.OPENING;
+        return reader.getReaderHelper().openDocument(path,baseOptions,pluginOptions);
+    }
+
+    public void saveReaderDocument(ReaderDocument readerDocument, DocumentInfo documentInfo){
+        reader.getReaderHelper().saveReaderDocument(readerDocument,documentInfo);
     }
 
     public ReaderViewInfo getReaderViewInfo() {
@@ -78,6 +90,14 @@ public class ReaderDataHolder {
         documentOpenState = DocumentOpenState.INIT;
         reader = ReaderManager.getReader(documentInfo);
         reader.init(this);
+    }
+
+    public boolean isDocumentOpened() {
+        return documentOpenState == DocumentOpenState.OPENED && reader != null;
+    }
+
+    public void updateDocumentOpenStatePened(){
+        documentOpenState = DocumentOpenState.OPENED;
     }
 
     public Reader getReader() {

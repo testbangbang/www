@@ -28,7 +28,7 @@ public class ReaderTextModel {
     private ObservableBoolean isShow = new ObservableBoolean(false);
     private ObservableBoolean isPdf = new ObservableBoolean(false);
     private ObservableField<ReaderTypeface> currentTypeface = new ObservableField<>(boldFaceType);
-    private ObservableField<ReaderFontSize> currentFontSize = new ObservableField<>(ReaderFontSize.LevelOneFontSize);
+    private ObservableField<ReaderFontSize> currentFontSize = new ObservableField<>(ReaderFontSize.LevelThreeFontSize);
     private ObservableField<Language> currentLanguage = new ObservableField<>(Language.Simplified);
     public enum Language{
         Simplified,Traditional

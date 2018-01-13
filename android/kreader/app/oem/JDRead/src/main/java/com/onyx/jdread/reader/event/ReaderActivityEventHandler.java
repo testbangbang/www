@@ -119,6 +119,7 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateReaderViewInfoEvent(UpdateReaderViewInfoEvent event){
         readerViewModel.getReaderDataHolder().setReaderViewInfo(event.getReaderViewInfo());
+        readerViewModel.getReaderDataHolder().updateDocumentOpenStatePened();
     }
 
     public static void updateReaderViewInfo(ReaderBaseRequest request){

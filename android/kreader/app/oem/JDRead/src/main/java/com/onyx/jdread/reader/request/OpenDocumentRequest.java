@@ -4,6 +4,7 @@ import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.exception.FileFormatErrorException;
@@ -14,11 +15,12 @@ import com.onyx.jdread.reader.exception.FileFormatErrorException;
 
 public class OpenDocumentRequest extends ReaderBaseRequest {
     private ReaderDataHolder readerDataHolder;
-    private ReaderDocumentOptionsImpl documentOptions;
     private ReaderPluginOptions pluginOptions;
+    private BaseOptions srcOptions;
 
-    public OpenDocumentRequest(ReaderDataHolder readerDataHolder) {
+    public OpenDocumentRequest(ReaderDataHolder readerDataHolder,BaseOptions baseOptions) {
         this.readerDataHolder = readerDataHolder;
+        this.srcOptions = baseOptions;
     }
 
     @Override
@@ -32,14 +34,17 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
     }
 
     public void initOptions() {
-        documentOptions = new ReaderDocumentOptionsImpl(null, null);
-        pluginOptions = ReaderPluginOptionsImpl.create(getAppContext());
+        pluginOptions = srcOptions.pluginOptions();
+        if (pluginOptions == null) {
+            pluginOptions = ReaderPluginOptionsImpl.create(getAppContext());
+        }
+
     }
 
     private boolean openDocument() throws Exception {
-        ReaderDocument document = readerDataHolder.getReader().getReaderHelper().openDocument(readerDataHolder.getReader().getDocumentInfo().getBookPath(), documentOptions, pluginOptions);
+        ReaderDocument document = readerDataHolder.openDocument(readerDataHolder.getReader().getDocumentInfo().getBookPath(), srcOptions, pluginOptions);
         if(document != null) {
-            readerDataHolder.getReader().getReaderHelper().saveReaderDocument(document,readerDataHolder.getReader().getDocumentInfo());
+            readerDataHolder.saveReaderDocument(document,readerDataHolder.getReader().getDocumentInfo());
             return true;
         }
         return false;

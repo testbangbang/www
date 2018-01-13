@@ -20,6 +20,7 @@ public class UpdateViewPageRequest extends ReaderBaseRequest {
     }
 
     public void updatePageView(){
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,createReaderViewInfo());
+        readerDataHolder.setReaderUserDataInfo(getReaderUserDataInfo());
+        readerDataHolder.getReaderViewHelper().draw(readerDataHolder,readerDataHolder.getReader().getReaderHelper().getViewportBitmap().getBitmap());
     }
 }
