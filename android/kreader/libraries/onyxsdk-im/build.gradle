@@ -42,7 +42,7 @@ dependencies {
     }
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
-    compile ("io.socket:socket.io-client:$rootProject.socketio") {
+    compile ("io.socket:socket.io-client:$rootProject.socketioVersion") {
         exclude group: 'org.json', module: 'json'
     }
     compile ("cn.leancloud.android:avoscloud-sdk:$rootProject.avoscloudVersion")
