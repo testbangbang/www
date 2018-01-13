@@ -344,4 +344,5 @@
     <string name="feedback_history">Feedback history</string>
     <string name="device_reset_prompt">The device will immediately go to reset, continue?</string>
     <string name="buy_book_success">Book purchase success </string>
+    <string name="lineation">Lineation</string>
 </resources>
