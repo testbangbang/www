@@ -325,5 +325,15 @@
     <string name="password_setting_phone_hint">Please enter phone number</string>
     <string name="feedback_history">Feedback history</string>
     <string name="device_reset_prompt">The device will immediately go to reset, continue?</string>
+    <string name="email_address_key">email_address_key</string>
+    <string name="bind_to_email">bind to email</string>
+    <string name="bind_to_email_failed">bind_to_email_failed</string>
+    <string name="send_succeed">send_succeed</string>
     <string name="buy_book_success">Book purchase success </string>
+    <string name="email_address_hint">Email address</string>
+    <string name="email_address_wrong">Please input the correct email address</string>
+    <string name="unbind_to_email">Unbind to email</string>
+    <string name="email_address_format">Email: %s</string>
+    <string name="email_bound">Email bound</string>
+    <string name="confirm_bind">Confirm bind</string>
 </resources>

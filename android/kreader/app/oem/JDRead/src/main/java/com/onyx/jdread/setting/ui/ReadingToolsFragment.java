@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.evernote.client.android.login.EvernoteLoginFragment;
+import com.onyx.android.sdk.utils.PreferenceManager;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentReadingToolsBinding;
@@ -22,6 +24,7 @@ import com.onyx.jdread.setting.event.DictionaryToolsEvent;
 import com.onyx.jdread.setting.event.TranslationToolsEvent;
 import com.onyx.jdread.setting.model.ReadingToolsModel;
 import com.onyx.jdread.setting.model.SettingBundle;
+import com.onyx.jdread.setting.view.AssociatedEmailDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -29,7 +32,7 @@ import org.greenrobot.eventbus.Subscribe;
  * Created by hehai on 18-1-2.
  */
 
-public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginFragment.ResultCallback{
+public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginFragment.ResultCallback {
 
     private FragmentReadingToolsBinding binding;
     private ReadingToolsModel readingToolsModel;
@@ -77,7 +80,15 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
 
     @Subscribe
     public void onAssociatedEmailToolsEvent(AssociatedEmailToolsEvent event) {
-
+        AssociatedEmailDialog.DialogModel model = new AssociatedEmailDialog.DialogModel();
+        String email = PreferenceManager.getStringValue(JDReadApplication.getInstance(), R.string.email_address_key, null);
+        boolean bound = StringUtils.isNotBlank(email);
+        model.title.set(bound ? getString(R.string.unbind_to_email) : getString(R.string.bind_to_email));
+        model.emailAddress.set(email);
+        model.bound.set(bound);
+        AssociatedEmailDialog.Builder builder = new AssociatedEmailDialog.Builder(JDReadApplication.getInstance(), model);
+        AssociatedEmailDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Subscribe

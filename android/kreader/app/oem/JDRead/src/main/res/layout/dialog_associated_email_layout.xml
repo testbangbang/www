@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
+        <variable
+            name="dialogModel"
+            type="com.onyx.jdread.setting.view.AssociatedEmailDialog.DialogModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="1dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@{dialogModel.title}"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <ImageView
+                android:id="@+id/close_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingBottom="@dimen/dialog_single_manage_close_padding"
+                android:paddingRight="@dimen/dialog_single_manage_close_padding_right"
+                android:paddingTop="@dimen/dialog_single_manage_close_padding"
+                android:src="@mipmap/ic_shelf_close" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <EditText
+            android:layout_width="@dimen/dialog_associated_edit_width"
+            android:layout_height="@dimen/dialog_associated_edit_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dialog_associated_edit_margin_top"
+            android:hint="@string/email_address_hint"
+            android:text="@={dialogModel.emailAddress}"
+            android:textSize="@dimen/level_two_heading_font"
+            android:visibility="@{dialogModel.bound?View.GONE:View.VISIBLE}" />
+
+        <TextView
+            android:layout_width="@dimen/dialog_associated_edit_width"
+            android:layout_height="@dimen/dialog_associated_edit_height"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dialog_associated_edit_margin_top"
+            android:text="@{@string/email_address_format(dialogModel.emailAddress)}"
+            android:textSize="@dimen/level_two_heading_font"
+            android:visibility="@{dialogModel.bound?View.VISIBLE:View.GONE}" />
+
+        <TextView
+            android:layout_width="@dimen/dialog_associated_edit_width"
+            android:layout_height="@dimen/dialog_associated_edit_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dialog_associated_email_button_margin_top"
+            android:background="@drawable/rectangle_stroke"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="@{()->dialogModel.bindToEmail()}"
+            android:text="@string/confirm_bind"
+            android:textSize="@dimen/level_two_heading_font"
+            android:visibility="@{dialogModel.bound?View.GONE:View.VISIBLE}" />
+
+        <TextView
+            android:layout_width="@dimen/dialog_associated_edit_width"
+            android:layout_height="@dimen/dialog_associated_edit_height"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dialog_associated_email_button_margin_top"
+            android:background="@drawable/rectangle_stroke"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="@{()->dialogModel.unbindToEmail()}"
+            android:text="@string/unbind_to_email"
+            android:textSize="@dimen/level_two_heading_font"
+            android:visibility="@{dialogModel.bound?View.VISIBLE:View.GONE}" />
+
+    </LinearLayout>
+</layout>

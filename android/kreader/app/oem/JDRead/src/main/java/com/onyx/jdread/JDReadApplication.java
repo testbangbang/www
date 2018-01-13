@@ -44,8 +44,6 @@ public class JDReadApplication extends MultiDexApplication {
     private AppBaseInfo appBaseInfo;
     private JDAppBaseInfo jdAppBaseInfo;
     private EvernoteSession evernoteSession;
-    private static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.SANDBOX;
-    private static final boolean SUPPORT_APP_LINKED_NOTEBOOKS = true;
 
     @Override
     protected void attachBaseContext(Context context) {
