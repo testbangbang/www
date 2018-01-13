@@ -22,6 +22,7 @@ public class ShopDataBundle {
     private RankViewModel rankViewModel;
     private BookDetailResultBean.Detail bookDetail;
     private TitleBarModel titleBarModel;
+    private BuyReadVipModel buyReadVipModel;
 
     private ShopDataBundle() {
 
@@ -120,5 +121,13 @@ public class ShopDataBundle {
             titleBarModel = new TitleBarModel(eventBus);
         }
         return titleBarModel;
+    }
+
+    public BuyReadVipModel getBuyReadVipModel() {
+        if (buyReadVipModel == null) {
+            buyReadVipModel = new BuyReadVipModel();
+            buyReadVipModel.loadData();
+        }
+        return buyReadVipModel;
     }
 }

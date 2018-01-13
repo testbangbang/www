@@ -209,7 +209,10 @@
         <item name="android:max">20</item>
         <item name="android:maxHeight">@dimen/menu_seek_bar_height</item>
         <item name="android:minHeight">@dimen/menu_seek_bar_height</item>
-        <item name="android:padding">@dimen/reader_page_info_menu_reading_process_padding</item>
+        <item name="android:paddingTop">@dimen/reader_page_info_menu_reading_process_padding</item>
+        <item name="android:paddingBottom">@dimen/reader_page_info_menu_reading_process_padding</item>
+        <item name="android:paddingLeft">@dimen/reader_page_info_menu_reading_process_padding_left</item>
+        <item name="android:paddingRight">@dimen/reader_page_info_menu_reading_process_padding_left</item>
         <item name="android:progressDrawable">@drawable/seekbar_progress</item>
         <item name="android:thumb">@drawable/seekbar_thumb</item>
     </style>
