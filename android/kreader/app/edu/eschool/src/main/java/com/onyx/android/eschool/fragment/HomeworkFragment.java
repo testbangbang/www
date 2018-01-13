@@ -20,6 +20,7 @@ import com.onyx.android.eschool.custom.CustomRadioGroup;
 import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.databinding.FragmentHomeworkBinding;
 import com.onyx.android.eschool.databinding.ItemHomeworkBinding;
+import com.onyx.android.eschool.events.HomeworkEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -47,6 +48,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 
@@ -423,6 +425,17 @@ public class HomeworkFragment extends Fragment {
     public void onGroupContainer(GroupContainer groupContainer) {
         resetArguments(getArguments(), groupContainer.subjectList);
         updateSubjectGroupView(groupContainer.subjectList);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHomeworkEvent(HomeworkEvent event) {
+        String subject = event.homework.subject;
+        if (StringUtils.isNullOrEmpty(subject)) {
+            return;
+        }
+        if (subject.equals(getSubjectId())) {
+            refreshData();
+        }
     }
 
     @Override

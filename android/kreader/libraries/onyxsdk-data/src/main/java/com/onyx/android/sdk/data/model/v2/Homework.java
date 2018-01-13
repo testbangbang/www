@@ -36,6 +36,9 @@ public class Homework extends BaseData implements Serializable {
     public boolean isCollect;
     public boolean published;
 
+    public String subject;
+    public boolean checked;
+
     @Override
     public void beforeSave() {
         if (getCreatedAt() == null) {
@@ -43,5 +46,9 @@ public class Homework extends BaseData implements Serializable {
             setCreatedAt(now);
             setUpdatedAt(now);
         }
+    }
+
+    public static boolean checkValid(Homework homework) {
+        return homework != null && HomeworkDetail.checkValid(homework.child);
     }
 }
