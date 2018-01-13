@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -13,11 +14,14 @@ import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNotePage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 9/30/16.
@@ -48,6 +52,8 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
         }
 
         boolean dirty = false;
+        HashMap<String, List<Shape>> removedShapes = new HashMap<>();
+
         for (PageInfo pageInfo : getVisiblePages()) {
             List<TouchPointList> normalizedList = normalizeOnPage(pageInfo);
 
@@ -55,18 +61,38 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
             final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(),
                     pageInfo.getRange(), pageInfo.getSubPage());
             if (notePage != null) {
+                ArrayList<Shape> pageShapes = new ArrayList<>();
                 for (TouchPointList list : normalizedList) {
-                    notePage.removeShapesByTouchPointList(list, radius);
-                    dirty |= notePage.getRemovedShapeIdList().size() > 0;
+                     pageShapes.addAll(notePage.removeShapesByTouchPointList(list, radius));
+                }
+                if (pageShapes.size() > 0) {
+                    dirty = true;
+                    removedShapes.put(notePage.getSubPageUniqueId(), pageShapes);
                 }
             }
         }
+
+        HashMap<String, RectF> dirtyRect = new HashMap<>();
+        for (Map.Entry<String, List<Shape>> entry : removedShapes.entrySet()) {
+            dirtyRect.put(entry.getKey(), ShapeUtils.getBoundingRect(entry.getValue()));
+        }
+        for (PageInfo pageInfo : getVisiblePages()) {
+            final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(),
+                    pageInfo.getRange(), pageInfo.getSubPage());
+            if (notePage != null) {
+                if (!dirtyRect.containsKey(notePage.getSubPageUniqueId())) {
+                    dirtyRect.put(notePage.getSubPageUniqueId(), new RectF());
+                }
+            }
+        }
+
         noteManager.setRenderBitmapDirty(dirty);
-        getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
+        getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager, docBitmap, dirtyRect));
         renderToScreen(noteManager);
-        
+
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
     }
+
 
     private List<TouchPointList> normalizeOnPage(PageInfo pageInfo) {
         List<TouchPointList> result = new ArrayList<>();

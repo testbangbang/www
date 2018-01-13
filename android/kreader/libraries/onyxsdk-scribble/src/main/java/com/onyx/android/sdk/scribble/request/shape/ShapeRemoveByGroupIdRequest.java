@@ -1,9 +1,6 @@
 package com.onyx.android.sdk.scribble.request.shape;
 
-import android.util.Log;
-
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
 /**

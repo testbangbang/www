@@ -22,6 +22,7 @@ import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -173,21 +174,35 @@ public class BaseNoteRequest extends BaseRequest {
         return shapeDataInfo;
     }
 
+
     public void renderVisiblePages(final NoteViewHelper parent) {
+        renderVisiblePages(parent, null);
+    }
+
+    public void renderVisiblePages(final NoteViewHelper parent, RectF dirtyRect) {
         synchronized (parent) {
             Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
-            bitmap.eraseColor(Color.WHITE);
             Canvas canvas = new Canvas(bitmap);
             Paint paint = preparePaint(parent);
+            if (dirtyRect == null) {
+                canvas.drawColor(Color.WHITE);
+            } else {
+                paint.setColor(Color.WHITE);
+                paint.setStyle(Paint.Style.FILL);
+                canvas.drawRect(dirtyRect, paint);
+
+                preparePaint(parent, paint);
+            }
 
             if (!parent.isLineLayoutMode()) {
                 drawBackground(canvas, paint, parent.getNoteDocument().getBackground(),
-                        parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
+                        parent.getNoteDocument().getNoteDrawingArgs().bgFilePath,
+                        dirtyRect);
             }
             prepareRenderingBuffer(bitmap);
 
             final Matrix renderMatrix = new Matrix();
-            final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
+            final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix, dirtyRect);
             for (PageInfo page : getVisiblePages()) {
                 final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
                 notePage.render(renderContext, null);
@@ -202,11 +217,15 @@ public class BaseNoteRequest extends BaseRequest {
 
     private Paint preparePaint(final NoteViewHelper parent) {
         Paint paint = new Paint();
+        preparePaint(parent, paint);
+        return paint;
+    }
+
+    private void preparePaint(final NoteViewHelper parent, Paint paint) {
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
         paint.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
-        return paint;
     }
 
     private void prepareRenderingBuffer(final Bitmap bitmap) {
@@ -218,7 +237,7 @@ public class BaseNoteRequest extends BaseRequest {
     private void flushRenderingBuffer(final Bitmap bitmap) {
     }
 
-    private void drawBackground(final Canvas canvas, final Paint paint, int bgType, String bgFilePath) {
+    private void drawBackground(final Canvas canvas, final Paint paint, int bgType, String bgFilePath, RectF dirtyRect) {
         int bgResID = 0;
         switch (bgType) {
             case NoteBackgroundType.EMPTY:
@@ -266,11 +285,11 @@ public class BaseNoteRequest extends BaseRequest {
                 bgResID = Integer.MIN_VALUE;
                 break;
         }
-        drawBackgroundResource(canvas, paint, bgResID, bgFilePath);
+        drawBackgroundResource(canvas, paint, bgResID, bgFilePath, dirtyRect);
 
     }
 
-    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID, String bgFilePath) {
+    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID, String bgFilePath, RectF dirtyRect) {
         Bitmap bitmap;
         Rect dest;
         if (resID == Integer.MIN_VALUE && !TextUtils.isEmpty(bgFilePath)) {
@@ -286,6 +305,9 @@ public class BaseNoteRequest extends BaseRequest {
             dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
         }
         Rect src = new Rect(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
+        if (dirtyRect != null) {
+            dest = RectUtils.toRect(dirtyRect);
+        }
         if (DeviceConfig.isColorDevice()) {
             canvas.drawBitmap(bitmap, 0, 0, paint);
         } else {
@@ -332,11 +354,15 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     public void renderCurrentPage(final NoteViewHelper helper) {
+        renderCurrentPage(helper, null);
+    }
+
+    public void renderCurrentPage(final NoteViewHelper helper, final RectF dirtyRect) {
         if (!isRender()) {
             return;
         }
         currentPageAsVisiblePage(helper);
-        renderVisiblePages(helper);
+        renderVisiblePages(helper, dirtyRect);
     }
 
     public void updateShapeDataInfo(final NoteViewHelper parent) {

@@ -8,20 +8,22 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.support.annotation.NonNull;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.note.NoteManager;
@@ -29,6 +31,7 @@ import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.data.ReaderNotePage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -213,18 +216,19 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         return noteDataInfo;
     }
 
-    public boolean renderVisiblePages(final NoteManager parent) {
+    public boolean renderVisiblePages(final NoteManager parent,
+                                      ReaderBitmapReferenceImpl docBitmap,
+                                      HashMap<String, RectF> dirtyRects) {
         if (parent.getRenderBitmap() != null && !parent.isRenderBitmapDirty()) {
             return true;
         }
 
         boolean rendered = false;
         ReaderBitmapImpl bitmap = new ReaderBitmapImpl(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
-        bitmap.getBitmap().eraseColor(Color.TRANSPARENT);
-        Canvas canvas = new Canvas(bitmap.getBitmap());
         Paint paint = preparePaint(parent);
 
-        drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
+        Canvas canvas = createCanvasAndDrawBackground(parent, docBitmap, dirtyRects, bitmap, paint);
+
         final Matrix renderMatrix = new Matrix();
         final RenderContext renderContext = parent.getRenderContext();
         renderContext.prepareRenderingBuffer(bitmap.getBitmap());
@@ -234,9 +238,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 break;
             }
             updateMatrix(renderMatrix, page);
-            renderContext.update(bitmap.getBitmap(), canvas, paint, renderMatrix);
             final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getRange(), page.getSubPage());
             if (notePage != null) {
+                renderContext.update(bitmap.getBitmap(), canvas, paint, renderMatrix, dirtyRects.get(notePage.getSubPageUniqueId()));
                 notePage.render(renderContext, new ReaderNotePage.RenderCallback() {
                     @Override
                     public boolean isRenderAbort() {
@@ -256,6 +260,48 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         }
 
         return rendered;
+    }
+
+    public boolean renderVisiblePages(final NoteManager parent) {
+        return renderVisiblePages(parent, null, new HashMap<String, RectF>());
+    }
+
+    @NonNull
+    private Canvas createCanvasAndDrawBackground(NoteManager parent, ReaderBitmapReferenceImpl docBitmap, HashMap<String, RectF> dirtyRects, ReaderBitmapImpl bitmap, Paint paint) {
+        Canvas canvas;
+        if (dirtyRects.size() <= 0 || parent.getRenderBitmap() == null) {
+            canvas = new Canvas(bitmap.getBitmap());
+            bitmap.getBitmap().eraseColor(Color.TRANSPARENT);
+            drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
+        } else {
+            bitmap.copyFrom(parent.getRenderBitmap());
+            canvas = new Canvas(bitmap.getBitmap());
+            for (PageInfo page : getVisiblePages()) {
+                final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getRange(), page.getSubPage());
+                if (notePage == null) {
+                    continue;
+                }
+                RectF dirty = dirtyRects.get(notePage.getSubPageUniqueId());
+                if (dirty == null) {
+                    dirty = new RectF(page.getDisplayRect());
+                } else {
+                    dirty = new RectF(dirty);
+                    Matrix matrix = new Matrix();
+                    updateMatrix(matrix, page);
+                    matrix.mapRect(dirty);
+                }
+                paint.setColor(Color.WHITE);
+                paint.setStyle(Paint.Style.FILL);
+                canvas.drawRect(dirty, paint);
+
+                if (docBitmap != null) {
+                    canvas.drawBitmap(docBitmap.getBitmap(), RectUtils.toRect(dirty),
+                            RectUtils.toRect(dirty), null);
+                }
+                drawBackground(canvas, paint, parent.getNoteDocument().getBackground(), dirty);
+            }
+        }
+        return canvas;
     }
 
     private void loadNotePages(final NoteManager parent) {
@@ -296,6 +342,10 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     private void drawBackground(final Canvas canvas, final Paint paint,int bgType) {
+        drawBackground(canvas, paint, bgType, null);
+    }
+
+    private void drawBackground(final Canvas canvas, final Paint paint,int bgType, RectF clipRect) {
         int bgResID = 0;
         switch (bgType) {
             case NoteBackgroundType.EMPTY:
@@ -307,13 +357,16 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 bgResID = com.onyx.android.sdk.scribble.R.drawable.scribble_back_ground_grid;
                 break;
         }
-        drawBackgroundResource(canvas, paint, bgResID);
+        drawBackgroundResource(canvas, paint, bgResID, clipRect);
     }
 
-    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID) {
+    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID, RectF clipRect) {
         Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resID);
         Rect src = new Rect(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
         Rect dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
+        if (clipRect != null) {
+            dest = RectUtils.toRect(clipRect);
+        }
         canvas.drawBitmap(bitmap, src, dest, paint);
         if (!bitmap.isRecycled()) {
             bitmap.recycle();
