@@ -15,7 +15,7 @@ import com.onyx.android.eschool.activity.HomeActivity;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
-import com.onyx.android.eschool.manager.PushManager;
+import com.onyx.android.eschool.manager.PushMessageHandler;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -74,7 +74,7 @@ public class SchoolApp extends MultiDexApplication {
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private HashSet<String> mediaFilesSet = new LinkedHashSet<>();
 
-    private PushManager messageManager;
+    private PushMessageHandler messageHandler;
 
     @Override
     public void onCreate() {
@@ -324,7 +324,7 @@ public class SchoolApp extends MultiDexApplication {
     }
 
     private void initPushManager() {
-        getPushMessageManager();
+        getPushMessageHandler();
     }
 
     public void initCloudStore() {
@@ -378,16 +378,16 @@ public class SchoolApp extends MultiDexApplication {
         return EnvironmentUtil.getRemovableSDCardCid();
     }
 
-    public PushManager getPushMessageManager() {
-        if (messageManager == null) {
-            messageManager = new PushManager(ActionContext.create(getApplicationContext(),
+    public PushMessageHandler getPushMessageHandler() {
+        if (messageHandler == null) {
+            messageHandler = new PushMessageHandler(ActionContext.create(getApplicationContext(),
                     getSchoolCloudStore().getCloudManager(), getDataManager()));
         }
-        return messageManager;
+        return messageHandler;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushMessageEvent(MessageEvent messageEvent) {
-        getPushMessageManager().processMessage(messageEvent.message);
+        getPushMessageHandler().processMessage(messageEvent.message);
     }
 }

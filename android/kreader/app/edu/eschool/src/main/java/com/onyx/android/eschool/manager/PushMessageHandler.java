@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Created by suicheng on 2017/8/2.
  */
-public class PushManager {
+public class PushMessageHandler {
 
     public static final String TYPE_NOTIFY_HOMEWORK = "homework";
 
@@ -37,7 +37,7 @@ public class PushManager {
     private ActionContext actionContext;
     private Map<String, PushCallback> pushTypeFilterMap = new HashMap<>();
 
-    public PushManager(ActionContext actionContext) {
+    public PushMessageHandler(ActionContext actionContext) {
         this.actionContext = actionContext;
     }
 
