@@ -13,16 +13,11 @@ import com.onyx.jdread.reader.ui.gesture.ReaderOnGestureListener;
  */
 
 public class ReaderTouchHelper {
-    private int readerMode = 0;
     private ReaderDataHolder readerDataHolder;
     private GestureDetector gestureDetector;
 
     public void setReaderDataHolder(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
-    }
-
-    public void setReaderMode(int readerMode) {
-        this.readerMode = readerMode;
     }
 
     public void setReaderViewTouchListener(SurfaceView surfaceView) {

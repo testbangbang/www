@@ -36,13 +36,12 @@ public class ReaderViewModel extends BaseObservable {
     }
 
     private void openDocument(DocumentInfo documentInfo) {
-        getReaderDataHolder();
-        readerDataHolder.initReaderDataHolder(documentInfo);
+        getReaderDataHolder().initReaderDataHolder(documentInfo);
     }
 
     public ReaderDataHolder getReaderDataHolder() {
         if (readerDataHolder == null) {
-            readerDataHolder = new ReaderDataHolder();
+            readerDataHolder = new ReaderDataHolder(JDReadApplication.getInstance());
         }
         return readerDataHolder;
     }

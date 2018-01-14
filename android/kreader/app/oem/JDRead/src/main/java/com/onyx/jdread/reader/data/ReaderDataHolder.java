@@ -1,8 +1,8 @@
 package com.onyx.jdread.reader.data;
 
+import android.content.Context;
 import android.view.SurfaceView;
 
-import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
@@ -13,16 +13,15 @@ import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
-import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 
 /**
  * Created by huxiaomao on 2017/12/20.
  */
 
 public class ReaderDataHolder {
-    public enum DocumentOpenState {INIT, OPENING, OPENED}
+    public enum DocumentState {INIT, OPENING, OPENED}
 
-    private DocumentOpenState documentOpenState = DocumentOpenState.INIT;
+    private DocumentState documentState = DocumentState.INIT;
     private Reader reader;
     private ReaderTextStyle style;
     private ImageReflowSettings settings;
@@ -30,6 +29,11 @@ public class ReaderDataHolder {
     private ReaderUserDataInfo readerUserDataInfo;
     private ReaderSelectionManager readerSelectionManager;
     private HandlerManger handlerManger;
+    private Context appContext;
+
+    public ReaderDataHolder(final Context appContext) {
+        setAppContext(appContext);
+    }
 
     public ReaderSelectionManager getReaderSelectionManager() {
         if (readerSelectionManager == null) {
@@ -46,7 +50,7 @@ public class ReaderDataHolder {
     }
 
     public ReaderDocument openDocument(final String path, final BaseOptions baseOptions, final ReaderPluginOptions pluginOptions) throws Exception{
-        documentOpenState = DocumentOpenState.OPENING;
+        documentState = DocumentState.OPENING;
         return reader.getReaderHelper().openDocument(path,baseOptions,pluginOptions);
     }
 
@@ -87,17 +91,17 @@ public class ReaderDataHolder {
     }
 
     public void initReaderDataHolder(final DocumentInfo documentInfo) {
-        documentOpenState = DocumentOpenState.INIT;
+        documentState = DocumentState.INIT;
         reader = ReaderManager.getReader(documentInfo);
         reader.init(this);
     }
 
     public boolean isDocumentOpened() {
-        return documentOpenState == DocumentOpenState.OPENED && reader != null;
+        return documentState == DocumentState.OPENED && reader != null;
     }
 
-    public void updateDocumentOpenStatePened(){
-        documentOpenState = DocumentOpenState.OPENED;
+    public void setDocumentOpenState(){
+        documentState = DocumentState.OPENED;
     }
 
     public Reader getReader() {
@@ -115,5 +119,13 @@ public class ReaderDataHolder {
 
     public ReaderViewHelper getReaderViewHelper() {
         return reader.getReaderViewHelper();
+    }
+
+    public Context getAppContext() {
+        return appContext;
+    }
+
+    public void setAppContext(Context appContext) {
+        this.appContext = appContext;
     }
 }
