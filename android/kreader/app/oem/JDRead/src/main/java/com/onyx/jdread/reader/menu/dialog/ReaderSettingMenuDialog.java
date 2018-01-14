@@ -23,8 +23,10 @@ import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
+import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
+import com.onyx.jdread.reader.menu.event.GotoPageEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuDialogHandler;
 import com.onyx.jdread.reader.menu.model.ReaderMarginModel;
 import com.onyx.jdread.reader.menu.model.ReaderImageModel;
@@ -33,6 +35,8 @@ import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
 import com.onyx.jdread.reader.menu.model.ReaderTextModel;
 import com.onyx.jdread.reader.menu.model.ReaderTitleBarModel;
 import com.onyx.jdread.setting.model.BrightnessModel;
+
+import org.greenrobot.eventbus.EventBus;
 
 
 /**
@@ -48,12 +52,15 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     private FunctionBarAdapter functionBarAdapter;
     private ReaderSettingMenuDialogHandler readerSettingMenuDialogHandler;
 
-    public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity, ReaderTextStyle style, ImageReflowSettings settings, ReaderViewInfo readerViewInfo) {
+    public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.readerDataHolder = readerDataHolder;
 
-        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(readerDataHolder,this,style,settings);
-        readerSettingMenuDialogHandler.setReaderViewInfo(readerViewInfo);
+        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(readerDataHolder,this);
+    }
+
+    public ReaderSettingMenuDialogHandler getReaderSettingMenuDialogHandler() {
+        return readerSettingMenuDialogHandler;
     }
 
     @Override
@@ -75,13 +82,12 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         initTextBar();
         initImageBar();
         initCustomizeBar();
-
-        readerSettingMenuDialogHandler.setBinding(binding);
     }
 
     private void initView() {
         binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.reader_setting_menu, null, false);
         setContentView(binding.getRoot());
+        readerSettingMenuDialogHandler.setBinding(binding);
     }
 
     private void initReaderSettingMenu(){
@@ -90,7 +96,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void initReaderPageInfoBar(){
         binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel());
-        new UpdatePageInfoAction(binding,readerSettingMenuDialogHandler.getReaderViewInfo()).execute(readerDataHolder);
+        new UpdatePageInfoAction(binding,readerDataHolder.getReaderViewInfo()).execute(readerDataHolder);
         initReaderPageInfoEvent();
     }
 
@@ -109,6 +115,8 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(seekBar.getProgress());
+                GotoPageEvent event = new GotoPageEvent(seekBar.getProgress());
+                EventBus.getDefault().post(event);
             }
         });
     }
@@ -217,6 +225,12 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void initReaderTitleBar() {
         binding.readerSettingTitleBar.setReaderTitleBarModel(new ReaderTitleBarModel());
+        updateBookmarkState();
+    }
+
+    public void updateBookmarkState(){
+        boolean isBookmark = readerSettingMenuDialogHandler.hasBookmark();
+        binding.readerSettingTitleBar.getReaderTitleBarModel().setBookMarkImageId(isBookmark);
     }
 
     private void initFunctionBar() {

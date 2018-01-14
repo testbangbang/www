@@ -6,6 +6,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.OpenDocumentFailResultEvent;
+import com.onyx.jdread.reader.request.LoadDocumentOptionsRequest;
 import com.onyx.jdread.reader.request.OpenDocumentRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,7 +24,21 @@ public class OpenDocumentAction extends BaseReaderAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        OpenDocumentRequest openDocumentRequest = new OpenDocumentRequest(readerDataHolder);
+        loadDocumentOptions(readerDataHolder);
+    }
+
+    private void loadDocumentOptions(final ReaderDataHolder readerDataHolder) {
+        final LoadDocumentOptionsRequest request = new LoadDocumentOptionsRequest(readerDataHolder);
+        request.execute(new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                openDocument(readerDataHolder, request);
+            }
+        });
+    }
+
+    private void openDocument(ReaderDataHolder readerDataHolder, LoadDocumentOptionsRequest request) {
+        OpenDocumentRequest openDocumentRequest = new OpenDocumentRequest(readerDataHolder,request.getDocumentOptions());
         OpenDocumentRequest.setAppContext(JDReadApplication.getInstance());
         openDocumentRequest.execute(new RxCallback() {
             @Override
@@ -38,7 +53,7 @@ public class OpenDocumentAction extends BaseReaderAction {
         });
     }
 
-    private void analysisOpenDocumentSuccessResult(){
+    private void analysisOpenDocumentSuccessResult() {
         InitPageViewAction createPageViewAction = new InitPageViewAction();
         createPageViewAction.execute(readerDataHolder);
     }
@@ -46,7 +61,7 @@ public class OpenDocumentAction extends BaseReaderAction {
     private void analysisOpenDocumentErrorResult(Throwable throwable) {
         OpenDocumentFailResultEvent event = new OpenDocumentFailResultEvent();
         String message = throwable.getMessage();
-        if(StringUtils.isNullOrEmpty(message)){
+        if (StringUtils.isNullOrEmpty(message)) {
             message = JDReadApplication.getInstance().getString(R.string.open_book_fail);
         }
         event.setMessage(message);

@@ -21,6 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:textColor="@android:color/black"
             android:layout_marginRight="5dp"/>
 
     <TextView
@@ -31,6 +32,7 @@
             android:id="@+id/text_view_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
             android:layout_toLeftOf="@id/text_view_description"
             android:layout_toRightOf="@id/image_view_indicator"/>
 

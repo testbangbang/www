@@ -64,9 +64,10 @@ public class ReaderHelper {
     private ReaderFormManager formManager;
     private ReaderHitTestManager hitTestManager;
     private ReaderLayoutManager readerLayoutManager = null;
-    private BaseOptions documentOptions = new BaseOptions();
+    private BaseOptions documentOptions;
     private ImageReflowManager imageReflowManager;
     private BitmapReferenceLruCache bitmapCache;
+    private ReaderBitmapReferenceImpl viewportBitmap;
 
     public ReaderHelper() {
     }
@@ -117,8 +118,9 @@ public class ReaderHelper {
         formManager = view.getFormManager();
     }
 
-    public ReaderDocument openDocument(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws Exception {
-        return plugin.open(path, documentOptions, pluginOptions);
+    public ReaderDocument openDocument(final String path, final BaseOptions baseOptions, final ReaderPluginOptions pluginOptions) throws Exception {
+        this.documentOptions = baseOptions;
+        return plugin.open(path, documentOptions.documentOptions(), pluginOptions);
     }
 
     public ReaderLayoutManager getReaderLayoutManager() {
@@ -178,10 +180,10 @@ public class ReaderHelper {
     }
 
     public final ReaderBitmapReferenceImpl getViewportBitmap() {
-        return null;
+        return viewportBitmap;
     }
 
-    private ReaderPlugin getPlugin() {
+    public ReaderPlugin getPlugin() {
         return plugin;
     }
 
@@ -198,15 +200,20 @@ public class ReaderHelper {
     }
 
     public ReaderHitTestManager getHitTestManager() {
-        return null;
+        return hitTestManager;
     }
 
     public void transferRenderBitmapToViewport(ReaderBitmapReferenceImpl renderBitmap) {
-
+        if (viewportBitmap != null && viewportBitmap.isValid()) {
+            returnBitmapToCache(viewportBitmap);
+        }
+        viewportBitmap = renderBitmap;
     }
 
     public void returnBitmapToCache(ReaderBitmapReferenceImpl bitmap) {
-
+        if (bitmapCache != null) {
+            bitmapCache.put(bitmap.getKey(), bitmap);
+        }
     }
 
     public BitmapReferenceLruCache getBitmapCache() {
@@ -397,5 +404,9 @@ public class ReaderHelper {
 
     private void saveReaderTextStyle(final ReaderTextStyle style) {
 
+    }
+
+    public String getDocumentMd5() {
+        return documentMd5;
     }
 }

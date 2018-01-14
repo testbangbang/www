@@ -328,6 +328,19 @@
     <string name="total_book">Total%d</string>
     <string name="password_setting_hint">Please enter the 4-12 digit password</string>
     <string name="password_setting_phone_hint">Please enter phone number</string>
+    <string name="reader_book_info_bookmark">Bookmark</string>
+    <string name="reader_book_info_note">Note</string>
+    <string name="delete_bookmark">Delete bookmarks？</string>
+    <string name="delete_book_note">Delete notes？</string>
+    <string name="empty">Empty</string>
+    <string name="Annotation">Annotation</string>
+    <string name="save_annotation">Save</string>
+    <string name="close">Close</string>
+    <string name="update">Update</string>
+    <string name="sure_delete">Are you sure you want to delete this</string>
+    <string name="page_search" formatted="false">%d page</string>
+    <string name="reader_content">Content:</string>
+    <string name="reader_read_progress">Progress:</string>
     <string name="feedback_history">Feedback history</string>
     <string name="device_reset_prompt">The device will immediately go to reset, continue?</string>
     <string name="email_address_key">email_address_key</string>
@@ -335,6 +348,7 @@
     <string name="bind_to_email_failed">bind_to_email_failed</string>
     <string name="send_succeed">send_succeed</string>
     <string name="buy_book_success">Book purchase success </string>
+    <string name="lineation">Lineation</string>
     <string name="email_address_hint">Email address</string>
     <string name="email_address_wrong">Please input the correct email address</string>
     <string name="unbind_to_email">Unbind to email</string>
