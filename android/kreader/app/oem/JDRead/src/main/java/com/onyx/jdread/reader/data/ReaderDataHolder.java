@@ -30,9 +30,15 @@ public class ReaderDataHolder {
     private ReaderSelectionManager readerSelectionManager;
     private HandlerManger handlerManger;
     private Context appContext;
+    private ReaderTouchHelper readerTouchHelper;
 
     public ReaderDataHolder(final Context appContext) {
+        this.readerTouchHelper = new ReaderTouchHelper();
         setAppContext(appContext);
+    }
+
+    public ReaderTouchHelper getReaderTouchHelper() {
+        return readerTouchHelper;
     }
 
     public ReaderSelectionManager getReaderSelectionManager() {
@@ -66,16 +72,16 @@ public class ReaderDataHolder {
         return readerUserDataInfo;
     }
 
-    public ImageReflowSettings getSettings() {
-        return settings;
+    public ImageReflowSettings getSettingsCopy() {
+        return ImageReflowSettings.copy(settings);
     }
 
     public void setSettings(ImageReflowSettings settings){
         this.settings = settings;
     }
 
-    public ReaderTextStyle getStyle() {
-        return style;
+    public ReaderTextStyle getStyleCopy() {
+        return ReaderTextStyle.copy(style);
     }
 
     public void setStyle(ReaderTextStyle style) {
@@ -93,7 +99,7 @@ public class ReaderDataHolder {
     public void initReaderDataHolder(final DocumentInfo documentInfo) {
         documentState = DocumentState.INIT;
         reader = ReaderManager.getReader(documentInfo);
-        reader.init(this);
+        readerTouchHelper.setReaderDataHolder(this);
     }
 
     public boolean isDocumentOpened() {
@@ -114,7 +120,7 @@ public class ReaderDataHolder {
 
     public void setReadPageView(SurfaceView readPageView) {
         reader.getReaderViewHelper().setReadPageView(readPageView);
-        reader.getReaderTouchHelper().setReaderViewTouchListener(readPageView);
+        getReaderTouchHelper().setReaderViewTouchListener(readPageView);
     }
 
     public ReaderViewHelper getReaderViewHelper() {

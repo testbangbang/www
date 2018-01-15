@@ -32,6 +32,9 @@ public abstract class ReaderBaseRequest extends RxRequest {
     }
 
     public ReaderViewInfo getReaderViewInfo() {
+        if(readerViewInfo == null) {
+            readerViewInfo = new ReaderViewInfo();
+        }
         return readerViewInfo;
     }
 
