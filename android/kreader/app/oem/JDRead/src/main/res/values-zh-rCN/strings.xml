@@ -310,9 +310,23 @@
     <string name="password_setting_hint">请输入4-12位数字密码</string>
     <string name="password_setting_phone_hint">请输入手机号</string>
     <string name="password">密码</string>
+    <string name="reader_book_info_bookmark">书签</string>
+    <string name="reader_book_info_note">笔记</string>
+    <string name="delete_bookmark">是否删除书签？</string>
+    <string name="delete_book_note">是否删除笔记？</string>
+    <string name="empty">空</string>
+    <string name="Annotation">标注</string>
+    <string name="save_annotation">保存</string>
+    <string name="close">关闭</string>
+    <string name="update">更新</string>
+    <string name="sure_delete">是否确定删除</string>
+    <string name="page_search" formatted="false">%d 页</string>
+    <string name="reader_content">原文:</string>
+    <string name="reader_read_progress">进度:</string>
     <string name="feedback_history">反馈记录</string>
     <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
     <string name="buy_book_success">购买成功 </string>
+    <string name="lineation">划线</string>
     <string name="email_address_hint">电子邮箱地址</string>
     <string name="email_address_wrong">请输入正确的电子邮箱地址</string>
     <string name="bind_to_email">关联电子邮箱</string>
@@ -320,4 +334,5 @@
     <string name="email_address_format">电子邮箱地址：%s</string>
     <string name="email_bound">电子邮箱已关联</string>
     <string name="confirm_bind">确认关联</string>
+    <string name="crash_tip">确定发送错误报告吗?</string>
 </resources>

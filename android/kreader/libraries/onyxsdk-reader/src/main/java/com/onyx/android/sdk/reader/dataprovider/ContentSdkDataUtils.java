@@ -105,6 +105,6 @@ public class ContentSdkDataUtils {
     }
 
     public static DataProviderBase getDataProvider() {
-        return DataProviderManager.getRemoteDataProvider();
+        return DataProviderManager.getLocalDataProvider();
     }
 }

@@ -23,8 +23,14 @@ import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
+import com.onyx.jdread.setting.feedback.OnyxAttachmentUriProvider;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+
+import org.acra.ACRA;
+import org.acra.annotation.AcraCore;
+import org.acra.annotation.AcraHttpSender;
+import org.acra.sender.HttpSender;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +39,12 @@ import java.util.List;
 /**
  * Created by hehai on 17-12-6.
  */
-
+@AcraCore(buildConfigClass = BuildConfig.class,
+        attachmentUriProvider = OnyxAttachmentUriProvider.class)
+@AcraHttpSender(httpMethod = HttpSender.Method.POST,
+        uri = "http://120.78.15.79:5984/acra-onyxjd/_design/acra-storage/_update/report",
+        basicAuthLogin = "onyx",
+        basicAuthPassword = "boox8686")
 public class JDReadApplication extends MultiDexApplication {
     private static final String TAG = JDReadApplication.class.getSimpleName();
     private static JDReadApplication instance = null;
@@ -49,6 +60,7 @@ public class JDReadApplication extends MultiDexApplication {
     protected void attachBaseContext(Context context) {
         super.attachBaseContext(context);
         MultiDex.install(JDReadApplication.this);
+        ACRA.init(this);
     }
 
     @Override
@@ -71,7 +83,6 @@ public class JDReadApplication extends MultiDexApplication {
         initContentProvider(this);
         initFrescoLoader();
         PreferenceManager.init(instance);
-
         OnyxDownloadManager.init(this.getApplicationContext());
         OnyxDownloadManager.getInstance();
         initEventListener();

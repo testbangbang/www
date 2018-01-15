@@ -7,8 +7,11 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.model.TitleBarModel;
-import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
 import com.onyx.jdread.main.util.RegularUtil;
+import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
+
+import org.acra.ACRA;
+import org.acra.ErrorReporter;
 
 import java.util.Observable;
 
@@ -38,5 +41,9 @@ public class FeedbackModel extends Observable {
             ToastUtils.showToast(JDReadApplication.getInstance(), R.string.phone_number_format_error);
             return;
         }
+
+        ErrorReporter reporter = ACRA.getErrorReporter();
+        reporter.putCustomData(phone.get(), feedback.get());
+        reporter.handleException(null);
     }
 }

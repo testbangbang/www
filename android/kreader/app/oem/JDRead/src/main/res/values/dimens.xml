@@ -5,6 +5,7 @@
     <dimen name="page_indicator_layout_margin">20dp</dimen>
     <dimen name="rectangle_stroke_width">1dp</dimen>
     <dimen name="function_bar_text_size">18sp</dimen>
+    <dimen name="level_large_heading_font">26sp</dimen>
     <dimen name="level_one_heading_font">22sp</dimen>
     <dimen name="level_two_heading_font">18sp</dimen>
     <dimen name="level_three_heading_font">16sp</dimen>
@@ -228,7 +229,7 @@
     <dimen name="reader_title_buy_padding_bottom">4dp</dimen>
     <dimen name="reader_title_buy_padding_margin_left">10dp</dimen>
     <dimen name="reader_title_back_margin_right">10dp</dimen>
-    <dimen name="reader_title_back_padding">4dp</dimen>
+    <dimen name="reader_title_back_padding">10dp</dimen>
     <dimen name="reader_page_info_chapter_margin_left">15dp</dimen>
     <dimen name="reader_page_info_chapter_margin_right">15dp</dimen>
     <dimen name="user_image_height">74dp</dimen>
@@ -347,6 +348,7 @@
     <dimen name="quick_back_button_explanation_margin_right">110dp</dimen>
     <dimen name="fragment_help_item_height">70dp</dimen>
     <dimen name="manual_qr_code_text_margin_top">20dp</dimen>
+    <dimen name="dict_name_text_view_layout_width">140dp</dimen>
     <dimen name="dialog_associated_edit_width">300dp</dimen>
     <dimen name="dialog_associated_edit_height">60dp</dimen>
     <dimen name="dialog_associated_edit_margin_top">50dp</dimen>
