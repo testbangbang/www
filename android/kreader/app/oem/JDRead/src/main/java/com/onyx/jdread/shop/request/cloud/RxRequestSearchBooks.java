@@ -2,7 +2,7 @@ package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
-import com.onyx.jdread.shop.cloud.entity.CategoryLevel2BooksRequestBean;
+import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
@@ -16,15 +16,15 @@ import retrofit2.Call;
  * Created by hehai on 17-3-30.
  */
 
-public class RxRequestCategoryLevel2Books extends RxBaseCloudRequest {
-    private CategoryLevel2BooksRequestBean requestBean;
+public class RxRequestSearchBooks extends RxBaseCloudRequest {
+    private SearchBooksRequestBean requestBean;
     private BookModelBooksResultBean resultBean;
 
     public BookModelBooksResultBean getResultBean() {
         return resultBean;
     }
 
-    public void setRequestBean(CategoryLevel2BooksRequestBean requestBean) {
+    public void setRequestBean(SearchBooksRequestBean requestBean) {
         this.requestBean = requestBean;
     }
 
@@ -66,6 +66,6 @@ public class RxRequestCategoryLevel2Books extends RxBaseCloudRequest {
     }
 
     private Call<BookModelBooksResultBean> getCall(ReadContentService getCommonService) {
-        return getCommonService.getCategoryLevel2BookList(requestBean.getAppBaseInfo().getRequestParamsMap(),requestBean.getQueryArgsMap());
+        return getCommonService.getSearchBooks(requestBean.getAppBaseInfo().getRequestParamsMap(),requestBean.getQueryArgsMap());
     }
 }

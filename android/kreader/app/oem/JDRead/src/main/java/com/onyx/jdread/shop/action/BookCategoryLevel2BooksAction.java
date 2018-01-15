@@ -3,12 +3,12 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.shop.cloud.entity.CategoryLevel2BooksRequestBean;
+import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.request.cloud.RxRequestCategoryLevel2Books;
+import com.onyx.jdread.shop.request.cloud.RxRequestSearchBooks;
 
 import static com.onyx.jdread.shop.common.CloudApiContext.CategoryLevel2BookList.PAGE_SIZE_DEFAULT_VALUES;
 import static com.onyx.jdread.shop.common.CloudApiContext.SearchBook.SEARCH_TYPE_BOOK_SHOP;
@@ -36,7 +36,7 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         shopViewModel = shopDataBundle.getShopViewModel();
-        CategoryLevel2BooksRequestBean requestBean = new CategoryLevel2BooksRequestBean();
+        SearchBooksRequestBean requestBean = new SearchBooksRequestBean();
         JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
         jdAppBaseInfo.setTime();
         requestBean.setAppBaseInfo(jdAppBaseInfo);
@@ -45,9 +45,9 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
         requestBean.sort = sortKey + "_" + sortType;
         requestBean.page = String.valueOf(currentPage);
         requestBean.page_size = PAGE_SIZE_DEFAULT_VALUES;
-        final RxRequestCategoryLevel2Books request = new RxRequestCategoryLevel2Books();
+        final RxRequestSearchBooks request = new RxRequestSearchBooks();
         request.setRequestBean(requestBean);
-        request.execute(new RxCallback<RxRequestCategoryLevel2Books>() {
+        request.execute(new RxCallback<RxRequestSearchBooks>() {
 
             @Override
             public void onSubscribe() {
@@ -62,7 +62,7 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
             }
 
             @Override
-            public void onNext(RxRequestCategoryLevel2Books request) {
+            public void onNext(RxRequestSearchBooks request) {
                 resultBean = request.getResultBean();
                 if (resultBean != null) {
                     if (resultBean.data != null)

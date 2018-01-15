@@ -72,7 +72,7 @@ public interface ReadContentService {
                                              @QueryMap Map<String, String> map);
 
     @GET("search")
-    Call<BookModelBooksResultBean> getCategoryLevel2BookList(@QueryMap Map<String, String> baseInfoMap,
+    Call<BookModelBooksResultBean> getSearchBooks(@QueryMap Map<String, String> baseInfoMap,
                                                                   @QueryMap Map<String, String> queryMap);
 
     @GET("category")

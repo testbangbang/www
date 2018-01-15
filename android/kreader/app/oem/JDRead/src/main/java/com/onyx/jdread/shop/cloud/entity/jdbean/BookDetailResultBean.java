@@ -29,7 +29,7 @@ public class BookDetailResultBean {
         public boolean can_try;
         public String try_url;
         public String price_message;
-        public int price;
+        public float price;
         public float jd_price;
         public String isbn;
         public int second_catid1;
