@@ -41,6 +41,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
@@ -422,14 +423,10 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     protected void onFinishErasing(TouchPointList pointList) {
         erasePoint = null;
+        final List<Shape> stash = getNoteViewHelper().detachStash();
         RemoveByPointListAction<BaseScribbleActivity> removeByPointListAction = new
-                RemoveByPointListAction<>(pointList);
-        removeByPointListAction.execute(this, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                drawPage();
-            }
-        });
+                RemoveByPointListAction<>(pointList, stash, surfaceView);
+        removeByPointListAction.execute(this, null);
     }
 
     private void drawContent(final Canvas canvas, final Paint paint) {
@@ -654,5 +651,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     public void resetFullUpdate() {
         this.fullUpdate = false;
+    }
+
+    public boolean shouldResume() {
+        return !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType());
     }
 }
