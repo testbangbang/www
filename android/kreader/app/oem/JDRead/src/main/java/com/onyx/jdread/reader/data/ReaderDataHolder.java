@@ -80,8 +80,8 @@ public class ReaderDataHolder {
         this.settings = settings;
     }
 
-    public ReaderTextStyle getStyle() {
-        return style;
+    public ReaderTextStyle getStyleCopy() {
+        return ReaderTextStyle.copy(style);
     }
 
     public void setStyle(ReaderTextStyle style) {
