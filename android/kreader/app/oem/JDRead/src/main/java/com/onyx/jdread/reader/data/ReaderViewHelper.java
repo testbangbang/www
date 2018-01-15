@@ -67,7 +67,7 @@ public class ReaderViewHelper {
             readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().drawVisiblePages(readerDataHolder.getReader(), context, readerViewInfo);
             draw(readerDataHolder, context.renderingBitmap.getBitmap(),readerUserDataInfo,readerViewInfo);
 
-            readerDataHolder.getReader().getReaderHelper().transferRenderBitmapToViewport(context.renderingBitmap);
+            readerDataHolder.getReader().getReaderHelper().saveToCache(context.renderingBitmap);
         } catch (Exception e) {
             e.printStackTrace();
         }
