@@ -17,9 +17,9 @@ import com.onyx.jdread.shop.model.ShopDataBundle;
 public class BookDownloadUtils {
     private static final String TAG = BookDownloadUtils.class.getSimpleName();
 
-    public static void download(final BookDetailResultBean.Detail bookDetailBean, ShopDataBundle dataBundle) {
-        bookDetailBean.getBookExtraInfoBean().isWholeBook = true;
-        if (StringUtils.isNullOrEmpty(bookDetailBean.getDownLoadUrl())) {
+    public static void download(final BookDetailResultBean.DetailBean bookDetailBean, ShopDataBundle dataBundle) {
+        bookDetailBean.bookExtraInfoBean.isWholeBook = true;
+        if (StringUtils.isNullOrEmpty(bookDetailBean.downLoadUrl)) {
             BookDownloadUrlAction downloadUrlAction = new BookDownloadUrlAction(bookDetailBean);
             downloadUrlAction.execute(dataBundle, new RxCallback() {
                 @Override
@@ -33,7 +33,7 @@ public class BookDownloadUtils {
                 }
             });
         } else {
-            BookExtraInfoBean bookExtraInfoBean = bookDetailBean.getBookExtraInfoBean();
+            BookExtraInfoBean bookExtraInfoBean = bookDetailBean.bookExtraInfoBean;
             if (bookExtraInfoBean != null && bookExtraInfoBean.downLoadState != FileDownloadStatus.INVALID_STATUS && DownLoadHelper.isDownloading(bookExtraInfoBean.downLoadState)) {
                 OnyxDownloadManager.getInstance().pauseTask(bookExtraInfoBean.downLoadTaskTag, false);
             } else {

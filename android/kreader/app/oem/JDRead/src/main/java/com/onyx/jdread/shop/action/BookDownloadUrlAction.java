@@ -19,10 +19,10 @@ import com.onyx.jdread.shop.request.cloud.RxRequestBookDownloadUrl;
 
 public class BookDownloadUrlAction extends BaseAction {
 
-    private BookDetailResultBean.Detail bookDetailBean;
+    private BookDetailResultBean.DetailBean bookDetailBean;
     private BookDownloadUrlResultBean bookDownloadUrlResultBean;
 
-    public BookDownloadUrlAction(BookDetailResultBean.Detail bookDetailBean) {
+    public BookDownloadUrlAction(BookDetailResultBean.DetailBean bookDetailBean) {
         this.bookDetailBean = bookDetailBean;
     }
 
@@ -31,9 +31,9 @@ public class BookDownloadUrlAction extends BaseAction {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(dataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.BookDownloadUrl.ORDER_ID, bookDetailBean.getOrderId());
+        body.put(CloudApiContext.BookDownloadUrl.ORDER_ID, bookDetailBean.order_id);
         body.put(CloudApiContext.BookDownloadUrl.UUID, dataBundle.getAppBaseInfo().getUuid());
-        body.put(CloudApiContext.BookDownloadUrl.EBOOK_ID, bookDetailBean.getEbookId());
+        body.put(CloudApiContext.BookDownloadUrl.EBOOK_ID, bookDetailBean.ebook_id);
         body.put(CloudApiContext.BookDownloadUrl.USER_ID, PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NICK_NAME, ""));
         baseRequestBean.setBody(body.toString());
         final RxRequestBookDownloadUrl req = new RxRequestBookDownloadUrl();
@@ -43,7 +43,7 @@ public class BookDownloadUrlAction extends BaseAction {
             public void onNext(Object o) {
                 bookDownloadUrlResultBean = req.getBookDownloadUrlResultBean();
                 if (bookDownloadUrlResultBean != null && StringUtils.isNotBlank(bookDownloadUrlResultBean.ebookAddress)) {
-                    bookDetailBean.setDownLoadUrl( bookDownloadUrlResultBean.ebookAddress);
+                    bookDetailBean.downLoadUrl = bookDownloadUrlResultBean.ebookAddress;
                     BookCertAction bookCertAction = new BookCertAction(bookDetailBean);
                     bookCertAction.execute(dataBundle, new RxCallback() {
                         @Override

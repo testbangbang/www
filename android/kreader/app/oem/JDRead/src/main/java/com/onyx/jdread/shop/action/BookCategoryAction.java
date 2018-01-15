@@ -1,13 +1,12 @@
 package com.onyx.jdread.shop.action;
 
-import android.content.Context;
-
-import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestCategoryList;
@@ -21,24 +20,20 @@ import java.util.List;
 
 public class BookCategoryAction extends BaseAction<ShopDataBundle> {
 
-    private boolean isAllCategory;
-    private Context context;
+    private boolean isMainCategory;
     private BookShopViewModel shopViewModel;
-    private List<CategoryListResultBean.CatListBean> catList;
+    private List<CategoryListResultBean.CategoryBeanLevelOne> levelOneData;
 
-    public BookCategoryAction(Context context, boolean isAllCategory) {
-        this.context = context;
-        this.isAllCategory = isAllCategory;
+    public BookCategoryAction(boolean isMainCategory) {
+        this.isMainCategory = isMainCategory;
     }
 
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         shopViewModel = shopDataBundle.getShopViewModel();
-        BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
-        JSONObject body = new JSONObject();
-        body.put(CloudApiContext.CategoryList.CLIENT_PLATFORM, CloudApiContext.CategoryList.CLIENT_PLATFORM_VALUE);
-        baseRequestBean.setBody(body.toJSONString());
+        BaseRequestInfo baseRequestBean = new BaseRequestInfo();
+        JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
+        baseRequestBean.setAppBaseInfo(jdAppBaseInfo);
         final RxRequestCategoryList request = new RxRequestCategoryList();
         request.setBaseRequestBean(baseRequestBean);
         request.execute(new RxCallback<RxRequestCategoryList>() {
@@ -59,9 +54,11 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
             public void onNext(RxRequestCategoryList request) {
                 CategoryListResultBean categoryListResultBean = request.getCategoryListResultBean();
                 if (categoryListResultBean != null) {
-                    catList = categoryListResultBean.catList;
-                    if (!isAllCategory) {
-                        shopViewModel.setCategorySubjectItems(catList);
+                    levelOneData = categoryListResultBean.data;
+                }
+                if (levelOneData != null) {
+                    if (isMainCategory) {
+                        shopViewModel.setCategorySubjectItems(levelOneData.get(0).sub_category);
                     }
                 }
 
@@ -88,28 +85,29 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
         });
     }
 
-    public List<CategoryListResultBean.CatListBean> getCatList() {
-        return catList;
+    public List<CategoryListResultBean.CategoryBeanLevelOne> getCategoryBeanLevelOneList() {
+        return levelOneData == null ? new ArrayList<CategoryListResultBean.CategoryBeanLevelOne>() : levelOneData;
     }
 
-    public List<CategoryListResultBean.CatListBean> loadCategoryV2(List<CategoryListResultBean.CatListBean> catList, int catId) {
-        List<CategoryListResultBean.CatListBean> list = new ArrayList<>();
-        if (catList != null) {
-            for (CategoryListResultBean.CatListBean catListBean : catList) {
-                if (catId == catListBean.catId) {
-                    List<CategoryListResultBean.CatListBean.ChildListBean> childList = catListBean.childList;
-                    for (CategoryListResultBean.CatListBean.ChildListBean childListBean : childList) {
-                        CategoryListResultBean.CatListBean bean = new CategoryListResultBean.CatListBean();
-                        bean.amount = childListBean.amount;
-                        bean.catId = childListBean.catId;
-                        bean.catName = childListBean.catName;
-                        bean.catType = childListBean.catType;
-                        bean.isLeaf = childListBean.isLeaf;
-                        list.add(bean);
-                    }
-                }
-            }
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getCateTwo(){
+        List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> cateTwoList = new ArrayList<>();
+        for (CategoryListResultBean.CategoryBeanLevelOne cateOne : getCategoryBeanLevelOneList()){
+            CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = new CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo();
+            categoryBeanLevelTwo.cateLevel = Constants.CATEGORY_LEVEL_ONE;
+            categoryBeanLevelTwo.id = cateOne.id;
+            categoryBeanLevelTwo.image_url = cateOne.image_url;
+            categoryBeanLevelTwo.name = cateOne.name;
+            categoryBeanLevelTwo.sub_category = cateOne.sub_category;
+            cateTwoList.add(categoryBeanLevelTwo);
         }
-        return list;
+        return cateTwoList;
+    }
+
+    public List<String> getTitleList() {
+        List<String> titleList = new ArrayList<>();
+        for (CategoryListResultBean.CategoryBeanLevelOne categoryOne : getCategoryBeanLevelOneList()) {
+            titleList.add(categoryOne.name);
+        }
+        return titleList;
     }
 }

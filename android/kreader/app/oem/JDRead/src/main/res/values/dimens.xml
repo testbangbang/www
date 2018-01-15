@@ -246,9 +246,7 @@
     <dimen name="item_consumption_record_date_margin_top">14dp</dimen>
     <dimen name="item_points_for_points_width">100dp</dimen>
     <dimen name="item_points_for_points_padding">10dp</dimen>
-    <dimen name="all_category_title_shadow_margin_top">2dp</dimen>
-    <dimen name="all_category_title_shadow_margin_width">42dp</dimen>
-    <dimen name="all_category_title_shadow_margin_height">2dp</dimen>
+    <dimen name="all_category_title_shadow_padding_bottom">5dp</dimen>
     <dimen name="recycler_view_all_categorys_margin_top">10dp</dimen>
     <dimen name="all_category_type_margin_top">15dp</dimen>
     <dimen name="device_info_recycler_height">467dp</dimen>
@@ -378,4 +376,7 @@
     <dimen name="reader_search_result_dec_margin_left">10dp</dimen>
     <dimen name="reader_search_result_dec_margin_top">20dp</dimen>
     <dimen name="reader_search_recycler_margin_top">30dp</dimen>
+    <dimen name="shadow_selector_padding_bottom">3dp</dimen>
+    <dimen name="recycle_view_indicator_margin_top">10dp</dimen>
+    <dimen name="all_category_recycle_view_overlap_height">-30dp</dimen>
 </resources>

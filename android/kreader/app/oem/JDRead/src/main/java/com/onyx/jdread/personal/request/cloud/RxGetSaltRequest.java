@@ -28,7 +28,7 @@ public class RxGetSaltRequest extends RxBaseCloudRequest {
 
     @Override
     public Object call() throws Exception {
-        ReadContentService service = CloudApiContext.getService(CloudApiContext.JD_NEW_BASE_URL);
+        ReadContentService service = CloudApiContext.getService(CloudApiContext.JD_BOOK_SHOP_URL);
         Call<SaltResultBean> call = getCall(service);
         Response<SaltResultBean> response = call.execute();
         if (response.isSuccessful()) {

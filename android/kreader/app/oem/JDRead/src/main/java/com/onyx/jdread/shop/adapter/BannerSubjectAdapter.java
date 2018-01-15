@@ -10,8 +10,8 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.BannerSubjectModelItemBinding;
-import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
-import com.onyx.jdread.shop.event.BookItemClickEvent;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
+import com.onyx.jdread.shop.event.BannerItemClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -21,7 +21,7 @@ import java.util.List;
  * Created by jackdeng on 2017/12/12.
  */
 
-public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, ResultBookBean, ResultBookBean> {
+public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, BookModelConfigResultBean.DataBean.AdvBean , BookModelConfigResultBean.DataBean.AdvBean > {
 
     private EventBus eventBus;
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_banner_recycle_view_row);
@@ -58,7 +58,7 @@ public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolde
 
     @Override
     public void onPageBindViewHolder(PageRecyclerView.ViewHolder holder, int position) {
-        final ResultBookBean bookBean = getItemVMList().get(position);
+        final BookModelConfigResultBean.DataBean.AdvBean  bookBean = getItemVMList().get(position);
         ModelViewHolder viewHolder = (ModelViewHolder) holder;
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
@@ -66,7 +66,7 @@ public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolde
     }
 
     @Override
-    public void setRawData(List<ResultBookBean> rawData, Context context) {
+    public void setRawData(List<BookModelConfigResultBean.DataBean.AdvBean > rawData, Context context) {
         super.setRawData(rawData, context);
         setItemVMList(rawData);
         notifyDataSetChanged();
@@ -80,7 +80,7 @@ public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolde
         }
         int position = (int) tag;
         if (eventBus != null && getItemVMList() != null) {
-            eventBus.post(new BookItemClickEvent(getItemVMList().get(position)));
+            eventBus.post(new BannerItemClickEvent(getItemVMList().get(position)));
         }
     }
 
@@ -97,8 +97,8 @@ public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolde
             return bind;
         }
 
-        public void bindTo(ResultBookBean bookBean) {
-            bind.setBookBean(bookBean);
+        public void bindTo(BookModelConfigResultBean.DataBean.AdvBean  bookBean) {
+            bind.setAdvBean(bookBean);
             bind.executePendingBindings();
         }
     }

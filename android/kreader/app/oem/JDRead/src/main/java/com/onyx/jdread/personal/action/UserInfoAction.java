@@ -1,16 +1,10 @@
 package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.personal.cloud.entity.UserInfoRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxRequestUserInfo;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by jackdeng on 2017/12/26.
@@ -46,15 +40,5 @@ public class UserInfoAction extends BaseAction {
 
     public UserInfoBean getUserInfoData() {
         return userInfoBean;
-    }
-
-    private String getUserInfoJsonBody(String pin) {
-        final JSONObject json = new JSONObject();
-        try {
-            json.put(Constants.SP_KEY_LIST_PIN, pin);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return json.toString();
     }
 }

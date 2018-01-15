@@ -1,7 +1,6 @@
 package com.onyx.jdread.shop.action;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -29,7 +28,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
     private String url;
     private String filePath;
     private Object tag;
-    private BookDetailResultBean.Detail bookDetailBean;
+    private BookDetailResultBean.DetailBean bookDetailBean;
 
     public DownloadAction(Context context, String url, String filePath, Object tag) {
         this.context = context;
@@ -116,7 +115,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
         return OnyxDownloadManager.getInstance();
     }
 
-    public void setBookDetailBean(BookDetailResultBean.Detail bookDetailBean) {
+    public void setBookDetailBean(BookDetailResultBean.DetailBean bookDetailBean) {
         this.bookDetailBean = bookDetailBean;
     }
 }

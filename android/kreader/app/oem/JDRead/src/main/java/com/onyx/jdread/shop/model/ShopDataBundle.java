@@ -20,9 +20,10 @@ public class ShopDataBundle {
     private DataManager dataManager;
     private ShopCartModel shopCartModel;
     private RankViewModel rankViewModel;
-    private BookDetailResultBean.Detail bookDetail;
     private TitleBarModel titleBarModel;
     private BuyReadVipModel buyReadVipModel;
+    private BookDetailResultBean.DetailBean bookDetail;
+    private ViewAllViewModel viewAllViewModel;
 
     private ShopDataBundle() {
 
@@ -79,6 +80,17 @@ public class ShopDataBundle {
         return rankViewModel;
     }
 
+    public ViewAllViewModel getViewAllViewModel() {
+        if (viewAllViewModel == null) {
+            synchronized (ViewAllViewModel.class) {
+                if (viewAllViewModel == null) {
+                    viewAllViewModel = new ViewAllViewModel(getEventBus());
+                }
+            }
+        }
+        return viewAllViewModel;
+    }
+
     public AppBaseInfo getAppBaseInfo() {
         if (appBaseInfo == null) {
             synchronized (AppBaseInfo.class) {
@@ -108,11 +120,11 @@ public class ShopDataBundle {
         return shopCartModel;
     }
 
-    public void setBookDetail(BookDetailResultBean.Detail bookDetail) {
+    public void setBookDetail(BookDetailResultBean.DetailBean bookDetail) {
         this.bookDetail = bookDetail;
     }
 
-    public BookDetailResultBean.Detail getBookDetail() {
+    public BookDetailResultBean.DetailBean getBookDetail() {
         return bookDetail;
     }
 

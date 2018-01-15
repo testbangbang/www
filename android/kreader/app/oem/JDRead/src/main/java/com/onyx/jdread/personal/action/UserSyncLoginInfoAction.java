@@ -16,7 +16,6 @@ public class UserSyncLoginInfoAction extends BaseAction {
     @Override
     public void execute(PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo requestBean = new JDAppBaseInfo();
-        requestBean.addApp();
         final RxRequestSyncLoginInfo rq = new RxRequestSyncLoginInfo();
         rq.setRequestBean(requestBean);
         rq.execute(new RxCallback() {

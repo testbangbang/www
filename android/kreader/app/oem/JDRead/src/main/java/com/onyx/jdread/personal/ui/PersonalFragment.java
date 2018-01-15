@@ -31,7 +31,6 @@ import com.onyx.jdread.personal.event.UserInfoEvent;
 import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalModel;
-import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;

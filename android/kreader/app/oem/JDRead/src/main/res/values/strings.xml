@@ -113,7 +113,7 @@
     <string name="new_book">New Book</string>
     <string name="category">Category</string>
     <string name="back_to_top">Back to top</string>
-    <string name="view_all_books">View all the %1$s million books</string>
+    <string name="view_all_books">View All Books</string>
     <string name="search_view_hint">Please input what you want to search</string>
     <string name="book_detail_yuedou_price">%1$s Read Bean</string>
     <string name="book_detail_button_now_read">Now Read</string>
@@ -148,8 +148,6 @@
     <string name="book_detail_downloading">Downloading</string>
     <string name="book_detail_try_read">Try read the book</string>
     <string name="book_detail_download_add_shelf">Trying to read file has started to download and add a bookcase</string>
-    <string name="book_detail_go_shelf">Go book shelf</string>
-    <string name="book_detail_stay">Stay</string>
     <string name="book_detail_dialog_fluent">Smooth Reading immediately(the book supported)</string>
     <string name="book_detail_dialog_buy">Direct purchase</string>
     <string name="book_detail_dialog_add_cart">Add to cart, buy later</string>
@@ -258,9 +256,6 @@
     <string name="being_set_up">Being set up</string>
     <string name="loading_format">%s ...</string>
     <string name="add_to_smooth_list_failed">Add to smooth list failed</string>
-    <string name="all_category_title_publish">Publish</string>
-    <string name="all_category_title_boy">Boy</string>
-    <string name="all_category_title_girl">Girl</string>
     <string name="all_category">All Category</string>
     <string name="device_model_format">Model： %s</string>
     <string name="device_version_format">Version： %s</string>

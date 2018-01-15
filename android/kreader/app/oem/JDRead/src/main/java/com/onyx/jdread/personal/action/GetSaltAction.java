@@ -14,7 +14,6 @@ public class GetSaltAction extends BaseAction {
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.addApp();
         final RxGetSaltRequest rq = new RxGetSaltRequest(baseInfo);
         rq.execute(new RxCallback() {
             @Override

@@ -16,7 +16,6 @@ public class ResultBookBean extends BaseObservable{
     public int type;
     public String adWords;
     public boolean isFluentRead;
-    public String info;
     public boolean tobFluentRead;
     public int secondCatid2;
     public int secondCatid1;
@@ -39,10 +38,8 @@ public class ResultBookBean extends BaseObservable{
     public String promotion;
     public String publisher;
     public float fileSize;
-    public String author;
     public String mediaComments;
     public String isbn;
-    public String name;
     public int applePrice;
     public String largeImageUrl;
     public String ipadId;
@@ -60,4 +57,12 @@ public class ResultBookBean extends BaseObservable{
     public String currentTime;
     public boolean tryRead;
     public boolean isFree;
+
+    public int ebook_id;
+    public String name;
+    public String author;
+    public String image_url;
+    public String large_image_url;
+    public String info;
+    public String bookType;
 }

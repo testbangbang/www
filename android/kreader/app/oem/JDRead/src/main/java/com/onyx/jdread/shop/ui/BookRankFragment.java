@@ -7,27 +7,29 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookRankBinding;
 import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.shop.action.BookRankAction;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelResultBean;
+import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
+import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.model.RankViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
 
 /**
  * Created by jackdeng on 2018/1/4.
@@ -39,9 +41,6 @@ public class BookRankFragment extends BaseFragment {
     private int bookDetailSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_detail_recycle_view_space);
     private DividerItemDecoration itemDecoration;
     private PageRecyclerView recyclerView;
-    private ArrayList<SubjectViewModel> dataList = new ArrayList<>();
-    private BookModelResultBean newBookResultBean;
-    private BookModelResultBean specialTodayResultBean;
     private GPaginator paginator;
 
     @Nullable
@@ -49,12 +48,30 @@ public class BookRankFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         bookRankBinding = FragmentBookRankBinding.inflate(inflater, container, false);
         initView();
+        initLibrary();
         initData();
         return bookRankBinding.getRoot();
     }
 
-    private void initData() {
+    private void initLibrary() {
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
+    }
 
+    private void initData() {
+        BookRankAction rankAction = new BookRankAction();
+        rankAction.execute(getShopDataBundle(), new RxCallback<BookRankAction>() {
+            @Override
+            public void onNext(BookRankAction rankAction) {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+        });
     }
 
     private void initView() {
@@ -90,7 +107,7 @@ public class BookRankFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getEventBus().register(this);
+        initLibrary();
     }
 
     @Override
@@ -111,12 +128,12 @@ public class BookRankFragment extends BaseFragment {
         return getShopDataBundle().getRankViewModel();
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
         showLoadingDialog(getString(event.getResId()));
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
         hideLoadingDialog();
     }
@@ -126,5 +143,29 @@ public class BookRankFragment extends BaseFragment {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onViewAllClickEvent(ViewAllClickEvent event) {
+        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
+        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, event.modelId);
+        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, event.modelType);
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookItemClickEvent(BookItemClickEvent event) {
+        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        hideLoadingDialog();
     }
 }

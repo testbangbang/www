@@ -70,7 +70,7 @@
     <integer name="loading_dialog_width">250</integer>
     <integer name="loading_dialog_height">150</integer>
     <integer name="all_category_recycle_view_space">0</integer>
-    <integer name="all_category_recycle_view_row">5</integer>
+    <integer name="all_category_recycle_view_row">6</integer>
     <integer name="all_category_recycle_view_col">4</integer>
     <integer name="device_info_row">7</integer>
     <integer name="device_info_col">1</integer>

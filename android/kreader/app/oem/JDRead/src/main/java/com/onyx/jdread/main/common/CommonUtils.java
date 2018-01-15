@@ -79,19 +79,11 @@ public class CommonUtils {
         return bookArr;
     }
 
-    public static boolean isCanNowRead(BookDetailResultBean.Detail detailBean){
+    public static boolean isCanNowRead(BookDetailResultBean.DetailBean detailBean){
         boolean canNowRead = false;
         if (detailBean != null) {
-            canNowRead = detailBean.isTryRead();
+            canNowRead = detailBean.can_try;
         }
         return canNowRead;
-    }
-
-    public static boolean showBuyBookButton(BookDetailResultBean.Detail detailBean){
-        boolean showBuyBookButton = false;
-        if (detailBean != null) {
-            showBuyBookButton = !detailBean.isFree();
-        }
-        return showBuyBookButton;
     }
 }

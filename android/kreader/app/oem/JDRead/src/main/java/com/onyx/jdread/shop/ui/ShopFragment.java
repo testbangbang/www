@@ -21,9 +21,7 @@ import com.onyx.jdread.databinding.FragmentBookShopTwoBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCategoryAction;
-import com.onyx.jdread.shop.action.BookImportantRecommendAction;
-import com.onyx.jdread.shop.action.BookSpecialTodayAction;
-import com.onyx.jdread.shop.action.NewBookAction;
+import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
@@ -32,6 +30,8 @@ import com.onyx.jdread.shop.event.CategoryViewClick;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
+import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
+import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
@@ -64,15 +64,20 @@ public class ShopFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         bookShopBinding = FragmentBookShopBinding.inflate(inflater, container, false);
         initView();
+        initLibrary();
         initData();
         return bookShopBinding.getRoot();
     }
 
+    private void initLibrary() {
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
+    }
+
     private void initData() {
-        getRecyclerViewSubjectOneData();
-        getRecyclerViewSubjectTwoData();
-        getRecyclerViewSubjectFourData();
-        getRecyclerViewCategoryData();
+        getShopMainConfigData();
+        getCategoryData();
     }
 
     private void initView() {
@@ -100,7 +105,7 @@ public class ShopFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getEventBus().register(this);
+        initLibrary();
     }
 
     @Override
@@ -214,27 +219,11 @@ public class ShopFragment extends BaseFragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private void getRecyclerViewSubjectOneData() {
-        NewBookAction newBookAction = new NewBookAction(JDReadApplication.getInstance());
-        newBookAction.execute(getShopDataBundle(), new RxCallback() {
+    private void getShopMainConfigData() {
+        ShopMainConfigAction configAction = new ShopMainConfigAction();
+        configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
             @Override
-            public void onNext(Object o) {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                super.onError(throwable);
-
-            }
-        });
-    }
-
-    public void getRecyclerViewSubjectTwoData() {
-         BookSpecialTodayAction bookSpecialTodayAction = new BookSpecialTodayAction(JDReadApplication.getInstance());
-        bookSpecialTodayAction.execute(getShopDataBundle(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
+            public void onNext(ShopMainConfigAction configAction) {
 
             }
 
@@ -245,23 +234,8 @@ public class ShopFragment extends BaseFragment {
         });
     }
 
-    public void getRecyclerViewSubjectFourData() {
-        BookImportantRecommendAction bookImportantRecommendAction = new BookImportantRecommendAction(JDReadApplication.getInstance());
-        bookImportantRecommendAction.execute(getShopDataBundle(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                super.onError(throwable);
-            }
-        });
-    }
-
-    private void getRecyclerViewCategoryData() {
-        BookCategoryAction bookCategoryAction = new BookCategoryAction(JDReadApplication.getInstance(),false);
+    private void getCategoryData() {
+        BookCategoryAction bookCategoryAction = new BookCategoryAction(true);
         bookCategoryAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -296,7 +270,7 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
+        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
@@ -307,8 +281,28 @@ public class ShopFragment extends BaseFragment {
         getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShopMainViewAllBookEvent(ShopMainViewAllBookEvent event) {
+        getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onViewAllClickEvent(ViewAllClickEvent event) {
+        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
+        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, event.modelId);
+        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, event.modelType);
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+        }
+    }
+
     public ShopDataBundle getShopDataBundle() {
         return ShopDataBundle.getInstance();
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        hideLoadingDialog();
+    }
 }
