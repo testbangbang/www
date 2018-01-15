@@ -17,16 +17,17 @@ public class SelectWordAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
-        final SelectWordRequest selectWordRequest = new SelectWordRequest(readerDataHolder,
+    public void execute(final ReaderDataHolder readerDataHolder) {
+        final SelectWordRequest request = new SelectWordRequest(readerDataHolder,
                 selectWordInfo.pagePosition,
                 selectWordInfo.startPoint,
                 selectWordInfo.endPoint,
                 selectWordInfo.touchPoint,
                 ReaderHitTestOptionsImpl.create(false));
-        selectWordRequest.execute(new RxCallback() {
+        request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                readerDataHolder.setReaderUserDataInfo(request.getReaderUserDataInfo());
             }
         });
     }

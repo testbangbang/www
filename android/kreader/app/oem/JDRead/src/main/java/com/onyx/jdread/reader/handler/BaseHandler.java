@@ -257,18 +257,6 @@ public class BaseHandler {
     }
 
     public static boolean processSingleTapUp(ReaderDataHolder readerDataHolder, final String action, final String args) {
-        if (StringUtils.isNullOrEmpty(action)) {
-            return false;
-        }
-        if (action.equals(TouchAction.NEXT_PAGE)) {
-            new NextPageAction().execute(readerDataHolder);
-        } else if (action.equals(TouchAction.PREV_PAGE)) {
-            new PrevPageAction().execute(readerDataHolder);
-        } else if (action.equals(TouchAction.SHOW_MENU)) {
-            new ShowSettingMenuAction().execute(readerDataHolder);
-        } else {
-            return false;
-        }
         return true;
     }
 

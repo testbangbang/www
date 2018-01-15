@@ -41,6 +41,8 @@ public class WordSelectionHandler extends BaseHandler {
     private PointF highLightEndBottom;
     private int lastSelectStartPosition = 0;
     private int lastSelectEndPosition = 0;
+    private float lastMoveX = 0;
+    private float lastMoveY = 0;
 
     public WordSelectionHandler(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder);
@@ -157,8 +159,6 @@ public class WordSelectionHandler extends BaseHandler {
         return MathUtils.distance(lastMovedPoint.x, lastMovedPoint.y, x, y) > moveRangeAfterLongPress;
     }
 
-    float lastMoveX = 0;
-    float lastMoveY = 0;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
