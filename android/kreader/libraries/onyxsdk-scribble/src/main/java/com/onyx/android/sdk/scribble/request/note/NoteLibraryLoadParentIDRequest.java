@@ -9,11 +9,8 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 
 public class NoteLibraryLoadParentIDRequest extends BaseNoteRequest {
-    public String getParentUniqueID() {
-        return parentUniqueID;
-    }
-
-    private String parentUniqueID;
+    private volatile String parentUniqueID;
+    private volatile String uniqueID;
 
     public NoteLibraryLoadParentIDRequest(String uniqueID) {
         this.uniqueID = uniqueID;
@@ -21,10 +18,13 @@ public class NoteLibraryLoadParentIDRequest extends BaseNoteRequest {
         setResumeInputProcessor(false);
     }
 
-    private String uniqueID;
-
     @Override
     public void execute(NoteViewHelper helper) throws Exception {
         parentUniqueID = NoteDataProvider.load(uniqueID).getParentUniqueId();
     }
+
+    public String getParentUniqueID() {
+        return parentUniqueID;
+    }
+
 }
