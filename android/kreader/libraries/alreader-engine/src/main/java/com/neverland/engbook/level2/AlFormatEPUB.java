@@ -105,7 +105,7 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
         noUseCover = bookOptions.noUseCover;
         size = 0;
 
-        autoCodePage = false;
+        autoCodePage = true;
         setCP(TAL_CODE_PAGES.CP65001);
 
         allState.state_parser = STATE_XML_SKIP;
@@ -936,6 +936,11 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
                 } else {
 
                 }
+                return true;
+
+            case AlFormatTag.TAG_HTML:
+                if (tag.closed)
+                    setCP(TAL_CODE_PAGES.CP65001);
                 return true;
         }
 

@@ -574,7 +574,7 @@ public class AlFormatMOBI extends AlFormatBaseHTML {
             case AlFormatTag.TAG_PAGEBREAK:
                 if (tag.closed) {
 
-                } else if (!tag.ended) {
+                } else /*if (!tag.ended)*/ {
                     newParagraph();
                     setPropStyle(AlParProperty.SL2_BREAK_BEFORE);
                 }

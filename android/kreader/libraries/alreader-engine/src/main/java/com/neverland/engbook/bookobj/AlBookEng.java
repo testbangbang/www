@@ -435,6 +435,8 @@ public class AlBookEng{
             prof.interline = 50;
         profiles.font_interline[0] = prof.interline;
 
+		profiles.paragraphSpacing = prof.paragraphSpacing;
+
         prof.marginLeft = prof.validateMargin(prof.marginLeft);
         prof.marginRight = prof.validateMargin(prof.marginRight);
         prof.marginTop = prof.validateMargin(prof.marginTop);
@@ -529,6 +531,11 @@ public class AlBookEng{
 				profiles.font_interline[i] -= 15; 
 			}*/
 		}
+
+		if (profiles.paragraphSpacing < 0)
+			profiles.paragraphSpacing = 0;
+		if (profiles.paragraphSpacing > 200)
+			profiles.paragraphSpacing = 200;
 
 		if (profiles.font_sizes[InternalConst.TAL_PROFILE_FONTTYPE_NOTE] > profiles.font_sizes[0])
 			profiles.font_sizes[InternalConst.TAL_PROFILE_FONTTYPE_NOTE] = profiles.font_sizes[0];
@@ -657,14 +664,14 @@ public class AlBookEng{
 
 
 	private static final int MAX_NOTESITEMS_ON_PAGE	= 2;
-	private static final int DEF_RED_LINE_VALUE =		104;	
-	private static final int DEF_RED_LINEV_VALUE =		100;
-	private static final int DEF_STYLEV_VALUE =		0;
-	private static final int DEF_RED_PARV_VALUE =		20;
-	private static final int DEF_STYLE1_VALUE =		210;
-	private static final int DEF_STYLE2_VALUE =		225;
-	private static final int DEF_STYLE3_VALUE =		240;
-	private static final int DEF_RED_SUMMV_VALUE =		0;
+	//private static final int DEF_RED_LINE_VALUE =		104;
+	private static final int DEF_HEIGHT_EMPTYLINE_VALUE =		100;
+	//private static final int DEF_STYLEV_VALUE =		0;
+	//private static final int DEF_RED_PARV_VALUE =		20;
+	//private static final int DEF_STYLE1_VALUE =		210;
+	//private static final int DEF_STYLE2_VALUE =		225;
+	//private static final int DEF_STYLE3_VALUE =		240;
+	//private static final int DEF_RED_SUMMV_VALUE =		0;
 	private static final boolean DEF_SCREEN_PUNCTUATION =	true;
 
     private static final String TESTSTRING_FOR_CALCPAGESIZE = "Ш .ангй";
@@ -732,12 +739,12 @@ public class AlBookEng{
 			
 		//int paragraphHeight = 0x65656900;//PrefManager.getInt(R.string.keyscreen_paragraph);
 		
-		screen_parameters.redLineV = DEF_RED_LINEV_VALUE;
-		if (screen_parameters.redLineV < 10)
-			screen_parameters.redLineV = 10;
-		if (screen_parameters.redLineV > 200)
-			screen_parameters.redLineV = 200;
-		screen_parameters.redParV = DEF_RED_PARV_VALUE;
+		screen_parameters.heightEmptyLine = DEF_HEIGHT_EMPTYLINE_VALUE;
+		if (screen_parameters.heightEmptyLine < 10)
+			screen_parameters.heightEmptyLine = 10;
+		if (screen_parameters.heightEmptyLine > 200)
+			screen_parameters.heightEmptyLine = 200;
+		//screen_parameters.heightEmptyLine = DEF_RED_PARV_VALUE;
 		
 		/*screen_parameters.redLine = DEF_RED_LINE_VALUE;
 		if (screen_parameters.redLine >= 200) {
@@ -792,7 +799,7 @@ public class AlBookEng{
 			screen_parameters.redStyle3 = 1;
 		}*/
 
-		screen_parameters.redStyleV = DEF_STYLEV_VALUE;
+		//screen_parameters.redStyleV = DEF_STYLEV_VALUE;
 
 		//noinspection PointlessBooleanExpression
 		if (DEF_SCREEN_PUNCTUATION && !preferences.chinezeFormatting) {
@@ -3122,6 +3129,10 @@ public class AlBookEng{
 				oi.base_line_up = tword.base_line_up[wcurr];
 			if (use4text && oi.base_line_up4text < tword.base_line_up[wcurr])
 				oi.base_line_up4text = tword.base_line_up[wcurr];
+			if (use4text && oi.count > 0 && oi.base_line_upExceptFirst < tword.base_line_up[wcurr])
+				oi.base_line_upExceptFirst = tword.base_line_up[wcurr];
+			if (use4text && oi.count > 0 && oi.base_line_downExceptFirst < tword.base_line_down[wcurr])
+				oi.base_line_downExceptFirst = tword.base_line_down[wcurr];
 
 			oi.count++;
 			if (oi.count >= oi.realLength) 
@@ -3141,6 +3152,43 @@ public class AlBookEng{
 		oi.count++;
 		if (oi.count >= oi.realLength) 
 			AlOneItem.incItemLength(oi);
+	}
+
+	private void calcInteline(AlOneItem oi, AlOnePage page) {
+		int[] c = new int[4];
+		c[0]=c[1]=c[2]=c[3]= 0;
+
+		if (oi.isNote) {
+			c[0] = screen_parameters.cFontInterline[InternalConst.TAL_PROFILE_FONTTYPE_TEXT] - 20;
+			if (c[0] > 0)
+				c[0] = 0;
+			oi.interline = c[0] * (oi.base_line_up4text + oi.base_line_downExceptFirst) / 100;
+		} else {
+
+			for (int i = 0; i < oi.count; i++) {
+				if ((oi.style[i] & AlStyles.STYLE_CODE) != 0) {
+					c[1]++;
+				} else {
+					c[(int) ((oi.style[i] & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)]++;
+				}
+			}
+
+			if (c[0] > 0) {
+				oi.interline = screen_parameters.cFontInterline[0] * (oi.base_line_up4text + oi.base_line_downExceptFirst) / 100;
+			} else
+			if (c[1] > 0) {
+				oi.interline = screen_parameters.cFontInterline[1] * (oi.base_line_up4text + oi.base_line_downExceptFirst) / 100;
+			} else
+			if (c[2] > 0) {
+				oi.interline = screen_parameters.cFontInterline[2] * (oi.base_line_up4text + oi.base_line_downExceptFirst) / 100;
+			} else {
+				oi.interline = screen_parameters.cFontInterline[3] * (oi.base_line_up4text + oi.base_line_downExceptFirst) / 100;
+			}
+
+			if ((page.countItems > 0 || preferences.isASRoll || profiles.specialModeRoll) && oi.isStart) {
+				oi.height += profiles.paragraphSpacing * fontParam.em_width / 100;
+			}
+		}
 	}
 
 	private void initOneItem(AlOneItem oi, AlOneItem poi, long style,
@@ -3168,6 +3216,7 @@ public class AlBookEng{
 		oi.allWidth = width;
 		oi.textWidth = 0;		
 		oi.height = 0;
+		oi.mtop = 0;
 		oi.needHeihtImage0 = addEmptyLine;
 		oi.cntImage = 0;
 		oi.isEnd = oi.isStart = false;		
@@ -3185,12 +3234,15 @@ public class AlBookEng{
 		if (oi.base_line_up < 2)
 			oi.base_line_up = 2;*/
 		oi.base_line_up4text = oi.base_line_up;
+		oi.base_line_upExceptFirst = oi.base_line_up;
+		oi.base_line_downExceptFirst = oi.base_line_down;
 
 		oi.isNote = false;
 		oi.isPrepare = false;
-		oi.spaceAfterHyph0 = 0;		
-		
-		switch ((int) (oi.prop & AlParProperty.SL2_INTER_MASK >> 32L)) {
+		oi.spaceAfterHyph0 = 0;
+
+		oi.interline = 0;
+		/*switch ((int) (oi.prop & AlParProperty.SL2_INTER_MASK >> 32L)) {
 		case (int)(AlParProperty.SL2_INTER_100_ >> 32L):
 			oi.interline = 0;
 			break;
@@ -3206,7 +3258,7 @@ public class AlBookEng{
 			oi.interline = screen_parameters.cFontInterline[(int) ((style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)] *
 				screen_parameters.cFontHeight[(int) ((style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)] / 100;
 			break;		
-		}
+		}*/
 
         if (oi.isTableRow && oi.interline > 0) {
             oi.interline = 0;
@@ -3215,7 +3267,7 @@ public class AlBookEng{
         if (calcMode == TAL_CALC_MODE.NOTES) {
 			oi.justify = 0;
 			oi.isNote = true;
-			oi.prop = AlParProperty.SL2_INTER_NOTES;
+			//oi.prop = AlParProperty.SL2_INTER_NOTES;
 			if (oi.interline > 0)
 				oi.interline = 0;
 			return;
@@ -3263,59 +3315,25 @@ public class AlBookEng{
 					oi.allWidth -= oi.isRed;
 				}
 			}
-			
+
+			vP = (oi.prop & (AlParProperty.SL2_MARGT_MASK/* - AlParProperty::SL2_MARGT_MASK_EM*/)) >> AlParProperty.SL2_MARGT_SHIFT;
+			if (vP != 0) {
+				//v = (int32_t)(((double)page->pageHeight) * v / 100) * profiles.multiplexer;
+				vP = (int)(fontParam.em_width * vP / 2);//(int)(((double)width) * vP / 100.0);
+				/*if (vP > (page.pageHeight >> 1))
+					vP = page.pageHeight >> 1;*/
+				if (vP > (fontParam.height * 2))
+					vP = fontParam.height * 2;
+				oi.height += vP;
+				oi.mtop = (int) vP;
+			}
+
 			if (addEmptyLine || preferences.isASRoll) {
 
-				vP = (oi.prop & (AlParProperty.SL2_MARGT_MASK/* - AlParProperty::SL2_MARGT_MASK_EM*/)) >> AlParProperty.SL2_MARGT_SHIFT;
-				if (vP != 0) {
-					//v = (int32_t)(((double)page->pageHeight) * v / 100) * profiles.multiplexer;
-					vP = (int)(fontParam.em_width * vP / 1);//(int)(((double)width) * vP / 100.0);
-					if (vP > (page.pageHeight >> 1))
-						vP = page.pageHeight >> 1;
-					oi.height += vP;
-				}
-
-				/*if ((poi == null && (style & AlStyles.SL_STANZA) != 0) || (oi.isTableRow) ||
-                        ((poi != null) && (style & AlStyles.SL_STANZA) != 0 && (poi.style[0] & AlStyles.SL_STANZA) != 0)) {
-
-				} else {
-					switch (screen_parameters.redParV) {
-					case 10: oi.height += fontParam.height * 0.1f; break;
-					case 20: oi.height += fontParam.height * 0.2f; break;
-					case 30: oi.height += fontParam.height * 0.3f; break;
-					case 40: oi.height += fontParam.height * 0.4f; break;
-					case 50: oi.height += fontParam.height * 0.5f; break;
-				    }
-				}
-			
-				if (screen_parameters.summRedV == 0 && (style & (AlStyles.SL_PREV_EMPTY_1 + AlStyles.SL_PREV_EMPTY_0)) == (AlStyles.SL_PREV_EMPTY_1 + AlStyles.SL_PREV_EMPTY_0)) {
-					if ((style & AlStyles.SL_PREV_EMPTY_1) != 0) { 
-						switch (screen_parameters.redLineV > screen_parameters.redStyleV ? screen_parameters.redLineV : screen_parameters.redStyleV) {
-						case  25: oi.height += fontParam.height * 0.25f;  break;
-						case  50: oi.height += fontParam.height * 0.5f;  break;
-						case  75: oi.height += fontParam.height * 0.75f; break;
-						case 125: oi.height += fontParam.height * 1.25f; break;
-						case 150: oi.height += fontParam.height * 1.5f;  break;
-						default:  oi.height += fontParam.height; break;
-						}
-					}
-				} else {
-					if ((style & (AlStyles.SL_PREV_EMPTY_1 + AlStyles.SL_PREV_EMPTY_0)) != 0) { 
-						switch (screen_parameters.redLineV) {
-						case  25: oi.height += fontParam.height * 0.25f;  break;
-						case  50: oi.height += fontParam.height * 0.5f;  break;
-						case  75: oi.height += fontParam.height * 0.75f; break;
-						case 125: oi.height += fontParam.height * 1.25f; break;
-						case 150: oi.height += fontParam.height * 1.5f;  break;
-						default:  oi.height += fontParam.height; break;
-						}
-					}				
-				}*/
-
 				if ((oi.prop & (/*AlStyles::SL_PREV_EMPTY_1 + */AlParProperty.SL2_EMPTY_BEFORE)) != 0)
-					oi.height += fontParam.height * screen_parameters.redLineV / 100.0f;
+					oi.height += fontParam.height * screen_parameters.heightEmptyLine / 100.0f;
 				
-				if (!preferences.isASRoll) {
+				if (!preferences.isASRoll && !profiles.specialModeRoll) {
 					if ((oi.prop & AlParProperty.SL2_BREAK_BEFORE) != 0)
 						oi.height += InternalConst.BREAK_HEIGHT;
 					if (poi != null && poi.count == 1 && ((poi.style[0] & AlStyles.SL_IMAGE) != 0) && 
@@ -4218,6 +4236,8 @@ public class AlBookEng{
                 if (rowspanDiff > 0)
                     verifyRowSpan(page, oi, true);
 
+				calcInteline(oi, page);
+
                 ///////////////////////////////////////////////////////////
 				int addedItem = page.countItems;
 				if (addItem2Page0(oi, page, calcMode, width))
@@ -5019,7 +5039,9 @@ public class AlBookEng{
                     int rowspanDiff = 0;
                     if (oi.count == 1 && oi.text[0] == AlStyles.CHAR_ROWS_E)
                         rowspanDiff = verifyRowSpan(page, oi, false);
-					
+
+					calcInteline(oi, page);
+
 					if ((calcMode != TAL_CALC_MODE.NOTES || notesItemsOnPage < preferences.maxNotesItemsOnPageUsed) && (
 						
 							(page.textHeight + oi.height + oi.base_line_down + oi.base_line_up + (oi.interline > 0 ? oi.interline : 0) +
