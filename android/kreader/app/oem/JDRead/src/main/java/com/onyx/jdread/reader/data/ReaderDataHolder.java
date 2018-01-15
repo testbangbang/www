@@ -72,8 +72,8 @@ public class ReaderDataHolder {
         return readerUserDataInfo;
     }
 
-    public ImageReflowSettings getSettings() {
-        return settings;
+    public ImageReflowSettings getSettingsCopy() {
+        return ImageReflowSettings.copy(settings);
     }
 
     public void setSettings(ImageReflowSettings settings){

@@ -186,7 +186,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onImageReflowEvent(ImageReflowEvent event) {
-        new ImageReflowAction(readerDataHolder.getSettings()).execute(readerDataHolder);
+        new ImageReflowAction(readerDataHolder.getSettingsCopy()).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
