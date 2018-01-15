@@ -4,6 +4,10 @@ buildscript {
     repositories {
         jcenter()
         maven { url "http://mvn.leancloud.cn/nexus/content/repositories/releases" }
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.0'
@@ -22,6 +26,10 @@ allprojects {
         maven { url "https://jitpack.io" }
         maven { url  "http://dl.bintray.com/dasar/maven" }
         maven { url "http://mvn.leancloud.cn/nexus/content/repositories/releases" }
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
         repositories {
             flatDir {
                 dirs 'libs' //this way we can find the .aar file in libs folder
@@ -99,6 +107,8 @@ ext {
     flexboxVersion='0.3.0'
 
     evernoteVersion = '2.0.0-RC4'
+
+    acraVersion = '5.0.0'
 
 }
 
