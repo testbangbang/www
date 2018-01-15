@@ -1,6 +1,7 @@
 package com.onyx.android.note.activity.onyx;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -203,13 +204,13 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
                         }
 
                         @Override
-                        public void onCancel() {
-                            syncWithCallback(true, true, null);
+                        public void onLayoutStateChanged() {
+
                         }
 
                         @Override
-                        public void onLayoutStateChanged() {
-
+                        public void onVisibilityChanged(Rect excludeRect, boolean redrawPage, int visibility) {
+                            syncWithCallback(true, true, null);
                         }
                     }, R.id.divider, true
             );

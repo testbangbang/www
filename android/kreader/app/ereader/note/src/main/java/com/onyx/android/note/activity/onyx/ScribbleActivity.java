@@ -43,6 +43,7 @@ import com.onyx.android.note.actions.scribble.PenColorChangeAction;
 import com.onyx.android.note.actions.scribble.RedoAction;
 import com.onyx.android.note.actions.scribble.RemoveByGroupIdAction;
 import com.onyx.android.note.actions.scribble.UndoAction;
+import com.onyx.android.note.actions.scribble.UpdateScreenWritingExcludeRegionAction;
 import com.onyx.android.note.activity.BaseScribbleActivity;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
@@ -129,6 +130,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        hidePotentialShowSubMenu();
         wakeLockHolder.releaseWakeLock();
     }
 
@@ -199,30 +201,35 @@ public class ScribbleActivity extends BaseScribbleActivity {
         prevPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onPrevPage();
             }
         });
         nextPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onNextPage();
             }
         });
         undoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onUndo();
             }
         });
         redoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onRedo();
             }
         });
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onSave(false, true);
             }
         });
@@ -245,6 +252,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         settingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 showExportMenu();
             }
         });
@@ -255,6 +263,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (e == null) {
+                            hidePotentialShowSubMenu();
                             showGotoPageDialog();
                         }
                     }
@@ -305,6 +314,36 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void gcInvalidate() {
         EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
+    }
+
+    @Override
+    protected void onAddNewPage() {
+        hidePotentialShowSubMenu();
+        super.onAddNewPage();
+    }
+
+    @Override
+    protected void onDeletePage() {
+        hidePotentialShowSubMenu();
+        super.onDeletePage();
+    }
+
+    @Override
+    protected void onPrevPage() {
+        hidePotentialShowSubMenu();
+        super.onPrevPage();
+    }
+
+    @Override
+    protected void onNextPage() {
+        hidePotentialShowSubMenu();
+        super.onNextPage();
+    }
+
+    private void hidePotentialShowSubMenu(){
+        if (getScribbleSubMenu().isShow()) {
+            getScribbleSubMenu().dismiss(false);
+        }
     }
 
     private void initSpanTextView() {
@@ -771,13 +810,22 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         }
 
                         @Override
-                        public void onCancel() {
-                            syncWithCallback(true, true, null);
+                        public void onLayoutStateChanged() {
                         }
 
                         @Override
-                        public void onLayoutStateChanged() {
-
+                        public void onVisibilityChanged(final Rect excludeRect, final boolean redrawPage, int visibility) {
+                            boolean resume = visibility != View.VISIBLE && shouldResume();
+                            UpdateScreenWritingExcludeRegionAction<ScribbleActivity> action = new
+                                    UpdateScreenWritingExcludeRegionAction<>(excludeRect, resume);
+                            action.execute(ScribbleActivity.this, new BaseCallback() {
+                                @Override
+                                public void done(BaseRequest request, Throwable e) {
+                                    if (redrawPage) {
+                                        drawPage();
+                                    }
+                                }
+                            });
                         }
                     }, R.id.divider, true
             );

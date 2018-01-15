@@ -2,6 +2,7 @@ package com.onyx.android.note.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,7 @@ public class ScribbleSubMenu extends RelativeLayout {
 
         public abstract void onLayoutStateChanged();
 
-        public abstract void onCancel();
+        public abstract void onVisibilityChanged(final Rect excludeRect,final boolean redrawPage , int visibility);
     }
 
     private final MenuCallback mMenuCallback;
@@ -117,7 +118,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         });
         createAdapter();
         parentLayout.addView(this, setMenuPosition(isShowStatusBar));
-        this.setVisibility(View.GONE);
+        setVisibility(View.GONE);
     }
 
     public
@@ -165,13 +166,40 @@ public class ScribbleSubMenu extends RelativeLayout {
         dismiss(true);
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        updateWritingExcludeRegion();
+    }
+
+    private void updateWritingExcludeRegion(){
+        post(new Runnable() {
+            @Override
+            public void run() {
+                Rect excludeRect;
+                boolean redrawPage = true;
+                switch (getVisibility()) {
+                    case VISIBLE:
+                        excludeRect = new Rect(mMenuContentView.getLeft(), mMenuContentView.getTop(),
+                                mMenuContentView.getRight(), mMenuContentView.getBottom());
+                        redrawPage = false;
+                        break;
+                    default:
+                        excludeRect = new Rect();
+                        break;
+                }
+                mMenuCallback.onVisibilityChanged(excludeRect, redrawPage, getVisibility());
+            }
+        });
+    }
+
     /**
      * @param isCancel if no submenu item was previous selected -> true,otherwise false.
      */
-    private void dismiss(boolean isCancel) {
-        if (mMenuCallback != null && isCancel) {
-            mMenuCallback.onCancel();
-        }
+    public void dismiss(boolean isCancel) {
+//        if (mMenuCallback != null && isCancel) {
+//            mMenuCallback.onCancel();
+//        }
         setVisibility(GONE);
     }
 
