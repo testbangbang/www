@@ -3,8 +3,10 @@ package com.onyx.jdread;
 import android.test.ApplicationTestCase;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BookCommentsRequestBean;
-import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.request.cloud.RxRequestGetBookCommentList;
 
 import org.json.JSONException;
@@ -12,6 +14,8 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -33,9 +37,14 @@ public class BookCommentListTest extends ApplicationTestCase<JDReadApplication> 
     public void testBookCommentList() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         BookCommentsRequestBean bookCommentsRequestBean = new BookCommentsRequestBean();
-        bookCommentsRequestBean.setAppBaseInfo(ShopDataBundle.getInstance().getAppBaseInfo());
-        String bookCommentsJsonBody = getBookCommentsJsonBody(EBOOK, bookId, "1");
-        bookCommentsRequestBean.setBody(bookCommentsJsonBody);
+        JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
+        jdAppBaseInfo.setTime();
+        Map<String, String> queryArgs = new HashMap();
+        queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, Constants.BOOK_PAGE_SIZE);
+        queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, 1 + "");
+        bookCommentsRequestBean.setAppBaseInfo(jdAppBaseInfo);
+        bookCommentsRequestBean.bookId = bookId;
+        bookCommentsRequestBean.setQueryArgsMap(queryArgs);
         final RxRequestGetBookCommentList rq = new RxRequestGetBookCommentList();
         rq.setBookCommentsRequestBean(bookCommentsRequestBean);
         rq.execute(new RxCallback<RxRequestGetBookCommentList>() {

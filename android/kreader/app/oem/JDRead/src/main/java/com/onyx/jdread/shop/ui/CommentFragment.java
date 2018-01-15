@@ -14,19 +14,19 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookCommentBinding;
-import com.onyx.jdread.shop.event.HideAllDialogEvent;
-import com.onyx.jdread.shop.event.LoadingDialogEvent;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.TopRightTitleEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,7 +42,7 @@ public class CommentFragment extends BaseFragment {
 
     private FragmentBookCommentBinding bookCommentBinding;
     private int bookDetailSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_detail_recycle_view_space);
-    private DividerItemDecoration itemDecoration;
+    private DashLineItemDivider itemDecoration;
     private long ebookId;
     private PageRecyclerView recyclerViewComments;
     private int currentPage = 1;
@@ -104,9 +104,7 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void initDividerItemDecoration() {
-        itemDecoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
-        itemDecoration.setDrawLine(false);
-        itemDecoration.setSpace(bookDetailSpace);
+        itemDecoration = new DashLineItemDivider();
     }
 
     @Override
@@ -134,16 +132,16 @@ public class CommentFragment extends BaseFragment {
         commnetListAction.execute(getShopDataBundle(), new RxCallback<BookCommentListAction>() {
             @Override
             public void onNext(BookCommentListAction action) {
-                BookCommentsResultBean resultBean = action.getbookCommentsBean();
-                if (resultBean != null && resultBean.getReviews() != null && resultBean.getReviews().getList() != null) {
-                    initPageIndicator(resultBean);
+                BookCommentsResultBean.DataBean dataBean = action.getbookCommentsBean();
+                if (dataBean != null && dataBean.comments != null) {
+                    initPageIndicator(dataBean);
                 }
             }
         });
     }
 
-    private void initPageIndicator(BookCommentsResultBean resultBean) {
-        int size = resultBean.getReviews().getList().size();
+    private void initPageIndicator(BookCommentsResultBean.DataBean resultBean) {
+        int size = resultBean.comments.size();
         recyclerViewComments.resize(recyclerViewComments.getPageAdapter().getRowCount(), recyclerViewComments.getPageAdapter().getColumnCount(), size);
         getBookDetailViewModel().setTotalPage(paginator.pages());
         setCurrentPage(paginator.getCurrentPage());

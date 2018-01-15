@@ -52,11 +52,6 @@ public interface ReadContentService {
                                @Query(AppBaseInfo.BODY_KEY) String body);
 
     @POST("client.action")
-    Call<BookCommentsResultBean> getBookCommentsList(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                     @Query(AppBaseInfo.BODY_KEY) String body,
-                                                     @QueryMap Map<String, String> map);
-
-    @POST("client.action")
     Call<BookDownloadUrlResultBean> getBookDownloadUrl(@QueryMap Map<String, String> map,
                                                        @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
                                                        @Query(AppBaseInfo.BODY_KEY) String body);
@@ -73,7 +68,7 @@ public interface ReadContentService {
 
     @GET("search")
     Call<BookModelBooksResultBean> getSearchBooks(@QueryMap Map<String, String> baseInfoMap,
-                                                                  @QueryMap Map<String, String> queryMap);
+                                                  @QueryMap Map<String, String> queryMap);
 
     @GET("category")
     Call<CategoryListResultBean> getCategoryList(@QueryMap Map<String, String> baseInfoMap);
@@ -99,8 +94,8 @@ public interface ReadContentService {
 
     @POST("client.action")
     Call<RecommendListResultBean> getRecommendList(@QueryMap Map<String, String> map,
-                                                  @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                  @Query(AppBaseInfo.BODY_KEY) String body);
+                                                   @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
+                                                   @Query(AppBaseInfo.BODY_KEY) String body);
 
     @POST("client.action")
     Call<ShoppingCartBookIdsBean> getCartBookIds(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
@@ -122,18 +117,24 @@ public interface ReadContentService {
                                    @QueryMap Map<String, String> map);
 
     @GET("module/{f_type}/{module_id}")
-    Call<BookModelBooksResultBean> getBookShopModule(@Path("f_type")int fType,
-                                                     @Path("module_id")int moduleId,
+    Call<BookModelBooksResultBean> getBookShopModule(@Path("f_type") int fType,
+                                                     @Path("module_id") int moduleId,
                                                      @QueryMap Map<String, String> baseInfoMap,
                                                      @QueryMap Map<String, String> queryMap);
+
     @GET("channel/{cid}")
-    Call<BookModelConfigResultBean> getShopMainConfig(@Path("cid")int cid,
+    Call<BookModelConfigResultBean> getShopMainConfig(@Path("cid") int cid,
                                                       @QueryMap Map<String, String> baseInfoMap);
 
     @GET("rank/modules")
     Call<BookModelConfigResultBean> getBookRank(@QueryMap Map<String, String> baseInfoMap);
 
     @GET("ebook/{bookId}")
-    Call<BookDetailResultBean> getBookDetail(@Path("bookId")long bookId,
+    Call<BookDetailResultBean> getBookDetail(@Path("bookId") long bookId,
                                              @QueryMap Map<String, String> baseInfoMap);
+
+    @GET("ebook/{bookId}/comment")
+    Call<BookCommentsResultBean> getBookCommentsList(@Path("bookId") long bookId,
+                                                     @QueryMap Map<String, String> baseInfoMap,
+                                                     @QueryMap Map<String, String> queryMap);
 }
