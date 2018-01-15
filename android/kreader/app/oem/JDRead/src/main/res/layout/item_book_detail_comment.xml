@@ -48,14 +48,6 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
 
-        <View
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dashed_line_height"
-            android:layout_marginBottom="@dimen/book_detail_margin"
-            android:layout_marginTop="@dimen/book_detail_margin"
-            android:background="@mipmap/ic_dashed_line" />
-
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
 </layout>

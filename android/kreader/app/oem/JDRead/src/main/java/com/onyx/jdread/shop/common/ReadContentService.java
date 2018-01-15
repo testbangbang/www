@@ -93,11 +93,6 @@ public interface ReadContentService {
                                                @QueryMap Map<String, String> map);
 
     @POST("client.action")
-    Call<RecommendListResultBean> getRecommendList(@QueryMap Map<String, String> map,
-                                                   @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                   @Query(AppBaseInfo.BODY_KEY) String body);
-
-    @POST("client.action")
     Call<ShoppingCartBookIdsBean> getCartBookIds(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
                                                  @Query(AppBaseInfo.BODY_KEY) String body,
                                                  @QueryMap Map<String, String> map);
@@ -137,4 +132,8 @@ public interface ReadContentService {
     Call<BookCommentsResultBean> getBookCommentsList(@Path("bookId") long bookId,
                                                      @QueryMap Map<String, String> baseInfoMap,
                                                      @QueryMap Map<String, String> queryMap);
+
+    @GET("ebook/{bookId}/recommend")
+    Call<RecommendListResultBean> getRecommendList(@Path("bookId") long bookId,
+                                                   @QueryMap Map<String, String> baseInfoMap);
 }

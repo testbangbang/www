@@ -90,7 +90,7 @@
     <dimen name="book_shop_recycler_height">190dp</dimen>
     <dimen name="book_shop_banner_recycler_height">90dp</dimen>
     <dimen name="book_shop_banner_recycler_margin_top_and_bottom">30dp</dimen>
-    <dimen name="view_all_drawable_padding">1dp</dimen>
+    <dimen name="view_all_drawable_padding">5dp</dimen>
     <dimen name="search_view_shop_car_icon_margin_left">10dp</dimen>
     <dimen name="search_view_search_icon_margin_right">8dp</dimen>
     <dimen name="search_view_shop_car_icon_width_and_height">35dp</dimen>
@@ -132,8 +132,8 @@
     <dimen name="rating_bar_style_max_height">35dp</dimen>
     <dimen name="book_detail_discount_margin_left">20dp</dimen>
     <dimen name="book_detail_discount_padding_left_and_right">5dp</dimen>
-    <dimen name="book_detail_text_view_content_introduce_margin_top">15dp</dimen>
-    <dimen name="dashed_line_height">1dp</dimen>
+    <dimen name="book_detail_common_margin_top">20dp</dimen>
+    <dimen name="dashed_line_height">2dp</dimen>
     <dimen name="book_detail_margin">10dp</dimen>
     <dimen name="book_detail_recycler_view_recommend_height">125dp</dimen>
     <dimen name="item_book_detail_recommend_width">90dp</dimen>
@@ -356,4 +356,5 @@
     <dimen name="shadow_selector_padding_bottom">3dp</dimen>
     <dimen name="recycle_view_indicator_margin_top">10dp</dimen>
     <dimen name="all_category_recycle_view_overlap_height">-30dp</dimen>
+    <dimen name="book_detail_catalog_container_margin_left">25dp</dimen>
 </resources>

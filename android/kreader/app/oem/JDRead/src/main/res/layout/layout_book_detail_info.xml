@@ -20,6 +20,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:layout_marginTop="@dimen/book_detail_common_margin_top"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
@@ -56,21 +57,6 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_two_heading_font" />
 
-                    <TextView
-                        android:id="@+id/book_detail_author"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="@dimen/book_detail_author_margin_top"
-                        android:layout_weight="1"
-                        android:drawablePadding="@dimen/view_all_drawable_padding"
-                        android:drawableRight="@mipmap/ic_go_view_all"
-                        android:ellipsize="end"
-                        android:gravity="center_vertical"
-                        android:maxLines="1"
-                        android:text="@{bookDetailViewModel.bookDetailResultBean.data.author}"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/level_three_heading_font" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
@@ -78,23 +64,45 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <RatingBar
-                            android:id="@+id/book_detail_rating_bar"
-                            style="@style/RatingBarStyle"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:rating="@{bookDetailViewModel.bookDetailResultBean.data.star}" />
+                            android:layout_gravity="center_vertical"
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/book_detail_sub_info_margin_left"
-                            android:text="@{@string/book_detail_star(bookDetailViewModel.bookDetailResultBean.data.star)}"
-                            android:textSize="@dimen/level_three_heading_font" />
+                            <RatingBar
+                                android:id="@+id/book_detail_rating_bar"
+                                style="@style/RatingBarStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:isIndicator="true"
+                                android:layout_gravity="center_vertical"
+                                android:numStars="5"
+                                android:rating="@{bookDetailViewModel.bookDetailResultBean.data.star}" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/book_detail_sub_info_margin_left"
+                                android:text="@{@string/book_detail_star(bookDetailViewModel.bookDetailResultBean.data.star)}"
+                                android:textSize="@dimen/level_three_heading_font" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/book_detail_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="@dimen/book_detail_author_margin_top"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:text="@{bookDetailViewModel.bookDetailResultBean.data.author}"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/level_three_heading_font" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -144,8 +152,6 @@
                             android:id="@+id/book_detail_category_second_path"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawablePadding="@dimen/view_all_drawable_padding"
-                            android:drawableRight="@mipmap/ic_go_view_all"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.second_catid1_str}" />
 
                         <TextView
@@ -153,8 +159,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/book_detail_margin"
-                            android:drawablePadding="@dimen/view_all_drawable_padding"
-                            android:drawableRight="@mipmap/ic_go_view_all"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.third_catid1_str}" />
 
                     </LinearLayout>
@@ -166,7 +170,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/book_detail_margin"
+                android:layout_marginTop="@dimen/book_detail_common_margin_top"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -181,7 +185,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/rectangle_stroke"
+                        android:background="@drawable/rectangle_stroke_corners"
                         android:enabled="@{bookDetailViewModel.bookDetailResultBean != null}"
                         android:gravity="center"
                         android:onClick="@{()->bookDetailViewModel.onNowReadClick()}"
@@ -197,7 +201,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/book_detail_button_margin"
                         android:layout_weight="1"
-                        android:background="@drawable/rectangle_stroke"
+                        android:background="@drawable/rectangle_stroke_corners"
                         android:enabled="@{bookDetailViewModel.bookDetailResultBean != null}"
                         android:gravity="center"
                         android:onClick="@{()->bookDetailViewModel.onDownBookClick()}"
@@ -237,19 +241,11 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/book_detail_text_view_content_introduce_margin_top"
-                android:text="@string/book_detail_text_view_content_introduce"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
-
             <com.onyx.jdread.shop.view.HtmlTextView
+                android:layout_marginTop="@dimen/book_detail_common_margin_top"
                 android:id="@+id/book_detail_content_introduction"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/book_detail_margin"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="2"
@@ -257,9 +253,11 @@
                 bind:htmlContent="@{bookDetailViewModel.bookDetailResultBean.data.info}" />
 
             <RelativeLayout
+                android:layout_marginLeft="@dimen/book_detail_catalog_container_margin_left"
+                android:layout_marginRight="@dimen/book_detail_catalog_container_margin_left"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/book_detail_margin">
+                android:layout_marginTop="@dimen/book_detail_common_margin_top">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -267,10 +265,10 @@
                     android:layout_alignParentLeft="true"
                     android:background="@drawable/text_no_stoke_background"
                     android:drawablePadding="@dimen/view_all_drawable_padding"
-                    android:drawableRight="@mipmap/ic_go_view_all"
+                    android:drawableLeft="@mipmap/ic_view_catalog"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onViewDirectoryClick()}"
-                    android:text="@string/book_detail_view_directory"
+                    android:text="@string/book_detail_view_catalog"
                     android:textSize="@dimen/level_three_heading_font" />
 
                 <TextView
@@ -279,7 +277,7 @@
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/text_no_stoke_background"
                     android:drawablePadding="@dimen/view_all_drawable_padding"
-                    android:drawableRight="@mipmap/ic_go_view_all"
+                    android:drawableLeft="@mipmap/ic_view_comment"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onViewCommentClick()}"
                     android:text="@string/book_detail_view_comments"
@@ -291,7 +289,7 @@
                     android:layout_alignParentRight="true"
                     android:background="@drawable/text_no_stoke_background"
                     android:drawablePadding="@dimen/view_all_drawable_padding"
-                    android:drawableRight="@mipmap/ic_go_view_all"
+                    android:drawableLeft="@mipmap/ic_view_copyright"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onCopyrightClick()}"
                     android:text="@string/book_detail_view_copyright"
@@ -300,11 +298,9 @@
             </RelativeLayout>
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dashed_line_height"
-                android:layout_marginBottom="@dimen/book_detail_margin"
-                android:layout_marginTop="@dimen/book_detail_margin"
-                android:background="@mipmap/ic_dashed_line" />
+                style="@style/book_detail_dot_line_Style"
+                android:layout_marginBottom="@dimen/book_detail_common_margin_top"
+                android:layout_marginTop="@dimen/book_detail_common_margin_top"/>
 
         </LinearLayout>
 
@@ -315,6 +311,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:layout_marginBottom="@dimen/book_detail_common_margin_top"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/book_detail_text_view_recommend_title"
@@ -339,7 +336,8 @@
                     android:layout_height="@dimen/book_detail_recycler_view_recommend_height"
                     android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_margin="@dimen/book_detail_margin"
+                    android:layout_marginLeft="@dimen/book_detail_margin"
+                    android:layout_marginRight="@dimen/book_detail_margin"
                     android:background="@drawable/normal_selected_background"
                     android:onClick="@{()->bookDetailViewModel.onRecommendNextPageClick()}"
                     android:padding="@dimen/book_detail_button_padding"
