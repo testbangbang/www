@@ -61,19 +61,19 @@ public class ReaderViewHelper {
         return readPageView.getHeight();
     }
 
-    public void updatePageView(ReaderDataHolder readerDataHolder, ReaderViewInfo readerViewInfo) {
+    public void updatePageView(ReaderDataHolder readerDataHolder, ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo) {
         try {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().drawVisiblePages(readerDataHolder.getReader(), context, readerViewInfo);
-            draw(readerDataHolder, context.renderingBitmap.getBitmap());
+            draw(readerDataHolder, context.renderingBitmap.getBitmap(),readerUserDataInfo,readerViewInfo);
 
-            readerDataHolder.getReader().getReaderHelper().transferRenderBitmapToViewport(context.renderingBitmap);
+            readerDataHolder.getReader().getReaderHelper().saveToCache(context.renderingBitmap);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void draw(ReaderDataHolder readerDataHolder, Bitmap bitmap) {
+    public void draw(ReaderDataHolder readerDataHolder, Bitmap bitmap,final ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo) {
         if (readPageView == null) {
             return;
         }
@@ -81,13 +81,11 @@ public class ReaderViewHelper {
             return;
         }
         paint.setDither(true);
-        Rect rect = new Rect(readPageView.getLeft(), readPageView.getTop(),
-                readPageView.getRight(), readPageView.getBottom());
         Canvas canvas = readPageView.getHolder().lockCanvas();
         canvas.drawColor(Color.WHITE);
         paint.setColor(Color.BLACK);
         canvas.drawBitmap(bitmap, 0, 0, paint);
-        drawHighlightResult(null, canvas, paint, readerDataHolder);
+        drawHighlightResult(null, canvas, paint, readerDataHolder,readerUserDataInfo,readerViewInfo);
         readPageView.getHolder().unlockCanvasAndPost(canvas);
     }
 
@@ -112,19 +110,15 @@ public class ReaderViewHelper {
         paint.setStyle(oldStyle);
     }
 
-    private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final ReaderDataHolder readerDataHolder) {
-        ReaderUserDataInfo readerUserDataInfo = readerDataHolder.getReaderUserDataInfo();
-        if (readerUserDataInfo != null && readerUserDataInfo.hasHighlightResult()) {
-            ReaderViewInfo readerViewInfo = readerDataHolder.getReaderViewInfo();
-
-            drawReaderSelection(context, canvas, paint,readerViewInfo , readerUserDataInfo.getHighlightResult());
-            drawSelectionCursor(canvas, paint, readerDataHolder.getReaderSelectionManager());
-
-            readerDataHolder.getReaderSelectionManager().setCurrentSelection(readerDataHolder.getReaderUserDataInfo().getHighlightResult());
+    private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final ReaderDataHolder readerDataHolder, final ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo) {
+        if (readerViewInfo != null && readerUserDataInfo != null && readerUserDataInfo.hasHighlightResult()) {
+            readerDataHolder.getReaderSelectionManager().setCurrentSelection(readerUserDataInfo.getHighlightResult());
             readerDataHolder.getReaderSelectionManager().update(JDReadApplication.getInstance().getApplicationContext());
 
             readerDataHolder.getReaderSelectionManager().updateDisplayPosition();
             readerDataHolder.getReaderSelectionManager().setEnable(true);
+            drawReaderSelection(context, canvas, paint, readerViewInfo, readerUserDataInfo.getHighlightResult());
+            drawSelectionCursor(canvas, paint, readerDataHolder.getReaderSelectionManager());
         }
     }
 

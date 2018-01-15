@@ -2,7 +2,6 @@ package com.onyx.jdread.reader.request;
 
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 /**
@@ -22,9 +21,9 @@ public class GetDocumentInfoRequest extends ReaderBaseRequest {
         String displayName = readerDataHolder.getReader().getReaderHelper().getPlugin().displayName();
         String md5 = readerDataHolder.getReader().getReaderHelper().getDocumentMd5();
 
-        readerDataHolder.getReaderUserDataInfo().loadDocumentTableOfContent(JDReadApplication.getInstance().getApplicationContext(), document);
-        readerDataHolder.getReaderUserDataInfo().loadDocumentAnnotations(JDReadApplication.getInstance().getApplicationContext(), displayName, md5);
-        readerDataHolder.getReaderUserDataInfo().loadDocumentBookmarks(JDReadApplication.getInstance().getApplicationContext(), displayName, md5);
+        getReaderUserDataInfo().loadDocumentTableOfContent(JDReadApplication.getInstance().getApplicationContext(), document);
+        getReaderUserDataInfo().loadDocumentAnnotations(JDReadApplication.getInstance().getApplicationContext(), displayName, md5);
+        getReaderUserDataInfo().loadDocumentBookmarks(JDReadApplication.getInstance().getApplicationContext(), displayName, md5);
         return this;
     }
 }

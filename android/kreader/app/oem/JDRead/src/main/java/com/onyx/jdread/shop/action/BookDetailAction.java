@@ -1,11 +1,11 @@
 package com.onyx.jdread.shop.action;
 
-import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
+import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookDetail;
@@ -30,12 +30,12 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
-        BaseRequestBean baseRequestBean = new BaseRequestBean();
-        JSONObject body = new JSONObject();
-        body.put(CloudApiContext.NewBookDetail.BOOK_ID, bookID);
-        baseRequestBean.setBody(body.toJSONString());
+        GetBookDetailRequestBean baseRequestBean = new GetBookDetailRequestBean();
+        JDAppBaseInfo appBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
+        baseRequestBean.setAppBaseInfo(appBaseInfo);
+        baseRequestBean.bookId = bookID;
         final RxRequestBookDetail rq = new RxRequestBookDetail();
-        rq.setBaseRequestBean(baseRequestBean);
+        rq.setRequestBean(baseRequestBean);
         rq.execute(new RxCallback<RxRequestBookDetail>() {
 
             @Override

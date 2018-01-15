@@ -29,7 +29,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         updateView();
         initPosition();
         restoreReaderTextStyle();
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder, createReaderViewInfo());
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder, getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 

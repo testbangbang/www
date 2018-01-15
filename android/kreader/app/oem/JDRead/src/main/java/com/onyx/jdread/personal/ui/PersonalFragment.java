@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -17,6 +18,8 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.adapter.PersonalAdapter;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
+import com.onyx.jdread.personal.common.EncryptHelper;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.GiftCenterEvent;
 import com.onyx.jdread.personal.event.PersonalAccountEvent;
@@ -24,6 +27,7 @@ import com.onyx.jdread.personal.event.PersonalBookEvent;
 import com.onyx.jdread.personal.event.PersonalNoteEvent;
 import com.onyx.jdread.personal.event.PersonalTaskEvent;
 import com.onyx.jdread.personal.event.ReadPreferenceEvent;
+import com.onyx.jdread.personal.event.UserInfoEvent;
 import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalModel;
@@ -69,19 +73,32 @@ public class PersonalFragment extends BaseFragment {
                 viewEventCallBack.gotoView(PersonalExperienceFragment.class.getName());
             }
         });
+
+        binding.personalLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLogin("");
+            }
+        });
+
+        binding.personalLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void initData() {
-        String imgUrl = LoginHelper.getImgUrl();
-        String userName = LoginHelper.getUserName();
-        if (StringUtils.isNotBlank(imgUrl) && StringUtils.isNotBlank(userName)) {
-            binding.setImageUrl(imgUrl);
-            binding.setUserName(userName);
+        binding.setIsLogin(JDReadApplication.getInstance().getLogin());
+        if (binding.getIsLogin()) {
+            LoginHelper.getUserInfo(PersonalDataBundle.getInstance());
         }
         PersonalModel personalModel = PersonalDataBundle.getInstance().getPersonalModel();
         if (personalAdapter != null) {
             personalAdapter.setData(personalModel.getPersonalData(), personalModel.getEvents());
         }
+        EncryptHelper.getSaltValue(PersonalDataBundle.getInstance(), null);
     }
 
     private void initView() {
@@ -92,7 +109,56 @@ public class PersonalFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginEvent(UserLoginEvent event) {
+        Utils.hideSoftWindow(getActivity());
+        UserLoginAction userLoginAction = new UserLoginAction(getActivity(),event.account,event.password);
+        userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                binding.setIsLogin(true);
+            }
+        });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserInfoEvent(UserInfoEvent event) {
+        UserInfo userInfo = event.getUserInfo();
+        PersonalDataBundle.getInstance().setUserInfo(userInfo);
+        binding.setImageUrl(userInfo.yun_small_image_url);
+        binding.setUserName(userInfo.nickname);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGiftCenterEvent(GiftCenterEvent event) {
+        showLogin(GiftCenterFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPersonalAccountEvent(PersonalAccountEvent event) {
+        showLogin(PersonalAccountFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPersonalBookEvent(PersonalBookEvent event) {
+        showLogin(PersonalBookFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPersonalNoteEvent(PersonalNoteEvent event) {
+        showLogin(PersonalNoteFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPersonalTaskEvent(PersonalTaskEvent event) {
+        showLogin(PersonalTaskFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReadPreferenceEvent(ReadPreferenceEvent event) {
+        showLogin(ReadPreferenceFragment.class.getName());
+    }
+
+    private void showLogin(String name) {
         if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
             ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
             return;
@@ -101,38 +167,8 @@ public class PersonalFragment extends BaseFragment {
             LoginHelper.showUserLoginDialog(getActivity(), PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel());
             return;
         }
-        viewEventCallBack.gotoView(GiftCenterFragment.class.getName());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUserLoginEvent(UserLoginEvent event) {
-        Utils.hideSoftWindow(getActivity());
-        UserLoginAction userLoginAction = new UserLoginAction(getActivity(),event.account,event.password);
-        userLoginAction.execute(PersonalDataBundle.getInstance(), null);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPersonalAccountEvent(PersonalAccountEvent event) {
-        viewEventCallBack.gotoView(PersonalAccountFragment.class.getName());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPersonalBookEvent(PersonalBookEvent event) {
-        viewEventCallBack.gotoView(PersonalBookFragment.class.getName());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPersonalNoteEvent(PersonalNoteEvent event) {
-        viewEventCallBack.gotoView(PersonalNoteFragment.class.getName());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPersonalTaskEvent(PersonalTaskEvent event) {
-        viewEventCallBack.gotoView(PersonalTaskFragment.class.getName());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReadPreferenceEvent(ReadPreferenceEvent event) {
-        viewEventCallBack.gotoView(ReadPreferenceFragment.class.getName());
+        if (StringUtils.isNotBlank(name)) {
+            viewEventCallBack.gotoView(name);
+        }
     }
 }

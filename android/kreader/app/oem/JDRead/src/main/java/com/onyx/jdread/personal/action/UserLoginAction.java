@@ -73,25 +73,7 @@ public class UserLoginAction extends BaseAction {
             public void onSuccess() {
                 PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_ACCOUNT, account);
                 PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_PASSWORD, password);
-
-                LoginHelper loginHelper = new LoginHelper();
-                loginHelper.getUserInfo(helper.getPin(), dataBundle);
-
-                UserSyncLoginInfoAction userSyncLoginInfoAction = new UserSyncLoginInfoAction();
-                userSyncLoginInfoAction.execute(dataBundle, new RxCallback<UserSyncLoginInfoAction>() {
-                    @Override
-                    public void onNext(UserSyncLoginInfoAction userSyncLoginInfoAction) {
-                        SyncLoginInfoBean syncLoginInfoBean = userSyncLoginInfoAction.getSyncLoginInfoBean();
-                        if (syncLoginInfoBean != null) {
-                            onSyncLoginInfo(dataBundle, syncLoginInfoBean);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        super.onError(throwable);
-                    }
-                });
+                syncServiceInfo(dataBundle);
             }
 
             @Override
@@ -118,9 +100,29 @@ public class UserLoginAction extends BaseAction {
         });
     }
 
-    public void onSyncLoginInfo(PersonalDataBundle dataBundle, SyncLoginInfoBean syncLoginInfoBean) {
+    private void syncServiceInfo(final PersonalDataBundle dataBundle) {
+        UserSyncLoginInfoAction userSyncLoginInfoAction = new UserSyncLoginInfoAction();
+        userSyncLoginInfoAction.execute(dataBundle, new RxCallback<UserSyncLoginInfoAction>() {
+            @Override
+            public void onNext(UserSyncLoginInfoAction userSyncLoginInfoAction) {
+                SyncLoginInfoBean syncLoginInfoBean = userSyncLoginInfoAction.getSyncLoginInfoBean();
+                if (syncLoginInfoBean != null) {
+                    onSyncLoginInfo(dataBundle, syncLoginInfoBean);
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+        });
+    }
+
+    private void onSyncLoginInfo(PersonalDataBundle dataBundle, SyncLoginInfoBean syncLoginInfoBean) {
         String code = syncLoginInfoBean.getCode();
         if (Constants.LOGIN_CODE_SUCCESS.equals(code)) {
+            // TODO: 2018/1/12 recent close it
+            //LoginHelper.getUserInfo(dataBundle);
             dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success)));
             if (rxCallback != null) {
                 rxCallback.onNext(UserLoginAction.class);

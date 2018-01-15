@@ -203,7 +203,7 @@ public class ReaderHelper {
         return hitTestManager;
     }
 
-    public void transferRenderBitmapToViewport(ReaderBitmapReferenceImpl renderBitmap) {
+    public void saveToCache(ReaderBitmapReferenceImpl renderBitmap) {
         if (viewportBitmap != null && viewportBitmap.isValid()) {
             returnBitmapToCache(viewportBitmap);
         }

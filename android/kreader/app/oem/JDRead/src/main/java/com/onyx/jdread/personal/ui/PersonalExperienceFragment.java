@@ -47,6 +47,7 @@ public class PersonalExperienceFragment extends BaseFragment {
         binding = (PersonalExperienceBinding) DataBindingUtil.inflate(inflater, R.layout.fragment_personal_experience, container, false);
         initView();
         initData();
+        initListener();
         return binding.getRoot();
     }
 
@@ -112,6 +113,15 @@ public class PersonalExperienceFragment extends BaseFragment {
         binding.experienceRecycler.addItemDecoration(decoration);
         adapter = new PersonalExperienceAdapter();
         binding.experienceRecycler.setAdapter(adapter);
+    }
+
+    private void initListener() {
+        binding.experienceNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.experienceRecycler.nextPage();
+            }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

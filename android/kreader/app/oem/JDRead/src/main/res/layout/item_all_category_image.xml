@@ -5,8 +5,8 @@
     <data class="AllCategoryImageItemBinding">
 
         <variable
-            name="categoryListBean"
-            type="com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean" />
+            name="categoryBean"
+            type="com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo" />
 
     </data>
 
@@ -27,19 +27,8 @@
                 android:layout_width="@dimen/item_all_category_image_width"
                 android:layout_height="@dimen/item_all_category_image_height"
                 android:padding="@dimen/rectangle_stroke_width"
-                android:src="@drawable/book_default_cover"
-                android:scaleType="fitXY"/>
-
-            <TextView
-                android:id="@+id/textView_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/text_no_stoke_background"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:lines="1"
-                android:text="@{categoryListBean.catName}"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:scaleType="fitXY"
+                bind:cover="@{categoryBean.image_url}" />
 
         </LinearLayout>
 

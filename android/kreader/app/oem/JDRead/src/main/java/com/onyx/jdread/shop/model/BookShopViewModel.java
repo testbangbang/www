@@ -7,6 +7,7 @@ import com.onyx.jdread.shop.event.CategoryViewClick;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
+import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -17,7 +18,7 @@ import java.util.List;
  */
 
 public class BookShopViewModel extends BaseObservable {
-    public SubjectViewModel bannerSubjectIems;
+    public BannerViewModel bannerSubjectIems;
     public SubjectViewModel coverSubjectOneItems;
     public SubjectViewModel coverSubjectTwoItems;
     public SubjectViewModel coverSubjectThreeItems;
@@ -27,7 +28,7 @@ public class BookShopViewModel extends BaseObservable {
     public SubjectViewModel titleSubjectIems;
     public SubjectViewModel specialTodaySubjectIems;
     public AllCategoryViewModel allCategoryViewModel;
-    public List<CategoryListResultBean.CatListBean> categorySubjectItems;
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categorySubjectItems;
     public String searchContent;
     public EventBus eventBus;
 
@@ -46,11 +47,11 @@ public class BookShopViewModel extends BaseObservable {
         return eventBus;
     }
 
-    public SubjectViewModel getBannerSubjectIems() {
+    public BannerViewModel getBannerSubjectIems() {
         return bannerSubjectIems;
     }
 
-    public void setBannerSubjectIems(SubjectViewModel bannerSubjectIems) {
+    public void setBannerSubjectIems(BannerViewModel bannerSubjectIems) {
         this.bannerSubjectIems = bannerSubjectIems;
         notifyChange();
     }
@@ -90,11 +91,11 @@ public class BookShopViewModel extends BaseObservable {
         notifyChange();
     }
 
-    public List<CategoryListResultBean.CatListBean> getCategorySubjectItems() {
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getCategorySubjectItems() {
         return categorySubjectItems;
     }
 
-    public void setCategorySubjectItems(List<CategoryListResultBean.CatListBean> categorySubjectItems) {
+    public void setCategorySubjectItems(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categorySubjectItems) {
         this.categorySubjectItems = categorySubjectItems;
         notifyChange();
     }
@@ -164,7 +165,7 @@ public class BookShopViewModel extends BaseObservable {
     }
 
     public void onViewAllBookViewClick() {
-
+        getEventBus().post(new ShopMainViewAllBookEvent());
     }
 
     public void onBackTopViewClick() {

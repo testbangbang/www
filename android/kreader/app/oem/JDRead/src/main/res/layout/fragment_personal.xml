@@ -4,13 +4,19 @@
 
     <data class="PersonalBinding">
 
+        <import type="android.view.View" />
+
         <variable
             name="imageUrl"
             type="String" />
 
         <variable
             name="userName"
-            type="String"/>
+            type="String" />
+
+        <variable
+            name="isLogin"
+            type="boolean" />
     </data>
 
     <LinearLayout
@@ -18,57 +24,75 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/personal_information"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/personal_information"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:visibility="@{isLogin ? View.VISIBLE : View.INVISIBLE}">
 
-                <ImageView
-                    android:layout_width="@dimen/user_image_height"
-                    android:layout_height="@dimen/user_image_height"
-                    android:layout_marginTop="@dimen/personal_portrait_margin_top"
-                    bind:personalImage="@{imageUrl}" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="@dimen/user_image_height"
+                        android:layout_height="@dimen/user_image_height"
+                        android:layout_marginTop="@dimen/personal_portrait_margin_top"
+                        bind:personalImage="@{imageUrl}" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/personal_name_margin_top"
+                        android:text="@{userName}"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/level_two_heading_font" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/personal_read_time_margin_top"
+                        android:text="readed time in current machine"
+                        android:textColor="@color/text_gray_color"
+                        android:textSize="@dimen/level_two_heading_font" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/personal_name_margin_top"
-                    android:text="@{userName}"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/personal_sign_in_margin_right"
+                    android:layout_marginTop="@dimen/personal_sign_in_margin_top"
+                    android:background="@drawable/arc_shape_stroke"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/personal_sign_in_padding_bottom"
+                    android:paddingLeft="@dimen/personal_sign_in_padding_left"
+                    android:paddingRight="@dimen/personal_sign_in_padding_right"
+                    android:paddingTop="@dimen/personal_sign_in_padding_top"
+                    android:text="@string/unsigned_in"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
+            </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/personal_read_time_margin_top"
-                    android:text="readed time in current machine"
-                    android:textColor="@color/text_gray_color"
-                    android:textSize="@dimen/level_two_heading_font" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/personal_sign_in_margin_right"
-                android:layout_marginTop="@dimen/personal_sign_in_margin_top"
-                android:background="@drawable/arc_shape_stroke"
-                android:gravity="center"
-                android:paddingBottom="@dimen/personal_sign_in_padding_bottom"
-                android:paddingLeft="@dimen/personal_sign_in_padding_left"
-                android:paddingRight="@dimen/personal_sign_in_padding_right"
-                android:paddingTop="@dimen/personal_sign_in_padding_top"
-                android:text="@string/unsigned_in"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
-        </RelativeLayout>
+            <Button
+                android:id="@+id/personal_login"
+                android:layout_width="@dimen/personal_logout_width"
+                android:layout_height="@dimen/personal_logout_height"
+                android:layout_gravity="center"
+                android:background="@drawable/rectangle_stroke_corners"
+                android:paddingLeft="@dimen/personal_log_out_margin"
+                android:paddingRight="@dimen/personal_log_out_margin"
+                android:text="@string/login_immediately"
+                android:textSize="@dimen/level_one_heading_font"
+                android:visibility="@{isLogin ? View.INVISIBLE : View.VISIBLE}" />
+        </FrameLayout>
 
         <View
             android:layout_width="match_parent"
@@ -92,14 +116,16 @@
             android:layout_weight="1" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/personal_log_out"
+            android:layout_width="@dimen/personal_logout_width"
+            android:layout_height="@dimen/personal_logout_height"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/personal_log_out_margin"
-            android:background="@drawable/rectangle_stroke"
+            android:background="@drawable/rectangle_stroke_corners"
             android:paddingLeft="@dimen/personal_log_out_margin"
             android:paddingRight="@dimen/personal_log_out_margin"
             android:text="@string/log_out"
-            android:textSize="@dimen/level_one_heading_font" />
+            android:textSize="@dimen/level_one_heading_font"
+            android:visibility="@{isLogin ? View.VISIBLE : View.INVISIBLE}" />
     </LinearLayout>
 </layout>

@@ -20,7 +20,7 @@
             android:layout_height="@dimen/item_subject_list_cover_height"
             android:padding="@dimen/rectangle_stroke_width"
             android:scaleType="fitXY"
-            bind:cover="@{bookBean.imageUrl}" />
+            bind:cover="@{bookBean.image_url}" />
 
         <LinearLayout
             android:layout_marginLeft="@dimen/item_subject_list_info_marginleft"
@@ -47,7 +47,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:lines="1"
-                android:text="@{bookBean.author + '|' + bookBean.categoryPath}"
+                android:text="@{bookBean.author + '|' + bookBean.author}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_four_heading_font" />
 

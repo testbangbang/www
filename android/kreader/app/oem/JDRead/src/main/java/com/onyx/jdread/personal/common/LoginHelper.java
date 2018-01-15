@@ -12,7 +12,9 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.databinding.DialogUserLoginBinding;
 import com.onyx.jdread.personal.action.UserInfoAction;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
+import com.onyx.jdread.personal.event.UserInfoEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 
@@ -21,20 +23,17 @@ import com.onyx.jdread.personal.model.UserLoginViewModel;
  */
 
 public class LoginHelper {
-    private UserInfoAction userInfoAction;
     private static AlertDialog userLoginDialog;
 
-    public void getUserInfo(final String pin, PersonalDataBundle dataBundle) {
-        userInfoAction = new UserInfoAction(pin);
+    public static void getUserInfo(final PersonalDataBundle dataBundle) {
+        UserInfoAction userInfoAction = new UserInfoAction();
         userInfoAction.execute(dataBundle, new RxCallback<UserInfoAction>() {
             @Override
             public void onNext(UserInfoAction userInfoAction) {
                 UserInfoBean userInfoBean = userInfoAction.getUserInfoData();
-                if (userInfoBean != null && userInfoBean.getList() != null && userInfoBean.getList().size() > 0) {
-                    String nickName = userInfoBean.getList().get(0).getNickName();
-                    String imgUrl = userInfoBean.getList().get(0).getYunBigImageUrl();
-                    String pin = userInfoBean.getList().get(0).getPin();
-                    setUserInfo(nickName, imgUrl, pin);
+                UserInfo data = userInfoBean.data;
+                if (data != null) {
+                    dataBundle.getEventBus().post(new UserInfoEvent(data));
                 }
             }
 

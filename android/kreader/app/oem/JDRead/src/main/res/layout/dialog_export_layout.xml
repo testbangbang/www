@@ -24,13 +24,16 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/export_note_to"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            android:textSize="@dimen/level_one_heading_font" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/dialog_export_to_margin"
+            android:layout_marginBottom="@dimen/dialog_export_to_margin"
+            android:layout_marginLeft="@dimen/dialog_export_to_margin"
+            android:layout_marginRight="@dimen/dialog_export_to_margin"
+            android:layout_marginTop="@dimen/dialog_export_to_margin_top"
             android:orientation="horizontal">
 
             <TextView
@@ -38,7 +41,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@mipmap/ic_setting_jdread"
+                android:drawablePadding="@dimen/dialog_export_to_drawable_padding"
+                android:drawableTop="@mipmap/ic_export_local"
                 android:gravity="center"
                 android:text="@string/native_folder"
                 android:textColor="@android:color/black"
@@ -49,7 +53,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@mipmap/ic_setting_jdread"
+                android:drawablePadding="@dimen/dialog_export_to_drawable_padding"
+                android:drawableTop="@mipmap/ic_export_email"
                 android:gravity="center"
                 android:text="@string/email"
                 android:textColor="@android:color/black"
@@ -60,7 +65,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@mipmap/ic_setting_jdread"
+                android:drawablePadding="@dimen/dialog_export_to_drawable_padding"
+                android:drawableTop="@mipmap/ic_export_evernote"
                 android:gravity="center"
                 android:text="@string/impression_note"
                 android:textColor="@android:color/black"

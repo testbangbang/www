@@ -18,11 +18,12 @@ public class GetDocumentInfoAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder) {
         final GetDocumentInfoRequest request = new GetDocumentInfoRequest(readerDataHolder);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                readerDataHolder.setReaderUserDataInfo(request.getReaderUserDataInfo());
                 GetDocumentInfoResultEvent event = new GetDocumentInfoResultEvent();
                 EventBus.getDefault().post(event);
             }

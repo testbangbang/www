@@ -28,7 +28,7 @@
                 android:layout_height="@dimen/subject_model_item_height"
                 android:padding="@dimen/rectangle_stroke_width"
                 android:scaleType="fitXY"
-                bind:cover="@{bookBean.imageUrl}" />
+                bind:cover="@{bookBean.image_url}" />
 
             <TextView
                 android:id="@+id/textView_title"

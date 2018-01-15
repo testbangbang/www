@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -109,5 +110,11 @@ public class Utils {
                 break;
         }
         return state;
+    }
+
+    public static float getValuesFloat(int res) {
+        TypedValue outValue = new TypedValue();
+        JDReadApplication.getInstance().getResources().getValue(res, outValue, true);
+        return outValue.getFloat();
     }
 }

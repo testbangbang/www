@@ -1,12 +1,15 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.shop.common.ReadContentService;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
+import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.ReadContentService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 
@@ -14,15 +17,15 @@ import retrofit2.Call;
  * Created by hehai on 17-3-30.
  */
 public class RxRequestCategoryList extends RxBaseCloudRequest {
-    private BaseRequestBean baseRequestBean;
+    private BaseRequestInfo requestBean;
     private CategoryListResultBean categoryListResultBean;
 
     public CategoryListResultBean getCategoryListResultBean() {
         return categoryListResultBean;
     }
 
-    public void setBaseRequestBean(BaseRequestBean baseRequestBean) {
-        this.baseRequestBean = baseRequestBean;
+    public void setBaseRequestBean(BaseRequestInfo requestBean) {
+        this.requestBean = requestBean;
     }
 
     @Override
@@ -44,18 +47,28 @@ public class RxRequestCategoryList extends RxBaseCloudRequest {
     }
 
     private void checkQuestResult() {
-        if (categoryListResultBean != null && StringUtils.isNullOrEmpty(categoryListResultBean.code)) {
-            switch (categoryListResultBean.code) {
-                default:
-                    break;
+        if (categoryListResultBean != null) {
+            List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> adjustLevelTwoList = new ArrayList<>();
+            for (int i = 0; i < categoryListResultBean.data.size(); i++) {
+                adjustLevelTwoList.clear();
+                CategoryListResultBean.CategoryBeanLevelOne categoryBeanLevelOne = categoryListResultBean.data.get(i);
+                categoryBeanLevelOne.cateLevel = Constants.CATEGORY_LEVEL_ONE;
+                for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo : categoryBeanLevelOne.sub_category) {
+                    categoryBeanLevelTwo.cateLevel = Constants.CATEGORY_LEVEL_TWO;
+                    for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelThree : categoryBeanLevelTwo.sub_category) {
+                        categoryBeanLevelThree.cateLevel = Constants.CATEGORY_LEVEL_TWO;
+                        adjustLevelTwoList.add(categoryBeanLevelThree);
+                    }
+                }
+                if (adjustLevelTwoList.size() > 0) {
+                    categoryBeanLevelOne.sub_category.clear();
+                    categoryBeanLevelOne.sub_category.addAll(adjustLevelTwoList);
+                }
             }
         }
     }
 
     private Call<CategoryListResultBean> getCall(ReadContentService getCommonService) {
-        return getCommonService.getCategoryList(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
-                CloudApiContext.CategoryList.CATEGORY_LIST,
-                baseRequestBean.getBody()
-        );
+        return getCommonService.getCategoryList(requestBean.getAppBaseInfo().getRequestParamsMap());
     }
 }

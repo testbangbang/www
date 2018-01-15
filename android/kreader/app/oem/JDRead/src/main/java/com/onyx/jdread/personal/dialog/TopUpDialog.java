@@ -51,8 +51,8 @@ public class TopUpDialog extends DialogFragment {
         WindowManager.LayoutParams attributes = window.getAttributes();
         int screenWidth = Utils.getScreenWidth(JDReadApplication.getInstance());
         int screenHeight = Utils.getScreenHeight(JDReadApplication.getInstance());
-        attributes.width = (int) (screenWidth * 0.6);
-        attributes.height = (int) (screenHeight * 0.6);
+        attributes.width = (int) (screenWidth * Utils.getValuesFloat(R.integer.top_up_dialog_width_rate));
+        attributes.height = (int) (screenHeight * Utils.getValuesFloat(R.integer.top_up_dialog_height_rate));
         window.setAttributes(attributes);
     }
 

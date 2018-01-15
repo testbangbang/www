@@ -14,9 +14,8 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.databinding.FragmentSubjectListBinding;
-import com.onyx.jdread.shop.event.HideAllDialogEvent;
-import com.onyx.jdread.shop.event.LoadingDialogEvent;
+import com.onyx.jdread.databinding.FragmentCategoryBookListBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCategoryLevel2BooksAction;
@@ -26,7 +25,9 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryItemClickEvent;
-import com.onyx.jdread.shop.event.SubjectListSortTypeChangeEvent;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
+import com.onyx.jdread.shop.event.SubjectListSortKeyChangeEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.TopRightTitle2Event;
 import com.onyx.jdread.shop.event.TopRightTitle3Event;
@@ -35,7 +36,6 @@ import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectListViewModel;
 import com.onyx.jdread.shop.model.TitleBarViewModel;
-import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -47,9 +47,9 @@ import java.util.List;
  * Created by jackdeng on 2017/12/30.
  */
 
-public class SubjectListFragment extends BaseFragment {
+public class CategoryBookListFragment extends BaseFragment {
 
-    private FragmentSubjectListBinding subjectListBinding;
+    private FragmentCategoryBookListBinding categoryBookListBinding;
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_row);
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_col);
     private int catRow = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_category_recycle_viw_row);
@@ -58,21 +58,31 @@ public class SubjectListFragment extends BaseFragment {
     private GPaginator paginator;
     private int currentPage = 1;
     private String currentCatName;
-    private int catid;
-    private int sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_HOT;
+    private int sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
+    private int sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
     private boolean typeFree;
+    private int catOneId;
+    private int catTwoId;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        subjectListBinding = FragmentSubjectListBinding.inflate(inflater, container, false);
+        categoryBookListBinding = FragmentCategoryBookListBinding.inflate(inflater, container, false);
         initView();
+        initLibrary();
         initData();
-        return subjectListBinding.getRoot();
+        return categoryBookListBinding.getRoot();
+    }
+
+    private void initLibrary() {
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
     }
 
     private void initData() {
-        catid = PreferenceManager.getIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_ID, 0);
+        catOneId = PreferenceManager.getIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, 0);
+        catTwoId = PreferenceManager.getIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
         currentCatName = PreferenceManager.getStringValue(getContextJD(), Constants.SP_KEY_CATEGORY_NAME, "");
         typeFree = PreferenceManager.getBooleanValue(getContextJD(), Constants.SP_KEY_CATEGORY_ISFREE, false);
         getSubjectListViewModel().getTitleBarViewModel().leftText = currentCatName;
@@ -84,12 +94,16 @@ public class SubjectListFragment extends BaseFragment {
         setAllCatIsOpen(false);
         setRightText2Icon();
         setRightText3Icon();
-        getBooksData(catid, currentPage, sortType);
+        getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
         setCategoryV2Data();
     }
 
-    private void getBooksData(int catid, int currentPage, int sortType) {
-        BookCategoryLevel2BooksAction booksAction = new BookCategoryLevel2BooksAction(catid, currentPage, sortType);
+    private String getFinalCatId() {
+        return  catOneId + "_" + catTwoId;
+    }
+
+    private void getBooksData(String catid, int currentPage, int sortKey, int sortType) {
+        BookCategoryLevel2BooksAction booksAction = new BookCategoryLevel2BooksAction(catid, currentPage, sortKey, sortType);
         booksAction.execute(getShopDataBundle(), new RxCallback<BookCategoryLevel2BooksAction>() {
             @Override
             public void onNext(BookCategoryLevel2BooksAction categoryBooksAction) {
@@ -100,7 +114,7 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     private void setCategoryV2Data() {
-        List<CategoryListResultBean.CatListBean> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
+        List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
         getSubjectListViewModel().setCategoryItems(allCategoryItems);
         getSubjectListViewModel().isFree.set(typeFree);
     }
@@ -111,10 +125,10 @@ public class SubjectListFragment extends BaseFragment {
 
     private void initView() {
         SubjectListAdapter adapter = new SubjectListAdapter(getEventBus());
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContextJD(), DividerItemDecoration.VERTICAL_LIST);
-        itemDecoration.setDrawLine(false);
-        recyclerView = subjectListBinding.recyclerViewSubjectList;
+        DashLineItemDivider itemDecoration = new DashLineItemDivider();
+        recyclerView = categoryBookListBinding.recyclerViewSubjectList;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
         paginator = recyclerView.getPaginator();
         recyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
@@ -126,13 +140,12 @@ public class SubjectListFragment extends BaseFragment {
                 }
             }
         });
-        subjectListBinding.setViewModel(getSubjectListViewModel());
+        categoryBookListBinding.setViewModel(getSubjectListViewModel());
         CategorySubjectAdapter categorySubjectAdapter = new CategorySubjectAdapter(getEventBus(), true);
         categorySubjectAdapter.setRowAndCol(catRow,catCol);
-        PageRecyclerView recyclerViewCategoryList = subjectListBinding.recyclerViewCategoryList;
+        PageRecyclerView recyclerViewCategoryList = categoryBookListBinding.recyclerViewCategoryList;
         recyclerViewCategoryList.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewCategoryList.setAdapter(categorySubjectAdapter);
-        itemDecoration.setDrawLine(true);
         recyclerViewCategoryList.addItemDecoration(itemDecoration);
     }
 
@@ -189,7 +202,7 @@ public class SubjectListFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getEventBus().register(this);
+        initLibrary();
     }
 
     @Override
@@ -207,7 +220,7 @@ public class SubjectListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
+        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
@@ -215,13 +228,13 @@ public class SubjectListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
-        CategoryListResultBean.CatListBean categoryBean = event.getCategoryBean();
-        this.catid = categoryBean.catId;
-        this.currentCatName = categoryBean.catName;
+        CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
+        this.catTwoId = categoryBean.id;
+        this.currentCatName = categoryBean.name;
         this.currentPage = 1;
-        this.sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_HOT;
+        this.sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
         getSubjectListViewModel().getTitleBarViewModel().leftText = currentCatName;
-        getBooksData(catid, currentPage, sortType);
+        getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
         showOrCloseAllCatButton();
     }
 
@@ -270,10 +283,10 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSubjectListSortTypeChangeEvent(SubjectListSortTypeChangeEvent event) {
-        if (sortType != event.type) {
-            sortType = event.type;
-            getBooksData(catid, currentPage, sortType);
+    public void onSubjectListSortKeyChangeEvent(SubjectListSortKeyChangeEvent event) {
+        if (sortkey != event.sortKey) {
+            sortkey = event.sortKey;
+            getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
         }
         showOrCloseSortButton();
     }
@@ -285,6 +298,12 @@ public class SubjectListFragment extends BaseFragment {
 
     @Subscribe
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
         hideLoadingDialog();
     }
 }

@@ -17,9 +17,9 @@ import com.onyx.jdread.shop.request.db.RxRequestBookshelfInsert;
 public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
 
     private String localPath;
-    private BookDetailResultBean.Detail bookDetailBean;
+    private BookDetailResultBean.DetailBean bookDetailBean;
 
-    public BookshelfInsertAction(BookDetailResultBean.Detail bookDetailBean, String localPath) {
+    public BookshelfInsertAction(BookDetailResultBean.DetailBean bookDetailBean, String localPath) {
         this.bookDetailBean = bookDetailBean;
         this.localPath = localPath;
     }
@@ -56,24 +56,23 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         });
     }
 
-    private Metadata convertBookDetailEntityToMetadata(BookDetailResultBean.Detail detailBean) {
+    private Metadata convertBookDetailEntityToMetadata(BookDetailResultBean.DetailBean detailBean) {
         Metadata metadata = new Metadata();
-        metadata.setName(detailBean.getName());
-        metadata.setAuthors(detailBean.getAuthor());
-        metadata.setPublisher(detailBean.getPublisher());
-        metadata.setLanguage(detailBean.getLanguage());
-        metadata.setISBN(detailBean.getIsbn());
-        metadata.setDescription(detailBean.getInfo());
+        metadata.setName(detailBean.name);
+        metadata.setAuthors(detailBean.author);
+        metadata.setPublisher(detailBean.publisher);
+        metadata.setISBN(detailBean.isbn);
+        metadata.setDescription(detailBean.info);
         metadata.setNativeAbsolutePath(localPath);
-        metadata.setCloudId(String.valueOf(detailBean.getEbookId()));
-        metadata.setLocation(StringUtils.isNullOrEmpty(detailBean.getDownLoadUrl()) ? detailBean.getTryEpubDownUrl() : detailBean.getDownLoadUrl());
-        metadata.setCoverUrl(detailBean.getImageUrl());
-        metadata.setSize((long) detailBean.getFileSize());
-        BookExtraInfoBean extraInfo = detailBean.getBookExtraInfoBean();
+        metadata.setCloudId(String.valueOf(detailBean.ebook_id));
+        metadata.setLocation(StringUtils.isNullOrEmpty(detailBean.downLoadUrl) ? detailBean.try_url : detailBean.downLoadUrl);
+        metadata.setCoverUrl(detailBean.large_image_url);
+        metadata.setSize((long) detailBean.file_size);
+        BookExtraInfoBean extraInfo = detailBean.bookExtraInfoBean;
         if (extraInfo != null) {
             metadata.setExtraAttributes(JSONObjectParseUtils.toJson(extraInfo));
         }
-        metadata.setIdString(String.valueOf(detailBean.getEbookId()));
+        metadata.setIdString(String.valueOf(detailBean.ebook_id));
         return metadata;
     }
 }

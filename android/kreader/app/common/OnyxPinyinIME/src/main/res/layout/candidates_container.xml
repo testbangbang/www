@@ -15,28 +15,45 @@
 -->
 <com.onyx.pinyinime.CandidatesContainer xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/candidates_container"
-  android:background="@drawable/cands_container_bg"
+  android:background="@drawable/shape_skb_bg"
   android:orientation="horizontal"
   android:layout_width="0dip"
   android:layout_height="0dip">
 
   <ImageButton android:id="@+id/arrow_left_btn"
-    android:background="@drawable/arrow_bg"
+    android:background="@null"
     android:src="@drawable/arrow_left"
     android:layout_height="match_parent"
-    android:layout_width="30dip"
+    android:layout_width="@dimen/arrow_button_width"
     android:clickable="true"
     android:layout_alignParentLeft="true"/>
 
+  <View
+      android:layout_toRightOf="@+id/arrow_left_btn"
+      android:layout_width="1dp"
+      android:layout_marginTop="@dimen/candidate_vertical_separator_y_margin"
+      android:layout_marginBottom="@dimen/candidate_vertical_separator_y_margin"
+      android:background="@android:color/background_dark"
+      android:layout_height="match_parent"/>
+
   <ImageButton android:id="@+id/arrow_right_btn"
-    android:background="@drawable/arrow_bg"
+    android:background="@null"
     android:src="@drawable/arrow_right"
-    android:layout_width="30dip"
+    android:layout_width="@dimen/arrow_button_width"
     android:layout_height="match_parent"
     android:clickable="true"
     android:layout_alignParentRight="true"/>
 
+  <View
+      android:layout_toLeftOf="@+id/arrow_right_btn"
+      android:layout_width="1dp"
+      android:layout_marginTop="@dimen/candidate_vertical_separator_y_margin"
+      android:layout_marginBottom="@dimen/candidate_vertical_separator_y_margin"
+      android:background="@android:color/background_dark"
+      android:layout_height="match_parent"/>
+
   <ViewFlipper android:id="@+id/candidate_flipper"
+      android:paddingLeft="@dimen/candidate_view_left_padding"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_toLeftOf="@id/arrow_right_btn"

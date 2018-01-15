@@ -25,14 +25,14 @@ import retrofit2.Response;
 public class RxRequestBookCert extends RxBaseCloudRequest {
     private BaseRequestBean requestBean;
     private CertBean certBean;
-    private BookDetailResultBean.Detail bookDetailBean;
+    private BookDetailResultBean.DetailBean bookDetailBean;
     private ShopDataBundle dataBundle;
 
     public void setRequestBean(BaseRequestBean requestBean) {
         this.requestBean = requestBean;
     }
 
-    public void setBookDetailEntity(BookDetailResultBean.Detail bookDetailBean) {
+    public void setBookDetailEntity(BookDetailResultBean.DetailBean bookDetailBean) {
         this.bookDetailBean = bookDetailBean;
     }
 
@@ -54,9 +54,9 @@ public class RxRequestBookCert extends RxBaseCloudRequest {
     }
 
     private void downloadBook() {
-        String bookName = bookDetailBean.getDownLoadUrl().substring(bookDetailBean.getDownLoadUrl().lastIndexOf("/") + 1);
+        String bookName = bookDetailBean.downLoadUrl.substring(bookDetailBean.downLoadUrl.lastIndexOf("/") + 1);
         String localPath = CommonUtils.getJDBooksPath() + File.separator + bookName;
-        DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.getDownLoadUrl(), localPath, bookName);
+        DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.downLoadUrl, localPath, bookName);
         downloadAction.setBookDetailBean(bookDetailBean);
         downloadAction.execute(dataBundle, new RxCallback() {
             @Override

@@ -10,6 +10,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemReadPreferenceBinding;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 
 public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
-    private List<CategoryListResultBean.CatListBean> data;
+    private List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> data;
 
     @Override
     public int getRowCount() {
@@ -45,19 +46,19 @@ public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implemen
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ReadPreferenceViewHolder viewHolder = (ReadPreferenceViewHolder) holder;
-        CategoryListResultBean.CatListBean catListBean = data.get(position);
+        CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = data.get(position);
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
         viewHolder.getBinding().itemPreferenceType.setSelected(catListBean.isSelect);
-        viewHolder.BindTo(catListBean.catName);
+        viewHolder.BindTo(catListBean.name);
     }
 
-    public void setData(List<CategoryListResultBean.CatListBean> data) {
+    public void setData(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> data) {
         this.data = data;
         notifyDataSetChanged();
     }
 
-    public List<CategoryListResultBean.CatListBean> getData() {
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getData() {
         return data;
     }
 
@@ -68,8 +69,8 @@ public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implemen
             return;
         }
         int position = (int) tag;
-        CategoryListResultBean.CatListBean catListBean = data.get(position);
-        if (catListBean.isLeaf != 0) {
+        CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = data.get(position);
+        if (catListBean.cateLevel == Constants.CATEGORY_LEVEL_TWO) {
             catListBean.isSelect = true;
             notifyItemChanged(position);
             return;

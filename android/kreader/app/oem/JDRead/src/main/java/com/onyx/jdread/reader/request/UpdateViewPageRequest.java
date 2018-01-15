@@ -19,9 +19,9 @@ public class UpdateViewPageRequest extends ReaderBaseRequest {
         return this;
     }
 
-    public void updatePageView(){
-        // TODO, should be removed as it's accessed in working thread.
-        // readerDataHolder.setReaderUserDataInfo(getReaderUserDataInfo());
-        readerDataHolder.getReaderViewHelper().draw(readerDataHolder,readerDataHolder.getReader().getReaderHelper().getViewportBitmap().getBitmap());
+    public void updatePageView() {
+        readerDataHolder.getReaderViewHelper().draw(readerDataHolder,
+                readerDataHolder.getReader().getReaderHelper().getViewportBitmap().getBitmap(),
+                getReaderUserDataInfo(),getReaderViewInfo());
     }
 }

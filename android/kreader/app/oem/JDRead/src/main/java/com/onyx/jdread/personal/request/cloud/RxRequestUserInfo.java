@@ -2,21 +2,23 @@ package com.onyx.jdread.personal.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.shop.common.CloudApiContext;
-import com.onyx.jdread.shop.common.ReadContentService;
-import com.onyx.jdread.personal.cloud.entity.UserInfoRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
+import com.onyx.jdread.personal.common.EncryptHelper;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
+import com.onyx.jdread.shop.common.ReadContentService;
 
 import retrofit2.Call;
 import retrofit2.Response;
 
 public class RxRequestUserInfo extends RxBaseCloudRequest {
 
-    private UserInfoRequestBean userInfoRequestBean;
+    private JDAppBaseInfo baseInfo;
     private UserInfoBean userInfoBean;
+    private String saltValue;
 
-    public void setUserInfoRequestBean(UserInfoRequestBean userInfoRequestBean) {
-        this.userInfoRequestBean = userInfoRequestBean;
+    public void setUserInfoRequestBean(JDAppBaseInfo baseInfo) {
+        this.baseInfo = baseInfo;
     }
 
     public UserInfoBean getUserInfoBean() {
@@ -25,10 +27,15 @@ public class RxRequestUserInfo extends RxBaseCloudRequest {
 
     @Override
     public Object call() throws Exception {
-        ReadContentService userInfoService = CloudApiContext.getService(CloudApiContext.getJdBaseUrl());
+        String encryptKey = EncryptHelper.getEncryptKey(saltValue);
+        String encryptParams = EncryptHelper.getEncryptParams(encryptKey, baseInfo.getSignString());
+        baseInfo.setParams(encryptParams);
+        baseInfo.setEnc();
+        baseInfo.addApp();
+        ReadContentService userInfoService = CloudApiContext.getService(CloudApiContext.JD_NEW_BASE_URL);
         Call<UserInfoBean> call = getCall(userInfoService);
         Response<UserInfoBean> response = call.execute();
-        if (response != null) {
+        if (response.isSuccessful()) {
             userInfoBean = response.body();
             checkQuestResult();
         }
@@ -37,16 +44,18 @@ public class RxRequestUserInfo extends RxBaseCloudRequest {
     }
 
     private void checkQuestResult() {
-        if (userInfoBean != null && !StringUtils.isNullOrEmpty(userInfoBean.getCode())) {
-            switch (userInfoBean.getCode()) {
+        if (userInfoBean != null && !StringUtils.isNullOrEmpty(userInfoBean.result_code)) {
+            switch (userInfoBean.result_code) {
 
             }
         }
     }
 
     private Call<UserInfoBean> getCall(ReadContentService userInfoService) {
-        return userInfoService.getUserInfo(CloudApiContext.NewBookDetail.USER_BASIC_INFO,
-                userInfoRequestBean.getBody(),
-                userInfoRequestBean.getAppBaseInfo().getRequestParamsMap());
+        return userInfoService.getUserInfo(baseInfo.getRequestParamsMap());
+    }
+
+    public void setSaltValue(String saltValue) {
+        this.saltValue = saltValue;
     }
 }
