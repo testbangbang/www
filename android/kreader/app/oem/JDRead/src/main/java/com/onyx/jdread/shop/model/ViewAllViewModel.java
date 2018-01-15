@@ -40,7 +40,7 @@ public class ViewAllViewModel extends BaseObservable {
     }
 
     public void setCurrentPage(int curPage) {
-        curPage = curPage < 1 ? 1 : curPage;
+        curPage = Math.max(1,curPage);
         currentPosition.set(curPage);
     }
 
@@ -49,7 +49,7 @@ public class ViewAllViewModel extends BaseObservable {
     }
 
     public void setTotalPage(int allPage) {
-        allPage = allPage < 1 ? 1 : allPage;
+        allPage = Math.max(1,allPage);
         totalPage.set(allPage);
     }
 

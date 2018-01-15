@@ -37,7 +37,7 @@ import com.onyx.jdread.shop.ui.BookRankFragment;
 import com.onyx.jdread.shop.ui.CommentFragment;
 import com.onyx.jdread.shop.ui.ShopCartFragment;
 import com.onyx.jdread.shop.ui.ShopFragment;
-import com.onyx.jdread.shop.ui.SubjectListFragment;
+import com.onyx.jdread.shop.ui.CategoryBookListFragment;
 import com.onyx.jdread.shop.ui.ViewAllBooksFragment;
 
 import java.util.HashMap;
@@ -63,7 +63,7 @@ public class ViewConfig {
         childViewInfo.put(BookDetailFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(CommentFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(AllCategoryFragment.class.getName(), FunctionModule.SHOP);
-        childViewInfo.put(SubjectListFragment.class.getName(), FunctionModule.SHOP);
+        childViewInfo.put(CategoryBookListFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(BookRankFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(ShopCartFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(ViewAllBooksFragment.class.getName(), FunctionModule.SHOP);

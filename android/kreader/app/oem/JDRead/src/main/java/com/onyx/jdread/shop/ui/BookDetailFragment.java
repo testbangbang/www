@@ -240,7 +240,7 @@ public class BookDetailFragment extends BaseFragment {
     public void onRecommendItemClickEvent(RecommendItemClickEvent event) {
         ResultBookBean bookBean = event.getBookBean();
         cleanData();
-        setBookId(bookBean.ebookId);
+        setBookId(bookBean.ebook_id);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -51,9 +51,9 @@ public class AllCategoryFragment extends BaseFragment {
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_recycle_view_col);
     private PageRecyclerView recyclerView;
     private GPaginator paginator;
-    private static final int TYPE_INDEX_ZERO = 10;
-    private static final int TYPE_INDEX_ONE = 11;
-    private static final int TYPE_INDEX_TWO = 12;
+    private static final int TYPE_INDEX_ZERO = 0;
+    private static final int TYPE_INDEX_ONE = 1;
+    private static final int TYPE_INDEX_TWO = 2;
     private int currentType = TYPE_INDEX_ZERO;
     private BookCategoryAction bookCategoryAction;
     private PageRecyclerView topRecyclerView;
@@ -130,7 +130,7 @@ public class AllCategoryFragment extends BaseFragment {
                 if (paginator != null) {
                     setCurrentPage(paginator.getCurrentPage());
                 }
-                getAllCategoryViewModel().setTopCategoryItems(getAllCategoryViewModel().getAllCategoryItems().subList(position,position + col));
+                getAllCategoryViewModel().setTopCategoryItems(getAllCategoryViewModel().getAllCategoryItems().subList(position, position + col));
             }
         });
 
@@ -233,9 +233,16 @@ public class AllCategoryFragment extends BaseFragment {
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
         if (categoryBean != null) {
-            PreferenceManager.setIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_ID, categoryBean.id);
+            PreferenceManager.setIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, categoryBean.id);
             PreferenceManager.setStringValue(getContextJD(), Constants.SP_KEY_CATEGORY_NAME, categoryBean.name);
-            getViewEventCallBack().gotoView(SubjectListFragment.class.getName());
+            getViewEventCallBack().gotoView(CategoryBookListFragment.class.getName());
+        }
+    }
+
+    public void saveCurCategoryLevelOneCateId(int index) {
+        if (categoryBeanLevelOneList != null) {
+            int catId = categoryBeanLevelOneList.get(index).id;
+            PreferenceManager.setIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, catId);
         }
     }
 
@@ -243,6 +250,7 @@ public class AllCategoryFragment extends BaseFragment {
         allCategoryBinding.titleOne.setChecked(currentType == TYPE_INDEX_ZERO);
         allCategoryBinding.titleTwo.setChecked(currentType == TYPE_INDEX_ONE);
         allCategoryBinding.titleThree.setChecked(currentType == TYPE_INDEX_TWO);
+        saveCurCategoryLevelOneCateId(currentType);
     }
 
     @Subscribe

@@ -4,7 +4,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.cloud.entity.CategoryLevel2BooksRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryLevel2BooksResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -22,11 +22,11 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
     private int sortType;
     private int sortKey;
     private int currentPage;
-    private int catId;
+    private String catId;
     private BookShopViewModel shopViewModel;
-    private CategoryLevel2BooksResultBean categoryLevel2BooksResultBean;
+    private BookModelBooksResultBean resultBean;
 
-    public BookCategoryLevel2BooksAction(int catId, int currentPage, int sortKey, int sortType) {
+    public BookCategoryLevel2BooksAction(String catId, int currentPage, int sortKey, int sortType) {
         this.currentPage = currentPage;
         this.catId = catId;
         this.sortType = sortType;
@@ -63,9 +63,10 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void onNext(RxRequestCategoryLevel2Books request) {
-                categoryLevel2BooksResultBean = request.getCategoryLevel2BooksResultBean();
-                if (categoryLevel2BooksResultBean != null) {
-                    shopViewModel.getAllCategoryViewModel().getSubjectListViewModel().setBookList(categoryLevel2BooksResultBean.bookList);
+                resultBean = request.getResultBean();
+                if (resultBean != null) {
+                    if (resultBean.data != null)
+                    shopViewModel.getAllCategoryViewModel().getSubjectListViewModel().setBookList(resultBean.data.items);
                 }
 
                 if (rxCallback != null) {
@@ -91,7 +92,7 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
         });
     }
 
-    public CategoryLevel2BooksResultBean getBooksResultBean() {
-        return categoryLevel2BooksResultBean;
+    public BookModelBooksResultBean getBooksResultBean() {
+        return resultBean;
     }
 }

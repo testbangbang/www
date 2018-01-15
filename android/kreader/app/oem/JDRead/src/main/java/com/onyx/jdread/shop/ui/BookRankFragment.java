@@ -157,7 +157,7 @@ public class BookRankFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
+        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }

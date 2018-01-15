@@ -15,9 +15,8 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDownloadUrlResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookModuleListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryLevel2BooksResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModuleListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
@@ -73,7 +72,7 @@ public interface ReadContentService {
                                              @QueryMap Map<String, String> map);
 
     @GET("search")
-    Call<CategoryLevel2BooksResultBean> getCategoryLevel2BookList(@QueryMap Map<String, String> baseInfoMap,
+    Call<BookModelBooksResultBean> getCategoryLevel2BookList(@QueryMap Map<String, String> baseInfoMap,
                                                                   @QueryMap Map<String, String> queryMap);
 
     @GET("category")

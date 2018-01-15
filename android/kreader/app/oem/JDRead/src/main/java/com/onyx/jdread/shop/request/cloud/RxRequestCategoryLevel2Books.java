@@ -3,7 +3,7 @@ package com.onyx.jdread.shop.request.cloud;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.CategoryLevel2BooksRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryLevel2BooksResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
 
@@ -18,10 +18,10 @@ import retrofit2.Call;
 
 public class RxRequestCategoryLevel2Books extends RxBaseCloudRequest {
     private CategoryLevel2BooksRequestBean requestBean;
-    private CategoryLevel2BooksResultBean categoryLevel2BooksResultBean;
+    private BookModelBooksResultBean resultBean;
 
-    public CategoryLevel2BooksResultBean getCategoryLevel2BooksResultBean() {
-        return categoryLevel2BooksResultBean;
+    public BookModelBooksResultBean getResultBean() {
+        return resultBean;
     }
 
     public void setRequestBean(CategoryLevel2BooksRequestBean requestBean) {
@@ -37,8 +37,8 @@ public class RxRequestCategoryLevel2Books extends RxBaseCloudRequest {
     private void executeCloudRequest() {
         setBaseRequestBeanParams();
         ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
-        Call<CategoryLevel2BooksResultBean> call = getCall(getCommonService);
-        categoryLevel2BooksResultBean = done(call);
+        Call<BookModelBooksResultBean> call = getCall(getCommonService);
+        resultBean = done(call);
         checkQuestResult();
     }
 
@@ -54,17 +54,18 @@ public class RxRequestCategoryLevel2Books extends RxBaseCloudRequest {
         }
     }
 
-    private CategoryLevel2BooksResultBean done(Call<CategoryLevel2BooksResultBean> call) {
-        EnhancedCall<CategoryLevel2BooksResultBean> enhancedCall = new EnhancedCall<>(call);
-        return enhancedCall.execute(call, CategoryLevel2BooksResultBean.class);
+    private BookModelBooksResultBean done(Call<BookModelBooksResultBean> call) {
+        EnhancedCall<BookModelBooksResultBean> enhancedCall = new EnhancedCall<>(call);
+        return enhancedCall.execute(call, BookModelBooksResultBean.class);
     }
 
     private void checkQuestResult() {
-        if (categoryLevel2BooksResultBean != null && categoryLevel2BooksResultBean.bookList != null) {
+        if (resultBean != null && resultBean.data.items != null) {
+
         }
     }
 
-    private Call<CategoryLevel2BooksResultBean> getCall(ReadContentService getCommonService) {
+    private Call<BookModelBooksResultBean> getCall(ReadContentService getCommonService) {
         return getCommonService.getCategoryLevel2BookList(requestBean.getAppBaseInfo().getRequestParamsMap(),requestBean.getQueryArgsMap());
     }
 }
