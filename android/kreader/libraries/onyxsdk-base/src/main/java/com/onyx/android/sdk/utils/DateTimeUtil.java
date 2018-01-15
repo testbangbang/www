@@ -62,4 +62,13 @@ public class DateTimeUtil {
             return second_value + second_symbol;
         }
     }
+
+    public static String formatTime(long millisecond) {
+        int totalSeconds = (int) (millisecond / 1000);
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours = totalSeconds / 3600;
+        return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes,
+                seconds) : String.format("%02d:%02d", minutes, seconds);
+    }
 }

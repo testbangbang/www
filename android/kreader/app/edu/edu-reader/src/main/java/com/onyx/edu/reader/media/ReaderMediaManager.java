@@ -2,6 +2,10 @@ package com.onyx.edu.reader.media;
 
 import android.media.MediaPlayer;
 
+import com.onyx.edu.reader.ui.data.ReaderDataHolder;
+import com.onyx.edu.reader.ui.events.MediaPlayCompleteEvent;
+import com.onyx.edu.reader.ui.events.MediaPlayStartEvent;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
 
@@ -12,6 +16,11 @@ import java.io.IOException;
 public class ReaderMediaManager {
 
     private MediaPlayer mediaPlayer;
+    private ReaderDataHolder readerDataHolder;
+
+    public ReaderMediaManager(ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
+    }
 
     public MediaPlayer getMediaPlayer() {
         if (mediaPlayer == null) {
@@ -34,11 +43,43 @@ public class ReaderMediaManager {
         getMediaPlayer().setDataSource(url);
         getMediaPlayer().prepare();
         getMediaPlayer().start();
+        readerDataHolder.getEventBus().post(new MediaPlayStartEvent());
+        getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                readerDataHolder.getEventBus().post(new MediaPlayCompleteEvent());
+            }
+        });
+    }
+
+    public void resume() {
+        getMediaPlayer().seekTo(getMediaPlayer().getCurrentPosition());
+        getMediaPlayer().start();
+    }
+
+    public void seekTo(int msec) {
+        if (mediaPlayer != null) {
+            mediaPlayer.seekTo(msec);
+        }
     }
 
     public void stop() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
+        }
+    }
+
+    public void pause() {
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+        }
+    }
+
+    public void quit() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 
