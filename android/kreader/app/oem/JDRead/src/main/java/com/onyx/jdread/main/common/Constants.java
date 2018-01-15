@@ -56,6 +56,9 @@ public class Constants {
     public static final String PAY_URL = "pay_url";
     public final static long APP_CACHE_MAX_SIZE = 1024 * 1024 * 8;
     public final static String LOCAL_WEB_CACHE_PATH = Environment.getExternalStorageDirectory().getPath() + "/webcache";
+    public static final int CATEGORY_TYPE_FREE = 1;
+    public static final String ENCRYPTION_DIR = "drdrop";
+    public static final String ENCRYPTION_NAME = "dataread.jdr";
     public static final int SHOP_MAIN_INDEX_ZERO = 0;
     public static final int SHOP_MAIN_INDEX_ONE = 1;
     public static final int SHOP_MAIN_INDEX_TWO = 2;
@@ -72,4 +75,7 @@ public class Constants {
     public static final int CATEGORY_LEVEL_ONE = 1;
     public static final int CATEGORY_LEVEL_TWO = 2;
     public static final int RANK_LIST_SIZE = 6;
+    public static final long RESET_PRESS_TIMEOUT = 1000;
+    public static final int START_PRODUCTION_TEST_PRESS_COUNT = 6;
+    public static final int REMOVE_PRODUCTION_TEST_PRESS_COUNT = 5;
 }

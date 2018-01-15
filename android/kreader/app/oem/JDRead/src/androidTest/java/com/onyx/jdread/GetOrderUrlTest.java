@@ -10,15 +10,13 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.personal.cloud.entity.GetOrderRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.request.cloud.RxGetOrderUrlRequest;
-import com.onyx.jdread.personal.request.cloud.RxRequestSyncLoginInfo;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
 import jd.wjlogin_sdk.common.WJLoginHelper;
 import jd.wjlogin_sdk.common.listener.OnLoginCallback;
 import jd.wjlogin_sdk.model.FailResult;
@@ -67,28 +65,6 @@ public class GetOrderUrlTest extends ApplicationTestCase<JDReadApplication> {
                 Log.d(TAG, "onFail: ");
                 assertNull(failResult);
                 countDownLatch.countDown();
-            }
-        });
-        countDownLatch.await();
-    }
-
-    public void testSyncLogin() throws Exception {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        BaseRequestBean requestBean = new BaseRequestBean();
-        requestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
-        final RxRequestSyncLoginInfo rq = new RxRequestSyncLoginInfo();
-        rq.setRequestBean(requestBean);
-        rq.execute(new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                SyncLoginInfoBean syncLoginInfoBean = rq.getSyncLoginInfoBean();
-                assertNotNull(syncLoginInfoBean);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                assertNull(throwable);
             }
         });
         countDownLatch.await();

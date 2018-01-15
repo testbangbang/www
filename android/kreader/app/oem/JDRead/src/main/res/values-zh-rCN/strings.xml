@@ -87,6 +87,7 @@
     <string name="read_preference">阅读偏好</string>
     <string name="gift_center">礼品中心</string>
     <string name="log_out">退出登录</string>
+    <string name="login_immediately">立即登录</string>
     <string name="unsigned_in">未签到</string>
     <string name="manual">使用手册</string>
     <string name="feedback">问题反馈</string>
@@ -326,6 +327,13 @@
     <string name="feedback_history">反馈记录</string>
     <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
     <string name="buy_book_success">购买成功 </string>
+    <string name="buy_read_vip">购买畅读VIP</string>
+    <string name="not_open_vip">还未开通畅读VIP</string>
+    <string name="read_vip_instructions">畅读VIP须知</string>
+    <string name="ten">￥10.00</string>
+    <string name="thirty">￥30.00</string>
+    <string name="fifty">￥50.00</string>
+    <string name="ninety">￥90.00</string>
     <string name="lineation">划线</string>
     <string name="email_address_hint">电子邮箱地址</string>
     <string name="email_address_wrong">请输入正确的电子邮箱地址</string>
@@ -334,5 +342,6 @@
     <string name="email_address_format">电子邮箱地址：%s</string>
     <string name="email_bound">电子邮箱已关联</string>
     <string name="confirm_bind">确认关联</string>
+    <string name="total_search_result">全部搜索结果(%d)</string>
     <string name="crash_tip">确定发送错误报告吗?</string>
 </resources>

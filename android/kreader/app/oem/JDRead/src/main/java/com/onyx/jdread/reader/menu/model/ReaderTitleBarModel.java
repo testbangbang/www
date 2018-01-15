@@ -8,6 +8,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.menu.event.BuyBookClickEvent;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
+import com.onyx.jdread.reader.menu.event.SearchContentEvent;
 import com.onyx.jdread.reader.menu.event.ToggleBookmarkEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,7 +37,7 @@ public class ReaderTitleBarModel extends BaseObservable {
     }
 
     public void searchContextClick() {
-
+        EventBus.getDefault().post(new SearchContentEvent());
     }
 
     public void bookmarkCLick() {

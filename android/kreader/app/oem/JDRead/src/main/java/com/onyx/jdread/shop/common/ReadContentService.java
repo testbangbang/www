@@ -6,6 +6,7 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadUnlimitedResultBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.SaltResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddBookToSmoothCardBookBean;
@@ -112,14 +113,15 @@ public interface ReadContentService {
                                            @Query(AppBaseInfo.BODY_KEY) String body,
                                            @QueryMap Map<String, String> map);
 
-    @POST("client.action")
-    Call<SyncLoginInfoBean> getSyncLoginInfo(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                             @QueryMap Map<String, String> map);
+    @GET("user/sync")
+    Call<SyncLoginInfoBean> getSyncLoginInfo(@QueryMap Map<String, String> map);
 
-    @POST("client.action")
-    Call<UserInfoBean> getUserInfo(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                   @Query(AppBaseInfo.BODY_KEY) String body,
-                                   @QueryMap Map<String, String> map);
+
+    @GET("user")
+    Call<UserInfoBean> getUserInfo(@QueryMap Map<String, String> map);
+
+    @GET("now")
+    Call<SaltResultBean> getSalt(@QueryMap Map<String, String> map);
 
     @GET("module/{f_type}/{module_id}")
     Call<BookModelBooksResultBean> getBookShopModule(@Path("f_type")int fType,

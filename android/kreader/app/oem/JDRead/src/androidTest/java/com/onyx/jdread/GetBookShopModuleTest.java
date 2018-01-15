@@ -37,7 +37,6 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         GetBookDetailRequestBean baseRequestBean = new GetBookDetailRequestBean();
         JDAppBaseInfo appBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        appBaseInfo.setTime();
         baseRequestBean.setAppBaseInfo(appBaseInfo);
         baseRequestBean.bookId = 30224458;
         final RxRequestBookDetail rq = new RxRequestBookDetail();
@@ -64,7 +63,6 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         BookModelRequestBean requestBean = new BookModelRequestBean();
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setTime();
         requestBean.setAppBaseInfo(baseInfo);
         Map<String,String> body = new HashMap<>();
         body.put(CloudApiContext.SearchBook.PAGE_SIZE,Constants.BOOK_PAGE_SIZE);
@@ -101,7 +99,6 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         ShopMainConfigRequestBean requestBean = new ShopMainConfigRequestBean();
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setTime();
         requestBean.setAppBaseInfo(baseInfo);
 
         requestBean.setCid(Constants.BOOK_SHOP_DEFAULT_CID);
@@ -159,7 +156,6 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         BaseRequestInfo baseRequestBean = new BaseRequestInfo();
         JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        jdAppBaseInfo.setTime();
         jdAppBaseInfo.setTid(String.valueOf(System.currentTimeMillis()));
         baseRequestBean.setAppBaseInfo(jdAppBaseInfo);
         final RxRequestCategoryList request = new RxRequestCategoryList();

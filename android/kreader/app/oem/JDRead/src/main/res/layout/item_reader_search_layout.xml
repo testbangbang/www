@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ItemReaderSearchBinding">
+
+        <variable
+            name="bean"
+            type="com.onyx.jdread.reader.menu.model.SearchResultBean" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:text="@{bean.chapter}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_reader_search_result_margin_top"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:text="@{bean.result}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font" />
+    </LinearLayout>
+</layout>

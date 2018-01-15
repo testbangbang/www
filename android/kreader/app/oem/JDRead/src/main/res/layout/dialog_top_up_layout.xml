@@ -12,7 +12,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/top_up_dialog_title_height"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="@dimen/top_up_padding">
@@ -33,6 +33,11 @@
                 android:src="@mipmap/ic_close" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_width"
+            android:background="@color/divider_color"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +50,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/top_up_tips_margin_left"
-            android:layout_marginTop="@dimen/top_up_tips_margin_top"
             android:text="gbajgoasidjgdj"
             android:textSize="@dimen/level_three_heading_font" />
 
@@ -53,6 +57,9 @@
             android:id="@+id/dialog_top_up_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/top_up_tips_recycler_margin" />
+            android:layout_marginTop="@dimen/top_up_tips_margin_top"
+            android:layout_marginLeft="@dimen/top_up_tips_recycler_margin"
+            android:layout_marginRight="@dimen/top_up_tips_recycler_margin"
+            android:layout_marginBottom="@dimen/top_up_tips_recycler_margin"/>
     </LinearLayout>
 </layout>

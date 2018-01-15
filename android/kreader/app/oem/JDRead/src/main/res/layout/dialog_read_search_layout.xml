@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="DialogReadSearchBinding">
+
+        <import type="android.view.View" />
+
+        <variable
+            name="model"
+            type="com.onyx.jdread.reader.menu.model.ReaderSearchModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/reader_search_whole_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->model.back()}"
+                android:src="@mipmap/ic_read_back" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/reader_search_input_margin"
+                android:layout_marginRight="@dimen/reader_search_input_margin"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle_stroke"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/reader_search_input_padding">
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:text="@={model.searchContent}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_one_heading_font" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->model.clearInput()}"
+                    android:src="@mipmap/ic_shelf_close" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->model.search()}"
+                android:src="@mipmap/ic_read_search" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/reader_search_result_dec_margin_left"
+            android:layout_marginTop="@dimen/reader_search_result_dec_margin_top"
+            android:text="@{@string/total_search_result(model.searchSize)}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font"
+            android:visibility="@{model.searchSize == 0 ? View.GONE : View.VISIBLE}" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/dialog_read_search_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/reader_search_recycler_margin_top"
+            android:layout_weight="1" />
+    </LinearLayout>
+</layout>

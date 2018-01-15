@@ -20,12 +20,12 @@
             android:layout_weight="1"
             android:text="@{data.days}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            android:textSize="@dimen/level_one_heading_font" />
 
         <TextView
             android:layout_width="@dimen/item_points_for_points_width"
             android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_stroke"
+            android:background="@drawable/rectangle_stroke_corners"
             android:gravity="center"
             android:padding="@dimen/item_points_for_points_padding"
             android:text="@{data.points}"

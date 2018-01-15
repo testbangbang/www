@@ -32,7 +32,6 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         GetBookDetailRequestBean baseRequestBean = new GetBookDetailRequestBean();
         JDAppBaseInfo appBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        appBaseInfo.setTime();
         baseRequestBean.setAppBaseInfo(appBaseInfo);
         baseRequestBean.bookId = bookID;
         final RxRequestBookDetail rq = new RxRequestBookDetail();

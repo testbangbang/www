@@ -16,7 +16,7 @@ import com.onyx.jdread.databinding.ItemPersonalNoteBinding;
  * Created by li on 2018/1/3.
  */
 
-public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter {
+public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     private boolean show;
 
     @Override
@@ -43,12 +43,23 @@ public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PersonalNoteViewHolder viewHolder = (PersonalNoteViewHolder) holder;
+        viewHolder.itemView.setOnClickListener(this);
+        viewHolder.itemView.setTag(position);
         viewHolder.getBinding().setShowBox(show);
     }
 
     public void showBox(boolean show) {
         this.show = show;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Object tag = v.getTag();
+        if (tag == null) {
+            return;
+        }
+        // TODO: 2018/1/11
     }
 
     static class PersonalNoteViewHolder extends RecyclerView.ViewHolder {
