@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,7 +43,6 @@ import com.onyx.android.note.actions.scribble.RedoAction;
 import com.onyx.android.note.actions.scribble.RemoveByGroupIdAction;
 import com.onyx.android.note.actions.scribble.UndoAction;
 import com.onyx.android.note.activity.BaseScribbleActivity;
-import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
@@ -84,7 +82,6 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -636,7 +633,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final RedoAction<ScribbleActivity> action = new RedoAction<>();
+                final RedoAction<ScribbleActivity> action = new RedoAction<>(shouldResume());
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -652,7 +649,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final UndoAction<ScribbleActivity> action = new UndoAction<>();
+                final UndoAction<ScribbleActivity> action = new UndoAction<>(shouldResume());
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -1118,7 +1115,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
             syncWithCallback(true, false, null);
         } else {
-            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>();
+            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>(shouldResume());
             action.execute(this, null);
         }
     }
