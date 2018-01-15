@@ -51,13 +51,13 @@ public class SelectWordRequest extends ReaderBaseRequest {
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, end);
         selection = hitTestManager.selectOnScreen(argsStart, argsEnd, hitTestOptions);
-        LayoutProviderUtils.updateReaderViewInfo(readerDataHolder.getReader(), createReaderViewInfo(), readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(readerDataHolder.getReader(), getReaderViewInfo(), readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
             getReaderUserDataInfo().setTouchPoint(touchPoint);
             readerDataHolder.getReaderViewHelper().draw(readerDataHolder,
                     readerDataHolder.getReader().getReaderHelper().getViewportBitmap().getBitmap(),
-                    getReaderUserDataInfo());
+                    getReaderUserDataInfo(),getReaderViewInfo());
         }
         return this;
     }

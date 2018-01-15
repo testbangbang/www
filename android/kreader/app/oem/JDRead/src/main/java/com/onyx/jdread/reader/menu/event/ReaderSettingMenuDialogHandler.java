@@ -154,12 +154,12 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event) {
-        new SettingFontSizeAction(readerDataHolder.getStyle(), event.fontSize).execute(readerDataHolder);
+        new SettingFontSizeAction(readerDataHolder.getStyleCopy(), event.fontSize).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingTypefaceEvent(ReaderSettingTypefaceEvent event) {
-        new SettingTypefaceAction(readerDataHolder.getStyle(), event.typeFace).execute(readerDataHolder);
+        new SettingTypefaceAction(readerDataHolder.getStyleCopy(), event.typeFace).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -186,7 +186,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onImageReflowEvent(ImageReflowEvent event) {
-        new ImageReflowAction(readerDataHolder.getSettings()).execute(readerDataHolder);
+        new ImageReflowAction(readerDataHolder.getSettingsCopy()).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -201,17 +201,17 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingLeftAndRightSpacingEvent(SettingLeftAndRightSpacingEvent event) {
-        new SettingLeftAndRightSpacingAction(readerDataHolder.getStyle(), event.margin).execute(readerDataHolder);
+        new SettingLeftAndRightSpacingAction(readerDataHolder.getStyleCopy(), event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingLineSpacingEvent(SettingLineSpacingEvent event) {
-        new SettingLineSpacingAction(readerDataHolder.getStyle(), event.margin).execute(readerDataHolder);
+        new SettingLineSpacingAction(readerDataHolder.getStyleCopy(), event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingUpAndDownSpacingEvent(SettingUpAndDownSpacingEvent event) {
-        new SettingUpAndDownSpacingAction(readerDataHolder.getStyle(), event.margin).execute(readerDataHolder);
+        new SettingUpAndDownSpacingAction(readerDataHolder.getStyleCopy(), event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

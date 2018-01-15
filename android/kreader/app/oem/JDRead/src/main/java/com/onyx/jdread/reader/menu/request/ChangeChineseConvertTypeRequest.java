@@ -20,7 +20,7 @@ public class ChangeChineseConvertTypeRequest extends ReaderBaseRequest {
     @Override
     public ChangeChineseConvertTypeRequest call() throws Exception {
         readerDataHolder.getReader().getReaderHelper().getRenderer().setChineseConvertType(convertType);
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,createReaderViewInfo());
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 }

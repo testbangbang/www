@@ -61,11 +61,11 @@ public class ReaderViewHelper {
         return readPageView.getHeight();
     }
 
-    public void updatePageView(ReaderDataHolder readerDataHolder, ReaderViewInfo readerViewInfo) {
+    public void updatePageView(ReaderDataHolder readerDataHolder, ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo) {
         try {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().drawVisiblePages(readerDataHolder.getReader(), context, readerViewInfo);
-            draw(readerDataHolder, context.renderingBitmap.getBitmap(),null);
+            draw(readerDataHolder, context.renderingBitmap.getBitmap(),readerUserDataInfo,readerViewInfo);
 
             readerDataHolder.getReader().getReaderHelper().transferRenderBitmapToViewport(context.renderingBitmap);
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class ReaderViewHelper {
         }
     }
 
-    public void draw(ReaderDataHolder readerDataHolder, Bitmap bitmap,final ReaderUserDataInfo readerUserDataInfo) {
+    public void draw(ReaderDataHolder readerDataHolder, Bitmap bitmap,final ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo) {
         if (readPageView == null) {
             return;
         }
@@ -85,7 +85,7 @@ public class ReaderViewHelper {
         canvas.drawColor(Color.WHITE);
         paint.setColor(Color.BLACK);
         canvas.drawBitmap(bitmap, 0, 0, paint);
-        drawHighlightResult(null, canvas, paint, readerDataHolder,readerUserDataInfo);
+        drawHighlightResult(null, canvas, paint, readerDataHolder,readerUserDataInfo,readerViewInfo);
         readPageView.getHolder().unlockCanvasAndPost(canvas);
     }
 
@@ -110,10 +110,8 @@ public class ReaderViewHelper {
         paint.setStyle(oldStyle);
     }
 
-    private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final ReaderDataHolder readerDataHolder, final ReaderUserDataInfo readerUserDataInfo) {
-        if (readerUserDataInfo != null && readerUserDataInfo.hasHighlightResult()) {
-            ReaderViewInfo readerViewInfo = readerDataHolder.getReaderViewInfo();
-
+    private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final ReaderDataHolder readerDataHolder, final ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo) {
+        if (readerViewInfo != null && readerUserDataInfo != null && readerUserDataInfo.hasHighlightResult()) {
             readerDataHolder.getReaderSelectionManager().setCurrentSelection(readerUserDataInfo.getHighlightResult());
             readerDataHolder.getReaderSelectionManager().update(JDReadApplication.getInstance().getApplicationContext());
 
