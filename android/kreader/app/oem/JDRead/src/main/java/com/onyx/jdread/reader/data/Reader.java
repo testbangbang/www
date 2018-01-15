@@ -11,7 +11,6 @@ public class Reader {
     private DocumentInfo documentInfo;
     private ReaderViewHelper readerViewHelper;
 
-
     public Reader(DocumentInfo documentInfo) {
         this.documentInfo = documentInfo;
         this.readerHelper = new ReaderHelper();

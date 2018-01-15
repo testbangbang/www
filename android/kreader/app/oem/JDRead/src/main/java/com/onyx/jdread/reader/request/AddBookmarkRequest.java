@@ -24,7 +24,7 @@ public class AddBookmarkRequest extends ReaderBaseRequest {
     @Override
     public AddBookmarkRequest call() throws Exception {
         ContentSdkDataUtils.getDataProvider().addBookmark(createBookmark());
-        LayoutProviderUtils.updateReaderViewInfo(readerDataHolder.getReader(), createReaderViewInfo(), readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(readerDataHolder.getReader(), getReaderViewInfo(), readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager());
         return this;
     }
 

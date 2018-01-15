@@ -23,7 +23,7 @@ public class DeleteBookmarkRequest extends ReaderBaseRequest {
         if (bookmark != null) {
             ContentSdkDataUtils.getDataProvider().deleteBookmark(bookmark);
         }
-        LayoutProviderUtils.updateReaderViewInfo(readerDataHolder.getReader(), createReaderViewInfo(), readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(readerDataHolder.getReader(), getReaderViewInfo(), readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager());
         return this;
     }
 }
