@@ -404,7 +404,7 @@ public class CandidateView extends View {
 
         // When the size is changed, the first page will be displayed.
         // mPageNo = 0;
-        // mActiveCandInPage = 0;
+         mActiveCandInPage = 0;
     }
 
     private boolean calculatePage(int pageNo) {
@@ -434,7 +434,7 @@ public class CandidateView extends View {
 
             float xPos;
             xPos = 0;
-            xPos += mSeparatorDrawable.getIntrinsicWidth();
+            //xPos += mSeparatorDrawable.getIntrinsicWidth();
             while (xPos < mContentWidth && pStart + pSize < candSize) {
                 int itemPos = pStart + pSize;
                 String itemStr = mDecInfo.mCandidatesList.get(itemPos);
