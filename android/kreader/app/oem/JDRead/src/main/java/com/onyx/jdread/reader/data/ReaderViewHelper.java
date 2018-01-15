@@ -114,7 +114,7 @@ public class ReaderViewHelper {
         if (readerUserDataInfo != null && readerUserDataInfo.hasHighlightResult()) {
             ReaderViewInfo readerViewInfo = readerDataHolder.getReaderViewInfo();
 
-            readerDataHolder.getReaderSelectionManager().setCurrentSelection(readerDataHolder.getReaderUserDataInfo().getHighlightResult());
+            readerDataHolder.getReaderSelectionManager().setCurrentSelection(readerUserDataInfo.getHighlightResult());
             readerDataHolder.getReaderSelectionManager().update(JDReadApplication.getInstance().getApplicationContext());
 
             readerDataHolder.getReaderSelectionManager().updateDisplayPosition();
