@@ -1,7 +1,5 @@
 package com.neverland.engbook.forpublic;
 
-import com.neverland.engbook.util.AlStyles;
-
 public class AlBookStyles {
 
     public static final int DEFAULT_COLOR_SELECT = 0x3f51b5;

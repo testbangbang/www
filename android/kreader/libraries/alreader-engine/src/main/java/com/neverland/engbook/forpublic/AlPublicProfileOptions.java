@@ -120,6 +120,8 @@ public class AlPublicProfileOptions {
 	public int					textIndentDefaultEm = 2;
 	public boolean				textIndentOverrideFromCSS = false;
 
+	public int					paragraphSpacing = 30;
+
 	/**
 	 * метод задает значение левого отсупа на странице
 	 * В случае двухколоночного режима отступы используется по следующему принципу:
