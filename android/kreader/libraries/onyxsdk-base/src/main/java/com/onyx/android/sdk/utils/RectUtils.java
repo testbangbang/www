@@ -66,6 +66,11 @@ public class RectUtils {
         return new PointF(target.right, target.bottom);
     }
 
+    static public PointF getEndRight(List<RectF> list) {
+        RectF target = list.get(list.size() - 1);
+        return new PointF(target.right, target.top);
+    }
+
     /**
      * compare base line of two rectangle
      *

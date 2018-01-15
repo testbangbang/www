@@ -1,7 +1,10 @@
 package com.onyx.jdread.reader.menu.event;
 
+import android.graphics.RectF;
+
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
@@ -9,11 +12,13 @@ import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.reader.actions.GotoPageAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
+import com.onyx.jdread.reader.actions.ToggleBookmarkAction;
 import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
+import com.onyx.jdread.reader.event.ShowReaderCatalogMenuEvent;
 import com.onyx.jdread.reader.menu.actions.ChangeChineseConvertTypeAction;
 import com.onyx.jdread.reader.menu.actions.GammaCorrectionAction;
 import com.onyx.jdread.reader.menu.actions.ImageReflowAction;
@@ -35,6 +40,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by huxiaomao on 2018/1/4.
  */
@@ -43,23 +51,12 @@ public class ReaderSettingMenuDialogHandler {
     private ReaderSettingViewBack readerSettingViewBack;
     private ReaderSettingMenuBinding binding;
     private ReaderDataHolder readerDataHolder;
-    private ReaderTextStyle style;
-    private ImageReflowSettings settings;
-    private ReaderViewInfo readerViewInfo;
+    private boolean sideNoting = false;
+    private int sideNotePage = 0;
 
-    public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder,ReaderSettingViewBack readerSettingViewBack,ReaderTextStyle style,ImageReflowSettings settings) {
+    public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder, ReaderSettingViewBack readerSettingViewBack) {
         this.readerDataHolder = readerDataHolder;
         this.readerSettingViewBack = readerSettingViewBack;
-        this.style = style;
-        this.settings = settings;
-    }
-
-    public void setReaderViewInfo(ReaderViewInfo readerViewInfo) {
-        this.readerViewInfo = readerViewInfo;
-    }
-
-    public ReaderViewInfo getReaderViewInfo() {
-        return readerViewInfo;
     }
 
     public void setBinding(ReaderSettingMenuBinding binding) {
@@ -80,6 +77,10 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCloseReaderSettingMenuEvent(CloseReaderSettingMenuEvent event) {
+        closeDialog();
+    }
+
+    private void closeDialog(){
         readerSettingViewBack.getContent().dismiss();
     }
 
@@ -99,121 +100,203 @@ public class ReaderSettingMenuDialogHandler {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReaderFunctionItemCatalogEvent(ReaderFunctionItemCatalogEvent event){
-        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(),"Catalog");
-        //start activity
+    public void onReaderFunctionItemCatalogEvent(ReaderFunctionItemCatalogEvent event) {
+        //catalog
+        closeDialog();
+        EventBus.getDefault().post(new ShowReaderCatalogMenuEvent());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReaderFunctionItemBackEvent(ReaderFunctionItemBackEvent event){
+    public void onReaderFunctionItemBackEvent(ReaderFunctionItemBackEvent event) {
         EventBus.getDefault().post(new CloseDocumentEvent());
         readerSettingViewBack.getContent().dismiss();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReaderFunctionItemProgressEvent(ReaderFunctionItemProgressEvent event){
+    public void onReaderFunctionItemProgressEvent(ReaderFunctionItemProgressEvent event) {
         binding.readerSettingFunctionBar.getFunctionBarModel().changeTabSelection(ViewConfig.FunctionModule.SHOP);
         //show system,title,progress,function, menu
         new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.progressMenuGroup).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReaderFunctionItemBrightnessEvent(ReaderFunctionItemBrightnessEvent event){
+    public void onReaderFunctionItemBrightnessEvent(ReaderFunctionItemBrightnessEvent event) {
         binding.readerSettingFunctionBar.getFunctionBarModel().changeTabSelection(ViewConfig.FunctionModule.SETTING);
         //show system,title,brightness,function, menu
         new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.brightnessMenuGroup).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReaderFunctionItemSettingEvent(ReaderFunctionItemSettingEvent event){
-        if(readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle() != null) {
+    public void onReaderFunctionItemSettingEvent(ReaderFunctionItemSettingEvent event) {
+        if (readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle() != null) {
             //epub show text
             new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.textMenuGroup).execute(readerDataHolder);
-        }else {
+        } else {
             //pdf show text
             new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.imageMenuGroup).execute(readerDataHolder);
         }
     }
 
-    @Subscribe (threadMode = ThreadMode.MAIN)
-    public void onReaderSettingMenuItemBackPdfEvent(ReaderSettingMenuItemBackPdfEvent event){
-        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(),"BackPdf");
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReaderSettingMenuItemBackPdfEvent(ReaderSettingMenuItemBackPdfEvent event) {
+        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(), "BackPdf");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReaderSettingMenuItemCustomizeEvent(ReaderSettingMenuItemCustomizeEvent event){
+    public void onReaderSettingMenuItemCustomizeEvent(ReaderSettingMenuItemCustomizeEvent event) {
         new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.customMenuGroup).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPageViewUpdateEvent(PageViewUpdateEvent event){
-        new UpdatePageInfoAction(binding,readerViewInfo).execute(readerDataHolder);
+    public void onPageViewUpdateEvent(PageViewUpdateEvent event) {
+        new UpdatePageInfoAction(binding, readerDataHolder.getReaderViewInfo()).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event){
-        new SettingFontSizeAction(style,event.fontSize).execute(readerDataHolder);
+    public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event) {
+        new SettingFontSizeAction(readerDataHolder.getStyleCopy(), event.fontSize).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReaderSettingTypefaceEvent(ReaderSettingTypefaceEvent event){
-        new SettingTypefaceAction(style,event.typeFace).execute(readerDataHolder);
+    public void onReaderSettingTypefaceEvent(ReaderSettingTypefaceEvent event) {
+        new SettingTypefaceAction(readerDataHolder.getStyleCopy(), event.typeFace).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateImageShowModeEvent(SwitchNavigationToComicModeEvent event){
+    public void onUpdateImageShowModeEvent(SwitchNavigationToComicModeEvent event) {
         new SwitchNavigationToComicModeAction().execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onResetNavigationEvent(ResetNavigationEvent event){
+    public void onResetNavigationEvent(ResetNavigationEvent event) {
         new ResetNavigationAction().execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGammaCorrectionEvent(GammaCorrectionEvent event){
+    public void onGammaCorrectionEvent(GammaCorrectionEvent event) {
         GammaInfo gammaInfo = new GammaInfo();
         gammaInfo.setTextGamma(event.textGamma);
         new GammaCorrectionAction(gammaInfo).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onScaleToPageCropEvent(ScaleToPageCropEvent event){
-        new ScaleToPageCropAction(readerViewInfo).execute(readerDataHolder);
+    public void onScaleToPageCropEvent(ScaleToPageCropEvent event) {
+        new ScaleToPageCropAction(readerDataHolder.getReaderViewInfo()).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onImageReflowEvent(ImageReflowEvent event){
-        new ImageReflowAction(settings).execute(readerDataHolder);
+    public void onImageReflowEvent(ImageReflowEvent event) {
+        new ImageReflowAction(readerDataHolder.getSettingsCopy()).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onChangeChineseConvertTypeEvent(ChangeChineseConvertTypeEvent event){
+    public void onChangeChineseConvertTypeEvent(ChangeChineseConvertTypeEvent event) {
         new ChangeChineseConvertTypeAction(event.convertType).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSettingParagraphSpacingEvent(SettingParagraphSpacingEvent event){
+    public void onSettingParagraphSpacingEvent(SettingParagraphSpacingEvent event) {
         new SettingParagraphSpacingAction().execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSettingLeftAndRightSpacingEvent(SettingLeftAndRightSpacingEvent event){
-        new SettingLeftAndRightSpacingAction(style,event.margin).execute(readerDataHolder);
+    public void onSettingLeftAndRightSpacingEvent(SettingLeftAndRightSpacingEvent event) {
+        new SettingLeftAndRightSpacingAction(readerDataHolder.getStyleCopy(), event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSettingLineSpacingEvent(SettingLineSpacingEvent event){
-        new SettingLineSpacingAction(style,event.margin).execute(readerDataHolder);
+    public void onSettingLineSpacingEvent(SettingLineSpacingEvent event) {
+        new SettingLineSpacingAction(readerDataHolder.getStyleCopy(), event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSettingUpAndDownSpacingEvent(SettingUpAndDownSpacingEvent event){
-        new SettingUpAndDownSpacingAction(style,event.margin).execute(readerDataHolder);
+    public void onSettingUpAndDownSpacingEvent(SettingUpAndDownSpacingEvent event) {
+        new SettingUpAndDownSpacingAction(readerDataHolder.getStyleCopy(), event.margin).execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGotoPageEvent(GotoPageEvent event){
+    public void onGotoPageEvent(GotoPageEvent event) {
         new GotoPageAction(event.page).execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToggleBookmarkEvent(ToggleBookmarkEvent event) {
+        if(hasBookmark()){
+            removeBookmark();
+        }else{
+            addBookmark();
+        }
+    }
+
+    private void removeBookmark() {
+        new ToggleBookmarkAction(ToggleBookmarkAction.ToggleSwitch.Off,readerDataHolder.getReaderUserDataInfo(),getFirstVisiblePageWithBookmark()).execute(readerDataHolder);
+    }
+
+    private void addBookmark() {
+        new ToggleBookmarkAction(ToggleBookmarkAction.ToggleSwitch.On,readerDataHolder.getReaderUserDataInfo(),getFirstPageInfo()).execute(readerDataHolder);
+    }
+
+    public boolean hasBookmark() {
+        return getFirstVisiblePageWithBookmark() != null;
+    }
+
+    public PageInfo getFirstVisiblePageWithBookmark() {
+        for (PageInfo pageInfo : getVisiblePages()) {
+            if (readerDataHolder.getReaderUserDataInfo().hasBookmark(pageInfo)) {
+                return pageInfo;
+            }
+        }
+        return null;
+    }
+
+    public final PageInfo getFirstPageInfo() {
+        return readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
+    }
+
+    public final List<PageInfo> getVisiblePages() {
+        ArrayList<PageInfo> pages = new ArrayList<>();
+
+        PageInfo firstPage = getFirstPageInfo();
+        if (firstPage == null) {
+            return pages;
+        }
+        if (!supportScalable()) {
+            firstPage.setSubPage(-1);
+        }
+
+        pages.add(firstPage);
+
+        if (sideNoting) {
+            PageInfo subNotePage = new PageInfo(firstPage.getName(),
+                    firstPage.getRange().startPosition,
+                    firstPage.getRange().endPosition,
+                    firstPage.getOriginWidth(),
+                    firstPage.getOriginHeight());
+
+            RectF pageRect = new RectF(0, 0, subNotePage.getOriginWidth(),
+                    subNotePage.getOriginHeight());
+            int displayWidth = readerDataHolder.getReader().getReaderViewHelper().getPageViewWidth();
+            int displayHeight = readerDataHolder.getReader().getReaderViewHelper().getPageViewHeight();
+            RectF viewportRect = new RectF(displayWidth / 2, 0, displayWidth, displayHeight);
+            float scale = PageUtils.scaleToFitRect(pageRect, viewportRect);
+
+            subNotePage.setScale(scale);
+            subNotePage.updateDisplayRect(pageRect);
+
+            PageUtils.updateVisibleRect(subNotePage, viewportRect);
+
+            subNotePage.setSubPage(getSubPageIndex());
+            pages.add(subNotePage);
+        }
+
+        return pages;
+    }
+
+    public boolean supportScalable() {
+        return readerDataHolder.getReaderViewInfo() != null && readerDataHolder.getReaderViewInfo().supportScalable;
+    }
+
+    public int getSubPageIndex() {
+        return supportScalable() ? sideNotePage + 1 : sideNotePage;
     }
 }

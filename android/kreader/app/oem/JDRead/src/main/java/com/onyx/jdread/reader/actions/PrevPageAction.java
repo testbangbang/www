@@ -8,7 +8,6 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
-import com.onyx.jdread.reader.event.UpdateReaderViewInfoEvent;
 import com.onyx.jdread.reader.request.PreviousScreenRequest;
 
 import org.greenrobot.eventbus.EventBus;

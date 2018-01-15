@@ -107,6 +107,9 @@
     <item name="top_up_dialog_height_rate" type="integer" format="float">0.6</item>
     <item name="export_dialog_width_rate" type="integer" format="float">0.8</item>
     <item name="export_dialog_height_rate" type="integer" format="float">0.4</item>
+    <integer name="book_info_dialog_mark_row">4</integer>
+    <integer name="book_info_dialog_catalog_row">12</integer>
+    <integer name="book_info_dialog_note_row">4</integer>
     <integer name="dialog_associated_width">600</integer>
     <integer name="search_reader_adapter_col">1</integer>
     <integer name="search_reader_adapter_row">6</integer>

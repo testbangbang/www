@@ -9,6 +9,7 @@ import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.menu.event.BuyBookClickEvent;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
 import com.onyx.jdread.reader.menu.event.SearchContentEvent;
+import com.onyx.jdread.reader.menu.event.ToggleBookmarkEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -40,7 +41,8 @@ public class ReaderTitleBarModel extends BaseObservable {
     }
 
     public void bookmarkCLick() {
-
+        ToggleBookmarkEvent event = new ToggleBookmarkEvent();
+        EventBus.getDefault().post(event);
     }
 
     public ObservableBoolean getIsBuy() {
@@ -63,8 +65,12 @@ public class ReaderTitleBarModel extends BaseObservable {
         return bookMarkImageId;
     }
 
-    public void setBookMarkImageId(ObservableInt bookMarkImageId) {
-        this.bookMarkImageId = bookMarkImageId;
+    public void setBookMarkImageId(boolean isBookMark) {
+        if(isBookMark){
+            this.bookMarkImageId.set(R.mipmap.ic_read_bm_add);
+        }else {
+            this.bookMarkImageId.set(R.mipmap.ic_read_bm_normal);
+        }
     }
 
     public ObservableBoolean getIsShow() {

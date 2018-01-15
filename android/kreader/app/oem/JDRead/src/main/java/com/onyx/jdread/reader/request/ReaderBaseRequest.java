@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.request;
 import com.onyx.android.sdk.common.request.ExecutorContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.rx.RxRequest;
+import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 
 import java.util.concurrent.ExecutorService;
 
@@ -16,13 +17,24 @@ import io.reactivex.schedulers.Schedulers;
 public abstract class ReaderBaseRequest extends RxRequest {
     static final ExecutorService executorService = new ExecutorContext().getSingleThreadPool();
     private ReaderViewInfo readerViewInfo;
+    private ReaderUserDataInfo readerUserDataInfo;
 
     public ReaderViewInfo createReaderViewInfo() {
         readerViewInfo = new ReaderViewInfo();
         return readerViewInfo;
     }
 
+    public final ReaderUserDataInfo getReaderUserDataInfo() {
+        if (readerUserDataInfo == null) {
+            readerUserDataInfo = new ReaderUserDataInfo();
+        }
+        return readerUserDataInfo;
+    }
+
     public ReaderViewInfo getReaderViewInfo() {
+        if(readerViewInfo == null) {
+            readerViewInfo = new ReaderViewInfo();
+        }
         return readerViewInfo;
     }
 

@@ -20,7 +20,7 @@ public class InitPageViewAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                EventBus.getDefault().post(new InitPageViewInfoEvent());
+                EventBus.getDefault().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
                 ReaderActivityEventHandler.updateReaderViewInfo(request);
             }
 

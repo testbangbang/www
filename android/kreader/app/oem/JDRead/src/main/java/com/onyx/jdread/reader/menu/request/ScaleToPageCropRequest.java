@@ -25,7 +25,7 @@ public class ScaleToPageCropRequest extends ReaderBaseRequest {
         readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().setSavePosition(true);
         readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().setCurrentLayout(PageConstants.SINGLE_PAGE, new NavigationArgs());
         readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().scaleToPageContent(pageName);
-        readerDataHolder.getReader().getReaderViewHelper().updatePageView(readerDataHolder,createReaderViewInfo());
+        readerDataHolder.getReader().getReaderViewHelper().updatePageView(readerDataHolder,getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 }
