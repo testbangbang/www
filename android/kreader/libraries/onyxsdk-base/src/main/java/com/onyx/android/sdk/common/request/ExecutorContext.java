@@ -5,7 +5,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Exchanger;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -17,6 +16,7 @@ public class ExecutorContext {
 
     private ExecutorService singleThreadPool = null;
     private ExecutorService multiThreadPool = null;
+    private ExecutorService multiThreadPoolWithFiveCorePoolSize = null;
     private List<BaseRequest> requestList;
     private int threadPriority = Thread.MAX_PRIORITY;
 
@@ -103,5 +103,19 @@ public class ExecutorContext {
             });
         }
         return multiThreadPool;
+    }
+
+    public ExecutorService getMultiThreadPoolWithFiveCorePoolSize() {
+        if (multiThreadPoolWithFiveCorePoolSize == null) {
+            multiThreadPoolWithFiveCorePoolSize = Executors.newScheduledThreadPool(5, new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r);
+                    t.setPriority(threadPriority);
+                    return t;
+                }
+            });
+        }
+        return multiThreadPoolWithFiveCorePoolSize;
     }
 }

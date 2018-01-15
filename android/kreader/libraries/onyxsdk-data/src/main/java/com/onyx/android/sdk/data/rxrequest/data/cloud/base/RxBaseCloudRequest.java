@@ -14,7 +14,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public abstract class RxBaseCloudRequest extends RxRequest {
     protected final String TAG = this.getClass().getSimpleName();
-    static final ExecutorService executorService = new ExecutorContext().getSingleThreadPool();
+    static final ExecutorService executorService = new ExecutorContext().getMultiThreadPoolWithFiveCorePoolSize();
 
     public RxBaseCloudRequest() {
 
