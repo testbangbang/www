@@ -355,4 +355,6 @@
     <dimen name="dialog_associated_edit_height">60dp</dimen>
     <dimen name="dialog_associated_edit_margin_top">50dp</dimen>
     <dimen name="dialog_associated_email_button_margin_top">80dp</dimen>
+    <dimen name="translation_edit_height">150dp</dimen>
+    <dimen name="translate_result_height">200dp</dimen>
 </resources>

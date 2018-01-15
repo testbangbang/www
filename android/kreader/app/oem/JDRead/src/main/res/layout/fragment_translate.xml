@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.onyx.jdread.setting.model.TranslateModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.onyx.jdread.setting.ui.TranslateFragment">
+
+        <include
+            android:id="@+id/title_bar"
+            layout="@layout/title_bar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/fragment_content_padding">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/translation_edit_height"
+                android:gravity="top"
+                android:text="@={model.inputWords}" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black" />
+
+            <TextView
+                android:id="@+id/translate_result"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/translate_result_height"
+                android:clickable="true"
+                android:fadeScrollbars="false"
+                android:scrollbars="vertical"
+                android:text="@{model.translateResult}" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/rectangle_stroke"
+                android:clickable="true"
+                android:onClick="@{()->model.translate()}"
+                android:padding="@dimen/user_login_edit_text_delete_button_margin"
+                android:text="translate"
+                android:textSize="@dimen/level_two_heading_font" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</layout>

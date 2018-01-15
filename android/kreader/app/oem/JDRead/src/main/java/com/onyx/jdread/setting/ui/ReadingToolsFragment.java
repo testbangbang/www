@@ -98,7 +98,7 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
 
     @Subscribe
     public void onTranslationToolsEvent(TranslationToolsEvent event) {
-
+        viewEventCallBack.gotoView(TranslateFragment.class.getName());
     }
 
     @Subscribe
