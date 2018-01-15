@@ -1,6 +1,7 @@
 package com.onyx.android.libsetting.util;
 
 import android.content.Context;
+import android.os.Build;
 import android.provider.Settings;
 
 import com.onyx.android.libsetting.R;
@@ -57,14 +58,18 @@ public class PowerUtil {
 
     public static String getCurrentTimeoutValue(Context context,
                                                 @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory) {
-        return Integer.toString(Settings.System.getInt(
-                context.getContentResolver(), getTimeoutDataKeyByCategory(context, timeoutCategory), -1));
+        return Integer.toString(getCurrentTimeoutIntValue(context, timeoutCategory));
     }
 
     public static int getCurrentTimeoutIntValue(Context context,
                                                 @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory) {
-        return Settings.System.getInt(
-                context.getContentResolver(), getTimeoutDataKeyByCategory(context, timeoutCategory), -1);
+        if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN_MR1)) {
+            return Settings.Global.getInt(
+                    context.getContentResolver(), getTimeoutDataKeyByCategory(context, timeoutCategory), -1);
+        } else {
+            return Settings.System.getInt(
+                    context.getContentResolver(), getTimeoutDataKeyByCategory(context, timeoutCategory), -1);
+        }
     }
 
     private static String getTimeoutDataKeyByCategory(Context context,
