@@ -3634,7 +3634,7 @@ public class AlBookEng{
 
                         note_word.count++;
                         note_word.hyph[note_word.count] = InternalConst.TAL_HYPH_INPLACE_DISABLE;
-                        if (note_word.count >= EngBookMyType.AL_WORD_LEN) {
+                        if (note_word.count >= EngBookMyType.AL_WORD_LEN || (ch >= 0x3000 && AlUnicode.isChinezeSpecial(ch))) {
                             note_word.need_flags |= InternalConst.AL_ONEWORD_FLAG_NOINSERTALL;
                             if (addWord(note_word, page, width, TAL_CALC_MODE.ROWS))
                             	return false;
@@ -3721,7 +3721,7 @@ public class AlBookEng{
 						
 						note_word.count++;
 						note_word.hyph[note_word.count]	= InternalConst.TAL_HYPH_INPLACE_DISABLE;
-						if (note_word.count >= EngBookMyType.AL_WORD_LEN) {
+						if (note_word.count >= EngBookMyType.AL_WORD_LEN || (ch >= 0x3000 && AlUnicode.isChinezeSpecial(ch))) {
 							note_word.need_flags |= InternalConst.AL_ONEWORD_FLAG_NOINSERTALL;
 							if (addWord(note_word, page, width, TAL_CALC_MODE.NOTES))
 								return false;
@@ -5277,7 +5277,7 @@ public class AlBookEng{
 						
 						tmp_word.count++;
 						tmp_word.hyph[tmp_word.count]	= InternalConst.TAL_HYPH_INPLACE_DISABLE;
-						if (tmp_word.count >= EngBookMyType.AL_WORD_LEN) {
+						if (tmp_word.count >= EngBookMyType.AL_WORD_LEN || (ch >= 0x3000 && AlUnicode.isChinezeSpecial(ch))) {
 							tmp_word.need_flags |= InternalConst.AL_ONEWORD_FLAG_NOINSERTALL;
 							if (addWord(tmp_word, page, width, TAL_CALC_MODE.NORMAL/*calc_mode*/))
 								return;
