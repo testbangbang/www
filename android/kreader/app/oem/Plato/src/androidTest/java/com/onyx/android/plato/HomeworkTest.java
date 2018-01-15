@@ -8,15 +8,15 @@ import com.alibaba.fastjson.JSON;
 import com.onyx.android.plato.cloud.bean.GetAnalysisBean;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskRequestBean;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskResultBean;
-import com.onyx.android.plato.cloud.bean.GetSubjectBean;
 import com.onyx.android.plato.cloud.bean.GetStudyReportDetailResultBean;
+import com.onyx.android.plato.cloud.bean.GetSubjectBean;
 import com.onyx.android.plato.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.plato.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.plato.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.plato.cloud.bean.InsertParseBean;
 import com.onyx.android.plato.cloud.bean.InsertParseRequestBean;
-import com.onyx.android.plato.cloud.bean.IntrospectionRequestBean;
 import com.onyx.android.plato.cloud.bean.IntrospectionBean;
+import com.onyx.android.plato.cloud.bean.IntrospectionRequestBean;
 import com.onyx.android.plato.cloud.bean.PracticeAnswerBean;
 import com.onyx.android.plato.cloud.bean.PracticeFavoriteBean;
 import com.onyx.android.plato.cloud.bean.PracticeFavoriteOrDeleteBean;
@@ -31,8 +31,8 @@ import com.onyx.android.plato.requests.cloud.GetAnalysisRequest;
 import com.onyx.android.plato.requests.cloud.GetCorrectedTaskRequest;
 import com.onyx.android.plato.requests.cloud.GetExerciseTypeRequest;
 import com.onyx.android.plato.requests.cloud.GetPracticeParseRequest;
-import com.onyx.android.plato.requests.cloud.GetSubjectRequest;
 import com.onyx.android.plato.requests.cloud.GetStudyReportDetailRequest;
+import com.onyx.android.plato.requests.cloud.GetSubjectRequest;
 import com.onyx.android.plato.requests.cloud.HomeworkFinishedRequest;
 import com.onyx.android.plato.requests.cloud.HomeworkUnfinishedRequest;
 import com.onyx.android.plato.requests.cloud.InsertAnalysisRequest;
@@ -294,7 +294,7 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
 
     public void testUploadFile() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        Bitmap bitmap = BitmapFactory.decodeResource(SunApplication.getInstance().getResources(), R.drawable.book_cover);
+        Bitmap bitmap = BitmapFactory.decodeResource(SunApplication.getInstance().getResources(), R.drawable.ic_answer_area);
         File file = Utils.bitmap2File(bitmap);
 
         final RequestUploadFile rq = new RequestUploadFile(file);
