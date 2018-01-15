@@ -20,5 +20,6 @@ public class ChangePenStateRequest extends BaseNoteRequest {
     public void execute(NoteViewHelper helper) throws Exception {
         setRender(render);
         setResumeInputProcessor(resume);
+        renderCurrentPage(helper);
     }
 }

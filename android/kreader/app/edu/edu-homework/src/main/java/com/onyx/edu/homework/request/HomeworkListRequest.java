@@ -4,8 +4,10 @@ import android.support.annotation.NonNull;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.homework.Homework;
+import com.onyx.android.sdk.data.model.homework.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.data.model.homework.QuestionOption;
+import com.onyx.android.sdk.data.model.homework.QuestionReview;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -96,7 +98,12 @@ public class HomeworkListRequest extends BaseCloudRequest {
             model.loadFromQuestion(question);
             DBDataProvider.saveQuestion(model);
             loadUserSelectOption(question, model);
+            loadQuestionReview(question, model);
         }
+    }
+
+    private void loadQuestionReview(Question question, QuestionModel model) {
+        question.setReview(model.getReview());
     }
 
     private void loadUserSelectOption(Question question, QuestionModel model) {
