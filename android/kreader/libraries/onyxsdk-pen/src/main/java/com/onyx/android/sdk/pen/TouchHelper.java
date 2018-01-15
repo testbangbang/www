@@ -14,6 +14,10 @@ import java.util.List;
  */
 
 public class TouchHelper {
+
+    public static final int STROKE_STYLE_PENCIL = EpdPenManager.STROKE_STYLE_PENCIL;
+    public static final int STROKE_STYLE_BRUSH = EpdPenManager.STROKE_STYLE_BRUSH;
+
     private class ReaderCallback extends RawInputCallback {
 
         RawInputCallback callback;
@@ -149,6 +153,14 @@ public class TouchHelper {
         }
         TouchHelper helper = new TouchHelper(hostView, callback);
         return helper;
+    }
+
+    public void setStrokeStyle(int style) {
+        if (style == STROKE_STYLE_BRUSH) {
+            getEpdPenManager().setStrokeStyle(STROKE_STYLE_BRUSH);
+        } else {
+            getEpdPenManager().setStrokeStyle(STROKE_STYLE_PENCIL);
+        }
     }
 
     public TouchHelper setStrokeWidth(float w) {
