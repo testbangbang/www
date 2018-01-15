@@ -15,7 +15,7 @@ import com.onyx.android.sdk.scribble.request.note.NoteLibraryLoadRequest;
 public class GotoUpAction<T extends BaseManagerActivity> extends BaseNoteAction<T> {
 
     private volatile String uniqueId, parentUniqueID;
-    private NoteModel noteModel, parentModel;
+    private NoteModel parentModel;
     private NoteLibraryLoadRequest loadRequest;
 
     public GotoUpAction(final String id) {
@@ -36,11 +36,11 @@ public class GotoUpAction<T extends BaseManagerActivity> extends BaseNoteAction<
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        NoteLibraryLoadParentIDRequest noteLibraryLoadParentIDRequest = new NoteLibraryLoadParentIDRequest(uniqueId);
+        final NoteLibraryLoadParentIDRequest noteLibraryLoadParentIDRequest = new NoteLibraryLoadParentIDRequest(uniqueId);
         activity.submitRequest(noteLibraryLoadParentIDRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                parentUniqueID = ((NoteLibraryLoadParentIDRequest) request).getParentUniqueID();
+                parentUniqueID = noteLibraryLoadParentIDRequest.getParentUniqueID();
                 loadRequest = new NoteLibraryLoadRequest(parentUniqueID);
                 loadRequest.thumbnailLimit = Constant.PERTIME_THUMBNAIL_LOAD_LIMIT;
                 activity.submitRequest(loadRequest, new BaseCallback() {
