@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class NoteLibraryLoadRequest extends BaseNoteRequest {
 
-    private String parentUniqueId;
+    private String uniqueId;
     private NoteModel noteModel;
     private List<NoteModel> noteList;
     private volatile boolean loadThumbnail;
@@ -33,7 +33,7 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
 
     public NoteLibraryLoadRequest(final String id, int thumbLimit,
                                   @SortBy.SortByDef int sortBy, @AscDescOrder.AscDescOrderDef int ascDesc) {
-        parentUniqueId = id;
+        uniqueId = id;
         loadThumbnail = true;
         this.sortBy = sortBy;
         this.ascDesc = ascDesc;
@@ -47,12 +47,12 @@ public class NoteLibraryLoadRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper shapeManager) throws Exception {
-        noteModel = NoteDataProvider.load(parentUniqueId);
+        noteModel = NoteDataProvider.load(uniqueId);
         if (noteModel != null) {
             noteModel.setExtraAttributes(NoteDataProvider.getNoteAbsolutePath(
                     getContext(), noteModel.getUniqueId(), "/"));
         }
-        noteList = NoteDataProvider.loadNoteList(getContext(), parentUniqueId, sortBy, ascDesc);
+        noteList = NoteDataProvider.loadNoteList(getContext(), uniqueId, sortBy, ascDesc);
         if (!loadThumbnail) {
             return;
         }
