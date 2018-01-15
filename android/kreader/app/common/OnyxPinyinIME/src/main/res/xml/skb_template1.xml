@@ -108,10 +108,10 @@
 
   <!-- Language-switching key. -->
   <key id="6" start_pos_x="14.286%p" start_pos_y="75%p"
-      width="15.307%p" height="25%p" code="-2" label="中 文" key_type="1"
+      width="15.307%p" height="25%p" code="-2" icon="@drawable/ic_kb_zh" key_type="1"
       repeat="true">
-      <toggle_state state_id="@string/toggle_en_lower" label="英 文" code="-2"/>
-      <toggle_state state_id="@string/toggle_en_upper" label="英 文" code="-2"/>
+      <toggle_state state_id="@string/toggle_en_lower" icon="@drawable/ic_kb_en" code="-2"/>
+      <toggle_state state_id="@string/toggle_en_upper" icon="@drawable/ic_kb_en" code="-2"/>
   </key>
 
   <!-- Period key(English mode). -->
