@@ -7,7 +7,7 @@ import android.databinding.ObservableInt;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
-import com.onyx.jdread.shop.event.SubjectListSortTypeChangeEvent;
+import com.onyx.jdread.shop.event.SubjectListSortKeyChangeEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -27,7 +27,7 @@ public class SubjectListViewModel extends BaseObservable {
     public final ObservableBoolean sortButtonIsOpen =new ObservableBoolean();
     public final ObservableBoolean allCatIsOpen =new ObservableBoolean();
     public final ObservableBoolean isFree =new ObservableBoolean();
-    public List<CategoryListResultBean.CatListBean> categoryItems;
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryItems;
 
     public SubjectListViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -48,7 +48,7 @@ public class SubjectListViewModel extends BaseObservable {
     }
 
     public void setCurrentPage(int curPage) {
-        curPage = curPage < 1 ? 1 : curPage;
+        curPage = Math.max(1,curPage);
         currentPosition.set(curPage);
     }
 
@@ -57,7 +57,7 @@ public class SubjectListViewModel extends BaseObservable {
     }
 
     public void setTotalPage(int allPage) {
-        allPage = allPage < 1 ? 1 : allPage;
+        allPage = Math.max(1,allPage);
         totalPage.set(allPage);
     }
 
@@ -70,24 +70,24 @@ public class SubjectListViewModel extends BaseObservable {
         notifyChange();
     }
 
-    public List<CategoryListResultBean.CatListBean> getCategoryItems() {
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getCategoryItems() {
         return categoryItems;
     }
 
-    public void setCategoryItems(List<CategoryListResultBean.CatListBean> categoryItems) {
+    public void setCategoryItems(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryItems) {
         this.categoryItems = categoryItems;
         notifyChange();
     }
 
-    public void onSortTypeHotClick(){
-        getEventBus().post(new SubjectListSortTypeChangeEvent(CloudApiContext.CategoryLevel2BookList.SORT_TYPE_HOT));
+    public void onSortKeyHotClick(){
+        getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_PRAISE));
     }
 
-    public void onSortTypeSalesClick(){
-        getEventBus().post(new SubjectListSortTypeChangeEvent(CloudApiContext.CategoryLevel2BookList.SORT_TYPE_SALES));
+    public void onSortKeySalesClick(){
+        getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_SALES));
     }
 
-    public void onSortTypeNewestClick(){
-        getEventBus().post(new SubjectListSortTypeChangeEvent(CloudApiContext.CategoryLevel2BookList.SORT_TYPE_NEWEST));
+    public void onSortKeyNewestClick(){
+        getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_TIME));
     }
 }

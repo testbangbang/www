@@ -37,7 +37,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/text_no_stoke_background"
-                        android:text="@{viewModel.coverSubjectFourItems.modelBean.moduleBookChild.showName}"
+                        android:text="@{viewModel.coverSubjectFourItems.modelBean.show_name}"
                         android:textSize="@dimen/level_two_heading_font" />
 
                     <TextView
@@ -56,7 +56,7 @@
 
                 <com.onyx.android.sdk.ui.view.PageRecyclerView
                     android:id="@+id/recycler_view_cover_subject_four"
-                    subjectItems="@{viewModel.coverSubjectFourItems.modelBean.resultList}"
+                    subjectItems="@{viewModel.coverSubjectFourItems.modelBean.bookList}"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/book_shop_recycler_height"
                     android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
@@ -72,7 +72,7 @@
                 android:drawableRight="@mipmap/ic_go_view_all"
                 android:gravity="center"
                 android:onClick="@{()->viewModel.onViewAllBookViewClick()}"
-                android:text="@{@string/view_all_books(viewModel.coverSubjectOneItems.modelBean.amount)}"
+                android:text="@string/view_all_books"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 

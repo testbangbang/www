@@ -1,11 +1,11 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
+import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
-import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 
 import retrofit2.Call;
 
@@ -14,16 +14,15 @@ import retrofit2.Call;
  */
 
 public class RxRequestBookDetail extends RxBaseCloudRequest {
-    private static final String TAG = RxRequestBookDetail.class.getSimpleName();
-    private BaseRequestBean baseRequestBean;
+    private GetBookDetailRequestBean requestBean;
     private BookDetailResultBean bookDetailResultBean;
 
     public BookDetailResultBean getBookDetailResultBean() {
         return bookDetailResultBean;
     }
 
-    public void setBaseRequestBean(BaseRequestBean baseRequestBean) {
-        this.baseRequestBean = baseRequestBean;
+    public void setRequestBean(GetBookDetailRequestBean requestBean) {
+        this.requestBean = requestBean;
     }
 
     @Override
@@ -44,6 +43,6 @@ public class RxRequestBookDetail extends RxBaseCloudRequest {
     }
 
     private Call<BookDetailResultBean> getCall(ReadContentService getCommonService) {
-        return getCommonService.getBookDetail(CloudApiContext.NewBookDetail.API_NEW_BOOK_DETAIL, baseRequestBean.getBody());
+        return getCommonService.getBookDetail(requestBean.bookId, requestBean.getAppBaseInfo().getRequestParamsMap());
     }
 }

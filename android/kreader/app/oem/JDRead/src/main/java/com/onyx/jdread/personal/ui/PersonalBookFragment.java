@@ -131,8 +131,8 @@ public class PersonalBookFragment extends BaseFragment {
 
                 List<Metadata> data = personalBookAdapter.getData();
                 Metadata metadata = data.get(position);
-                BookDetailResultBean.Detail detail = covert(metadata);
-                BookExtraInfoBean infoBean = detail.getBookExtraInfoBean();
+                BookDetailResultBean.DetailBean detail = covert(metadata);
+                BookExtraInfoBean infoBean = detail.bookExtraInfoBean;
                 if (DownLoadHelper.isDownloading(infoBean.downLoadState)) {
                     DownLoadHelper.stopDownloadingTask(metadata.getTags());
                     infoBean.downLoadState = DownLoadHelper.getPausedState();
@@ -160,11 +160,11 @@ public class PersonalBookFragment extends BaseFragment {
     public synchronized void onDownloadingEvent(DownloadingEvent event) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (task != null) {
-            BookDetailResultBean.Detail bookDetail = ShopDataBundle.getInstance().getBookDetail();
-            bookDetail.getBookExtraInfoBean().downLoadState = task.getStatus();
-            bookDetail.getBookExtraInfoBean().localPath = task.getPath();
-            bookDetail.setTag(event.tag);
-            bookDetail.getBookExtraInfoBean().percentage = (int) (event.progressInfoModel.progress * 100);
+            BookDetailResultBean.DetailBean bookDetail = ShopDataBundle.getInstance().getBookDetail();
+            bookDetail.bookExtraInfoBean.downLoadState = task.getStatus();
+            bookDetail.bookExtraInfoBean.localPath = task.getPath();
+            bookDetail.tag = event.tag;
+            bookDetail.bookExtraInfoBean.percentage = (int) (event.progressInfoModel.progress * 100);
             updateProgress(bookDetail);
         }
     }
@@ -173,28 +173,28 @@ public class PersonalBookFragment extends BaseFragment {
     public synchronized void onDownloadFinishEvent(DownloadFinishEvent event) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (task != null) {
-            BookDetailResultBean.Detail bookDetail = ShopDataBundle.getInstance().getBookDetail();
-            bookDetail.getBookExtraInfoBean().downLoadState = task.getStatus();
-            bookDetail.getBookExtraInfoBean().localPath = task.getPath();
-            bookDetail.getBookExtraInfoBean().percentage = DownLoadHelper.DOWNLOAD_PERCENT_FINISH;
+            BookDetailResultBean.DetailBean bookDetail = ShopDataBundle.getInstance().getBookDetail();
+            bookDetail.bookExtraInfoBean.downLoadState = task.getStatus();
+            bookDetail.bookExtraInfoBean.localPath = task.getPath();
+            bookDetail.bookExtraInfoBean.percentage = DownLoadHelper.DOWNLOAD_PERCENT_FINISH;
             updateProgress(bookDetail);
         }
     }
 
-    private synchronized void updateProgress(BookDetailResultBean.Detail detail) {
+    private synchronized void updateProgress(BookDetailResultBean.DetailBean detail) {
         if (personalBookAdapter == null) {
             return;
         }
         List<Metadata> data = personalBookAdapter.getData();
         for (int i = 0; i < data.size(); i++) {
             Metadata metadata = data.get(i);
-            if (String.valueOf(detail.getEbookId()).equals(metadata.getCloudId())) {
-                String infoBean = JSONObjectParseUtils.toJson(detail.getBookExtraInfoBean());
+            if (String.valueOf(detail.ebook_id).equals(metadata.getCloudId())) {
+                String infoBean = JSONObjectParseUtils.toJson(detail.bookExtraInfoBean);
                 metadata.setExtraAttributes(infoBean);
-                metadata.setTags((String) detail.getTag());
+                metadata.setTags((String) detail.tag);
                 personalBookAdapter.notifyDataSetChanged();
-                if (DownLoadHelper.canInsertBookDetail(detail.getBookExtraInfoBean().downLoadState)) {
-                    BookshelfInsertAction action = new BookshelfInsertAction(detail, detail.getBookExtraInfoBean().localPath);
+                if (DownLoadHelper.canInsertBookDetail(detail.bookExtraInfoBean.downLoadState)) {
+                    BookshelfInsertAction action = new BookshelfInsertAction(detail, detail.bookExtraInfoBean.localPath);
                     action.execute(ShopDataBundle.getInstance(), null);
                 }
             }
@@ -305,14 +305,14 @@ public class PersonalBookFragment extends BaseFragment {
         }
     }
 
-    private BookDetailResultBean.Detail covert(Metadata metadata) {
-        BookDetailResultBean.Detail detail = new BookDetailResultBean.Detail();
-        detail.setName(metadata.getName());
-        detail.setAuthor(metadata.getAuthors());
-        detail.setEbookId(Integer.parseInt(metadata.getCloudId()));
-        detail.setImageUrl(metadata.getCoverUrl());
-        detail.setFileSize(metadata.getSize());
-        detail.setDownLoadUrl(StringUtils.isNotBlank(metadata.getLocation()) ? metadata.getLocation() : null);
+    private BookDetailResultBean.DetailBean covert(Metadata metadata) {
+        BookDetailResultBean.DetailBean detail = new BookDetailResultBean.DetailBean();
+        detail.name = metadata.getName();
+        detail.author = metadata.getAuthors();
+        detail.ebook_id = Integer.parseInt(metadata.getCloudId());
+        detail.image_url = metadata.getCoverUrl();
+        detail.file_size = metadata.getSize();
+        detail.downLoadUrl = StringUtils.isNotBlank(metadata.getLocation()) ? metadata.getLocation() : null;
         String extraAttributes = metadata.getExtraAttributes();
 
         BookExtraInfoBean infoBean = null;
@@ -322,9 +322,9 @@ public class PersonalBookFragment extends BaseFragment {
             infoBean = JSONObjectParseUtils.toBean(extraAttributes, BookExtraInfoBean.class);
         }
         if (StringUtils.isNotBlank(metadata.getTags())) {
-            detail.setTag(metadata.getTags());
+            detail.tag = metadata.getTags();
         }
-        detail.setBookExtraInfoBean(infoBean);
+        detail.bookExtraInfoBean = infoBean;
         return detail;
     }
 }

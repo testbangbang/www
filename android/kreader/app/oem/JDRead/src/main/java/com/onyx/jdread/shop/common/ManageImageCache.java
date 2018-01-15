@@ -16,7 +16,7 @@ import com.onyx.jdread.JDReadApplication;
 
 public class ManageImageCache {
     public static void loadUrl(final String url, final ImageView imageView, final int defaultImage) {
-        Glide.with(JDReadApplication.getInstance().getApplicationContext()).load(url).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(defaultImage).into(imageView);
+        Glide.with(JDReadApplication.getInstance().getApplicationContext()).load(url).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(defaultImage).error(defaultImage).into(imageView);
     }
 
     public static void loadUrl(final int resourceID, final ImageView imageView, final int defaultImage) {

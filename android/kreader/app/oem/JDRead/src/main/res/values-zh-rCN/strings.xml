@@ -110,7 +110,7 @@
     <string name="new_book">新书</string>
     <string name="category">分类</string>
     <string name="back_to_top">返回顶部</string>
-    <string name="view_all_books">查看全部%1$s万册图书</string>
+    <string name="view_all_books">查看全库图书</string>
     <string name="search_view_hint">请输入搜索内容</string>
     <string name="book_detail_yuedou_price">%1$s阅豆</string>
     <string name="book_detail_button_now_read">立即阅读</string>
@@ -143,8 +143,6 @@
     <string name="book_detail_downloading">正在下载</string>
     <string name="book_detail_try_read">试读本书</string>
     <string name="book_detail_download_add_shelf">试读文件已开始下载并加入书架</string>
-    <string name="book_detail_go_shelf">去书架</string>
-    <string name="book_detail_stay">再逛逛</string>
     <string name="book_detail_dialog_fluent">立即畅读(本书支持畅读)</string>
     <string name="book_detail_dialog_buy">直接购买</string>
     <string name="book_detail_dialog_add_cart">加入购物车，稍后购买</string>
@@ -246,9 +244,6 @@
     <string name="eighty_one_hundred_points">8100积分</string>
     <string name="being_set_up">正在设置</string>
     <string name="add_to_smooth_list_failed">加入畅读列表失败</string>
-    <string name="all_category_title_publish">出版</string>
-    <string name="all_category_title_boy">男生</string>
-    <string name="all_category_title_girl">女生</string>
     <string name="all_category">全部分类</string>
     <string name="device_model_format">设备型号： %s</string>
     <string name="device_version_format">系统版本： %s</string>
