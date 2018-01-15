@@ -2,6 +2,8 @@ package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
 
+import com.onyx.jdread.main.common.Constants;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
@@ -36,6 +38,16 @@ public class RankViewModel extends BaseObservable {
 
     public void setRankItems(List<SubjectViewModel> rankItems) {
         this.rankItems = rankItems;
+        if (rankItems != null) {
+            for (int i = 0; i < rankItems.size(); i++) {
+                if (i == Constants.SHOP_MAIN_INDEX_ONE || i == Constants.SHOP_MAIN_INDEX_THREE) {
+                    SubjectViewModel subjectViewModel = rankItems.get(i);
+                    SubjectViewModel nextSubjectViewModel = rankItems.get(i + 1);
+                    subjectViewModel.setShowNextTitle(true);
+                    subjectViewModel.setModelBeanNext(nextSubjectViewModel.getModelBean());
+                }
+            }
+        }
         notifyChange();
     }
 

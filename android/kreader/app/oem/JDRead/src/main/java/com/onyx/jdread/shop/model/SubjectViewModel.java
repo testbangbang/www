@@ -64,7 +64,7 @@ public class SubjectViewModel extends BaseObservable {
         return modelBeanNext;
     }
 
-    private void setModelBeanNext(BookModelConfigResultBean.DataBean.ModulesBean modelBeanNext) {
+    public void setModelBeanNext(BookModelConfigResultBean.DataBean.ModulesBean modelBeanNext) {
         this.modelBeanNext = modelBeanNext;
         notifyChange();
     }
