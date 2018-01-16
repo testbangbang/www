@@ -7,6 +7,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.action.TranslateAction;
+import com.onyx.jdread.setting.event.BackToReadingToolsEvent;
 import com.onyx.jdread.setting.ui.TranslateFragment;
 
 import java.util.Observable;
@@ -24,7 +25,7 @@ public class TranslateModel extends Observable {
 
     public TranslateModel() {
         titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.translation));
-        titleBarModel.backEvent.set(new TranslateFragment());
+        titleBarModel.backEvent.set(new BackToReadingToolsEvent());
     }
 
     public void translate() {

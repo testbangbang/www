@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="model"
+            type="com.onyx.jdread.setting.model.DictionaryModel"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.onyx.jdread.setting.ui.DictionaryFragment">
+
+        <include
+            android:id="@+id/dictionary_title"
+            layout="@layout/title_bar" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/dictionary_recycler"
+            android:padding="@dimen/fragment_content_padding"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            items="@{model.list}"
+            android:layout_weight="1" />
+    </LinearLayout>
+</layout>

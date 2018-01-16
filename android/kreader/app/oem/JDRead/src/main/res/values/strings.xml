@@ -367,4 +367,5 @@
     <string name="input_language">Source language: %s</string>
     <string name="target_language">Target language: %s</string>
     <string name="input_number_for_contact">Please enter your mobile phone number so that the staff can contact you.</string>
+    <string name="installed">installed</string>
 </resources>
