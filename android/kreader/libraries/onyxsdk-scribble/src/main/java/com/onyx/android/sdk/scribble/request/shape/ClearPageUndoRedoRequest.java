@@ -8,9 +8,9 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class ClearPageUndoRedoRequest extends BaseNoteRequest {
 
-    public ClearPageUndoRedoRequest() {
+    public ClearPageUndoRedoRequest(boolean resume) {
         setPauseInputProcessor(false);
-        setResumeInputProcessor(true);
+        setResumeInputProcessor(resume);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {

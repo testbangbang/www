@@ -13,8 +13,10 @@ import com.onyx.android.sdk.scribble.request.shape.UndoRequest;
 public class ClearPageUndoRedoAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
 
     private ClearPageUndoRedoRequest request;
+    private boolean resume;
 
-    public ClearPageUndoRedoAction() {
+    public ClearPageUndoRedoAction(boolean resume) {
+        this.resume = resume;
     }
 
     public void execute(final T activity) {
@@ -28,7 +30,7 @@ public class ClearPageUndoRedoAction<T extends BaseScribbleActivity> extends Bas
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        request = new ClearPageUndoRedoRequest();
+        request = new ClearPageUndoRedoRequest(resume);
         activity.submitRequest(request, callback);
     }
 

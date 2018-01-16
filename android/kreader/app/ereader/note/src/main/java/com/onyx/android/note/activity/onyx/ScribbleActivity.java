@@ -543,7 +543,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private void switchScribbleMode(boolean isLineLayoutMode) {
         cleanUpAllPopMenu();
         hideSoftInput();
-        new ClearPageUndoRedoAction<ScribbleActivity>().execute(this, null);
+        new ClearPageUndoRedoAction<ScribbleActivity>(shouldResume()).execute(this, null);
 
         if (isLineLayoutMode) {
             spanTextHandler.openSpanTextFunc();
