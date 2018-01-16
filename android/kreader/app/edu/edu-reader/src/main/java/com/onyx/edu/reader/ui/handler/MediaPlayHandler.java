@@ -1,5 +1,10 @@
 package com.onyx.edu.reader.ui.handler;
 
+import android.app.Dialog;
+import android.view.KeyEvent;
+
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.reader.media.ReaderMediaManager;
@@ -26,7 +31,69 @@ public class MediaPlayHandler extends BaseHandler {
     @Override
     public void onActivate(ReaderDataHolder readerDataHolder, HandlerInitialState initialState) {
         super.onActivate(readerDataHolder, initialState);
-        new DialogMediaPlay(readerDataHolder).show();
+        showMediaPlayDialog(readerDataHolder);
+    }
+
+    private void showMediaPlayDialog(final ReaderDataHolder readerDataHolder) {
+        new DialogMediaPlay(readerDataHolder.getContext(),
+                readerDataHolder.getEventBus(),
+                readerDataHolder.getMediaManager().getMediaPlayer(),
+                new DialogMediaPlay.MediaPlayListener() {
+                    @Override
+                    public void startMedia() {
+                        start();
+                    }
+
+                    @Override
+                    public void resumeMedia() {
+                        resume();
+                    }
+
+                    @Override
+                    public void stopMedia() {
+                        stop();
+                    }
+
+                    @Override
+                    public void pauseMedia() {
+                        pause();
+                    }
+
+                    @Override
+                    public void quitMedia() {
+                        quit();
+                    }
+
+                    @Override
+                    public void closeDialog(Dialog dialog) {
+                        onCloseDialog(dialog);
+                    }
+
+                    @Override
+                    public boolean keyUp(int keyCode, KeyEvent event) {
+                        return onKeyUp(readerDataHolder, keyCode, event);
+                    }
+
+                    @Override
+                    public void seekTo(int msec) {
+                        readerDataHolder.getMediaManager().seekTo(msec);
+                    }
+
+                    @Override
+                    public void nextPage() {
+                        nextScreen(readerDataHolder, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                startMedia();
+                            }
+                        });
+                    }
+                }).show();
+    }
+
+    private void onCloseDialog(Dialog dialog) {
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
+        readerDataHolder.removeActiveDialog(dialog);
     }
 
     public void start() {

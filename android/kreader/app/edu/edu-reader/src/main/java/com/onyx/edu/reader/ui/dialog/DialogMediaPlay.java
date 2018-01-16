@@ -1,5 +1,6 @@
 package com.onyx.edu.reader.ui.dialog;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
@@ -23,13 +24,12 @@ import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.device.ReaderDeviceManager;
 import com.onyx.edu.reader.ui.actions.NextScreenAction;
-import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.events.CloseMediaPlayDialogEvent;
 import com.onyx.edu.reader.ui.events.MediaPlayCompleteEvent;
 import com.onyx.edu.reader.ui.events.MediaPlayStartEvent;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
-import com.onyx.edu.reader.ui.handler.MediaPlayHandler;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.Bind;
@@ -40,6 +40,18 @@ import butterknife.ButterKnife;
  */
 public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListener {
     public static final int VOLUME_SPAN = 2;
+
+    public interface MediaPlayListener {
+        void startMedia();
+        void resumeMedia();
+        void stopMedia();
+        void pauseMedia();
+        void quitMedia();
+        void closeDialog(Dialog dialog);
+        boolean keyUp(int keyCode, KeyEvent event);
+        void seekTo(int msec);
+        void nextPage();
+    }
 
     @Bind(R.id.tts_play)
     ImageButton ttsPlay;
@@ -70,21 +82,26 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
 
     private int maxVolume;
     private AudioManager audioMgr;
-    private ReaderDataHolder readerDataHolder;
-    private MediaPlayHandler playHandler;
     private CountDownTimer timer;
+    private MediaPlayListener mediaPlayListener;
+    private EventBus eventBus;
+    private MediaPlayer mediaPlayer;
     private boolean stop = false;
 
     private int gcInterval = 0;
 
-    public DialogMediaPlay(ReaderDataHolder readerDataHolder) {
-        super(readerDataHolder.getContext(), R.style.dialog_transparent_no_title);
+    public DialogMediaPlay(Context context,
+                           EventBus bus,
+                           MediaPlayer player,
+                           MediaPlayListener listener) {
+        super(context, R.style.dialog_transparent_no_title);
         setContentView(R.layout.dialog_media_play);
 
-        this.readerDataHolder = readerDataHolder;
-        readerDataHolder.getEventBus().register(this);
-        playHandler = (MediaPlayHandler) readerDataHolder.getHandlerManager().getActiveProvider();
+        eventBus = bus;
+        mediaPlayListener = listener;
+        mediaPlayer = player;
 
+        eventBus.register(this);
         ButterKnife.bind(this);
         fitDialogToWindow();
         initView();
@@ -105,7 +122,7 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
 
     public void show() {
         super.show();
-        playHandler.start();
+        mediaPlayListener.startMedia();
     }
 
     private void initView() {
@@ -167,9 +184,8 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
                 cancelTimer();
                 resetSeekBar();
                 ReaderDeviceManager.setGcInterval(gcInterval);
-                readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
-                readerDataHolder.removeActiveDialog(DialogMediaPlay.this);
-                readerDataHolder.getEventBus().unregister(DialogMediaPlay.this);
+                eventBus.unregister(DialogMediaPlay.this);
+                mediaPlayListener.closeDialog(DialogMediaPlay.this);
             }
         });
 
@@ -177,7 +193,7 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP) {
-                    playHandler.onKeyUp(readerDataHolder, keyCode, event);
+                    mediaPlayListener.keyUp(keyCode, event);
                 }
                 return false;
             }
@@ -201,13 +217,13 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
         if (v.equals(ttsVoice)) {
             voiceSizeLayout.setVisibility(voiceSizeLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
         } else if (v.equals(ttsClose)) {
-            playHandler.quit();
+            mediaPlayListener.quitMedia();
             dismiss();
         } else if (v.equals(ttsPlay)) {
             onPlay();
         } else if (v.equals(ttsStop)) {
             hideVoiceControlLayout();
-            playHandler.stop();
+            mediaPlayListener.stopMedia();
             setStop(true);
             onMediaPlayStateChanged();
         } else if (v.equals(minusVoice)) {
@@ -222,14 +238,14 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
     private void onPlay() {
         hideVoiceControlLayout();
         if (isStop()) {
-            playHandler.start();
+            mediaPlayListener.startMedia();
             setStop(false);
         }else {
-            if (readerDataHolder.getMediaManager().isPlaying()) {
-                playHandler.pause();
+            if (getMediaPlayer().isPlaying()) {
+                mediaPlayListener.pauseMedia();
                 cancelTimer();
             } else {
-                playHandler.resume();
+                mediaPlayListener.resumeMedia();
                 countTime();
             }
             onMediaPlayStateChanged();
@@ -254,16 +270,6 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
         }.start();
     }
 
-    private void autoNextScreen() {
-        new NextScreenAction().execute(readerDataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                resetSeekBar();
-                playHandler.start();
-            }
-        });
-    }
-
     private void resetSeekBar() {
         seekBarMedia.setProgress(0);
         seekBarMedia.setMax(0);
@@ -284,7 +290,7 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
     }
 
     private MediaPlayer getMediaPlayer() {
-        return readerDataHolder.getMediaManager().getMediaPlayer();
+        return mediaPlayer;
     }
 
     public void setStop(boolean stop) {
@@ -313,6 +319,7 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
 
     @Subscribe
     public void onMediaPlayStartEvent(MediaPlayStartEvent event) {
+        resetSeekBar();
         seekBarMedia.setMax(getMediaPlayer().getDuration());
         countTime();
         onMediaPlayStateChanged();
@@ -320,18 +327,19 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
 
     @Subscribe
     public void onMediaPlayCompleteEvent(MediaPlayCompleteEvent event) {
-        seekBarMedia.setProgress(getMediaPlayer().getDuration());
-        autoNextScreen();
+        seekBarMedia.setProgress(seekBarMedia.getMax());
+        mediaPlayListener.stopMedia();
+        mediaPlayListener.nextPage();
     }
 
     @Subscribe
     public void onCloseMediaPlayDialogEvent(CloseMediaPlayDialogEvent event) {
-        playHandler.quit();
+        mediaPlayListener.quitMedia();
         dismiss();
     }
 
     private void onMediaPlayStateChanged() {
-        if (readerDataHolder.getMediaManager().isPlaying()) {
+        if (getMediaPlayer().isPlaying()) {
             ttsPlay.setImageResource(R.drawable.ic_dialog_tts_suspend);
         } else {
             ttsPlay.setImageResource(R.drawable.ic_dialog_tts_play);
@@ -344,8 +352,8 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
     }
 
     private void seekTo(int msec) {
-        readerDataHolder.getMediaManager().seekTo(msec);
-        if (readerDataHolder.getMediaManager().isPlaying()) {
+        mediaPlayListener.seekTo(msec);
+        if (getMediaPlayer().isPlaying()) {
             countTime();
         }
     }
