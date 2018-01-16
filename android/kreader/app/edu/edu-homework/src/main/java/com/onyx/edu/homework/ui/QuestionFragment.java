@@ -146,7 +146,7 @@ public class QuestionFragment extends BaseFragment {
 
     private CompoundButton createCompoundButton(final Question question, final QuestionOption option) {
         final boolean single = question.isSingleChoiceQuestion();
-        final boolean enable = getDataBundle().isDoing();
+        final boolean enable = getDataBundle().isDoing() && !getDataBundle().isExpired();
         final CompoundButton button = single ? new RadioButton(getActivity()) : new CheckBox(getActivity());
         button.setText(Html.fromHtml(StringUtils.filterHtmlWrapChar(option.value), new Base64ImageParser(getActivity()), null));
         button.setTextSize(getResources().getDimension(R.dimen.question_option_text_size));
@@ -228,7 +228,7 @@ public class QuestionFragment extends BaseFragment {
     }
 
     public void updateViewState() {
-        boolean enable = getDataBundle().isDoing();
+        boolean enable = getDataBundle().isDoing() && !getDataBundle().isExpired();
         int size = binding.option.getChildCount();
         for (int i = 0; i < size; i++) {
             View view = binding.option.getChildAt(i);

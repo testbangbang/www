@@ -560,6 +560,7 @@ public class ScribbleFragment extends BaseFragment {
     public boolean shouldResume() {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
+                && !getDataBundle().isExpired()
                 && isRunning();
     }
 }
