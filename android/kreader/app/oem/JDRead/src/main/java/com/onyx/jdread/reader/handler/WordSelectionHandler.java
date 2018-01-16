@@ -49,6 +49,7 @@ public class WordSelectionHandler extends BaseHandler {
     private float lastMoveY = 0;
     private int crossScreenTouchRegionMinWidth;
     private int crossScreenTouchRegionMinHeight;
+    private String pagePosition;
 
     public WordSelectionHandler(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder);
@@ -59,6 +60,7 @@ public class WordSelectionHandler extends BaseHandler {
 
     @Override
     public void onLongPress(MotionEvent event) {
+        pagePosition = getReaderDataHolder().getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
         if (isCrossScreenSelectText(event)) {
             return;
         }
@@ -84,9 +86,9 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private boolean isCrossScreenSelectText(MotionEvent event) {
-        if (getReaderDataHolder().getReaderSelectionManager().getCurrentSelection() != null) {
-            int height = getReaderDataHolder().getReaderViewHelper().getPageViewHeight();
-            int width = getReaderDataHolder().getReaderViewHelper().getPageViewWidth();
+        if (getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(pagePosition) != null) {
+            int height = getReaderDataHolder().getReader().getReaderViewHelper().getPageViewHeight();
+            int width = getReaderDataHolder().getReader().getReaderViewHelper().getPageViewWidth();
             float x = event.getX();
             float y = event.getY();
             if (x < crossScreenTouchRegionMinWidth && y < crossScreenTouchRegionMinHeight) {
@@ -268,7 +270,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private float getMovePointOffsetHeight() {
-        if (!getReaderDataHolder().getReaderSelectionManager().isEnable()) {
+        if (!getReaderDataHolder().getReaderSelectionManager().isEnable(pagePosition)) {
             return 0f;
         }
         return movePointOffsetHeight;
@@ -305,8 +307,8 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public int getCursorSelected(int x, int y) {
-        HighlightCursor beginHighlightCursor = getReaderDataHolder().getReaderSelectionManager().getHighlightCursor(HighlightCursor.BEGIN_CURSOR_INDEX);
-        HighlightCursor endHighlightCursor = getReaderDataHolder().getReaderSelectionManager().getHighlightCursor(HighlightCursor.END_CURSOR_INDEX);
+        HighlightCursor beginHighlightCursor = getReaderDataHolder().getReaderSelectionManager().getHighlightCursor(pagePosition,HighlightCursor.BEGIN_CURSOR_INDEX);
+        HighlightCursor endHighlightCursor = getReaderDataHolder().getReaderSelectionManager().getHighlightCursor(pagePosition,HighlightCursor.END_CURSOR_INDEX);
 
         if (endHighlightCursor != null && endHighlightCursor.hitTest(x, y)) {
             return HighlightCursor.END_CURSOR_INDEX;
@@ -325,7 +327,7 @@ public class WordSelectionHandler extends BaseHandler {
     private void clearWordSelection() {
         new UpdateViewPageAction().execute(getReaderDataHolder());
         getReaderDataHolder().getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
-        getReaderDataHolder().getReaderSelectionManager().clear();
+        getReaderDataHolder().getReaderSelectionManager().clear(pagePosition);
     }
 
     private void enableSelectionCursor() {
