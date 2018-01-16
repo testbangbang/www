@@ -312,7 +312,7 @@ public class ReaderDataHolder {
 
     public ReaderMediaManager getMediaManager() {
         if (mediaManager == null) {
-            mediaManager = new ReaderMediaManager(this);
+            mediaManager = new ReaderMediaManager(getEventBus());
         }
         return mediaManager;
     }

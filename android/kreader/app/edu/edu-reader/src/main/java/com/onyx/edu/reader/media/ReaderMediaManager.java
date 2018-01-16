@@ -6,6 +6,8 @@ import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.events.MediaPlayCompleteEvent;
 import com.onyx.edu.reader.ui.events.MediaPlayStartEvent;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
 
@@ -16,10 +18,10 @@ import java.io.IOException;
 public class ReaderMediaManager {
 
     private MediaPlayer mediaPlayer;
-    private ReaderDataHolder readerDataHolder;
+    private EventBus eventBus;
 
-    public ReaderMediaManager(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public ReaderMediaManager(EventBus bus) {
+        this.eventBus = bus;
     }
 
     public MediaPlayer getMediaPlayer() {
@@ -43,13 +45,17 @@ public class ReaderMediaManager {
         getMediaPlayer().setDataSource(url);
         getMediaPlayer().prepare();
         getMediaPlayer().start();
-        readerDataHolder.getEventBus().post(new MediaPlayStartEvent());
+        getEventBus().post(new MediaPlayStartEvent());
         getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                readerDataHolder.getEventBus().post(new MediaPlayCompleteEvent());
+                getEventBus().post(new MediaPlayCompleteEvent());
             }
         });
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public void resume() {
