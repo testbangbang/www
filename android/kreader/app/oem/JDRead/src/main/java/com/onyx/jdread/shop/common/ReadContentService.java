@@ -113,7 +113,7 @@ public interface ReadContentService {
                                            @Query(AppBaseInfo.BODY_KEY) String body,
                                            @QueryMap Map<String, String> map);
 
-    @GET("user/sync")
+    @GET(CloudApiContext.User.SYNC_INFO)
     Call<SyncLoginInfoBean> getSyncLoginInfo(@QueryMap Map<String, String> map);
 
 
