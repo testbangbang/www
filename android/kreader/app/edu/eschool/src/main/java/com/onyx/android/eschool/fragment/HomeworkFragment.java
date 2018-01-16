@@ -246,7 +246,7 @@ public class HomeworkFragment extends Fragment {
     }
 
     private void nextPage() {
-        if (getPagination().isLastPage()) {
+        if (!getPagination().hasNextPage()) {
             postNextTab();
             return;
         }
