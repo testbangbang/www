@@ -25,6 +25,7 @@ import com.onyx.edu.reader.ui.actions.PlayAudioAction;
 import com.onyx.edu.reader.ui.actions.PreviousScreenAction;
 import com.onyx.edu.reader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
+import com.onyx.edu.reader.ui.actions.StartMediaPlayAction;
 import com.onyx.edu.reader.ui.data.BookmarkIconFactory;
 import com.onyx.edu.reader.ui.data.PageTurningDetector;
 import com.onyx.edu.reader.ui.data.PageTurningDirection;
@@ -367,7 +368,7 @@ public abstract class BaseHandler {
             for (ReaderRichMedia richMedia : richMedias) {
                 if (richMedia.getRectangle().contains(x, y)) {
                     if (richMedia.getMediaType() == ReaderRichMedia.MediaType.Audio) {
-                        new PlayAudioAction(richMedia).execute(readerDataHolder, null);
+                        new StartMediaPlayAction().execute(readerDataHolder, null);
                     }
                     return true;
                 }
