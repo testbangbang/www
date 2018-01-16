@@ -66,7 +66,7 @@ public class DataModel extends BaseObservable {
     }
 
     public void itemClicked() {
-        ItemClickEvent event = new ItemClickEvent(this);
+        ItemClickEvent event = new ItemClickEvent(this, true);
         eventBus.post(event);
     }
 
@@ -74,6 +74,11 @@ public class DataModel extends BaseObservable {
         ItemLongClickEvent event = new ItemLongClickEvent(this);
         eventBus.post(event);
         return true;
+    }
+
+    public void checkboxClicked() {
+        ItemClickEvent event = new ItemClickEvent(this, false);
+        eventBus.post(event);
     }
 
     public void setEnableSelection(boolean enable) {

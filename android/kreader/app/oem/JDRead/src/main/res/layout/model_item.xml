@@ -50,7 +50,7 @@
                 android:background="@drawable/book_item_selector"
                 android:button="@null"
                 android:checked="@={model.checked}"
-                android:onClick="@{()->model.itemClicked()}"
+                android:onClick="@{()->model.checkboxClicked()}"
                 android:visibility="@{model.showCheckBox()?View.VISIBLE:View.GONE}" />
 
             <TextView

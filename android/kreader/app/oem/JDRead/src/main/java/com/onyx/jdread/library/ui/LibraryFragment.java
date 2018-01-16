@@ -403,7 +403,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onItemClickEvent(ItemClickEvent event) {
         if (isMultiSelectionMode()) {
-            processMultiModeItemClick(event.getModel());
+            processMultiModeItemClick(event.getModel(), event.isLayoutClicked());
         } else {
             processNormalModeItemClick(event.getModel());
         }
@@ -485,12 +485,14 @@ public class LibraryFragment extends BaseFragment {
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 
-    private void processMultiModeItemClick(DataModel dataModel) {
+    private void processMultiModeItemClick(DataModel dataModel, boolean layoutClicked) {
         if (dataModel.type.get() == ModelType.TYPE_LIBRARY) {
             processLibraryItem(dataModel);
             return;
         }
-        dataModel.checked.set(!dataModel.checked.get());
+        if (layoutClicked) {
+            dataModel.checked.set(!dataModel.checked.get());
+        }
         dataBundle.getLibraryViewDataModel().clickItem(dataModel);
         updateContentView();
     }
