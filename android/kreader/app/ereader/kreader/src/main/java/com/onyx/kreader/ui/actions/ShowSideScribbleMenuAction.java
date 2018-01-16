@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -130,6 +131,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_ADD_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_DELETE_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_MINIMIZE.ordinal());
+        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_CLOSE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal());
@@ -145,6 +147,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private List<Integer> getMainMenuActions() {
         List<Integer> menuActions = new ArrayList<>();
         menuActions.add(ReaderMenuAction.SCRIBBLE_MAXIMIZE.ordinal());
+        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_CLOSE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal());
@@ -242,6 +245,9 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 break;
             case SCRIBBLE_CLOSE:
                 close(null);
+                break;
+            case SCRIBBLE_SIDE_NOTE_EXCHANGE_POS:
+                Log.e("TAG", "onMenuClickEvent: "+"SCRIBBLE_SIDE_NOTE_EXCHANGE_POS");
                 break;
         }
     }

@@ -65,6 +65,10 @@
             layout="@layout/menu_item"/>
 
         <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal()].setMenuIcon(R.drawable.ic_side_note_exchange_pos)}"
+            layout="@layout/menu_item"/>
+
+        <include
             bind:item="@{item[ReaderMenuAction.SCRIBBLE_CLOSE.ordinal()].setMenuIcon(R.drawable.ic_side_scribble_close)}"
             layout="@layout/menu_item"/>
 
