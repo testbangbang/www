@@ -389,14 +389,14 @@ public class BaseOptions {
 
     public int getLineSpacing() {
         if (!backend.hasKey(LINE_SPACING_TAG)) {
-            return INVALID_INT_VALUE;
+            return ReaderTextStyle.DEFAULT_LINE_SPACING.getPercent();
         }
         return backend.getInt(LINE_SPACING_TAG);
     }
 
     public int getParagraphSpacing() {
         if (!backend.hasKey(PARAGRAPH_SPACING_TAG)) {
-            return INVALID_INT_VALUE;
+            return ReaderTextStyle.DEFAULT_PARAGRAPH_SPACING.getPercent();
         }
         return backend.getInt(PARAGRAPH_SPACING_TAG);
     }
