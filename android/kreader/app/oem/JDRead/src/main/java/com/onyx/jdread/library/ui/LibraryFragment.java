@@ -438,7 +438,7 @@ public class LibraryFragment extends BaseFragment {
         metadataDeleteAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                quitMultiSelectionMode();
+                dataBundle.getLibraryViewDataModel().clearSelectedData();
                 int deletePageCount = dataBundle.getLibraryViewDataModel().getDeletePageCount();
                 loadData(dataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
             }
