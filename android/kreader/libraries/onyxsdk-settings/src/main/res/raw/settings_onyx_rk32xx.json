@@ -1,5 +1,5 @@
 {
-  "system_wifi_inactivity_key": "wifi_inactivity_timeout",
+  "system_wifi_inactivity_key": "close_wifi_delay",
   "screen_screen_off_values": [
     180000,
     300000,
