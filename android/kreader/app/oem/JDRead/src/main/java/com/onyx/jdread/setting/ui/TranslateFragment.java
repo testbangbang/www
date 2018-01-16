@@ -13,6 +13,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentTranslateBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.setting.event.BackToReadingToolsEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.TranslateModel;
 
@@ -80,7 +81,7 @@ public class TranslateFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTranslateFragment(TranslateFragment event) {
+    public void onBackToReadingToolsEvent(BackToReadingToolsEvent event) {
         viewEventCallBack.viewBack();
     }
 }
