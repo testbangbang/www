@@ -29,6 +29,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.ClearAllFreeShapesAction;
+import com.onyx.android.note.actions.scribble.ClearPageUndoRedoAction;
 import com.onyx.android.note.actions.scribble.DocumentCreateAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentFlushAction;
@@ -542,7 +543,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private void switchScribbleMode(boolean isLineLayoutMode) {
         cleanUpAllPopMenu();
         hideSoftInput();
-        getNoteViewHelper().clearPageUndoRedo(this);
+        new ClearPageUndoRedoAction<ScribbleActivity>().execute(this, null);
+
         if (isLineLayoutMode) {
             spanTextHandler.openSpanTextFunc();
         }else {
