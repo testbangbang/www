@@ -62,6 +62,8 @@ public class ReaderDataHolder {
 
     public enum DocumentOpenState { INIT, OPENING, OPENED }
 
+    public enum SideNoteArea { LEFT, RIGHT }
+
     private Context context;
     private String documentPath;
     private Reader reader;
@@ -93,7 +95,7 @@ public class ReaderDataHolder {
     private int orientationBeforeSideNote = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
     private boolean sideNoting = false;
-    private boolean isSwapSideNoteArea = true;
+    private SideNoteArea sideNoteArea = SideNoteArea.RIGHT;
     private int sideNotePage = 0;
 
     private ReaderPainter readerPainter = new ReaderPainter();
@@ -182,7 +184,7 @@ public class ReaderDataHolder {
         pages.add(firstPage);
 
         if (sideNoting) {
-            if (isSwapSideNoteArea) {
+            if (sideNoteArea == SideNoteArea.LEFT) {
                 float width = firstPage.getDisplayRect().width();
                 firstPage.getDisplayRect().left = getDocPageLeft();
                 firstPage.getDisplayRect().right = firstPage.getDisplayRect().left + width;
@@ -758,40 +760,36 @@ public class ReaderDataHolder {
         }
     }
 
-    public boolean isSwapSideNoteArea() {
-        return isSwapSideNoteArea;
+    public SideNoteArea getSideNoteArea() {
+        return sideNoteArea;
     }
 
     public int getDocPageLeft() {
         if (!sideNoting) {
             return 0;
         }
-        return !isSwapSideNoteArea ? 0 : getDisplayWidth() / 2;
+        return sideNoteArea == SideNoteArea.RIGHT ? 0 : getDisplayWidth() / 2;
+    }
+
+    public int getDocPageRight() {
+        if (!sideNoting) {
+            return getDisplayWidth();
+        }
+
+        return sideNoteArea == SideNoteArea.RIGHT ? getDisplayWidth() / 2 : getDisplayWidth();
     }
 
     public int getSideNotePageLeft() {
-        return isSwapSideNoteArea ? 0 : getDisplayWidth() / 2;
+        return sideNoteArea == SideNoteArea.LEFT ? 0 : getDisplayWidth() / 2;
     }
 
     public int getSideNotePageRight() {
-        return isSwapSideNoteArea ? getDisplayWidth() / 2 : getDisplayWidth();
+        return sideNoteArea == SideNoteArea.LEFT ? getDisplayWidth() / 2 : getDisplayWidth();
     }
 
     public boolean isInDocPageRegion(int x, int y) {
-        boolean checkY = 0 <= y && y <= getDisplayHeight();
-        if (!checkY) {
-            return false;
-        }
-
-        if (!sideNoting) {
-            return 0 <= x && x <= getDisplayWidth();
-        }
-
-        if (!isSwapSideNoteArea) {
-            return 0 <= x && x <= getDisplayWidth() / 2;
-        }
-
-        return getDocPageLeft() <= x && x <= getDisplayWidth();
+        return getDocPageLeft() <= x && x <= getDocPageRight() &&
+                0 <= y && y <= getDisplayHeight();
     }
 
     public int getSideNoteStartSubPageIndex() {
