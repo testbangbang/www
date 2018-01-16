@@ -11,7 +11,6 @@ import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.actions.NextPageSelectTextAction;
 import com.onyx.jdread.reader.actions.PrevPageSelectTextAction;
@@ -53,9 +52,9 @@ public class WordSelectionHandler extends BaseHandler {
 
     public WordSelectionHandler(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder);
-        movePointOffsetHeight = JDReadApplication.getInstance().getResources().getDimension(R.dimen.move_point_offset_height);
-        crossScreenTouchRegionMinWidth = JDReadApplication.getInstance().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_width);
-        crossScreenTouchRegionMinHeight = JDReadApplication.getInstance().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_height);
+        movePointOffsetHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.move_point_offset_height);
+        crossScreenTouchRegionMinWidth = readerDataHolder.getAppContext().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_width);
+        crossScreenTouchRegionMinHeight = readerDataHolder.getAppContext().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_height);
     }
 
     @Override
