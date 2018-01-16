@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.EventBus;
 public class NextPageAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        final NextScreenRequest request = new NextScreenRequest(readerDataHolder);
+        final NextScreenRequest request = new NextScreenRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

@@ -13,11 +13,9 @@ public class NextPageSelectTextAction extends BaseReaderAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        float x = readerDataHolder.getReaderViewHelper().getPageViewWidth();
-        float y = readerDataHolder.getReaderViewHelper().getPageViewHeight();
         ReaderTextStyle style = readerDataHolder.getStyleCopy();
 
-        final NextPageSelectTextRequest request = new NextPageSelectTextRequest(readerDataHolder, style, x, y);
+        final NextPageSelectTextRequest request = new NextPageSelectTextRequest(readerDataHolder.getReader(), style);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

@@ -11,7 +11,9 @@ import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.jdread.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,110 +26,133 @@ import java.util.List;
  * * draw
  */
 public class ReaderSelectionManager {
-    private ReaderSelection currentSelection;
-
-    private List<HighlightCursor> cursors = new ArrayList<HighlightCursor>();
+    private Map<String, ReaderSelectionInfo> readerSelectionInfos = new HashMap<>();
 
     public ReaderSelectionManager() {
         super();
     }
 
-    public void setCurrentSelection(ReaderSelection selection) {
-        currentSelection = selection;
+    public ReaderSelection getCurrentSelection(String pagePosition) {
+        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            return readerSelectionInfo.getCurrentSelection();
+        }
+        return null;
     }
 
-    public ReaderSelection getCurrentSelection() {
-        return currentSelection;
-    }
-
-    public HighlightCursor getHighlightCursor(int index) {
-        if (index >= 0 && index < cursors.size())  {
-            return cursors.get(index);
+    public HighlightCursor getHighlightCursor(String pagePosition, int index) {
+        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            if (index >= 0 && index < readerSelectionInfo.getCursors().size()) {
+                return readerSelectionInfo.getCursors().get(index);
+            }
         }
         return null;
     }
 
 
-    public boolean normalize() {
-        RectF begin = cursors.get(0).getHotPoint();
-        RectF end = cursors.get(1).getHotPoint();
-        if ((begin.top > end.top) || (begin.top == end.top && begin.left > end.left)) {
-            HighlightCursor beginCursor = cursors.get(0);
-            beginCursor.setCursorType(HighlightCursor.Type.END_CURSOR);
-            HighlightCursor endCursor = cursors.get(1);
-            endCursor.setCursorType(HighlightCursor.Type.BEGIN_CURSOR);
-            cursors.clear();
-            cursors.add(endCursor);
-            cursors.add(beginCursor);
-            return true;
+    public boolean normalize(String pagePosition) {
+        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            RectF begin = readerSelectionInfo.getCursors().get(0).getHotPoint();
+            RectF end = readerSelectionInfo.getCursors().get(1).getHotPoint();
+            if ((begin.top > end.top) || (begin.top == end.top && begin.left > end.left)) {
+                HighlightCursor beginCursor = readerSelectionInfo.getCursors().get(0);
+                beginCursor.setCursorType(HighlightCursor.Type.END_CURSOR);
+                HighlightCursor endCursor = readerSelectionInfo.getCursors().get(1);
+                endCursor.setCursorType(HighlightCursor.Type.BEGIN_CURSOR);
+                readerSelectionInfo.getCursors().clear();
+                readerSelectionInfo.getCursors().add(endCursor);
+                readerSelectionInfo.getCursors().add(beginCursor);
+                return true;
+            }
         }
         return false;
     }
 
-    public int tracking(final float sx, final float sy, final float ex, final float ey) {
-        for(int i = 0; i < cursors.size(); ++i) {
-            if (cursors.get(i).tracking(sx, sy, ex, ey)) {
-                return i;
+    public int tracking(String pagePosition, final float sx, final float sy, final float ex, final float ey) {
+        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            for (int i = 0; i < readerSelectionInfo.getCursors().size(); ++i) {
+                if (readerSelectionInfo.getCursors().get(i).tracking(sx, sy, ex, ey)) {
+                    return i;
+                }
             }
         }
         return -1;
     }
 
-    public void draw(Canvas canvas, Paint paint) {
-        for(HighlightCursor cursor : cursors) {
-            cursor.draw(canvas, paint);
+    public void draw(String pagePosition, Canvas canvas, Paint paint) {
+        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
+                cursor.draw(canvas, paint);
+            }
         }
     }
 
-    public void clear() {
-        for(HighlightCursor cursor : cursors) {
-            cursor.clear();
+    public void clear(String pagePosition) {
+        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
+                cursor.clear();
+            }
         }
     }
 
-    public boolean update(final Context context) {
-        if (currentSelection == null) {
+    public boolean update(String pagePosition, final Context context) {
+        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo == null || readerSelectionInfo.getCurrentSelection() == null) {
             return false;
         }
-        List<RectF> rects = currentSelection.getRectangles();
+        List<RectF> rects = readerSelectionInfo.getCurrentSelection().getRectangles();
         if (rects == null || rects.size() <= 0) {
             return false;
         }
-        if (cursors.size() <= 0) {
-            cursors.add(new HighlightCursor(context, R.mipmap.ic_choose_left, R.mipmap.ic_choose_right, HighlightCursor.Type.BEGIN_CURSOR));
-            cursors.add(new HighlightCursor(context, R.mipmap.ic_choose_left, R.mipmap.ic_choose_right, HighlightCursor.Type.END_CURSOR));
+        if (readerSelectionInfo.getCursors().size() <= 0) {
+            readerSelectionInfo.getCursors().add(new HighlightCursor(context, R.mipmap.ic_choose_left, R.mipmap.ic_choose_right, HighlightCursor.Type.BEGIN_CURSOR));
+            readerSelectionInfo.getCursors().add(new HighlightCursor(context, R.mipmap.ic_choose_left, R.mipmap.ic_choose_right, HighlightCursor.Type.END_CURSOR));
         }
-        HighlightCursor cursor = cursors.get(0);
+        HighlightCursor cursor = readerSelectionInfo.getCursors().get(0);
         float fontHeight = rects.get(0).bottom - rects.get(0).top;
         cursor.setFontHeight(fontHeight);
         PointF beginBottom = RectUtils.getBeginTop(rects);
         cursor.setOriginPosition(beginBottom.x, beginBottom.y);
         cursor.setCursorType(HighlightCursor.Type.BEGIN_CURSOR);
 
-        cursor = cursors.get(1);
+        cursor = readerSelectionInfo.getCursors().get(1);
         PointF endBottom = RectUtils.getEndRight(rects);
         cursor.setFontHeight(fontHeight);
-        cursor.setOriginPosition(endBottom.x , endBottom.y);
+        cursor.setOriginPosition(endBottom.x, endBottom.y);
         cursor.setCursorType(HighlightCursor.Type.END_CURSOR);
         return true;
     }
 
-    public void updateDisplayPosition() {
-        for(HighlightCursor cursor : cursors) {
-            cursor.updateDisplayPosition();
+    public void updateDisplayPosition(String pagePosition) {
+        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
+                cursor.updateDisplayPosition();
+            }
         }
     }
 
-    public void setEnable(boolean enable){
-        for(HighlightCursor cursor : cursors) {
-            cursor.setEnable(enable);
+    public void setEnable(String pagePosition, boolean enable) {
+        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
+                cursor.setEnable(enable);
+            }
         }
     }
 
-    public boolean isEnable(){
-        for(HighlightCursor cursor : cursors) {
-            if (cursor != null){
-                return cursor.isEnable();
+    public boolean isEnable(String pagePosition) {
+        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
+                if (cursor != null) {
+                    return cursor.isEnable();
+                }
             }
         }
         return false;

@@ -28,7 +28,7 @@ public class OpenDocumentAction extends BaseReaderAction {
     }
 
     private void loadDocumentOptions(final ReaderDataHolder readerDataHolder) {
-        final LoadDocumentOptionsRequest request = new LoadDocumentOptionsRequest(readerDataHolder);
+        final LoadDocumentOptionsRequest request = new LoadDocumentOptionsRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -38,8 +38,9 @@ public class OpenDocumentAction extends BaseReaderAction {
     }
 
     private void openDocument(ReaderDataHolder readerDataHolder, LoadDocumentOptionsRequest request) {
-        OpenDocumentRequest openDocumentRequest = new OpenDocumentRequest(readerDataHolder,request.getDocumentOptions());
+        OpenDocumentRequest openDocumentRequest = new OpenDocumentRequest(readerDataHolder.getReader(),request.getDocumentOptions());
         OpenDocumentRequest.setAppContext(JDReadApplication.getInstance());
+        readerDataHolder.setDocumentOpeningState();
         openDocumentRequest.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

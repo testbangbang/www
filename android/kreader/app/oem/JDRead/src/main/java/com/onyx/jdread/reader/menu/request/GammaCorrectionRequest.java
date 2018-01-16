@@ -1,10 +1,9 @@
 package com.onyx.jdread.reader.menu.request;
 
 
-import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.jdread.reader.common.GammaInfo;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 /**
@@ -12,21 +11,21 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  * redraw request
  */
 public class GammaCorrectionRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
     private GammaInfo gammaInfo;
 
-    public GammaCorrectionRequest(final ReaderDataHolder readerDataHolder, GammaInfo gammaInfo) {
+    public GammaCorrectionRequest(final Reader reader, GammaInfo gammaInfo) {
         this.gammaInfo = gammaInfo;
-        this.readerDataHolder = readerDataHolder;
+        this.reader = reader;
     }
 
     @Override
     public GammaCorrectionRequest call() throws Exception {
-        if (readerDataHolder.getReader().getReaderHelper().getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+        if (reader.getReaderHelper().getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
             float gamma = ImageUtils.getGammaCorrectionBySelection(gammaInfo.getTextGamma());
-            readerDataHolder.getReader().getReaderHelper().getRenderer().setTextGamma(gamma);
+            reader.getReaderHelper().getRenderer().setTextGamma(gamma);
         }
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,getReaderUserDataInfo(),getReaderViewInfo());
+        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 }

@@ -11,7 +11,7 @@ import com.onyx.jdread.reader.request.UpdateViewPageRequest;
 public class UpdateViewPageAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        final UpdateViewPageRequest request = new UpdateViewPageRequest(readerDataHolder);
+        final UpdateViewPageRequest request = new UpdateViewPageRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

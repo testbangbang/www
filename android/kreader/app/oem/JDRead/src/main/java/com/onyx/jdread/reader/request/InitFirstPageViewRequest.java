@@ -8,7 +8,6 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.reader.data.Reader;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
 /**
@@ -16,12 +15,12 @@ import com.onyx.jdread.reader.menu.common.ReaderConfig;
  */
 
 public class InitFirstPageViewRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
     private int width;
     private int height;
 
-    public InitFirstPageViewRequest(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public InitFirstPageViewRequest(Reader reader) {
+        this.reader = reader;
     }
 
     @Override
@@ -29,7 +28,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         updateView();
         initPosition();
         restoreReaderTextStyle();
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder, getReaderUserDataInfo(),getReaderViewInfo());
+        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 
@@ -68,20 +67,20 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private void updateView() throws Exception {
-        width = readerDataHolder.getReaderViewHelper().getPageViewWidth();
-        height = readerDataHolder.getReaderViewHelper().getPageViewHeight();
-        readerDataHolder.getReader().getReaderHelper().updateViewportSize(width, height);
+        width = reader.getReaderViewHelper().getPageViewWidth();
+        height = reader.getReaderViewHelper().getPageViewHeight();
+        reader.getReaderHelper().updateViewportSize(width, height);
     }
 
     private void initPosition() throws Exception {
-        String bookPath = readerDataHolder.getReader().getDocumentInfo().getBookPath();
+        String bookPath = reader.getDocumentInfo().getBookPath();
         String position = PreferenceManager.getStringValue(JDReadApplication.getInstance(), bookPath, "0");
-        readerDataHolder.getReader().getReaderHelper().gotoPosition(position);
-        restoreScale(readerDataHolder.getReader(), position);
+        reader.getReaderHelper().gotoPosition(position);
+        restoreScale(reader, position);
     }
 
     private void restoreReaderTextStyle() throws ReaderException {
-        BaseOptions baseOptions = readerDataHolder.getReader().getReaderHelper().getDocumentOptions();
+        BaseOptions baseOptions = reader.getReaderHelper().getDocumentOptions();
 
         String fontFace = getFontFace();
         ReaderTextStyle.SPUnit spUnit = ReaderTextStyle.SPUnit.create(getFontSize());
@@ -93,11 +92,11 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         ReaderTextStyle.Percentage BottomMarin = ReaderTextStyle.Percentage.create(getBottomMarin());
 
         ReaderTextStyle style = ReaderTextStyle.create(fontFace, spUnit, lineSpacing, leftMargin, topMargin, rightMarin, BottomMarin);
-        readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().setStyle(style);
+        reader.getReaderHelper().getReaderLayoutManager().setStyle(style);
     }
 
     private int getTopMarin(){
-        int percent = readerDataHolder.getReader().getReaderHelper().getDocumentOptions().getTopMargin();
+        int percent = reader.getReaderHelper().getDocumentOptions().getTopMargin();
         if(percent <= 0){
             percent = ReaderConfig.PageLeftAndRightSpacing.DEFAULT_LEFT_AND_RIGHT_SPACING;
         }
@@ -105,7 +104,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private int getBottomMarin(){
-        int percent = readerDataHolder.getReader().getReaderHelper().getDocumentOptions().getBottomMargin();
+        int percent = reader.getReaderHelper().getDocumentOptions().getBottomMargin();
         if(percent <= 0){
             percent = ReaderConfig.PageLeftAndRightSpacing.DEFAULT_LEFT_AND_RIGHT_SPACING;
         }
@@ -113,7 +112,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private int getRightMarin(){
-        int percent = readerDataHolder.getReader().getReaderHelper().getDocumentOptions().getRightMargin();
+        int percent = reader.getReaderHelper().getDocumentOptions().getRightMargin();
         if(percent <= 0){
             percent = ReaderConfig.PageLeftAndRightSpacing.DEFAULT_LEFT_AND_RIGHT_SPACING;
         }
@@ -121,7 +120,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private int getLeftMarin(){
-        int percent = readerDataHolder.getReader().getReaderHelper().getDocumentOptions().getLeftMargin();
+        int percent = reader.getReaderHelper().getDocumentOptions().getLeftMargin();
         if(percent <= 0){
             percent = ReaderConfig.PageLeftAndRightSpacing.DEFAULT_LEFT_AND_RIGHT_SPACING;
         }
@@ -129,7 +128,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private int getLineSpacing(){
-        int lineSpacing = readerDataHolder.getReader().getReaderHelper().getDocumentOptions().getLineSpacing();
+        int lineSpacing = reader.getReaderHelper().getDocumentOptions().getLineSpacing();
         if(lineSpacing <= 0){
             lineSpacing = ReaderConfig.PageLineSpacing.DEFAULT_LINE_SPACING;
         }
@@ -137,7 +136,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private float getFontSize(){
-        float fontSize = readerDataHolder.getReader().getReaderHelper().getDocumentOptions().getFontSize();
+        float fontSize = reader.getReaderHelper().getDocumentOptions().getFontSize();
         if(fontSize <= 0.0f){
             fontSize = ReaderConfig.FontSize.DEFAULT_FONT_SIZE;
         }
@@ -145,7 +144,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private String getFontFace() {
-        String fontFace = readerDataHolder.getReader().getReaderHelper().getDocumentOptions().getFontFace();
+        String fontFace = reader.getReaderHelper().getDocumentOptions().getFontFace();
         if (StringUtils.isNullOrEmpty(fontFace)) {
             fontFace = ReaderConfig.Typeface.DEFAULT_TYPEFACE;
         }

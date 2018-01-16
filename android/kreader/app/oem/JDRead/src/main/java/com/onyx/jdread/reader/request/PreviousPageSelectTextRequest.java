@@ -4,7 +4,7 @@ import android.graphics.PointF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.highlight.HitTestTextHelper;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
@@ -13,30 +13,28 @@ import com.onyx.jdread.reader.menu.common.ReaderConfig;
  */
 
 public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
     private ReaderTextStyle style;
-    private float x;
-    private float y;
 
-    public PreviousPageSelectTextRequest(ReaderDataHolder readerDataHolder, ReaderTextStyle style, float x, float y) {
-        this.readerDataHolder = readerDataHolder;
+    public PreviousPageSelectTextRequest(Reader reader, ReaderTextStyle style) {
+        this.reader = reader;
         this.style = style;
-        this.x = x;
-        this.y = y;
     }
 
     @Override
     public PreviousPageSelectTextRequest call() throws Exception {
-        readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().prevScreen();
+        float x = reader.getReaderViewHelper().getPageViewWidth();
+        float y = reader.getReaderViewHelper().getPageViewHeight();
+        reader.getReaderHelper().getReaderLayoutManager().prevScreen();
 
         PointF start = new PointF(x, y);
         PointF end = new PointF(style.getPageMargin().getLeftMargin().getPercent(), style.getPageMargin().getTopMargin().getPercent());
 
-        ReaderSelection selection = HitTestTextHelper.hitTestTextRegion(start, end, -ReaderConfig.HIT_TEST_TEXT_STEP, readerDataHolder, getReaderUserDataInfo(), false);
+        ReaderSelection selection = HitTestTextHelper.hitTestTextRegion(start, end, -ReaderConfig.HIT_TEST_TEXT_STEP, reader, getReaderUserDataInfo(), false);
         if (selection == null || selection.getRectangles().size() <= 0) {
-            readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().nextScreen();
+            reader.getReaderHelper().getReaderLayoutManager().nextScreen();
         } else {
-            readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,
+            reader.getReaderViewHelper().updatePageView(reader,
                     getReaderUserDataInfo(), getReaderViewInfo());
         }
         return this;

@@ -1,5 +1,7 @@
 package com.onyx.jdread.reader.data;
 
+import android.content.Context;
+
 import com.onyx.jdread.reader.common.DocumentInfo;
 
 /**
@@ -10,6 +12,7 @@ public class Reader {
     private ReaderHelper readerHelper;
     private DocumentInfo documentInfo;
     private ReaderViewHelper readerViewHelper;
+    private Context context;
 
     public Reader(DocumentInfo documentInfo) {
         this.documentInfo = documentInfo;
@@ -27,5 +30,13 @@ public class Reader {
 
     public ReaderViewHelper getReaderViewHelper() {
         return readerViewHelper;
+    }
+
+    public Context getAppContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

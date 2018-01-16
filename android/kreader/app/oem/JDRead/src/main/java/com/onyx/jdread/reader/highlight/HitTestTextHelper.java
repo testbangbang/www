@@ -8,7 +8,7 @@ import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.host.impl.ReaderHitTestOptionsImpl;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.request.SelectRequest;
 
 /**
@@ -19,12 +19,12 @@ public class HitTestTextHelper {
     public static ReaderSelection hitTestTextRegion(PointF newPageStartPosition,
                                                     PointF newPageEndPosition,
                                                     int step,
-                                                    ReaderDataHolder readerDataHolder,
+                                                    Reader reader,
                                                     ReaderUserDataInfo readerUserDataInfo,
                                                     boolean isNext) {
-        String pagePosition = readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
-        ReaderHitTestManager hitTestManager = readerDataHolder.getReader().getReaderHelper().getHitTestManager();
-        PageInfo pageInfo = readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
+        String pagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
+        ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
+        PageInfo pageInfo = reader.getReaderHelper().getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
         ReaderSelection selection;
         if (isNext) {
             selection = nextPageHitTestText(newPageStartPosition, newPageEndPosition, step, pagePosition, pageInfo, hitTestManager, readerUserDataInfo);

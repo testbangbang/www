@@ -4,7 +4,7 @@ import android.graphics.PointF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.highlight.HitTestTextHelper;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
@@ -13,30 +13,29 @@ import com.onyx.jdread.reader.menu.common.ReaderConfig;
  */
 
 public class NextPageSelectTextRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
     private ReaderTextStyle style;
-    private float x;
-    private float y;
 
-    public NextPageSelectTextRequest(ReaderDataHolder readerDataHolder, ReaderTextStyle style, float x, float y) {
-        this.readerDataHolder = readerDataHolder;
+    public NextPageSelectTextRequest(Reader reader, ReaderTextStyle style) {
+        this.reader = reader;
         this.style = style;
-        this.x = x;
-        this.y = y;
     }
 
     @Override
     public NextPageSelectTextRequest call() throws Exception {
-        readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().nextScreen();
+        float x = reader.getReaderViewHelper().getPageViewWidth();
+        float y = reader.getReaderViewHelper().getPageViewHeight();
+
+        reader.getReaderHelper().getReaderLayoutManager().nextScreen();
 
         PointF start = new PointF(style.getPageMargin().getLeftMargin().getPercent(), style.getPageMargin().getTopMargin().getPercent());
         PointF end = new PointF(x, y);
 
-        ReaderSelection selection = HitTestTextHelper.hitTestTextRegion(start, end, ReaderConfig.HIT_TEST_TEXT_STEP, readerDataHolder, getReaderUserDataInfo(), true);
+        ReaderSelection selection = HitTestTextHelper.hitTestTextRegion(start, end, ReaderConfig.HIT_TEST_TEXT_STEP, reader, getReaderUserDataInfo(), true);
         if (selection == null || selection.getRectangles().size() <= 0) {
-            readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().prevScreen();
+            reader.getReaderHelper().getReaderLayoutManager().prevScreen();
         } else {
-            readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder, getReaderUserDataInfo(), getReaderViewInfo());
+            reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
         }
         return this;
     }

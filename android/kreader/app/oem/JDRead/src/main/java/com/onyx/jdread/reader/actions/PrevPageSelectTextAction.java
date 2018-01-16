@@ -13,11 +13,9 @@ public class PrevPageSelectTextAction extends BaseReaderAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        float x = readerDataHolder.getReaderViewHelper().getPageViewWidth();
-        float y = readerDataHolder.getReaderViewHelper().getPageViewHeight();
         ReaderTextStyle style = readerDataHolder.getStyleCopy();
 
-        PreviousPageSelectTextRequest request = new PreviousPageSelectTextRequest(readerDataHolder, style, x, y);
+        PreviousPageSelectTextRequest request = new PreviousPageSelectTextRequest(readerDataHolder.getReader(), style);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

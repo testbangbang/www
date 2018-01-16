@@ -1,16 +1,17 @@
 package com.onyx.jdread.reader.request;
 
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.ReaderViewHelper;
 
 /**
  * Created by huxiaomao on 2017/12/30.
  */
 
 public class UpdateViewPageRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
 
-    public UpdateViewPageRequest(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public UpdateViewPageRequest(Reader reader) {
+        this.reader = reader;
     }
 
     @Override
@@ -20,8 +21,8 @@ public class UpdateViewPageRequest extends ReaderBaseRequest {
     }
 
     public void updatePageView() {
-        readerDataHolder.getReaderViewHelper().draw(readerDataHolder,
-                readerDataHolder.getReader().getReaderHelper().getCurrentPageBitmap().getBitmap(),
-                getReaderUserDataInfo(),getReaderViewInfo());
+        reader.getReaderViewHelper().draw(reader,
+                reader.getReaderHelper().getCurrentPageBitmap().getBitmap(),
+                getReaderUserDataInfo(),getReaderViewInfo(),null);
     }
 }
