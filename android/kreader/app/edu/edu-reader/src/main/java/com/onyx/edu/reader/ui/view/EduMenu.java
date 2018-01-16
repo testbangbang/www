@@ -4,10 +4,12 @@ import android.content.Context;
 import android.view.View;
 
 import com.onyx.android.sdk.data.ReaderMenu;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuViewFactory;
+import com.onyx.android.sdk.utils.RunnableWithArgument;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.ui.dialog.DialogReaderEduMenu;
 
@@ -59,6 +61,7 @@ public class EduMenu extends ReaderMenu {
     @Override
     public void show(ReaderMenuState state) {
         this.state = state;
+        updateMenuItemsWithState(state);
         updateMenuContent();
         getDialog().show(state);
     }
@@ -87,6 +90,29 @@ public class EduMenu extends ReaderMenu {
             dialog = new DialogReaderEduMenu(context, readerMenuCallback);
         }
         return dialog;
+    }
+
+    private void updateMenuItemsWithState(final ReaderMenuState state) {
+        traverseMenuItems(menuItems, new RunnableWithArgument<ReaderLayerMenuItem>() {
+            @Override
+            public void run(ReaderLayerMenuItem value) {
+                updateMediaMenuVisible(value, state);
+            }
+        });
+    }
+
+    private void updateMediaMenuVisible(ReaderLayerMenuItem item, ReaderMenuState state) {
+        if (item.getAction() != ReaderMenuAction.MEDIA_PLAY) {
+            return;
+        }
+        item.setVisible(state.hasRichMedias());
+    }
+
+    private void traverseMenuItems(List<ReaderLayerMenuItem> items, RunnableWithArgument<ReaderLayerMenuItem> callback) {
+        for (ReaderLayerMenuItem item : items) {
+            callback.run(item);
+            traverseMenuItems(item.getChildren(), callback);
+        }
     }
 
     private void updateMenuContent() {

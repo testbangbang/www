@@ -50,6 +50,7 @@ public class HandlerManager {
     public static final String SLIDESHOW_PROVIDER = "slideshow";
     public static final String FORM_PROVIDER = "form";
     public static final String FORM_SCRIBBLE_PROVIDER = "form_scribble";
+    public static final String MEDIA_PLAY_PROVIDER = "media_play";
 
     private static final int TOUCH_HORIZONTAL_PART = 3;
     private static final int TOUCH_VERTICAL_PART = 2;
@@ -78,6 +79,7 @@ public class HandlerManager {
         providerMap.put(SLIDESHOW_PROVIDER, new SlideshowHandler(this));
         providerMap.put(FORM_PROVIDER, new FormFieldHandler(this));
         providerMap.put(FORM_SCRIBBLE_PROVIDER, new FormScribbleHandler(this));
+        providerMap.put(MEDIA_PLAY_PROVIDER, new MediaPlayHandler(this));
         activeProviderName = READING_PROVIDER;
         enable.set(true);
         enableTouch.set(true);
