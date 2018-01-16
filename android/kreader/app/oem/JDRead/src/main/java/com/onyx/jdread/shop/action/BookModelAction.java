@@ -1,13 +1,12 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.cloud.entity.BookModelRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookModule;
 
@@ -38,14 +37,16 @@ public class BookModelAction extends BaseAction<ShopDataBundle> {
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         BookModelRequestBean requestBean = new BookModelRequestBean();
-        JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        requestBean.setAppBaseInfo(jdAppBaseInfo);
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
         requestBean.setfType(modelType);
         requestBean.setModuleId(modelId);
         Map<String, String> queryArgs = new HashMap();
         queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, Constants.BOOK_PAGE_SIZE);
         queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, String.valueOf(currentPage));
-        requestBean.setQueryArgsMap(queryArgs);
+        appBaseInfo.addRequestParams(queryArgs);
+        String sign = String.format(CloudApiContext.BookShopURI.BOOK_MODULE_URI, String.valueOf(modelType), String.valueOf(modelId));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
+        requestBean.setAppBaseInfo(appBaseInfo);
         RxRequestBookModule request = new RxRequestBookModule();
         request.setRequestBean(requestBean);
         request.execute(new RxCallback<RxRequestBookModule>() {

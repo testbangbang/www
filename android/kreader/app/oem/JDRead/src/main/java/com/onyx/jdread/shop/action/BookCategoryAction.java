@@ -1,11 +1,11 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -32,8 +32,9 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestInfo baseRequestBean = new BaseRequestInfo();
-        JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        baseRequestBean.setAppBaseInfo(jdAppBaseInfo);
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        appBaseInfo.setSign(appBaseInfo.getSignValue(CloudApiContext.BookShopURI.CATEGORY_URI));
+        baseRequestBean.setAppBaseInfo(appBaseInfo);
         final RxRequestCategoryList request = new RxRequestCategoryList();
         request.setBaseRequestBean(baseRequestBean);
         request.execute(new RxCallback<RxRequestCategoryList>() {

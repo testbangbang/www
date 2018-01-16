@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.common;
 import android.os.Build;
 
 import com.jingdong.app.reader.data.DrmTools;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.AppInformationUtils;
 import com.onyx.jdread.main.common.Constants;
@@ -211,5 +212,19 @@ public class JDAppBaseInfo {
         }
         String queryString = sb.deleteCharAt(sb.length() - 1).toString();
         return queryString;
+    }
+
+    public String getSignValue(String uri) {
+        String queryString = CloudApiContext.JD_BOOK_BASE_URI + uri + getRequestParams();
+        String saltString = JDAppBaseInfo.APP_DEFAULT_VALUE + getTime() + getUuid();
+        String salt = FileUtils.computeMD5(saltString);
+        String sign = FileUtils.computeMD5(salt + queryString);
+        return sign;
+    }
+
+    public void addRequestParams(Map<String,String> requestParamsMap) {
+        if (requestParamsMap != null) {
+            this.requestParamsMap.putAll(requestParamsMap);
+        }
     }
 }

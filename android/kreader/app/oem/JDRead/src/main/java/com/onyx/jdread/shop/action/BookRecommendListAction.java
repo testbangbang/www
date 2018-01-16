@@ -1,9 +1,9 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.shop.cloud.entity.BookRecommendListRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -30,8 +30,9 @@ public class BookRecommendListAction extends BaseAction<ShopDataBundle> {
     public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         BookRecommendListRequestBean requestBean = new BookRecommendListRequestBean();
-        JDAppBaseInfo appBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        appBaseInfo.setTime();
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        String sign = String.format(CloudApiContext.BookShopURI.BOOK_RECOMMEND_LIST_URI, String.valueOf(bookID));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         requestBean.setAppBaseInfo(appBaseInfo);
         requestBean.bookId = bookID;
         final RxRequestRecommendList rq = new RxRequestRecommendList();

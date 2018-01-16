@@ -27,6 +27,7 @@ public class CloudApiContext {
     public static final String JD_SMOOTH_READ_URL = "https://cread.jd.com/";
     public static final String JD_BOOK_ORDER_URL = "https://order-e.jd.com/";
     public static final String JD_BOOK_STATISTIC_URL = "https://sns-e.jd.com/";
+    public static final String JD_BOOK_BASE_URI = "/eink/api/";
 
 
     public static class NewBookDetail {
@@ -47,6 +48,17 @@ public class CloudApiContext {
         public static final String GET_TOKEN = "genToken";
         public static final String READ_TOTAL_BOOK = "userReadEBookScale";
         public static final String NEW_BOUGHT_BOOK_ORDER = "newBuyedEbookOrderList";
+    }
+
+    public static class BookShopURI {
+        public static final String SHOP_MAIN_CONFIG_URI = "channel/%s";
+        public static final String CATEGORY_URI = "category";
+        public static final String SEARCH_URI = "search";
+        public static final String BOOK_MODULE_URI = "module/%1s/%2s";
+        public static final String BOOK_DETAIL_URI = "ebook/%s";
+        public static final String BOOK_RANK_URI = "rank/modules";
+        public static final String BOOK_COMMENT_LIST_URI = "ebook/%s/comment";
+        public static final String BOOK_RECOMMEND_LIST_URI = "ebook/%s/recommend";
     }
 
     public static class AddToSmooth {

@@ -1,14 +1,17 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestSearchBooks;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.onyx.jdread.shop.common.CloudApiContext.CategoryLevel2BookList.PAGE_SIZE_DEFAULT_VALUES;
 import static com.onyx.jdread.shop.common.CloudApiContext.SearchBook.SEARCH_TYPE_BOOK_SHOP;
@@ -37,13 +40,16 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         shopViewModel = shopDataBundle.getShopViewModel();
         SearchBooksRequestBean requestBean = new SearchBooksRequestBean();
-        JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        requestBean.setAppBaseInfo(jdAppBaseInfo);
-        requestBean.search_type = SEARCH_TYPE_BOOK_SHOP;
-        requestBean.cid = String.valueOf(catId);
-        requestBean.sort = sortKey + "_" + sortType;
-        requestBean.page = String.valueOf(currentPage);
-        requestBean.page_size = PAGE_SIZE_DEFAULT_VALUES;
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        Map<String, String> queryArgs = new HashMap<>();
+        queryArgs.put(CloudApiContext.SearchBook.SEARCH_TYPE, SEARCH_TYPE_BOOK_SHOP);
+        queryArgs.put(CloudApiContext.SearchBook.CATE_ID, String.valueOf(catId));
+        queryArgs.put(CloudApiContext.SearchBook.SORT, sortKey + "_" + sortType);
+        queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, String.valueOf(currentPage));
+        queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, PAGE_SIZE_DEFAULT_VALUES);
+        appBaseInfo.addRequestParams(queryArgs);
+        appBaseInfo.setSign(appBaseInfo.getSignValue(CloudApiContext.BookShopURI.SEARCH_URI));
+        requestBean.setAppBaseInfo(appBaseInfo);
         final RxRequestSearchBooks request = new RxRequestSearchBooks();
         request.setRequestBean(requestBean);
         request.execute(new RxCallback<RxRequestSearchBooks>() {

@@ -7,9 +7,6 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import retrofit2.Call;
 
 /**
@@ -35,23 +32,10 @@ public class RxRequestSearchBooks extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        setBaseRequestBeanParams();
         ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
         Call<BookModelBooksResultBean> call = getCall(getCommonService);
         resultBean = done(call);
         checkQuestResult();
-    }
-
-    private void setBaseRequestBeanParams() {
-        if (requestBean != null) {
-            Map<String, String> queryArgs = new HashMap<>();
-            queryArgs.put(CloudApiContext.SearchBook.SEARCH_TYPE, requestBean.search_type);
-            queryArgs.put(CloudApiContext.SearchBook.CATE_ID, requestBean.cid);
-            queryArgs.put(CloudApiContext.SearchBook.SORT, requestBean.sort);
-            queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, requestBean.page);
-            queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, requestBean.page_size);
-            requestBean.setQueryArgsMap(queryArgs);
-        }
     }
 
     private BookModelBooksResultBean done(Call<BookModelBooksResultBean> call) {
@@ -66,6 +50,6 @@ public class RxRequestSearchBooks extends RxBaseCloudRequest {
     }
 
     private Call<BookModelBooksResultBean> getCall(ReadContentService getCommonService) {
-        return getCommonService.getSearchBooks(requestBean.getAppBaseInfo().getRequestParamsMap(),requestBean.getQueryArgsMap());
+        return getCommonService.getSearchBooks(requestBean.getAppBaseInfo().getRequestParamsMap());
     }
 }

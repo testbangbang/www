@@ -3,10 +3,8 @@ package com.onyx.jdread;
 import android.test.ApplicationTestCase;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.BookModelRequestBean;
 import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
@@ -18,7 +16,6 @@ import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookDetail;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookModule;
-import com.onyx.jdread.shop.request.cloud.RxRequestBookModuleList;
 import com.onyx.jdread.shop.request.cloud.RxRequestCategoryList;
 import com.onyx.jdread.shop.request.cloud.RxRequestShopMainConfig;
 
@@ -36,7 +33,9 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
     public void testGetBookDetail() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         GetBookDetailRequestBean baseRequestBean = new GetBookDetailRequestBean();
-        JDAppBaseInfo appBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        String sign = String.format(CloudApiContext.BookShopURI.BOOK_DETAIL_URI, String.valueOf(30224458));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         baseRequestBean.setAppBaseInfo(appBaseInfo);
         baseRequestBean.bookId = 30224458;
         final RxRequestBookDetail rq = new RxRequestBookDetail();
@@ -62,17 +61,19 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
     public void testGetModuleBooks() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         BookModelRequestBean requestBean = new BookModelRequestBean();
-        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        requestBean.setAppBaseInfo(baseInfo);
-        Map<String,String> body = new HashMap<>();
-        body.put(CloudApiContext.SearchBook.PAGE_SIZE,Constants.BOOK_PAGE_SIZE);
-        body.put(CloudApiContext.SearchBook.CURRENT_PAGE,1+"");
-        requestBean.setQueryArgsMap(body);
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
         requestBean.setfType(1);
-        requestBean.setModuleId(1);
-        final RxRequestBookModule rq = new RxRequestBookModule();
-        rq.setRequestBean(requestBean);
-        rq.execute(new RxCallback<RxRequestBookModule>() {
+        requestBean.setModuleId(295);
+        Map<String, String> queryArgs = new HashMap();
+        queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, Constants.BOOK_PAGE_SIZE);
+        queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, String.valueOf(1));
+        appBaseInfo.addRequestParams(queryArgs);
+        String sign = String.format(CloudApiContext.BookShopURI.BOOK_MODULE_URI, String.valueOf(1), String.valueOf(295));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
+        requestBean.setAppBaseInfo(appBaseInfo);
+        RxRequestBookModule request = new RxRequestBookModule();
+        request.setRequestBean(requestBean);
+        request.execute(new RxCallback<RxRequestBookModule>() {
             @Override
             public void onNext(RxRequestBookModule request) {
                 BookModelBooksResultBean bookModelResultBean = request.getBookModelResultBean();
@@ -98,9 +99,10 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
     public void testShopMainConfig() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         ShopMainConfigRequestBean requestBean = new ShopMainConfigRequestBean();
-        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        requestBean.setAppBaseInfo(baseInfo);
-
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        String uri = String.format(CloudApiContext.BookShopURI.SHOP_MAIN_CONFIG_URI, String.valueOf(Constants.BOOK_SHOP_DEFAULT_CID));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(uri));
+        requestBean.setAppBaseInfo(appBaseInfo);
         requestBean.setCid(Constants.BOOK_SHOP_DEFAULT_CID);
         final RxRequestShopMainConfig rq = new RxRequestShopMainConfig();
         rq.setRequestBean(requestBean);
@@ -125,39 +127,12 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
         countDownLatch.await();
     }
 
-    public void testGetModuleList() throws Exception {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
-        JSONObject body = new JSONObject();
-        body.put(CloudApiContext.BookShopModuleList.SYS_ID, "1");
-        baseRequestBean.setBody(body.toJSONString());
-        final RxRequestBookModuleList rq = new RxRequestBookModuleList();
-        rq.setBaseRequestBean(baseRequestBean);
-        rq.execute(new RxCallback<RxRequestBookModule>() {
-            @Override
-            public void onNext(RxRequestBookModule request) {
-                assertNotNull(request.getBookModelResultBean());
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                super.onError(throwable);
-                assertNull(throwable);
-                countDownLatch.countDown();
-
-            }
-        });
-        countDownLatch.await();
-    }
-
     public void testGetCategoryList() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         BaseRequestInfo baseRequestBean = new BaseRequestInfo();
-        JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        jdAppBaseInfo.setTid(String.valueOf(System.currentTimeMillis()));
-        baseRequestBean.setAppBaseInfo(jdAppBaseInfo);
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        appBaseInfo.setSign(appBaseInfo.getSignValue(CloudApiContext.BookShopURI.CATEGORY_URI));
+        baseRequestBean.setAppBaseInfo(appBaseInfo);
         final RxRequestCategoryList request = new RxRequestCategoryList();
         request.setBaseRequestBean(baseRequestBean);
         request.execute(new RxCallback<RxRequestCategoryList>() {

@@ -45,6 +45,6 @@ public class RxRequestBookModule extends RxBaseCloudRequest {
 
     private Call<BookModelBooksResultBean> getCall(ReadContentService getCommonService) {
         return getCommonService.getBookShopModule(requestBean.getfType(), requestBean.getModuleId(),
-                requestBean.getAppBaseInfo().getRequestParamsMap(), requestBean.getQueryArgsMap());
+                requestBean.getAppBaseInfo().getRequestParamsMap());
     }
 }

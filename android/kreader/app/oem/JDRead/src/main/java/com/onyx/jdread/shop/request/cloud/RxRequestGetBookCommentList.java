@@ -51,6 +51,6 @@ public class RxRequestGetBookCommentList extends RxBaseCloudRequest {
     }
 
     private Call<BookCommentsResultBean> getCall(ReadContentService service) {
-        return service.getBookCommentsList(bookCommentsRequestBean.bookId, bookCommentsRequestBean.getAppBaseInfo().getRequestParamsMap(), bookCommentsRequestBean.getQueryArgsMap());
+        return service.getBookCommentsList(bookCommentsRequestBean.bookId, bookCommentsRequestBean.getAppBaseInfo().getRequestParamsMap());
     }
 }

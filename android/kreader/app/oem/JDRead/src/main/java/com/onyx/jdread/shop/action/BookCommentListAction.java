@@ -1,7 +1,6 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BookCommentsRequestBean;
@@ -40,14 +39,15 @@ public class BookCommentListAction extends BaseAction<ShopDataBundle> {
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         BookCommentsRequestBean bookCommentsRequestBean = new BookCommentsRequestBean();
-        JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        jdAppBaseInfo.setTime();
+        bookCommentsRequestBean.bookId = bookID;
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
         Map<String, String> queryArgs = new HashMap();
         queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, Constants.BOOK_PAGE_SIZE);
         queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, String.valueOf(currentPage));
-        bookCommentsRequestBean.setAppBaseInfo(jdAppBaseInfo);
-        bookCommentsRequestBean.bookId = bookID;
-        bookCommentsRequestBean.setQueryArgsMap(queryArgs);
+        appBaseInfo.addRequestParams(queryArgs);
+        String sign = String.format(CloudApiContext.BookShopURI.BOOK_COMMENT_LIST_URI, String.valueOf(bookID));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
+        bookCommentsRequestBean.setAppBaseInfo(appBaseInfo);
         final RxRequestGetBookCommentList rq = new RxRequestGetBookCommentList();
         rq.setBookCommentsRequestBean(bookCommentsRequestBean);
         rq.execute(new RxCallback<RxRequestGetBookCommentList>() {

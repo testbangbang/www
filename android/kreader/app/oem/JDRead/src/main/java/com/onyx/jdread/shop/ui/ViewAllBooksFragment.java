@@ -15,6 +15,7 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentViewAllBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookModelAction;
@@ -27,7 +28,6 @@ import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.TitleBarViewModel;
 import com.onyx.jdread.shop.model.ViewAllViewModel;
-import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -86,9 +86,9 @@ public class ViewAllBooksFragment extends BaseFragment {
 
     private void initView() {
         SubjectListAdapter adapter = new SubjectListAdapter(getEventBus());
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContextJD(), DividerItemDecoration.VERTICAL_LIST);
-        itemDecoration.setDrawLine(false);
+        DashLineItemDivider itemDecoration = new DashLineItemDivider();
         recyclerView = viewAllBinding.recyclerViewSubjectList;
+        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.setAdapter(adapter);
         paginator = recyclerView.getPaginator();
