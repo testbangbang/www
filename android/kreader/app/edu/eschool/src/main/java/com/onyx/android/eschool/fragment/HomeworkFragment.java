@@ -47,6 +47,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
@@ -120,7 +121,7 @@ public class HomeworkFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DATE_FORMAT_MMDD_HHMM = new SimpleDateFormat(getContext().getString(R.string.date_format), Locale.getDefault());
+        DATE_FORMAT_MMDD_HHMM = DateTimeUtil.getDefaultDateFormat(getContext().getString(R.string.date_format));
     }
 
     @Nullable
@@ -246,7 +247,7 @@ public class HomeworkFragment extends Fragment {
     }
 
     private void nextPage() {
-        if (getPagination().isLastPage()) {
+        if (!getPagination().hasNextPage()) {
             postNextTab();
             return;
         }
