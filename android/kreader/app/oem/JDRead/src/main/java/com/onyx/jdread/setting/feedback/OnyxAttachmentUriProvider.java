@@ -13,6 +13,7 @@ import org.acra.attachment.AttachmentUriProvider;
 import org.acra.config.CoreConfiguration;
 import org.acra.file.Directory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,8 @@ public class OnyxAttachmentUriProvider implements AttachmentUriProvider {
     private List<String> initFile() {
         List<String> result = new ArrayList<>();
         // TODO: 2018/1/9 add your log file
+        File file = LogUtils.generateFeedBackFile(JDReadApplication.getInstance());
+        result.add(getUriStr(Directory.ROOT, file.getPath()));
         return result;
     }
 
@@ -67,10 +70,5 @@ public class OnyxAttachmentUriProvider implements AttachmentUriProvider {
                 + JDReadApplication.getInstance().getPackageName() + ".acra/"
                 + directory.name().toLowerCase() + "/"
                 + filePath;
-    }
-
-    @NonNull
-    private String getUriStr(@NonNull String filePath) {
-        return "content://" + filePath;
     }
 }

@@ -14,7 +14,10 @@
      limitations under the License.
 -->
 <resources>
-    <dimen name="candidate_margin_left_right">3dip</dimen>
+    <dimen name="candidate_margin_left_right">10dip</dimen>
+    <dimen name="candidate_vertical_separator_y_margin">8dp</dimen>
+    <dimen name="candidate_view_left_padding">10dp</dimen>
+    <dimen name="arrow_button_width">62dip</dimen>
     <dimen name="composing_height">24dip</dimen>
     <dimen name="key_height">57.5dp</dimen>
     <dimen name="candidates_area_height">50dp</dimen>
