@@ -127,18 +127,6 @@
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/level_three_heading_font" />
 
-                        <TextView
-                            android:id="@+id/book_detail_discount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/book_detail_discount_margin_left"
-                            android:background="@drawable/rectangle_stroke_dark"
-                            android:paddingLeft="@dimen/book_detail_discount_padding_left_and_right"
-                            android:paddingRight="@dimen/book_detail_discount_padding_left_and_right"
-                            android:text="@{@string/book_detail_yuedou_discount(CommonUtils.calculateDiscount(bookDetailViewModel.bookDetailResultBean.data.price,bookDetailViewModel.bookDetailResultBean.data.price))}"
-                            android:textColor="@android:color/darker_gray"
-                            android:textSize="@dimen/level_three_heading_font" />
-
                     </LinearLayout>
 
                     <LinearLayout

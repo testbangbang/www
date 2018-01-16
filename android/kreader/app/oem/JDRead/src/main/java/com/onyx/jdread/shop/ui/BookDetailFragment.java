@@ -635,7 +635,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
-        getBookDetailData();
+        if(JDReadApplication.getInstance().getString(R.string.login_success).equals(event.getMessage())) {
+            getBookDetailData();
+        }
     }
 
     @Override

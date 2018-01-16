@@ -128,10 +128,9 @@
     <dimen name="layout_book_detail_cover_height">185dp</dimen>
     <dimen name="layout_book_detail_contain_book_info_margin_left">20dp</dimen>
     <dimen name="book_detail_author_margin_top">10dp</dimen>
-    <dimen name="rating_bar_style_min_height">35dp</dimen>
-    <dimen name="rating_bar_style_max_height">35dp</dimen>
+    <dimen name="rating_bar_style_min_height">15dp</dimen>
+    <dimen name="rating_bar_style_max_height">15dp</dimen>
     <dimen name="book_detail_discount_margin_left">20dp</dimen>
-    <dimen name="book_detail_discount_padding_left_and_right">5dp</dimen>
     <dimen name="book_detail_common_margin_top">20dp</dimen>
     <dimen name="dashed_line_height">2dp</dimen>
     <dimen name="book_detail_margin">10dp</dimen>
