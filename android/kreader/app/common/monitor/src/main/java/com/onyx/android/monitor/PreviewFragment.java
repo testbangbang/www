@@ -1096,8 +1096,8 @@ public class PreviewFragment extends Fragment
     }
 
     private int getRepeatLimitCount() {
-        //Approximately one minute 33 times refresh request
-        return SingletonSharedPreference.getGcIntervalTime(getActivity()) * 33 * 60;
+        int refreshFrequency = DeviceConfig.sharedInstance(getActivity()).getRefreshFrequency();
+        return SingletonSharedPreference.getGcIntervalTime(getActivity()) * refreshFrequency * 60;
     }
 
     private void checkBatteryChargeState() {
