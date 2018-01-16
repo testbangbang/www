@@ -232,7 +232,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void onClick(View v) {
                 hidePotentialShowSubMenu();
-                onSave(false, true);
+                onSave(false, shouldResume());
             }
         });
         screenRefreshBtn.setOnClickListener(new View.OnClickListener() {
