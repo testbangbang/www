@@ -28,7 +28,7 @@ public class LoadDocumentOptionsRequest extends ReaderBaseRequest {
         if (StringUtils.isNullOrEmpty(md5)) {
             md5 = FileUtils.computeMD5(new File(reader.getDocumentInfo().getBookPath()));
         }
-        document = ContentSdkDataUtils.getDataProvider().findMetadataByHashTag(reader.getAppContext(),
+        document = ContentSdkDataUtils.getDataProvider().findMetadataByHashTag(reader.getReaderHelper().getContext(),
                 reader.getDocumentInfo().getBookPath(),
                 md5);
         document.setIdString(md5);

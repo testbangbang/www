@@ -89,8 +89,7 @@ public class ReaderDataHolder {
 
     public void initReaderDataHolder(final DocumentInfo documentInfo) {
         documentState = DocumentState.INIT;
-        reader = ReaderManager.getReader(documentInfo);
-        reader.setContext(getAppContext());
+        reader = ReaderManager.getReader(documentInfo,getAppContext());
         readerTouchHelper.setReaderDataHolder(this);
     }
 

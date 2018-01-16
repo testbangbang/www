@@ -12,12 +12,11 @@ public class Reader {
     private ReaderHelper readerHelper;
     private DocumentInfo documentInfo;
     private ReaderViewHelper readerViewHelper;
-    private Context context;
 
-    public Reader(DocumentInfo documentInfo) {
+    public Reader(DocumentInfo documentInfo,Context context) {
         this.documentInfo = documentInfo;
-        this.readerHelper = new ReaderHelper();
-        this.readerViewHelper = new ReaderViewHelper();
+        this.readerHelper = new ReaderHelper(context);
+        this.readerViewHelper = new ReaderViewHelper(context);
     }
 
     public ReaderHelper getReaderHelper() {
@@ -30,13 +29,5 @@ public class Reader {
 
     public ReaderViewHelper getReaderViewHelper() {
         return readerViewHelper;
-    }
-
-    public Context getAppContext() {
-        return context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
     }
 }

@@ -2,7 +2,6 @@ package com.onyx.jdread.reader.actions;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.OpenDocumentFailResultEvent;
@@ -37,9 +36,9 @@ public class OpenDocumentAction extends BaseReaderAction {
         });
     }
 
-    private void openDocument(ReaderDataHolder readerDataHolder, LoadDocumentOptionsRequest request) {
+    private void openDocument(final ReaderDataHolder readerDataHolder, LoadDocumentOptionsRequest request) {
         OpenDocumentRequest openDocumentRequest = new OpenDocumentRequest(readerDataHolder.getReader(),request.getDocumentOptions());
-        OpenDocumentRequest.setAppContext(JDReadApplication.getInstance());
+        OpenDocumentRequest.setAppContext(readerDataHolder.getAppContext());
         readerDataHolder.setDocumentOpeningState();
         openDocumentRequest.execute(new RxCallback() {
             @Override
@@ -49,7 +48,7 @@ public class OpenDocumentAction extends BaseReaderAction {
 
             @Override
             public void onError(Throwable throwable) {
-                analysisOpenDocumentErrorResult(throwable);
+                analysisOpenDocumentErrorResult(readerDataHolder,throwable);
             }
         });
     }
@@ -59,11 +58,11 @@ public class OpenDocumentAction extends BaseReaderAction {
         createPageViewAction.execute(readerDataHolder);
     }
 
-    private void analysisOpenDocumentErrorResult(Throwable throwable) {
+    private void analysisOpenDocumentErrorResult(ReaderDataHolder readerDataHolder,Throwable throwable) {
         OpenDocumentFailResultEvent event = new OpenDocumentFailResultEvent();
         String message = throwable.getMessage();
         if (StringUtils.isNullOrEmpty(message)) {
-            message = JDReadApplication.getInstance().getString(R.string.open_book_fail);
+            message = readerDataHolder.getAppContext().getString(R.string.open_book_fail);
         }
         event.setMessage(message);
         EventBus.getDefault().post(event);

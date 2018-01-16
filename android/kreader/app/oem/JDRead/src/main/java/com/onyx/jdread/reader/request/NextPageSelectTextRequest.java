@@ -23,13 +23,13 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
 
     @Override
     public NextPageSelectTextRequest call() throws Exception {
-        float x = reader.getReaderViewHelper().getPageViewWidth();
-        float y = reader.getReaderViewHelper().getPageViewHeight();
+        float width = reader.getReaderViewHelper().getPageViewWidth();
+        float height = reader.getReaderViewHelper().getPageViewHeight();
 
         reader.getReaderHelper().getReaderLayoutManager().nextScreen();
 
         PointF start = new PointF(style.getPageMargin().getLeftMargin().getPercent(), style.getPageMargin().getTopMargin().getPercent());
-        PointF end = new PointF(x, y);
+        PointF end = new PointF(width, height);
 
         ReaderSelection selection = HitTestTextHelper.hitTestTextRegion(start, end, ReaderConfig.HIT_TEST_TEXT_STEP, reader, getReaderUserDataInfo(), true);
         if (selection == null || selection.getRectangles().size() <= 0) {

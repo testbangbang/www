@@ -6,9 +6,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.reader.data.Reader;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 /**
@@ -59,7 +57,7 @@ public class GetViewSettingRequest extends ReaderBaseRequest {
         String md5 = reader.getReaderHelper().getDocumentMd5();
         ReaderNavigator navigator = reader.getReaderHelper().getNavigator();
 
-        Context context = JDReadApplication.getInstance().getApplicationContext();
+        Context context = reader.getReaderHelper().getContext();
         if (readerViewInfo != null) {
             getReaderUserDataInfo().loadPageBookmarks(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
         }

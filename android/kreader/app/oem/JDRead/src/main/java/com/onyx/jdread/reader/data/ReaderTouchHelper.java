@@ -15,12 +15,18 @@ import com.onyx.jdread.reader.ui.gesture.ReaderOnGestureListener;
 public class ReaderTouchHelper {
     private ReaderDataHolder readerDataHolder;
     private GestureDetector gestureDetector;
+    private SurfaceView surfaceView;
+
+    public SurfaceView getSurfaceView() {
+        return surfaceView;
+    }
 
     public void setReaderDataHolder(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
     }
 
     public void setReaderViewTouchListener(SurfaceView surfaceView) {
+        this.surfaceView = surfaceView;
         surfaceView.setOnTouchListener(onTouchEvent);
         gestureDetector = new GestureDetector(surfaceView.getContext(), new ReaderOnGestureListener(readerDataHolder));
     }

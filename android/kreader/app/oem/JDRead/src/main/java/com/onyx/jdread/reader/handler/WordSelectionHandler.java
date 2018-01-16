@@ -60,7 +60,8 @@ public class WordSelectionHandler extends BaseHandler {
 
     @Override
     public void onLongPress(MotionEvent event) {
-        pagePosition = getReaderDataHolder().getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
+        pagePosition = getReaderDataHolder().getReaderViewInfo().getFirstVisiblePageName();
+
         if (isCrossScreenSelectText(event)) {
             return;
         }
@@ -87,8 +88,8 @@ public class WordSelectionHandler extends BaseHandler {
 
     private boolean isCrossScreenSelectText(MotionEvent event) {
         if (getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(pagePosition) != null) {
-            int height = getReaderDataHolder().getReader().getReaderViewHelper().getPageViewHeight();
-            int width = getReaderDataHolder().getReader().getReaderViewHelper().getPageViewWidth();
+            int height = getReaderDataHolder().getReaderTouchHelper().getSurfaceView().getHeight();
+            int width = getReaderDataHolder().getReaderTouchHelper().getSurfaceView().getWidth();
             float x = event.getX();
             float y = event.getY();
             if (x < crossScreenTouchRegionMinWidth && y < crossScreenTouchRegionMinHeight) {

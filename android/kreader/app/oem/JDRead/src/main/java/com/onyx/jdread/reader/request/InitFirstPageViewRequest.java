@@ -6,7 +6,6 @@ import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
@@ -74,7 +73,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
 
     private void initPosition() throws Exception {
         String bookPath = reader.getDocumentInfo().getBookPath();
-        String position = PreferenceManager.getStringValue(JDReadApplication.getInstance(), bookPath, "0");
+        String position = PreferenceManager.getStringValue(reader.getReaderHelper().getContext(), bookPath, "0");
         reader.getReaderHelper().gotoPosition(position);
         restoreScale(reader, position);
     }

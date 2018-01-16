@@ -14,7 +14,6 @@ import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.utils.RectUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
@@ -33,13 +32,13 @@ public class ReaderViewHelper {
     private static final int DEFAULT_MULTIPLEX = 1;
     public float dpiMultiplex = 1.0f;
 
-    public ReaderViewHelper() {
-        initData();
+    public ReaderViewHelper(Context context) {
+        initData(context);
     }
 
-    private void initData() {
+    private void initData(Context context) {
         paint.setColor(Color.BLACK);
-        paint.setTextSize(11 * (JDReadApplication.getInstance() != null ? dpiMultiplex : DEFAULT_MULTIPLEX));
+        paint.setTextSize(11 * (context != null ? dpiMultiplex : DEFAULT_MULTIPLEX));
         paint.setAntiAlias(false);
         paint.setFilterBitmap(false);
         paint.setStrokeWidth(0);
@@ -89,21 +88,21 @@ public class ReaderViewHelper {
         readPageView.getHolder().unlockCanvasAndPost(canvas);
     }
 
-    public void showTouchFunctionRegion(Canvas canvas) {
+    public void showTouchFunctionRegion(Canvas canvas,Reader reader) {
         Paint.Style oldStyle = paint.getStyle();
         paint.setStyle(Paint.Style.STROKE);
         int oldColor = paint.getColor();
         paint.setColor(Color.BLACK);
 
-        Rect rect = ShowSettingMenuAction.getRegionOne();
+        Rect rect = ShowSettingMenuAction.getRegionOne(reader.getReaderHelper().getContext());
         canvas.drawRect(rect, paint);
-        rect = ShowSettingMenuAction.getRegionTwo();
+        rect = ShowSettingMenuAction.getRegionTwo(reader.getReaderHelper().getContext());
         canvas.drawRect(rect, paint);
-        rect = PrevPageAction.getRegionOne();
+        rect = PrevPageAction.getRegionOne(reader.getReaderHelper().getContext());
         canvas.drawRect(rect, paint);
-        rect = NextPageAction.getRegionOne();
+        rect = NextPageAction.getRegionOne(reader.getReaderHelper().getContext());
         canvas.drawRect(rect, paint);
-        rect = NextPageAction.getRegionTwo();
+        rect = NextPageAction.getRegionTwo(reader.getReaderHelper().getContext());
         canvas.drawRect(rect, paint);
 
         paint.setColor(oldColor);
@@ -115,7 +114,7 @@ public class ReaderViewHelper {
                                      ReaderSelectionManager readerSelectionManager) {
         if (readerViewInfo != null && readerUserDataInfo != null && readerUserDataInfo.hasHighlightResult()) {
             String pagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
-            readerSelectionManager.update(pagePosition, JDReadApplication.getInstance().getApplicationContext());
+            readerSelectionManager.update(pagePosition, reader.getReaderHelper().getContext());
 
             readerSelectionManager.updateDisplayPosition(pagePosition);
             readerSelectionManager.setEnable(pagePosition, true);

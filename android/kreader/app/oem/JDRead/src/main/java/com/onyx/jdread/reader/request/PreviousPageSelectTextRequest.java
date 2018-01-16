@@ -23,11 +23,11 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
 
     @Override
     public PreviousPageSelectTextRequest call() throws Exception {
-        float x = reader.getReaderViewHelper().getPageViewWidth();
-        float y = reader.getReaderViewHelper().getPageViewHeight();
+        float width = reader.getReaderViewHelper().getPageViewWidth();
+        float height = reader.getReaderViewHelper().getPageViewHeight();
         reader.getReaderHelper().getReaderLayoutManager().prevScreen();
 
-        PointF start = new PointF(x, y);
+        PointF start = new PointF(width, height);
         PointF end = new PointF(style.getPageMargin().getLeftMargin().getPercent(), style.getPageMargin().getTopMargin().getPercent());
 
         ReaderSelection selection = HitTestTextHelper.hitTestTextRegion(start, end, -ReaderConfig.HIT_TEST_TEXT_STEP, reader, getReaderUserDataInfo(), false);
