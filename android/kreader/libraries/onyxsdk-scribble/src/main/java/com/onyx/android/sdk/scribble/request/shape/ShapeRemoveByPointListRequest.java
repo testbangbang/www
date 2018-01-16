@@ -39,12 +39,19 @@ public class ShapeRemoveByPointListRequest extends BaseNoteRequest {
     public void execute(final NoteViewHelper helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
         benchmarkStart();
+
+        RectF dirtyRect = null;
         if (stash != null) {
             helper.getNoteDocument().getCurrentPage(getContext()).addShapeList(stash);
+            dirtyRect = ShapeUtils.getBoundingRect(stash);
         }
 
         ArrayList<Shape> shapes = helper.getNoteDocument().removeShapesByTouchPointList(getContext(), touchPointList, 1.0f);
-        RectF dirtyRect = ShapeUtils.getBoundingRect(shapes);
+        if (dirtyRect == null) {
+            dirtyRect = ShapeUtils.getBoundingRect(shapes);
+        } else {
+            dirtyRect.union(ShapeUtils.getBoundingRect(shapes));
+        }
         renderCurrentPage(helper, dirtyRect);
 
         updateShapeDataInfo(helper);
