@@ -28,11 +28,11 @@ public class RxRequestUserInfo extends RxBaseCloudRequest {
     @Override
     public Object call() throws Exception {
         String encryptKey = EncryptHelper.getEncryptKey(saltValue);
-        String encryptParams = EncryptHelper.getEncryptParams(encryptKey, baseInfo.getSignString());
+        String encryptParams = EncryptHelper.getEncryptParams(encryptKey, baseInfo.getRequestParams());
         baseInfo.setParams(encryptParams);
         baseInfo.setEnc();
         baseInfo.addApp();
-        ReadContentService userInfoService = CloudApiContext.getService(CloudApiContext.JD_NEW_BASE_URL);
+        ReadContentService userInfoService = CloudApiContext.getService(CloudApiContext.JD_BOOK_SHOP_URL);
         Call<UserInfoBean> call = getCall(userInfoService);
         Response<UserInfoBean> response = call.execute();
         if (response.isSuccessful()) {
