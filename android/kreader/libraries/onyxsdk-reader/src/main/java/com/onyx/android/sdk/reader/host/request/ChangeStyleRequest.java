@@ -12,7 +12,7 @@ public class ChangeStyleRequest extends BaseReaderRequest {
     private ReaderTextStyle readerTextStyle;
 
     public ChangeStyleRequest(final ReaderTextStyle style) {
-        readerTextStyle = style;
+        readerTextStyle = ReaderTextStyle.copy(style);
     }
 
     public void execute(final Reader reader) throws Exception {

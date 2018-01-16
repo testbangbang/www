@@ -54,6 +54,53 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/text_view_paragraph_spacing_title"
+            android:textSize="@dimen/dialog_common_text_size"
+            android:layout_width="@dimen/dialog_text_style_sub_font_spacing_view_title_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/layout_paragraph_spacing"
+            android:layout_alignBottom="@+id/layout_paragraph_spacing"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
+            android:gravity="center"
+            android:text="@string/reader_layer_menu_font_style_font_paragraph_spacing"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:id="@+id/layout_paragraph_spacing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_line_spacing"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@id/text_view_paragraph_spacing_title"
+            android:orientation="horizontal" android:layout_gravity="center">
+            <ImageView android:id="@+id/image_view_small_paragraph_spacing"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                style="@style/fontStyle_imageView_style"
+                android:src="@drawable/ic_dialog_reader_menu_font_pg_space_small"/>
+            <ImageView android:id="@+id/image_view_middle_paragraph_spacing"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                style="@style/fontStyle_imageView_style"
+                android:src="@drawable/ic_dialog_reader_menu_font_pg_space_mid"/>
+            <ImageView android:id="@+id/image_view_large_paragraph_spacing"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                style="@style/fontStyle_imageView_style"
+                android:src="@drawable/ic_dialog_reader_menu_font_pg_space_big"/>
+            <ImageView android:id="@+id/image_view_decrease_paragraph_spacing"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                style="@style/fontStyle_imageView_style"
+                android:src="@drawable/ic_dialog_reader_menu_font_pg_space_shrink"/>
+            <ImageView android:id="@+id/image_view_increase_paragraph_spacing"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                style="@style/fontStyle_imageView_style"
+                android:src="@drawable/ic_dialog_reader_menu_font_pg_space_expand"/>
+        </LinearLayout>
+
+        <TextView
             android:id="@+id/text_view_margin_title"
             android:textSize="@dimen/dialog_common_text_size"
             android:layout_width="@dimen/dialog_text_style_sub_font_spacing_view_title_width"
@@ -73,7 +120,7 @@
             android:id="@+id/layout_page_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layout_line_spacing"
+            android:layout_below="@id/layout_paragraph_spacing"
             android:layout_toRightOf="@id/text_view_margin_title"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
