@@ -69,7 +69,7 @@ public class ReaderPainter {
                          List<PageInfo> visiblePages) {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
-        drawBitmap(canvas, paint, bitmap);
+        drawBitmap(canvas, paint, bitmap, readerDataHolder);
         drawCropRectIndicator(canvas, paint, viewInfo);
         drawViewportOverlayIndicator(canvas, paint, viewInfo);
         drawBookmark(context, canvas, readerDataHolder, userDataInfo, viewInfo);
@@ -88,12 +88,12 @@ public class ReaderPainter {
         canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
     }
 
-    private void drawBitmap(Canvas canvas, Paint paint, Bitmap bitmap) {
+    private void drawBitmap(Canvas canvas, Paint paint, Bitmap bitmap, ReaderDataHolder readerDataHolder) {
         if (bitmap == null) {
             return;
         }
         paint.setDither(true);
-        canvas.drawBitmap(bitmap, 0, 0, paint);
+        canvas.drawBitmap(bitmap, readerDataHolder.getDocPageLeft(), 0, paint);
     }
 
     private void drawPageInfo(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
