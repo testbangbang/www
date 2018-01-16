@@ -301,7 +301,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void quitMultiSelectionMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
-        dataBundle.getLibraryViewDataModel().quitManageMode();
+        dataBundle.getLibraryViewDataModel().clearSelectedData();
         setTitle();
         showMangeMenu();
     }
@@ -426,7 +426,7 @@ public class LibraryFragment extends BaseFragment {
         moveToAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                quitMultiSelectionMode();
+                dataBundle.getLibraryViewDataModel().clearSelectedData();
                 int deletePageCount = dataBundle.getLibraryViewDataModel().getDeletePageCount();
                 loadData(dataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
             }
