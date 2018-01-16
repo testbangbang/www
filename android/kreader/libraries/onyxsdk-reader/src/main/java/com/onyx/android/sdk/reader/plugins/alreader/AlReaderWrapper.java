@@ -260,7 +260,7 @@ public class AlReaderWrapper {
     }
 
     public void updateParagraphSpacing(final ReaderTextStyle.Percentage paragraphSpacing) {
-        profile.paragraphSpacing = (int)(100 * (paragraphSpacing.getPercent() - 100) / (float)100);
+        profile.paragraphSpacing = (int)(100 * paragraphSpacing.getPercent() / (float)100);
     }
 
     public void updateIndentation(final ReaderTextStyle.CharacterIndent indent) {
