@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.receiver.NetworkConnectChangedReceiver;
@@ -43,6 +44,7 @@ import com.onyx.edu.homework.event.GotoQuestionPageEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
+import com.onyx.edu.homework.receiver.OnyxMessageReceiver;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -58,6 +60,7 @@ public class HomeworkListActivity extends BaseActivity {
 
     private ActivityHomeworkListBinding binding;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
+    private OnyxMessageReceiver onyxMessageReceiver = new OnyxMessageReceiver();
     private List<Question> questions;
     private HomeworkIntent homeworkIntent;
     private RecordFragment recordFragment;
@@ -220,6 +223,7 @@ public class HomeworkListActivity extends BaseActivity {
                 reloadQuestionFragment(currentPage);
                 updateViewState();
                 showTotalScore();
+                binding.newMessage.setVisibility(View.GONE);
             }
         });
     }
@@ -258,8 +262,25 @@ public class HomeworkListActivity extends BaseActivity {
                 updateViewState();
                 showTotalScore();
                 initQuestions(questions);
+                initOnyxMessageReceiver();
             }
 
+        });
+    }
+
+    private void initOnyxMessageReceiver() {
+        onyxMessageReceiver.registerReceiver(this);
+        onyxMessageReceiver.setOnyxMessageListener(new OnyxMessageReceiver.OnyxMessageListener() {
+            @Override
+            public void onHomeworkMessageReceive(String data) {
+                if (getDataBundle().isReview()) {
+                    return;
+                }
+                HomeworkIntent homework = JSONObject.parseObject(data, HomeworkIntent.class);
+                if (homework.child._id.equals(DataBundle.getInstance().getHomeworkId()) && homework.checked) {
+                    binding.newMessage.setVisibility(View.VISIBLE);
+                }
+            }
         });
     }
 
@@ -311,6 +332,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (networkConnectChangedReceiver != null) {
             unregisterReceiver(networkConnectChangedReceiver);
         }
+        onyxMessageReceiver.unregisterReceiver(this);
     }
 
     private void showMessage(@StringRes int messageId) {
@@ -454,7 +476,7 @@ public class HomeworkListActivity extends BaseActivity {
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
         binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
         binding.result.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
-        binding.getResult.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
+        binding.getResultLayout.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
         binding.submit.setText(getDataBundle().isDoing() ? R.string.submit : R.string.submited);
         binding.submit.setEnabled(getDataBundle().isDoing());
     }
@@ -511,5 +533,4 @@ public class HomeworkListActivity extends BaseActivity {
             reloadQuestionFragment(currentPage);
         }
     }
-
 }
