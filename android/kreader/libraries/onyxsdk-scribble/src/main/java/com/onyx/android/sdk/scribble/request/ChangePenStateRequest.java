@@ -21,5 +21,6 @@ public class ChangePenStateRequest extends BaseNoteRequest {
         setRender(render);
         setResumeInputProcessor(resume);
         renderCurrentPage(helper);
+        updateShapeDataInfo(helper);
     }
 }
