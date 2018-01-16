@@ -3,7 +3,7 @@ package com.onyx.kreader.ui.actions;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.view.LayoutInflater;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -72,7 +72,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         addDividerLine(parent);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lp.addRule(RelativeLayout.RIGHT_OF, R.id.divider_line);
+        lp.addRule(RelativeLayout.RIGHT_OF, dividerLine.getId());
         sideMenu.addMainMenu(parent,
                 readerDataHolder.getEventBus(),
                 R.layout.reader_side_scribble_menu,
@@ -109,6 +109,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
 
     private void addDividerLine(ViewGroup parent) {
         dividerLine = new View(parent.getContext());
+        dividerLine.setId(Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.JELLY_BEAN_MR1 ? View.generateViewId() : R.id.divider);
         dividerLine.setBackgroundColor(Color.GRAY);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int)
                 parent.getContext().getResources().getDimension(R.dimen.divider_line_size),
