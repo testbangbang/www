@@ -11,6 +11,7 @@ import com.onyx.android.sdk.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * @author joy
@@ -61,5 +62,20 @@ public class DateTimeUtil {
         } else {
             return second_value + second_symbol;
         }
+    }
+
+    public static String formatTime(long millisecond) {
+        int totalSeconds = (int) (millisecond / 1000);
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours = totalSeconds / 3600;
+        return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes,
+                seconds) : String.format("%02d:%02d", minutes, seconds);
+    }
+
+    public static SimpleDateFormat getDefaultDateFormat(String pattern) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getDefault());
+        return dateFormat;
     }
 }
