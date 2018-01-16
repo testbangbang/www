@@ -189,6 +189,10 @@ public class PageRecyclerView extends RecyclerView {
         return paginator;
     }
 
+    public void setPaginator(GPaginator paginator) {
+        this.paginator = paginator;
+    }
+
     private void init() {
         originPaddingBottom = getPaddingBottom();
         setItemAnimator(null);
