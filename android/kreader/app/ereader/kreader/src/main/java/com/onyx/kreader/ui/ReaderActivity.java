@@ -43,14 +43,14 @@ import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
-import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
@@ -71,6 +71,7 @@ import com.onyx.kreader.ui.actions.ForwardAction;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.OpenDocumentAction;
 import com.onyx.kreader.ui.actions.SaveDocumentOptionsAction;
+import com.onyx.kreader.ui.actions.ShowDialogGoToPageAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSideScribbleMenuAction;
@@ -86,6 +87,7 @@ import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.ConfirmCloseDialogEvent;
+import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
@@ -110,7 +112,6 @@ import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
-import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.ShowTabHostMenuDialogEvent;
 import com.onyx.kreader.ui.events.ShowTabWidgetEvent;
 import com.onyx.kreader.ui.events.SlideshowStartEvent;
@@ -361,7 +362,11 @@ public class ReaderActivity extends OnyxBaseActivity {
         statusBar.setCallback(new ReaderStatusBar.Callback() {
             @Override
             public void onGotoPage() {
-                new ShowQuickPreviewAction(getReaderDataHolder()).execute(getReaderDataHolder(), null);
+                if (getReaderDataHolder().isSideNoting()) {
+                    new ShowDialogGoToPageAction().execute(getReaderDataHolder(), null);
+                } else {
+                    new ShowQuickPreviewAction(getReaderDataHolder()).execute(getReaderDataHolder(), null);
+                }
             }
         });
         reconfigStatusBar();

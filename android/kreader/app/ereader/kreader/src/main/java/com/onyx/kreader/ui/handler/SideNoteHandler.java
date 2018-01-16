@@ -18,9 +18,9 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.ChangeScaleWithDeltaAction;
+import com.onyx.kreader.ui.actions.ShowDialogGoToPageAction;
 import com.onyx.kreader.ui.actions.ToggleSideNoteMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
-import com.onyx.kreader.ui.dialog.DialogGotoPage;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.HideTabWidgetEvent;
 import com.onyx.kreader.ui.events.ShowTabWidgetEvent;
@@ -253,13 +253,6 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     private void showDialogGoToPage() {
-        DialogGotoPage.show(getParent().getReaderDataHolder(),
-                true, null,
-                (-(getParent().getReaderDataHolder().getDisplayWidth() / 4)), Integer.MIN_VALUE, new DialogGotoPage.OnCloseCallback() {
-                    @Override
-                    public void onClose() {
-                        new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
-                    }
-                });
+        new ShowDialogGoToPageAction().execute(getParent().getReaderDataHolder(), null);
     }
 }
