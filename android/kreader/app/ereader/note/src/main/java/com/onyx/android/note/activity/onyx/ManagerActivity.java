@@ -88,7 +88,7 @@ public class ManagerActivity extends BaseManagerActivity {
     }
     
     private void loadSortByAndAsc() {
-        currentSortBy = SortBy.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_SORT_BY, SortBy.CREATED_AT));
+        currentSortBy = SortBy.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_SORT_BY, SortBy.UPDATED_AT));
         ascOrder = AscDescOrder.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_ASC_ORDER, AscDescOrder.DESC));
     }
 
