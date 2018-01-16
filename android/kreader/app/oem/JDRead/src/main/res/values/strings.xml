@@ -360,4 +360,9 @@
     <string name="confirm_bind">Confirm bind</string>
     <string name="total_search_result">Total search results(%d)</string>
     <string name="crash_tip">Are you sure you want to send an error report?</string>
+    <string name="missing_translation_tools">No translation found</string>
+    <string name="chinese">Chinese</string>
+    <string name="english">English</string>
+    <string name="input_language">Source language: %s</string>
+    <string name="target_language">Target language: %s</string>
 </resources>

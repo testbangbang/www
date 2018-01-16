@@ -24,7 +24,8 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="@dimen/fragment_content_padding">
+            android:paddingLeft="@dimen/fragment_content_padding"
+            android:paddingRight="@dimen/fragment_content_padding">
 
             <View
                 android:layout_width="match_parent"
@@ -32,15 +33,44 @@
                 android:background="@android:color/black" />
 
             <EditText
+                android:id="@+id/translate_edit"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/translation_edit_height"
+                android:background="@null"
                 android:gravity="top"
+                android:padding="@dimen/translate_content_padding"
                 android:text="@={model.inputWords}" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/fragment_translate_exchange_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{@string/input_language(model.inputLanguage)}" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/fragment_translate_exchange_margin"
+                    android:layout_marginRight="@dimen/fragment_translate_exchange_margin"
+                    android:src="@mipmap/ic_read_exchange" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{@string/target_language(model.targetLanguage)}" />
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -51,6 +81,7 @@
                 android:id="@+id/translate_result"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/translate_result_height"
+                android:padding="@dimen/translate_content_padding"
                 android:clickable="true"
                 android:fadeScrollbars="false"
                 android:scrollbars="vertical"
@@ -62,14 +93,16 @@
                 android:background="@android:color/black" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/translate_button_margin_top"
+                android:layout_width="@dimen/translate_button_width"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/rectangle_stroke"
                 android:clickable="true"
+                android:gravity="center"
                 android:onClick="@{()->model.translate()}"
                 android:padding="@dimen/user_login_edit_text_delete_button_margin"
-                android:text="translate"
+                android:text="@string/translation"
                 android:textSize="@dimen/level_two_heading_font" />
 
         </LinearLayout>
