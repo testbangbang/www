@@ -1339,6 +1339,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private void startSideNodeDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(readerActivity.getExtraView(),
+                readerActivity.getStatusBar(),
                 ShowReaderMenuAction.getScribbleActionCallback(readerDataHolder));
         showMenu.execute(readerDataHolder, null);
     }
