@@ -23,10 +23,10 @@ public class AddBookToSmoothCardAction extends BaseAction {
 
 
     private boolean shouldDownLoad;
-    private BookDetailResultBean.Detail bookDetailBean;
+    private BookDetailResultBean.DetailBean bookDetailBean;
     private AddBookToSmoothCardBookBean addBookToSmoothCardResultBean;
 
-    public AddBookToSmoothCardAction(BookDetailResultBean.Detail bookDetailBean, boolean shouldDownLoad) {
+    public AddBookToSmoothCardAction(BookDetailResultBean.DetailBean bookDetailBean, boolean shouldDownLoad) {
         this.bookDetailBean = bookDetailBean;
         this.shouldDownLoad = shouldDownLoad;
     }
@@ -36,7 +36,7 @@ public class AddBookToSmoothCardAction extends BaseAction {
         BaseRequestBean requestBean = new BaseRequestBean();
         requestBean.setAppBaseInfo(dataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.AddToSmooth.EBOOK_ID, bookDetailBean.getEbookId());
+        body.put(CloudApiContext.AddToSmooth.EBOOK_ID, bookDetailBean.ebook_id);
         requestBean.setBody(body.toJSONString());
         RxRequestAddBookToSmoothCard rq = new RxRequestAddBookToSmoothCard(bookDetailBean);
         rq.setRequestBean(requestBean);
@@ -63,7 +63,7 @@ public class AddBookToSmoothCardAction extends BaseAction {
                     ToastUtil.showToast(JDReadApplication.getInstance(), JDReadApplication.getInstance().getString(R.string.add_to_smooth_list_failed));
                 }
                 if (shouldDownLoad) {
-                    bookDetailBean.setFluentRead(true);
+                    bookDetailBean.can_read = true;
                     BookDownloadUtils.download(bookDetailBean, dataBundle);
                 }
                 if (rxCallback != null) {

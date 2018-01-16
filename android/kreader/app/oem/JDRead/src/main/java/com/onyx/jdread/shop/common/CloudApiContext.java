@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class CloudApiContext {
-    public static final String JD_BOOK_SHOP_URL = "http://tob-gw.jd.com/";
+    public static final String JD_BOOK_SHOP_URL = "https://eink-api.jd.com/eink/api/";
     public static final String JD_BASE_URL = "https://gw-e.jd.com/";
     public static final String JD_BOOK_VERIFY_URL = "http://rights.e.jd.com/";
     public static final String JD_SMOOTH_READ_URL = "https://cread.jd.com/";
@@ -62,28 +62,6 @@ public class CloudApiContext {
         public static final String API_GET_MAIN_THEME_INFO = "getMainThemeInfo";
     }
 
-    public static class BookShopModule {
-        public static final String ID = "id";
-        public static final String MODULE_TYPE = "moduleType";
-        public static final String MODULE_ID = "moduleId";
-        public static final String RETURN_MESSAGE = "returnMessage";
-        public static final String MODULE_CHILD_INFO = "getReversionModuleData";
-        public static final int TODAY_SPECIAL_ID = 11;
-        public static final int TODAY_SPECIAL_MODULE_TYPE = 10;
-        public static final int NEW_BOOK_DELIVERY_ID = 18;
-        public static final int NEW_BOOK_DELIVERY_MODULE_TYPE = 6;
-        public static final int FREE_JOURNALS_ID = 181;
-        public static final int FREE_JOURNALS_MODULE_TYPE = 6;
-        public static final int IMPORTANT_RECOMMEND_ID = 91;
-        public static final int IMPORTANT_RECOMMEND_MODULE_TYPE = 6;
-    }
-
-    public static class CategoryList {
-        public static final String CLIENT_PLATFORM = "clientPlatform";
-        public static final int CLIENT_PLATFORM_VALUE = 1;
-        public static final String CATEGORY_LIST = "CategoryList";
-    }
-
     public static class CategoryLevel2BookList {
         public static final String SORT_TYPE = "sortType";
         public static final String PAGE_SIZE = "pageSize";
@@ -93,8 +71,9 @@ public class CloudApiContext {
         public static final String CLIENT_PLATFORM = "clientPlatform";
         public static final String ROOT_ID = "rootId";
         public static final String CATEGORY_LEVEL2_BOOK_LIST = "categoryBookListV2";
-        public static final int PAGE_SIZE_DEFAULT_VALUES = 40;
-        public static final int SORT_KEY_DEFAULT_VALUES = 1;
+        public static final String PAGE_SIZE_DEFAULT_VALUES = "40";
+        public static final int SORT_KEY_DEFAULT_VALUES = SearchBook.SORT_KEY_SALES;
+        public static final int SORT_TYPE_DEFAULT_VALUES = SearchBook.SORT_TYPE_DESC;
         public static final int CLIENT_PLATFORM_DEFAULT_VALUES = 1;
         public static final int ROOT_ID_DEFAULT_VALUES = 2;
         public static final int SORT_TYPE_HOT = 1;
@@ -111,15 +90,22 @@ public class CloudApiContext {
     }
 
     public static class SearchBook {
-        public static final String SORT_TYPE = "sortType";
-        public static final String SORT_SALE_DESC = "sort_sale_desc";
-        public static final String PAGE_SIZE = "pageSize";
+        public static final String SEARCH_TYPE = "search_type";
+        public static final String CATE_ID = "cid";
+        public static final String FILTER = "filter";
+        public static final String SORT = "sort";
+        public static final String KEY_WORD = "key_word";
+        public static final int SORT_TYPE_DESC = 1;
+        public static final int SORT_TYPE_ASC = 2;
+        public static final int SORT_KEY_SALES = 1;
+        public static final int SORT_KEY_PRICE = 2;
+        public static final int SORT_KEY_PRAISE = 3;
+        public static final int SORT_KEY_TIME = 4;
+        public static final String SEARCH_TYPE_BOOK_SHOP = "1";
+        public static final String SEARCH_TYPE_BOOK_COMMUNITY = "2";
+        public static final String PAGE_SIZE = "page_size";
+        public static final String CURRENT_PAGE = "page";
         public static final int PAGE_SIZE_COUNT = 20;
-        public static final String BOOK_TYPE = "bookType";
-        public static final String CURRENT_PAGE = "currentPage";
-        public static final String KEY_WORD = "keyword";
-        public static final String SEARCH_PAPER_BOOK = "searchPaperBook";
-        public static final String SEARCH_BOOK_V2 = "searchBookV2";
     }
 
     public static class BookDownloadUrl {

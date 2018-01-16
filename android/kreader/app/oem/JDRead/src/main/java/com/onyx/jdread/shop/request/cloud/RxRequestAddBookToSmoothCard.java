@@ -21,7 +21,7 @@ import retrofit2.Response;
 public class RxRequestAddBookToSmoothCard extends RxBaseCloudRequest {
     private AddBookToSmoothCardBookBean addBookToSmoothCardBookBean;
     private BaseRequestBean requestBean;
-    private BookDetailResultBean.Detail bookDetailBean;
+    private BookDetailResultBean.DetailBean bookDetailBean;
 
     public AddBookToSmoothCardBookBean getAddBookToSmoothCardBookBean() {
         return addBookToSmoothCardBookBean;
@@ -31,7 +31,7 @@ public class RxRequestAddBookToSmoothCard extends RxBaseCloudRequest {
         this.requestBean = requestBean;
     }
 
-    public RxRequestAddBookToSmoothCard(BookDetailResultBean.Detail bookDetailBean) {
+    public RxRequestAddBookToSmoothCard(BookDetailResultBean.DetailBean bookDetailBean) {
         this.bookDetailBean = bookDetailBean;
     }
 

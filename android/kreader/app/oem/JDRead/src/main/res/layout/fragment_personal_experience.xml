@@ -10,23 +10,23 @@
 
         <variable
             name="userName"
-            type="String"/>
+            type="String" />
 
         <variable
             name="stayTime"
-            type="String"/>
+            type="String" />
 
         <variable
             name="totalCount"
-            type="String"/>
+            type="String" />
 
         <variable
             name="readOver"
-            type="String"/>
+            type="String" />
 
         <variable
             name="notes"
-            type="String"/>
+            type="String" />
     </data>
 
     <LinearLayout
@@ -52,7 +52,7 @@
                 android:layout_width="@dimen/user_image_height"
                 android:layout_height="@dimen/user_image_height"
                 android:scaleType="centerCrop"
-                bind:personalImage="@{imageUrl}"/>
+                bind:personalImage="@{imageUrl}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -174,10 +174,9 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="..."
+                    android:text="@string/book_detail_text_view_recommend_title"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
@@ -187,14 +186,33 @@
                     android:drawableLeft="@mipmap/ic_refresh"
                     android:text="@string/switch_book"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:visibility="gone" />
             </LinearLayout>
 
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/experience_recycler"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/personal_experience_recycler_margin_top" />
+                android:layout_height="@dimen/book_detail_recycler_view_recommend_height"
+                android:layout_marginTop="@dimen/personal_experience_recycler_margin_top"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.onyx.android.sdk.ui.view.PageRecyclerView
+                    android:id="@+id/experience_recycler"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/experience_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/book_detail_margin"
+                    android:background="@drawable/normal_selected_background"
+                    android:padding="@dimen/book_detail_button_padding"
+                    android:src="@mipmap/ic_page_next" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </layout>

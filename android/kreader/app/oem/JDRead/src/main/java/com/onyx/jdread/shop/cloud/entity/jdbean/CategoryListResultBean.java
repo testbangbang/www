@@ -9,27 +9,24 @@ import java.util.List;
  */
 
 public class CategoryListResultBean {
-    public String code;
-    public List<CatListBean> catList;
+    public int result_code;
+    public String message;
+    public List<CategoryBeanLevelOne> data;
 
-    public static class CatListBean extends BaseObservable{
+    public static class CategoryBeanLevelOne {
+        public int id;
+        public String name;
+        public String image_url;
+        public int cateLevel;
+        public List<CategoryBeanLevelTwo> sub_category;
 
-        public int amount;
-        public int catId;
-        public String catName;
-        public int catType;
-        public int isLeaf;
-        public String shortName;
-        public List<ChildListBean> childList;
-        public boolean isSelect;
-
-        public static class ChildListBean {
-
-            public int amount;
-            public int catId;
-            public String catName;
-            public int catType;
-            public int isLeaf;
+        public static class CategoryBeanLevelTwo extends BaseObservable {
+            public int id;
+            public String name;
+            public String image_url;
+            public int cateLevel;
+            public boolean isSelect;
+            public List<CategoryBeanLevelTwo> sub_category;
         }
     }
 }

@@ -13,6 +13,10 @@
         <variable
             name="showBox"
             type="boolean"/>
+
+        <variable
+            name="check"
+            type="boolean"/>
     </data>
 
     <LinearLayout
@@ -59,6 +63,7 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="@{check}"
             android:visibility="@{showBox ? View.VISIBLE : View.GONE}"/>
     </LinearLayout>
 </layout>

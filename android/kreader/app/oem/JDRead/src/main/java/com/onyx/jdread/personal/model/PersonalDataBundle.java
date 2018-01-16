@@ -6,6 +6,7 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.TopUpValueBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,6 +32,8 @@ public class PersonalDataBundle {
     private PointsForModel pointsForModel;
     private PersonalTaskModel personalTaskModel;
     private PersonalBookModel personalBookModel;
+    private String salt;
+    private UserInfo userInfo;
 
     private PersonalDataBundle() {
 
@@ -151,5 +154,21 @@ public class PersonalDataBundle {
             personalBookModel.loadPopupData();
         }
         return personalBookModel;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 }

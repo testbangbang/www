@@ -94,6 +94,7 @@
     <string name="read_preference">Reading preference</string>
     <string name="gift_center">Gift center</string>
     <string name="log_out">Log out</string>
+    <string name="login_immediately">Login immediately</string>
     <string name="unsigned_in">Unsigned</string>
     <string name="phone_number_format_error">Phone number format is wrong</string>
     <string name="consumer_hotline">Phone: 400-XXX-XXXX</string>
@@ -112,7 +113,7 @@
     <string name="new_book">New Book</string>
     <string name="category">Category</string>
     <string name="back_to_top">Back to top</string>
-    <string name="view_all_books">View all the %1$s million books</string>
+    <string name="view_all_books">View All Books</string>
     <string name="search_view_hint">Please input what you want to search</string>
     <string name="book_detail_yuedou_price">%1$s Read Bean</string>
     <string name="book_detail_button_now_read">Now Read</string>
@@ -147,8 +148,6 @@
     <string name="book_detail_downloading">Downloading</string>
     <string name="book_detail_try_read">Try read the book</string>
     <string name="book_detail_download_add_shelf">Trying to read file has started to download and add a bookcase</string>
-    <string name="book_detail_go_shelf">Go book shelf</string>
-    <string name="book_detail_stay">Stay</string>
     <string name="book_detail_dialog_fluent">Smooth Reading immediately(the book supported)</string>
     <string name="book_detail_dialog_buy">Direct purchase</string>
     <string name="book_detail_dialog_add_cart">Add to cart, buy later</string>
@@ -257,9 +256,6 @@
     <string name="being_set_up">Being set up</string>
     <string name="loading_format">%s ...</string>
     <string name="add_to_smooth_list_failed">Add to smooth list failed</string>
-    <string name="all_category_title_publish">Publish</string>
-    <string name="all_category_title_boy">Boy</string>
-    <string name="all_category_title_girl">Girl</string>
     <string name="all_category">All Category</string>
     <string name="device_model_format">Model： %s</string>
     <string name="device_version_format">Version： %s</string>
@@ -348,6 +344,13 @@
     <string name="bind_to_email_failed">bind_to_email_failed</string>
     <string name="send_succeed">send_succeed</string>
     <string name="buy_book_success">Book purchase success </string>
+    <string name="buy_read_vip">Buy Read VIP</string>
+    <string name="not_open_vip">Not open to read VIP</string>
+    <string name="read_vip_instructions">Read VIP instructions</string>
+    <string name="ten">￥10.00</string>
+    <string name="thirty">￥30.00</string>
+    <string name="fifty">￥50.00</string>
+    <string name="ninety">￥90.00</string>
     <string name="lineation">Lineation</string>
     <string name="email_address_hint">Email address</string>
     <string name="email_address_wrong">Please input the correct email address</string>
@@ -355,5 +358,11 @@
     <string name="email_address_format">Email: %s</string>
     <string name="email_bound">Email bound</string>
     <string name="confirm_bind">Confirm bind</string>
+    <string name="total_search_result">Total search results(%d)</string>
     <string name="crash_tip">Are you sure you want to send an error report?</string>
+    <string name="missing_translation_tools">No translation found</string>
+    <string name="chinese">Chinese</string>
+    <string name="english">English</string>
+    <string name="input_language">Source language: %s</string>
+    <string name="target_language">Target language: %s</string>
 </resources>

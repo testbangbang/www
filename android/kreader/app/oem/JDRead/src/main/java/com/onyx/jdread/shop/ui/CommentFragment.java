@@ -53,8 +53,15 @@ public class CommentFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         bookCommentBinding = FragmentBookCommentBinding.inflate(inflater, container, false);
         initView();
+        initLibrary();
         initData();
         return bookCommentBinding.getRoot();
+    }
+
+    private void initLibrary() {
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
     }
 
     private void initData() {
@@ -105,7 +112,7 @@ public class CommentFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getEventBus().register(this);
+        initLibrary();
     }
 
     @Override
@@ -165,6 +172,12 @@ public class CommentFragment extends BaseFragment {
 
     @Subscribe
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
         hideLoadingDialog();
     }
 }

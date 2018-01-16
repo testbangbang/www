@@ -126,4 +126,8 @@ public class TimeUtils {
         long between = (timeEnd - timeFirst) / (1000 * 3600 * 24);
         return Integer.parseInt(String.valueOf(between));
     }
+
+    public static long getCurrentTimeInMillis() {
+        return System.currentTimeMillis();
+    }
 }

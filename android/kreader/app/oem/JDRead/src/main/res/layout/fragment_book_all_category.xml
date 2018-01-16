@@ -37,25 +37,20 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:onClick="@{()->categoryViewModel.onPublishClick()}"
+                android:onClick="@{()->categoryViewModel.onTitleOneClick()}"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/title_publisher"
+                <CheckedTextView
+                    android:id="@+id/title_one"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/selector_textview_shadow_background"
+                    android:checked="true"
                     android:gravity="center"
-                    android:text="@string/all_category_title_publish"
+                    android:paddingBottom="@dimen/all_category_title_shadow_padding_bottom"
+                    android:text="@{categoryViewModel.titleOne}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
-
-                <View
-                    android:id="@+id/title_publisher_shadow"
-                    android:layout_width="@dimen/all_category_title_shadow_margin_width"
-                    android:layout_height="@dimen/all_category_title_shadow_margin_height"
-                    android:layout_marginTop="@dimen/all_category_title_shadow_margin_top"
-                    android:background="@android:color/black"
-                    android:visibility="visible" />
 
             </LinearLayout>
 
@@ -64,25 +59,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:onClick="@{()->categoryViewModel.onBoyClick()}"
+                android:onClick="@{()->categoryViewModel.onTitleTwoClick()}"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/title_boy"
+                <CheckedTextView
+                    android:id="@+id/title_two"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/selector_textview_shadow_background"
                     android:gravity="center"
-                    android:text="@string/all_category_title_boy"
+                    android:paddingBottom="@dimen/all_category_title_shadow_padding_bottom"
+                    android:text="@{categoryViewModel.titleTwo}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
-
-                <View
-                    android:id="@+id/title_boy_shadow"
-                    android:layout_width="@dimen/all_category_title_shadow_margin_width"
-                    android:layout_height="@dimen/all_category_title_shadow_margin_height"
-                    android:layout_marginTop="@dimen/all_category_title_shadow_margin_top"
-                    android:background="@android:color/black"
-                    android:visibility="invisible" />
 
             </LinearLayout>
 
@@ -91,25 +80,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:onClick="@{()->categoryViewModel.onGirlClick()}"
+                android:onClick="@{()->categoryViewModel.onTitleThreeClick()}"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/title_girl"
+                <CheckedTextView
+                    android:id="@+id/title_three"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/selector_textview_shadow_background"
                     android:gravity="center"
-                    android:text="@string/all_category_title_girl"
+                    android:paddingBottom="@dimen/all_category_title_shadow_padding_bottom"
+                    android:text="@{categoryViewModel.titleThree}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
-
-                <View
-                    android:id="@+id/title_girl_shadow"
-                    android:layout_width="@dimen/all_category_title_shadow_margin_width"
-                    android:layout_height="@dimen/all_category_title_shadow_margin_height"
-                    android:layout_marginTop="@dimen/all_category_title_shadow_margin_top"
-                    android:background="@android:color/black"
-                    android:visibility="invisible" />
 
             </LinearLayout>
 
@@ -126,14 +109,17 @@
             android:layout_marginTop="@dimen/recycler_view_all_categorys_margin_top" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:layout_marginTop="@dimen/all_category_recycle_view_overlap_height"
             android:id="@+id/recycler_view_all_categorys"
-            categoryItems="@{categoryViewModel.bottomCategoryItems}"
+            categoryItems="@{categoryViewModel.allCategoryItems}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1" />
 
         <TextView
+            android:layout_marginTop="@dimen/recycle_view_indicator_margin_top"
+            android:layout_marginBottom="@dimen/all_category_recycle_view_overlap_height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"

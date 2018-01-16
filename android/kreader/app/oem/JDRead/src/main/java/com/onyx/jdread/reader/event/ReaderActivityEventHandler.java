@@ -12,7 +12,10 @@ import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
+import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
+import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
+import com.onyx.jdread.reader.menu.event.SearchContentEvent;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
@@ -139,7 +142,14 @@ public class ReaderActivityEventHandler {
         readerViewModel.getReaderDataHolder().setDocumentOpenState();
     }
 
-    public static void updateReaderViewInfo(ReaderBaseRequest request) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSearchContentEvent(SearchContentEvent event) {
+        EventBus.getDefault().post(new CloseReaderSettingMenuEvent());
+        ReadSearchDialog dialog = new ReadSearchDialog();
+        dialog.show(readerViewBack.getContext().getFragmentManager(), "");
+    }
+
+    public static void updateReaderViewInfo(ReaderBaseRequest request){
         UpdateReaderViewInfoEvent event = new UpdateReaderViewInfoEvent();
         event.setReaderViewInfo(request.getReaderViewInfo());
         EventBus.getDefault().post(event);

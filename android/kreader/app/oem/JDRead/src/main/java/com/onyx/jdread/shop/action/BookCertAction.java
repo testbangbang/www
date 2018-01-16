@@ -19,13 +19,13 @@ import com.onyx.jdread.shop.request.cloud.RxRequestBookCert;
 
 public class BookCertAction extends BaseAction {
 
-    private BookDetailResultBean.Detail bookDetailBean;
+    private BookDetailResultBean.DetailBean bookDetailBean;
 
-    public BookCertAction(BookDetailResultBean.Detail bookDetailBean) {
+    public BookCertAction(BookDetailResultBean.DetailBean bookDetailBean) {
         this.bookDetailBean = bookDetailBean;
     }
 
-    public BookDetailResultBean.Detail getBookDetailBean() {
+    public BookDetailResultBean.DetailBean getBookDetailBean() {
         return bookDetailBean;
     }
 
@@ -38,13 +38,13 @@ public class BookCertAction extends BaseAction {
         BaseRequestBean requestBean = new BaseRequestBean();
         requestBean.setAppBaseInfo(dataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.Cert.EBOOK_ID, bookDetailBean.getEbookId());
+        body.put(CloudApiContext.Cert.EBOOK_ID, bookDetailBean.ebook_id);
         body.put(CloudApiContext.Cert.DEVICE_MODEL, dataBundle.getAppBaseInfo().getBrand() +
                 dataBundle.getAppBaseInfo().getModel());
         body.put(CloudApiContext.Cert.UUID, DrmTools.hashDevicesInfo(JDReadApplication.getInstance()));
         body.put(CloudApiContext.Cert.HAS_RANDOM, Constants.RANDOW_VALUE);
         body.put(CloudApiContext.Cert.ORDER_TYPE, Constants.ORDER_TYPE);
-        body.put(CloudApiContext.Cert.ORDER_ID, bookDetailBean.isFluentRead() ? bookDetailBean.getEbookId() : bookDetailBean.getOrderId());
+        body.put(CloudApiContext.Cert.ORDER_ID, bookDetailBean.can_read ? bookDetailBean.ebook_id : bookDetailBean.order_id);
         body.put(CloudApiContext.Cert.HAS_CERT, Constants.HAS_CERT_VALUE);
         body.put(CloudApiContext.Cert.USER_ID, LoginHelper.getUserName());
         body.put(CloudApiContext.Cert.DEVICE_TYPE, Constants.DEVICE_TYPE_A);
@@ -55,8 +55,8 @@ public class BookCertAction extends BaseAction {
             public void onNext(RxRequestBookCert requestBookCert) {
                 CertBean certBean = requestBookCert.getCertBean();
                 if (certBean != null) {
-                    bookDetailBean.setKey(certBean.key);
-                    bookDetailBean.setRandom(certBean.random);
+                    bookDetailBean.key = certBean.key;
+                    bookDetailBean.random = certBean.random;
                 }
             }
         });

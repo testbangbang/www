@@ -82,4 +82,18 @@
         <item>@string/read_vip</item>
         <item>@string/self_import</item>
     </string-array>
+
+    <string-array name="VIP_for_days">
+        <item>@string/thirty_days</item>
+        <item>@string/ninety_days</item>
+        <item>@string/one_and_eighty_days</item>
+        <item>@string/year_days</item>
+    </string-array>
+
+    <string-array name="VIP_for_paid">
+        <item>@string/ten</item>
+        <item>@string/thirty</item>
+        <item>@string/fifty</item>
+        <item>@string/ninety</item>
+    </string-array>
 </resources>

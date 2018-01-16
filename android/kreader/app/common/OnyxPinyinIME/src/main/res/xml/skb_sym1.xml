@@ -29,23 +29,23 @@
       codes="8|9|10|11|12|13|14|15|16|7"/>
   </row>
 
-  <row>
+  <row start_pos_x="4.478%p">
     <keys splitter="|" labels="\@|#"/>
     <key label="￥">
       <toggle_state state_id="@string/toggle_en_sym1" label="$"/>
     </key>
-    <keys splitter="|" labels="%|&quot;|*"/>
+    <keys splitter="|" labels="%|*"/>
     <key label="—">
       <toggle_state state_id="@string/toggle_en_sym1" label="-"/>
     </key>
     <key label="、">
-      <toggle_state state_id="@string/toggle_en_sym1" label="/"/>
+      <toggle_state state_id="@string/toggle_en_sym1" label="“"/>
     </key>
     <keys splitter="|" labels="(|)"/>
   </row>
 
   <row width="10.205%p">
-    <key code="-5" width="14.286%p" key_type="1" label="More"/>
+    <key code="-5" width="14.286%p" key_type="1" label="符号"/>
     <key label="！">
       <toggle_state state_id="@string/toggle_en_sym1" label="!"/>
     </key>
@@ -72,8 +72,8 @@
 
   <row width="14.696%p" key_type="1">
     <key id="8" />
-    <key code="-2" label="中 符" width="15.307%p" repeat="true">
-      <toggle_state state_id="@string/toggle_en_sym1" label="英 符" code="-2"/>
+    <key code="-2" icon="@drawable/ic_kb_zh" width="15.307%p" repeat="true">
+      <toggle_state state_id="@string/toggle_en_sym1" icon="@drawable/ic_kb_en" code="-2"/>
     </key>
     <key code="-3" key_type="1" label="ABC" width="15.307%p"/>
     <key code="62" key_type="5" width="30.608%p"/>
