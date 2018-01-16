@@ -45,6 +45,10 @@ public class ReaderMediaManager {
         getMediaPlayer().setDataSource(url);
         getMediaPlayer().prepare();
         getMediaPlayer().start();
+        onStart();
+    }
+
+    public void onStart() {
         getEventBus().post(new MediaPlayStartEvent());
         getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
