@@ -22,7 +22,6 @@ public class SubjectViewModel extends BaseObservable {
     private BookModelConfigResultBean.DataBean.ModulesBean modelBean;
     private BookModelConfigResultBean.DataBean.ModulesBean modelBeanNext;
     private boolean showNextTitle;
-    private int index;
 
     public BookModelConfigResultBean.DataBean getDataBean() {
         return dataBean;

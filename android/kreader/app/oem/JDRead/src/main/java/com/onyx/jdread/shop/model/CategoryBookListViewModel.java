@@ -17,7 +17,7 @@ import java.util.List;
  * Created by jackdeng on 2017/12/11.
  */
 
-public class SubjectListViewModel extends BaseObservable {
+public class CategoryBookListViewModel extends BaseObservable {
 
     private EventBus eventBus;
     private TitleBarViewModel titleBarViewModel;
@@ -29,7 +29,7 @@ public class SubjectListViewModel extends BaseObservable {
     public final ObservableBoolean isFree =new ObservableBoolean();
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryItems;
 
-    public SubjectListViewModel(EventBus eventBus) {
+    public CategoryBookListViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
         titleBarViewModel = new TitleBarViewModel();
         titleBarViewModel.setEventBus(eventBus);

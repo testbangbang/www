@@ -27,8 +27,11 @@ import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryViewClick;
+import com.onyx.jdread.shop.event.EnjoyReadViewClick;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
+import com.onyx.jdread.shop.event.NewBookViewClick;
 import com.onyx.jdread.shop.event.RankViewClick;
+import com.onyx.jdread.shop.event.SaleViewClick;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
 import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
@@ -258,6 +261,27 @@ public class ShopFragment extends BaseFragment {
     public void onRankViewClick(RankViewClick event) {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookRankFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEnjoyReadViewClick(EnjoyReadViewClick event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookVIPReadFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSaleViewClick(SaleViewClick event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookSaleFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNewBookViewClick(NewBookViewClick event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookNewBooksFragment.class.getName());
         }
     }
 

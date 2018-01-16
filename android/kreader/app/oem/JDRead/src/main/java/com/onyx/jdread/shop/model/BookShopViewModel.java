@@ -4,8 +4,11 @@ import android.databinding.BaseObservable;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.CategoryViewClick;
+import com.onyx.jdread.shop.event.EnjoyReadViewClick;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
+import com.onyx.jdread.shop.event.NewBookViewClick;
 import com.onyx.jdread.shop.event.RankViewClick;
+import com.onyx.jdread.shop.event.SaleViewClick;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
 import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 
@@ -149,15 +152,15 @@ public class BookShopViewModel extends BaseObservable {
     }
 
     public void onEnjoyReadViewClick() {
-
+        getEventBus().post(new EnjoyReadViewClick());
     }
 
     public void onSaleViewClick() {
-
+        getEventBus().post(new SaleViewClick());
     }
 
     public void onNewBookViewClick() {
-
+        getEventBus().post(new NewBookViewClick());
     }
 
     public void onCategoryViewClick() {

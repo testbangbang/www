@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.onyx.jdread.shop.model.SubjectListViewModel" />
+            type="com.onyx.jdread.shop.model.CategoryBookListViewModel" />
 
     </data>
 

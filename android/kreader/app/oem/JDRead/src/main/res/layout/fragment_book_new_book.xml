@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="rankViewModel"
-            type="com.onyx.jdread.shop.model.RankViewModel" />
+            name="viewModel"
+            type="com.onyx.jdread.shop.model.NewBookViewModel" />
 
     </data>
 
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
             android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
-            bind:titleBarViewModel="@{rankViewModel.titleBarViewModel}" />
+            bind:titleBarViewModel="@{viewModel.titleBarViewModel}" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -32,8 +32,8 @@
             android:layout_marginTop="@dimen/book_detail_margin">
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/recycler_view_ranks"
-                subjectModels="@{rankViewModel.rankItems}"
+                android:id="@+id/recycler_view_new_book"
+                subjectModels="@{viewModel.subjectModels}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"

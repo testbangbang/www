@@ -66,7 +66,7 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
                 resultBean = request.getResultBean();
                 if (resultBean != null) {
                     if (resultBean.data != null)
-                    shopViewModel.getAllCategoryViewModel().getSubjectListViewModel().setBookList(resultBean.data.items);
+                    shopViewModel.getAllCategoryViewModel().getCategoryBookListViewModel().setBookList(resultBean.data.items);
                 }
 
                 if (rxCallback != null) {

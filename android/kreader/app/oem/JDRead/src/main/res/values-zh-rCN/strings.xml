@@ -2,7 +2,7 @@
     <string name="book_total" translatable="false">总计:%s</string>
     <string name="app_name">京东阅读</string>
     <string name="library_name">书架</string>
-    <string name="shop_name">书店</string>
+    <string name="shop_name">书城</string>
     <string name="back_name">返回</string>
     <string name="setting_name">设置</string>
     <string name="personal_name">我的</string>
@@ -335,4 +335,5 @@
     <string name="email_bound">电子邮箱已关联</string>
     <string name="confirm_bind">确认关联</string>
     <string name="crash_tip">确定发送错误报告吗?</string>
+    <string name="vip">会员</string>
 </resources>

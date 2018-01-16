@@ -3,7 +3,7 @@
     <string name="page_count" translatable="false">%1$d/%2$d</string>
     <string name="book_total" translatable="false">total %s</string>
     <string name="library_name">Library</string>
-    <string name="shop_name">Shopping</string>
+    <string name="shop_name">Bookstore</string>
     <string name="back_name">Back</string>
     <string name="setting_name">Setting</string>
     <string name="personal_name">Personal</string>
@@ -351,4 +351,5 @@
     <string name="email_bound">Email bound</string>
     <string name="confirm_bind">Confirm bind</string>
     <string name="crash_tip">Are you sure you want to send an error report?</string>
+    <string name="vip">VIP</string>
 </resources>

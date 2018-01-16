@@ -108,8 +108,8 @@ public class ShopDataBindingUtil {
         }
     }
 
-    @BindingAdapter({"rankItems"})
-    public static void setRankItems(PageRecyclerView recyclerView, List items) {
+    @BindingAdapter({"subjectModels"})
+    public static void setSubjectModels(PageRecyclerView recyclerView, List items) {
         BookRankAdapter adapter = (BookRankAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());

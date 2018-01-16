@@ -33,7 +33,10 @@ import com.onyx.jdread.setting.ui.SystemUpdateFragment;
 import com.onyx.jdread.setting.ui.WifiFragment;
 import com.onyx.jdread.shop.ui.AllCategoryFragment;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
+import com.onyx.jdread.shop.ui.BookNewBooksFragment;
 import com.onyx.jdread.shop.ui.BookRankFragment;
+import com.onyx.jdread.shop.ui.BookSaleFragment;
+import com.onyx.jdread.shop.ui.BookVIPReadFragment;
 import com.onyx.jdread.shop.ui.CommentFragment;
 import com.onyx.jdread.shop.ui.ShopCartFragment;
 import com.onyx.jdread.shop.ui.ShopFragment;
@@ -67,6 +70,9 @@ public class ViewConfig {
         childViewInfo.put(BookRankFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(ShopCartFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(ViewAllBooksFragment.class.getName(), FunctionModule.SHOP);
+        childViewInfo.put(BookVIPReadFragment.class.getName(), FunctionModule.SHOP);
+        childViewInfo.put(BookSaleFragment.class.getName(), FunctionModule.SHOP);
+        childViewInfo.put(BookNewBooksFragment.class.getName(), FunctionModule.SHOP);
         //setting
         childViewInfo.put(SettingFragment.class.getName(), FunctionModule.SETTING);
         childViewInfo.put(DeviceConfigFragment.class.getName(),FunctionModule.SETTING);

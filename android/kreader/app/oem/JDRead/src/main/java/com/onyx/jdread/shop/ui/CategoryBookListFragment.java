@@ -34,7 +34,7 @@ import com.onyx.jdread.shop.event.TopRightTitle3Event;
 import com.onyx.jdread.shop.model.AllCategoryViewModel;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.model.SubjectListViewModel;
+import com.onyx.jdread.shop.model.CategoryBookListViewModel;
 import com.onyx.jdread.shop.model.TitleBarViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -85,11 +85,11 @@ public class CategoryBookListFragment extends BaseFragment {
         catTwoId = PreferenceManager.getIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
         currentCatName = PreferenceManager.getStringValue(getContextJD(), Constants.SP_KEY_CATEGORY_NAME, "");
         typeFree = PreferenceManager.getBooleanValue(getContextJD(), Constants.SP_KEY_CATEGORY_ISFREE, false);
-        getSubjectListViewModel().getTitleBarViewModel().leftText = currentCatName;
-        getSubjectListViewModel().getTitleBarViewModel().showRightText2 = true;
-        getSubjectListViewModel().getTitleBarViewModel().showRightText3 = true;
-        getSubjectListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_all);
-        getSubjectListViewModel().getTitleBarViewModel().rightText3 = getString(R.string.subject_list_sort_type_hot);
+        getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
+        getCategoryBookListViewModel().getTitleBarViewModel().showRightText2 = true;
+        getCategoryBookListViewModel().getTitleBarViewModel().showRightText3 = true;
+        getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_all);
+        getCategoryBookListViewModel().getTitleBarViewModel().rightText3 = getString(R.string.subject_list_sort_type_hot);
         setSortButtonIsOpen(false);
         setAllCatIsOpen(false);
         setRightText2Icon();
@@ -99,7 +99,7 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private String getFinalCatId() {
-        return  catOneId + "_" + catTwoId;
+        return catOneId + "_" + catTwoId;
     }
 
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType) {
@@ -115,8 +115,8 @@ public class CategoryBookListFragment extends BaseFragment {
 
     private void setCategoryV2Data() {
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
-        getSubjectListViewModel().setCategoryItems(allCategoryItems);
-        getSubjectListViewModel().isFree.set(typeFree);
+        getCategoryBookListViewModel().setCategoryItems(allCategoryItems);
+        getCategoryBookListViewModel().isFree.set(typeFree);
     }
 
     private void setBooksData() {
@@ -140,9 +140,9 @@ public class CategoryBookListFragment extends BaseFragment {
                 }
             }
         });
-        categoryBookListBinding.setViewModel(getSubjectListViewModel());
+        categoryBookListBinding.setViewModel(getCategoryBookListViewModel());
         CategorySubjectAdapter categorySubjectAdapter = new CategorySubjectAdapter(getEventBus(), true);
-        categorySubjectAdapter.setRowAndCol(catRow,catCol);
+        categorySubjectAdapter.setRowAndCol(catRow, catCol);
         PageRecyclerView recyclerViewCategoryList = categoryBookListBinding.recyclerViewCategoryList;
         recyclerViewCategoryList.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewCategoryList.setAdapter(categorySubjectAdapter);
@@ -151,11 +151,11 @@ public class CategoryBookListFragment extends BaseFragment {
 
     private void initPageIndicator() {
         int size = 0;
-        if (getSubjectListViewModel().getBookList() != null) {
-            size = getSubjectListViewModel().getBookList().size();
+        if (getCategoryBookListViewModel().getBookList() != null) {
+            size = getCategoryBookListViewModel().getBookList().size();
         }
         paginator.resize(row, col, size);
-        getSubjectListViewModel().setTotalPage(paginator.pages());
+        getCategoryBookListViewModel().setTotalPage(paginator.pages());
         setCurrentPage(paginator.getCurrentPage());
     }
 
@@ -168,7 +168,7 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void setCurrentPage(int currentPage) {
-        getSubjectListViewModel().setCurrentPage(currentPage + Constants.PAGE_STEP);
+        getCategoryBookListViewModel().setCurrentPage(currentPage + Constants.PAGE_STEP);
     }
 
     private ShopDataBundle getShopDataBundle() {
@@ -183,12 +183,12 @@ public class CategoryBookListFragment extends BaseFragment {
         return getShopViewModel().getAllCategoryViewModel();
     }
 
-    private SubjectListViewModel getSubjectListViewModel() {
-        return getAllCategoryViewModel().getSubjectListViewModel();
+    private CategoryBookListViewModel getCategoryBookListViewModel() {
+        return getAllCategoryViewModel().getCategoryBookListViewModel();
     }
 
     private TitleBarViewModel getTitleBarViewModel() {
-        return getSubjectListViewModel().getTitleBarViewModel();
+        return getCategoryBookListViewModel().getTitleBarViewModel();
     }
 
     private EventBus getEventBus() {
@@ -233,7 +233,7 @@ public class CategoryBookListFragment extends BaseFragment {
         this.currentCatName = categoryBean.name;
         this.currentPage = 1;
         this.sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
-        getSubjectListViewModel().getTitleBarViewModel().leftText = currentCatName;
+        getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
         showOrCloseAllCatButton();
     }
@@ -244,10 +244,10 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void showOrCloseAllCatButton() {
-        if (getSubjectListViewModel().sortButtonIsOpen.get()) {
+        if (getCategoryBookListViewModel().sortButtonIsOpen.get()) {
             showOrCloseSortButton();
         }
-        boolean allCatIsOpen = getSubjectListViewModel().allCatIsOpen.get();
+        boolean allCatIsOpen = getCategoryBookListViewModel().allCatIsOpen.get();
         setAllCatIsOpen(!allCatIsOpen);
         setRightText2Icon();
     }
@@ -258,28 +258,28 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void showOrCloseSortButton() {
-        if (getSubjectListViewModel().allCatIsOpen.get()) {
+        if (getCategoryBookListViewModel().allCatIsOpen.get()) {
             showOrCloseAllCatButton();
         }
-        boolean sortButtonIsOpen = getSubjectListViewModel().sortButtonIsOpen.get();
+        boolean sortButtonIsOpen = getCategoryBookListViewModel().sortButtonIsOpen.get();
         setSortButtonIsOpen(!sortButtonIsOpen);
         setRightText3Icon();
     }
 
     private void setAllCatIsOpen(boolean allCatIsOpen) {
-        getSubjectListViewModel().allCatIsOpen.set(allCatIsOpen);
+        getCategoryBookListViewModel().allCatIsOpen.set(allCatIsOpen);
     }
 
     private void setSortButtonIsOpen(boolean sortButtonIsOpen) {
-        getSubjectListViewModel().sortButtonIsOpen.set(sortButtonIsOpen);
+        getCategoryBookListViewModel().sortButtonIsOpen.set(sortButtonIsOpen);
     }
 
     private void setRightText2Icon() {
-        getTitleBarViewModel().rightText2IconId.set(getSubjectListViewModel().allCatIsOpen.get() ? R.mipmap.ic_up : R.mipmap.ic_down);
+        getTitleBarViewModel().rightText2IconId.set(getCategoryBookListViewModel().allCatIsOpen.get() ? R.mipmap.ic_up : R.mipmap.ic_down);
     }
 
     private void setRightText3Icon() {
-        getTitleBarViewModel().rightText3IconId.set(getSubjectListViewModel().sortButtonIsOpen.get() ? R.mipmap.ic_up : R.mipmap.ic_down);
+        getTitleBarViewModel().rightText3IconId.set(getCategoryBookListViewModel().sortButtonIsOpen.get() ? R.mipmap.ic_up : R.mipmap.ic_down);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
