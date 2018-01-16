@@ -18,12 +18,14 @@ import com.onyx.android.sdk.ui.data.MenuClickEvent;
 import com.onyx.android.sdk.ui.data.MenuItem;
 import com.onyx.android.sdk.ui.data.MenuManager;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
+import com.onyx.android.sdk.utils.DeviceInfoUtil;
 import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.kreader.BR;
 import com.onyx.kreader.R;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.request.PauseDrawingRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
@@ -45,13 +47,14 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private ReaderMenuAction parentAction;
     private MenuManager sideMenu;
     private ReaderDataHolder readerDataHolder;
-    private View dividerLine;
+    private View dividerLine, readerStatusBar;
     private ShowScribbleMenuAction.ActionCallback actionCallback;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
 
-    public ShowSideScribbleMenuAction(ViewGroup parent, ShowScribbleMenuAction.ActionCallback actionCallback) {
+    public ShowSideScribbleMenuAction(ViewGroup parent,View readerStatusBar ,ShowScribbleMenuAction.ActionCallback actionCallback) {
         this.parent = parent;
         this.actionCallback = actionCallback;
+        this.readerStatusBar = readerStatusBar;
     }
 
     @Override
@@ -77,6 +80,17 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         updateSideNotePositionText(readerDataHolder);
         addDividerLine(parent);
         onMenuViewSizeChange(parent);
+        updateMenuHeight(true);
+    }
+
+    private void updateMenuHeight(boolean isShow){
+        if (SingletonSharedPreference.isReaderStatusBarEnabled(parent.getContext())){
+            ViewGroup.LayoutParams params = parent.getLayoutParams();
+            params.height = isShow ? DeviceInfoUtil.getScreenResolution(parent.getContext()).y - readerStatusBar.getHeight() -
+                    (int) (4 * parent.getContext().getResources().getDisplayMetrics().density)
+                    : ViewGroup.LayoutParams.MATCH_PARENT;
+            parent.setLayoutParams(params);
+        }
     }
 
     private void onMenuViewSizeChange(ViewGroup parent) {
@@ -94,8 +108,9 @@ public class ShowSideScribbleMenuAction extends BaseAction {
 
     private void addDividerLine(ViewGroup parent) {
         dividerLine = new View(parent.getContext());
-        dividerLine.setBackgroundColor(Color.BLACK);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int) parent.getContext().getResources().getDimension(R.dimen.divider_line_size),
+        dividerLine.setBackgroundColor(Color.GRAY);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int)
+                parent.getContext().getResources().getDimension(R.dimen.divider_line_size),
                 ViewGroup.LayoutParams.MATCH_PARENT);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
         parent.addView(dividerLine, lp);
@@ -278,6 +293,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         parent.removeView(dividerLine);
         readerDataHolder.getEventBus().unregister(this);
         readerDataHolder.resetHandlerManager();
+        updateMenuHeight(false);
     }
 
     private void closeSubMenu(final ViewGroup parent) {
