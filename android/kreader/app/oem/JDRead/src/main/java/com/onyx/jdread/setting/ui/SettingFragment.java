@@ -11,8 +11,10 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.SettingBinding;
+import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.setting.adapter.SettingAdapter;
 import com.onyx.jdread.setting.event.FeedbackEvent;
 import com.onyx.jdread.setting.event.IntensityEvent;
@@ -23,6 +25,7 @@ import com.onyx.jdread.setting.event.ToDeviceConfigEvent;
 import com.onyx.jdread.setting.event.WireLessEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingDataModel;
+import com.onyx.jdread.util.TimeUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -35,6 +38,8 @@ public class SettingFragment extends BaseFragment {
     private SettingBinding binding;
     private SettingAdapter settingAdapter;
     private SettingDataModel settingDataModel;
+    private long lastPressTime;
+    private long resetPressCount;
 
     @Nullable
     @Override
@@ -42,6 +47,7 @@ public class SettingFragment extends BaseFragment {
         binding = (SettingBinding) DataBindingUtil.inflate(inflater, R.layout.fragment_setting, container, false);
         initView();
         initData();
+        initListener();
         return binding.getRoot();
     }
 
@@ -72,6 +78,39 @@ public class SettingFragment extends BaseFragment {
         binding.settingRecycler.addItemDecoration(dividerItemDecoration);
         settingAdapter = new SettingAdapter(SettingBundle.getInstance().getEventBus());
         binding.settingRecycler.setAdapter(settingAdapter);
+    }
+
+    private void initListener() {
+        binding.settingStartTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startOrRemoveTest(Constants.START_PRODUCTION_TEST_PRESS_COUNT);
+            }
+        });
+
+        binding.settingRemoveTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startOrRemoveTest(Constants.REMOVE_PRODUCTION_TEST_PRESS_COUNT);
+            }
+        });
+    }
+
+    private void startOrRemoveTest(int count) {
+        if (TimeUtils.getCurrentTimeInLong() > lastPressTime + Constants.RESET_PRESS_TIMEOUT) {
+            lastPressTime = TimeUtils.getCurrentTimeInLong();
+            resetPressCount = 0;
+        }
+        resetPressCount++;
+        if (resetPressCount >= count) {
+            resetPressCount = 0;
+            lastPressTime = 0;
+            if (count == Constants.START_PRODUCTION_TEST_PRESS_COUNT) {
+                ManagerActivityUtils.startProductionTest(getContext());
+            } else {
+                // TODO: 2018/1/15 invoke remove method
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

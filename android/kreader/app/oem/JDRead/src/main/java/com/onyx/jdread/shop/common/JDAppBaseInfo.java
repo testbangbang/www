@@ -8,7 +8,10 @@ import com.onyx.jdread.main.common.AppInformationUtils;
 import com.onyx.jdread.main.common.Constants;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,6 +85,7 @@ public class JDAppBaseInfo {
         enc = ENC_DEFAULT_VALUE;
         nt = NET_DEFAULT_VALUE;
         sp = SP_DEFAULT_VALUE;
+        time = String.valueOf(System.currentTimeMillis());
         requestParamsMap = new HashMap<>();
         requestParamsMap.put(BUILD_KEY, build);
         requestParamsMap.put(OS_VERSION_KEY, osVersion);
@@ -95,8 +99,8 @@ public class JDAppBaseInfo {
         requestParamsMap.put(BRAND_KEY, brand);
         requestParamsMap.put(SCREEN_KEY, screen);
         requestParamsMap.put(IP_KEY, ip);
+        requestParamsMap.put(TIME_KEY,time);
         requestParamsMap.put(APP_KEY, app);
-        requestParamsMap.put(ENC_KEY, enc);
         requestParamsMap.put(NET_KEY, nt);
         requestParamsMap.put(SP_KEY, sp);
     }
@@ -153,11 +157,6 @@ public class JDAppBaseInfo {
         return time;
     }
 
-    public void setTime() {
-        this.time = String.valueOf(System.currentTimeMillis());
-        requestParamsMap.put(TIME_KEY,time);
-    }
-
     public String getTid() {
         return tid;
     }
@@ -183,5 +182,34 @@ public class JDAppBaseInfo {
     public void setSign(String sign) {
         requestParamsMap.put(SIGN_KEY,sign);
         this.sign = sign;
+    }
+
+    public void addApp() {
+        requestParamsMap.put(APP_KEY, app);
+    }
+
+    public void removeApp() {
+        requestParamsMap.remove(APP_KEY);
+    }
+
+    public void setEnc() {
+        requestParamsMap.put(ENC_KEY, enc);
+    }
+
+    public void removeEnc() {
+        requestParamsMap.remove(ENC_KEY);
+    }
+
+    public String getRequestParams() {
+        List<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>(requestParamsMap.entrySet());
+        Collections.sort(list, new RequestKeyComparator());
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < list.size(); i++) {
+            Map.Entry<String, String> stringStringEntry = list.get(i);
+            String s = stringStringEntry.toString();
+            sb.append(s + "&");
+        }
+        String queryString = sb.deleteCharAt(sb.length() - 1).toString();
+        return queryString;
     }
 }

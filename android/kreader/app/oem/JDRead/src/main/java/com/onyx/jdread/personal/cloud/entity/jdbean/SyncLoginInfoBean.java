@@ -5,13 +5,14 @@ package com.onyx.jdread.personal.cloud.entity.jdbean;
  */
 
 public class SyncLoginInfoBean {
-    private String code;
+    public String result_code;
+    public String message;
 
     public String getCode() {
-        return code;
+        return result_code;
     }
 
     public void setCode(String code) {
-        this.code = code;
+        this.result_code = code;
     }
 }

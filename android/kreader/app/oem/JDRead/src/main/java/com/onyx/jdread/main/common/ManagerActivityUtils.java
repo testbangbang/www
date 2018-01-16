@@ -3,6 +3,7 @@ package com.onyx.jdread.main.common;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.LockScreenActivity;
@@ -45,6 +46,14 @@ public class ManagerActivityUtils {
 
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startProductionTest(Context context) {
+        Intent intent = new Intent();
+        String packageName = "com.onyx.android.production.test";
+        String className = "com.onyx.android.productiontest.activity.ProductionTestMainActivity";
+        intent.setClassName(packageName, className);
         context.startActivity(intent);
     }
 }

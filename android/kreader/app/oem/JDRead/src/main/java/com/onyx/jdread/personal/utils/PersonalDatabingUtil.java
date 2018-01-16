@@ -36,7 +36,7 @@ public class PersonalDatabingUtil {
     @BindingAdapter({"personalImage"})
     public static void setImageUrl(ImageView view, String url) {
         if (view != null) {
-            ManageImageCache.loadUrl(url, view, R.drawable.book_default_cover);
+            ManageImageCache.loadUrl(url, view, R.mipmap.ic_me);
         }
     }
 }

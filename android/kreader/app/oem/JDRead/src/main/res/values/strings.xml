@@ -94,6 +94,7 @@
     <string name="read_preference">Reading preference</string>
     <string name="gift_center">Gift center</string>
     <string name="log_out">Log out</string>
+    <string name="login_immediately">Login immediately</string>
     <string name="unsigned_in">Unsigned</string>
     <string name="phone_number_format_error">Phone number format is wrong</string>
     <string name="consumer_hotline">Phone: 400-XXX-XXXX</string>
@@ -343,6 +344,13 @@
     <string name="bind_to_email_failed">bind_to_email_failed</string>
     <string name="send_succeed">send_succeed</string>
     <string name="buy_book_success">Book purchase success </string>
+    <string name="buy_read_vip">Buy Read VIP</string>
+    <string name="not_open_vip">Not open to read VIP</string>
+    <string name="read_vip_instructions">Read VIP instructions</string>
+    <string name="ten">￥10.00</string>
+    <string name="thirty">￥30.00</string>
+    <string name="fifty">￥50.00</string>
+    <string name="ninety">￥90.00</string>
     <string name="lineation">Lineation</string>
     <string name="email_address_hint">Email address</string>
     <string name="email_address_wrong">Please input the correct email address</string>
@@ -350,6 +358,12 @@
     <string name="email_address_format">Email: %s</string>
     <string name="email_bound">Email bound</string>
     <string name="confirm_bind">Confirm bind</string>
+    <string name="total_search_result">Total search results(%d)</string>
     <string name="crash_tip">Are you sure you want to send an error report?</string>
+    <string name="missing_translation_tools">No translation found</string>
+    <string name="chinese">Chinese</string>
+    <string name="english">English</string>
+    <string name="input_language">Source language: %s</string>
+    <string name="target_language">Target language: %s</string>
     <string name="vip">VIP</string>
 </resources>
