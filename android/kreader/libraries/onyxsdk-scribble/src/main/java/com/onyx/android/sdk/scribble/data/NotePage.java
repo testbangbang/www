@@ -241,22 +241,22 @@ public class NotePage {
             return shapes;
         }
 
-        Map<String, Shape> hitShapes = new HashMap<>();
+        ArrayList<Shape> hitShapes = new ArrayList<>();
         for(Shape shape : shapeList) {
             if (!shape.isFreePosition()) {
                 continue;
             }
             for(TouchPoint touchPoint : touchPointList.getPoints()) {
                 if (shape.fastHitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
-                    hitShapes.put(shape.getShapeUniqueId(), shape);
+                    hitShapes.add(shape);
                     break;
                 }
             }
         }
 
-        for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            if (hitTestAndRemoveShape(entry, touchPointList, radius)) {
-                shapes.add(entry.getValue());
+        for(Shape shape : hitShapes) {
+            if (hitTestAndRemoveShape(shape, touchPointList, radius)) {
+                shapes.add(shape);
             }
         }
 
@@ -313,10 +313,10 @@ public class NotePage {
         return resultList;
     }
 
-    private boolean hitTestAndRemoveShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
+    private boolean hitTestAndRemoveShape(Shape shape, final TouchPointList touchPointList, final float radius) {
         for(TouchPoint touchPoint : touchPointList.getPoints()) {
-            if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
-                removeShape(entry.getValue(), true);
+            if (shape.hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                removeShape(shape, true);
                 return true;
             }
         }
