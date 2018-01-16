@@ -1,9 +1,11 @@
 package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxRequestSyncLoginInfo;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
 /**
@@ -15,9 +17,11 @@ public class UserSyncLoginInfoAction extends BaseAction {
 
     @Override
     public void execute(PersonalDataBundle dataBundle, final RxCallback rxCallback) {
-        JDAppBaseInfo requestBean = new JDAppBaseInfo();
+        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
         final RxRequestSyncLoginInfo rq = new RxRequestSyncLoginInfo();
-        rq.setRequestBean(requestBean);
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.SYNC_INFO);
+        baseInfo.setSign(signValue);
+        rq.setRequestBean(baseInfo);
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
