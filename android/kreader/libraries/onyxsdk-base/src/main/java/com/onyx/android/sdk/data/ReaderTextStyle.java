@@ -218,6 +218,12 @@ public class ReaderTextStyle {
     static public Percentage LARGE_LINE_SPACING = new Percentage(150);
     static public Percentage DEFAULT_LINE_SPACING = NORMAL_LINE_SPACING;
 
+    static public Percentage PARAGRAPH_SPACING_STEP = new Percentage(10);
+    static public Percentage SMALL_PARAGRAPH_SPACING = new Percentage(10);
+    static public Percentage NORMAL_PARAGRAPH_SPACING = new Percentage(30);
+    static public Percentage LARGE_PARAGRAPH_SPACING = new Percentage(70);
+    static public Percentage DEFAULT_PARAGRAPH_SPACING = NORMAL_PARAGRAPH_SPACING;
+
     static private int MARGIN_STEP = 1;
     static private int SMALL_MARGIN = 1;
     static private int NORMAL_MARGIN = 10;
@@ -241,6 +247,7 @@ public class ReaderTextStyle {
     private Alignment alignment = DEFAULT_ALIGNMENT;
     private CharacterIndent indent = DEFAULT_CHARACTER_INDENT;
     private Percentage lineSpacing = DEFAULT_LINE_SPACING;
+    private Percentage paragraphSpacing = DEFAULT_PARAGRAPH_SPACING;
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
 
     public static float limitFontSize(float newSize) {
@@ -305,6 +312,7 @@ public class ReaderTextStyle {
     }
 
     public static ReaderTextStyle create(String fontface, SPUnit fontSize, Percentage lineSpacing,
+                                         Percentage paragraphSpacing,
                                          CharacterIndent indent,
                                          Percentage leftMargin, Percentage topMargin,
                                          Percentage rightMargin, Percentage bottomMargin) {
@@ -312,6 +320,7 @@ public class ReaderTextStyle {
         style.fontFace = fontface;
         style.fontSize = fontSize;
         style.lineSpacing = lineSpacing;
+        style.paragraphSpacing = paragraphSpacing;
         style.indent = indent;
         style.pageMargin.setLeftMargin(leftMargin);
         style.pageMargin.setTopMargin(topMargin);
@@ -330,6 +339,7 @@ public class ReaderTextStyle {
         copy.alignment = style.alignment;
         copy.indent = CharacterIndent.create(style.indent.getIndent());
         copy.lineSpacing = Percentage.create(style.lineSpacing.getPercent());
+        copy.paragraphSpacing = Percentage.create(style.paragraphSpacing.getPercent());
         copy.pageMargin = PageMargin.copy(style.pageMargin);
         return copy;
     }
@@ -392,6 +402,14 @@ public class ReaderTextStyle {
 
     public void setLineSpacing(Percentage lineSpacing) {
         this.lineSpacing = lineSpacing;
+    }
+
+    public Percentage getParagraphSpacing() {
+        return paragraphSpacing;
+    }
+
+    public void setParagraphSpacing(Percentage paragraphSpacing) {
+        this.paragraphSpacing = paragraphSpacing;
     }
 
     public PageMargin getPageMargin() {
