@@ -23,9 +23,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLibraryBinding;
-import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.library.action.LibraryDeleteAction;
 import com.onyx.jdread.library.action.LibraryMoveToAction;
 import com.onyx.jdread.library.action.LibraryRenameAction;
@@ -49,6 +47,8 @@ import com.onyx.jdread.library.model.LibraryViewDataModel;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.library.view.SingleItemManageDialog;
+import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
 
@@ -200,10 +200,13 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void nextPage() {
+        QueryArgs queryArgs;
         if (!pagination.nextPage()) {
-            return;
+            queryArgs = dataBundle.getLibraryViewDataModel().firstPage();
+        } else {
+            queryArgs = dataBundle.getLibraryViewDataModel().nextPage();
         }
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().nextPage(), false);
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(queryArgs, false);
         loadAction.setLoadFromCache(true);
         loadAction.execute(dataBundle, new RxCallback() {
             @Override
@@ -217,7 +220,7 @@ public class LibraryFragment extends BaseFragment {
     private void preloadNext() {
         int preLoadPage = pagination.getCurrentPage() + 1;
         if (preLoadPage >= pagination.pages()) {
-            return;
+            preLoadPage = 0;
         }
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
         loadAction.setLoadMetadata(isLoadMetadata());
@@ -229,10 +232,13 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void prevPage() {
+        QueryArgs queryArgs;
         if (!pagination.prevPage()) {
-            return;
+            queryArgs = dataBundle.getLibraryViewDataModel().lastPage();
+        } else {
+            queryArgs = dataBundle.getLibraryViewDataModel().prevPage();
         }
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().prevPage(), false);
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(queryArgs, false);
         loadAction.setLoadFromCache(true);
         loadAction.setLoadMetadata(isLoadMetadata());
         loadAction.execute(dataBundle, new RxCallback() {
@@ -247,7 +253,7 @@ public class LibraryFragment extends BaseFragment {
     private void preloadPrev() {
         int preLoadPage = pagination.getCurrentPage() - 1;
         if (preLoadPage < 0) {
-            return;
+            preLoadPage = pagination.lastPage();
         }
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
         loadAction.setLoadMetadata(isLoadMetadata());
@@ -327,8 +333,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void refreshData() {
-        pagination.setCurrentPage(0);
-        loadData(libraryBuildQueryArgs(), false);
+        loadData(dataBundle.getLibraryViewDataModel().lastPage(), false);
     }
 
     @Subscribe
@@ -407,8 +412,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onModifyLibraryDataEvent(ModifyLibraryDataEvent event) {
         dataBundle.getLibraryViewDataModel().libraryPathList.clear();
-        pagination.setCurrentPage(0);
-        loadData(libraryBuildQueryArgs(), false);
+        loadData(dataBundle.getLibraryViewDataModel().lastPage(), false);
     }
 
     @Subscribe

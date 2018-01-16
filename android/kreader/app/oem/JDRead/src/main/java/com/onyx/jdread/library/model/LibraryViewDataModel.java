@@ -178,7 +178,7 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public QueryArgs libraryQuery() {
-        return libraryQuery(queryArgs.limit, 0);
+        return libraryQuery(queryArgs.limit, queryArgs.offset);
     }
 
     public QueryArgs getCurrentQueryArgs() {
