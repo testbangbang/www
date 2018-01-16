@@ -27,11 +27,14 @@ public class ShowExpiredDialogAction extends BaseAction {
     @Override
     public void execute(Context context, BaseCallback baseCallback) {
         eventBus.post(new StopNoteEvent(false));
-        OnyxCustomDialog.getConfirmDialog(context, context.getString(R.string.end_time_tips), false, new DialogInterface.OnClickListener() {
+        OnyxCustomDialog.getConfirmDialog(context, context.getString(R.string.end_time_tips),
+                false,
+                null,
+                null).addOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onDismiss(DialogInterface dialog) {
                 eventBus.post(new ReloadQuestionViewEvent());
             }
-        }, null).show();
+        }).show();
     }
 }
