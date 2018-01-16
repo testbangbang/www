@@ -103,7 +103,7 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
 
     @Subscribe
     public void onDictionaryToolsEvent(DictionaryToolsEvent event) {
-
+        viewEventCallBack.gotoView(DictionaryFragment.class.getName());
     }
 
     @Override

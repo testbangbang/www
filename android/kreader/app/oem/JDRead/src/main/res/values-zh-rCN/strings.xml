@@ -349,4 +349,5 @@
     <string name="english">英文</string>
     <string name="input_language">源语言:%s</string>
     <string name="target_language">目标语言:%s</string>
+    <string name="installed">已安装</string>
 </resources>
