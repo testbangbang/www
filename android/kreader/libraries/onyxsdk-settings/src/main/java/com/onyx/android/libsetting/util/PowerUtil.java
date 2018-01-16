@@ -57,14 +57,13 @@ public class PowerUtil {
 
     public static String getCurrentTimeoutValue(Context context,
                                                 @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory) {
-        return Integer.toString(Settings.System.getInt(
-                context.getContentResolver(), getTimeoutDataKeyByCategory(context, timeoutCategory), -1));
+        return Integer.toString(getCurrentTimeoutIntValue(context, timeoutCategory));
     }
 
     public static int getCurrentTimeoutIntValue(Context context,
                                                 @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int timeoutCategory) {
-        return Settings.System.getInt(
-                context.getContentResolver(), getTimeoutDataKeyByCategory(context, timeoutCategory), -1);
+        return SystemSettingUtil.getSystemConfigIntegerValue(context,
+                getTimeoutDataKeyByCategory(context, timeoutCategory), -1);
     }
 
     private static String getTimeoutDataKeyByCategory(Context context,
