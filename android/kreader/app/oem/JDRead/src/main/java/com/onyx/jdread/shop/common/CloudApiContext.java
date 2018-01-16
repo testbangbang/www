@@ -31,6 +31,7 @@ public class CloudApiContext {
 
     public static class User {
         public static final String SYNC_INFO = "user/sync";
+        public static final String GET_USER_INFO = "user";
     }
 
     public static class NewBookDetail {

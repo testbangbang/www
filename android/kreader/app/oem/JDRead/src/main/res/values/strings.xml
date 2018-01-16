@@ -76,7 +76,8 @@
     <string name="laboratory">Laboratory</string>
     <string name="quick_back_button">Quick back button</string>
     <string name="quick_back_button_explanation">Put in the middle of the menu below,Easy one-handed operation to quickly return to the previous step,Long press can also be closed</string>
-    <string name="on">on</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
     <string name="file_does_not_exist">File does not exist</string>
     <string name="file_format_error">Book format error</string>
     <string name="document_path_error">Book path error</string>
@@ -365,4 +366,5 @@
     <string name="english">English</string>
     <string name="input_language">Source language: %s</string>
     <string name="target_language">Target language: %s</string>
+    <string name="input_number_for_contact">Please enter your mobile phone number so that the staff can contact you.</string>
 </resources>
