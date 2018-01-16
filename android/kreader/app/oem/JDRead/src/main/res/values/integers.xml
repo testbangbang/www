@@ -103,4 +103,6 @@
     <integer name="book_info_dialog_catalog_row">12</integer>
     <integer name="book_info_dialog_note_row">4</integer>
     <integer name="dialog_associated_width">600</integer>
+    <integer name="reader_cross_screen_touch_region_min_width">60</integer>
+    <integer name="reader_cross_screen_touch_region_min_height">60</integer>
 </resources>

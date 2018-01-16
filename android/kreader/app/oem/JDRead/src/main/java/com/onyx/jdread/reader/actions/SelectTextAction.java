@@ -9,10 +9,10 @@ import com.onyx.jdread.reader.request.SelectRequest;
 /**
  * Created by huxiaomao on 2016/6/3.
  */
-public class SelectWordAction extends BaseReaderAction {
+public class SelectTextAction extends BaseReaderAction {
     private SelectWordInfo selectWordInfo;
 
-    public SelectWordAction(SelectWordInfo selectWordInfo) {
+    public SelectTextAction(SelectWordInfo selectWordInfo) {
         this.selectWordInfo = selectWordInfo;
     }
 
@@ -23,7 +23,7 @@ public class SelectWordAction extends BaseReaderAction {
                 selectWordInfo.startPoint,
                 selectWordInfo.endPoint,
                 selectWordInfo.touchPoint,
-                ReaderHitTestOptionsImpl.create(true));
+                ReaderHitTestOptionsImpl.create(false));
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

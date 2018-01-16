@@ -15,7 +15,7 @@ import com.onyx.jdread.reader.layout.LayoutProviderUtils;
  * Created by huxiaomao on 2018/1/10.
  */
 
-public class SelectWordRequest extends ReaderBaseRequest {
+public class SelectRequest extends ReaderBaseRequest {
     private PointF start = new PointF();
     private PointF end = new PointF();
     private PointF touchPoint = new PointF();
@@ -24,7 +24,7 @@ public class SelectWordRequest extends ReaderBaseRequest {
     private ReaderHitTestOptions hitTestOptions;
     private ReaderDataHolder readerDataHolder;
 
-    public SelectWordRequest(ReaderDataHolder readerDataHolder, final String pagePosition, final PointF startPoint, final PointF endPoint, final PointF touchPoint, final ReaderHitTestOptions hitTestOptions) {
+    public SelectRequest(ReaderDataHolder readerDataHolder, final String pagePosition, final PointF startPoint, final PointF endPoint, final PointF touchPoint, final ReaderHitTestOptions hitTestOptions) {
         start.set(startPoint.x, startPoint.y);
         end.set(endPoint.x, endPoint.y);
         this.touchPoint.set(touchPoint.x, touchPoint.y);
@@ -42,7 +42,7 @@ public class SelectWordRequest extends ReaderBaseRequest {
     }
 
     @Override
-    public SelectWordRequest call() throws Exception {
+    public SelectRequest call() throws Exception {
         if (!readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().canHitTest()) {
             return this;
         }
@@ -56,13 +56,13 @@ public class SelectWordRequest extends ReaderBaseRequest {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
             getReaderUserDataInfo().setTouchPoint(touchPoint);
             readerDataHolder.getReaderViewHelper().draw(readerDataHolder,
-                    readerDataHolder.getReader().getReaderHelper().getViewportBitmap().getBitmap(),
-                    getReaderUserDataInfo(),getReaderViewInfo());
+                    readerDataHolder.getReader().getReaderHelper().getCurrentPageBitmap().getBitmap(),
+                    getReaderUserDataInfo(), getReaderViewInfo());
         }
         return this;
     }
 
-    private ReaderSelection translateToScreen(PageInfo pageInfo, ReaderSelection selection) {
+    public static ReaderSelection translateToScreen(PageInfo pageInfo, ReaderSelection selection) {
         int size = selection.getRectangles().size();
         for (int i = 0; i < size; i++) {
             PageUtils.translate(pageInfo.getDisplayRect().left,

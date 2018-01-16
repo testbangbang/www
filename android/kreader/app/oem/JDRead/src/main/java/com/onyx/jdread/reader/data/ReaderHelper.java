@@ -67,7 +67,7 @@ public class ReaderHelper {
     private BaseOptions documentOptions;
     private ImageReflowManager imageReflowManager;
     private BitmapReferenceLruCache bitmapCache;
-    private ReaderBitmapReferenceImpl viewportBitmap;
+    private ReaderBitmapReferenceImpl currentPageBitmap;
 
     public ReaderHelper() {
     }
@@ -179,8 +179,8 @@ public class ReaderHelper {
     public void afterDraw(ReaderBitmapReferenceImpl bitmap) {
     }
 
-    public final ReaderBitmapReferenceImpl getViewportBitmap() {
-        return viewportBitmap;
+    public final ReaderBitmapReferenceImpl getCurrentPageBitmap() {
+        return currentPageBitmap;
     }
 
     public ReaderPlugin getPlugin() {
@@ -204,10 +204,10 @@ public class ReaderHelper {
     }
 
     public void saveToCache(ReaderBitmapReferenceImpl renderBitmap) {
-        if (viewportBitmap != null && viewportBitmap.isValid()) {
-            returnBitmapToCache(viewportBitmap);
+        if (currentPageBitmap != null && currentPageBitmap.isValid()) {
+            returnBitmapToCache(currentPageBitmap);
         }
-        viewportBitmap = renderBitmap;
+        currentPageBitmap = renderBitmap;
     }
 
     public void returnBitmapToCache(ReaderBitmapReferenceImpl bitmap) {

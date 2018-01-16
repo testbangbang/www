@@ -11,6 +11,11 @@ import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
+import com.onyx.jdread.reader.actions.NextPageSelectTextAction;
+import com.onyx.jdread.reader.actions.PrevPageSelectTextAction;
+import com.onyx.jdread.reader.actions.SelectTextAction;
 import com.onyx.jdread.reader.actions.SelectWordAction;
 import com.onyx.jdread.reader.actions.UpdateViewPageAction;
 import com.onyx.jdread.reader.common.SelectWordInfo;
@@ -43,13 +48,21 @@ public class WordSelectionHandler extends BaseHandler {
     private int lastSelectEndPosition = 0;
     private float lastMoveX = 0;
     private float lastMoveY = 0;
+    private int crossScreenTouchRegionMinWidth;
+    private int crossScreenTouchRegionMinHeight;
 
     public WordSelectionHandler(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder);
+        movePointOffsetHeight = JDReadApplication.getInstance().getResources().getDimension(R.dimen.move_point_offset_height);
+        crossScreenTouchRegionMinWidth = JDReadApplication.getInstance().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_width);
+        crossScreenTouchRegionMinHeight = JDReadApplication.getInstance().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_height);
     }
 
     @Override
     public void onLongPress(MotionEvent event) {
+        if (isCrossScreenSelectText(event)) {
+            return;
+        }
         if (tryPageImage(event.getX(), event.getY())) {
             quitWordSelection();
             return;
@@ -69,6 +82,28 @@ public class WordSelectionHandler extends BaseHandler {
         } else if (cursorSelected < 0) {
             quitWordSelection();
         }
+    }
+
+    private boolean isCrossScreenSelectText(MotionEvent event) {
+        if (getReaderDataHolder().getReaderSelectionManager().getCurrentSelection() != null) {
+            int height = getReaderDataHolder().getReaderViewHelper().getPageViewHeight();
+            int width = getReaderDataHolder().getReaderViewHelper().getPageViewWidth();
+            float x = event.getX();
+            float y = event.getY();
+            if (x < crossScreenTouchRegionMinWidth && y < crossScreenTouchRegionMinHeight) {
+                if (getReaderDataHolder().getReaderViewInfo().canPrevScreen) {
+                    new PrevPageSelectTextAction().execute(getReaderDataHolder());
+                }
+                return true;
+            }
+            if (x > (width - crossScreenTouchRegionMinWidth) && y > (height - crossScreenTouchRegionMinHeight)) {
+                if (getReaderDataHolder().getReaderViewInfo().canNextScreen) {
+                    new NextPageSelectTextAction().execute(getReaderDataHolder());
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean tryPageImage(final float x, final float y) {
@@ -134,7 +169,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private void showSelectionMenu(boolean isWord) {
-
+        enableSelectionCursor();
     }
 
     public boolean onScrollAfterLongPress(final float x1, final float y1, final float x2, final float y2) {
@@ -174,7 +209,7 @@ public class WordSelectionHandler extends BaseHandler {
                 if (filterMoveAfterLongPress(x, y)) {
                     return true;
                 }
-                if(Math.abs(lastMoveX - x) <= 0 || Math.abs(lastMoveY - y) <= 0){
+                if (Math.abs(lastMoveX - x) <= 0 || Math.abs(lastMoveY - y) <= 0) {
                     return true;
                 }
                 lastMoveX = x;
@@ -229,7 +264,7 @@ public class WordSelectionHandler extends BaseHandler {
                 highLightBeginTop,
                 highLightEndBottom,
                 touchPoint);
-        SelectWordAction action = new SelectWordAction(info);
+        SelectTextAction action = new SelectTextAction(info);
         action.execute(getReaderDataHolder());
     }
 
@@ -292,5 +327,9 @@ public class WordSelectionHandler extends BaseHandler {
         new UpdateViewPageAction().execute(getReaderDataHolder());
         getReaderDataHolder().getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
         getReaderDataHolder().getReaderSelectionManager().clear();
+    }
+
+    private void enableSelectionCursor() {
+        showSelectionCursor = true;
     }
 }
