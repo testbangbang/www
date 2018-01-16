@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,4 +22,19 @@ public class LibraryDataModel implements Serializable {
     public Map<String, CloseableReference<Bitmap>> thumbnailMap = new HashMap<>();
     public int bookCount;
     public int libraryCount;
+
+    public static LibraryDataModel create(QueryResult<Metadata> result, QueryResult<Library> libraryResult,
+                                          Map<String, CloseableReference<Bitmap>> map) {
+        LibraryDataModel libraryDataModel = new LibraryDataModel();
+        if (result != null && !CollectionUtils.isNullOrEmpty(result.list)) {
+            libraryDataModel.visibleBookList = result.list;
+            libraryDataModel.bookCount = (int) result.count;
+        }
+        if (libraryResult != null && !CollectionUtils.isNullOrEmpty(libraryResult.list)) {
+            libraryDataModel.visibleLibraryList = libraryResult.list;
+            libraryDataModel.libraryCount = (int) libraryResult.count;
+        }
+        libraryDataModel.thumbnailMap = map;
+        return libraryDataModel;
+    }
 }

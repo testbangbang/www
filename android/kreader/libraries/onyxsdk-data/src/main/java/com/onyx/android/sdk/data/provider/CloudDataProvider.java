@@ -277,10 +277,16 @@ public class CloudDataProvider implements DataProviderBase {
     public List<CloudLibrary> fetchLibraryListFromCloud(String parentId, QueryArgs queryArgs) {
         List<CloudLibrary> libraryList = new ArrayList<>();
         try {
-            Response<List<CloudLibrary>> response = RetrofitUtils.executeCall(getContentService().loadLibraryList());
+            QueryResult<CloudLibrary> result = new QueryResult<>();
+            Response<QueryResult<CloudLibrary>> response = RetrofitUtils.executeCall(getContentService().loadLibraryList(parentId));
             if (response.isSuccessful()) {
-                libraryList = response.body();
+                result = response.body();
+                if (result.count < CollectionUtils.getSize(result.list)) {
+                    result.count = CollectionUtils.getSize(result.list);
+                }
+                result.fetchSource = Metadata.FetchSource.CLOUD;
             }
+            libraryList = result.getEnsureList();
         } catch (Exception e) {
             if (!FetchPolicy.isCloudOnlyPolicy(queryArgs.fetchPolicy) && !FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy)) {
                 libraryList = fetchLibraryListFromLocal(parentId);

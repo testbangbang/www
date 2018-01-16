@@ -1,4 +1,4 @@
-package com.onyx.android.eschool.manager;
+package com.onyx.android.sdk.im.push;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -16,8 +16,9 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import java.io.File;
 
 /**
- * Created by suicheng on 2017/3/3.
+ * Created by suicheng on 2017/8/12.
  */
+
 public class LeanCloudManager {
     private static final String TAG = LeanCloudManager.class.getSimpleName();
 
@@ -61,9 +62,6 @@ public class LeanCloudManager {
             if (installationSaved) {
                 return;
             }
-            if (!NetworkUtil.isWiFiConnected(context)) {
-                return;
-            }
             Point resolution = DeviceInfoUtil.getScreenResolution(context);
             final AVInstallation installation = AVInstallation.getCurrentInstallation();
             installation.put("width", resolution.x);
@@ -78,6 +76,7 @@ public class LeanCloudManager {
                 public void done(AVException e) {
                     if (e != null) {
                         Log.i(TAG, "Save installation failed." + e.toString());
+                        return;
                     }
                     installationSaved = true;
                     Log.i(TAG, "Save installation success: " + installation.getInstallationId());

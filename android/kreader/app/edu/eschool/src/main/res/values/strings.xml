@@ -133,4 +133,9 @@
 
     <string name="find_homework">Find homework</string>
     <string name="wrong_question_record">Wrong question</string>
+
+    <string name="homework_set_format">《%s》has been arranged</string>
+    <string name="homework_format">%s Homework</string>
+    <string name="goto_look">Go to</string>
+    <string name="notification">Notification</string>
 </resources>

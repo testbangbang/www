@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.model.v2;
 
 import com.onyx.android.sdk.data.model.BaseData;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -29,5 +30,9 @@ public class HomeworkDetail extends BaseData implements Serializable {
 
     public String getSubjectName() {
         return subject == null ? "" : subject.name;
+    }
+
+    public static boolean checkValid(HomeworkDetail item) {
+        return item != null && StringUtils.isNotBlank(item._id);
     }
 }
