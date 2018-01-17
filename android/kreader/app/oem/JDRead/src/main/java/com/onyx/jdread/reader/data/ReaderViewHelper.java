@@ -88,21 +88,21 @@ public class ReaderViewHelper {
         readPageView.getHolder().unlockCanvasAndPost(canvas);
     }
 
-    public void showTouchFunctionRegion(Canvas canvas,Reader reader) {
+    public void showTouchFunctionRegion(Canvas canvas,Context context) {
         Paint.Style oldStyle = paint.getStyle();
         paint.setStyle(Paint.Style.STROKE);
         int oldColor = paint.getColor();
         paint.setColor(Color.BLACK);
 
-        Rect rect = ShowSettingMenuAction.getRegionOne(reader.getReaderHelper().getContext());
+        Rect rect = ShowSettingMenuAction.getRegionOne(context);
         canvas.drawRect(rect, paint);
-        rect = ShowSettingMenuAction.getRegionTwo(reader.getReaderHelper().getContext());
+        rect = ShowSettingMenuAction.getRegionTwo(context);
         canvas.drawRect(rect, paint);
-        rect = PrevPageAction.getRegionOne(reader.getReaderHelper().getContext());
+        rect = PrevPageAction.getRegionOne(context);
         canvas.drawRect(rect, paint);
-        rect = NextPageAction.getRegionOne(reader.getReaderHelper().getContext());
+        rect = NextPageAction.getRegionOne(context);
         canvas.drawRect(rect, paint);
-        rect = NextPageAction.getRegionTwo(reader.getReaderHelper().getContext());
+        rect = NextPageAction.getRegionTwo(context);
         canvas.drawRect(rect, paint);
 
         paint.setColor(oldColor);
