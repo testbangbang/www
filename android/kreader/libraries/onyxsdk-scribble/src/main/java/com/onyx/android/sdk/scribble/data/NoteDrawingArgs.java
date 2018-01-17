@@ -18,6 +18,9 @@ public class NoteDrawingArgs {
         PEN_SHAPE_SELECTING         // in user shape select state
     }
 
+    public static final int STROKE_STYLE_PENCIL = 0;
+    public static final int STROKE_STYLE_BRUSH = 1;
+
     public volatile float strokeWidth = NoteModel.getDefaultStrokeWidth();
     public volatile int strokeColor = defaultColor();
     public volatile int style;
@@ -71,6 +74,12 @@ public class NoteDrawingArgs {
 
     public int getCurrentShapeType() {
         return currentShapeType;
+    }
+
+    public int getCurrentStrokeType() {
+        return currentShapeType == ShapeFactory.SHAPE_BRUSH_SCRIBBLE
+                ? STROKE_STYLE_BRUSH
+                : STROKE_STYLE_PENCIL;
     }
 
     public int restoreCurrentShapeType() {
