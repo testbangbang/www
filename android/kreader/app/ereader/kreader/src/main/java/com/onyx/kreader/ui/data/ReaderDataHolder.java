@@ -95,7 +95,7 @@ public class ReaderDataHolder {
     private int orientationBeforeSideNote = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
     private boolean sideNoting = false;
-    private SideNoteArea sideNoteArea = SideNoteArea.RIGHT;
+    private SideNoteArea sideNoteArea;
     private int sideNotePage = 0;
 
     private ReaderPainter readerPainter = new ReaderPainter();
@@ -112,6 +112,7 @@ public class ReaderDataHolder {
     public ReaderDataHolder(Context context) {
         this.context = context;
         ReaderBroadcastReceiver.setEventBus(eventBus);
+        sideNoteArea = SingletonSharedPreference.getSideNotePos();
     }
 
     public Context getContext() {
@@ -574,7 +575,6 @@ public class ReaderDataHolder {
         // disable regal to avoid screen flash
         return request instanceof RenderRequest ||
                 request instanceof ChangeViewConfigRequest ||
-                request instanceof ChangeViewConfigRequest ||
                 request instanceof StartSideNodeRequest ||
                 request instanceof StopSideNodeRequest;
     }
@@ -762,6 +762,28 @@ public class ReaderDataHolder {
 
     public SideNoteArea getSideNoteArea() {
         return sideNoteArea;
+    }
+
+    public void setSideNoteArea(SideNoteArea targetArea) {
+        sideNoteArea = targetArea;
+        SingletonSharedPreference.setSideNotePos(sideNoteArea);
+    }
+
+    public void toggleSideNoteArea() {
+        setSideNoteArea(sideNoteArea == SideNoteArea.LEFT
+                ? SideNoteArea.RIGHT : SideNoteArea.LEFT);
+    }
+
+    public int getDocPageDialogPosX(){
+        int posX = (getDisplayWidth() / 4);
+        posX = sideNoteArea == SideNoteArea.LEFT ? posX : -posX;
+        return posX;
+    }
+
+    public int getSideNoteDialogPosX() {
+        int posX = (getDisplayWidth() / 4);
+        posX = sideNoteArea == SideNoteArea.LEFT ? -posX : posX;
+        return posX;
     }
 
     public int getDocPageLeft() {

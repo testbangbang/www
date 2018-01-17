@@ -150,7 +150,7 @@ public abstract class BaseManagerActivity extends OnyxAppCompatActivity implemen
     @Override
     public void loadNoteList() {
         final LoadNoteListAction<BaseManagerActivity> action = new LoadNoteListAction<>(getCurrentLibraryId());
-        action.execute(this);
+        action.execute(this, null);
     }
 
     @Override

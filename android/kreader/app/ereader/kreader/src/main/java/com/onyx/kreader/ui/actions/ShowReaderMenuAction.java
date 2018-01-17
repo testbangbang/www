@@ -651,7 +651,7 @@ public class ShowReaderMenuAction extends BaseAction {
         dlg.getInputEditText().setHint("1-" + readerDataHolder.getSideNotePageCount());
 
         WindowManager.LayoutParams params = dlg.getWindow().getAttributes();
-        params.x = readerDataHolder.getDisplayWidth() / 4;
+        params.x = readerDataHolder.getSideNoteDialogPosX();
 
         dlg.show();
     }
@@ -1036,7 +1036,7 @@ public class ShowReaderMenuAction extends BaseAction {
             }
         });
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-        params.x = (readerDataHolder.getDisplayWidth() / 4);
+        params.x = readerDataHolder.getSideNoteDialogPosX();
         dialog.show();
     }
 
