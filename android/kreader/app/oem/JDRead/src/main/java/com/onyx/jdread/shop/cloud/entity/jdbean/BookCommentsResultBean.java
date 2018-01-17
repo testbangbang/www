@@ -7,7 +7,7 @@ import java.util.List;
  */
 
 public class BookCommentsResultBean {
-    public String result_code;
+    public int resultCode;
     public DataBean data;
 
     public static class DataBean {

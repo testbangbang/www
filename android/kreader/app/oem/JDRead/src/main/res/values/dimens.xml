@@ -306,6 +306,7 @@
     <dimen name="shop_cart_settlement_width">140dp</dimen>
     <dimen name="shop_cart_settlement_padding">10dp</dimen>
     <dimen name="item_shop_cart_price_margin_top">20dp</dimen>
+    <dimen name="book_detail_discount_padding_left_and_right">5dp</dimen>
     <dimen name="item_shop_cart_promotion_margin_padding">10dp</dimen>
     <dimen name="dialog_text_content_height">135dp</dimen>
     <dimen name="dialog_button_height">55dp</dimen>

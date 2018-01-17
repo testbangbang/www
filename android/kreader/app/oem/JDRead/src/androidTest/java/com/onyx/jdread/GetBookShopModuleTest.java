@@ -79,9 +79,9 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
                 BookModelBooksResultBean bookModelResultBean = request.getBookModelResultBean();
                 assertNotNull(bookModelResultBean);
                 Log.d(TAG, "onNext: message " + bookModelResultBean.message);
-                Log.d(TAG, "onNext: result_code " + bookModelResultBean.result_code);
+                Log.d(TAG, "onNext: resultCode " + bookModelResultBean.resultCode);
                 Log.d(TAG, "onNext: name " + bookModelResultBean.data.items.get(0).name);
-                assertTrue(bookModelResultBean.result_code == 0);
+                assertTrue(bookModelResultBean.resultCode == 0);
                 countDownLatch.countDown();
             }
 

@@ -6,7 +6,7 @@ package com.onyx.jdread.shop.cloud.entity.jdbean;
 
 public class BookDetailResultBean {
     public DetailBean data;
-    public int result_code;
+    public int resultCode;
     public String message;
 
     public static class DetailBean {
