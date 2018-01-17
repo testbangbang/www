@@ -71,10 +71,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:switchMinWidth="@dimen/switch_track_width"
-                    android:textOff=""
+                    android:textOff="@string/off"
                     android:textOn="@string/on"
+                    android:textColor="@android:color/white"
                     android:thumb="@drawable/thumb_selector"
-                    android:track="@drawable/track_selector" />
+                    android:track="@drawable/gray_track" />
             </RelativeLayout>
 
         </LinearLayout>
