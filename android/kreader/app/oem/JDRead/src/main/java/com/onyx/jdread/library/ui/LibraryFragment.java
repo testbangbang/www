@@ -387,6 +387,9 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onItemLongClickEvent(ItemLongClickEvent event) {
+        if (isMultiSelectionMode()){
+            return;
+        }
         DataModel currentChosenModel = event.getDataModel();
         dataBundle.getLibraryViewDataModel().addItemSelected(currentChosenModel, true);
         showSingleMangeDialog(currentChosenModel);
