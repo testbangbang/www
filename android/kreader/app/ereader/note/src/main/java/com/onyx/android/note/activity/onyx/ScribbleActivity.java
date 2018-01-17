@@ -280,7 +280,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 syncWithCallback(true, true, !isLineLayoutMode(), new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        switchScribbleMode(isLineLayoutMode());
+                        switchScribbleMode(isLineLayoutMode(), true);
                     }
                 });
             }
@@ -427,7 +427,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void run() {
                 updateLineLayoutArgs();
-                switchScribbleMode(isLineLayoutMode());
+                switchScribbleMode(isLineLayoutMode(), false);
             }
         });
     }
@@ -540,10 +540,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
         spanTextView.setText("");
     }
 
-    private void switchScribbleMode(boolean isLineLayoutMode) {
+    private void switchScribbleMode(boolean isLineLayoutMode, boolean clearUndoRedo) {
         cleanUpAllPopMenu();
         hideSoftInput();
-        new ClearPageUndoRedoAction<ScribbleActivity>(shouldResume()).execute(this, null);
+
+        if (clearUndoRedo) {
+            new ClearPageUndoRedoAction<ScribbleActivity>(shouldResume()).execute(this, null);
+        }
 
         if (isLineLayoutMode) {
             spanTextHandler.openSpanTextFunc();
