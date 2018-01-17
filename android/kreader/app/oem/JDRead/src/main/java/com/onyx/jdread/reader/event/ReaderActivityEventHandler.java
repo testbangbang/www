@@ -2,14 +2,17 @@ package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
 
+import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
+import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
-import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
+import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
 import com.onyx.jdread.reader.menu.event.SearchContentEvent;
@@ -89,12 +92,12 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe
-    public void onShowReaderCatalogMenuEvent(ShowReaderCatalogMenuEvent event){
+    public void onShowReaderCatalogMenuEvent(ShowReaderCatalogMenuEvent event) {
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
             return;
         }
-        ReaderBookInfoDialog readerBookInfoDialog = new ReaderBookInfoDialog(activity,readerViewModel.getReaderDataHolder(),
+        ReaderBookInfoDialog readerBookInfoDialog = new ReaderBookInfoDialog(activity, readerViewModel.getReaderDataHolder(),
                 ReaderBookInfoDialogConfig.CATALOG_MODE);
         readerBookInfoDialog.show();
     }
@@ -110,17 +113,31 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateViewSettingEvent(UpdateViewSettingEvent event){
-        readerViewModel.getReaderDataHolder().setStyle(event.getStyle());
-        readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
-        readerViewModel.getReaderDataHolder().setReaderUserDataInfo(event.getReaderUserDataInfo());
-        if(readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()){
+    public void onUpdateViewSettingEvent(UpdateViewSettingEvent event) {
+        if(event.getStyle() != null) {
+            readerViewModel.getReaderDataHolder().setStyle(event.getStyle());
+        }
+        if(event.getSettings() != null) {
+            readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
+        }
+        if(event.getReaderUserDataInfo() != null) {
+            readerViewModel.getReaderDataHolder().setReaderUserDataInfo(event.getReaderUserDataInfo());
+        }
+        if (readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()) {
             readerSettingMenuDialog.updateBookmarkState();
         }
     }
 
+    public static void updateViewSetting(ImageReflowSettings settings, ReaderTextStyle style, ReaderUserDataInfo readerUserDataInfo) {
+        UpdateViewSettingEvent event = new UpdateViewSettingEvent();
+        event.setStyle(style);
+        event.setSettings(settings);
+        event.setReaderUserDataInfo(readerUserDataInfo);
+        EventBus.getDefault().post(event);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateReaderViewInfoEvent(UpdateReaderViewInfoEvent event){
+    public void onUpdateReaderViewInfoEvent(UpdateReaderViewInfoEvent event) {
         readerViewModel.getReaderDataHolder().setReaderViewInfo(event.getReaderViewInfo());
         readerViewModel.getReaderDataHolder().setDocumentOpenState();
     }

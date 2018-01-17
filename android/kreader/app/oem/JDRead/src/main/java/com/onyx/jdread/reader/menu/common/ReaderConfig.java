@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 
 public class ReaderConfig {
     public static final String TYPEFACE_ROOT_PATH = "/sdcard/fonts/";
+    public static final int HIT_TEST_TEXT_STEP = 30;
 
     public static class FontSize {
         public static final int FONT_SIZE_X_SMALL = 12;

@@ -5,7 +5,7 @@ import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 
 /**
@@ -14,27 +14,27 @@ import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 
 public class AddBookmarkRequest extends ReaderBaseRequest {
     private PageInfo pageInfo;
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
 
-    public AddBookmarkRequest(ReaderDataHolder readerDataHolder,PageInfo pageInfo) {
+    public AddBookmarkRequest(Reader reader,PageInfo pageInfo) {
         this.pageInfo = pageInfo;
-        this.readerDataHolder = readerDataHolder;
+        this.reader = reader;
     }
 
     @Override
     public AddBookmarkRequest call() throws Exception {
         ContentSdkDataUtils.getDataProvider().addBookmark(createBookmark());
-        LayoutProviderUtils.updateReaderViewInfo(readerDataHolder.getReader(), getReaderViewInfo(), readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
         return this;
     }
 
     private Bookmark createBookmark() {
         Bookmark bookmark = new Bookmark();
-        bookmark.setIdString(readerDataHolder.getReader().getReaderHelper().getDocumentMd5());
-        bookmark.setApplication(readerDataHolder.getReader().getReaderHelper().getPlugin().displayName());
+        bookmark.setIdString(reader.getReaderHelper().getDocumentMd5());
+        bookmark.setApplication(reader.getReaderHelper().getPlugin().displayName());
         bookmark.setPosition(pageInfo.getPosition());
         bookmark.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));
-        bookmark.setQuote(getQuote(readerDataHolder.getReader().getReaderHelper().getDocument().getPageText(pageInfo.getPosition())));
+        bookmark.setQuote(getQuote(reader.getReaderHelper().getDocument().getPageText(pageInfo.getPosition())));
         return bookmark;
     }
 

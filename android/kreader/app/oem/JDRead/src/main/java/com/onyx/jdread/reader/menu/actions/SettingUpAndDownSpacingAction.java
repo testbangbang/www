@@ -27,7 +27,7 @@ public class SettingUpAndDownSpacingAction extends BaseReaderAction {
         topMargin.setPercent(margin);
         ReaderTextStyle.Percentage bottomMargin = pageMargin.getBottomMargin();
         bottomMargin.setPercent(margin);
-        new SettingTextStyleRequest(readerDataHolder,style).execute(new RxCallback() {
+        new SettingTextStyleRequest(readerDataHolder.getReader(),style).execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
             }

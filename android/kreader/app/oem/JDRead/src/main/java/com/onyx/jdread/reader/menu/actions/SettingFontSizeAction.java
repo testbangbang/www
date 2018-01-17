@@ -23,7 +23,7 @@ public class SettingFontSizeAction extends BaseReaderAction {
     public void execute(final ReaderDataHolder readerDataHolder) {
         ReaderTextStyle.SPUnit oldFontSize = style.getFontSize();
         oldFontSize.setValue(fontSize);
-        new SettingTextStyleRequest(readerDataHolder,style).execute(new RxCallback() {
+        new SettingTextStyleRequest(readerDataHolder.getReader(),style).execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
 

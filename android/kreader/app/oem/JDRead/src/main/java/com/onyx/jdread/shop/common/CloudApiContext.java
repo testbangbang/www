@@ -27,7 +27,12 @@ public class CloudApiContext {
     public static final String JD_SMOOTH_READ_URL = "https://cread.jd.com/";
     public static final String JD_BOOK_ORDER_URL = "https://order-e.jd.com/";
     public static final String JD_BOOK_STATISTIC_URL = "https://sns-e.jd.com/";
+    public static final String JD_BOOK_BASE_URI = "/eink/api/";
 
+    public static class User {
+        public static final String SYNC_INFO = "user/sync";
+        public static final String GET_USER_INFO = "user";
+    }
 
     public static class NewBookDetail {
         public static final String BOOK_SPECIAL_PRICE_TYPE = "specialPrice";

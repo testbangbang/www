@@ -44,8 +44,8 @@ public class RxRequestUserInfo extends RxBaseCloudRequest {
     }
 
     private void checkQuestResult() {
-        if (userInfoBean != null && !StringUtils.isNullOrEmpty(userInfoBean.result_code)) {
-            switch (userInfoBean.result_code) {
+        if (userInfoBean != null && !StringUtils.isNullOrEmpty(userInfoBean.resultCode)) {
+            switch (userInfoBean.resultCode) {
 
             }
         }

@@ -16,7 +16,7 @@ public class InitPageViewAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        final InitFirstPageViewRequest request = new InitFirstPageViewRequest(readerDataHolder);
+        final InitFirstPageViewRequest request = new InitFirstPageViewRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

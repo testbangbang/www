@@ -8,6 +8,7 @@ import android.view.SurfaceView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.RegionFunctionManager;
 import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 /**
@@ -69,5 +70,6 @@ public class ReaderViewModel extends BaseObservable {
 
     public void setReaderPageView(SurfaceView surfaceView){
         readerDataHolder.setReadPageView(surfaceView);
+        RegionFunctionManager.initRegionAction(readerDataHolder.getAppContext());
     }
 }

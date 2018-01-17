@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.menu.request;
 
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
@@ -9,18 +10,18 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  */
 
 public class ChangeChineseConvertTypeRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
     private ReaderChineseConvertType convertType;
 
-    public ChangeChineseConvertTypeRequest(ReaderDataHolder readerDataHolder, ReaderChineseConvertType convertType) {
-        this.readerDataHolder = readerDataHolder;
+    public ChangeChineseConvertTypeRequest(Reader reader, ReaderChineseConvertType convertType) {
+        this.reader = reader;
         this.convertType = convertType;
     }
 
     @Override
     public ChangeChineseConvertTypeRequest call() throws Exception {
-        readerDataHolder.getReader().getReaderHelper().getRenderer().setChineseConvertType(convertType);
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,getReaderUserDataInfo(),getReaderViewInfo());
+        reader.getReaderHelper().getRenderer().setChineseConvertType(convertType);
+        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 }

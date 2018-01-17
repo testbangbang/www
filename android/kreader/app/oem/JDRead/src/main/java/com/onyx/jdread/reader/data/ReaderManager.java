@@ -1,6 +1,8 @@
 package com.onyx.jdread.reader.data;
 
 
+import android.content.Context;
+
 import com.onyx.jdread.reader.common.DocumentInfo;
 
 import java.util.HashMap;
@@ -21,7 +23,7 @@ public class ReaderManager {
         return false;
     }
 
-    public static Reader getReader(final DocumentInfo documentInfo) {
-        return new Reader(documentInfo);
+    public static Reader getReader(final DocumentInfo documentInfo, Context context) {
+        return new Reader(documentInfo,context);
     }
 }
