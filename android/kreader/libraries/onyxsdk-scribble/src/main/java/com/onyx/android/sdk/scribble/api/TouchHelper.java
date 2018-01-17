@@ -216,11 +216,13 @@ public class TouchHelper {
     }
 
     public void setLimitRect(Rect rect) {
-        setLimitRect(rect, null);
+        getTouchReader().setLimitRect(rect);
+        getRawInputManager().setLimitRect(rect);
     }
 
     public void setLimitRect(List<Rect> rectList) {
-        setLimitRect(rectList, null);
+        getTouchReader().setLimitRect(rectList);
+        getRawInputManager().setLimitRect(rectList);
     }
 
     public TouchHelper setLimitRect(Rect limitRect, List<Rect> excludeRectList) {
