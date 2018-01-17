@@ -63,7 +63,7 @@ public class PageIndicatorModel extends BaseObservable {
     public void updateTotal(int totalCount) {
         String total;
         if (StringUtils.isNotBlank(totalFormat)) {
-            total = String.format(totalFormat, totalCount);
+            total = totalFormat + totalCount;
         } else {
             total = String.valueOf(gPaginator.getSize());
         }

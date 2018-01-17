@@ -139,6 +139,7 @@ public class LibraryFragment extends BaseFragment {
         int totalCount = getTotalCount();
         pagination.resize(row, col, totalCount);
         pageIndicatorModel.updateCurrentPage(totalCount);
+        pageIndicatorModel.setTotalFormat(dataBundle.getLibraryViewDataModel().libraryPathList.size() == 0 ? getString(R.string.total) : getString(R.string.bosom));
         pageIndicatorModel.updateTotal(totalCount);
         dataBundle.getLibraryViewDataModel().updateDeletePage();
     }
@@ -387,7 +388,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onItemLongClickEvent(ItemLongClickEvent event) {
-        if (isMultiSelectionMode()){
+        if (isMultiSelectionMode()) {
             return;
         }
         DataModel currentChosenModel = event.getDataModel();
