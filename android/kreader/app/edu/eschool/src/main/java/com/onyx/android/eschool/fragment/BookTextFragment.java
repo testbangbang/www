@@ -166,10 +166,17 @@ public class BookTextFragment extends Fragment {
         super.onResume();
     }
 
+    private String getRootLibraryId() {
+        if (getArguments() == null) {
+            return null;
+        }
+        return getArguments().getString(LIBRARY_ID_ARGS);
+    }
+
     private void loadData() {
         String uniqueId = null;
         if (getArguments() != null) {
-            uniqueId = getArguments().getString(LIBRARY_ID_ARGS);
+            uniqueId = getRootLibraryId();
             fragmentName = getArguments().getString(FRAGMENT_NAME);
         }
         if (StringUtils.isNullOrEmpty(uniqueId)) {
@@ -794,10 +801,17 @@ public class BookTextFragment extends Fragment {
     public void onLibraryEvent(BookLibraryEvent event) {
         if (Library.isValid(event.library)) {
             if (event.library.getName().equals(fragmentName)) {
+                if (isSameRootLibrary(event.library)) {
+                    return;
+                }
                 resetArgumentsBundle(getArguments(), fragmentName, event.library.getIdString());
                 onRootLibraryClick();
             }
         }
+    }
+
+    private boolean isSameRootLibrary(Library library) {
+        return library.getIdString().equals(getRootLibraryId());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
