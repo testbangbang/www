@@ -34,18 +34,6 @@ public class LoadNoteListAction<T extends BaseManagerActivity> extends BaseNoteA
         this.ascOrder = ascOrder;
     }
 
-
-    public void execute(final T activity) {
-        execute(activity, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                activity.updateCurLibName(parentNoteModel == null ? "" : parentNoteModel.getTitle());
-                activity.updateCurLibPath(parentNoteModel == null ? "" : parentNoteModel.getExtraAttributes());
-                activity.updateUIWithNewNoteList(loadRequest.getNoteList());
-            }
-        });
-    }
-
     @Override
     public void execute(final T activity, final BaseCallback callback) {
         loadRequest = new NoteLibraryLoadRequest(parentLibraryId, Constant.PERTIME_THUMBNAIL_LOAD_LIMIT, sortBy, ascOrder);
@@ -53,6 +41,9 @@ public class LoadNoteListAction<T extends BaseManagerActivity> extends BaseNoteA
             @Override
             public void done(BaseRequest request, Throwable e) {
                 parentNoteModel = loadRequest.getNoteModel();
+                activity.updateCurLibName(parentNoteModel == null ? "" : parentNoteModel.getTitle());
+                activity.updateCurLibPath(parentNoteModel == null ? "" : parentNoteModel.getExtraAttributes());
+                activity.updateUIWithNewNoteList(loadRequest.getNoteList());
                 invoke(callback, request, e);
             }
         });
