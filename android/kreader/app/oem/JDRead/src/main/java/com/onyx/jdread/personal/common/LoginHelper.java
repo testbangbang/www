@@ -66,6 +66,7 @@ public class LoginHelper {
     public static void showUserLoginDialog(final Activity activity, final UserLoginViewModel userLoginViewModel) {
         final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(activity), null, false);
         userLoginBinding.setLoginViewModel(userLoginViewModel);
+        userLoginViewModel.setContext(activity);
         if (userLoginDialog == null) {
             final AlertDialog.Builder userLoginDialogBuild = new AlertDialog.Builder(activity);
             userLoginDialogBuild.setView(userLoginBinding.getRoot());

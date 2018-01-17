@@ -63,8 +63,8 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
         DeviceConfigViewHolder viewHolder = (DeviceConfigViewHolder) holder;
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
-        viewHolder.getBinding().itemDataFormat.setChecked(is24Hour());
-        viewHolder.getBinding().itemDataFormat.setOnCheckedChangeListener(this);
+        viewHolder.getBinding().itemDataFormatCheck.setChecked(is24Hour());
+        viewHolder.getBinding().itemDataFormatCheck.setOnCheckedChangeListener(this);
         viewHolder.bindTo(data.get(position));
     }
 

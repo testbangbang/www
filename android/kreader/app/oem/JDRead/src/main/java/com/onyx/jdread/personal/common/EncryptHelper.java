@@ -32,7 +32,8 @@ public class EncryptHelper {
     public static String getEncryptParams(String key, String signStr) {
         File encryptFile = getEncryptFile();
         FileUtils.appendContentToFile(key, encryptFile);
-        String atencrypting = decryptionoperation.atencrypting(signStr, encryptFile.getParent(), 0);
+        String path = encryptFile.getParent() + "/";
+        String atencrypting = decryptionoperation.atencrypting(signStr, path, 0);
         return atencrypting;
     }
 

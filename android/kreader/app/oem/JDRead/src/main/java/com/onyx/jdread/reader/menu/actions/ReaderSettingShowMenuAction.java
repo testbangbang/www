@@ -34,7 +34,7 @@ public class ReaderSettingShowMenuAction extends BaseReaderAction {
         binding.readerSettingFunctionBar.getFunctionBarModel().setIsShow(isSystemMenuShow);
 
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.progressMenuGroup == menuGroup ? true : false);
-        binding.readerSettingBrightnessBar.getBrightnessModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.brightnessMenuGroup == menuGroup ? true : false);
+        binding.readerSettingBrightnessBar.getBrightnessModel().setShow(ReaderSettingModel.ReaderSystemMenuGroup.brightnessMenuGroup == menuGroup ? true : false);
 
         binding.readerSettingTextSettingBar.getReaderTextModel().setIsShow(ReaderSettingModel.ReaderSystemMenuGroup.textMenuGroup == menuGroup ? true : false);
 

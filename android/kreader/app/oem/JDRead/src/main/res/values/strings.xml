@@ -19,7 +19,7 @@
     <string name="device_setting_never">Never</string>
     <string name="refresh_tips">Refresh the page to ensure that the ink screen is clear, to reduce the page damage, please set it according to your needs.</string>
     <string name="refresh_mode">Speed refresh mode</string>
-    <string name="refresh_mode_tips">The function of the laboratory greatly improved the page speed, but the shadow was more obvious</string>
+    <string name="refresh_mode_tips">Greatly improved the page speed, but the shadow was more obvious</string>
     <string name="view_history_version">View history version</string>
     <string name="updatable_version">Updatable version: </string>
     <string name="current_version">Current version: </string>
@@ -368,4 +368,6 @@
     <string name="target_language">Target language: %s</string>
     <string name="input_number_for_contact">Please enter your mobile phone number so that the staff can contact you.</string>
     <string name="installed">installed</string>
+    <string name="input_number_un_encrypt">Please enter a numeric password to unencrypt it.</string>
+    <string name="encryption_success">Encryption success</string>
 </resources>
