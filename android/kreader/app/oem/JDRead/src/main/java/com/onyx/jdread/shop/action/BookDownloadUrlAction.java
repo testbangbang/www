@@ -68,7 +68,7 @@ public class BookDownloadUrlAction extends BaseAction {
             public void onComplete() {
                 super.onComplete();
                 if (bookDownloadUrlResultBean != null) {
-                    if (Constants.CODE_STATE_THREE.equals(bookDownloadUrlResultBean.Code) || Constants.CODE_STATE_FOUR.equals(bookDownloadUrlResultBean.Code)) {
+                    if (Constants.CODE_STATE_THREE.equals(bookDownloadUrlResultBean.resultCode) || Constants.CODE_STATE_FOUR.equals(bookDownloadUrlResultBean.resultCode)) {
                         JDReadApplication.getInstance().setLogin(false);
                         //TODO autoLogin();
                     }
