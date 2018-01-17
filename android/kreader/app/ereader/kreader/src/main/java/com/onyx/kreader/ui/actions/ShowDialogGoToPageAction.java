@@ -13,9 +13,11 @@ public class ShowDialogGoToPageAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        int posX = (readerDataHolder.getDisplayWidth() / 4);
+        posX = readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT
+                ? posX : -posX;
         DialogGotoPage.show(readerDataHolder,
-                true, null,
-                (-(readerDataHolder.getDisplayWidth() / 4)), Integer.MIN_VALUE, new DialogGotoPage.OnCloseCallback() {
+                true, null, posX, Integer.MIN_VALUE, new DialogGotoPage.OnCloseCallback() {
                     @Override
                     public void onClose() {
                         new ResumeDrawingAction(readerDataHolder.
