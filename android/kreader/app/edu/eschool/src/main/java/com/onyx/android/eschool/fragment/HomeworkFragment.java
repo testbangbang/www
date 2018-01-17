@@ -501,7 +501,7 @@ public class HomeworkFragment extends Fragment {
             if (item.getUpdatedAt() == null) {
                 return null;
             }
-            return DATE_FORMAT_MMDD_HHMM.format(item.getUpdatedAt());
+            return DateTimeUtil.formatGMTDate(item.getUpdatedAt(), DATE_FORMAT_MMDD_HHMM);
         }
     }
 }
