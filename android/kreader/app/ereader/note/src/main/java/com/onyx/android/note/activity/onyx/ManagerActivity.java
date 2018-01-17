@@ -66,10 +66,15 @@ public class ManagerActivity extends BaseManagerActivity {
     private LinearLayout controlPanel;
     private @SortBy.SortByDef int currentSortBy = SortBy.CREATED_AT;
     private @AscDescOrder.AscDescOrderDef int ascOrder= AscDescOrder.DESC;
+    private int cachedPage = Integer.MIN_VALUE;
+    private static final String CACHED_PAGE_KEY = "cached_page_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState !=null){
+            cachedPage = savedInstanceState.getInt(CACHED_PAGE_KEY);
+        }
         NoteApplication.initWithAppConfig(this);
         setContentView(R.layout.onyx_activity_manager);
         loadSortByAndAsc();
@@ -86,7 +91,21 @@ public class ManagerActivity extends BaseManagerActivity {
             Device.currentDevice().postInvalidate(getWindow().getDecorView(), UpdateMode.GC);
         }
     }
-    
+
+    private void restoreLastViewPage() {
+        if (cachedPage != Integer.MIN_VALUE) {
+            contentView.gotoPage(cachedPage);
+            cachedPage = Integer.MIN_VALUE;
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        cachedPage = contentView.getCurrentPage();
+        outState.putInt(CACHED_PAGE_KEY, cachedPage);
+    }
+
     private void loadSortByAndAsc() {
         currentSortBy = SortBy.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_SORT_BY, SortBy.UPDATED_AT));
         ascOrder = AscDescOrder.translate(NotePreference.getIntValue(this, NotePreference.KEY_NOTE_ASC_ORDER, AscDescOrder.DESC));
@@ -407,7 +426,12 @@ public class ManagerActivity extends BaseManagerActivity {
     @Override
     public void loadNoteList() {
         final LoadNoteListAction<BaseManagerActivity> action = new LoadNoteListAction<>(getCurrentLibraryId(), currentSortBy, ascOrder);
-        action.execute(this);
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                restoreLastViewPage();
+            }
+        });
     }
 
     @Override
@@ -581,5 +605,6 @@ public class ManagerActivity extends BaseManagerActivity {
             public boolean onItemLongClick(ContentItemView view) {
                 return onItemLongClicked(view);
             }
-        };    }
+        };
+    }
 }

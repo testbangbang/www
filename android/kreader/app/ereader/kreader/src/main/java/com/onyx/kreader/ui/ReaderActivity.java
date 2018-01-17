@@ -1337,12 +1337,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         new StartSideNoteAction().execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                startSideNodeDrawing(getReaderDataHolder(), ReaderActivity.this);
+                startSideNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
             }
         });
     }
 
-    private void startSideNodeDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
+    private void startSideNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(readerActivity.getExtraView(),
                 readerActivity.getStatusBar(),
                 ShowReaderMenuAction.getScribbleActionCallback(readerDataHolder));

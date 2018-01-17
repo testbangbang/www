@@ -32,6 +32,7 @@ public class SingletonSharedPreference {
     private final static String MULTIPLE_TAB_STATE = "multiple_tab_state";
     private final static String MULTIPLE_TAB_VISIBILITY = "multiple_tab_visibility";
     private final static String CURRENT_TAB = "current_tab";
+    private final static String SIDE_NOTE_POS = "side_note_pos";
 
     private static Context sContext;
     private static SharedPreferences.Editor sDefaultEditor;
@@ -393,5 +394,13 @@ public class SingletonSharedPreference {
 
     public static String getCurrentTab() {
         return getPrefs().getString(CURRENT_TAB, "");
+    }
+
+    public static void setSideNotePos(ReaderDataHolder.SideNoteArea targetArea){
+        setIntValue(SIDE_NOTE_POS,targetArea.ordinal());
+    }
+
+    public static ReaderDataHolder.SideNoteArea getSideNotePos(){
+        return ReaderDataHolder.SideNoteArea.values()[getPrefs().getInt(SIDE_NOTE_POS, ReaderDataHolder.SideNoteArea.RIGHT.ordinal())];
     }
 }

@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -25,6 +24,7 @@ import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.kreader.BR;
 import com.onyx.kreader.R;
 import com.onyx.kreader.note.actions.FlushNoteAction;
+import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.request.PauseDrawingRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -73,7 +73,14 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         addDividerLine(parent);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        lp.addRule(RelativeLayout.RIGHT_OF, dividerLine.getId());
+        switch (readerDataHolder.getSideNoteArea()) {
+            case LEFT:
+                lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                break;
+            case RIGHT:
+                lp.addRule(RelativeLayout.RIGHT_OF, dividerLine.getId());
+                break;
+        }
         sideMenu.addMainMenu(parent,
                 readerDataHolder.getEventBus(),
                 R.layout.reader_side_scribble_menu,
@@ -247,7 +254,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 close(null);
                 break;
             case SCRIBBLE_SIDE_NOTE_EXCHANGE_POS:
-                Log.e("TAG", "onMenuClickEvent: "+"SCRIBBLE_SIDE_NOTE_EXCHANGE_POS");
+                toggleSideNotePos(readerDataHolder);
                 break;
         }
     }
@@ -350,6 +357,21 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         if (menu.isShowing()) {
             excludeRectFs.add(new RectF(menuView.getLeft(), menuView.getTop(), menuView.getRight(), menuView.getBottom()));
         }
+    }
+
+    private void toggleSideNotePos(final ReaderDataHolder readerDataHolder) {
+        readerDataHolder.toggleSideNoteArea();
+        readerDataHolder.redrawPage(new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new ResumeDrawingAction(readerDataHolder.getVisiblePages()).execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        show(readerDataHolder);
+                    }
+                });
+            }
+        });
     }
 
 }
