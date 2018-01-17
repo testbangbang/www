@@ -185,6 +185,7 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
                 resetSeekBar();
                 ReaderDeviceManager.setGcInterval(gcInterval);
                 eventBus.unregister(DialogMediaPlay.this);
+                mediaPlayListener.quitMedia();
                 mediaPlayListener.closeDialog(DialogMediaPlay.this);
             }
         });
