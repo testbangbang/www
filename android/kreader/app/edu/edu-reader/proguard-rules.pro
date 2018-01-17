@@ -19,6 +19,7 @@
 -dontshrink
 
 -keep class com.onyx.android.sdk.reader.api.** { public protected *; }
+-keep class com.onyx.android.sdk.reader.host.impl.** { public protected *; }
 -keepnames class com.onyx.edu.reader.device.DeviceConfig { *; }
 -keepnames class com.onyx.edu.reader.ui.data.ReviewDocumentData { *; }
 -keepnames class com.onyx.android.sdk.scribble.formshape.FormValue { *; }
