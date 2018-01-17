@@ -20,6 +20,7 @@ import com.onyx.jdread.databinding.FragmentBookShopThreeBinding;
 import com.onyx.jdread.databinding.FragmentBookShopTwoBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
@@ -38,6 +39,7 @@ import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -259,6 +261,9 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRankViewClick(RankViewClick event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookRankFragment.class.getName());
         }
@@ -266,6 +271,9 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEnjoyReadViewClick(EnjoyReadViewClick event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookVIPReadFragment.class.getName());
         }
@@ -273,6 +281,9 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSaleViewClick(SaleViewClick event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookSaleFragment.class.getName());
         }
@@ -280,6 +291,9 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNewBookViewClick(NewBookViewClick event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookNewBooksFragment.class.getName());
         }
@@ -287,6 +301,9 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryViewClick(CategoryViewClick event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
         }
@@ -294,6 +311,9 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
@@ -302,16 +322,25 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShopMainViewAllBookEvent(ShopMainViewAllBookEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
         PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, event.modelId);
         PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, event.modelType);
@@ -328,5 +357,13 @@ public class ShopFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
+    }
+
+    private boolean checkWfiDisConnected() {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            return true;
+        }
+        return false;
     }
 }

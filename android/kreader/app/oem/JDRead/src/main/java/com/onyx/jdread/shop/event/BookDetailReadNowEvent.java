@@ -8,13 +8,13 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 
 public class BookDetailReadNowEvent {
 
-    private BookDetailResultBean.DetailBean bookDetailBean;
+    private BookDetailResultBean bookDetailResultBean;
 
-    public BookDetailReadNowEvent(BookDetailResultBean.DetailBean bookDetailBean) {
-        this.bookDetailBean = bookDetailBean;
+    public BookDetailReadNowEvent(BookDetailResultBean bookDetailResultBean) {
+        this.bookDetailResultBean = bookDetailResultBean;
     }
 
-    public BookDetailResultBean.DetailBean getBookDetailBean() {
-        return bookDetailBean;
+    public BookDetailResultBean getBookDetailResultBean() {
+        return bookDetailResultBean;
     }
 }

@@ -40,6 +40,7 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
+import com.onyx.jdread.setting.ui.WifiFragment;
 import com.onyx.jdread.shop.action.AddBookToSmoothCardAction;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.BookDetailAction;
@@ -65,6 +66,7 @@ import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
+import com.onyx.jdread.shop.event.MenuWifiSettingEvent;
 import com.onyx.jdread.shop.event.RecommendItemClickEvent;
 import com.onyx.jdread.shop.event.RecommendNextPageEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
@@ -259,6 +261,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewCommentEvent(ViewCommentEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(CommentFragment.class.getName());
         }
@@ -266,14 +271,28 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadWholeBookEvent(DownloadWholeBookEvent event) {
-        bookDetailBean = event.getBookDetailBean();
-        BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-        bookDetailBean.bookExtraInfoBean = extraInfoBean;
-        if (!JDReadApplication.getInstance().getLogin()) {
-            LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
-        } else {
-            smoothDownload();
+        if (checkWfiDisConnected()) {
+            return;
         }
+        BookDetailResultBean bookDetailResultBean = event.getBookDetailResultBean();
+        if (bookDetailResultBean != null) {
+            bookDetailBean = bookDetailResultBean.data;
+            BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
+            bookDetailBean.bookExtraInfoBean = extraInfoBean;
+            if (!JDReadApplication.getInstance().getLogin()) {
+                LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
+            } else {
+                smoothDownload();
+            }
+        }
+    }
+
+    private boolean checkWfiDisConnected() {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            return true;
+        }
+        return false;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -290,6 +309,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCopyrightEvent(CopyrightEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         showCopyRightDialog();
     }
 
@@ -300,6 +322,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (bookDetailBean != null) {
             addToCart(bookDetailBean.ebook_id);
         }
@@ -307,10 +332,16 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailReadNowEvent(BookDetailReadNowEvent event) {
-        bookDetailBean = event.getBookDetailBean();
-        BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-        bookDetailBean.bookExtraInfoBean = extraInfoBean;
-        tryDownload(bookDetailBean);
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        BookDetailResultBean bookDetailResultBean = event.getBookDetailResultBean();
+        if (bookDetailResultBean != null) {
+            bookDetailBean = bookDetailResultBean.data;
+            BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
+            bookDetailBean.bookExtraInfoBean = extraInfoBean;
+            tryDownload(bookDetailBean);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -413,6 +444,11 @@ public class BookDetailFragment extends BaseFragment {
                 ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_download_go_on));
                 return;
             }
+        }
+
+        if (!CommonUtils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ManagerActivityUtils.showWifiDialog(getActivity());
+            return;
         }
 
         if (bookDetailBean.can_read || bookDetailBean.isAlreadyBuy) {
@@ -637,6 +673,13 @@ public class BookDetailFragment extends BaseFragment {
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
         if(JDReadApplication.getInstance().getString(R.string.login_success).equals(event.getMessage())) {
             getBookDetailData();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMenuWifiSettingEvent(MenuWifiSettingEvent event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(WifiFragment.class.getName());
         }
     }
 
