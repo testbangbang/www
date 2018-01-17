@@ -86,4 +86,25 @@ public class DateTimeUtil {
             return second_value + second_symbol;
         }
     }
+
+    public static String formatGTMDate(Date date, SimpleDateFormat simpleDateFormat) {
+        if (date == null) {
+            return "";
+        }
+        return simpleDateFormat.format(convertGTMDateToLocal(date));
+    }
+
+    public static Date convertGTMDateToLocal(Date date) {
+        if (date == null) {
+            return null;
+        }
+        int zoneOffset = date.getTimezoneOffset();
+        if (zoneOffset == 0) {
+            return date;
+        }
+        Date newDate = new Date();
+        newDate.setTime(date.getTime() - date.getTimezoneOffset()*60*1000);
+        return newDate;
+    }
+
 }

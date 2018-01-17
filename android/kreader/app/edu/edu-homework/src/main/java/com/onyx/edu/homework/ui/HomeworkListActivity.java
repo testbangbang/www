@@ -310,13 +310,13 @@ public class HomeworkListActivity extends BaseActivity {
             title += "  " + getString(R.string.subject, subject.name);
         }
         if (beginTime != null) {
-            String time = DateTimeUtil.formatDate(beginTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+            String time = DateTimeUtil.formatGTMDate(beginTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
             title += "  " + getString(R.string.publish_time, time);
         }
         binding.toolbar.title.setText(title);
 
         if (endTime != null) {
-            String time = DateTimeUtil.formatDate(endTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+            String time = DateTimeUtil.formatGTMDate(endTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
             binding.toolbar.title2.setText(getString(R.string.end_time, time));
         }
     }
