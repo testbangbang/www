@@ -130,11 +130,12 @@ public class SideNoteHandler extends BaseHandler {
 
     @Override
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        int viewPortWidth = getViewportWidth();
         if (inDocRegion(e)) {
-            if (e.getX() < viewPortWidth / 3) {
+            int left = readerDataHolder.getDocPageLeft();
+            int width = readerDataHolder.getDisplayWidth() / 2;
+            if (left <= e.getX() && e.getX() < left + width / 3) {
                 prevScreen(readerDataHolder);
-            } else if (e.getX() > ((viewPortWidth * 2) / 3) && e.getX() < viewPortWidth) {
+            } else if (e.getX() > left + ((width * 2) / 3) && e.getX() < left + width) {
                 nextScreen(readerDataHolder);
             } else {
                 toggleSideNoteMenu(readerDataHolder);
@@ -185,15 +186,11 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     private boolean inDocRegion(MotionEvent e) {
-        return e.getX() < getViewportWidth();
+        return inDocRegion(e.getX(), e.getY());
     }
 
     private boolean inDocRegion(float x, float y) {
-        return x < getViewportWidth();
-    }
-
-    private int getViewportWidth() {
-        return getParent().getReaderDataHolder().getDisplayWidth() / 2;
+        return getParent().getReaderDataHolder().isInDocPageRegion((int)x, (int)y);
     }
 
     private void toggleSideNoteMenu(final ReaderDataHolder readerDataHolder) {
