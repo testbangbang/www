@@ -87,14 +87,14 @@ public class DateTimeUtil {
         }
     }
 
-    public static String formatGTMDate(Date date, SimpleDateFormat simpleDateFormat) {
+    public static String formatGMTDate(Date date, SimpleDateFormat simpleDateFormat) {
         if (date == null) {
             return "";
         }
-        return simpleDateFormat.format(convertGTMDateToLocal(date));
+        return simpleDateFormat.format(convertGMTDateToLocal(date));
     }
 
-    public static Date convertGTMDateToLocal(Date date) {
+    public static Date convertGMTDateToLocal(Date date) {
         if (date == null) {
             return null;
         }
