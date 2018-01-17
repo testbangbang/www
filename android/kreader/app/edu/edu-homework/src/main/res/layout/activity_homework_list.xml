@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:appCompat="http://schemas.android.com/tools">
+<layout xmlns:appCompat="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -95,12 +96,34 @@
                 android:id="@+id/result"
                 style="@style/homework_text" />
 
-            <TextView
+            <com.onyx.android.sdk.ui.compat.AppCompatFrameLayout
+                appCompat:alwaysLayoutImageView="true"
                 android:visibility="gone"
-                android:padding="@dimen/homework_text_margin"
+                android:id="@+id/get_result_layout"
                 android:background="@drawable/round_bg"
-                android:id="@+id/get_result"
-                style="@style/homework_text" />
+                android:layout_margin="@dimen/homework_text_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textSize="@dimen/homework_text_size"
+                    android:layout_margin="@dimen/homework_text_margin"
+                    android:textColor="@color/text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/get_result" />
+
+                <ImageView
+                    android:visibility="gone"
+                    android:layout_gravity="right"
+                    android:layout_margin="4dp"
+                    android:id="@+id/new_message"
+                    android:src="@drawable/message_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </com.onyx.android.sdk.ui.compat.AppCompatFrameLayout>
+
 
             <TextView
                 android:padding="@dimen/homework_text_margin"

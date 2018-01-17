@@ -146,12 +146,11 @@ public class QuestionFragment extends BaseFragment {
 
     private CompoundButton createCompoundButton(final Question question, final QuestionOption option) {
         final boolean single = question.isSingleChoiceQuestion();
-        final boolean enable = getDataBundle().isDoing();
         final CompoundButton button = single ? new RadioButton(getActivity()) : new CheckBox(getActivity());
         button.setText(Html.fromHtml(StringUtils.filterHtmlWrapChar(option.value), new Base64ImageParser(getActivity()), null));
         button.setTextSize(getResources().getDimension(R.dimen.question_option_text_size));
         button.setChecked(option.checked);
-        button.setEnabled(enable);
+        button.setEnabled(radioButtonIsEnabled());
         button.setGravity(Gravity.TOP);
         button.setTextColor(Color.BLACK);
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -182,6 +181,10 @@ public class QuestionFragment extends BaseFragment {
         for (QuestionOption option : options) {
             option.setChecked(false);
         }
+    }
+
+    private boolean radioButtonIsEnabled() {
+        return getDataBundle().isDoing() && !getDataBundle().isExpired();
     }
     
     public void initFragment() {
@@ -228,13 +231,12 @@ public class QuestionFragment extends BaseFragment {
     }
 
     public void updateViewState() {
-        boolean enable = getDataBundle().isDoing();
         int size = binding.option.getChildCount();
         for (int i = 0; i < size; i++) {
             View view = binding.option.getChildAt(i);
-            view.setEnabled(enable);
+            view.setEnabled(radioButtonIsEnabled());
         }
-        binding.option.setClickable(enable);
+        binding.option.setClickable(radioButtonIsEnabled());
     }
 
     public void saveQuestion(@NonNull SaveDocumentOption option, BaseCallback callback) {

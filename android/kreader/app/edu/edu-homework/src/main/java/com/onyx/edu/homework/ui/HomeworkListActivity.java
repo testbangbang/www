@@ -5,12 +5,14 @@ import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.receiver.NetworkConnectChangedReceiver;
@@ -31,6 +33,7 @@ import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.action.ShowAnalysisAction;
+import com.onyx.edu.homework.action.ShowExpiredDialogAction;
 import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
@@ -40,9 +43,11 @@ import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.CloseSubMenuEvent;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
+import com.onyx.edu.homework.event.ReloadQuestionViewEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
+import com.onyx.edu.homework.receiver.OnyxMessageReceiver;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -58,11 +63,13 @@ public class HomeworkListActivity extends BaseActivity {
 
     private ActivityHomeworkListBinding binding;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
+    private OnyxMessageReceiver onyxMessageReceiver = new OnyxMessageReceiver();
     private List<Question> questions;
     private HomeworkIntent homeworkIntent;
     private RecordFragment recordFragment;
     private QuestionFragment questionFragment;
     private int currentPage = 0;
+    private CountDownTimer timer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -205,6 +212,18 @@ public class HomeworkListActivity extends BaseActivity {
         });
     }
 
+    private void showExpiredDialog() {
+        if (getQuestionFragment() == null) {
+            return;
+        }
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onStopSaveOption(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new ShowExpiredDialogAction(getDataBundle().getEventBus()).execute(HomeworkListActivity.this, null);
+            }
+        });
+    }
+
     private void getHomeworkReview() {
         getDataBundle().post(new StopNoteEvent(false));
         GetHomeworkReviewsAction reviewsAction = new GetHomeworkReviewsAction(getDataBundle().getHomeworkId(), questions, true, true);
@@ -220,6 +239,7 @@ public class HomeworkListActivity extends BaseActivity {
                 reloadQuestionFragment(currentPage);
                 updateViewState();
                 showTotalScore();
+                binding.newMessage.setVisibility(View.GONE);
             }
         });
     }
@@ -258,8 +278,26 @@ public class HomeworkListActivity extends BaseActivity {
                 updateViewState();
                 showTotalScore();
                 initQuestions(questions);
+                initOnyxMessageReceiver();
+                countDownEndTime();
             }
 
+        });
+    }
+
+    private void initOnyxMessageReceiver() {
+        onyxMessageReceiver.registerReceiver(this);
+        onyxMessageReceiver.setOnyxMessageListener(new OnyxMessageReceiver.OnyxMessageListener() {
+            @Override
+            public void onHomeworkMessageReceive(String data) {
+                if (getDataBundle().isReview()) {
+                    return;
+                }
+                HomeworkIntent homework = JSONObject.parseObject(data, HomeworkIntent.class);
+                if (homework.child._id.equals(DataBundle.getInstance().getHomeworkId()) && homework.checked) {
+                    binding.newMessage.setVisibility(View.VISIBLE);
+                }
+            }
         });
     }
 
@@ -267,6 +305,7 @@ public class HomeworkListActivity extends BaseActivity {
         String title = homeworkIntent.child.title;
         Subject subject = getDataBundle().getHomework().subject;
         Date beginTime = getDataBundle().getHomework().beginTime;
+        Date endTime = getDataBundle().getHomework().getEndTime();
         if (subject != null && !StringUtils.isNullOrEmpty(subject.name)) {
             title += "  " + getString(R.string.subject, subject.name);
         }
@@ -275,6 +314,11 @@ public class HomeworkListActivity extends BaseActivity {
             title += "  " + getString(R.string.publish_time, time);
         }
         binding.toolbar.title.setText(title);
+
+        if (endTime != null) {
+            String time = DateTimeUtil.formatDate(endTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+            binding.toolbar.title2.setText(getString(R.string.end_time, time));
+        }
     }
 
     private boolean checkWifi(boolean showMessage) {
@@ -311,6 +355,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (networkConnectChangedReceiver != null) {
             unregisterReceiver(networkConnectChangedReceiver);
         }
+        onyxMessageReceiver.unregisterReceiver(this);
     }
 
     private void showMessage(@StringRes int messageId) {
@@ -430,6 +475,11 @@ public class HomeworkListActivity extends BaseActivity {
         reloadQuestionFragment(currentPage);
     }
 
+    @Subscribe
+    public void onReloadQuestionViewEvent(ReloadQuestionViewEvent event) {
+        reloadQuestionFragment(currentPage);
+    }
+
     public void setCurrentPage(int page) {
         page = Math.max(0, page);
         page = Math.min(page, questions == null ? 0 : questions.size() - 1);
@@ -454,7 +504,7 @@ public class HomeworkListActivity extends BaseActivity {
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
         binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
         binding.result.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
-        binding.getResult.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
+        binding.getResultLayout.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
         binding.submit.setText(getDataBundle().isDoing() ? R.string.submit : R.string.submited);
         binding.submit.setEnabled(getDataBundle().isDoing());
     }
@@ -510,6 +560,34 @@ public class HomeworkListActivity extends BaseActivity {
         if (reload) {
             reloadQuestionFragment(currentPage);
         }
+    }
+
+    private void countDownEndTime() {
+        if (getDataBundle().isExpired()) {
+            return;
+        }
+        Date endTime = getDataBundle().getHomework().getEndTime();
+        if (endTime == null) {
+            return;
+        }
+        long millisInFuture = endTime.getTime() - System.currentTimeMillis();
+        if (millisInFuture <= 0) {
+            return;
+        }
+        if (timer != null) {
+            timer.cancel();
+        }
+        timer = new CountDownTimer(millisInFuture, millisInFuture) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                showExpiredDialog();
+            }
+        }.start();
     }
 
 }

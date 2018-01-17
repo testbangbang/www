@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.model.homework;
 import com.onyx.android.sdk.data.model.Subject;
 
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -35,5 +36,13 @@ public class Homework {
 
     public void setHomeworkId(String id) {
         this._id = id;
+    }
+
+    public boolean isExpired() {
+        return endTime != null && endTime.before(Calendar.getInstance().getTime());
+    }
+
+    public Date getEndTime() {
+        return endTime;
     }
 }
