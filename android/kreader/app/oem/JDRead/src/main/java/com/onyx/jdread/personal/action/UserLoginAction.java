@@ -81,7 +81,7 @@ public class UserLoginAction extends BaseAction {
                 try {
                     UserLoginResultErrorBean resultErrorBean = JSONObjectParseUtils.parseObject(errorJson, UserLoginResultErrorBean.class);
                     if (resultErrorBean != null) {
-                        EventBus.getDefault().post(new UserLoginResultEvent(resultErrorBean.errMsg));
+                        dataBundle.getEventBus().post(new UserLoginResultEvent(resultErrorBean.errMsg));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

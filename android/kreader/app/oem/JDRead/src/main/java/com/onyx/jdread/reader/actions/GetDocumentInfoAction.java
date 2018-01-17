@@ -19,7 +19,7 @@ public class GetDocumentInfoAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        final GetDocumentInfoRequest request = new GetDocumentInfoRequest(readerDataHolder);
+        final GetDocumentInfoRequest request = new GetDocumentInfoRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

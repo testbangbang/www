@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.menu.request;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
@@ -9,18 +10,18 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  */
 
 public class SettingTextStyleRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
     private ReaderTextStyle style;
 
-    public SettingTextStyleRequest(ReaderDataHolder readerDataHolder,ReaderTextStyle style) {
-        this.readerDataHolder = readerDataHolder;
+    public SettingTextStyleRequest(Reader reader,ReaderTextStyle style) {
+        this.reader = reader;
         this.style = style;
     }
 
     @Override
     public SettingTextStyleRequest call() throws Exception {
-        readerDataHolder.getReader().getReaderHelper().getTextStyleManager().setStyle(style);
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,getReaderUserDataInfo(),getReaderViewInfo());
+        reader.getReaderHelper().getTextStyleManager().setStyle(style);
+        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 }

@@ -1,28 +1,28 @@
 package com.onyx.jdread.reader.request;
 
 import com.onyx.android.sdk.reader.api.ReaderException;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
 
 /**
  * Created by huxiaomao on 2018/1/8.
  */
 
 public class GotoPageRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
     private int page;
 
-    public GotoPageRequest(ReaderDataHolder readerDataHolder,int page) {
-        this.readerDataHolder = readerDataHolder;
+    public GotoPageRequest(Reader reader,int page) {
+        this.reader = reader;
         this.page = page;
     }
 
     @Override
     public GotoPageRequest call() throws Exception {
-        readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().setSavePosition(true);
-        if (!readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().gotoPage(page)) {
+        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
+        if (!reader.getReaderHelper().getReaderLayoutManager().gotoPage(page)) {
             throw ReaderException.outOfRange();
         }
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,getReaderUserDataInfo(),getReaderViewInfo());
+        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 }

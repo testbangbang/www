@@ -9,12 +9,7 @@ import android.view.ScaleGestureDetector;
 import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyBinding;
-import com.onyx.android.sdk.data.TouchAction;
 import com.onyx.android.sdk.data.TouchBinding;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.reader.actions.NextPageAction;
-import com.onyx.jdread.reader.actions.PrevPageAction;
-import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 import java.util.Map;
@@ -192,7 +187,7 @@ public class BaseHandler {
 
     private Point bookmarkPosition(Bitmap bitmap) {
         Point point = new Point();
-        point.set(readerDataHolder.getReaderViewHelper().getPageViewWidth() - bitmap.getWidth(), 10);
+        point.set(readerDataHolder.getReaderTouchHelper().getSurfaceView().getWidth() - bitmap.getWidth(), 10);
         return point;
     }
 
@@ -237,8 +232,8 @@ public class BaseHandler {
     }
 
     public static String getTouchAreaCode(ReaderDataHolder readerDataHolder, final MotionEvent event) {
-        int displayWidth = readerDataHolder.getReaderViewHelper().getPageViewWidth();
-        int displayHeight = readerDataHolder.getReaderViewHelper().getPageViewHeight();
+        int displayWidth = readerDataHolder.getReaderTouchHelper().getSurfaceView().getWidth();
+        int displayHeight = readerDataHolder.getReaderTouchHelper().getSurfaceView().getHeight();
         if (event.getX() > displayWidth * TOUCH_VERTICAL_PART / TOUCH_HORIZONTAL_PART &&
                 event.getY() > displayHeight / TOUCH_VERTICAL_PART) {
             return TouchBinding.TOUCH_RIGHT_BOTTOM;

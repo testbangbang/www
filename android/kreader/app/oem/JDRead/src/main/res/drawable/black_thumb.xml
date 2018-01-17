@@ -6,12 +6,11 @@
         android:width="@dimen/switch_thumb_width"
         android:height="@dimen/switch_thumb_height" />
     <corners
-        android:bottomRightRadius="@dimen/switch_radius"
-        android:topRightRadius="@dimen/switch_radius" />
+        android:radius="@dimen/switch_radius" />
 
     <gradient
-        android:endColor="#eeeeee"
-        android:startColor="#eeeeee" />
+        android:endColor="@android:color/black"
+        android:startColor="@android:color/black" />
 
     <stroke
         android:width="1dp"
