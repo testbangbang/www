@@ -7,7 +7,6 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
-import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
@@ -37,7 +36,6 @@ import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.layout.ReaderLayoutManager;
 
@@ -67,9 +65,15 @@ public class ReaderHelper {
     private BaseOptions documentOptions;
     private ImageReflowManager imageReflowManager;
     private BitmapReferenceLruCache bitmapCache;
-    private ReaderBitmapReferenceImpl viewportBitmap;
+    private ReaderBitmapReferenceImpl currentPageBitmap;
+    private Context context;
 
-    public ReaderHelper() {
+    public ReaderHelper(Context context) {
+        this.context = context;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     public boolean selectPlugin(final Context context, final DocumentInfo documentInfo, final ReaderPluginOptions pluginOptions) {
@@ -92,7 +96,7 @@ public class ReaderHelper {
     public void saveReaderDocument(ReaderDocument readerDocument,DocumentInfo documentInfo) {
         this.readerDocument = readerDocument;
         setFileMd5(documentInfo);
-        initData(JDReadApplication.getInstance().getApplicationContext());
+        initData(context);
     }
 
     public void setFileMd5(DocumentInfo documentInfo){
@@ -179,8 +183,8 @@ public class ReaderHelper {
     public void afterDraw(ReaderBitmapReferenceImpl bitmap) {
     }
 
-    public final ReaderBitmapReferenceImpl getViewportBitmap() {
-        return viewportBitmap;
+    public final ReaderBitmapReferenceImpl getCurrentPageBitmap() {
+        return currentPageBitmap;
     }
 
     public ReaderPlugin getPlugin() {
@@ -204,10 +208,10 @@ public class ReaderHelper {
     }
 
     public void saveToCache(ReaderBitmapReferenceImpl renderBitmap) {
-        if (viewportBitmap != null && viewportBitmap.isValid()) {
-            returnBitmapToCache(viewportBitmap);
+        if (currentPageBitmap != null && currentPageBitmap.isValid()) {
+            returnBitmapToCache(currentPageBitmap);
         }
-        viewportBitmap = renderBitmap;
+        currentPageBitmap = renderBitmap;
     }
 
     public void returnBitmapToCache(ReaderBitmapReferenceImpl bitmap) {

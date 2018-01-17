@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.data;
 
+import android.content.Context;
 import android.graphics.Rect;
 
 import com.onyx.jdread.reader.actions.BaseReaderAction;
@@ -36,17 +37,17 @@ public class RegionFunctionManager {
      *          *    region              *
      *************************************
      */
-    static  {
-        regionAction.put(PrevPageAction.getRegionOne(),new PrevPageAction());
-        regionAction.put(NextPageAction.getRegionOne(),new NextPageAction());
-        regionAction.put(NextPageAction.getRegionTwo(),new NextPageAction());
-        regionAction.put(ShowSettingMenuAction.getRegionOne(),new ShowSettingMenuAction());
-        regionAction.put(ShowSettingMenuAction.getRegionTwo(),new ShowSettingMenuAction());
+    public static void initRegionAction(Context context) {
+        regionAction.put(PrevPageAction.getRegionOne(context), new PrevPageAction());
+        regionAction.put(NextPageAction.getRegionOne(context), new NextPageAction());
+        regionAction.put(NextPageAction.getRegionTwo(context), new NextPageAction());
+        regionAction.put(ShowSettingMenuAction.getRegionOne(context), new ShowSettingMenuAction());
+        regionAction.put(ShowSettingMenuAction.getRegionTwo(context), new ShowSettingMenuAction());
     }
 
-    public static boolean processRegionFunction(ReaderDataHolder readerDataHolder,int x, int y) {
-        for (Rect rect : regionAction.keySet()){
-            if(rect.contains(x,y)){
+    public static boolean processRegionFunction(ReaderDataHolder readerDataHolder, int x, int y) {
+        for (Rect rect : regionAction.keySet()) {
+            if (rect.contains(x, y)) {
                 regionAction.get(rect).execute(readerDataHolder);
                 return true;
             }

@@ -55,15 +55,6 @@ public class ReaderDataHolder {
         return handlerManger;
     }
 
-    public ReaderDocument openDocument(final String path, final BaseOptions baseOptions, final ReaderPluginOptions pluginOptions) throws Exception{
-        documentState = DocumentState.OPENING;
-        return reader.getReaderHelper().openDocument(path,baseOptions,pluginOptions);
-    }
-
-    public void saveReaderDocument(ReaderDocument readerDocument, DocumentInfo documentInfo){
-        reader.getReaderHelper().saveReaderDocument(readerDocument,documentInfo);
-    }
-
     public ReaderViewInfo getReaderViewInfo() {
         return readerViewInfo;
     }
@@ -98,7 +89,7 @@ public class ReaderDataHolder {
 
     public void initReaderDataHolder(final DocumentInfo documentInfo) {
         documentState = DocumentState.INIT;
-        reader = ReaderManager.getReader(documentInfo);
+        reader = ReaderManager.getReader(documentInfo,getAppContext());
         readerTouchHelper.setReaderDataHolder(this);
     }
 
@@ -108,6 +99,10 @@ public class ReaderDataHolder {
 
     public void setDocumentOpenState(){
         documentState = DocumentState.OPENED;
+    }
+
+    public void setDocumentOpeningState(){
+        documentState = DocumentState.OPENING;
     }
 
     public Reader getReader() {
@@ -121,10 +116,6 @@ public class ReaderDataHolder {
     public void setReadPageView(SurfaceView readPageView) {
         reader.getReaderViewHelper().setReadPageView(readPageView);
         getReaderTouchHelper().setReaderViewTouchListener(readPageView);
-    }
-
-    public ReaderViewHelper getReaderViewHelper() {
-        return reader.getReaderViewHelper();
     }
 
     public Context getAppContext() {

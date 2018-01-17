@@ -1,22 +1,22 @@
 package com.onyx.jdread.reader.request;
 
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
 
 /**
  * Created by huxiaomao on 2017/12/27.
  */
 
 public class NextScreenRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
 
-    public NextScreenRequest(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public NextScreenRequest(Reader reader) {
+        this.reader = reader;
     }
 
     @Override
     public NextScreenRequest call() throws Exception {
-        readerDataHolder.getReader().getReaderHelper().nextScreen();
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,getReaderUserDataInfo(),getReaderViewInfo());
+        reader.getReaderHelper().nextScreen();
+        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 }

@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.request;
 
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 /**
@@ -7,16 +8,16 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
  */
 
 public class PreviousScreenRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
 
-    public PreviousScreenRequest(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public PreviousScreenRequest(Reader reader) {
+        this.reader = reader;
     }
 
     @Override
     public PreviousScreenRequest call() throws Exception {
-        readerDataHolder.getReader().getReaderHelper().previousScreen();
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder,getReaderUserDataInfo(),getReaderViewInfo());
+        reader.getReaderHelper().previousScreen();
+        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 }

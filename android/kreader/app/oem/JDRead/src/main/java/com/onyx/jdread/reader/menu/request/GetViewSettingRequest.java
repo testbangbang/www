@@ -6,8 +6,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
-import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 /**
@@ -15,22 +14,22 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  */
 
 public class GetViewSettingRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
     private ReaderTextStyle style;
     private ImageReflowSettings settings;
     private ReaderViewInfo readerViewInfo;
 
-    public GetViewSettingRequest(ReaderViewInfo readerViewInfo,ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public GetViewSettingRequest(ReaderViewInfo readerViewInfo,Reader reader) {
+        this.reader = reader;
         this.readerViewInfo = readerViewInfo;
     }
 
     @Override
     public GetViewSettingRequest call() throws Exception {
-        ReaderTextStyle srcStyle = readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle();
+        ReaderTextStyle srcStyle = reader.getReaderHelper().getTextStyleManager().getStyle();
         style = ReaderTextStyle.copy(srcStyle);
 
-        ImageReflowSettings srcSettings = readerDataHolder.getReader().getReaderHelper().getImageReflowManager().getSettings();
+        ImageReflowSettings srcSettings = reader.getReaderHelper().getImageReflowManager().getSettings();
         settings = ImageReflowSettings.copy(srcSettings);
 
         loadUserData();
@@ -46,19 +45,19 @@ public class GetViewSettingRequest extends ReaderBaseRequest {
     }
 
     private void loadUserData() {
-        getReaderUserDataInfo().setDocumentPath(readerDataHolder.getReader().getDocumentInfo().getBookPath());
-        getReaderUserDataInfo().setDocumentCategory(readerDataHolder.getReader().getReaderHelper().getDocumentOptions().getDocumentCategory());
-        getReaderUserDataInfo().setDocumentCodePage(readerDataHolder.getReader().getReaderHelper().getDocumentOptions().getCodePage());
-        getReaderUserDataInfo().setChineseConvertType(readerDataHolder.getReader().getReaderHelper().getDocumentOptions().getChineseConvertType());
-        getReaderUserDataInfo().setDocumentMetadata(readerDataHolder.getReader().getReaderHelper().getDocumentMetadata());
+        getReaderUserDataInfo().setDocumentPath(reader.getDocumentInfo().getBookPath());
+        getReaderUserDataInfo().setDocumentCategory(reader.getReaderHelper().getDocumentOptions().getDocumentCategory());
+        getReaderUserDataInfo().setDocumentCodePage(reader.getReaderHelper().getDocumentOptions().getCodePage());
+        getReaderUserDataInfo().setChineseConvertType(reader.getReaderHelper().getDocumentOptions().getChineseConvertType());
+        getReaderUserDataInfo().setDocumentMetadata(reader.getReaderHelper().getDocumentMetadata());
 
 
-        boolean isSupportScale = readerDataHolder.getReader().getReaderHelper().getRendererFeatures().supportScale();
-        String displayName = readerDataHolder.getReader().getReaderHelper().getPlugin().displayName();
-        String md5 = readerDataHolder.getReader().getReaderHelper().getDocumentMd5();
-        ReaderNavigator navigator = readerDataHolder.getReader().getReaderHelper().getNavigator();
+        boolean isSupportScale = reader.getReaderHelper().getRendererFeatures().supportScale();
+        String displayName = reader.getReaderHelper().getPlugin().displayName();
+        String md5 = reader.getReaderHelper().getDocumentMd5();
+        ReaderNavigator navigator = reader.getReaderHelper().getNavigator();
 
-        Context context = JDReadApplication.getInstance().getApplicationContext();
+        Context context = reader.getReaderHelper().getContext();
         if (readerViewInfo != null) {
             getReaderUserDataInfo().loadPageBookmarks(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
         }

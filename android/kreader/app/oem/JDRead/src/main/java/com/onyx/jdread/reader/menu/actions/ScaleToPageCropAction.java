@@ -20,7 +20,7 @@ public class ScaleToPageCropAction extends BaseReaderAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        final ScaleToPageCropRequest request = new ScaleToPageCropRequest(readerDataHolder,readerViewInfo);
+        final ScaleToPageCropRequest request = new ScaleToPageCropRequest(readerDataHolder.getReader(),readerViewInfo);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

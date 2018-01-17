@@ -2,7 +2,7 @@ package com.onyx.jdread.reader.request;
 
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 
 /**
@@ -11,11 +11,11 @@ import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 
 public class DeleteBookmarkRequest extends ReaderBaseRequest {
     private Bookmark bookmark;
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
 
-    public DeleteBookmarkRequest(ReaderDataHolder readerDataHolder, Bookmark bookmark) {
+    public DeleteBookmarkRequest(Reader reader, Bookmark bookmark) {
         this.bookmark = bookmark;
-        this.readerDataHolder = readerDataHolder;
+        this.reader = reader;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class DeleteBookmarkRequest extends ReaderBaseRequest {
         if (bookmark != null) {
             ContentSdkDataUtils.getDataProvider().deleteBookmark(bookmark);
         }
-        LayoutProviderUtils.updateReaderViewInfo(readerDataHolder.getReader(), getReaderViewInfo(), readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
         return this;
     }
 }

@@ -32,7 +32,7 @@ public class ToggleBookmarkAction extends  BaseReaderAction{
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
         if (toggleSwitch == ToggleSwitch.On) {
-            final AddBookmarkRequest request = new AddBookmarkRequest(readerDataHolder,pageInfo);
+            final AddBookmarkRequest request = new AddBookmarkRequest(readerDataHolder.getReader(),pageInfo);
             request.execute(new RxCallback() {
                 @Override
                 public void onNext(Object o) {
@@ -42,7 +42,7 @@ public class ToggleBookmarkAction extends  BaseReaderAction{
             });
         } else if (toggleSwitch == ToggleSwitch.Off) {
             Bookmark bookmark = readerUserDataInfo.getBookmark(pageInfo);
-            final DeleteBookmarkRequest request = new DeleteBookmarkRequest(readerDataHolder,bookmark);
+            final DeleteBookmarkRequest request = new DeleteBookmarkRequest(readerDataHolder.getReader(),bookmark);
             request.execute(new RxCallback() {
                 @Override
                 public void onNext(Object o) {

@@ -5,8 +5,7 @@ import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.Reader;
 
 import java.io.File;
 
@@ -15,22 +14,22 @@ import java.io.File;
  */
 
 public class LoadDocumentOptionsRequest extends ReaderBaseRequest {
-    private ReaderDataHolder readerDataHolder;
+    private Reader reader;
     private Metadata document;
     private String md5;
 
-    public LoadDocumentOptionsRequest(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public LoadDocumentOptionsRequest(Reader reader) {
+        this.reader = reader;
     }
 
     @Override
     public LoadDocumentOptionsRequest call() throws Exception {
-        md5 = readerDataHolder.getReader().getReaderHelper().getDocumentMd5();
+        md5 = reader.getReaderHelper().getDocumentMd5();
         if (StringUtils.isNullOrEmpty(md5)) {
-            md5 = FileUtils.computeMD5(new File(readerDataHolder.getReader().getDocumentInfo().getBookPath()));
+            md5 = FileUtils.computeMD5(new File(reader.getDocumentInfo().getBookPath()));
         }
-        document = ContentSdkDataUtils.getDataProvider().findMetadataByHashTag(readerDataHolder.getAppContext(),
-                readerDataHolder.getReader().getDocumentInfo().getBookPath(),
+        document = ContentSdkDataUtils.getDataProvider().findMetadataByHashTag(reader.getReaderHelper().getContext(),
+                reader.getDocumentInfo().getBookPath(),
                 md5);
         document.setIdString(md5);
         return this;
