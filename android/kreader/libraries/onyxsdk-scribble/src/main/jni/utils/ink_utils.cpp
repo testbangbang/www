@@ -160,7 +160,7 @@ public:
 
     float setStrokeWidth(float value) {
         //LOGI("setStrokeWidth: %f", value);
-        mRadiusMax = value + 3;
+        mRadiusMax = (value + 3) / 2.0f;
         mRadiusMin = 1.0f;
         return mRadiusMax;
     }
