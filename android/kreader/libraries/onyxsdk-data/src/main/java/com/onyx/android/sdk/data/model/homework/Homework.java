@@ -1,10 +1,12 @@
 package com.onyx.android.sdk.data.model.homework;
 
 import com.onyx.android.sdk.data.model.Subject;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -39,10 +41,11 @@ public class Homework {
     }
 
     public boolean isExpired() {
-        return endTime != null && endTime.before(Calendar.getInstance().getTime());
+        return endTime != null && DateTimeUtil.convertGTMDateToLocal(endTime).before(Calendar.getInstance().getTime());
     }
 
     public Date getEndTime() {
         return endTime;
     }
+
 }
