@@ -66,7 +66,6 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
         viewHolder.bindTo(dataModel);
     }
 
-
     private void setEnableSelection(DataModel dataModel) {
         if (isSelectable(dataModel)) {
             dataModel.setEnableSelection(false);

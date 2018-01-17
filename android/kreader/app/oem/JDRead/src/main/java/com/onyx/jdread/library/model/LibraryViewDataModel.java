@@ -178,7 +178,7 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public QueryArgs libraryQuery() {
-        return libraryQuery(queryArgs.limit, 0);
+        return libraryQuery(queryArgs.limit, queryArgs.offset);
     }
 
     public QueryArgs getCurrentQueryArgs() {
@@ -343,9 +343,10 @@ public class LibraryViewDataModel extends Observable {
         return selectHelper.getLibrarySelectedModel(getLibraryIdString());
     }
 
-    public void quitManageMode() {
+    public void clearSelectedData() {
         getSelectHelper().getChildLibrarySelectedMap().clear();
         getLibrarySelectedModel().setSelectedAll(false);
+        setSelectAllBtnText();
         clearItemSelectedList();
         checkedOrCancelAll(false);
     }
