@@ -770,11 +770,20 @@ public class ReaderDataHolder {
     }
 
     public void toggleSideNoteArea() {
-        if (sideNoteArea == SideNoteArea.LEFT) {
-            setSideNoteArea(SideNoteArea.RIGHT);
-        } else {
-            setSideNoteArea(SideNoteArea.LEFT);
-        }
+        setSideNoteArea(sideNoteArea == SideNoteArea.LEFT
+                ? SideNoteArea.RIGHT : SideNoteArea.LEFT);
+    }
+
+    public int getDocPageDialogPosX(){
+        int posX = (getDisplayWidth() / 4);
+        posX = sideNoteArea == SideNoteArea.LEFT ? posX : -posX;
+        return posX;
+    }
+
+    public int getSideNoteDialogPosX() {
+        int posX = (getDisplayWidth() / 4);
+        posX = sideNoteArea == SideNoteArea.LEFT ? -posX : posX;
+        return posX;
     }
 
     public int getDocPageLeft() {

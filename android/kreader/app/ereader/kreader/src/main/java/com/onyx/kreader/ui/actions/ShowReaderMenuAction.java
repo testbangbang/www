@@ -651,16 +651,9 @@ public class ShowReaderMenuAction extends BaseAction {
         dlg.getInputEditText().setHint("1-" + readerDataHolder.getSideNotePageCount());
 
         WindowManager.LayoutParams params = dlg.getWindow().getAttributes();
-        params.x = calculateSideNoteNoteRegionDialogPosX(readerDataHolder);
+        params.x = readerDataHolder.getSideNoteDialogPosX();
 
         dlg.show();
-    }
-
-    private static int calculateSideNoteNoteRegionDialogPosX(ReaderDataHolder readerDataHolder) {
-        int posX = (readerDataHolder.getDisplayWidth() / 4);
-        posX = readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT
-                ? -posX : posX;
-        return posX;
     }
 
     private static void onGotoSideNotePage(final ReaderDataHolder readerDataHolder, final String page) {
@@ -1043,7 +1036,7 @@ public class ShowReaderMenuAction extends BaseAction {
             }
         });
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-        params.x = calculateSideNoteNoteRegionDialogPosX(readerDataHolder);
+        params.x = readerDataHolder.getSideNoteDialogPosX();
         dialog.show();
     }
 
