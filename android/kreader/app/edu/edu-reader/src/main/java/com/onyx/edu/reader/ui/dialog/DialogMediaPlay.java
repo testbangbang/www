@@ -185,6 +185,7 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
                 resetSeekBar();
                 ReaderDeviceManager.setGcInterval(gcInterval);
                 eventBus.unregister(DialogMediaPlay.this);
+                mediaPlayListener.quitMedia();
                 mediaPlayListener.closeDialog(DialogMediaPlay.this);
             }
         });
@@ -220,12 +221,9 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
             mediaPlayListener.quitMedia();
             dismiss();
         } else if (v.equals(ttsPlay)) {
-            onPlay();
+            onMediaPlay();
         } else if (v.equals(ttsStop)) {
-            hideVoiceControlLayout();
-            mediaPlayListener.stopMedia();
-            setStop(true);
-            onMediaPlayStateChanged();
+            onMediaStop();
         } else if (v.equals(minusVoice)) {
             setSeekBarValue(false);
         } else if (v.equals(plusVoice)) {
@@ -235,7 +233,17 @@ public class DialogMediaPlay extends OnyxBaseDialog implements View.OnClickListe
         }
     }
 
-    private void onPlay() {
+    private void onMediaStop() {
+        seekBarMedia.setProgress(0);
+        progress.setText(R.string.init_time);
+        cancelTimer();
+        hideVoiceControlLayout();
+        mediaPlayListener.stopMedia();
+        setStop(true);
+        onMediaPlayStateChanged();
+    }
+
+    private void onMediaPlay() {
         hideVoiceControlLayout();
         if (isStop()) {
             mediaPlayListener.startMedia();
