@@ -103,7 +103,7 @@ public class DateTimeUtil {
             return date;
         }
         Date newDate = new Date();
-        newDate.setTime(date.getTime() - date.getTimezoneOffset()*60*1000);
+        newDate.setTime(date.getTime() - zoneOffset*60*1000);
         return newDate;
     }
 
