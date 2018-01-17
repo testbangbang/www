@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.edu.reader.R;
@@ -20,9 +21,11 @@ import com.onyx.edu.reader.ui.actions.GotoPositionAction;
 import com.onyx.edu.reader.ui.actions.NextScreenAction;
 import com.onyx.edu.reader.ui.actions.PanAction;
 import com.onyx.edu.reader.ui.actions.PinchZoomAction;
+import com.onyx.edu.reader.ui.actions.PlayAudioAction;
 import com.onyx.edu.reader.ui.actions.PreviousScreenAction;
 import com.onyx.edu.reader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
+import com.onyx.edu.reader.ui.actions.StartMediaPlayAction;
 import com.onyx.edu.reader.ui.data.BookmarkIconFactory;
 import com.onyx.edu.reader.ui.data.PageTurningDetector;
 import com.onyx.edu.reader.ui.data.PageTurningDirection;
@@ -301,6 +304,9 @@ public abstract class BaseHandler {
         if (tryPageLink(readerDataHolder, x, y)) {
             return true;
         }
+        if (tryRichMedia(readerDataHolder, x, y)) {
+            return true;
+        }
         return false;
     }
 
@@ -347,6 +353,24 @@ public abstract class BaseHandler {
                         new GotoPositionAction(link.getPagePosition()).execute(readerDataHolder);
                         return true;
                     }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean tryRichMedia(final ReaderDataHolder readerDataHolder, final float x, final float y) {
+        for (PageInfo pageInfo : readerDataHolder.getReaderViewInfo().getVisiblePages()) {
+            if (!readerDataHolder.getReaderUserDataInfo().hasRichMedias(pageInfo)) {
+                continue;
+            }
+            List<ReaderRichMedia> richMedias = readerDataHolder.getReaderUserDataInfo().getRichMedias(pageInfo);
+            for (ReaderRichMedia richMedia : richMedias) {
+                if (richMedia.getRectangle().contains(x, y)) {
+                    if (richMedia.getMediaType() == ReaderRichMedia.MediaType.Audio) {
+                        new StartMediaPlayAction().execute(readerDataHolder, null);
+                    }
+                    return true;
                 }
             }
         }

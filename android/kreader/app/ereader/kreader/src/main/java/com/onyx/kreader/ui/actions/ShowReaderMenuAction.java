@@ -997,6 +997,11 @@ public class ShowReaderMenuAction extends BaseAction {
             }
 
             @Override
+            public boolean hasRichMedias() {
+                return false;
+            }
+
+            @Override
             public List<String> getFontFaces() {
                 return fontFaces;
             }

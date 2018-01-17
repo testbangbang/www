@@ -35,6 +35,7 @@ import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
 import com.onyx.edu.reader.device.DeviceConfig;
+import com.onyx.edu.reader.media.ReaderMediaManager;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.actions.CloseNoteMenuAction;
 import com.onyx.edu.reader.note.receiver.DeviceReceiver;
@@ -73,6 +74,7 @@ public class ReaderDataHolder {
     private HandlerManager handlerManager;
     private ReaderSelectionManager selectionManager;
     private ReaderTtsManager ttsManager;
+    private ReaderMediaManager mediaManager;
     private NoteManager noteManager;
     private DataManager dataManager;
     private CloudManager cloudManager;
@@ -306,6 +308,13 @@ public class ReaderDataHolder {
             ttsManager = new ReaderTtsManager(this);
         }
         return ttsManager;
+    }
+
+    public ReaderMediaManager getMediaManager() {
+        if (mediaManager == null) {
+            mediaManager = new ReaderMediaManager(getEventBus());
+        }
+        return mediaManager;
     }
 
     public boolean useCustomFormMode() {
@@ -590,6 +599,7 @@ public class ReaderDataHolder {
         unregisterReceiver();
         closeActiveDialogs();
         closeTts();
+        stopMedia();
         closeNoteManager();
         closeNoteMenu();
         closeFormMenu();
@@ -600,6 +610,7 @@ public class ReaderDataHolder {
 
     public void stop() {
         clearFormFieldControls();
+        stopMedia();
     }
 
     private void closeFormMenu() {
@@ -637,6 +648,12 @@ public class ReaderDataHolder {
         if (ttsManager != null) {
             ttsManager.shutdown();
             ttsManager = null;
+        }
+    }
+
+    private void stopMedia() {
+        if (mediaManager != null) {
+            mediaManager.stop();
         }
     }
 
@@ -685,6 +702,7 @@ public class ReaderDataHolder {
     }
 
     public void onActivityPause() {
+        stopMedia();
         getEventBus().post(new ActivityPauseEvent(getContext()));
     }
 

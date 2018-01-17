@@ -33,6 +33,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
     private boolean loadPageLinks = true;
     private boolean loadPageImages = true;
     private boolean loadFormFields = true;
+    private boolean loadRichMedia = true;
 
     public BaseReaderRequest() {
         super();
@@ -236,6 +237,9 @@ public abstract class BaseReaderRequest extends BaseRequest {
         }
         if (readerViewInfo != null && loadFormFields && reader.getReaderHelper().getFormManager().isCustomFormEnabled()) {
             getReaderUserDataInfo().loadFormFields(getContext(), reader, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null && loadRichMedia) {
+            getReaderUserDataInfo().loadReaderRichMedia(getContext(), reader, readerViewInfo.getVisiblePages());
         }
     }
 

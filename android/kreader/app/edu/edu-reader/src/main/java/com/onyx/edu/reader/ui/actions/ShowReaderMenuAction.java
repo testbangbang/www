@@ -211,6 +211,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_SCRIBBLE, R.drawable.ic_write, R.string.scribble),
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_topic, R.string.toc),
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.TTS, R.drawable.ic_tts, R.string.popup_selection_menu_start_tts),
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.MEDIA_PLAY, R.drawable.ic_tts, R.string.popup_selection_menu_start_tts),
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.REFRESH, R.drawable.ic_refresh, R.string.screen_refresh)
         };
         readerMenu = new EduMenu(readerDataHolder.getContext());
@@ -313,6 +314,9 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case TTS:
                         showTtsDialog(readerDataHolder);
+                        break;
+                    case MEDIA_PLAY:
+                        showMediaPlayDialog(readerDataHolder);
                         break;
                     case REFRESH:
                         showScreenRefreshDialog(readerDataHolder);
@@ -778,6 +782,12 @@ public class ShowReaderMenuAction extends BaseAction {
         action.execute(readerDataHolder, null);
     }
 
+    public static void showMediaPlayDialog(final ReaderDataHolder readerDataHolder){
+        hideReaderMenu();
+        StartMediaPlayAction action = new StartMediaPlayAction();
+        action.execute(readerDataHolder, null);
+    }
+
     private void showReaderSettings(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         new ShowReaderSettingsAction().execute(readerDataHolder, null);
@@ -1118,6 +1128,11 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public boolean isShowingNotes() {
                 return SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
+            }
+
+            @Override
+            public boolean hasRichMedias() {
+                return readerDataHolder.getReaderUserDataInfo().hasRichMedias(readerDataHolder.getFirstPageInfo());
             }
 
             @Override
