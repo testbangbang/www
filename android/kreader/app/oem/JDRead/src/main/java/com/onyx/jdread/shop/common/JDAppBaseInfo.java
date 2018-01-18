@@ -221,4 +221,10 @@ public class JDAppBaseInfo {
         String sign = FileUtils.computeMD5(salt + queryString);
         return sign;
     }
+
+    public void clear() {
+        if (requestParamsMap != null && requestParamsMap.size() > 0) {
+            requestParamsMap.clear();
+        }
+    }
 }

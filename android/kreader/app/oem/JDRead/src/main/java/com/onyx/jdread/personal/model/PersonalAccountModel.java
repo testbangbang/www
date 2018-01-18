@@ -2,6 +2,7 @@ package com.onyx.jdread.personal.model;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.event.ConsumptionRecordEvent;
 import com.onyx.jdread.personal.event.PaidRecordEvent;
 import com.onyx.jdread.personal.event.PointsForEvent;
@@ -16,14 +17,14 @@ import java.util.Map;
  */
 
 public class PersonalAccountModel {
-    private String[] accountTitles = JDReadApplication.getInstance().getResources().getStringArray(R.array.personal_account);
+    private String[] accountTitles = ResManager.getResStringArray(R.array.personal_account);
     private Map<String, Object> accountEvents = new HashMap<String, Object>() {
         {
-            put(JDReadApplication.getInstance().getResources().getString(R.string.top_up), new TopUpEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.consumption_record), new ConsumptionRecordEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.paid_record), new PaidRecordEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.read_vip), new ReadVipEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.points_for), new PointsForEvent());
+            put(ResManager.getResString(R.string.top_up), new TopUpEvent());
+            put(ResManager.getResString(R.string.consumption_record), new ConsumptionRecordEvent());
+            put(ResManager.getResString(R.string.paid_record), new PaidRecordEvent());
+            put(ResManager.getResString(R.string.read_vip), new ReadVipEvent());
+            put(ResManager.getResString(R.string.points_for), new PointsForEvent());
         }
     };
 

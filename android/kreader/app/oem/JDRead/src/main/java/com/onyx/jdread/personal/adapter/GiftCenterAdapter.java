@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemGiftCenterBinding;
+import com.onyx.jdread.main.common.ResManager;
 
 /**
  * Created by li on 2017/12/29.
@@ -18,12 +19,12 @@ import com.onyx.jdread.databinding.ItemGiftCenterBinding;
 public class GiftCenterAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     @Override
     public int getRowCount() {
-        return 4;
+        return ResManager.getResInteger(R.integer.gift_center_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return 1;
+        return ResManager.getResInteger(R.integer.gift_center_adapter_col);
     }
 
     @Override

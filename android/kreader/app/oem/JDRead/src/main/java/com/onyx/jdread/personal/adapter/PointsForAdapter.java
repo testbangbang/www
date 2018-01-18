@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemPointsForBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.model.PointsForData;
 
 import java.util.List;
@@ -23,12 +24,12 @@ public class PointsForAdapter extends PageRecyclerView.PageAdapter implements Vi
 
     @Override
     public int getRowCount() {
-        return 5;
+        return ResManager.getResInteger(R.integer.points_for_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return 1;
+        return ResManager.getResInteger(R.integer.points_for_adapter_col);
     }
 
     @Override

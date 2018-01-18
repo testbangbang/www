@@ -82,8 +82,6 @@ public class JDReadApplication extends MultiDexApplication {
         initContentProvider(this);
         initFrescoLoader();
         PreferenceManager.init(instance);
-        OnyxDownloadManager.init(this.getApplicationContext());
-        OnyxDownloadManager.getInstance();
         initEventListener();
         initDownloadManager();
     }

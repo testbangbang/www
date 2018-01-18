@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.model.PopMenuModel;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.event.FilterEvent;
 import com.onyx.jdread.personal.event.FilterHaveBoughtEvent;
 import com.onyx.jdread.personal.event.FilterAllEvent;
@@ -28,8 +29,8 @@ public class PersonalBookModel {
     };
 
     public void loadPopupData() {
-        String[] bookFilters = JDReadApplication.getInstance().getResources().getStringArray(R.array.book_filter);
-        TypedArray typedArray = JDReadApplication.getInstance().getResources().obtainTypedArray(R.array.book_filter);
+        String[] bookFilters = ResManager.getResStringArray(R.array.book_filter);
+        TypedArray typedArray = ResManager.getTypedArray(R.array.book_filter);
         int length = typedArray.length();
         int[] resIds = new int[length];
         for (int i = 0; i < bookFilters.length; i++) {

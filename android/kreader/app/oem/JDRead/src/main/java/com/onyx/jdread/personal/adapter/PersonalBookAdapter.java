@@ -12,6 +12,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemPersonalBookBinding;
+import com.onyx.jdread.main.common.ResManager;
 
 import java.util.List;
 
@@ -24,12 +25,12 @@ public class PersonalBookAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_book_row);
+        return ResManager.getResInteger(R.integer.personal_book_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_book_col);
+        return ResManager.getResInteger(R.integer.personal_book_col);
     }
 
     @Override

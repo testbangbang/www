@@ -11,6 +11,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemConsumptionRecordBinding;
+import com.onyx.jdread.main.common.ResManager;
 
 /**
  * Created by li on 2018/1/2.
@@ -19,12 +20,12 @@ import com.onyx.jdread.databinding.ItemConsumptionRecordBinding;
 public class ConsumptionRecordAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_consumption_record_row);
+        return ResManager.getResInteger(R.integer.personal_consumption_record_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_consumption_record_col);
+        return ResManager.getResInteger(R.integer.personal_consumption_record_col);
     }
 
     @Override

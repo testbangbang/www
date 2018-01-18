@@ -11,6 +11,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemExperienceBinding;
+import com.onyx.jdread.main.common.ResManager;
 
 /**
  * Created by li on 2017/12/29.
@@ -19,12 +20,12 @@ import com.onyx.jdread.databinding.ItemExperienceBinding;
 public class PersonalExperienceAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_experience_row);
+        return ResManager.getResInteger(R.integer.personal_experience_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_experience_col);
+        return ResManager.getResInteger(R.integer.personal_experience_col);
     }
 
     @Override

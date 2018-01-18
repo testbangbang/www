@@ -11,6 +11,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemDialogTopUpBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.cloud.entity.jdbean.TopUpValueBean;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,12 +32,12 @@ public class TopUpAdapter extends PageRecyclerView.PageAdapter implements View.O
 
     @Override
     public int getRowCount() {
-        return 3;
+        return ResManager.getResInteger(R.integer.top_up_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return ResManager.getResInteger(R.integer.top_up_adapter_col);
     }
 
     @Override
