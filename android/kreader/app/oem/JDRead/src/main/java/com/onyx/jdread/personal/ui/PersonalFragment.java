@@ -110,14 +110,7 @@ public class PersonalFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginEvent(UserLoginEvent event) {
-        Utils.hideSoftWindow(getActivity());
-        UserLoginAction userLoginAction = new UserLoginAction(getActivity(),event.account,event.password);
-        userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                binding.setIsLogin(true);
-            }
-        });
+        binding.setIsLogin(true);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -277,13 +277,6 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUserLoginEvent(UserLoginEvent event) {
-        Utils.hideSoftWindow(getActivity());
-        UserLoginAction userLoginAction = new UserLoginAction(getActivity(),event.account,event.password);
-        userLoginAction.execute(PersonalDataBundle.getInstance(), null);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCancelUserLoginDialogEvent(CancelUserLoginDialogEvent event) {
         LoginHelper.dismissUserLoginDialog();
     }

@@ -3,6 +3,7 @@ package com.onyx.jdread.setting.ui;
 import android.databinding.DataBindingUtil;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -82,7 +83,7 @@ public class WifiFragment extends BaseFragment {
             }
         });
 
-        binding.wifiTitleBar.settingTitleSwitch.setOnClickListener(new View.OnClickListener() {
+        binding.wifiTitleBar.settingTitleCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 wifiAdmin.toggleWifi();
@@ -208,7 +209,9 @@ public class WifiFragment extends BaseFragment {
         wifiAdmin = new WifiAdmin(JDReadApplication.getInstance(), new WifiAdmin.Callback() {
             @Override
             public void onWifiStateChange(boolean isWifiEnable, int wifiExtraState) {
-                updateUI(isWifiEnable);
+                if (wifiExtraState != WifiManager.WIFI_STATE_ENABLING) {
+                    updateUI(isWifiEnable);
+                }
             }
 
             @Override
@@ -254,7 +257,7 @@ public class WifiFragment extends BaseFragment {
     }
 
     private void updateUI(boolean isWifiEnable) {
-        binding.wifiTitleBar.settingTitleSwitch.setChecked(isWifiEnable);
+        binding.wifiTitleBar.settingTitleCheck.setChecked(isWifiEnable);
         binding.wifiRecycler.setVisibility(isWifiEnable ? View.VISIBLE : View.GONE);
         if (!isWifiEnable) {
             wifiSettingAdapter.getScanResult().clear();
