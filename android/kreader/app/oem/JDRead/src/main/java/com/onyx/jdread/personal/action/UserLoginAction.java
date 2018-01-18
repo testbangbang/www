@@ -15,11 +15,8 @@ import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserLoginResultErrorBean;
-import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-
-import org.greenrobot.eventbus.EventBus;
 
 import jd.wjlogin_sdk.common.WJLoginHelper;
 import jd.wjlogin_sdk.common.listener.OnLoginCallback;
@@ -120,7 +117,7 @@ public class UserLoginAction extends BaseAction {
 
     private void onSyncLoginInfo(PersonalDataBundle dataBundle, SyncLoginInfoBean syncLoginInfoBean) {
         String code = syncLoginInfoBean.getCode();
-        if (Constants.LOGIN_CODE_SUCCESS.equals(code)) {
+        if (Constants.RESULT_CODE_SUCCESS.equals(code)) {
             // TODO: 2018/1/12 recent close it
             //LoginHelper.getUserInfo(dataBundle);
             dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success)));
@@ -129,15 +126,16 @@ public class UserLoginAction extends BaseAction {
             }
         } else {
             String errorMsg = JDReadApplication.getInstance().getString(R.string.login_fail);
-            if (Constants.LOGIN_CODE_PARAMS_ERROR.equals(code)) {
+            if (Constants.RESULT_CODE_PARAMS_ERROR.equals(code)) {
                 errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_params_error);
-            } else if (Constants.LOGIN_CODE_NO_FUNCTION.equals(code)) {
+            } else if (Constants.RESULT_CODE_NO_FUNCTION.equals(code)) {
                 errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_no_function);
-            } else if (Constants.LOGIN_CODE_NOT_LOGIN.equals(code)) {
+            } else if (Constants.RESULT_CODE_NOT_LOGIN.equals(code)) {
                 errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_not_login);
-            } else if (Constants.LOGIN_CODE_SERVER_ERROR_CODE_ONE.equals(code) ||
-                    Constants.LOGIN_CODE_SERVER_ERROR_CODE_TWO.equals(code)) {
-                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_server_error);
+            } else if (Constants.RESULT_CODE_PARAMS_LENGTH_ERROR.equals(code)) {
+                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_params_error);
+            } else if (Constants.RESULT_CODE_UNKNOWN_ERROR.equals(code)) {
+                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_unknown_error);
             }
             dataBundle.getEventBus().post(new UserLoginResultEvent(errorMsg));
         }

@@ -180,7 +180,7 @@
     <string name="login_resutl_params_error">params error</string>
     <string name="login_resutl_no_function">no function</string>
     <string name="login_resutl_not_login">The account is not login, please login again</string>
-    <string name="login_resutl_server_error">system error</string>
+    <string name="login_resutl_unknown_error">unknown error</string>
     <string name="the_book_unsupported_try_read">The book unsupported probation</string>
     <string name="the_book_unsupported_fluent_read">The book unsupported fluent read</string>
     <string name="you_unsupported_fluent_read">You unsupported fluent read</string>
@@ -316,7 +316,7 @@
     <string name="screen_saver_key">screen_saver_key</string>
     <string name="no_selected">No merchandise is selected</string>
     <string name="subject_list_sort_type_hot">Hot</string>
-    <string name="subject_list_sort_type_sales">Sales</string>
+    <string name="subject_list_sort_type_price">Price</string>
     <string name="subject_list_sort_type_newest">Newest</string>
     <string name="subject_list_all">All</string>
     <string name="subject_list_just_vip">Just  look at VIP</string>
@@ -369,4 +369,6 @@
     <string name="input_number_for_contact">Please enter your mobile phone number so that the staff can contact you.</string>
     <string name="installed">installed</string>
     <string name="vip">VIP</string>
+    <string name="content_empty">null</string>
+    <string name="error_content_author_unknown">unknown author</string>
 </resources>

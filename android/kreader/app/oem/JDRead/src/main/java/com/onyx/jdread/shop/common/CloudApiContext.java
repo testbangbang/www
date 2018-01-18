@@ -122,6 +122,10 @@ public class CloudApiContext {
         public static final String PAGE_SIZE = "page_size";
         public static final String CURRENT_PAGE = "page";
         public static final int PAGE_SIZE_COUNT = 20;
+        public static final int FILTER_DEFAULT = 0;
+        public static final int FILTER_VIP = 1;
+        public static final int FILTER_SALE = 2;
+        public static final int FILTER_FREE = 3;
     }
 
     public static class BookDownloadUrl {

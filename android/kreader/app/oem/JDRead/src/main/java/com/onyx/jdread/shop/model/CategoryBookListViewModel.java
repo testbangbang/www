@@ -80,14 +80,14 @@ public class CategoryBookListViewModel extends BaseObservable {
     }
 
     public void onSortKeyHotClick(){
-        getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_PRAISE));
-    }
-
-    public void onSortKeySalesClick(){
         getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_SALES));
     }
 
     public void onSortKeyNewestClick(){
         getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_TIME));
+    }
+
+    public void onSortKeyPriceClick(){
+        getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_PRICE));
     }
 }

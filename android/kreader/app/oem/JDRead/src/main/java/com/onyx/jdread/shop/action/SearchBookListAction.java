@@ -20,20 +20,24 @@ import static com.onyx.jdread.shop.common.CloudApiContext.SearchBook.SEARCH_TYPE
  * Created by jackdeng on 2018/1/2.
  */
 
-public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
+public class SearchBookListAction extends BaseAction<ShopDataBundle> {
 
     private int sortType;
     private int sortKey;
     private int currentPage;
     private String catId;
+    private String keyWord;
+    private int filter;
     private BookShopViewModel shopViewModel;
     private BookModelBooksResultBean resultBean;
 
-    public BookCategoryLevel2BooksAction(String catId, int currentPage, int sortKey, int sortType) {
+    public SearchBookListAction(String catId, int currentPage, int sortKey, int sortType, String keyWord, int filter) {
         this.currentPage = currentPage;
         this.catId = catId;
         this.sortType = sortType;
         this.sortKey = sortKey;
+        this.keyWord = keyWord;
+        this.filter = filter;
     }
 
     @Override
@@ -44,6 +48,8 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
         Map<String, String> queryArgs = new HashMap<>();
         queryArgs.put(CloudApiContext.SearchBook.SEARCH_TYPE, SEARCH_TYPE_BOOK_SHOP);
         queryArgs.put(CloudApiContext.SearchBook.CATE_ID, String.valueOf(catId));
+        queryArgs.put(CloudApiContext.SearchBook.KEY_WORD, keyWord);
+        queryArgs.put(CloudApiContext.SearchBook.FILTER, String.valueOf(filter));
         queryArgs.put(CloudApiContext.SearchBook.SORT, sortKey + "_" + sortType);
         queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, String.valueOf(currentPage));
         queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, PAGE_SIZE_DEFAULT_VALUES);
@@ -69,13 +75,8 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onNext(RxRequestSearchBooks request) {
                 resultBean = request.getResultBean();
-                if (resultBean != null) {
-                    if (resultBean.data != null)
-                    shopViewModel.getAllCategoryViewModel().getCategoryBookListViewModel().setBookList(resultBean.data.items);
-                }
-
                 if (rxCallback != null) {
-                    rxCallback.onNext(BookCategoryLevel2BooksAction.this);
+                    rxCallback.onNext(SearchBookListAction.this);
                 }
             }
 

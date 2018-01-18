@@ -18,9 +18,10 @@ import com.onyx.jdread.databinding.FragmentCategoryBookListBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.shop.action.BookCategoryLevel2BooksAction;
+import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
@@ -103,11 +104,13 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType) {
-        BookCategoryLevel2BooksAction booksAction = new BookCategoryLevel2BooksAction(catid, currentPage, sortKey, sortType);
-        booksAction.execute(getShopDataBundle(), new RxCallback<BookCategoryLevel2BooksAction>() {
+        boolean justShowVip = categoryBookListBinding.subjectListShowVip.isChecked();
+        int filter = justShowVip ? CloudApiContext.SearchBook.FILTER_VIP : CloudApiContext.SearchBook.FILTER_DEFAULT;
+        SearchBookListAction booksAction = new SearchBookListAction(catid, currentPage, sortKey, sortType, "", filter);
+        booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
             @Override
-            public void onNext(BookCategoryLevel2BooksAction categoryBooksAction) {
-                setBooksData();
+            public void onNext(SearchBookListAction action) {
+                setBooksData(action.getBooksResultBean());
                 updateContentView();
             }
         });
@@ -119,7 +122,12 @@ public class CategoryBookListFragment extends BaseFragment {
         getCategoryBookListViewModel().isFree.set(typeFree);
     }
 
-    private void setBooksData() {
+    private void setBooksData(BookModelBooksResultBean booksResultBean) {
+        if (booksResultBean != null) {
+            if (booksResultBean.data != null) {
+                getCategoryBookListViewModel().setBookList(booksResultBean.data.items);
+            }
+        }
         recyclerView.gotoPage(0);
     }
 
@@ -284,10 +292,13 @@ public class CategoryBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSubjectListSortKeyChangeEvent(SubjectListSortKeyChangeEvent event) {
-        if (sortkey != event.sortKey) {
+        if (sortkey == event.sortKey) {
+            sortType = sortType == CloudApiContext.SearchBook.SORT_TYPE_ASC ? CloudApiContext.SearchBook.SORT_TYPE_DESC : CloudApiContext.SearchBook.SORT_TYPE_ASC;
+        } else {
+            sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
             sortkey = event.sortKey;
-            getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
         }
+        getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
         showOrCloseSortButton();
     }
 

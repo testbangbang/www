@@ -176,7 +176,7 @@
     <string name="login_resutl_params_error">参数错误</string>
     <string name="login_resutl_no_function">接口不存在</string>
     <string name="login_resutl_not_login">账号未登录,请重新登录</string>
-    <string name="login_resutl_server_error">系统错误</string>
+    <string name="login_resutl_unknown_error">未知错误</string>
     <string name="the_book_unsupported_try_read">抱歉,该图书不支持试读!</string>
     <string name="the_book_unsupported_fluent_read">抱歉,该图书不支持畅读!</string>
     <string name="you_unsupported_fluent_read">抱歉,您不支持畅读该书!</string>
@@ -302,7 +302,7 @@
     <string name="network_password">密码</string>
     <string name="no_selected">未选中任何商品</string>
     <string name="subject_list_sort_type_hot">热门</string>
-    <string name="subject_list_sort_type_sales">销量</string>
+    <string name="subject_list_sort_type_price">价格</string>
     <string name="subject_list_sort_type_newest">最新</string>
     <string name="subject_list_all">全部</string>
     <string name="subject_list_just_vip">只看畅读VIP</string>
@@ -353,4 +353,5 @@
     <string name="input_number_for_contact">请输入手机号，方便工作人员与您联系</string>
     <string name="installed">已安装</string>
     <string name="vip">会员</string>
+    <string name="error_content_author_unknown">作者未知</string>
 </resources>

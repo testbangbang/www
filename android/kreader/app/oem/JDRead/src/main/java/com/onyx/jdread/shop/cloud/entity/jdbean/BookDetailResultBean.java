@@ -1,15 +1,17 @@
 package com.onyx.jdread.shop.cloud.entity.jdbean;
 
+import android.databinding.BaseObservable;
+
 /**
  * Created by huxiaomao on 17/3/28.
  */
 
 public class BookDetailResultBean {
     public DetailBean data;
-    public int resultCode;
+    public int result_code;
     public String message;
 
-    public static class DetailBean {
+    public static class DetailBean extends BaseObservable{
         public Object tag;
         public int ebook_id;
         public String name;
@@ -45,5 +47,10 @@ public class BookDetailResultBean {
         public String random;
         public String order_id;
         public boolean isAlreadyBuy;
+
+        public void setAuthor(String author) {
+            this.author = author;
+            notifyChange();
+        }
     }
 }

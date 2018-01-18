@@ -67,18 +67,18 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/subject_list_sort_button_margin_left"
                         android:background="@drawable/normal_selected_background"
-                        android:onClick="@{()->viewModel.onSortKeySalesClick()}"
+                        android:onClick="@{()->viewModel.onSortKeyNewestClick()}"
                         android:padding="@dimen/subject_list_sort_button_padding"
-                        android:text="@string/subject_list_sort_type_sales" />
+                        android:text="@string/subject_list_sort_type_newest" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/subject_list_sort_button_margin_left"
                         android:background="@drawable/normal_selected_background"
-                        android:onClick="@{()->viewModel.onSortKeyNewestClick()}"
+                        android:onClick="@{()->viewModel.onSortKeyPriceClick()}"
                         android:padding="@dimen/subject_list_sort_button_padding"
-                        android:text="@string/subject_list_sort_type_newest" />
+                        android:text="@string/subject_list_sort_type_price" />
 
                 </LinearLayout>
 

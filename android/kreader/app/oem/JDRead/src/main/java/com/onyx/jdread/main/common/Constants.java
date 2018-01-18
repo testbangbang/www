@@ -30,6 +30,7 @@ public class Constants {
     public static final String SP_KEY_SUBJECT_NAME = "subject_name";
     public static final String SP_KEY_SUBJECT_MODEL_ID = "subject_model_id";
     public static final String SP_KEY_SUBJECT_MODEL_TYPE = "subject_model_type";
+    public static final String SP_KEY_KEYWORD = "Keyword";
 
     public static final int BOOK_SHOP_DEFAULT_CID = 11;
     public static final int BOOK_COMMENT_PAGE_SIZE = 20;
@@ -37,12 +38,12 @@ public class Constants {
     public static final String BOOK_PAGE_SIZE = "20";
     public static final int PAGE_STEP = 1;
     public static final String BOOK_FORMAT = ".JEB";
-    public static final String LOGIN_CODE_SUCCESS = "0";
-    public static final String LOGIN_CODE_PARAMS_ERROR = "1";
-    public static final String LOGIN_CODE_NO_FUNCTION = "2";
-    public static final String LOGIN_CODE_NOT_LOGIN = "3";
-    public static final String LOGIN_CODE_SERVER_ERROR_CODE_ONE = "-1";
-    public static final String LOGIN_CODE_SERVER_ERROR_CODE_TWO = "-2";
+    public static final String RESULT_CODE_SUCCESS = "0";
+    public static final String RESULT_CODE_UNKNOWN_ERROR = "1";
+    public static final String RESULT_CODE_NO_FUNCTION = "2";
+    public static final String RESULT_CODE_NOT_LOGIN = "3";
+    public static final String RESULT_CODE_PARAMS_ERROR = "4";
+    public static final String RESULT_CODE_PARAMS_LENGTH_ERROR = "5";
     public static final int PASSWORD_MIN_LENGTH = 6;
     public static final String CODE_STATE_THREE = "3";
     public static final String CODE_STATE_FOUR = "4";

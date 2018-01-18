@@ -5,6 +5,8 @@ import android.databinding.BaseObservable;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
+import com.onyx.jdread.shop.event.BookDetailViewInfoEvent;
+import com.onyx.jdread.shop.event.BookSearchKeyWordrEvent;
 import com.onyx.jdread.shop.event.BookDetailReadNowEvent;
 import com.onyx.jdread.shop.event.CopyrightCancelEvent;
 import com.onyx.jdread.shop.event.CopyrightEvent;
@@ -104,6 +106,30 @@ public class BookDetailViewModel extends BaseObservable {
 
     public void onViewDirectoryClick() {
 
+    }
+
+    public void onInfoClick() {
+        if (bookDetailResultBean != null && bookDetailResultBean.data != null) {
+            getEventBus().post(new BookDetailViewInfoEvent(bookDetailResultBean.data.info));
+        }
+    }
+
+    public void onAuthorClick() {
+        if (bookDetailResultBean != null && bookDetailResultBean.data != null) {
+            getEventBus().post(new BookSearchKeyWordrEvent(bookDetailResultBean.data.author));
+        }
+    }
+
+    public void onCategoryPathLevelTwoClick() {
+        if (bookDetailResultBean != null && bookDetailResultBean.data != null) {
+            getEventBus().post(new BookSearchKeyWordrEvent(bookDetailResultBean.data.second_catid1_str));
+        }
+    }
+
+    public void onCategoryPathLevelThreeClick() {
+        if (bookDetailResultBean != null && bookDetailResultBean.data != null) {
+            getEventBus().post(new BookSearchKeyWordrEvent(bookDetailResultBean.data.third_catid1_str));
+        }
     }
 
     public void onViewCommentClick() {

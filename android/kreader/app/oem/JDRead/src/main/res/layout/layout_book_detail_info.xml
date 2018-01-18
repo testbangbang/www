@@ -4,7 +4,7 @@
 
     <data>
 
-        <import type="com.onyx.jdread.main.common.CommonUtils" />
+        <import type="com.onyx.jdread.shop.utils.ViewHelper" />
 
         <import type="android.view.View" />
 
@@ -15,6 +15,7 @@
     </data>
 
     <LinearLayout
+        android:visibility="@{ViewHelper.isShowBookDetailView(bookDetailViewModel.bookDetailResultBean) ? View.VISIBLE : View.GONE}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -64,7 +65,8 @@
                         android:layout_marginTop="@dimen/book_detail_author_margin_top"
                         android:layout_weight="1"
                         android:drawablePadding="@dimen/view_all_drawable_padding"
-                        android:drawableRight="@mipmap/ic_go_view_all"
+                        android:enabled="false"
+                        android:onClick="@{()->bookDetailViewModel.onAuthorClick()}"
                         android:ellipsize="end"
                         android:gravity="center_vertical"
                         android:maxLines="1"
@@ -117,7 +119,7 @@
                             android:id="@+id/book_detail_yuedou_price_old"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{@string/book_detail_yuedou_price(CommonUtils.getYueDouPrice(bookDetailViewModel.bookDetailResultBean.data.price))}"
+                            android:text="@{@string/book_detail_yuedou_price(ViewHelper.getYueDouPrice(bookDetailViewModel.bookDetailResultBean.data.price))}"
                             android:textColor="@android:color/darker_gray"
                             android:textSize="@dimen/level_three_heading_font" />
 
@@ -125,7 +127,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/book_detail_sub_info_margin_left"
-                            android:text="@{@string/book_detail_yuedou_price(CommonUtils.getYueDouPrice(bookDetailViewModel.bookDetailResultBean.data.price))}"
+                            android:text="@{@string/book_detail_yuedou_price(ViewHelper.getYueDouPrice(bookDetailViewModel.bookDetailResultBean.data.price))}"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/level_three_heading_font" />
 
@@ -151,6 +153,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelTwoClick()}"
                             android:id="@+id/book_detail_category_second_path"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -159,10 +162,11 @@
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.second_catid1_str}" />
 
                         <TextView
+                            android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelThreeClick()}"
                             android:id="@+id/book_detail_category_third_path"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/book_detail_margin"
+                            android:layout_marginLeft="@dimen/book_detail_common_margin_top"
                             android:drawablePadding="@dimen/view_all_drawable_padding"
                             android:drawableRight="@mipmap/ic_go_view_all"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.third_catid1_str}" />
@@ -198,8 +202,7 @@
                         android:text="@string/book_detail_button_now_read"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font"
-                        android:textStyle="bold"
-                        android:visibility="@{bookDetailViewModel.bookDetailResultBean != null ? View.VISIBLE : View.VISIBLE}" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/book_detail_buy_book"
@@ -214,8 +217,8 @@
                         android:text="@string/book_detail_button_buy_whole_book"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font"
-                        android:textStyle="bold"
-                        android:visibility="@{bookDetailViewModel.bookDetailResultBean != null ? View.VISIBLE : View.VISIBLE}" />
+                        android:textStyle="bold" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -253,6 +256,7 @@
                 android:layout_marginTop="@dimen/book_detail_common_margin_top"
                 android:layout_weight="1"
                 android:ellipsize="end"
+                android:onClick="@{()->bookDetailViewModel.onInfoClick()}"
                 android:maxLines="2"
                 android:textSize="@dimen/level_three_heading_font"
                 bind:htmlContent="@{bookDetailViewModel.bookDetailResultBean.data.info}" />
@@ -336,11 +340,10 @@
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/book_detail_recycler_view_recommend_height"
+                    android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/book_detail_margin"
-                    android:layout_marginRight="@dimen/book_detail_margin"
+                    android:layout_margin="@dimen/book_detail_margin"
                     android:background="@drawable/normal_selected_background"
                     android:onClick="@{()->bookDetailViewModel.onRecommendNextPageClick()}"
                     android:padding="@dimen/book_detail_button_padding"
