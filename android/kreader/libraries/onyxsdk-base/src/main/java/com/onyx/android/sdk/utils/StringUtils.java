@@ -203,4 +203,16 @@ public class StringUtils {
         }
         return resultWidth;
     }
+
+    public static int getTextMaxWidth(Paint paint, String str) {
+        int maxWidth = 0;
+        String[] splitStringSet = str.split("\n");
+        for (String s : splitStringSet) {
+            int width = getTextWidth(paint, s);
+            if (width > maxWidth) {
+                maxWidth = width;
+            }
+        }
+        return maxWidth;
+    }
 }
