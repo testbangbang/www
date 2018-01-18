@@ -6553,6 +6553,10 @@ public class AlBookEng{
 					if ( AlUnicode.isChineze(oi.text[i]) || (word_text.length() == 1 && AlUnicode.isChineze(word_text.charAt(0))))
 						textOnScreen.addText(word_text, word_rect, word_pos);
 
+					if (word_text.length() > 0 && AlUnicode.isLetter(word_text.charAt(word_text.length() - 1)) && !AlUnicode.isLetter(oi.text[i])) {
+						textOnScreen.addText(word_text, word_rect, word_pos);
+					}
+
 					if (word_text.length() == 0) {
 						word_rect.x0 = word_rect.x1 = x;
 						word_rect.y0 = y - oi.base_line_up;
