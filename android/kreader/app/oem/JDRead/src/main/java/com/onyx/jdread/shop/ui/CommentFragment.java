@@ -165,7 +165,9 @@ public class CommentFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
-        showLoadingDialog(getString(event.getResId()));
+        if (isAdded()) {
+            showLoadingDialog(getString(event.getResId()));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

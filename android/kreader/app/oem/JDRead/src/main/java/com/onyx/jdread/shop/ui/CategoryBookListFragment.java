@@ -302,12 +302,14 @@ public class CategoryBookListFragment extends BaseFragment {
         showOrCloseSortButton();
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
-        showLoadingDialog(getString(event.getResId()));
+        if (isAdded()) {
+            showLoadingDialog(getString(event.getResId()));
+        }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
         hideLoadingDialog();
     }

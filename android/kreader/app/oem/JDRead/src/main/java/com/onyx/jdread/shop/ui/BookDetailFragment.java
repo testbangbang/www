@@ -22,6 +22,7 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.databinding.DialogBookInfoBinding;
 import com.onyx.jdread.databinding.FragmentBookDetailBinding;
 import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -114,6 +115,7 @@ public class BookDetailFragment extends BaseFragment {
     private int percentage;
     private boolean isWholeBook;
     private GPaginator paginator;
+    private AlertDialog infoDialog;
 
     @Nullable
     @Override
@@ -696,7 +698,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
-        showLoadingDialog(getString(event.getResId()));
+        if (isAdded()) {
+            showLoadingDialog(getString(event.getResId()));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -742,12 +746,43 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailViewInfoEvent(BookDetailViewInfoEvent event) {
-
+        showInfoDialog();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
+        dismissCopyRightDialog();
+        dismissInfoDialog();
+    }
+
+    private void showInfoDialog() {
+        if (bookDetailBean == null || StringUtils.isNullOrEmpty(bookDetailBean.info)) {
+            return;
+        }
+        if (infoDialog == null) {
+            DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
+            infoBinding.setInfo(bookDetailBean.info);
+            AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+            build.setView(infoBinding.getRoot());
+            build.setCancelable(true);
+            infoBinding.setListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismissInfoDialog();
+                }
+            });
+            infoDialog = build.create();
+        }
+        if (infoDialog != null) {
+            infoDialog.show();
+        }
+    }
+
+    private void dismissInfoDialog() {
+        if (infoDialog != null && infoDialog.isShowing()) {
+            infoDialog.dismiss();
+        }
     }
 }

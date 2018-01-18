@@ -15,10 +15,10 @@
     </data>
 
     <LinearLayout
-        android:visibility="@{ViewHelper.isShowBookDetailView(bookDetailViewModel.bookDetailResultBean) ? View.VISIBLE : View.GONE}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="@{ViewHelper.isShowBookDetailView(bookDetailViewModel.bookDetailResultBean) ? View.VISIBLE : View.GONE}">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,11 +65,11 @@
                         android:layout_marginTop="@dimen/book_detail_author_margin_top"
                         android:layout_weight="1"
                         android:drawablePadding="@dimen/view_all_drawable_padding"
-                        android:enabled="false"
-                        android:onClick="@{()->bookDetailViewModel.onAuthorClick()}"
                         android:ellipsize="end"
+                        android:enabled="false"
                         android:gravity="center_vertical"
                         android:maxLines="1"
+                        android:onClick="@{()->bookDetailViewModel.onAuthorClick()}"
                         android:text="@{bookDetailViewModel.bookDetailResultBean.data.author}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
@@ -153,22 +153,22 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelTwoClick()}"
                             android:id="@+id/book_detail_category_second_path"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawablePadding="@dimen/view_all_drawable_padding"
                             android:drawableRight="@mipmap/ic_go_view_all"
+                            android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelTwoClick()}"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.second_catid1_str}" />
 
                         <TextView
-                            android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelThreeClick()}"
                             android:id="@+id/book_detail_category_third_path"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/book_detail_common_margin_top"
                             android:drawablePadding="@dimen/view_all_drawable_padding"
                             android:drawableRight="@mipmap/ic_go_view_all"
+                            android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelThreeClick()}"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.third_catid1_str}" />
 
                     </LinearLayout>
@@ -249,17 +249,23 @@
 
             </LinearLayout>
 
-            <com.onyx.jdread.shop.view.HtmlTextView
-                android:id="@+id/book_detail_content_introduction"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/book_detail_common_margin_top"
                 android:layout_weight="1"
-                android:ellipsize="end"
-                android:onClick="@{()->bookDetailViewModel.onInfoClick()}"
-                android:maxLines="2"
-                android:textSize="@dimen/level_three_heading_font"
-                bind:htmlContent="@{bookDetailViewModel.bookDetailResultBean.data.info}" />
+                android:onClick="@{()->bookDetailViewModel.onInfoClick()}">
+
+                <com.onyx.jdread.shop.view.HtmlTextView
+                    android:id="@+id/book_detail_content_introduction"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textSize="@dimen/level_three_heading_font"
+                    bind:htmlContent="@{bookDetailViewModel.bookDetailResultBean.data.info}" />
+
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -339,6 +345,7 @@
                     android:layout_weight="1" />
 
                 <ImageView
+                    android:visibility="@{bookDetailViewModel.recommendList.size() > 4 ? View.VISIBLE : View.GONE}"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
