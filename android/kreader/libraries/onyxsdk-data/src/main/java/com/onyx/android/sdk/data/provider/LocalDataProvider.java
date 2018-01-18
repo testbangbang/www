@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Annotation_Table;
@@ -16,6 +18,8 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
+import com.onyx.android.sdk.data.model.SearchHistory;
+import com.onyx.android.sdk.data.model.SearchHistory_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
@@ -358,5 +362,20 @@ public class LocalDataProvider implements DataProviderBase {
     @Override
     public long libraryMetadataCount(Library library) {
         return new Select().from(MetadataCollection.class).where(MetadataCollection_Table.libraryUniqueId.eq(library.getIdString())).queryList().size();
+    }
+
+    @Override
+    public List<SearchHistory> loadSearchHistory() {
+        return new Select().from(SearchHistory.class).orderBy(OrderBy.fromProperty(SearchHistory_Table.createdAt).ascending()).queryList();
+    }
+
+    @Override
+    public void saveSearchHistory(Context context, SearchHistory searchHistory) {
+        SearchHistory single = new Select().from(SearchHistory.class).where(SearchHistory_Table.content.eq(searchHistory.getContent())).querySingle();
+        if (single == null) {
+            searchHistory.save();
+        }else {
+            single.update();
+        }
     }
 }

@@ -16,6 +16,8 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.ProductResult;
+import com.onyx.android.sdk.data.model.SearchHistory;
+import com.onyx.android.sdk.data.model.SearchHistory_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
@@ -467,6 +469,21 @@ public class CloudDataProvider implements DataProviderBase {
     @Override
     public long libraryMetadataCount(Library library) {
         return 0;
+    }
+
+    @Override
+    public List<SearchHistory> loadSearchHistory() {
+        return new Select().from(SearchHistory.class).orderBy(OrderBy.fromProperty(SearchHistory_Table.createdAt).ascending()).queryList();
+    }
+
+    @Override
+    public void saveSearchHistory(Context context, SearchHistory searchHistory) {
+        SearchHistory single = new Select().from(SearchHistory.class).where(SearchHistory_Table.content.eq(searchHistory.getContent())).querySingle();
+        if (single == null) {
+            searchHistory.save();
+        }else {
+            single.update();
+        }
     }
 
     private ContentService getContentService() {

@@ -5,12 +5,15 @@ import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
@@ -112,4 +115,8 @@ public interface DataProviderBase {
     Library findLibraryByName(Context appContext, String name);
 
     long libraryMetadataCount(Library library);
+
+    List<SearchHistory> loadSearchHistory();
+
+    void saveSearchHistory(final Context context, SearchHistory searchHistory);
 }
