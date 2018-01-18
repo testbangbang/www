@@ -159,14 +159,7 @@ public class LoginFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginEvent(UserLoginEvent event) {
-        Utils.hideSoftWindow(getActivity());
-        UserLoginAction userLoginAction = new UserLoginAction(getActivity(),event.account,event.password);
-        userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                viewEventCallBack.viewBack();
-            }
-        });
+        viewEventCallBack.viewBack();
     }
     
     @Subscribe(threadMode = ThreadMode.MAIN)

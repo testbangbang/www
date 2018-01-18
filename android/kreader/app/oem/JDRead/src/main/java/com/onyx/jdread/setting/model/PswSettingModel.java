@@ -11,8 +11,11 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.main.util.RegularUtil;
+import com.onyx.jdread.setting.event.BackToDeviceConfigEvent;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.utils.Constants;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Observable;
 
@@ -26,9 +29,11 @@ public class PswSettingModel extends Observable {
     public final ObservableField<String> phoneEdit = new ObservableField<>();
     public final ObservableField<String> unlockPasswordEdit = new ObservableField<>();
     public final ObservableBoolean encrypted = new ObservableBoolean(false);
-    private final String password;
+    private final EventBus eventBus;
+    private String password;
 
-    public PswSettingModel() {
+    public PswSettingModel(EventBus eventBus) {
+        this.eventBus = eventBus;
         titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.password_setting));
         titleBarModel.backEvent.set(new BackToDeviceConfigFragment());
         password = PreferenceManager.getStringValue(JDReadApplication.getInstance(), R.string.password_key, null);
@@ -48,11 +53,15 @@ public class PswSettingModel extends Observable {
         }
         // TODO: 18-1-2 save password
         PreferenceManager.setStringValue(JDReadApplication.getInstance(), R.string.password_key, FileUtils.computeMD5(passwordEdit.get()));
-        encrypted.set(true);
+        eventBus.post(new BackToDeviceConfigEvent());
+        //encrypted.set(true);
     }
 
     public void unlockPassword() {
         String unlockPassword = unlockPasswordEdit.get();
+        if (StringUtils.isNullOrEmpty(password)) {
+            password = PreferenceManager.getStringValue(JDReadApplication.getInstance(), R.string.password_key, null);
+        }
         if (StringUtils.isNotBlank(unlockPassword) && FileUtils.computeMD5(unlockPassword).equals(password)) {
             // TODO: 18-1-2 unlock password
             PreferenceManager.setStringValue(JDReadApplication.getInstance(), R.string.password_key, "");

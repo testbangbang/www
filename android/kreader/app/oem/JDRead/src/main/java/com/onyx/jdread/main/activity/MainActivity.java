@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -23,6 +24,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.library.action.RxFileSystemScanAction;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
@@ -37,6 +39,7 @@ import com.onyx.jdread.main.event.ShowBackTabEvent;
 import com.onyx.jdread.main.event.UsbDisconnectedEvent;
 import com.onyx.jdread.main.model.FunctionBarItem;
 import com.onyx.jdread.main.model.FunctionBarModel;
+import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.main.model.MainViewModel;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.personal.common.LoginHelper;
@@ -121,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateFunctionBar() {
         InitMainViewFunctionBarAction initFunctionBarAction = new InitMainViewFunctionBarAction(functionBarModel);
-        initFunctionBarAction.execute(JDReadApplication.getDataBundle(), new RxCallback() {
+        initFunctionBarAction.execute(MainBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updateFunctionBarView();
@@ -163,7 +166,9 @@ public class MainActivity extends AppCompatActivity {
         initFragmentManager();
         notifyChildViewChangeWindow();
         BaseFragment baseFragment = getPageView(childViewName);
-
+        if (currentFragment != null && currentFragment.getBundle() != null) {
+            baseFragment.setBundle(currentFragment.getBundle());
+        }
         transaction.replace(R.id.main_content_view, baseFragment);
         transaction.commitAllowingStateLoss();
         changeFunctionItem(childViewName);
@@ -298,10 +303,10 @@ public class MainActivity extends AppCompatActivity {
     public void onUsbDisconnectedEvent(UsbDisconnectedEvent event) {
         JDReadApplication.getInstance().dealWithMtpBuffer();
         RxFileSystemScanAction scanAction = new RxFileSystemScanAction(RxFileSystemScanAction.MMC_STORAGE_ID, true);
-        scanAction.execute(JDReadApplication.getDataBundle(), new RxCallback() {
+        scanAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                JDReadApplication.getDataBundle().getEventBus().post(new ModifyLibraryDataEvent());
+                LibraryDataBundle.getInstance().getEventBus().post(new ModifyLibraryDataEvent());
             }
         });
     }

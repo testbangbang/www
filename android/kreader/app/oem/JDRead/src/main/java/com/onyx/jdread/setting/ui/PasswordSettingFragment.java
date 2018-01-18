@@ -6,11 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentPasswordSettingsBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.setting.event.BackToDeviceConfigEvent;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.model.PswSettingModel;
 import com.onyx.jdread.setting.model.SettingBundle;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -32,7 +37,7 @@ public class PasswordSettingFragment extends BaseFragment {
 
     private void initBinding(LayoutInflater inflater, @Nullable ViewGroup container) {
         passwordSettingBinding = FragmentPasswordSettingsBinding.inflate(inflater, container, false);
-        PswSettingModel pswSettingModel = new PswSettingModel();
+        PswSettingModel pswSettingModel = new PswSettingModel(SettingBundle.getInstance().getEventBus());
         passwordSettingBinding.passwordSettingsTitle.setTitleModel(pswSettingModel.titleBarModel);
         passwordSettingBinding.setPswSettingModel(pswSettingModel);
     }
@@ -51,6 +56,14 @@ public class PasswordSettingFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToDeviceConfigFragment(BackToDeviceConfigFragment event) {
+        Utils.hideSoftWindow(getActivity());
+        viewEventCallBack.viewBack();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackToDeviceConfigEvent(BackToDeviceConfigEvent event) {
+        ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.encryption_success));
+        Utils.hideSoftWindow(getActivity());
         viewEventCallBack.viewBack();
     }
 }

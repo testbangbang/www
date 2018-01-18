@@ -46,7 +46,7 @@
                 android:textSize="@dimen/level_three_heading_font" />
         </LinearLayout>
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/wifi_setting_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,8 +58,8 @@
                 android:id="@+id/wifi_setting_wifi_lock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@mipmap/wifi"
+                android:layout_gravity="right"
+                android:src="@drawable/ic_lock"
                 android:visibility="@{accessPoint.getSecurity() == 2 ? View.VISIBLE : View.GONE}" />
 
             <ImageView
@@ -67,8 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/wifi_view_item_margin_left"
-                android:src="@mipmap/ic_setting_wifi" />
-        </LinearLayout>
+                android:src="@drawable/ic_wifi_4" />
+        </FrameLayout>
     </RelativeLayout>
 </layout>
