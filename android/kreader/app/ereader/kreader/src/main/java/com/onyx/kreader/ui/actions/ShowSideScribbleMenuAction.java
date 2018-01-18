@@ -73,14 +73,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         addDividerLine(parent);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        switch (readerDataHolder.getSideNoteArea()) {
-            case LEFT:
-                lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                break;
-            case RIGHT:
-                lp.addRule(RelativeLayout.RIGHT_OF, dividerLine.getId());
-                break;
-        }
+        lp.addRule(readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT ?
+                RelativeLayout.LEFT_OF : RelativeLayout.RIGHT_OF, dividerLine.getId());
         sideMenu.addMainMenu(parent,
                 readerDataHolder.getEventBus(),
                 R.layout.reader_side_scribble_menu,
