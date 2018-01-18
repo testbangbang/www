@@ -29,9 +29,10 @@ public class GenerateAccountInfoRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         boolean needRotation = true;
         int rotationAngle = infoShowConfig == null ? 90 : infoShowConfig.rotationAngle;
-        String targetString = authAccount.getNameAppendRole() + " " + authAccount.getFirstGroup();
+        String targetString = appendString(authAccount.getFirstGroup() + "\n",
+                new String[]{authAccount.name, authAccount.role, authAccount.phone});
         Bitmap bitmap = BitmapUtils.buildBitmapFromText(StringUtils.getBlankStr(targetString).trim(),
-                100, 25, true,
+                115, 25, true,
                 true, true, needRotation, rotationAngle,
                 "data/local/assets/info.png");
         if (infoShowConfig == null || bitmap == null) {
@@ -44,4 +45,16 @@ public class GenerateAccountInfoRequest extends BaseCloudRequest {
                 infoShowConfig.startY + (infoShowConfig.isScreenPositive() ? -textWidth : 0));
     }
 
+    private String appendString(String origin, String[] target) {
+        if (target == null || target.length <= 0) {
+            return origin;
+        }
+        for (String s : target) {
+            if (StringUtils.isNullOrEmpty(s)) {
+                continue;
+            }
+            origin += s + " ";
+        }
+        return origin.trim();
+    }
 }
