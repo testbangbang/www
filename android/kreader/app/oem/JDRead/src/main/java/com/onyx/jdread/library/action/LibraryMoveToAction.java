@@ -8,8 +8,9 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.R;
-import com.onyx.jdread.library.model.DataBundle;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.request.RxMoveToLibraryFromMultipleLibraryRequest;
+import com.onyx.jdread.main.action.BaseAction;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ import java.util.Map;
  * Created by suicheng on 2017/4/14.
  */
 
-public class LibraryMoveToAction extends BaseAction<DataBundle> {
+public class LibraryMoveToAction extends BaseAction<LibraryDataBundle> {
 
     private Context context;
     private Map<String, List<Metadata>> chosenItemsMap;
@@ -28,41 +29,41 @@ public class LibraryMoveToAction extends BaseAction<DataBundle> {
     }
 
     @Override
-    public void execute(final DataBundle dataBundle, final RxCallback baseCallback) {
+    public void execute(final LibraryDataBundle libraryDataBundle, final RxCallback baseCallback) {
         final GetSelectedMetadataAction getSelectedAction = new GetSelectedMetadataAction();
-        getSelectedAction.execute(dataBundle, new RxCallback() {
+        getSelectedAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 chosenItemsMap = getSelectedAction.getChosenItemsMap();
                 if (CollectionUtils.isNullOrEmpty(chosenItemsMap)) {
-                    ToastUtils.showToast(dataBundle.getAppContext(), R.string.please_select_book);
+                    ToastUtils.showToast(libraryDataBundle.getAppContext(), R.string.please_select_book);
                     return;
                 }
-                selectTargetLibrary(dataBundle, chosenItemsMap, baseCallback);
+                selectTargetLibrary(libraryDataBundle, chosenItemsMap, baseCallback);
             }
         });
     }
 
-    private void selectTargetLibrary(final DataBundle dataBundle, Map<String, List<Metadata>> chosenItemsMap, final RxCallback baseCallback) {
+    private void selectTargetLibrary(final LibraryDataBundle libraryDataBundle, Map<String, List<Metadata>> chosenItemsMap, final RxCallback baseCallback) {
         final LibrarySelectionAction selectionAction = new LibrarySelectionAction(chosenItemsMap, context);
-        selectionAction.execute(dataBundle, new RxCallback() {
+        selectionAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                moveBookToLibrary(dataBundle, selectionAction.getLibrarySelected(), baseCallback);
+                moveBookToLibrary(libraryDataBundle, selectionAction.getLibrarySelected(), baseCallback);
             }
         });
     }
 
-    private void moveBookToLibrary(final DataBundle dataBundle, DataModel librarySelected, final RxCallback baseCallback) {
+    private void moveBookToLibrary(final LibraryDataBundle libraryDataBundle, DataModel librarySelected, final RxCallback baseCallback) {
         if (CollectionUtils.isNullOrEmpty(chosenItemsMap.keySet())) {
             return;
         }
-        showLoadingDialog(dataBundle, R.string.adding);
-        RxMoveToLibraryFromMultipleLibraryRequest request = new RxMoveToLibraryFromMultipleLibraryRequest(dataBundle.getDataManager(), chosenItemsMap, librarySelected);
+        showLoadingDialog(libraryDataBundle, R.string.adding);
+        RxMoveToLibraryFromMultipleLibraryRequest request = new RxMoveToLibraryFromMultipleLibraryRequest(libraryDataBundle.getDataManager(), chosenItemsMap, librarySelected);
         request.execute(new RxCallback<RxMoveToLibraryFromMultipleLibraryRequest>() {
             @Override
             public void onNext(RxMoveToLibraryFromMultipleLibraryRequest rxLibraryMoveToRequest) {
-                hideLoadingDialog(dataBundle);
+                hideLoadingDialog(libraryDataBundle);
                 if (baseCallback != null) {
                     baseCallback.onNext(rxLibraryMoveToRequest);
                 }
@@ -71,9 +72,9 @@ public class LibraryMoveToAction extends BaseAction<DataBundle> {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                hideLoadingDialog(dataBundle);
+                hideLoadingDialog(libraryDataBundle);
                 if (throwable != null) {
-                    ToastUtils.showToast(dataBundle.getAppContext(), R.string.library_move_to_fail);
+                    ToastUtils.showToast(libraryDataBundle.getAppContext(), R.string.library_move_to_fail);
                 }
             }
         });

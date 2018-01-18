@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.main.model.MainBundle;
+import com.onyx.jdread.setting.model.SettingBundle;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -11,15 +14,21 @@ import org.greenrobot.eventbus.EventBus;
  * Created by suicheng on 2017/4/15.
  */
 
-public class DataBundle {
-    private Context appContext;
-    private EventBus eventBus = new EventBus();
+public class LibraryDataBundle extends MainBundle {
+    private static LibraryDataBundle bundle;
     private DataManager dataManager = new DataManager();
     private CloudManager cloudManager = new CloudManager();
     private LibraryViewDataModel libraryViewDataModel = new LibraryViewDataModel(getEventBus());
 
-    public DataBundle(Context appContext) {
-        this.appContext = appContext;
+    public static LibraryDataBundle getInstance() {
+        if (bundle == null) {
+            bundle = new LibraryDataBundle(JDReadApplication.getInstance());
+        }
+        return bundle;
+    }
+
+    public LibraryDataBundle(Context appContext) {
+        super(appContext);
     }
 
     public DataManager getDataManager() {
@@ -42,11 +51,13 @@ public class DataBundle {
         this.cloudManager = cloudManager;
     }
 
+    @Override
     public EventBus getEventBus() {
-        return eventBus;
+        return super.getEventBus();
     }
 
+    @Override
     public Context getAppContext() {
-        return appContext;
+        return super.getAppContext();
     }
 }
