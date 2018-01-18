@@ -16,7 +16,7 @@ import java.util.Observable;
 
 public class FileServerModel extends Observable {
 
-    public final TitleBarModel titleBarModel = new TitleBarModel(JDReadApplication.getDataBundle().getEventBus());
+    public final TitleBarModel titleBarModel = new TitleBarModel(LibraryDataBundle.getInstance().getEventBus());
     public final ObservableField<String> serverAddress = new ObservableField<>();
     public final ObservableField<Bitmap> bitmap = new ObservableField<>();
 

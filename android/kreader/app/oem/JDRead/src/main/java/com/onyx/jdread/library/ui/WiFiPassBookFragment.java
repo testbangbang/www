@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentWifiPassBookBinding;
 import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
@@ -47,7 +48,7 @@ public class WiFiPassBookFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        JDReadApplication.getDataBundle().getEventBus().register(this);
+        LibraryDataBundle.getInstance().getEventBus().register(this);
         try {
             server.start();
             loadData();
@@ -57,7 +58,7 @@ public class WiFiPassBookFragment extends BaseFragment {
     }
 
     private void loadData() {
-        RxFileServerAddressRequest request = new RxFileServerAddressRequest(JDReadApplication.getDataBundle().getDataManager(), fileServerModel);
+        RxFileServerAddressRequest request = new RxFileServerAddressRequest(LibraryDataBundle.getInstance().getDataManager(), fileServerModel);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -70,7 +71,7 @@ public class WiFiPassBookFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         server.stop();
-        JDReadApplication.getDataBundle().getEventBus().unregister(this);
+        LibraryDataBundle.getInstance().getEventBus().unregister(this);
     }
 
     @Subscribe

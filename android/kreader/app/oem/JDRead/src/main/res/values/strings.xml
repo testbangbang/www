@@ -25,8 +25,8 @@
     <string name="current_version">Current version: </string>
     <string name="system_update">System update</string>
     <string name="device_config">Device config</string>
-    <string name="hour_format">24-hour format</string>
-    <string name="sample_clock">13:00</string>
+    <string name="hour_format">Time format</string>
+    <string name="sample_clock">>Opened 24-hour format</string>
     <string name="date_time">Date/time</string>
     <string name="screen_saver">Screen saver</string>
     <string name="password">Password</string>
@@ -370,4 +370,6 @@
     <string name="installed">installed</string>
     <string name="input_number_un_encrypt">Please enter a numeric password to unencrypt it.</string>
     <string name="encryption_success">Encryption success</string>
+    <string name="total">total:</string>
+    <string name="bosom">bosom:</string>
 </resources>

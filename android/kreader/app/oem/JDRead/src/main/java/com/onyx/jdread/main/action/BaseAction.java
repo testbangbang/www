@@ -1,16 +1,16 @@
-package com.onyx.jdread.library.action;
+package com.onyx.jdread.main.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
-import com.onyx.jdread.library.model.DataBundle;
+import com.onyx.jdread.main.model.MainBundle;
 
 
 /**
  * Created by suicheng on 2017/4/14.
  */
 
-public abstract class BaseAction<T extends DataBundle> {
+public abstract class BaseAction<T extends MainBundle> {
 
     public abstract void execute(T dataBundle, RxCallback baseCallback);
 
