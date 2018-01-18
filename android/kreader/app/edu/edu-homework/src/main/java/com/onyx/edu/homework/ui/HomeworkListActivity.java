@@ -273,6 +273,7 @@ public class HomeworkListActivity extends BaseActivity {
                     checkWifi(true);
                     return;
                 }
+                updateHomework(homeworkIntent);
                 initToolbarTitle();
                 hideMessage();
                 updateViewState();
@@ -285,6 +286,10 @@ public class HomeworkListActivity extends BaseActivity {
         });
     }
 
+    private void updateHomework(HomeworkIntent intent) {
+        getDataBundle().updateHomeworkFromIntent(intent);
+    }
+
     private void initOnyxMessageReceiver() {
         onyxMessageReceiver.registerReceiver(this);
         onyxMessageReceiver.setOnyxMessageListener(new OnyxMessageReceiver.OnyxMessageListener() {
@@ -294,8 +299,12 @@ public class HomeworkListActivity extends BaseActivity {
                     return;
                 }
                 HomeworkIntent homework = JSONObject.parseObject(data, HomeworkIntent.class);
-                if (homework.child._id.equals(DataBundle.getInstance().getHomeworkId()) && homework.checked) {
-                    binding.newMessage.setVisibility(View.VISIBLE);
+                if (homework.child._id.equals(DataBundle.getInstance().getHomeworkId())) {
+                    updateHomework(homework);
+                    updateViewState();
+                    if (homework.readActive) {
+                        reloadQuestionFragment(currentPage);
+                    }
                 }
             }
         });
@@ -499,14 +508,15 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void updateViewState() {
-        binding.analysis.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
-        binding.answerIcon.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        binding.analysis.setVisibility(getDataBundle().canCheckAnswer() ? View.VISIBLE : View.GONE);
+        binding.answerIcon.setVisibility(getDataBundle().canCheckAnswer() ? View.VISIBLE : View.GONE);
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
         binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
         binding.result.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
         binding.getResultLayout.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
         binding.submit.setText(getDataBundle().isDoing() ? R.string.submit : R.string.submited);
         binding.submit.setEnabled(getDataBundle().isDoing());
+        binding.newMessage.setVisibility(getDataBundle().canGetReview() ? View.VISIBLE : View.GONE);
     }
 
     @Override

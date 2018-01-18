@@ -23,6 +23,8 @@ public class Homework {
     public Date endTime;
     public Subject subject;
     public boolean published;
+    public boolean canGetReview;
+    public boolean canCheckAnswer;
 
     public Homework() {
     }
@@ -47,4 +49,19 @@ public class Homework {
         return endTime;
     }
 
+    public boolean canCheckAnswer() {
+        return canCheckAnswer;
+    }
+
+    public boolean canGetReview() {
+        return canGetReview;
+    }
+
+    public void setCanCheckAnswer(boolean canCheckAnswer) {
+        this.canCheckAnswer = canCheckAnswer;
+    }
+
+    public void setCanGetReview(boolean canGetReview) {
+        this.canGetReview = canGetReview;
+    }
 }

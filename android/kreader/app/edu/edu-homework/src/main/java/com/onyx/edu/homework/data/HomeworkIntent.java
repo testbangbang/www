@@ -9,4 +9,5 @@ public class HomeworkIntent {
     public String _id;
     public HomeworkDetail child;
     public boolean checked;
+    public boolean readActive;
 }
