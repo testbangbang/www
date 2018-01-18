@@ -1,8 +1,8 @@
 package com.onyx.jdread.main.common;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.library.action.BaseAction;
-import com.onyx.jdread.library.model.DataBundle;
+import com.onyx.jdread.main.action.BaseAction;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +25,14 @@ public class ActionChain<T extends BaseAction> {
         observableList.add(action);
     }
 
-    public void execute(final DataBundle dataBundle, final RxCallback<T> callback) {
+    public void execute(final LibraryDataBundle libraryDataBundle, final RxCallback<T> callback) {
         Observable<T> observable = Observable.fromIterable(observableList);
         observable.observeOn(observeScheduler())
                 .subscribeOn(subscribeScheduler())
                 .subscribe(new Consumer<T>() {
             @Override
             public void accept(T t) throws Exception {
-                t.execute(dataBundle, null);
+                t.execute(libraryDataBundle, null);
                 if (callback != null) {
                     callback.onNext(t);
                 }

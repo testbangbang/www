@@ -1,12 +1,13 @@
 package com.onyx.jdread.library.model;
 
 import android.databinding.ObservableArrayList;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableList;
 
+import com.onyx.android.sdk.data.model.DataModel;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
-import com.onyx.jdread.library.event.SearchBookEvent;
-import com.onyx.jdread.library.event.SearchBookKeyEvent;
 import com.onyx.jdread.library.event.SubmitSearchBookEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -18,8 +19,12 @@ import java.util.Observable;
  */
 
 public class SearchBookModel extends Observable {
+    public final ObservableField<String> searchKey = new ObservableField<>();
     public final ObservableList<String> searchHistory = new ObservableArrayList<>();
     public final ObservableField<Object> backEvent = new ObservableField<>();
+    public final ObservableList<DataModel> searchHint = new ObservableArrayList<>();
+    public final ObservableList<DataModel> searchResult = new ObservableArrayList<>();
+    public final ObservableBoolean isInputting = new ObservableBoolean(false);
     public EventBus eventBus;
 
     public SearchBookModel(EventBus eventBus) {
@@ -37,5 +42,13 @@ public class SearchBookModel extends Observable {
 
     public void search() {
         eventBus.post(new SubmitSearchBookEvent());
+    }
+
+    public boolean showHintList() {
+        return isInputting.get() && StringUtils.isNotBlank(searchKey.get());
+    }
+
+    public boolean showResult() {
+        return !isInputting.get() && StringUtils.isNotBlank(searchKey.get());
     }
 }

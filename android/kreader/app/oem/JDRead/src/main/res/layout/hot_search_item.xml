@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="numBackgroundRes"
+            type="Integer" />
+
+        <variable
+            name="num"
+            type="String" />
+
+        <variable
+            name="hotWord"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/hot_item_num"
+            android:layout_width="@dimen/hot_search_item_num_width"
+            android:layout_height="@dimen/hot_search_item_num_width"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@{num}"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{hotWord}"
+            android:textSize="@dimen/level_two_heading_font" />
+    </LinearLayout>
+</layout>
