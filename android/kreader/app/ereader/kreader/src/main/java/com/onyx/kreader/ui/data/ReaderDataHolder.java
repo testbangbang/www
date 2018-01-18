@@ -189,6 +189,9 @@ public class ReaderDataHolder {
                 float width = firstPage.getDisplayRect().width();
                 firstPage.getDisplayRect().left = getDocPageLeft();
                 firstPage.getDisplayRect().right = firstPage.getDisplayRect().left + width;
+
+                RectF viewportRect = new RectF(getDocPageLeft(), 0, getDocPageRight(), displayHeight);
+                PageUtils.updateVisibleRect(firstPage, viewportRect);
             }
 
             PageInfo subNotePage = new PageInfo(firstPage.getName(),

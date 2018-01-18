@@ -219,10 +219,10 @@ public class ReaderTextStyle {
     static public Percentage DEFAULT_LINE_SPACING = NORMAL_LINE_SPACING;
 
     static public Percentage PARAGRAPH_SPACING_STEP = new Percentage(10);
-    static public Percentage SMALL_PARAGRAPH_SPACING = new Percentage(10);
-    static public Percentage NORMAL_PARAGRAPH_SPACING = new Percentage(30);
-    static public Percentage LARGE_PARAGRAPH_SPACING = new Percentage(70);
-    static public Percentage DEFAULT_PARAGRAPH_SPACING = NORMAL_PARAGRAPH_SPACING;
+    static public Percentage SMALL_PARAGRAPH_SPACING = new Percentage(0);
+    static public Percentage NORMAL_PARAGRAPH_SPACING = new Percentage(70);
+    static public Percentage LARGE_PARAGRAPH_SPACING = new Percentage(200);
+    static public Percentage DEFAULT_PARAGRAPH_SPACING = SMALL_PARAGRAPH_SPACING;
 
     static private int MARGIN_STEP = 1;
     static private int SMALL_MARGIN = 1;
