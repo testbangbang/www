@@ -352,4 +352,6 @@
     <string name="target_language">目标语言:%s</string>
     <string name="input_number_for_contact">请输入手机号，方便工作人员与您联系</string>
     <string name="installed">已安装</string>
+    <string name="total">总计:</string>
+    <string name="bosom">组内:</string>
 </resources>

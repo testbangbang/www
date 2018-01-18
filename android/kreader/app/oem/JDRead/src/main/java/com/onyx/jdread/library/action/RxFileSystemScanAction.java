@@ -13,7 +13,8 @@ import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.library.model.DataBundle;
+import com.onyx.jdread.library.model.LibraryDataBundle;
+import com.onyx.jdread.main.action.BaseAction;
 import com.raizlabs.android.dbflow.sql.language.Operator;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.Set;
  * Created by suicheng on 2017/7/29.
  */
 
-public class RxFileSystemScanAction extends BaseAction<DataBundle> {
+public class RxFileSystemScanAction extends BaseAction<LibraryDataBundle> {
     static public final String MMC_STORAGE_ID = "flash";
 
     private String storageId;
@@ -37,15 +38,15 @@ public class RxFileSystemScanAction extends BaseAction<DataBundle> {
     }
 
     @Override
-    public void execute(DataBundle dataHolder, RxCallback baseCallback) {
+    public void execute(LibraryDataBundle dataHolder, RxCallback baseCallback) {
         startFileSystemScan(dataHolder, baseCallback);
     }
 
-    private void startFileSystemScan(DataBundle dataHolder, RxCallback baseCallback) {
+    private void startFileSystemScan(LibraryDataBundle dataHolder, RxCallback baseCallback) {
         startFileSystemScan(dataHolder, baseCallback, storageId, getBookDirList(isFlash));
     }
 
-    private void startFileSystemScan(final DataBundle dataHolder, final RxCallback baseCallback,
+    private void startFileSystemScan(final LibraryDataBundle dataHolder, final RxCallback baseCallback,
                                      final String storageId, List<String> bookDirList) {
         final RxFileSystemScanRequest fileSystemScanRequest = new RxFileSystemScanRequest(dataHolder.getDataManager(), storageId, bookDirList, true);
         fileSystemScanRequest.setExtensionFilterSet(MimeTypeUtils.getDocumentExtension());
@@ -62,7 +63,7 @@ public class RxFileSystemScanAction extends BaseAction<DataBundle> {
         });
     }
 
-    private void startMetadataPathScan(final DataBundle dataHolder, final RxCallback baseCallback,
+    private void startMetadataPathScan(final LibraryDataBundle dataHolder, final RxCallback baseCallback,
                                        final String storageId, final HashSet<String> filePathSet) {
         QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.CreationTime, SortOrder.Desc);
         queryArgs.propertyList.add(Metadata_Table.nativeAbsolutePath);
@@ -82,7 +83,7 @@ public class RxFileSystemScanAction extends BaseAction<DataBundle> {
         });
     }
 
-    private void processMetaSnapshot(final DataBundle dataHolder, final RxCallback baseCallback,
+    private void processMetaSnapshot(final LibraryDataBundle dataHolder, final RxCallback baseCallback,
                                      final String storageId, HashSet<String> fileList, HashSet<String> snapshotList) {
         final RxFilesDiffFromMetadataRequest filesFromMetadataRequest = new RxFilesDiffFromMetadataRequest(dataHolder.getDataManager(),
                 fileList, snapshotList);
@@ -96,7 +97,7 @@ public class RxFileSystemScanAction extends BaseAction<DataBundle> {
         });
     }
 
-    private void addFilesToMetaData(final DataBundle dataHolder, final RxCallback baseCallback, String storageId, Set<String> addedSet) {
+    private void addFilesToMetaData(final LibraryDataBundle dataHolder, final RxCallback baseCallback, String storageId, Set<String> addedSet) {
         RxFilesAddToMetadataRequest addRequest = new RxFilesAddToMetadataRequest(dataHolder.getDataManager(), storageId, addedSet);
         addRequest.execute(new RxCallback<RxFilesAddToMetadataRequest>() {
             @Override
