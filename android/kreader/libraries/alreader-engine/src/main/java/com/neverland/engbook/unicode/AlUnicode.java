@@ -134,8 +134,11 @@ public class AlUnicode {
 			case 0xff1b: //；
 			case 0xff1f: //？
 
+			case 0x201d: //”
+
 			case 0x3001: //、
 			case 0x3002: //。
+			case 0x300b: //》
 				return true;
 		}
 		return false;
