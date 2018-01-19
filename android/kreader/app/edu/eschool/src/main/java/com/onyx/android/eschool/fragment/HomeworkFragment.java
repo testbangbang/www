@@ -59,6 +59,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -498,10 +499,11 @@ public class HomeworkFragment extends Fragment {
         }
 
         private String getDateString(Homework item) {
-            if (item.getUpdatedAt() == null) {
-                return null;
+            Date date = item.beginTime;
+            if (date == null) {
+                date = item.getUpdatedAt();
             }
-            return DateTimeUtil.formatGMTDate(item.getUpdatedAt(), DATE_FORMAT_MMDD_HHMM);
+            return DateTimeUtil.formatGMTDate(date, DATE_FORMAT_MMDD_HHMM);
         }
     }
 }
