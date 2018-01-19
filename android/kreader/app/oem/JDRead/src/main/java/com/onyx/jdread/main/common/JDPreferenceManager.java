@@ -12,7 +12,7 @@ public class JDPreferenceManager extends PreferenceManager {
     private static Context context;
     private static JDPreferenceManager manager;
 
-    public static void init(Context context) {
+    public static void initWithAppContext(Context context) {
         JDPreferenceManager.context = context;
         init(context);
     }

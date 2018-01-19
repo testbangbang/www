@@ -83,7 +83,7 @@ public class JDReadApplication extends MultiDexApplication {
         DataManager.init(instance, null);
         initContentProvider(this);
         initFrescoLoader();
-        JDPreferenceManager.init(instance);
+        JDPreferenceManager.initWithAppContext(instance);
         ResManager.init(instance);
         initEventListener();
         initDownloadManager();
