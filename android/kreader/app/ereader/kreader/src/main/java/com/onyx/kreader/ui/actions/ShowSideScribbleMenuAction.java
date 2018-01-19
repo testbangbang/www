@@ -82,6 +82,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 lp,
                 MenuItem.createVisibleMenus(getMainMenuActions()));
         updateSideNotePositionText(readerDataHolder);
+        updateMainMenuBg();
         onMenuViewSizeChange(parent);
         updateMenuHeight(true);
     }
@@ -142,7 +143,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
 
     private void updateMainMenuBg() {
         boolean subMenuShowed = sideMenu.getSubMenu() != null && sideMenu.getSubMenu().isShowing();
-        sideMenu.getMainMenu().getRootView().setBackgroundResource(subMenuShowed ? R.drawable.sub_menu_show_shadow_bg : R.drawable.shadow_bg);
+        sideMenu.getMainMenu().getRootView().setBackgroundResource(subMenuShowed ? R.drawable.sub_menu_show_shadow_bg :
+                (readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT ? R.drawable.left_shadow_bg : R.drawable.shadow_bg));
     }
 
     private List<Integer> getMainMenuActions() {
@@ -265,7 +267,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         }
         int mainMenuViewId = sideMenu.getMainMenu().getRootViewId();
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.RIGHT_OF, mainMenuViewId);
+        lp.addRule(readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT ?
+                RelativeLayout.LEFT_OF : RelativeLayout.RIGHT_OF, mainMenuViewId);
         lp.addRule(RelativeLayout.ALIGN_TOP, mainMenuViewId);
         sideMenu.addSubMenu(parent,
                 readerDataHolder.getEventBus(),

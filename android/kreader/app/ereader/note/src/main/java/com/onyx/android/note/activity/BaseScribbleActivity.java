@@ -1,5 +1,6 @@
 package com.onyx.android.note.activity;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -35,7 +37,6 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.asyncrequest.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -76,6 +77,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     private boolean syncOnErasing = false;
     protected boolean drawPageDuringErasing = false;
 
+    //it could be dialog or dialog fragment;
+    private List<Object> dialogList = new ArrayList<>();
+
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY}
     private ActivityState activityState;
 
@@ -108,6 +112,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         setActivityState(ActivityState.PAUSE);
         //TODO:pause drawing when activity Pause;
         syncWithCallback(true, false, null);
+        dialogList.clear();
         super.onPause();
     }
 
@@ -694,6 +699,31 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     public void resetFullUpdate() {
         this.fullUpdate = false;
+    }
+
+    public void addDialogToForegroundDialogList(Object dialog) {
+        dialogList.add(dialog);
+    }
+
+    public void removeDialogFromForegroundDialogList(Object dialog) {
+        if (dialogList.contains(dialog)) {
+            dialogList.remove(dialog);
+        }
+    }
+
+    public boolean hasForegroundDialogShowing() {
+        for (Object dialog : dialogList) {
+            if (dialog instanceof Dialog) {
+                if (((Dialog) dialog).isShowing()) {
+                    return true;
+                }
+            } else if (dialog instanceof DialogFragment) {
+                if (((DialogFragment) dialog).isVisible()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean shouldResume() {

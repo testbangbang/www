@@ -821,7 +821,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
                         @Override
                         public void onVisibilityChanged(final Rect excludeRect, final boolean redrawPage, int visibility) {
-                            boolean resume = visibility != View.VISIBLE && shouldResume();
+                            boolean resume = visibility != View.VISIBLE && shouldResume() && !hasForegroundDialogShowing();
                             UpdateScreenWritingExcludeRegionAction<ScribbleActivity> action = new
                                     UpdateScreenWritingExcludeRegionAction<>(excludeRect, resume);
                             action.execute(ScribbleActivity.this, new BaseCallback() {
@@ -955,7 +955,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void showCustomLineWidthDialog() {
-        DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(this,
+        final DialogCustomLineWidth customLineWidth = new DialogCustomLineWidth(this,
                 (int) shapeDataInfo.getStrokeWidth(),
                 20, Color.BLACK, new DialogCustomLineWidth.Callback() {
             @Override
@@ -964,10 +964,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
             }
         });
         customLineWidth.show();
+        addDialogToForegroundDialogList(customLineWidth);
         customLineWidth.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                syncWithCallback(true, true, null);
+                syncWithCallback(true, true, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        removeDialogFromForegroundDialogList(customLineWidth);
+                    }
+                });
             }
         });
     }
