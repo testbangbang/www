@@ -209,8 +209,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
                         }
 
                         @Override
-                        public void onVisibilityChanged(Rect excludeRect, boolean redrawPage,
-                                                        boolean isOverrideResumeStatus, boolean overrideResumeFlag, int visibility) {
+                        public void onVisibilityChanged(Rect excludeRect, boolean redrawPage, int visibility) {
                             syncWithCallback(true, true, null);
                         }
                     }, R.id.divider, true
