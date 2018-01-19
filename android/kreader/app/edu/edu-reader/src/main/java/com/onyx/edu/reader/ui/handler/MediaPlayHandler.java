@@ -7,6 +7,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.edu.reader.media.ReaderMediaManager;
 import com.onyx.edu.reader.ui.actions.PlayAudioAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
@@ -102,7 +103,18 @@ public class MediaPlayHandler extends BaseHandler {
             readerDataHolder.getEventBus().post(new CloseMediaPlayDialogEvent());
             return;
         }
-        new PlayAudioAction(richMedias.get(0)).execute(readerDataHolder, null);
+        new PlayAudioAction(searchAudioMedia(richMedias)).execute(readerDataHolder, null);
+    }
+
+    private ReaderRichMedia searchAudioMedia(List<ReaderRichMedia> richMedias) {
+        ReaderRichMedia media = null;
+        for (ReaderRichMedia richMedia : richMedias) {
+            if (FileUtils.isAudioFile(richMedia.getName())) {
+                media = richMedia;
+                break;
+            }
+        }
+        return media;
     }
 
     public void resume() {
