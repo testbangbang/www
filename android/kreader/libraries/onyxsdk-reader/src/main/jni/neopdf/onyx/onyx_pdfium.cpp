@@ -32,6 +32,31 @@ static const char * annotationClassName = "com/onyx/android/sdk/data/model/Annot
 
 namespace {
 
+struct RichMediaObject {
+    std::string mediaName;
+    double left, top, right, bottom;
+    char *buf;
+    size_t len;
+
+    RichMediaObject()
+        : left(0), top(0), right(0), bottom(0), buf(nullptr), len(0) {
+
+    }
+
+    RichMediaObject(const std::string &name, const double left, const double top, const double right, const double bottom,
+                    char *buf, const size_t len)
+        : mediaName(name), left(left), top(top), right(right), bottom(bottom), buf(buf), len(len) {
+
+    }
+
+    ~RichMediaObject() {
+        if (buf) {
+            PoDoFo::podofo_free(buf);
+            buf = nullptr;
+        }
+    }
+};
+
 int libraryReference = 0;
 
 std::string deviceId;
@@ -77,9 +102,7 @@ bool readDrmManifest(FPDF_DOCUMENT document, std::vector<char16_t> *manifestBuf,
 
 bool getRichMediaObject(const PoDoFo::PdfVecObjects &objects,
                         const PoDoFo::PdfAnnotation *annot,
-                        std::string *name,
-                        double *left, double *top, double *right, double *bottom,
-                        char **buf, size_t *len) {
+                        std::vector<std::shared_ptr<RichMediaObject>> *result) {
     const PoDoFo::PdfObject *content = annot->GetObject()->GetIndirectKey("RichMediaContent");
     if (!content) {
         return false;
@@ -91,10 +114,10 @@ bool getRichMediaObject(const PoDoFo::PdfVecObjects &objects,
     }
 
     const PoDoFo::PdfArray rectArray = rect->GetArray();
-    *left = rectArray[0].GetReal();
-    *top = rectArray[1].GetReal();
-    *right = rectArray[2].GetReal();
-    *bottom = rectArray[3].GetReal();
+    double left = rectArray[0].GetReal();
+    double top = rectArray[1].GetReal();
+    double right = rectArray[2].GetReal();
+    double bottom = rectArray[3].GetReal();
 
     const PoDoFo::PdfObject *assets = content->GetIndirectKey("Assets");
     if (!assets) {
@@ -112,37 +135,42 @@ bool getRichMediaObject(const PoDoFo::PdfVecObjects &objects,
         return false;
     }
 
-    size_t index = 0;
-    if (namesArray.GetSize() > 2) {
-        // ignore first .swf file, which is hard-coded by looking into PDF file
-        index = 2;
-    }
+    for (size_t index = 0; index < namesArray.GetSize(); index += 2) {
+        std::string name = namesArray[index].GetString().GetStringUtf8();
 
-    *name = namesArray[index].GetString().GetStringUtf8();
-
-    const PoDoFo::PdfObject *assetObj = objects.GetObject(namesArray[index + 1].GetReference());
-    if (!assetObj) {
-        return false;
-    }
-
-    const PoDoFo::PdfObject *embededObj = assetObj->GetIndirectKey("EF");
-    if (!embededObj) {
-        return false;
-    }
-    const PoDoFo::PdfObject *fileObj = embededObj->GetIndirectKey("F");
-    if (!fileObj) {
-        return false;
-    }
-
-    if (!fileObj->HasStream()) {
-        fileObj->DelayedStreamLoad();
-        if (!fileObj->HasStream()) {
+        const PoDoFo::PdfObject *assetObj = objects.GetObject(namesArray[index + 1].GetReference());
+        if (!assetObj) {
             return false;
         }
+
+        const PoDoFo::PdfObject *embededObj = assetObj->GetIndirectKey("EF");
+        if (!embededObj) {
+            return false;
+        }
+
+        const PoDoFo::PdfObject *fileObj = embededObj->GetIndirectKey("F");
+        if (!fileObj) {
+            return false;
+        }
+
+        if (!fileObj->HasStream()) {
+            fileObj->DelayedStreamLoad();
+            if (!fileObj->HasStream()) {
+                return false;
+            }
+        }
+
+        char *buf = nullptr;
+        PoDoFo::pdf_long len = 0;
+        fileObj->GetStream()->GetFilteredCopy(&buf, &len);
+        if (len <= 0) {
+            return false;
+        }
+
+        result->push_back(std::shared_ptr<RichMediaObject>(new RichMediaObject(name, left, top, right, bottom, buf, len)));
     }
 
-    fileObj->GetStream()->GetFilteredCopy(buf, (PoDoFo::pdf_long *)len);
-    return *len > 0;
+    return true;
 }
 
 bool addRichMediaObjectToList(JNIEnv *env, jint id, jint pageIndex, jobject objectList,
@@ -905,19 +933,16 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     for (int i = 0; i < count; i++) {
         PoDoFo::PdfAnnotation *annot = page->GetAnnotation(i);
 
-        std::string mediaName;
-        double left, top, right, bottom;
-        char *buf = nullptr;
-        size_t len = 0;
-        if (!getRichMediaObject(objects, annot, &mediaName, &left, &top, &right, &bottom, &buf, &len)) {
+        std::vector<std::shared_ptr<RichMediaObject>> list;
+        if (!getRichMediaObject(objects, annot, &list)) {
             continue;
         }
 
-        addRichMediaObjectToList(env, id, pageIndex, objectList,
-                                 mediaName, left, top, right, bottom,
-                                 buf, len);
-
-        PoDoFo::podofo_free(buf);
+        for (auto &obj : list) {
+            addRichMediaObjectToList(env, id, pageIndex, objectList,
+                                     obj->mediaName, obj->left, obj->top, obj->right, obj->bottom,
+                                     obj->buf, obj->len);
+        }
     }
 
     return true;
