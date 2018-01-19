@@ -38,6 +38,10 @@ public class Homework extends BaseData implements Serializable {
 
     public String subject;
     public boolean checked;
+    public boolean readActive;
+
+    public Date beginTime;
+    public Date endTime;
 
     @Override
     public void beforeSave() {
