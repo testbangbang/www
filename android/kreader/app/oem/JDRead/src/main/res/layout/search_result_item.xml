@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
+        <variable
+            name="dataModel"
+            type="com.onyx.android.sdk.data.model.DataModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/image_cover"
+            thumbnail="@{dataModel.coverBitmap}"
+            android:layout_width="@dimen/search_result_book_cover_width"
+            android:layout_height="@dimen/search_result_book_cover_height"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/rectangle_stroke_width"
+            android:scaleType="fitXY"
+            android:src="@{dataModel.coverDefault}" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/search_result_item_text_margin_left"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{dataModel.title}"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/search_result_item_text_margin_top"
+                android:text="@{dataModel.author}"
+                android:textSize="@dimen/level_four_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/search_result_item_text_margin_top"
+                android:text="@{StringUtils.isNotBlank(dataModel.absolutePath)?@string/in_library:@string/in_shop}"
+                android:textSize="@dimen/level_four_heading_font" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

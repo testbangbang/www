@@ -64,6 +64,9 @@ public class DataModelUtil {
             DataModel model = new DataModel(eventBus);
             model.type.set(ModelType.TYPE_METADATA);
             model.idString.set(metadata.getIdString());
+            if (StringUtils.isNotBlank(metadata.getCloudId())) {
+                model.cloudId.set(Long.valueOf(metadata.getCloudId()));
+            }
             model.title.set(metadata.getName());
             model.author.set(StringUtils.isNullOrEmpty(metadata.getAuthors()) ? "" : metadata.getAuthors());
             model.format.set(metadata.getType());

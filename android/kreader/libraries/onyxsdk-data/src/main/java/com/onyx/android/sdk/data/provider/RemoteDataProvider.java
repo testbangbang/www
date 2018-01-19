@@ -24,6 +24,7 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
+import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
@@ -467,5 +468,20 @@ public class RemoteDataProvider implements DataProviderBase {
         List<MetadataCollection> metadataCollections = ContentUtils.queryList(OnyxMetadataCollectionProvider.CONTENT_URI, MetadataCollection.class,
                 OperatorGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(library.getIdString())), null);
         return metadataCollections == null ? 0 : metadataCollections.size();
+    }
+
+    @Override
+    public List<SearchHistory> loadSearchHistory() {
+        return null;
+    }
+
+    @Override
+    public void saveSearchHistory(final Context context, SearchHistory searchHistory) {
+
+    }
+
+    @Override
+    public void clearSearchHistory() {
+
     }
 }

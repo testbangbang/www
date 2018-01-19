@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
+        <variable
+            name="searchModel"
+            type="com.onyx.jdread.library.model.SearchBookModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/fragment_content_padding"
+        tools:context="com.onyx.jdread.library.ui.SearchBookFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->searchModel.back()}"
+                android:src="@mipmap/ic_read_back" />
+
+            <android.support.v7.widget.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:shadowColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font"
+                app:iconifiedByDefault="false"
+                app:queryHint="@string/search_view_hint"
+                app:searchIcon="@null" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->searchModel.search()}"
+                android:src="@mipmap/ic_shelf_search" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/search_hot_history_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/fragment_search_line_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_hot_words"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/hot_search_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hot_search_recycler_height"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp" />
+
+            <View
+                style="@style/DottedLineStyle"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fragment_search_line_margin">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/search_history"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:onClick="@{()->searchModel.clearHistory()}"
+                    android:src="@mipmap/ic_shelf_delete_book" />
+            </RelativeLayout>
+
+            <com.onyx.jdread.library.view.FlowLayout
+                android:id="@+id/flow_layout"
+                child="@{searchModel.searchHistory}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fragment_search_line_margin"
+                app:height_space="@dimen/fragment_search_line_margin"
+                app:width_space="@dimen/fragment_search_width_space" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/search_hint_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/hot_search_recycler_height"
+            android:orientation="vertical">
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/search_hint_recycler"
+                items="@{searchModel.searchHint}"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <View
+                style="@style/DottedLineStyle"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:visibility="@{searchModel.showHintList()?View.VISIBLE:View.GONE}" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/search_result_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/search_result_recycler"
+                items="@{searchModel.searchResult}"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical" />
+
+            <include layout="@layout/page_indicator_layout" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

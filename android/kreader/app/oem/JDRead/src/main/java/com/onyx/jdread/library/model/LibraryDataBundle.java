@@ -19,6 +19,7 @@ public class LibraryDataBundle extends MainBundle {
     private DataManager dataManager = new DataManager();
     private CloudManager cloudManager = new CloudManager();
     private LibraryViewDataModel libraryViewDataModel = new LibraryViewDataModel(getEventBus());
+    private SearchBookModel searchBookModel = new SearchBookModel(getEventBus());
 
     public static LibraryDataBundle getInstance() {
         if (bundle == null) {
@@ -59,5 +60,9 @@ public class LibraryDataBundle extends MainBundle {
     @Override
     public Context getAppContext() {
         return super.getAppContext();
+    }
+
+    public SearchBookModel getSearchBookModel() {
+        return searchBookModel;
     }
 }

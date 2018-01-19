@@ -1,6 +1,7 @@
 package com.onyx.jdread.main.common;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 /**
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
  */
 
 public class BaseFragment extends Fragment {
+    private Bundle bundle;
     protected ChildViewEventCallBack viewEventCallBack = null;
     private LoadingDialog loadingDialog;
     private LoadingDialog.DialogModel loadingModel;
@@ -50,5 +52,13 @@ public class BaseFragment extends Fragment {
         if (loadingDialog != null && loadingDialog.isShowing()) {
             loadingDialog.dismiss();
         }
+    }
+
+    public void setBundle(Bundle bundle) {
+        this.bundle = bundle;
+    }
+
+    public Bundle getBundle() {
+        return bundle;
     }
 }

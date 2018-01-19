@@ -13,6 +13,7 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogSingleManageLayoutBinding;
+import com.onyx.jdread.library.event.BookDetailEvent;
 import com.onyx.jdread.library.event.DeleteBookEvent;
 import com.onyx.jdread.library.event.LibraryDeleteEvent;
 import com.onyx.jdread.library.event.LibraryDeleteIncludeBookEvent;
@@ -61,6 +62,7 @@ public class SingleItemManageDialog extends Dialog {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
+                    model.getEventBus().post(new BookDetailEvent(model.dataModel.get()));
                 }
             });
             bind.delete.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +115,10 @@ public class SingleItemManageDialog extends Dialog {
 
         public EventBus getEventBus() {
             return eventBus;
+        }
+
+        public boolean isCloudBook() {
+            return dataModel.get().cloudId.get() != -1;
         }
 
         public boolean showBookMenu() {
