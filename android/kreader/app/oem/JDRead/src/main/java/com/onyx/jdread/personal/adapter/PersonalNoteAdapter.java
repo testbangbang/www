@@ -22,12 +22,12 @@ public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public int getRowCount() {
-        return ResManager.getResInteger(R.integer.personal_note_row);
+        return ResManager.getResManager().getInteger(R.integer.personal_note_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResInteger(R.integer.personal_note_col);
+        return ResManager.getResManager().getInteger(R.integer.personal_note_col);
     }
 
     @Override

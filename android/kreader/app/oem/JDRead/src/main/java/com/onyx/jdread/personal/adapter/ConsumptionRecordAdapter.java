@@ -20,12 +20,12 @@ import com.onyx.jdread.main.common.ResManager;
 public class ConsumptionRecordAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public int getRowCount() {
-        return ResManager.getResInteger(R.integer.personal_consumption_record_row);
+        return ResManager.getResManager().getInteger(R.integer.personal_consumption_record_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResInteger(R.integer.personal_consumption_record_col);
+        return ResManager.getResManager().getInteger(R.integer.personal_consumption_record_col);
     }
 
     @Override

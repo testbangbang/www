@@ -9,8 +9,8 @@ import com.onyx.jdread.main.common.ResManager;
  */
 
 public class PersonalTaskModel {
-    private String[] tasks = new String[]{ResManager.getResString(R.string.sign_in_vouchers),
-            ResManager.getResString(R.string.read_thirty) + "(" + ResManager.getResString(R.string.add_ten_vouchers) + ")"};
+    private String[] tasks = new String[]{ResManager.getResManager().getString(R.string.sign_in_vouchers),
+            ResManager.getResManager().getString(R.string.read_thirty) + "(" + ResManager.getResManager().getString(R.string.add_ten_vouchers) + ")"};
 
     public String[] getTasks() {
         return tasks;

@@ -20,12 +20,12 @@ import com.onyx.jdread.main.common.ResManager;
 public class PersonalExperienceAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public int getRowCount() {
-        return ResManager.getResInteger(R.integer.personal_experience_row);
+        return ResManager.getResManager().getInteger(R.integer.personal_experience_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResInteger(R.integer.personal_experience_col);
+        return ResManager.getResManager().getInteger(R.integer.personal_experience_col);
     }
 
     @Override

@@ -17,14 +17,14 @@ import java.util.Map;
  */
 
 public class PersonalAccountModel {
-    private String[] accountTitles = ResManager.getResStringArray(R.array.personal_account);
+    private String[] accountTitles = ResManager.getResManager().getStringArray(R.array.personal_account);
     private Map<String, Object> accountEvents = new HashMap<String, Object>() {
         {
-            put(ResManager.getResString(R.string.top_up), new TopUpEvent());
-            put(ResManager.getResString(R.string.consumption_record), new ConsumptionRecordEvent());
-            put(ResManager.getResString(R.string.paid_record), new PaidRecordEvent());
-            put(ResManager.getResString(R.string.read_vip), new ReadVipEvent());
-            put(ResManager.getResString(R.string.points_for), new PointsForEvent());
+            put(ResManager.getResManager().getString(R.string.top_up), new TopUpEvent());
+            put(ResManager.getResManager().getString(R.string.consumption_record), new ConsumptionRecordEvent());
+            put(ResManager.getResManager().getString(R.string.paid_record), new PaidRecordEvent());
+            put(ResManager.getResManager().getString(R.string.read_vip), new ReadVipEvent());
+            put(ResManager.getResManager().getString(R.string.points_for), new PointsForEvent());
         }
     };
 

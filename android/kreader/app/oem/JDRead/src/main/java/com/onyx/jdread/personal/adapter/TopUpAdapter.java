@@ -32,12 +32,12 @@ public class TopUpAdapter extends PageRecyclerView.PageAdapter implements View.O
 
     @Override
     public int getRowCount() {
-        return ResManager.getResInteger(R.integer.top_up_adapter_row);
+        return ResManager.getResManager().getInteger(R.integer.top_up_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResInteger(R.integer.top_up_adapter_col);
+        return ResManager.getResManager().getInteger(R.integer.top_up_adapter_col);
     }
 
     @Override

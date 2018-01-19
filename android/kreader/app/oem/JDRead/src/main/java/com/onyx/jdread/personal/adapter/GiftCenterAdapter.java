@@ -19,12 +19,12 @@ import com.onyx.jdread.main.common.ResManager;
 public class GiftCenterAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     @Override
     public int getRowCount() {
-        return ResManager.getResInteger(R.integer.gift_center_adapter_row);
+        return ResManager.getResManager().getInteger(R.integer.gift_center_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResInteger(R.integer.gift_center_adapter_col);
+        return ResManager.getResManager().getInteger(R.integer.gift_center_adapter_col);
     }
 
     @Override

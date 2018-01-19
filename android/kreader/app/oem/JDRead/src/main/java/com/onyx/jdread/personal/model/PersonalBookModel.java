@@ -29,8 +29,8 @@ public class PersonalBookModel {
     };
 
     public void loadPopupData() {
-        String[] bookFilters = ResManager.getResStringArray(R.array.book_filter);
-        TypedArray typedArray = ResManager.getTypedArray(R.array.book_filter);
+        String[] bookFilters = ResManager.getResManager().getStringArray(R.array.book_filter);
+        TypedArray typedArray = ResManager.getResManager().getTypedArray(R.array.book_filter);
         int length = typedArray.length();
         int[] resIds = new int[length];
         for (int i = 0; i < bookFilters.length; i++) {

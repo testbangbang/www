@@ -20,12 +20,12 @@ import com.onyx.jdread.main.common.ResManager;
 public class FeedbackRecordAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public int getRowCount() {
-        return ResManager.getResInteger(R.integer.feedback_record_adapter_row);
+        return ResManager.getResManager().getInteger(R.integer.feedback_record_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResInteger(R.integer.feedback_record_adapter_col);
+        return ResManager.getResManager().getInteger(R.integer.feedback_record_adapter_col);
     }
 
     @Override

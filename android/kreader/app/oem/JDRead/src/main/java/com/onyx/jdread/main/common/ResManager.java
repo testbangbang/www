@@ -1,29 +1,42 @@
 package com.onyx.jdread.main.common;
 
+import android.content.Context;
 import android.content.res.TypedArray;
 
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.R;
 
 /**
  * Created by li on 2018/1/18.
  */
 
 public class ResManager {
+    private static Context context;
+    private static ResManager resManager;
 
-    public static String getResString(int resId) {
-        return JDReadApplication.getInstance().getResources().getString(resId);
+    public static void init(Context context) {
+        ResManager.context = context;
     }
 
-    public static Integer getResInteger(int resId) {
-        return JDReadApplication.getInstance().getResources().getInteger(resId);
+    public static ResManager getResManager() {
+        if (resManager == null) {
+            resManager = new ResManager();
+        }
+        return resManager;
     }
 
-    public static String[] getResStringArray(int resId) {
-        return JDReadApplication.getInstance().getResources().getStringArray(resId);
+    public String getString(int resId) {
+        return context.getResources().getString(resId);
     }
 
-    public static TypedArray getTypedArray(int resId) {
-        return JDReadApplication.getInstance().getResources().obtainTypedArray(resId);
+    public Integer getInteger(int resId) {
+        return context.getResources().getInteger(resId);
+    }
+
+    public String[] getStringArray(int resId) {
+        return context.getResources().getStringArray(resId);
+    }
+
+    public TypedArray getTypedArray(int resId) {
+        return context.getResources().obtainTypedArray(resId);
     }
 }

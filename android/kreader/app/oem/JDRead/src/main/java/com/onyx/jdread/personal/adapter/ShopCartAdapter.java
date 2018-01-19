@@ -26,12 +26,12 @@ public class ShopCartAdapter extends PageRecyclerView.PageAdapter implements Vie
 
     @Override
     public int getRowCount() {
-        return ResManager.getResInteger(R.integer.shop_cart_row);
+        return ResManager.getResManager().getInteger(R.integer.shop_cart_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResInteger(R.integer.shop_cart_col);
+        return ResManager.getResManager().getInteger(R.integer.shop_cart_col);
     }
 
     @Override

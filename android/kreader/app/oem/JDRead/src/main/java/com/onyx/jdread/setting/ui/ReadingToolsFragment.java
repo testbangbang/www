@@ -96,7 +96,7 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
     @Subscribe
     public void onAssociatedNotesToolsEvent(AssociatedNotesToolsEvent event) {
         if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ToastUtil.showToast(ResManager.getResString(R.string.wifi_no_connected));
+            ToastUtil.showToast(ResManager.getResManager().getString(R.string.wifi_no_connected));
             return;
         }
         EvernoteManager.getEvernoteSession(JDReadApplication.getInstance()).authenticate(getActivity());

@@ -63,7 +63,7 @@ public class PasswordSettingFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToDeviceConfigEvent(BackToDeviceConfigEvent event) {
-        ToastUtil.showToast(ResManager.getResString(R.string.encryption_success));
+        ToastUtil.showToast(ResManager.getResManager().getString(R.string.encryption_success));
         Utils.hideSoftWindow(getActivity());
         viewEventCallBack.viewBack();
     }
