@@ -5,14 +5,15 @@ import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryLoadRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.R;
-import com.onyx.jdread.library.model.DataBundle;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.model.LibraryViewDataModel;
+import com.onyx.jdread.main.action.BaseAction;
 
 /**
  * Created by suicheng on 2017/4/15.
  */
 
-public class RxMetadataLoadAction extends BaseAction<DataBundle> {
+public class RxMetadataLoadAction extends BaseAction<LibraryDataBundle> {
     private boolean showDialog = true;
     private boolean loadFromCache = false;
 
@@ -37,9 +38,9 @@ public class RxMetadataLoadAction extends BaseAction<DataBundle> {
     }
 
     @Override
-    public void execute(final DataBundle dataHolder, final RxCallback baseCallback) {
+    public void execute(final LibraryDataBundle dataHolder, final RxCallback baseCallback) {
         final LibraryViewDataModel dataModel = dataHolder.getLibraryViewDataModel();
-        final RxLibraryLoadRequest libraryRequest = new RxLibraryLoadRequest(dataHolder.getDataManager(), queryArgs, dataModel.getListSelected(), dataModel.isSelectAll(), dataHolder.getEventBus(), loadMetadata);
+        final RxLibraryLoadRequest libraryRequest = new RxLibraryLoadRequest(dataHolder.getDataManager(), queryArgs, dataModel.getLibrarySelectedModel().getSelectedList(), dataModel.getLibrarySelectedModel().isSelectedAll(), dataHolder.getEventBus(), loadMetadata);
         libraryRequest.setLoadFromCache(loadFromCache);
         RxLibraryLoadRequest.setAppContext(dataHolder.getAppContext());
         libraryRequest.execute(new RxCallback<RxLibraryLoadRequest>() {

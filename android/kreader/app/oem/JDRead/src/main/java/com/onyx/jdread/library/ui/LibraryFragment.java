@@ -20,18 +20,18 @@ import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLibraryBinding;
-import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.library.action.LibraryDeleteAction;
 import com.onyx.jdread.library.action.LibraryMoveToAction;
 import com.onyx.jdread.library.action.LibraryRenameAction;
 import com.onyx.jdread.library.action.MetadataDeleteAction;
 import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
+import com.onyx.jdread.library.event.BookDetailEvent;
 import com.onyx.jdread.library.event.DeleteBookEvent;
 import com.onyx.jdread.library.event.LibraryBackEvent;
 import com.onyx.jdread.library.event.LibraryDeleteEvent;
@@ -41,16 +41,21 @@ import com.onyx.jdread.library.event.LibraryMenuEvent;
 import com.onyx.jdread.library.event.LibraryRenameEvent;
 import com.onyx.jdread.library.event.MoveToLibraryEvent;
 import com.onyx.jdread.library.event.MyBookEvent;
+import com.onyx.jdread.library.event.SearchBookEvent;
 import com.onyx.jdread.library.event.SortByNameEvent;
 import com.onyx.jdread.library.event.SortByTimeEvent;
 import com.onyx.jdread.library.event.WifiPassBookEvent;
-import com.onyx.jdread.library.model.DataBundle;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.model.LibraryViewDataModel;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.library.view.SingleItemManageDialog;
+import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
+import com.onyx.jdread.shop.ui.BookDetailFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -63,7 +68,7 @@ import java.io.File;
 
 public class LibraryFragment extends BaseFragment {
 
-    private DataBundle dataBundle;
+    private LibraryDataBundle libraryDataBundle;
     private FragmentLibraryBinding libraryBinding;
     private SinglePageRecyclerView contentView;
     private ModelAdapter modelAdapter;
@@ -92,7 +97,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private EventBus getEventBus() {
-        return dataBundle.getEventBus();
+        return libraryDataBundle.getEventBus();
     }
 
     @Override
@@ -117,7 +122,7 @@ public class LibraryFragment extends BaseFragment {
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(queryArgs);
         loadAction.setLoadFromCache(loadFromCache);
         loadAction.setLoadMetadata(isLoadMetadata());
-        loadAction.execute(dataBundle, new RxCallback() {
+        loadAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updateContentView();
@@ -139,16 +144,17 @@ public class LibraryFragment extends BaseFragment {
         int totalCount = getTotalCount();
         pagination.resize(row, col, totalCount);
         pageIndicatorModel.updateCurrentPage(totalCount);
+        pageIndicatorModel.setTotalFormat(libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() == 0 ? getString(R.string.total) : getString(R.string.bosom));
         pageIndicatorModel.updateTotal(totalCount);
-        dataBundle.getLibraryViewDataModel().updateDeletePage();
+        libraryDataBundle.getLibraryViewDataModel().updateDeletePage();
     }
 
     private int getTotalCount() {
-        return dataBundle.getLibraryViewDataModel().count.get();
+        return libraryDataBundle.getLibraryViewDataModel().count.get();
     }
 
     private QueryArgs libraryBuildQueryArgs() {
-        QueryArgs args = dataBundle.getLibraryViewDataModel().libraryQuery();
+        QueryArgs args = libraryDataBundle.getLibraryViewDataModel().libraryQuery();
         QueryBuilder.andWith(args.conditionGroup, null);
         return args;
     }
@@ -173,7 +179,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void initPageIndicator() {
-        pagination = dataBundle.getLibraryViewDataModel().getQueryPagination();
+        pagination = libraryDataBundle.getLibraryViewDataModel().getQueryPagination();
         pagination.setCurrentPage(0);
         pageIndicatorModel = new PageIndicatorModel(pagination, new PageIndicatorModel.PageChangedListener() {
             @Override
@@ -200,12 +206,15 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void nextPage() {
+        QueryArgs queryArgs;
         if (!pagination.nextPage()) {
-            return;
+            queryArgs = libraryDataBundle.getLibraryViewDataModel().firstPage();
+        } else {
+            queryArgs = libraryDataBundle.getLibraryViewDataModel().nextPage();
         }
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().nextPage(), false);
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(queryArgs, false);
         loadAction.setLoadFromCache(true);
-        loadAction.execute(dataBundle, new RxCallback() {
+        loadAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updateContentView();
@@ -217,11 +226,11 @@ public class LibraryFragment extends BaseFragment {
     private void preloadNext() {
         int preLoadPage = pagination.getCurrentPage() + 1;
         if (preLoadPage >= pagination.pages()) {
-            return;
+            preLoadPage = 0;
         }
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(libraryDataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
         loadAction.setLoadMetadata(isLoadMetadata());
-        loadAction.execute(dataBundle, null);
+        loadAction.execute(libraryDataBundle, null);
     }
 
     private boolean isLoadMetadata() {
@@ -229,13 +238,16 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void prevPage() {
+        QueryArgs queryArgs;
         if (!pagination.prevPage()) {
-            return;
+            queryArgs = libraryDataBundle.getLibraryViewDataModel().lastPage();
+        } else {
+            queryArgs = libraryDataBundle.getLibraryViewDataModel().prevPage();
         }
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().prevPage(), false);
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(queryArgs, false);
         loadAction.setLoadFromCache(true);
         loadAction.setLoadMetadata(isLoadMetadata());
-        loadAction.execute(dataBundle, new RxCallback() {
+        loadAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updateContentView();
@@ -247,17 +259,17 @@ public class LibraryFragment extends BaseFragment {
     private void preloadPrev() {
         int preLoadPage = pagination.getCurrentPage() - 1;
         if (preLoadPage < 0) {
-            return;
+            preLoadPage = pagination.lastPage();
         }
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(libraryDataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
         loadAction.setLoadMetadata(isLoadMetadata());
-        loadAction.execute(dataBundle, null);
+        loadAction.execute(libraryDataBundle, null);
     }
 
     private void initDataBundle() {
-        dataBundle = JDReadApplication.getDataBundle();
-        dataBundle.setLibraryViewDataModel(LibraryViewDataModel.create(dataBundle.getEventBus(), row, col));
-        libraryBinding.setLibraryModel(dataBundle.getLibraryViewDataModel());
+        libraryDataBundle = LibraryDataBundle.getInstance();
+        libraryDataBundle.setLibraryViewDataModel(LibraryViewDataModel.create(libraryDataBundle.getEventBus(), row, col));
+        libraryBinding.setLibraryModel(libraryDataBundle.getLibraryViewDataModel());
     }
 
     public SinglePageRecyclerView getContentView() {
@@ -265,7 +277,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private boolean processBackRequest() {
-        if (!CollectionUtils.isNullOrEmpty(dataBundle.getLibraryViewDataModel().libraryPathList)) {
+        if (!CollectionUtils.isNullOrEmpty(libraryDataBundle.getLibraryViewDataModel().libraryPathList)) {
             removeLastParentLibrary();
             loadData(libraryBuildQueryArgs(), false);
             return false;
@@ -279,23 +291,23 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void removeLastParentLibrary() {
-        dataBundle.getLibraryViewDataModel().libraryPathList.remove(dataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
+        libraryDataBundle.getLibraryViewDataModel().libraryPathList.remove(libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
         setTitle();
         loadData();
     }
 
     private void setTitle() {
-        int size = dataBundle.getLibraryViewDataModel().libraryPathList.size();
+        int size = libraryDataBundle.getLibraryViewDataModel().libraryPathList.size();
         if (size > 0) {
-            dataBundle.getLibraryViewDataModel().title.set(dataBundle.getLibraryViewDataModel().libraryPathList.get(size - 1).title.get());
+            libraryDataBundle.getLibraryViewDataModel().title.set(libraryDataBundle.getLibraryViewDataModel().libraryPathList.get(size - 1).title.get());
         } else {
-            dataBundle.getLibraryViewDataModel().title.set(isMultiSelectionMode() ? getString(R.string.manage_book) : "");
+            libraryDataBundle.getLibraryViewDataModel().title.set(isMultiSelectionMode() ? getString(R.string.manage_book) : "");
         }
     }
 
     private void quitMultiSelectionMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
-        dataBundle.getLibraryViewDataModel().quitManageMode();
+        libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
         setTitle();
         showMangeMenu();
     }
@@ -306,8 +318,13 @@ public class LibraryFragment extends BaseFragment {
     }
 
     @Subscribe
+    public void onSearchBookEvent(SearchBookEvent event) {
+        viewEventCallBack.gotoView(SearchBookFragment.class.getName());
+    }
+
+    @Subscribe
     public void onLibraryManageEvent(LibraryManageEvent event) {
-        dataBundle.getLibraryViewDataModel().title.set(getString(R.string.manage_book));
+        libraryDataBundle.getLibraryViewDataModel().title.set(getString(R.string.manage_book));
         modelAdapter.setMultiSelectionMode(SelectionMode.MULTISELECT_MODE);
         getIntoMultiSelectMode();
         showMangeMenu();
@@ -317,23 +334,22 @@ public class LibraryFragment extends BaseFragment {
     public void onLibraryMenuEvent(LibraryMenuEvent event) {
         MenuPopupWindow menuPopupWindow = new MenuPopupWindow(getActivity(), getEventBus());
         menuPopupWindow.setShowItemDecoration(true);
-        menuPopupWindow.showPopupWindow(libraryBinding.imageMenu, dataBundle.getLibraryViewDataModel().getMenuData());
+        menuPopupWindow.showPopupWindow(libraryBinding.imageMenu, libraryDataBundle.getLibraryViewDataModel().getMenuData());
     }
 
     @Subscribe
     public void onSortByTimeEvent(SortByTimeEvent event) {
-        dataBundle.getLibraryViewDataModel().updateSortBy(SortBy.CreationTime, SortOrder.Asc);
+        libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.CreationTime, SortOrder.Asc);
         refreshData();
     }
 
     private void refreshData() {
-        pagination.setCurrentPage(0);
-        loadData(libraryBuildQueryArgs(), false);
+        loadData(libraryDataBundle.getLibraryViewDataModel().lastPage(), false);
     }
 
     @Subscribe
     public void onSortByNameEvent(SortByNameEvent event) {
-        dataBundle.getLibraryViewDataModel().updateSortBy(SortBy.Name, SortOrder.Asc);
+        libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.Name, SortOrder.Asc);
         refreshData();
     }
 
@@ -350,7 +366,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onLibraryRenameEvent(LibraryRenameEvent event) {
         LibraryRenameAction renameAction = new LibraryRenameAction(JDReadApplication.getInstance(), event.getDataModel());
-        renameAction.execute(dataBundle, new RxCallback() {
+        renameAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 refreshData();
@@ -361,7 +377,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onLibraryDeleteEvent(LibraryDeleteEvent event) {
         LibraryDeleteAction action = new LibraryDeleteAction(JDReadApplication.getInstance(), event.getDataModel(), false);
-        action.execute(dataBundle, new RxCallback() {
+        action.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 loadData();
@@ -372,7 +388,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onLibraryDeleteIncludeBookEvent(LibraryDeleteIncludeBookEvent event) {
         LibraryDeleteAction action = new LibraryDeleteAction(JDReadApplication.getInstance(), event.getDataModel(), true);
-        action.execute(dataBundle, new RxCallback() {
+        action.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 refreshData();
@@ -382,13 +398,16 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onItemLongClickEvent(ItemLongClickEvent event) {
+        if (isMultiSelectionMode()) {
+            return;
+        }
         DataModel currentChosenModel = event.getDataModel();
-        dataBundle.getLibraryViewDataModel().addItemSelected(currentChosenModel, true);
+        libraryDataBundle.getLibraryViewDataModel().addItemSelected(currentChosenModel, true);
         showSingleMangeDialog(currentChosenModel);
     }
 
     private void showSingleMangeDialog(DataModel currentChosenModel) {
-        SingleItemManageDialog.DialogModel dialogModel = new SingleItemManageDialog.DialogModel(dataBundle.getEventBus());
+        SingleItemManageDialog.DialogModel dialogModel = new SingleItemManageDialog.DialogModel(libraryDataBundle.getEventBus());
         dialogModel.dataModel.set(currentChosenModel);
         SingleItemManageDialog.Builder builder = new SingleItemManageDialog.Builder(JDReadApplication.getInstance(), dialogModel);
         SingleItemManageDialog dialog = builder.create();
@@ -398,7 +417,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onItemClickEvent(ItemClickEvent event) {
         if (isMultiSelectionMode()) {
-            processMultiModeItemClick(event.getModel());
+            processMultiModeItemClick(event.getModel(), event.isLayoutClicked());
         } else {
             processNormalModeItemClick(event.getModel());
         }
@@ -406,9 +425,8 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onModifyLibraryDataEvent(ModifyLibraryDataEvent event) {
-        dataBundle.getLibraryViewDataModel().libraryPathList.clear();
-        pagination.setCurrentPage(0);
-        loadData(libraryBuildQueryArgs(), false);
+        libraryDataBundle.getLibraryViewDataModel().libraryPathList.clear();
+        loadData(libraryDataBundle.getLibraryViewDataModel().lastPage(), false);
     }
 
     @Subscribe
@@ -417,26 +435,41 @@ public class LibraryFragment extends BaseFragment {
     }
 
     @Subscribe
+    public void onBookDetailEvent(BookDetailEvent event) {
+        if (event.getDataModel().cloudId.get() != -1) {
+            PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getDataModel().cloudId.get());
+            if (getViewEventCallBack() != null) {
+                getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+            }
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putString(getString(R.string.search_name_key), event.getDataModel().title.get());
+            setBundle(bundle);
+            viewEventCallBack.gotoView(SearchBookFragment.class.getName());
+        }
+    }
+
+    @Subscribe
     public void onMoveToLibraryEvent(MoveToLibraryEvent event) {
         LibraryMoveToAction moveToAction = new LibraryMoveToAction(JDReadApplication.getInstance());
-        moveToAction.execute(dataBundle, new RxCallback() {
+        moveToAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                quitMultiSelectionMode();
-                int deletePageCount = dataBundle.getLibraryViewDataModel().getDeletePageCount();
-                loadData(dataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
+                libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
+                int deletePageCount = libraryDataBundle.getLibraryViewDataModel().getDeletePageCount();
+                loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
             }
         });
     }
 
     private void deleteBook() {
         MetadataDeleteAction metadataDeleteAction = new MetadataDeleteAction(JDReadApplication.getInstance());
-        metadataDeleteAction.execute(dataBundle, new RxCallback() {
+        metadataDeleteAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                quitMultiSelectionMode();
-                int deletePageCount = dataBundle.getLibraryViewDataModel().getDeletePageCount();
-                loadData(dataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
+                libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
+                int deletePageCount = libraryDataBundle.getLibraryViewDataModel().getDeletePageCount();
+                loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
             }
         });
     }
@@ -452,18 +485,18 @@ public class LibraryFragment extends BaseFragment {
     private void processLibraryItem(DataModel model) {
         addLibraryToParentRefList(model);
         loadData(libraryBuildQueryArgs(), false);
-        dataBundle.getLibraryViewDataModel().getSelectHelper().putLibrarySelectedModelMap(model.idString.get());
+        libraryDataBundle.getLibraryViewDataModel().getSelectHelper().putLibrarySelectedModelMap(model.idString.get());
     }
 
     private void addLibraryToParentRefList(DataModel model) {
-        dataBundle.getLibraryViewDataModel().libraryPathList.add(model);
-        dataBundle.getLibraryViewDataModel().title.set(model.title.get());
+        libraryDataBundle.getLibraryViewDataModel().libraryPathList.add(model);
+        libraryDataBundle.getLibraryViewDataModel().title.set(model.title.get());
         showMangeMenu();
     }
 
     private void showMangeMenu() {
-        dataBundle.getLibraryViewDataModel().setShowTopMenu(!isMultiSelectionMode());
-        dataBundle.getLibraryViewDataModel().setShowBottomMenu(isMultiSelectionMode());
+        libraryDataBundle.getLibraryViewDataModel().setShowTopMenu(!isMultiSelectionMode());
+        libraryDataBundle.getLibraryViewDataModel().setShowBottomMenu(isMultiSelectionMode());
         viewEventCallBack.hideOrShowFunctionBar(!isMultiSelectionMode());
     }
 
@@ -481,19 +514,21 @@ public class LibraryFragment extends BaseFragment {
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 
-    private void processMultiModeItemClick(DataModel dataModel) {
+    private void processMultiModeItemClick(DataModel dataModel, boolean layoutClicked) {
         if (dataModel.type.get() == ModelType.TYPE_LIBRARY) {
             processLibraryItem(dataModel);
             return;
         }
-        dataModel.checked.set(!dataModel.checked.get());
-        dataBundle.getLibraryViewDataModel().clickItem(dataModel);
+        if (layoutClicked) {
+            dataModel.checked.set(!dataModel.checked.get());
+        }
+        libraryDataBundle.getLibraryViewDataModel().clickItem(dataModel);
         updateContentView();
     }
 
     private void getIntoMultiSelectMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.MULTISELECT_MODE);
-        dataBundle.getLibraryViewDataModel().clearItemSelectedList();
+        libraryDataBundle.getLibraryViewDataModel().clearItemSelectedList();
         updateContentView();
     }
 

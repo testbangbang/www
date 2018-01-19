@@ -1,6 +1,7 @@
 package com.onyx.jdread.main.common;
 
 import com.onyx.jdread.library.ui.LibraryFragment;
+import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.library.ui.WiFiPassBookFragment;
 import com.onyx.jdread.main.model.StackList;
 import com.onyx.jdread.personal.ui.ConsumptionRecordFragment;
@@ -21,6 +22,7 @@ import com.onyx.jdread.setting.ui.DeviceConfigFragment;
 import com.onyx.jdread.setting.ui.DeviceInformationFragment;
 import com.onyx.jdread.setting.ui.DictionaryFragment;
 import com.onyx.jdread.setting.ui.FeedbackFragment;
+import com.onyx.jdread.setting.ui.FeedbackRecordFragment;
 import com.onyx.jdread.setting.ui.HelpFragment;
 import com.onyx.jdread.setting.ui.LaboratoryFragment;
 import com.onyx.jdread.setting.ui.LockScreenFragment;
@@ -60,6 +62,7 @@ public class ViewConfig {
         //library
         childViewInfo.put(LibraryFragment.class.getName(), FunctionModule.LIBRARY);
         childViewInfo.put(WiFiPassBookFragment.class.getName(),FunctionModule.LIBRARY);
+        childViewInfo.put(SearchBookFragment.class.getName(),FunctionModule.LIBRARY);
         //shop
         childViewInfo.put(ShopFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(BookDetailFragment.class.getName(), FunctionModule.SHOP);
@@ -88,6 +91,7 @@ public class ViewConfig {
         childViewInfo.put(BrightnessFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(TranslateFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(DictionaryFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(FeedbackRecordFragment.class.getName(),FunctionModule.SETTING);
         //personal
         childViewInfo.put(PersonalFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(PersonalExperienceFragment.class.getName(), FunctionModule.PERSONAL);

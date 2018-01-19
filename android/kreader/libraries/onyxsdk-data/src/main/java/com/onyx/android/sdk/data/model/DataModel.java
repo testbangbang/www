@@ -25,6 +25,7 @@ public class DataModel extends BaseObservable {
     public final ObservableField<String> parentId = new ObservableField<>();
     public final ObservableLong id = new ObservableLong();
     public final ObservableField<String> idString = new ObservableField<>();
+    public final ObservableLong cloudId = new ObservableLong(-1);
     public final ObservableField<String> title = new ObservableField<>();
     public final ObservableField<String> author = new ObservableField<>();
     public final ObservableField<String> format = new ObservableField<>();
@@ -66,7 +67,7 @@ public class DataModel extends BaseObservable {
     }
 
     public void itemClicked() {
-        ItemClickEvent event = new ItemClickEvent(this);
+        ItemClickEvent event = new ItemClickEvent(this, true);
         eventBus.post(event);
     }
 
@@ -74,6 +75,11 @@ public class DataModel extends BaseObservable {
         ItemLongClickEvent event = new ItemLongClickEvent(this);
         eventBus.post(event);
         return true;
+    }
+
+    public void checkboxClicked() {
+        ItemClickEvent event = new ItemClickEvent(this, false);
+        eventBus.post(event);
     }
 
     public void setEnableSelection(boolean enable) {

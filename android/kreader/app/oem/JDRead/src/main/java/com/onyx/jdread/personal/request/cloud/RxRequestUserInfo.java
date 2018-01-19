@@ -1,5 +1,6 @@
 package com.onyx.jdread.personal.request.cloud;
 
+import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
@@ -12,7 +13,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class RxRequestUserInfo extends RxBaseCloudRequest {
-
     private JDAppBaseInfo baseInfo;
     private UserInfoBean userInfoBean;
     private String saltValue;
@@ -29,14 +29,17 @@ public class RxRequestUserInfo extends RxBaseCloudRequest {
     public Object call() throws Exception {
         String encryptKey = EncryptHelper.getEncryptKey(saltValue);
         String encryptParams = EncryptHelper.getEncryptParams(encryptKey, baseInfo.getRequestParams());
-        baseInfo.setParams(encryptParams);
+        baseInfo.clear();
         baseInfo.setEnc();
         baseInfo.addApp();
-        ReadContentService userInfoService = CloudApiContext.getService(CloudApiContext.JD_BOOK_SHOP_URL);
-        Call<UserInfoBean> call = getCall(userInfoService);
-        Response<UserInfoBean> response = call.execute();
+        baseInfo.setParams(encryptParams);
+        ReadContentService userInfoService = CloudApiContext.getServiceForString(CloudApiContext.JD_BOOK_SHOP_URL);
+        Call<String> call = getCall(userInfoService);
+        Response<String> response = call.execute();
         if (response.isSuccessful()) {
-            userInfoBean = response.body();
+            String body = response.body();
+            String decryptContent = EncryptHelper.getDecryptContent(body);
+            userInfoBean = JSONObject.parseObject(decryptContent, UserInfoBean.class);
             checkQuestResult();
         }
 
@@ -51,7 +54,7 @@ public class RxRequestUserInfo extends RxBaseCloudRequest {
         }
     }
 
-    private Call<UserInfoBean> getCall(ReadContentService userInfoService) {
+    private Call<String> getCall(ReadContentService userInfoService) {
         return userInfoService.getUserInfo(baseInfo.getRequestParamsMap());
     }
 

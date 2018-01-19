@@ -11,6 +11,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemPersonalTaskBinding;
+import com.onyx.jdread.main.common.ResManager;
 
 /**
  * Created by li on 2018/1/3.
@@ -21,12 +22,12 @@ public class PersonalTaskAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_task_row);
+        return ResManager.getInteger(R.integer.personal_task_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_task_col);
+        return ResManager.getInteger(R.integer.personal_task_col);
     }
 
     @Override

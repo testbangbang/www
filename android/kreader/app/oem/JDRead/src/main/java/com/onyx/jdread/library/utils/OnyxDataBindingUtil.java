@@ -2,6 +2,7 @@ package com.onyx.jdread.library.utils;
 
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
@@ -12,8 +13,13 @@ import android.widget.TextView;
 
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.model.DataModel;
+import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.library.event.SearchBookKeyEvent;
+import com.onyx.jdread.library.model.LibraryDataBundle;
+import com.onyx.jdread.library.view.FlowLayout;
 import com.onyx.jdread.main.common.PageAdapter;
 import com.onyx.jdread.library.view.CustomScrollBar;
 
@@ -99,5 +105,24 @@ public class OnyxDataBindingUtil {
     @BindingAdapter("focus")
     public static void setFocusPosition(CustomScrollBar customScrollBar, int focus) {
         customScrollBar.setFocusPosition(focus);
+    }
+
+    @BindingAdapter("child")
+    public static void setChild(FlowLayout flowLayout, List<SearchHistory> list) {
+        flowLayout.removeAllViews();
+        for (SearchHistory history : list) {
+            final TextView view = new TextView(flowLayout.getContext());
+            view.setText(history.getContent());
+            view.setGravity(Gravity.CENTER);
+            view.setTextColor(Color.BLACK);
+            view.setTextSize(flowLayout.getContext().getResources().getInteger(R.integer.search_history_text_size));
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LibraryDataBundle.getInstance().getEventBus().post(new SearchBookKeyEvent(view.getText().toString()));
+                }
+            });
+            flowLayout.addView(view);
+        }
     }
 }

@@ -18,12 +18,14 @@ import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.library.action.ModifyLibraryDataAction;
-import com.onyx.jdread.library.model.DataBundle;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.AppBaseInfo;
-import com.onyx.jdread.shop.common.JDAppBaseInfo;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.setting.feedback.OnyxAttachmentUriProvider;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
@@ -48,7 +50,6 @@ import java.util.List;
 public class JDReadApplication extends MultiDexApplication {
     private static final String TAG = JDReadApplication.class.getSimpleName();
     private static JDReadApplication instance = null;
-    private static DataBundle dataBundle;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private List<String> mtpBuffer = new ArrayList<>();
     private boolean isUserLogin;
@@ -82,9 +83,8 @@ public class JDReadApplication extends MultiDexApplication {
         DataManager.init(instance, null);
         initContentProvider(this);
         initFrescoLoader();
-        PreferenceManager.init(instance);
-        OnyxDownloadManager.init(this.getApplicationContext());
-        OnyxDownloadManager.getInstance();
+        JDPreferenceManager.initWithAppContext(instance);
+        ResManager.init(instance);
         initEventListener();
         initDownloadManager();
     }
@@ -115,23 +115,16 @@ public class JDReadApplication extends MultiDexApplication {
         return instance;
     }
 
-    public static DataBundle getDataBundle() {
-        if (dataBundle == null) {
-            dataBundle = new DataBundle(instance);
-        }
-        return dataBundle;
-    }
-
     public void dealWithMtpBuffer() {
         if (CollectionUtils.isNullOrEmpty(mtpBuffer)) {
             return;
         }
         final ModifyLibraryDataAction dataAction = new ModifyLibraryDataAction(mtpBuffer);
-        dataAction.execute(dataBundle, new RxCallback() {
+        dataAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 mtpBuffer.clear();
-                getDataBundle().getEventBus().post(new ModifyLibraryDataEvent());
+                LibraryDataBundle.getInstance().getEventBus().post(new ModifyLibraryDataEvent());
             }
         });
     }

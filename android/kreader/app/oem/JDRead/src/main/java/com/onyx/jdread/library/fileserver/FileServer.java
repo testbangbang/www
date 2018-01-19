@@ -8,6 +8,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.request.RxCopyBookToLibraryRequest;
 
 import org.nanohttpd.protocols.http.IHTTPSession;
@@ -83,7 +84,7 @@ public class FileServer extends NanoHTTPD {
             msg = "success";
             File targetFile = new File(Device.currentDevice.getExternalStorageDirectory() + "/Books/" + parameters.get("file"));
             final String fileName = parameters.get("file");
-            RxCopyBookToLibraryRequest request = new RxCopyBookToLibraryRequest(JDReadApplication.getDataBundle().getDataManager(), file, targetFile);
+            RxCopyBookToLibraryRequest request = new RxCopyBookToLibraryRequest(LibraryDataBundle.getInstance().getDataManager(), file, targetFile);
             request.execute(new RxCallback<RxCopyBookToLibraryRequest>() {
                 @Override
                 public void onNext(RxCopyBookToLibraryRequest request1) {

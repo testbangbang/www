@@ -57,6 +57,6 @@ public class FeedbackFragment extends BaseFragment {
 
     @Subscribe
     public void onTitleBarRightTitleEvent(TitleBarRightTitleEvent event){
-        // TODO: 18-1-8
+        viewEventCallBack.gotoView(FeedbackRecordFragment.class.getName());
     }
 }

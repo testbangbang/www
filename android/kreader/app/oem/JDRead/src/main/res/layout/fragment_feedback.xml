@@ -50,6 +50,7 @@
                 android:padding="@dimen/fragment_content_padding"
                 android:singleLine="true"
                 android:text="@={feedbackModel.phone}"
+                android:hint="@string/input_number_for_contact"
                 android:textSize="@dimen/level_one_heading_font" />
 
             <View style="@style/DottedLineStyle" />

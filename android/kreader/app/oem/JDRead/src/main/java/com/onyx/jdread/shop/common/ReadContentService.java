@@ -8,7 +8,6 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadUnlimitedResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SaltResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddBookToSmoothCardBookBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
@@ -21,6 +20,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookModuleListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ShoppingCartBookIdsBean;
 
 import java.util.Map;
@@ -74,7 +74,7 @@ public interface ReadContentService {
 
     @GET("search")
     Call<BookModelBooksResultBean> getCategoryLevel2BookList(@QueryMap Map<String, String> baseInfoMap,
-                                                                  @QueryMap Map<String, String> queryMap);
+                                                             @QueryMap Map<String, String> queryMap);
 
     @GET("category")
     Call<CategoryListResultBean> getCategoryList(@QueryMap Map<String, String> baseInfoMap);
@@ -100,8 +100,8 @@ public interface ReadContentService {
 
     @POST("client.action")
     Call<RecommendListResultBean> getRecommendList(@QueryMap Map<String, String> map,
-                                                  @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                  @Query(AppBaseInfo.BODY_KEY) String body);
+                                                   @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
+                                                   @Query(AppBaseInfo.BODY_KEY) String body);
 
     @POST("client.action")
     Call<ShoppingCartBookIdsBean> getCartBookIds(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
@@ -117,25 +117,29 @@ public interface ReadContentService {
     Call<SyncLoginInfoBean> getSyncLoginInfo(@QueryMap Map<String, String> map);
 
 
-    @GET("user")
-    Call<UserInfoBean> getUserInfo(@QueryMap Map<String, String> map);
+    @GET(CloudApiContext.User.GET_USER_INFO)
+    Call<String> getUserInfo(@QueryMap Map<String, String> map);
 
     @GET("now")
     Call<SaltResultBean> getSalt(@QueryMap Map<String, String> map);
 
     @GET("module/{f_type}/{module_id}")
-    Call<BookModelBooksResultBean> getBookShopModule(@Path("f_type")int fType,
-                                                     @Path("module_id")int moduleId,
+    Call<BookModelBooksResultBean> getBookShopModule(@Path("f_type") int fType,
+                                                     @Path("module_id") int moduleId,
                                                      @QueryMap Map<String, String> baseInfoMap,
                                                      @QueryMap Map<String, String> queryMap);
+
     @GET("channel/{cid}")
-    Call<BookModelConfigResultBean> getShopMainConfig(@Path("cid")int cid,
+    Call<BookModelConfigResultBean> getShopMainConfig(@Path("cid") int cid,
                                                       @QueryMap Map<String, String> baseInfoMap);
 
     @GET("rank/modules")
     Call<BookModelConfigResultBean> getBookRank(@QueryMap Map<String, String> baseInfoMap);
 
     @GET("ebook/{bookId}")
-    Call<BookDetailResultBean> getBookDetail(@Path("bookId")long bookId,
+    Call<BookDetailResultBean> getBookDetail(@Path("bookId") long bookId,
                                              @QueryMap Map<String, String> baseInfoMap);
+
+    @GET("search/key_word")
+    Call<SearchHotWord> getSearchHot(@Query(JDAppBaseInfo.APP_KEY) String app);
 }

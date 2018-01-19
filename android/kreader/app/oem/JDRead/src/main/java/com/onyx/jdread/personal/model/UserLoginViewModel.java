@@ -1,15 +1,18 @@
 package com.onyx.jdread.personal.model;
 
-import android.databinding.BaseObservable;
+import android.app.Activity;
 import android.databinding.ObservableField;
 
-import com.onyx.android.sdk.utils.PreferenceManager;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.event.CancelUserLoginDialogEvent;
 import com.onyx.jdread.personal.event.ForgetPasswordEvent;
 import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.event.UserRegisterJDAccountEvent;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,6 +26,7 @@ public class UserLoginViewModel {
     public final ObservableField<String> password = new ObservableField<>();
     public final ObservableField<Boolean> isShowPassword = new ObservableField<>();
     private EventBus eventBus;
+    private Activity context;
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -37,7 +41,14 @@ public class UserLoginViewModel {
     }
 
     public void onLoginViewClick() {
-        getEventBus().post(new UserLoginEvent(account.get(),password.get()));
+        Utils.hideSoftWindow(context);
+        UserLoginAction userLoginAction = new UserLoginAction(JDReadApplication.getInstance(),account.get(),password.get());
+        userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                getEventBus().post(new UserLoginEvent(account.get(),password.get()));
+            }
+        });
     }
 
     public void onDeleteAccountViewClick() {
@@ -50,9 +61,9 @@ public class UserLoginViewModel {
     }
 
     public void onChangePasswordVisibleViewClick() {
-        boolean showPassword = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), Constants.SP_KEY_SHOW_PASSWORD, false);
+        boolean showPassword = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_SHOW_PASSWORD, false);
         isShowPassword.set(!showPassword);
-        PreferenceManager.setBooleanValue(JDReadApplication.getInstance(),Constants.SP_KEY_SHOW_PASSWORD,!showPassword);
+        JDPreferenceManager.setBooleanValue(Constants.SP_KEY_SHOW_PASSWORD,!showPassword);
     }
 
     public void onRegisterViewClick() {
@@ -65,5 +76,9 @@ public class UserLoginViewModel {
 
     public void onForgetPasswordClick() {
         getEventBus().post(new ForgetPasswordEvent());
+    }
+
+    public void setContext(Activity context) {
+        this.context = context;
     }
 }

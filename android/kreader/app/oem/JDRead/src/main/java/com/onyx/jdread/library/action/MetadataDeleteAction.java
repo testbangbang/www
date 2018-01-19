@@ -7,9 +7,10 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.R;
-import com.onyx.jdread.library.model.DataBundle;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.request.RxDeleteMetadataFromMultipleLibraryRequest;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
+import com.onyx.jdread.main.action.BaseAction;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ import java.util.Map;
  * Created by hehai on 17-12-13.
  */
 
-public class MetadataDeleteAction extends BaseAction<DataBundle> {
+public class MetadataDeleteAction extends BaseAction<LibraryDataBundle> {
     private Context context;
     private Map<String, List<Metadata>> chosenItemsMap;
 
@@ -27,31 +28,31 @@ public class MetadataDeleteAction extends BaseAction<DataBundle> {
     }
 
     @Override
-    public void execute(final DataBundle dataBundle, final RxCallback baseCallback) {
+    public void execute(final LibraryDataBundle libraryDataBundle, final RxCallback baseCallback) {
         final GetSelectedMetadataAction getSelectedMetadataAction = new GetSelectedMetadataAction();
-        getSelectedMetadataAction.execute(dataBundle, new RxCallback() {
+        getSelectedMetadataAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 chosenItemsMap = getSelectedMetadataAction.getChosenItemsMap();
                 if (CollectionUtils.isNullOrEmpty(chosenItemsMap)) {
-                    ToastUtils.showToast(dataBundle.getAppContext(), R.string.please_select_book);
+                    ToastUtils.showToast(libraryDataBundle.getAppContext(), R.string.please_select_book);
                     return;
                 }
-                showDeleteDialog(dataBundle, chosenItemsMap, baseCallback);
+                showDeleteDialog(libraryDataBundle, chosenItemsMap, baseCallback);
             }
         });
     }
 
-    private void showDeleteDialog(final DataBundle dataBundle, final Map<String, List<Metadata>> chosenItemsMap, final RxCallback baseCallback) {
+    private void showDeleteDialog(final LibraryDataBundle libraryDataBundle, final Map<String, List<Metadata>> chosenItemsMap, final RxCallback baseCallback) {
         LibraryDeleteDialog.DialogModel dialogModel = new LibraryDeleteDialog.DialogModel();
-        dialogModel.message.set(dataBundle.getAppContext().getString(R.string.delete_book_prompt));
+        dialogModel.message.set(libraryDataBundle.getAppContext().getString(R.string.delete_book_prompt));
         LibraryDeleteDialog.Builder builder = new LibraryDeleteDialog.Builder(context, dialogModel);
         final LibraryDeleteDialog libraryDeleteDialog = builder.create();
         libraryDeleteDialog.show();
         dialogModel.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
             @Override
             public void onClicked() {
-                deleteMetadata(dataBundle, chosenItemsMap, baseCallback);
+                deleteMetadata(libraryDataBundle, chosenItemsMap, baseCallback);
                 libraryDeleteDialog.dismiss();
             }
         });
@@ -63,8 +64,8 @@ public class MetadataDeleteAction extends BaseAction<DataBundle> {
         });
     }
 
-    private void deleteMetadata(DataBundle dataBundle, Map<String, List<Metadata>> chosenItemsMap, RxCallback baseCallback) {
-        RxDeleteMetadataFromMultipleLibraryRequest request = new RxDeleteMetadataFromMultipleLibraryRequest(dataBundle.getDataManager(), chosenItemsMap);
+    private void deleteMetadata(LibraryDataBundle libraryDataBundle, Map<String, List<Metadata>> chosenItemsMap, RxCallback baseCallback) {
+        RxDeleteMetadataFromMultipleLibraryRequest request = new RxDeleteMetadataFromMultipleLibraryRequest(libraryDataBundle.getDataManager(), chosenItemsMap);
         request.execute(baseCallback);
     }
 }

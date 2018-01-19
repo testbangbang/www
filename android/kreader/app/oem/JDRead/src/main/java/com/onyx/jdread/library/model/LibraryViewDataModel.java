@@ -24,6 +24,7 @@ import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
 import com.onyx.jdread.library.event.MoveToLibraryEvent;
 import com.onyx.jdread.library.event.MyBookEvent;
+import com.onyx.jdread.library.event.SearchBookEvent;
 import com.onyx.jdread.library.event.SortByNameEvent;
 import com.onyx.jdread.library.event.SortByTimeEvent;
 import com.onyx.jdread.library.event.WifiPassBookEvent;
@@ -178,7 +179,7 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public QueryArgs libraryQuery() {
-        return libraryQuery(queryArgs.limit, 0);
+        return libraryQuery(queryArgs.limit, queryArgs.offset);
     }
 
     public QueryArgs getCurrentQueryArgs() {
@@ -265,7 +266,7 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public void onSearchClick() {
-
+        eventBus.post(new SearchBookEvent());
     }
 
     public void updateFilterBy(BookFilter bookFilter, SortOrder sortOrder) {
@@ -343,9 +344,10 @@ public class LibraryViewDataModel extends Observable {
         return selectHelper.getLibrarySelectedModel(getLibraryIdString());
     }
 
-    public void quitManageMode() {
+    public void clearSelectedData() {
         getSelectHelper().getChildLibrarySelectedMap().clear();
         getLibrarySelectedModel().setSelectedAll(false);
+        setSelectAllBtnText();
         clearItemSelectedList();
         checkedOrCancelAll(false);
     }

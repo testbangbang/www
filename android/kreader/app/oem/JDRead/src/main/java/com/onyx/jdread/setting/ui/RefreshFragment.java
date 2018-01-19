@@ -80,7 +80,7 @@ public class RefreshFragment extends BaseFragment {
     }
 
     private void initListener() {
-        binding.refreshToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        binding.refreshCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ScreenUtils.toggleA2Mode(JDReadApplication.getInstance());

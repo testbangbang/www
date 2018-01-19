@@ -85,7 +85,9 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         models.clear();
         DataModelUtil.libraryToDataModel(getDataProvider(), eventBus, models, libraryList, false, R.drawable.library_default_cover);
         DataModelUtil.metadataToDataModel(eventBus, models, bookList, thumbnailMap, ThumbnailUtils.defaultThumbnailMapping());
-        setChecked(models);
+        if (selectAll || !CollectionUtils.isNullOrEmpty(selectedList)) {
+            setChecked(models);
+        }
         return this;
     }
 

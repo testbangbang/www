@@ -31,10 +31,10 @@ public class WifiSettingAdapter extends PageRecyclerView.PageAdapter implements 
     private static final int WIFI_SIGNAL_3 = 3;
 
     static {
-        WIFI_SIGNAL_IMAGE.put(WIFI_SIGNAL_0, R.drawable.ic_wifi_signal_1);
-        WIFI_SIGNAL_IMAGE.put(WIFI_SIGNAL_1, R.drawable.ic_wifi_signal_2);
-        WIFI_SIGNAL_IMAGE.put(WIFI_SIGNAL_2, R.drawable.ic_wifi_signal_3);
-        WIFI_SIGNAL_IMAGE.put(WIFI_SIGNAL_3, R.drawable.ic_wifi_signal_4);
+        WIFI_SIGNAL_IMAGE.put(WIFI_SIGNAL_0, R.drawable.ic_wifi_1);
+        WIFI_SIGNAL_IMAGE.put(WIFI_SIGNAL_1, R.drawable.ic_wifi_2);
+        WIFI_SIGNAL_IMAGE.put(WIFI_SIGNAL_2, R.drawable.ic_wifi_3);
+        WIFI_SIGNAL_IMAGE.put(WIFI_SIGNAL_3, R.drawable.ic_wifi_4);
     }
 
     @Override
