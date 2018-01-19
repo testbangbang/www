@@ -105,7 +105,9 @@ public class ReaderSelectionManager {
         ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
-                cursor.draw(canvas, paint);
+                if(cursor.getShowState()) {
+                    cursor.draw(canvas, paint);
+                }
             }
         }
     }

@@ -333,10 +333,14 @@ public class WordSelectionHandler extends BaseHandler {
                 HighlightCursor.END_CURSOR_INDEX);
 
         if (endHighlightCursor != null && endHighlightCursor.hitTest(x, y)) {
-            return HighlightCursor.END_CURSOR_INDEX;
+            if(endHighlightCursor.getShowState()) {
+                return HighlightCursor.END_CURSOR_INDEX;
+            }
         }
         if (beginHighlightCursor != null && beginHighlightCursor.hitTest(x, y)) {
-            return HighlightCursor.BEGIN_CURSOR_INDEX;
+            if(beginHighlightCursor.getShowState()) {
+                return HighlightCursor.BEGIN_CURSOR_INDEX;
+            }
         }
         return -1;
     }

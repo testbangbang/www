@@ -59,6 +59,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
                 return this;
             }
             updateReaderSelectInfo(newPagePosition);
+            updateCursorState(newPagePosition,1,false);
             updateCurrentPageReaderSelect();
             reader.getReaderViewHelper().updatePageView(reader, getReaderViewInfo(), readerSelectionManager);
             HitTestTextHelper.saveLastHighLightPosition(newPagePosition, readerSelectionManager, readerSelectionInfo.getHighLightBeginTop(), readerSelectionInfo.getHighLightEndBottom());
@@ -80,6 +81,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
             readerSelectionInfo = HitTestTextHelper.selectOnScreen(start, end, newPagePosition, pageInfo, hitTestManager, getReaderUserDataInfo());
             if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection() != null) {
                 updateReaderSelectInfo(newPagePosition);
+                updateCursorState(newPagePosition,1,true);
                 reader.getReaderViewHelper().updatePageView(reader, getReaderViewInfo(), readerSelectionManager);
             }
         }
@@ -91,6 +93,10 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
                 getReaderUserDataInfo().getTouchPoint());
         readerSelectionManager.updateDisplayPosition(pagePosition);
         readerSelectionManager.setEnable(pagePosition, true);
+    }
+
+    private void updateCursorState(String pagePosition, int index, boolean isShow) {
+        readerSelectionManager.getHighlightCursor(pagePosition, index).isShow(isShow);
     }
 
     private boolean extendCurrentPageUpperLeftSelectTextRegion() {

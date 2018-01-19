@@ -154,4 +154,8 @@ public class HighlightCursor {
     public void isShow(boolean isShow) {
         this.isShow = isShow;
     }
+
+    public boolean getShowState() {
+        return isShow;
+    }
 }
