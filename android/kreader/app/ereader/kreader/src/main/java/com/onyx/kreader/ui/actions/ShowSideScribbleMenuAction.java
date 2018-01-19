@@ -265,7 +265,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         }
         int mainMenuViewId = sideMenu.getMainMenu().getRootViewId();
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.RIGHT_OF, mainMenuViewId);
+        lp.addRule(readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT ?
+                RelativeLayout.LEFT_OF : RelativeLayout.RIGHT_OF, mainMenuViewId);
         lp.addRule(RelativeLayout.ALIGN_TOP, mainMenuViewId);
         sideMenu.addSubMenu(parent,
                 readerDataHolder.getEventBus(),
