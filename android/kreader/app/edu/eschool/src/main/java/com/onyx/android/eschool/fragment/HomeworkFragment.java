@@ -440,10 +440,7 @@ public class HomeworkFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHomeworkEvent(HomeworkEvent event) {
         String subject = event.homework.subject;
-        if (StringUtils.isNullOrEmpty(subject)) {
-            return;
-        }
-        if (subject.equals(getSubjectId())) {
+        if(StringUtils.safeContains(subject, getSubjectId())) {
             refreshData();
         }
     }

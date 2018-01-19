@@ -215,4 +215,12 @@ public class StringUtils {
         }
         return maxWidth;
     }
+
+    public static boolean safeContains(String origin, String target) {
+        if (origin == null || target == null) {
+            return false;
+        }
+        return origin.contains(target);
+    }
+
 }
