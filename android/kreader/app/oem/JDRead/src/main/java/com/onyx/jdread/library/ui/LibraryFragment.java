@@ -293,6 +293,7 @@ public class LibraryFragment extends BaseFragment {
     private void removeLastParentLibrary() {
         libraryDataBundle.getLibraryViewDataModel().libraryPathList.remove(libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
         setTitle();
+        showMangeMenu();
         loadData();
     }
 
@@ -496,7 +497,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void showMangeMenu() {
-        libraryDataBundle.getLibraryViewDataModel().setShowTopMenu(!isMultiSelectionMode());
+        libraryDataBundle.getLibraryViewDataModel().setShowTopMenu(!isMultiSelectionMode() && libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() == 0);
         libraryDataBundle.getLibraryViewDataModel().setShowBottomMenu(isMultiSelectionMode());
         viewEventCallBack.hideOrShowFunctionBar(!isMultiSelectionMode());
     }
