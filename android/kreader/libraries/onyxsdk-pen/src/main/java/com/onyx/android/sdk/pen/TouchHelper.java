@@ -179,6 +179,7 @@ public class TouchHelper {
     }
 
     public TouchHelper openRawDrawing() {
+        resetStrokeStyle();
         createRawDrawing();
         rawDrawingCreated = true;
         return this;
@@ -186,6 +187,7 @@ public class TouchHelper {
 
     public void closeRawDrawing() {
         rawDrawingCreated = false;
+        resetStrokeStyle();
         pauseRawDrawing();
         destroyRawDrawing();
     }
@@ -236,6 +238,10 @@ public class TouchHelper {
             rawInputManager = new RawInputManager();
         }
         return rawInputManager;
+    }
+
+    private void resetStrokeStyle() {
+        setStrokeStyle(STROKE_STYLE_PENCIL);
     }
 
     private void createRawDrawing() {
