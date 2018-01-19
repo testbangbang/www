@@ -5,6 +5,7 @@ import android.content.Context;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseAction;
@@ -36,7 +37,7 @@ public class GetHomeworkReviewsAction extends BaseAction {
     @Override
     public void execute(final Context context, final BaseCallback baseCallback) {
         if (checkWifi) {
-            if (showLoading) {
+            if (showLoading && !NetworkUtil.isWiFiConnected(context)) {
                 showLoadingDialog(context, context.getString(R.string.opening_wifi));
             }
             final CheckWifiRequest wifiRequest = new CheckWifiRequest();

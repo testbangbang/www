@@ -40,6 +40,7 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
             parent.createDocument(getContext(), documentUniqueId, getParentLibraryId(), getGroupId(), calculateMinPageCount(parent));
         } else {
             parent.openDocument(getContext(), documentUniqueId, getParentLibraryId(), getGroupId());
+            parent.getNoteDocument().gotoPage(0);
         }
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);

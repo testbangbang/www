@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.model.homework.Homework;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.ShapeState;
+import com.onyx.edu.homework.data.HomeworkIntent;
 import com.onyx.edu.homework.data.HomeworkState;
 
 import org.greenrobot.eventbus.EventBus;
@@ -75,6 +76,18 @@ public class DataBundle {
         return homework;
     }
 
+    public void updateHomeworkFromIntent(HomeworkIntent intent) {
+        if (intent == null) {
+            return;
+        }
+        getHomework().setPublishedAnswer(intent.readActive);
+        getHomework().setHasReview(intent.checked);
+
+        if (homework.needUpdateEndTime(intent.endTime)) {
+            getHomework().setEndTime(intent.endTime);
+        }
+    }
+
     public EventBus getEventBus() {
         if (eventBus == null) {
             eventBus = new EventBus();
@@ -133,7 +146,15 @@ public class DataBundle {
     }
 
     public boolean isExpired() {
-        return isDoing() && homework.isExpired();
+        return isDoing() && getHomework().isExpired();
+    }
+
+    public boolean canCheckAnswer() {
+        return isReview() && getHomework().isPublishedAnswer();
+    }
+
+    public boolean canGetReview() {
+        return !isReview() && getHomework().hasReview();
     }
 
 }

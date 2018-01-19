@@ -23,6 +23,8 @@ public class Homework {
     public Date endTime;
     public Subject subject;
     public boolean published;
+    public boolean hasReview;
+    public boolean publishedAnswer;
 
     public Homework() {
     }
@@ -47,4 +49,27 @@ public class Homework {
         return endTime;
     }
 
+    public boolean isPublishedAnswer() {
+        return publishedAnswer;
+    }
+
+    public boolean hasReview() {
+        return hasReview;
+    }
+
+    public void setPublishedAnswer(boolean publishedAnswer) {
+        this.publishedAnswer = publishedAnswer;
+    }
+
+    public void setHasReview(boolean hasReview) {
+        this.hasReview = hasReview;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public boolean needUpdateEndTime(Date time) {
+        return time != null && (endTime == null || time.after(endTime));
+    }
 }

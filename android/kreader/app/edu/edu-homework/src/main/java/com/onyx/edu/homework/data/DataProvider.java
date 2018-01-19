@@ -35,6 +35,8 @@ public class DataProvider {
         homework.beginTime = model.getBeginTime();
         homework.endTime = model.getEndTime();
         homework.subject = model.getSubject();
+        homework.hasReview = model.isHasReview();
+        homework.publishedAnswer = model.isPublishedAnswer();
     }
 
 }

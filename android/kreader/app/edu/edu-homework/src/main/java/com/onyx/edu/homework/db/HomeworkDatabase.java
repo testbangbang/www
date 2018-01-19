@@ -19,7 +19,7 @@ import java.sql.Date;
 public class HomeworkDatabase {
 
     public static final String NAME = "HomeworkDatabase";
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
 
     @Migration(version = 2, database = HomeworkDatabase.class)
     public static class Version2QuestionModelMigration extends AlterTableMigration<QuestionModel> {
@@ -50,6 +50,20 @@ public class HomeworkDatabase {
             addColumn(SQLiteType.TEXT, HomeworkModel_Table.title.getNameAlias().name());
             addColumn(SQLiteType.INTEGER, HomeworkModel_Table.beginTime.getNameAlias().name());
             addColumn(SQLiteType.INTEGER, HomeworkModel_Table.endTime.getNameAlias().name());
+        }
+    }
+
+    @Migration(version = 3, database = HomeworkDatabase.class)
+    public static class Version3HomeworkModelMigration extends AlterTableMigration<HomeworkModel> {
+        public Version3HomeworkModelMigration(Class<HomeworkModel> table) {
+            super(table);
+        }
+
+        @Override
+        public void onPreMigrate() {
+            addColumn(SQLiteType.TEXT, HomeworkModel_Table.extraAttributes.getNameAlias().name());
+            addColumn(SQLiteType.INTEGER, HomeworkModel_Table.hasReview.getNameAlias().name());
+            addColumn(SQLiteType.INTEGER, HomeworkModel_Table.publishedAnswer.getNameAlias().name());
         }
     }
 }
