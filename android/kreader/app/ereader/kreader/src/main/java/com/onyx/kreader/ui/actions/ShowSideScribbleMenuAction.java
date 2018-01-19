@@ -82,6 +82,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 lp,
                 MenuItem.createVisibleMenus(getMainMenuActions()));
         updateSideNotePositionText(readerDataHolder);
+        updateMainMenuBg();
         onMenuViewSizeChange(parent);
         updateMenuHeight(true);
     }
@@ -142,7 +143,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
 
     private void updateMainMenuBg() {
         boolean subMenuShowed = sideMenu.getSubMenu() != null && sideMenu.getSubMenu().isShowing();
-        sideMenu.getMainMenu().getRootView().setBackgroundResource(subMenuShowed ? R.drawable.sub_menu_show_shadow_bg : R.drawable.shadow_bg);
+        sideMenu.getMainMenu().getRootView().setBackgroundResource(subMenuShowed ? R.drawable.sub_menu_show_shadow_bg :
+                (readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT ? R.drawable.left_shadow_bg : R.drawable.shadow_bg));
     }
 
     private List<Integer> getMainMenuActions() {
