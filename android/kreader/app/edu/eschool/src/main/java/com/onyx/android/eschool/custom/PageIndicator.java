@@ -40,8 +40,8 @@ public class PageIndicator {
     }
 
     public PageIndicator(View indicatorView, GPaginator gPaginator) {
-        this.gPaginator = gPaginator;
         ButterKnife.bind(this, indicatorView);
+        resetGPaginator(gPaginator);
     }
 
     public void updateCurrentPage() {

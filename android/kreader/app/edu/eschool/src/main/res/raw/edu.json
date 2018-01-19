@@ -46,8 +46,9 @@
   "info_show_config": {
     "orientation": 0,
     "rotationAngle": 270,
-    "startX": 959,
-    "startY": 239
+    "screenPositive": false,
+    "startX": 934,
+    "startY": 30
   },
   "enable_full_refresh": false,
   "media_scan_support": true,

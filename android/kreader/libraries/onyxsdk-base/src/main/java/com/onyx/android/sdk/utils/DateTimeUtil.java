@@ -78,4 +78,22 @@ public class DateTimeUtil {
         dateFormat.setTimeZone(TimeZone.getDefault());
         return dateFormat;
     }
+
+    public static String formatGMTDate(Date date, SimpleDateFormat simpleDateFormat) {
+        if (date == null) {
+            return "";
+        }
+        return simpleDateFormat.format(convertGMTDateToLocal(date));
+    }
+
+    public static Date convertGMTDateToLocal(Date date) {
+        if (date == null) {
+            return null;
+        }
+        int timezoneOffset = date.getTimezoneOffset();
+        if (timezoneOffset == 0) {
+            return date;
+        }
+        return new Date(date.getTime() - timezoneOffset * 60 * 1000);
+    }
 }

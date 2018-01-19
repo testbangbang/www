@@ -12,6 +12,9 @@ import android.graphics.RectF;
 import android.media.ThumbnailUtils;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.Size;
@@ -286,20 +289,23 @@ public class BitmapUtils {
                                              boolean overrideFilePermission,
                                              boolean needRotation, int rotationAngle,
                                              @Nullable String path) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         paint.setStrokeWidth(3);
         paint.setTextSize(textSize);
         paint.setColor(Color.BLACK);
         paint.setFakeBoldText(boldText);
-        int width = StringUtils.getTextWidth(paint, targetString);
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Rect targetRect = new Rect(0, 0, width, height);
+        paint.setTextAlign(Paint.Align.LEFT);
+
+        int maxWidth = StringUtils.getTextMaxWidth(paint, targetString);
+
+        Bitmap bitmap = Bitmap.createBitmap(maxWidth, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        Paint.FontMetricsInt fontMetrics = paint.getFontMetricsInt();
-        int baseline = (height - fontMetrics.bottom - fontMetrics.top) / 2;
-        paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(targetString, targetRect.centerX(), baseline, paint);
-        if (needRotation){
+        canvas.translate(0, height / 2);
+        StaticLayout textLayout = new StaticLayout(targetString, paint, canvas.getWidth(),
+                Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+        textLayout.draw(canvas);
+
+        if (needRotation) {
             bitmap = rotateBmp(bitmap, rotationAngle);
         }
         if (saveToDisk) {

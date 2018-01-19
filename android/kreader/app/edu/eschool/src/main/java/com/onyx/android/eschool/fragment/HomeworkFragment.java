@@ -59,6 +59,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -87,6 +88,7 @@ public class HomeworkFragment extends Fragment {
     private List<Homework> homeworkDataList = new ArrayList<>();
 
     private int subjectIndex = 0;
+    private GPaginator paginator;
 
     public static HomeworkFragment newInstance() {
         HomeworkFragment fragment = new HomeworkFragment();
@@ -122,6 +124,12 @@ public class HomeworkFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DATE_FORMAT_MMDD_HHMM = DateTimeUtil.getDefaultDateFormat(getContext().getString(R.string.date_format));
+        initPaginator();
+    }
+
+    private void initPaginator() {
+        paginator = new GPaginator(pageRow, pageCol, 0);
+        paginator.setCurrentPage(0);
     }
 
     @Nullable
@@ -139,7 +147,7 @@ public class HomeworkFragment extends Fragment {
     }
 
     private void initPageIndicator() {
-        pageIndicator = new PageIndicator(binding.pageIndicatorLayout.getRoot(), contentPageView.getPaginator());
+        pageIndicator = new PageIndicator(binding.pageIndicatorLayout.getRoot(), getPagination());
         pageIndicator.setTotalFormat(getString(R.string.total_format));
         pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
             @Override
@@ -230,6 +238,7 @@ public class HomeworkFragment extends Fragment {
                 nextPage();
             }
         });
+        contentPageView.setPaginator(getPagination());
     }
 
     @Override
@@ -283,7 +292,7 @@ public class HomeworkFragment extends Fragment {
     }
 
     private GPaginator getPagination() {
-        return contentPageView.getPaginator();
+        return paginator;
     }
 
     private String getSubjectId() {
@@ -490,10 +499,11 @@ public class HomeworkFragment extends Fragment {
         }
 
         private String getDateString(Homework item) {
-            if (item.getUpdatedAt() == null) {
-                return null;
+            Date date = item.beginTime;
+            if (date == null) {
+                date = item.getUpdatedAt();
             }
-            return DATE_FORMAT_MMDD_HHMM.format(item.getUpdatedAt());
+            return DateTimeUtil.formatGMTDate(date, DATE_FORMAT_MMDD_HHMM);
         }
     }
 }
