@@ -39,6 +39,7 @@ import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.HomeworkIntent;
+import com.onyx.edu.homework.data.NotificationType;
 import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.CloseSubMenuEvent;
@@ -296,22 +297,21 @@ public class HomeworkListActivity extends BaseActivity {
         onyxNotificationReceiver.registerReceiver(this);
         onyxNotificationReceiver.setOnyxNotificationListener(new OnyxNotificationReceiver.OnyxNotificationListener() {
             @Override
-            public void onHomeworkNotificationReceive(String data) {
-                if (getDataBundle().isReview()) {
-                    return;
-                }
-                handleOnyxNotification(data);
+            public void onHomeworkNotificationReceive(NotificationType type, String data) {
+                handleOnyxNotification(type, data);
             }
         });
     }
 
-    private void handleOnyxNotification(String data) {
+    private void handleOnyxNotification(NotificationType type, String data) {
         HomeworkIntent homework = JSONObject.parseObject(data, HomeworkIntent.class);
         if (homework.child._id.equals(DataBundle.getInstance().getHomeworkId())) {
-            boolean needUpdateEndTime = getDataBundle().getHomework().needUpdateEndTime(homework.endTime);
             updateHomeworkFromIntent(homework);
             updateViewState();
-            if (homework.readActive || needUpdateEndTime) {
+            setEndTimeText();
+            boolean reload = type == NotificationType.HOMEWORK_READER_ACTIVE
+                    || type == NotificationType.HOMEWORK_END_TIME;
+            if (reload) {
                 reloadQuestionFragment(currentPage);
             }
         }
@@ -321,7 +321,6 @@ public class HomeworkListActivity extends BaseActivity {
         String title = homeworkIntent.child.title;
         Subject subject = getDataBundle().getHomework().subject;
         Date beginTime = getDataBundle().getHomework().beginTime;
-        Date endTime = getDataBundle().getHomework().getEndTime();
         if (subject != null && !StringUtils.isNullOrEmpty(subject.name)) {
             title += "  " + getString(R.string.subject, subject.name);
         }
@@ -331,6 +330,11 @@ public class HomeworkListActivity extends BaseActivity {
         }
         binding.toolbar.title.setText(title);
 
+        setEndTimeText();
+    }
+
+    private void setEndTimeText() {
+        Date endTime = getDataBundle().getHomework().getEndTime();
         if (endTime != null) {
             String time = DateTimeUtil.formatGMTDate(endTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
             binding.toolbar.title2.setText(getString(R.string.end_time, time));
@@ -587,6 +591,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (endTime == null) {
             return;
         }
+        endTime = DateTimeUtil.convertGMTDateToLocal(endTime);
         long millisInFuture = endTime.getTime() - System.currentTimeMillis();
         if (millisInFuture <= 0) {
             return;

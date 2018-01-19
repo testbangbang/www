@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.onyx.edu.homework.data.NotificationType;
+
 /**
  * Created by lxm on 2018/1/16.
  */
@@ -16,10 +18,12 @@ public class OnyxNotificationReceiver extends BroadcastReceiver {
     public static final String ONYX_NOTIFICATION_TYPE = "type";
     public static final String ONYX_NOTIFICATION_DATA = "data";
 
-    public static final String ONYX_NOTIFICATION_TYPE_HOMEWORK = "homework";
+    public static final String TYPE_NOTIFY_HOMEWORK = "homework";
+    public static final String TYPE_NOTIFY_HOMEWORK_READ_ACTIVE = "homework_readActive";
+    public static final String TYPE_NOTIFY_HOMEWORK_END_TIME = "homework_endTime";
 
     public static abstract class OnyxNotificationListener {
-        public abstract void onHomeworkNotificationReceive(String data);
+        public abstract void onHomeworkNotificationReceive(NotificationType type, String data);
     }
 
     private OnyxNotificationListener onyxNotificationListener;
@@ -28,16 +32,17 @@ public class OnyxNotificationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String type = intent.getStringExtra(ONYX_NOTIFICATION_TYPE);
         String data = intent.getStringExtra(ONYX_NOTIFICATION_DATA);
-        if (type.equals(ONYX_NOTIFICATION_TYPE_HOMEWORK)) {
-            onHomeworkMessageReceive(data);
+        NotificationType notifyType = NotificationType.getNotificationType(type);
+        if (notifyType.isHomeWorkNotifyType()) {
+            onHomeworkMessageReceive(notifyType, data);
         }
     }
 
-    private void onHomeworkMessageReceive(String data) {
+    private void onHomeworkMessageReceive(NotificationType type, String data) {
         if (getOnyxNotificationListener() == null) {
             return;
         }
-        getOnyxNotificationListener().onHomeworkNotificationReceive(data);
+        getOnyxNotificationListener().onHomeworkNotificationReceive(type, data);
     }
 
     public void setOnyxNotificationListener(OnyxNotificationListener onyxNotificationListener) {
