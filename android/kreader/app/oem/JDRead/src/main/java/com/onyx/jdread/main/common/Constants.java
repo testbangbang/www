@@ -31,6 +31,7 @@ public class Constants {
     public static final String SP_KEY_SUBJECT_MODEL_ID = "subject_model_id";
     public static final String SP_KEY_SUBJECT_MODEL_TYPE = "subject_model_type";
     public static final String SP_KEY_KEYWORD = "Keyword";
+    public static final String SP_KEY_BOOK_LIST_TYPE = "book_list_type";
 
     public static final int BOOK_SHOP_DEFAULT_CID = 11;
     public static final int BOOK_COMMENT_PAGE_SIZE = 20;
@@ -79,4 +80,6 @@ public class Constants {
     public static final long RESET_PRESS_TIMEOUT = 1000;
     public static final int START_PRODUCTION_TEST_PRESS_COUNT = 6;
     public static final int REMOVE_PRODUCTION_TEST_PRESS_COUNT = 5;
+    public static final int BOOK_LIST_TYPE_BOOK_MODEL = 1;
+    public static final int BOOK_LIST_TYPE_BOOK_RANK = 2;
 }

@@ -19,8 +19,10 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookModelAction;
+import com.onyx.jdread.shop.action.BookRankListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
@@ -66,19 +68,37 @@ public class ViewAllBooksFragment extends BaseFragment {
 
     private void initData() {
         String title= PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, "");
-        modelId = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
-        modelType = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
         getTitleBarViewModel().leftText = title;
-        getBooksData(currentPage);
+        int bookListType= PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_LIST_TYPE, -1);
+        if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_MODEL) {
+            modelId = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
+            modelType = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
+            getBookModelData(currentPage);
+        } else if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_RANK) {
+            modelType = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
+            getBookRankData(modelType,currentPage);
+        }
     }
 
-    private void getBooksData(int currentPage) {
+    private void getBookModelData(int currentPage) {
         BookModelAction booksAction = new BookModelAction(modelId,modelType,currentPage);
         booksAction.execute(getShopDataBundle(), new RxCallback<BookModelAction>() {
             @Override
             public void onNext(BookModelAction booksAction) {
                 BookModelBooksResultBean bookModelResultBean = booksAction.getBookModelResultBean();
                 getViewAllViewModel().setBookList(bookModelResultBean.data.items);
+                updateContentView();
+            }
+        });
+    }
+
+    private void getBookRankData(int modelId, int currentPage) {
+        BookRankListAction booksAction = new BookRankListAction(modelId, currentPage);
+        booksAction.execute(getShopDataBundle(), new RxCallback<BookRankListAction>() {
+            @Override
+            public void onNext(BookRankListAction booksAction) {
+                RecommendListResultBean bookModelResultBean = booksAction.getBookModelResultBean();
+                getViewAllViewModel().setBookList(bookModelResultBean.data);
                 updateContentView();
             }
         });

@@ -78,10 +78,10 @@ public class SubjectViewModel extends BaseObservable {
     }
 
     public void onViewAllClick() {
-        getEventBus().post(new ViewAllClickEvent(modelBean.id, modelBean.f_type, modelBean.show_name));
+        getEventBus().post(new ViewAllClickEvent(modelBean.id, modelBean.rank_type, modelBean.show_name));
     }
 
     public void onNextViewAllClick() {
-        getEventBus().post(new ViewAllClickEvent(modelBeanNext.id, modelBeanNext.f_type, modelBeanNext.show_name));
+        getEventBus().post(new ViewAllClickEvent(modelBeanNext.id, modelBeanNext.rank_type, modelBeanNext.show_name));
     }
 }

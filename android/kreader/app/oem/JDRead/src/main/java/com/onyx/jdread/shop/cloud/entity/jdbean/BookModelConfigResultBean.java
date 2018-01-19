@@ -12,7 +12,7 @@ import java.util.List;
 public class BookModelConfigResultBean {
 
     public DataBean data;
-    public int resultCode;
+    public int result_code;
     public String message;
 
     public static class DataBean {

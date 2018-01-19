@@ -133,4 +133,9 @@ public interface ReadContentService {
     @GET("ebook/{bookId}/recommend")
     Call<RecommendListResultBean> getRecommendList(@Path("bookId") long bookId,
                                                    @QueryMap Map<String, String> baseInfoMap);
+
+    @GET("rank/{module_type}/{type}")
+    Call<RecommendListResultBean> getBookRankList(@Path("module_type") int moduleType,
+                                                     @Path("type") String type,
+                                                     @QueryMap Map<String, String> baseInfoMap);
 }

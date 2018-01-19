@@ -63,6 +63,7 @@ public class CloudApiContext {
         public static final String BOOK_RANK_URI = "rank/modules";
         public static final String BOOK_COMMENT_LIST_URI = "ebook/%s/comment";
         public static final String BOOK_RECOMMEND_LIST_URI = "ebook/%s/recommend";
+        public static final String BOOK_RANK_LIST_URI = "rank/%1s/%2s";
     }
 
     public static class AddToSmooth {
@@ -70,12 +71,6 @@ public class CloudApiContext {
         public static final String CURRENT_PAGE = "currentPage";
         public static final String PAGE_SIZE = "pageSize";
         public static final String SMOOTH_READ_BOOK_LIST = "myNewCardReadBook";
-    }
-
-    public static class BookShopModuleList {
-        public static final String SYS_ID = "sysId";
-        public static final String RETURN_MESSAGE = "returnMessage";
-        public static final String API_GET_MAIN_THEME_INFO = "getMainThemeInfo";
     }
 
     public static class CategoryLevel2BookList {
@@ -97,12 +92,8 @@ public class CloudApiContext {
         public static final int SORT_TYPE_NEWEST = 3;
     }
 
-    public static class RecommendList {
-        public static final String BOOK_ID = "bookId";
-        public static final String BOOK_DETAIL_RECOMMEND_LIST_V2 = "bookDetailRecommendListV2";
-        public static final String BOOK_TYPE = "ebook";
-        public static final String BOOK_TYPE_ID = "eBookId";
-        public static final String PAGE_BOOK_ID = "paperBookId";
+    public static class BookRankList {
+        public static final String RANK_LIST_TIME_TYPE = "week";
     }
 
     public static class SearchBook {
