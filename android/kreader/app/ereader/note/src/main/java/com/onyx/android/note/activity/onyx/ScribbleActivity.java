@@ -820,8 +820,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         }
 
                         @Override
-                        public void onVisibilityChanged(final Rect excludeRect, final boolean redrawPage, int visibility) {
-                            boolean resume = visibility != View.VISIBLE && shouldResume();
+                        public void onVisibilityChanged(Rect excludeRect, final boolean redrawPage,
+                                                       final boolean isOverrideResumeStatus,final boolean overrideResumeFlag, int visibility) {
+                            boolean resume = isOverrideResumeStatus ? overrideResumeFlag : (visibility != View.VISIBLE && shouldResume());
                             UpdateScreenWritingExcludeRegionAction<ScribbleActivity> action = new
                                     UpdateScreenWritingExcludeRegionAction<>(excludeRect, resume);
                             action.execute(ScribbleActivity.this, new BaseCallback() {

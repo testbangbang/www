@@ -51,7 +51,8 @@ public class ScribbleSubMenu extends RelativeLayout {
 
         public abstract void onLayoutStateChanged();
 
-        public abstract void onVisibilityChanged(final Rect excludeRect,final boolean redrawPage , int visibility);
+        public abstract void onVisibilityChanged(final Rect excludeRect, final boolean redrawPage,
+                                                 final boolean isOverrideResumeStatus, final boolean overrideResumeFlag,int visibility);
     }
 
     private final MenuCallback mMenuCallback;
@@ -65,17 +66,42 @@ public class ScribbleSubMenu extends RelativeLayout {
     @ScribbleMenuCategory.ScribbleMenuCategoryDef
     int currentCategory;
 
+    /*
+      TODO:Some menu item may have a further action such as show dialog.We don't want to resume even current shape is dfb Shape.
+      TODO:Temp use flag control here, change to event drive in next version.
+    */
+    private boolean isOverrideResumeStatus = false;
+    private boolean overrideResumeFlag = false;
+
     private void notifyOnMenuItemClickedListener(GObject scribbleMenu) {
+        int menuID = getMenuUniqueId(scribbleMenu);
         updateButtonIndicator(scribbleMenu);
-        mMenuCallback.onItemSelect(getMenuUniqueId(scribbleMenu));
-        boolean close = getMenuCloseAfterClick(scribbleMenu);
-        if (close) {
-            this.dismiss(false);
+        if (getMenuCloseAfterClick(scribbleMenu)) {
+            dismiss(false);
+            updateResumeStatusByMenuID(menuID);
         }
+        mMenuCallback.onItemSelect(menuID);
     }
 
     public void setCurShapeDataInfo(ShapeDataInfo curShapeDataInfo) {
         this.curShapeDataInfo = curShapeDataInfo;
+    }
+
+    private void updateResumeStatusByMenuID(int menuID) {
+        switch (menuID) {
+            case ScribbleSubMenuID.THICKNESS_CUSTOM_BOLD:
+                isOverrideResumeStatus = true;
+                overrideResumeFlag = false;
+                break;
+            default:
+                clearDismissResumeStatusFlag();
+                break;
+        }
+    }
+
+    private void clearDismissResumeStatusFlag() {
+        isOverrideResumeStatus = false;
+        overrideResumeFlag = false;
     }
 
     /**
@@ -92,7 +118,8 @@ public class ScribbleSubMenu extends RelativeLayout {
         menu.putBoolean(GAdapterUtil.TAG_MENU_CLOSE_AFTER_CLICK, close);
     }
 
-    public ScribbleSubMenu(Context context, ShapeDataInfo shapeDataInfo, RelativeLayout parentLayout, MenuCallback callback, int positionID, boolean isShowStatusBar) {
+    public ScribbleSubMenu(Context context, ShapeDataInfo shapeDataInfo,
+                           RelativeLayout parentLayout, MenuCallback callback, int positionID, boolean isShowStatusBar) {
         super(context);
         final LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.scribble_submenu, this, true);
@@ -188,7 +215,8 @@ public class ScribbleSubMenu extends RelativeLayout {
                         excludeRect = new Rect();
                         break;
                 }
-                mMenuCallback.onVisibilityChanged(excludeRect, redrawPage, getVisibility());
+                mMenuCallback.onVisibilityChanged(excludeRect, redrawPage, isOverrideResumeStatus, overrideResumeFlag, getVisibility());
+                clearDismissResumeStatusFlag();
             }
         });
     }
