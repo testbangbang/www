@@ -125,16 +125,6 @@ public class HomeworkModel extends BaseModel {
         return model;
     }
 
-    public void loadFromHomeworkRequestModel(Homework requestModel) {
-        if (requestModel == null) {
-            return;
-        }
-        setBeginTime(requestModel.beginTime);
-        setEndTime(requestModel.endTime);
-        setSubject(requestModel.subject);
-        setTitle(requestModel.title);
-    }
-
     public void loadFromHomework(Homework homework) {
         if (homework == null) {
             return;
@@ -143,6 +133,8 @@ public class HomeworkModel extends BaseModel {
         setEndTime(homework.endTime);
         setHasReview(homework.hasReview);
         setPublishedAnswer(homework.publishedAnswer);
+        setSubject(homework.subject);
+        setTitle(homework.title);
     }
 
 }

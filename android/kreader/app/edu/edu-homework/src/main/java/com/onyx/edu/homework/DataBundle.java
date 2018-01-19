@@ -80,8 +80,8 @@ public class DataBundle {
         if (intent == null) {
             return;
         }
-        getHomework().setPublishedAnswer(intent.readActive);
-        getHomework().setHasReview(intent.checked);
+        getHomework().setPublishedAnswer(getHomework().publishedAnswer || intent.readActive);
+        getHomework().setHasReview(getHomework().hasReview || intent.checked);
 
         if (homework.needUpdateEndTime(intent.endTime)) {
             getHomework().setEndTime(intent.endTime);

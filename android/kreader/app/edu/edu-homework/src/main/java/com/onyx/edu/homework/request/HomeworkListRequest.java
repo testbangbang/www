@@ -81,7 +81,7 @@ public class HomeworkListRequest extends BaseCloudRequest {
         if (homeworkModel == null) {
             homeworkModel = HomeworkModel.create(libraryId);
         }
-        homeworkModel.loadFromHomeworkRequestModel(homework);
+        homeworkModel.loadFromHomework(homework);
         homeworkModel.save();
         saveQuestions(homework.questions);
     }
