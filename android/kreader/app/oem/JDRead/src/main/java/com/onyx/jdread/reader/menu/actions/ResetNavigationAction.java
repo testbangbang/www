@@ -15,10 +15,11 @@ import com.onyx.jdread.reader.menu.request.ChangeLayoutRequest;
  */
 
 public class ResetNavigationAction extends BaseReaderAction {
+
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         ChangeLayoutParameter parameter = new ChangeLayoutParameter(PageConstants.SINGLE_PAGE, new NavigationArgs());
-        final ChangeLayoutRequest request = new ChangeLayoutRequest(readerDataHolder.getReader(),parameter,null);
+        final ChangeLayoutRequest request = new ChangeLayoutRequest(readerDataHolder.getReader(), parameter, null);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

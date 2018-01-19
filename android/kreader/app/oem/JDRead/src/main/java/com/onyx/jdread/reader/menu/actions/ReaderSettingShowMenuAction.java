@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.menu.actions;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -19,7 +20,7 @@ public class ReaderSettingShowMenuAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         showMenu();
     }
 

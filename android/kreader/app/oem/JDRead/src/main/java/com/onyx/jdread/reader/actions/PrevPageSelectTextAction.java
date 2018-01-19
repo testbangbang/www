@@ -14,13 +14,12 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
 public class PrevPageSelectTextAction extends BaseReaderAction {
     private ReaderSelectionManager readerSelectionManager;
 
-    public PrevPageSelectTextAction(ReaderSelectionManager readerSelectionManager, ActionCallBack callBack) {
+    public PrevPageSelectTextAction(ReaderSelectionManager readerSelectionManager) {
         this.readerSelectionManager = readerSelectionManager;
-        this.callBack = callBack;
     }
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
         ReaderTextStyle style = readerDataHolder.getStyleCopy();
         final String pagePosition = readerDataHolder.getCurrentPagePosition();
 
@@ -29,20 +28,17 @@ public class PrevPageSelectTextAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+
+            }
+
+            @Override
+            public void onFinally() {
                 readerDataHolder.getReaderSelectionManager().decrementSelectCount();
                 if (request.isSuccess) {
                     updateData(readerDataHolder, request, pagePosition);
                 }
-                if (callBack != null) {
-                    callBack.onFinally(pagePosition);
-                }
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                readerDataHolder.getReaderSelectionManager().decrementSelectCount();
-                if (callBack != null) {
-                    callBack.onFinally(pagePosition);
+                if (baseCallback != null) {
+                    baseCallback.onFinally();
                 }
             }
         });

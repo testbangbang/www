@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.actions;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 /**
@@ -7,9 +8,5 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
  */
 
 public abstract class BaseReaderAction {
-    public ActionCallBack callBack;
-    public abstract void execute(ReaderDataHolder readerDataHolder);
-    public interface ActionCallBack{
-        void onFinally(String pagePosition);
-    }
+    public abstract void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback);
 }

@@ -48,7 +48,7 @@ public class RegionFunctionManager {
     public static boolean processRegionFunction(ReaderDataHolder readerDataHolder, int x, int y) {
         for (Rect rect : regionAction.keySet()) {
             if (rect.contains(x, y)) {
-                regionAction.get(rect).execute(readerDataHolder);
+                regionAction.get(rect).execute(readerDataHolder,null);
                 return true;
             }
         }

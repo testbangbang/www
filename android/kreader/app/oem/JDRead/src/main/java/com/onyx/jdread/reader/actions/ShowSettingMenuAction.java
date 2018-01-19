@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.actions;
 import android.content.Context;
 import android.graphics.Rect;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -17,7 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 public class ShowSettingMenuAction extends BaseReaderAction {
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         EventBus.getDefault().post(new ShowReaderSettingMenuEvent());
     }
 

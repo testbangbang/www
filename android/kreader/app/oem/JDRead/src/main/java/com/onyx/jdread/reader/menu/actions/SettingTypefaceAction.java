@@ -20,7 +20,7 @@ public class SettingTypefaceAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         style.setFontFace(typefacePath);
 
         new SettingTextStyleRequest(readerDataHolder.getReader(), style).execute(new RxCallback() {

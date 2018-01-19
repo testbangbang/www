@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.device.ReaderDeviceManager;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -95,14 +96,14 @@ public class WordSelectionHandler extends BaseHandler {
             if (x < crossScreenTouchRegionMinWidth && y < crossScreenTouchRegionMinHeight) {
                 if (getReaderDataHolder().getReaderViewInfo().canPrevScreen) {
                     isCrossScreenSelect = true;
-                    new PrevPageSelectTextAction(getReaderDataHolder().getReaderSelectionManager(), crossScreenSelectActionCallBack).execute(getReaderDataHolder());
+                    new PrevPageSelectTextAction(getReaderDataHolder().getReaderSelectionManager()).execute(getReaderDataHolder(),crossScreenSelectActionCallBack);
                 }
                 return true;
             }
             if (x > (width - crossScreenTouchRegionMinWidth) && y > (height - crossScreenTouchRegionMinHeight)) {
                 if (getReaderDataHolder().getReaderViewInfo().canNextScreen) {
                     isCrossScreenSelect = true;
-                    new NextPageSelectTextAction(getReaderDataHolder().getReaderSelectionManager(), crossScreenSelectActionCallBack).execute(getReaderDataHolder());
+                    new NextPageSelectTextAction(getReaderDataHolder().getReaderSelectionManager()).execute(getReaderDataHolder(),crossScreenSelectActionCallBack);
                 }
                 return true;
             }
@@ -269,8 +270,8 @@ public class WordSelectionHandler extends BaseHandler {
                 new PointF(x1, y1),
                 new PointF(x2, y2),
                 new PointF(x2, y2));
-        SelectWordAction action = new SelectWordAction(info, selectActionCallBack);
-        action.execute(getReaderDataHolder());
+        SelectWordAction action = new SelectWordAction(info);
+        action.execute(getReaderDataHolder(),selectActionCallBack);
     }
 
     public void selectText(final float x1, final float y1, final float x2, final float y2) {
@@ -285,8 +286,8 @@ public class WordSelectionHandler extends BaseHandler {
                 highLightBeginTop,
                 highLightEndBottom,
                 touchPoint);
-        SelectTextAction action = new SelectTextAction(info, selectActionCallBack);
-        action.execute(getReaderDataHolder());
+        SelectTextAction action = new SelectTextAction(info);
+        action.execute(getReaderDataHolder(),selectActionCallBack);
     }
 
     private float getMovePointOffsetHeight() {
@@ -351,7 +352,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private void clearWordSelection() {
-        new UpdateViewPageAction().execute(getReaderDataHolder());
+        new UpdateViewPageAction().execute(getReaderDataHolder(),null);
         getReaderDataHolder().getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
         getReaderDataHolder().getReaderSelectionManager().clear();
     }
@@ -360,17 +361,27 @@ public class WordSelectionHandler extends BaseHandler {
         showSelectionCursor = true;
     }
 
-    private BaseReaderAction.ActionCallBack selectActionCallBack = new BaseReaderAction.ActionCallBack() {
+    private RxCallback selectActionCallBack = new RxCallback() {
         @Override
-        public void onFinally(String pagePosition) {
+        public void onNext(Object o) {
+
+        }
+
+        @Override
+        public void onFinally() {
             updateCursorSelected();
             updateHighLightRect();
         }
     };
 
-    private BaseReaderAction.ActionCallBack crossScreenSelectActionCallBack = new BaseReaderAction.ActionCallBack() {
+    private RxCallback crossScreenSelectActionCallBack = new RxCallback() {
         @Override
-        public void onFinally(String pagePosition) {
+        public void onNext(Object o) {
+
+        }
+
+        @Override
+        public void onFinally() {
             ReaderSelectionInfo readerSelectionInfo = getReaderDataHolder().getReaderSelectionManager().getReaderSelectionInfo(getReaderDataHolder().getCurrentPagePosition());
             if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection() != null) {
                 highLightBeginTop = readerSelectionInfo.getHighLightBeginTop();

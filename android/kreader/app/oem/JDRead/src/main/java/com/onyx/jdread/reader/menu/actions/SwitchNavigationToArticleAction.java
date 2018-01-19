@@ -16,7 +16,7 @@ import com.onyx.jdread.reader.menu.request.ChangeLayoutRequest;
 
 public class SwitchNavigationToArticleAction extends BaseReaderAction {
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         NavigationArgs args = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         args.columnsLeftToRight(NavigationArgs.Type.ALL, 2, 2, limit);

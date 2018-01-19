@@ -13,13 +13,12 @@ import com.onyx.jdread.reader.request.SelectRequest;
 public class SelectWordAction extends BaseReaderAction {
     private SelectWordInfo selectWordInfo;
 
-    public SelectWordAction(SelectWordInfo selectWordInfo,ActionCallBack callBack) {
+    public SelectWordAction(SelectWordInfo selectWordInfo) {
         this.selectWordInfo = selectWordInfo;
-        this.callBack = callBack;
     }
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
         final SelectRequest request = new SelectRequest(readerDataHolder.getReader(),
                 selectWordInfo.pagePosition,
                 selectWordInfo.startPoint,
@@ -33,22 +32,22 @@ public class SelectWordAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                readerDataHolder.getReaderSelectionManager().decrementSelectCount();
-                updateData(readerDataHolder,request,pagePosition);
+
             }
 
             @Override
-            public void onError(Throwable throwable) {
+            public void onFinally() {
                 readerDataHolder.getReaderSelectionManager().decrementSelectCount();
+                updateData(readerDataHolder,request,pagePosition,baseCallback);
             }
         });
     }
 
-    private void updateData(ReaderDataHolder readerDataHolder, ReaderBaseRequest request,String pagePosition){
+    private void updateData(ReaderDataHolder readerDataHolder, ReaderBaseRequest request,String pagePosition,RxCallback baseCallback){
         readerDataHolder.setReaderUserDataInfo(request.getReaderUserDataInfo());
         readerDataHolder.setReaderViewInfo(request.getReaderViewInfo());
-        if(callBack != null){
-            callBack.onFinally(pagePosition);
+        if(baseCallback != null){
+            baseCallback.onFinally();
         }
     }
 }
