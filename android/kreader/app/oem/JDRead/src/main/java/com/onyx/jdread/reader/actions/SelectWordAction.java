@@ -4,6 +4,7 @@ import com.onyx.android.sdk.reader.host.impl.ReaderHitTestOptionsImpl;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.common.SelectWordInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.request.ReaderBaseRequest;
 import com.onyx.jdread.reader.request.SelectRequest;
 
 /**
@@ -12,8 +13,9 @@ import com.onyx.jdread.reader.request.SelectRequest;
 public class SelectWordAction extends BaseReaderAction {
     private SelectWordInfo selectWordInfo;
 
-    public SelectWordAction(SelectWordInfo selectWordInfo) {
+    public SelectWordAction(SelectWordInfo selectWordInfo,ActionCallBack callBack) {
         this.selectWordInfo = selectWordInfo;
+        this.callBack = callBack;
     }
 
     @Override
@@ -25,11 +27,28 @@ public class SelectWordAction extends BaseReaderAction {
                 selectWordInfo.touchPoint,
                 ReaderHitTestOptionsImpl.create(true),
                 readerDataHolder.getReaderSelectionManager());
+
+        final String pagePosition = readerDataHolder.getCurrentPagePosition();
+        readerDataHolder.getReaderSelectionManager().incrementSelectCount();
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                readerDataHolder.setReaderUserDataInfo(request.getReaderUserDataInfo());
+                readerDataHolder.getReaderSelectionManager().decrementSelectCount();
+                updateData(readerDataHolder,request,pagePosition);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                readerDataHolder.getReaderSelectionManager().decrementSelectCount();
             }
         });
+    }
+
+    private void updateData(ReaderDataHolder readerDataHolder, ReaderBaseRequest request,String pagePosition){
+        readerDataHolder.setReaderUserDataInfo(request.getReaderUserDataInfo());
+        readerDataHolder.setReaderViewInfo(request.getReaderViewInfo());
+        if(callBack != null){
+            callBack.onFinally(pagePosition);
+        }
     }
 }

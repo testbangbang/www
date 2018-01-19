@@ -4,10 +4,7 @@ import android.content.Context;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.api.ReaderDocument;
-import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
-import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
@@ -124,5 +121,9 @@ public class ReaderDataHolder {
 
     public void setAppContext(Context appContext) {
         this.appContext = appContext;
+    }
+
+    public String getCurrentPagePosition() {
+        return getReaderViewInfo().getFirstVisiblePage().getPositionSafely();
     }
 }
