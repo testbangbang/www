@@ -372,6 +372,12 @@
     <string name="encryption_success">Encryption success</string>
     <string name="total">total:</string>
     <string name="bosom">bosom:</string>
+    <string name="related_books">Related books</string>
+    <string name="search_name_key">search_name_key</string>
+    <string name="search_history">Search history</string>
+    <string name="search_hot_words">Popular searches</string>
+    <string name="in_library">Location ：Library</string>
+    <string name="in_shop">Location ：Shop</string>
     <string name="vip">VIP</string>
     <string name="content_empty">null</string>
     <string name="error_content_author_unknown">unknown author</string>

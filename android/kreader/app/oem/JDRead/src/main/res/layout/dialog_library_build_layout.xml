@@ -32,6 +32,7 @@
             android:layout_height="@dimen/dialog_build_edit_height"
             android:hint="@string/build_library_hint"
             android:text="@={dialogModel.libraryName}"
+            android:maxLength="@integer/library_name_length"
             android:textSize="@dimen/level_two_heading_font" />
 
         <LinearLayout

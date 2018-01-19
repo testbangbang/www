@@ -1,6 +1,7 @@
 package com.onyx.jdread.main.common;
 
 import com.onyx.jdread.library.ui.LibraryFragment;
+import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.library.ui.WiFiPassBookFragment;
 import com.onyx.jdread.main.model.StackList;
 import com.onyx.jdread.personal.ui.ConsumptionRecordFragment;
@@ -64,6 +65,7 @@ public class ViewConfig {
         //library
         childViewInfo.put(LibraryFragment.class.getName(), FunctionModule.LIBRARY);
         childViewInfo.put(WiFiPassBookFragment.class.getName(),FunctionModule.LIBRARY);
+        childViewInfo.put(SearchBookFragment.class.getName(),FunctionModule.LIBRARY);
         //shop
         childViewInfo.put(ShopFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(BookDetailFragment.class.getName(), FunctionModule.SHOP);

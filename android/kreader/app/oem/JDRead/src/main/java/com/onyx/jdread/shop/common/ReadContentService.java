@@ -20,6 +20,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ShoppingCartBookIdsBean;
 
 import java.util.Map;
@@ -121,6 +122,9 @@ public interface ReadContentService {
     @GET("ebook/{bookId}")
     Call<BookDetailResultBean> getBookDetail(@Path("bookId") long bookId,
                                              @QueryMap Map<String, String> baseInfoMap);
+
+    @GET("search/key_word")
+    Call<SearchHotWord> getSearchHot(@Query(JDAppBaseInfo.APP_KEY) String app);
 
     @GET("ebook/{bookId}/comment")
     Call<BookCommentsResultBean> getBookCommentsList(@Path("bookId") long bookId,
