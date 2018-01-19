@@ -9,7 +9,7 @@ import android.content.IntentFilter;
  * Created by lxm on 2018/1/16.
  */
 
-public class OnyxMessageReceiver extends BroadcastReceiver {
+public class OnyxNotificationReceiver extends BroadcastReceiver {
 
     public static final String ONYX_NOTIFICATION_ACTION = "com.onyx.NOTIFICATION_ACTION";
 
@@ -18,11 +18,11 @@ public class OnyxMessageReceiver extends BroadcastReceiver {
 
     public static final String ONYX_NOTIFICATION_TYPE_HOMEWORK = "homework";
 
-    public static abstract class OnyxMessageListener {
-        public abstract void onHomeworkMessageReceive(String data);
+    public static abstract class OnyxNotificationListener {
+        public abstract void onHomeworkNotificationReceive(String data);
     }
 
-    private OnyxMessageListener onyxMessageListener;
+    private OnyxNotificationListener onyxNotificationListener;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -34,18 +34,18 @@ public class OnyxMessageReceiver extends BroadcastReceiver {
     }
 
     private void onHomeworkMessageReceive(String data) {
-        if (getOnyxMessageListener() == null) {
+        if (getOnyxNotificationListener() == null) {
             return;
         }
-        getOnyxMessageListener().onHomeworkMessageReceive(data);
+        getOnyxNotificationListener().onHomeworkNotificationReceive(data);
     }
 
-    public void setOnyxMessageListener(OnyxMessageListener onyxMessageListener) {
-        this.onyxMessageListener = onyxMessageListener;
+    public void setOnyxNotificationListener(OnyxNotificationListener onyxNotificationListener) {
+        this.onyxNotificationListener = onyxNotificationListener;
     }
 
-    public OnyxMessageListener getOnyxMessageListener() {
-        return onyxMessageListener;
+    public OnyxNotificationListener getOnyxNotificationListener() {
+        return onyxNotificationListener;
     }
 
     public void registerReceiver(final Context context) {

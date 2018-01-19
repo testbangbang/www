@@ -38,6 +38,15 @@ public class HomeworkModel extends BaseModel {
     @Column
     private String title;
 
+    @Column
+    String extraAttributes;
+
+    @Column
+    boolean hasReview;
+
+    @Column
+    boolean publishedAnswer;
+
     public String getUniqueId() {
         return uniqueId;
     }
@@ -86,6 +95,30 @@ public class HomeworkModel extends BaseModel {
         this.title = title;
     }
 
+    public String getExtraAttributes() {
+        return extraAttributes;
+    }
+
+    public void setExtraAttributes(String extraAttributes) {
+        this.extraAttributes = extraAttributes;
+    }
+
+    public boolean isHasReview() {
+        return hasReview;
+    }
+
+    public void setHasReview(boolean hasReview) {
+        this.hasReview = hasReview;
+    }
+
+    public boolean isPublishedAnswer() {
+        return publishedAnswer;
+    }
+
+    public void setPublishedAnswer(boolean publishedAnswer) {
+        this.publishedAnswer = publishedAnswer;
+    }
+
     public static HomeworkModel create(String uniqueId) {
         HomeworkModel model = new HomeworkModel();
         model.setUniqueId(uniqueId);
@@ -101,4 +134,15 @@ public class HomeworkModel extends BaseModel {
         setSubject(requestModel.subject);
         setTitle(requestModel.title);
     }
+
+    public void loadFromHomework(Homework homework) {
+        if (homework == null) {
+            return;
+        }
+        setBeginTime(homework.beginTime);
+        setEndTime(homework.endTime);
+        setHasReview(homework.hasReview);
+        setPublishedAnswer(homework.publishedAnswer);
+    }
+
 }

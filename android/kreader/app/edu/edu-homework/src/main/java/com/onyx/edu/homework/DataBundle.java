@@ -80,8 +80,12 @@ public class DataBundle {
         if (intent == null) {
             return;
         }
-        getHomework().setCanCheckAnswer(intent.readActive);
-        getHomework().setCanGetReview(intent.checked);
+        getHomework().setPublishedAnswer(intent.readActive);
+        getHomework().setHasReview(intent.checked);
+
+        if (homework.needUpdateEndTime(intent.endTime)) {
+            getHomework().setEndTime(intent.endTime);
+        }
     }
 
     public EventBus getEventBus() {
@@ -146,11 +150,11 @@ public class DataBundle {
     }
 
     public boolean canCheckAnswer() {
-        return isReview() && getHomework().canCheckAnswer();
+        return isReview() && getHomework().isPublishedAnswer();
     }
 
     public boolean canGetReview() {
-        return !isReview() && getHomework().canGetReview();
+        return !isReview() && getHomework().hasReview();
     }
 
 }

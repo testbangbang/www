@@ -23,8 +23,8 @@ public class Homework {
     public Date endTime;
     public Subject subject;
     public boolean published;
-    public boolean canGetReview;
-    public boolean canCheckAnswer;
+    public boolean hasReview;
+    public boolean publishedAnswer;
 
     public Homework() {
     }
@@ -49,19 +49,27 @@ public class Homework {
         return endTime;
     }
 
-    public boolean canCheckAnswer() {
-        return canCheckAnswer;
+    public boolean isPublishedAnswer() {
+        return publishedAnswer;
     }
 
-    public boolean canGetReview() {
-        return canGetReview;
+    public boolean hasReview() {
+        return hasReview;
     }
 
-    public void setCanCheckAnswer(boolean canCheckAnswer) {
-        this.canCheckAnswer = canCheckAnswer;
+    public void setPublishedAnswer(boolean publishedAnswer) {
+        this.publishedAnswer = publishedAnswer;
     }
 
-    public void setCanGetReview(boolean canGetReview) {
-        this.canGetReview = canGetReview;
+    public void setHasReview(boolean hasReview) {
+        this.hasReview = hasReview;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public boolean needUpdateEndTime(Date time) {
+        return time != null && (endTime == null || time.after(endTime));
     }
 }

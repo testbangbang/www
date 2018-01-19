@@ -34,6 +34,7 @@ import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.action.ShowAnalysisAction;
 import com.onyx.edu.homework.action.ShowExpiredDialogAction;
+import com.onyx.edu.homework.action.UpdateHomeworkModelAction;
 import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
@@ -47,7 +48,7 @@ import com.onyx.edu.homework.event.ReloadQuestionViewEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
-import com.onyx.edu.homework.receiver.OnyxMessageReceiver;
+import com.onyx.edu.homework.receiver.OnyxNotificationReceiver;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -63,7 +64,7 @@ public class HomeworkListActivity extends BaseActivity {
 
     private ActivityHomeworkListBinding binding;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
-    private OnyxMessageReceiver onyxMessageReceiver = new OnyxMessageReceiver();
+    private OnyxNotificationReceiver onyxNotificationReceiver = new OnyxNotificationReceiver();
     private List<Question> questions;
     private HomeworkIntent homeworkIntent;
     private RecordFragment recordFragment;
@@ -273,41 +274,47 @@ public class HomeworkListActivity extends BaseActivity {
                     checkWifi(true);
                     return;
                 }
-                updateHomework(homeworkIntent);
+                updateHomeworkFromIntent(homeworkIntent);
                 initToolbarTitle();
                 hideMessage();
                 updateViewState();
                 showTotalScore();
                 initQuestions(questions);
-                initOnyxMessageReceiver();
+                initOnyxNotificationReceiver();
                 countDownEndTime();
             }
 
         });
     }
 
-    private void updateHomework(HomeworkIntent intent) {
+    private void updateHomeworkFromIntent(HomeworkIntent intent) {
         getDataBundle().updateHomeworkFromIntent(intent);
+        new UpdateHomeworkModelAction(getDataBundle().getHomework()).execute(HomeworkListActivity.this, null);
     }
 
-    private void initOnyxMessageReceiver() {
-        onyxMessageReceiver.registerReceiver(this);
-        onyxMessageReceiver.setOnyxMessageListener(new OnyxMessageReceiver.OnyxMessageListener() {
+    private void initOnyxNotificationReceiver() {
+        onyxNotificationReceiver.registerReceiver(this);
+        onyxNotificationReceiver.setOnyxNotificationListener(new OnyxNotificationReceiver.OnyxNotificationListener() {
             @Override
-            public void onHomeworkMessageReceive(String data) {
+            public void onHomeworkNotificationReceive(String data) {
                 if (getDataBundle().isReview()) {
                     return;
                 }
-                HomeworkIntent homework = JSONObject.parseObject(data, HomeworkIntent.class);
-                if (homework.child._id.equals(DataBundle.getInstance().getHomeworkId())) {
-                    updateHomework(homework);
-                    updateViewState();
-                    if (homework.readActive) {
-                        reloadQuestionFragment(currentPage);
-                    }
-                }
+                handleOnyxNotification(data);
             }
         });
+    }
+
+    private void handleOnyxNotification(String data) {
+        HomeworkIntent homework = JSONObject.parseObject(data, HomeworkIntent.class);
+        if (homework.child._id.equals(DataBundle.getInstance().getHomeworkId())) {
+            boolean needUpdateEndTime = getDataBundle().getHomework().needUpdateEndTime(homework.endTime);
+            updateHomeworkFromIntent(homework);
+            updateViewState();
+            if (homework.readActive || needUpdateEndTime) {
+                reloadQuestionFragment(currentPage);
+            }
+        }
     }
 
     private void initToolbarTitle() {
@@ -364,7 +371,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (networkConnectChangedReceiver != null) {
             unregisterReceiver(networkConnectChangedReceiver);
         }
-        onyxMessageReceiver.unregisterReceiver(this);
+        onyxNotificationReceiver.unregisterReceiver(this);
     }
 
     private void showMessage(@StringRes int messageId) {
