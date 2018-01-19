@@ -9,6 +9,7 @@ import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.NewBookViewClick;
 import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.SaleViewClick;
+import com.onyx.jdread.shop.event.SearchViewClickEvent;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
 import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 
@@ -180,6 +181,6 @@ public class BookShopViewModel extends BaseObservable {
     }
 
     public void onSearchViewClick() {
-
+        getEventBus().post(new SearchViewClickEvent());
     }
 }

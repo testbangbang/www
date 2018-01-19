@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,10 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.PreferenceManager;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.databinding.DialogBookInfoBinding;
 import com.onyx.jdread.databinding.FragmentBookCommentBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -21,11 +24,13 @@ import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
+import com.onyx.jdread.shop.event.BookDetailViewInfoEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.TopRightTitleEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
+import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import org.greenrobot.eventbus.EventBus;
@@ -47,6 +52,7 @@ public class CommentFragment extends BaseFragment {
     private PageRecyclerView recyclerViewComments;
     private int currentPage = 1;
     private GPaginator paginator;
+    private AlertDialog infoDialog;
 
     @Nullable
     @Override
@@ -175,9 +181,47 @@ public class CommentFragment extends BaseFragment {
         hideLoadingDialog();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookDetailViewInfoEvent(BookDetailViewInfoEvent event) {
+        showInfoDialog(event.info);
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
+        dismissInfoDialog();
+    }
+
+    private void showInfoDialog(String content) {
+        if (StringUtils.isNullOrEmpty(content)) {
+            return;
+        }
+        DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
+        DialogBookInfoViewModel dialogBookInfoViewModel = getBookDetailViewModel().getDialogBookInfoViewModel();
+        dialogBookInfoViewModel.content.set(content);
+        dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce));
+        infoBinding.setViewModel(dialogBookInfoViewModel);
+        if (infoDialog == null) {
+            AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+            build.setView(infoBinding.getRoot());
+            build.setCancelable(true);
+            infoBinding.setListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismissInfoDialog();
+                }
+            });
+            infoDialog = build.create();
+        }
+        if (infoDialog != null) {
+            infoDialog.show();
+        }
+    }
+
+    private void dismissInfoDialog() {
+        if (infoDialog != null && infoDialog.isShowing()) {
+            infoDialog.dismiss();
+        }
     }
 }

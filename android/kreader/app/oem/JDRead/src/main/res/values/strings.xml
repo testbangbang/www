@@ -120,7 +120,7 @@
     <string name="book_detail_button_now_read">Now Read</string>
     <string name="book_detail_button_buy_whole_book">Buy the whole book</string>
     <string name="cart">Cart</string>
-    <string name="book_detail_text_view_content_introduce">Introduce:</string>
+    <string name="book_detail_text_view_content_introduce">Introduce</string>
     <string name="book_detail_view_catalog">Catalog</string>
     <string name="book_detail_view_comments">Comments</string>
     <string name="book_detail_view_copyright">CopyRight</string>

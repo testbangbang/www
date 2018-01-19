@@ -11,6 +11,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.CommentItemBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
+import com.onyx.jdread.shop.event.BookDetailViewInfoEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -78,8 +79,8 @@ public class BookCommentsAdapter extends PageAdapter<PageRecyclerView.ViewHolder
             return;
         }
         int position = (int) tag;
-        if (eventBus != null && getItemVMList() != null) {
-
+        if (eventBus != null && getItemVMList() != null && getItemVMList().get(position) != null) {
+            eventBus.post(new BookDetailViewInfoEvent(getItemVMList().get(position).contents));
         }
     }
 

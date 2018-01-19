@@ -31,11 +31,9 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
-import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.CancelUserLoginDialogEvent;
-import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
@@ -78,6 +76,7 @@ import com.onyx.jdread.shop.event.RecommendNextPageEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewCommentEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
+import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
@@ -192,11 +191,7 @@ public class BookDetailFragment extends BaseFragment {
         recyclerViewRecommend.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
-                if (paginator != null) {
-                    if (paginator.isLastPage()) {
-                        paginator.gotoPage(0);
-                    }
-                }
+
             }
         });
     }
@@ -299,7 +294,13 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecommendNextPageEvent(RecommendNextPageEvent event) {
         if (recyclerViewRecommend != null){
-            recyclerViewRecommend.nextPage();
+            if (paginator != null) {
+                if (paginator.isLastPage()) {
+                    recyclerViewRecommend.gotoPage(0);
+                } else {
+                    recyclerViewRecommend.nextPage();
+                }
+            }
         }
     }
 
@@ -739,7 +740,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailViewInfoEvent(BookDetailViewInfoEvent event) {
-        showInfoDialog();
+        showInfoDialog(event.info);
     }
 
     @Override
@@ -750,13 +751,16 @@ public class BookDetailFragment extends BaseFragment {
         dismissInfoDialog();
     }
 
-    private void showInfoDialog() {
-        if (bookDetailBean == null || StringUtils.isNullOrEmpty(bookDetailBean.info)) {
+    private void showInfoDialog(String content) {
+        if (StringUtils.isNullOrEmpty(content)) {
             return;
         }
+        DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
+        DialogBookInfoViewModel dialogBookInfoViewModel = getBookDetailViewModel().getDialogBookInfoViewModel();
+        dialogBookInfoViewModel.content.set(content);
+        dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce));
+        infoBinding.setViewModel(dialogBookInfoViewModel);
         if (infoDialog == null) {
-            DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
-            infoBinding.setInfo(bookDetailBean.info);
             AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
             build.setView(infoBinding.getRoot());
             build.setCancelable(true);

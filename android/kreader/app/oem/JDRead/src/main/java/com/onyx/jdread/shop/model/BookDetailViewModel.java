@@ -32,6 +32,14 @@ public class BookDetailViewModel extends BaseObservable {
     private int currentPage;
     private int totalPage;
     private TitleBarViewModel titleBarViewModel;
+    private DialogBookInfoViewModel dialogBookInfoViewModel;
+
+    public DialogBookInfoViewModel getDialogBookInfoViewModel() {
+        if (dialogBookInfoViewModel == null) {
+            dialogBookInfoViewModel = new DialogBookInfoViewModel();
+        }
+        return dialogBookInfoViewModel;
+    }
 
     public TitleBarViewModel getTitleBarViewModel() {
         return titleBarViewModel;
@@ -51,7 +59,7 @@ public class BookDetailViewModel extends BaseObservable {
     }
 
     public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
+        this.currentPage = Math.max(1, currentPage);
         notifyChange();
     }
 
@@ -60,7 +68,7 @@ public class BookDetailViewModel extends BaseObservable {
     }
 
     public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
+        this.totalPage = Math.max(1, totalPage);
         notifyChange();
     }
 

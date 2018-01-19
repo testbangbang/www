@@ -91,12 +91,22 @@ public class ShopDataBindingUtil {
 
     @BindingAdapter({"htmlContent"})
     public static void setHtmlContent(HtmlTextView htmlTextView, String content) {
-        String title = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce);
+        String title = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce) + ":";
         if (!StringUtils.isNullOrEmpty(content)){
             htmlTextView.setHtml(title + content);
         } else {
             String emptyCOntent = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_empty_introduce);
             htmlTextView.setHtml(title + emptyCOntent);
+        }
+    }
+
+    @BindingAdapter({"htmlContentDialog"})
+    public static void setHtmlContentDialog(HtmlTextView htmlTextView, String content) {
+        if (!StringUtils.isNullOrEmpty(content)){
+            htmlTextView.setHtml(content);
+        } else {
+            String emptyCOntent = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_empty_introduce);
+            htmlTextView.setHtml(emptyCOntent);
         }
     }
 

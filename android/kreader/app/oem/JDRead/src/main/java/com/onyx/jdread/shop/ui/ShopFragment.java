@@ -18,6 +18,7 @@ import com.onyx.jdread.databinding.FragmentBookShopBinding;
 import com.onyx.jdread.databinding.FragmentBookShopOneBinding;
 import com.onyx.jdread.databinding.FragmentBookShopThreeBinding;
 import com.onyx.jdread.databinding.FragmentBookShopTwoBinding;
+import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ToastUtil;
@@ -33,6 +34,7 @@ import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.NewBookViewClick;
 import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.SaleViewClick;
+import com.onyx.jdread.shop.event.SearchViewClickEvent;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
 import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
@@ -306,6 +308,13 @@ public class ShopFragment extends BaseFragment {
         }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSearchViewClickEvent(SearchViewClickEvent event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(SearchBookFragment.class.getName());
         }
     }
 
