@@ -486,6 +486,11 @@ public class CloudDataProvider implements DataProviderBase {
         }
     }
 
+    @Override
+    public void clearSearchHistory() {
+        new Delete().from(SearchHistory.class).query();
+    }
+
     private ContentService getContentService() {
         return ServiceFactory.getContentService(conf.getApiBase());
     }

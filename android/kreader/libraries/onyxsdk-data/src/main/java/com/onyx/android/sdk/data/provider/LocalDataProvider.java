@@ -366,7 +366,7 @@ public class LocalDataProvider implements DataProviderBase {
 
     @Override
     public List<SearchHistory> loadSearchHistory() {
-        return new Select().from(SearchHistory.class).orderBy(OrderBy.fromProperty(SearchHistory_Table.createdAt).ascending()).queryList();
+        return new Select().from(SearchHistory.class).orderBy(OrderBy.fromProperty(SearchHistory_Table.createdAt).descending()).queryList();
     }
 
     @Override
@@ -377,5 +377,10 @@ public class LocalDataProvider implements DataProviderBase {
         }else {
             single.update();
         }
+    }
+
+    @Override
+    public void clearSearchHistory() {
+        new Delete().from(SearchHistory.class).query();
     }
 }

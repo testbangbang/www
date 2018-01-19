@@ -6,8 +6,12 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableList;
 
 import com.onyx.android.sdk.data.model.DataModel;
+import com.onyx.android.sdk.data.model.SearchHistory;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.library.action.ClearSearchHistoryAction;
 import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
+import com.onyx.jdread.library.event.ClearSearchHistoryEvent;
 import com.onyx.jdread.library.event.SubmitSearchBookEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -20,7 +24,7 @@ import java.util.Observable;
 
 public class SearchBookModel extends Observable {
     public final ObservableField<String> searchKey = new ObservableField<>();
-    public final ObservableList<String> searchHistory = new ObservableArrayList<>();
+    public final ObservableList<SearchHistory> searchHistory = new ObservableArrayList<>();
     public final ObservableField<Object> backEvent = new ObservableField<>();
     public final ObservableList<DataModel> searchHint = new ObservableArrayList<>();
     public final ObservableList<DataModel> searchResult = new ObservableArrayList<>();
@@ -37,7 +41,7 @@ public class SearchBookModel extends Observable {
     }
 
     public void clearHistory() {
-        searchHistory.clear();
+        eventBus.post(new ClearSearchHistoryEvent());
     }
 
     public void search() {

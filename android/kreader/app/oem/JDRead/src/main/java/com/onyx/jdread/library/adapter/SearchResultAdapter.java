@@ -27,7 +27,7 @@ public class SearchResultAdapter extends PageAdapter<SearchResultAdapter.ViewHol
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.search_result_recycler_row);
+        return JDReadApplication.getInstance().getResources().getInteger(R.integer.search_result_recycler_col);
     }
 
     @Override

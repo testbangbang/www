@@ -119,4 +119,6 @@ public interface DataProviderBase {
     List<SearchHistory> loadSearchHistory();
 
     void saveSearchHistory(final Context context, SearchHistory searchHistory);
+
+    void clearSearchHistory();
 }

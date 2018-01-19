@@ -479,4 +479,9 @@ public class RemoteDataProvider implements DataProviderBase {
     public void saveSearchHistory(final Context context, SearchHistory searchHistory) {
 
     }
+
+    @Override
+    public void clearSearchHistory() {
+
+    }
 }

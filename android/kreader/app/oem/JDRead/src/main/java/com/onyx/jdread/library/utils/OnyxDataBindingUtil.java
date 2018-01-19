@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.model.DataModel;
+import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -107,11 +108,11 @@ public class OnyxDataBindingUtil {
     }
 
     @BindingAdapter("child")
-    public static void setChild(FlowLayout flowLayout, List<String> list) {
+    public static void setChild(FlowLayout flowLayout, List<SearchHistory> list) {
         flowLayout.removeAllViews();
-        for (String s : list) {
+        for (SearchHistory history : list) {
             final TextView view = new TextView(flowLayout.getContext());
-            view.setText(s);
+            view.setText(history.getContent());
             view.setGravity(Gravity.CENTER);
             view.setTextColor(Color.BLACK);
             view.setTextSize(flowLayout.getContext().getResources().getInteger(R.integer.search_history_text_size));

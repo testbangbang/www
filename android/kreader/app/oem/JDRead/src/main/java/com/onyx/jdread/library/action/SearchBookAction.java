@@ -1,5 +1,7 @@
 package com.onyx.jdread.library.action;
 
+import android.util.Log;
+
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
@@ -7,6 +9,7 @@ import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.library.model.LibraryDataBundle;
+import com.onyx.jdread.library.request.RxSaveSearchHistoryRequest;
 import com.onyx.jdread.library.request.RxSearchBookRequest;
 import com.onyx.jdread.main.action.BaseAction;
 
@@ -46,6 +49,7 @@ public class SearchBookAction extends BaseAction<LibraryDataBundle> {
     private void saveSearchHistory(LibraryDataBundle libraryDataBundle) {
         SearchHistory searchHistory = new SearchHistory();
         searchHistory.setContent(libraryDataBundle.getSearchBookModel().searchKey.get());
-        libraryDataBundle.getDataManager().getLocalContentProvider().saveSearchHistory(libraryDataBundle.getAppContext(), searchHistory);
+        RxSaveSearchHistoryRequest saveSearchHistoryRequest = new RxSaveSearchHistoryRequest(libraryDataBundle.getDataManager(),searchHistory);
+        saveSearchHistoryRequest.execute(null);
     }
 }

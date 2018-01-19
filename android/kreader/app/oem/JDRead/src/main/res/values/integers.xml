@@ -126,4 +126,5 @@
     <integer name="search_hint_recycler_row">5</integer>
     <integer name="search_hint_recycler_col">1</integer>
     <integer name="search_result_recycler_row">4</integer>
+    <integer name="search_result_recycler_col">1</integer>
 </resources>

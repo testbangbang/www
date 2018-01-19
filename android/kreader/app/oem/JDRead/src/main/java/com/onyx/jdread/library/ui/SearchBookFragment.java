@@ -13,11 +13,14 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentSearchBookBinding;
+import com.onyx.jdread.library.action.ClearSearchHistoryAction;
+import com.onyx.jdread.library.action.LoadSearchHistoryAction;
 import com.onyx.jdread.library.action.SearchBookAction;
 import com.onyx.jdread.library.adapter.HotSearchAdapter;
 import com.onyx.jdread.library.adapter.SearchHintAdapter;
 import com.onyx.jdread.library.adapter.SearchResultAdapter;
 import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
+import com.onyx.jdread.library.event.ClearSearchHistoryEvent;
 import com.onyx.jdread.library.event.SearchBookKeyEvent;
 import com.onyx.jdread.library.event.SubmitSearchBookEvent;
 import com.onyx.jdread.library.model.LibraryDataBundle;
@@ -79,6 +82,7 @@ public class SearchBookFragment extends BaseFragment {
                     @Override
                     public void onNext(Object o) {
                         searchResultAdapter.notifyDataSetChanged();
+                        loadSearchHistory();
                     }
                 });
                 return true;
@@ -116,12 +120,19 @@ public class SearchBookFragment extends BaseFragment {
                 binding.searchView.setQuery(searchKey, true);
             }
         }
+        checkView();
         loadHotSearchKey();
         loadSearchHistory();
     }
 
     private void loadSearchHistory() {
+        LoadSearchHistoryAction historyAction = new LoadSearchHistoryAction();
+        historyAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
 
+            }
+        });
     }
 
     private void loadHotSearchKey() {
@@ -166,5 +177,16 @@ public class SearchBookFragment extends BaseFragment {
         if (!TextUtils.isEmpty(query)) {
             binding.searchView.setQuery(query, true);
         }
+    }
+
+    @Subscribe
+    public void onClearSearchHistoryEvent(ClearSearchHistoryEvent event) {
+        ClearSearchHistoryAction action = new ClearSearchHistoryAction();
+        action.execute(LibraryDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
     }
 }
