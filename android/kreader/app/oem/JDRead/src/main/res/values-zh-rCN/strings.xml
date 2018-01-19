@@ -350,4 +350,6 @@
     <string name="input_language">源语言:%s</string>
     <string name="target_language">目标语言:%s</string>
     <string name="installed">已安装</string>
+    <string name="copy">复制</string>
+    <string name="baidupedia">百度百科</string>
 </resources>

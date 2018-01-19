@@ -16,6 +16,7 @@ import com.onyx.jdread.reader.actions.ParserOpenDocumentInfoAction;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.model.ReaderViewModel;
+import com.onyx.jdread.reader.model.SelectMenuModel;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -25,6 +26,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     private ActivityReaderBinding binding;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private ReaderViewModel readerViewModel;
+    private SelectMenuModel selectMenuModel;
     private ReaderActivityEventHandler readerActivityEventHandler;
 
     @Override
@@ -41,6 +43,14 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         binding.setReadViewModel(readerViewModel);
         readerActivityEventHandler = new ReaderActivityEventHandler(readerViewModel,this);
         initSurfaceView();
+        initSelectMenu();
+    }
+
+    private void initSelectMenu(){
+        selectMenuModel = new SelectMenuModel();
+        binding.readerPopupSelectionMenu.setSelectMenuModel(selectMenuModel);
+        selectMenuModel.setSelectMenuRootView(binding.readerPopupSelectionMenu.getRoot());
+        readerViewModel.getReaderDataHolder().setSelectMenuModel(selectMenuModel);
     }
 
     private void initData() {

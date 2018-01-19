@@ -366,4 +366,6 @@
     <string name="input_language">Source language: %s</string>
     <string name="target_language">Target language: %s</string>
     <string name="installed">installed</string>
+    <string name="copy">Copy</string>
+    <string name="baidupedia">Baidupedia</string>
 </resources>

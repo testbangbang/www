@@ -10,6 +10,7 @@ import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
+import com.onyx.jdread.reader.model.SelectMenuModel;
 
 /**
  * Created by huxiaomao on 2017/12/20.
@@ -28,10 +29,19 @@ public class ReaderDataHolder {
     private HandlerManger handlerManger;
     private Context appContext;
     private ReaderTouchHelper readerTouchHelper;
+    private SelectMenuModel selectMenuModel;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
         setAppContext(appContext);
+    }
+
+    public SelectMenuModel getSelectMenuModel() {
+        return selectMenuModel;
+    }
+
+    public void setSelectMenuModel(SelectMenuModel selectMenuModel) {
+        this.selectMenuModel = selectMenuModel;
     }
 
     public ReaderTouchHelper getReaderTouchHelper() {

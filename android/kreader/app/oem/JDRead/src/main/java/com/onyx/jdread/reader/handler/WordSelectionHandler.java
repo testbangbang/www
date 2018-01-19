@@ -13,7 +13,6 @@ import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
-import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.actions.NextPageSelectTextAction;
 import com.onyx.jdread.reader.actions.PrevPageSelectTextAction;
 import com.onyx.jdread.reader.actions.SelectTextAction;
@@ -175,7 +174,13 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private void showSelectionMenu(boolean isWord) {
+        getReaderDataHolder().getSelectMenuModel().requestLayoutView(getReaderDataHolder());
+        getReaderDataHolder().getSelectMenuModel().setIsShowSelectMenu(true);
         enableSelectionCursor();
+    }
+
+    public void hideTextSelectionPopupWindow() {
+        getReaderDataHolder().getSelectMenuModel().setIsShowSelectMenu(false);
     }
 
     public boolean onScrollAfterLongPress(final float x1, final float y1, final float x2, final float y2) {
@@ -320,9 +325,6 @@ public class WordSelectionHandler extends BaseHandler {
         }
     }
 
-    public void hideTextSelectionPopupWindow() {
-    }
-
     public boolean hasSelectionWord() {
         return getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition()) != null;
     }
@@ -349,6 +351,7 @@ public class WordSelectionHandler extends BaseHandler {
     public void quitWordSelection() {
         ReaderDeviceManager.enableRegal();
         clearWordSelection();
+        hideTextSelectionPopupWindow();
     }
 
     private void clearWordSelection() {
