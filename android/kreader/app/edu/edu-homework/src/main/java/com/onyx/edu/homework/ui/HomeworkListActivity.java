@@ -587,6 +587,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (endTime == null) {
             return;
         }
+        endTime = DateTimeUtil.convertGMTDateToLocal(endTime);
         long millisInFuture = endTime.getTime() - System.currentTimeMillis();
         if (millisInFuture <= 0) {
             return;
