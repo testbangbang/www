@@ -135,7 +135,7 @@
             android:background="@drawable/selected_background"
             android:gravity="center_vertical"
             android:padding="@dimen/dialog_single_manage_padding"
-            android:text="@string/book_detail"
+            android:text="@{dialogModel.isCloudBook()?@string/book_detail:@string/related_books}"
             android:textSize="@dimen/level_one_heading_font"
             android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
 
