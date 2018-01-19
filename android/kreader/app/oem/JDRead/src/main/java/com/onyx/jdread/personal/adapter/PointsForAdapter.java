@@ -24,12 +24,12 @@ public class PointsForAdapter extends PageRecyclerView.PageAdapter implements Vi
 
     @Override
     public int getRowCount() {
-        return ResManager.getResManager().getInteger(R.integer.points_for_adapter_row);
+        return ResManager.getInteger(R.integer.points_for_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResManager().getInteger(R.integer.points_for_adapter_col);
+        return ResManager.getInteger(R.integer.points_for_adapter_col);
     }
 
     @Override

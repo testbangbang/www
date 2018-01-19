@@ -25,12 +25,12 @@ public class PersonalBookAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public int getRowCount() {
-        return ResManager.getResManager().getInteger(R.integer.personal_book_row);
+        return ResManager.getInteger(R.integer.personal_book_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResManager().getInteger(R.integer.personal_book_col);
+        return ResManager.getInteger(R.integer.personal_book_col);
     }
 
     @Override

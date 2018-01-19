@@ -1,6 +1,5 @@
 package com.onyx.jdread.personal.model;
 
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 
@@ -9,8 +8,8 @@ import com.onyx.jdread.main.common.ResManager;
  */
 
 public class PersonalTaskModel {
-    private String[] tasks = new String[]{ResManager.getResManager().getString(R.string.sign_in_vouchers),
-            ResManager.getResManager().getString(R.string.read_thirty) + "(" + ResManager.getResManager().getString(R.string.add_ten_vouchers) + ")"};
+    private String[] tasks = new String[]{ResManager.getString(R.string.sign_in_vouchers),
+            ResManager.getString(R.string.read_thirty) + "(" + ResManager.getString(R.string.add_ten_vouchers) + ")"};
 
     public String[] getTasks() {
         return tasks;

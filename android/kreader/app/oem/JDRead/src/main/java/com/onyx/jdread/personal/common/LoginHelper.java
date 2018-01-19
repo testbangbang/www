@@ -7,10 +7,10 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.databinding.DialogUserLoginBinding;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.personal.action.UserInfoAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
@@ -46,21 +46,21 @@ public class LoginHelper {
     }
 
     private void setUserInfo(String nickName, String imgUrl, String userName) {
-        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NICK_NAME, nickName);
-        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_IMAGE_URL, imgUrl);
-        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NAME, userName);
+        JDPreferenceManager.setStringValue(Constants.SP_KEY_USER_NICK_NAME, nickName);
+        JDPreferenceManager.setStringValue(Constants.SP_KEY_USER_IMAGE_URL, imgUrl);
+        JDPreferenceManager.setStringValue(Constants.SP_KEY_USER_NAME, userName);
     }
 
     public static String getNickName() {
-        return PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NICK_NAME, "");
+        return JDPreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NICK_NAME, "");
     }
 
     public static String getImgUrl() {
-        return PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_IMAGE_URL, "");
+        return JDPreferenceManager.getStringValue(Constants.SP_KEY_USER_IMAGE_URL, "");
     }
 
     public static String getUserName() {
-        return PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NAME, "");
+        return JDPreferenceManager.getStringValue(Constants.SP_KEY_USER_NAME, "");
     }
 
     public static void showUserLoginDialog(final Activity activity, final UserLoginViewModel userLoginViewModel) {
@@ -72,7 +72,7 @@ public class LoginHelper {
             userLoginDialogBuild.setView(userLoginBinding.getRoot());
             userLoginDialogBuild.setCancelable(true);
             userLoginDialog = userLoginDialogBuild.create();
-            boolean showPassword = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), Constants.SP_KEY_SHOW_PASSWORD, false);
+            boolean showPassword = JDPreferenceManager.getBooleanValue(JDReadApplication.getInstance(), Constants.SP_KEY_SHOW_PASSWORD, false);
             userLoginViewModel.isShowPassword.set(showPassword);
             userLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override

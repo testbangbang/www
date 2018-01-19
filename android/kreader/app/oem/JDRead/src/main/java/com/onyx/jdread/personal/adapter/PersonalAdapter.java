@@ -34,12 +34,12 @@ public class PersonalAdapter extends PageRecyclerView.PageAdapter implements Vie
 
     @Override
     public int getRowCount() {
-        return ResManager.getResManager().getInteger(R.integer.personal_adapter_row);
+        return ResManager.getInteger(R.integer.personal_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResManager().getInteger(R.integer.personal_adapter_col);
+        return ResManager.getInteger(R.integer.personal_adapter_col);
     }
 
     @Override

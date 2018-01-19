@@ -22,12 +22,12 @@ public class PersonalTaskAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getRowCount() {
-        return ResManager.getResManager().getInteger(R.integer.personal_task_row);
+        return ResManager.getInteger(R.integer.personal_task_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResManager().getInteger(R.integer.personal_task_col);
+        return ResManager.getInteger(R.integer.personal_task_col);
     }
 
     @Override

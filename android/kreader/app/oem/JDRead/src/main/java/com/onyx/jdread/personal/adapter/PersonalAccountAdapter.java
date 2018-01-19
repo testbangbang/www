@@ -31,12 +31,12 @@ public class PersonalAccountAdapter extends PageRecyclerView.PageAdapter impleme
 
     @Override
     public int getRowCount() {
-        return ResManager.getResManager().getInteger(R.integer.personal_account_adapter_row);
+        return ResManager.getInteger(R.integer.personal_account_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResManager().getInteger(R.integer.personal_account_adapter_col);
+        return ResManager.getInteger(R.integer.personal_account_adapter_col);
     }
 
     @Override

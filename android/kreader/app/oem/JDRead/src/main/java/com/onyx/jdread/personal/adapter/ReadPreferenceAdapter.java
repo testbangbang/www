@@ -25,12 +25,12 @@ public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implemen
 
     @Override
     public int getRowCount() {
-        return ResManager.getResManager().getInteger(R.integer.read_preference_row);
+        return ResManager.getInteger(R.integer.read_preference_row);
     }
 
     @Override
     public int getColumnCount() {
-        return ResManager.getResManager().getInteger(R.integer.read_preference_col);
+        return ResManager.getInteger(R.integer.read_preference_col);
     }
 
     @Override

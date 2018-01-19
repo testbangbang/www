@@ -4,22 +4,19 @@ import android.content.Context;
 
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserLoginResultErrorBean;
-import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-
-import org.greenrobot.eventbus.EventBus;
 
 import jd.wjlogin_sdk.common.WJLoginHelper;
 import jd.wjlogin_sdk.common.listener.OnLoginCallback;
@@ -71,8 +68,8 @@ public class UserLoginAction extends BaseAction {
         helper.JDLoginWithPassword(account, password, null, true, new OnLoginCallback() {
             @Override
             public void onSuccess() {
-                PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_ACCOUNT, account);
-                PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_PASSWORD, password);
+                JDPreferenceManager.setStringValue(Constants.SP_KEY_ACCOUNT, account);
+                JDPreferenceManager.setStringValue(Constants.SP_KEY_PASSWORD, password);
                 syncServiceInfo(dataBundle);
             }
 
