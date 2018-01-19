@@ -119,6 +119,16 @@
     <integer name="buy_read_vip_adapter_row">4</integer>
     <integer name="dictionary_list_row">7</integer>
     <integer name="dictionary_list_col">1</integer>
+    <integer name="feedback_record_adapter_row">5</integer>
+    <integer name="feedback_record_adapter_col">1</integer>
+    <integer name="gift_center_adapter_row">4</integer>
+    <integer name="gift_center_adapter_col">1</integer>
+    <integer name="personal_account_adapter_row">5</integer>
+    <integer name="personal_account_adapter_col">1</integer>
+    <integer name="points_for_adapter_row">5</integer>
+    <integer name="points_for_adapter_col">1</integer>
+    <integer name="top_up_adapter_row">3</integer>
+    <integer name="top_up_adapter_col">2</integer>
     <integer name="library_name_length">20</integer>
     <integer name="search_history_text_size">18</integer>
     <integer name="hot_search_recycler_row">3</integer>
