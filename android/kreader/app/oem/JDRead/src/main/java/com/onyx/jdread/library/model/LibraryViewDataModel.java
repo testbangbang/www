@@ -344,8 +344,12 @@ public class LibraryViewDataModel extends Observable {
         return selectHelper.getLibrarySelectedModel(getLibraryIdString());
     }
 
-    public void clearSelectedData() {
-        getSelectHelper().getChildLibrarySelectedMap().clear();
+    public void clearSelectedData(boolean quitMultiSelectionMode) {
+        if (quitMultiSelectionMode) {
+            selectHelper.getChildLibrarySelectedMap().clear();
+        } else {
+            selectHelper.clearSelectedData();
+        }
         getLibrarySelectedModel().setSelectedAll(false);
         setSelectAllBtnText();
         clearItemSelectedList();
