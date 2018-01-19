@@ -83,6 +83,17 @@ public class FileUtils {
         return extension.equals("jpg") || extension.equals("jpeg");
     }
 
+    public static boolean isAudioFile(String fileName) {
+        fileName = fileName.toLowerCase();
+        return fileName.endsWith(".mp3")
+                || fileName.endsWith(".m4a")
+                || fileName.endsWith(".wav")
+                || fileName.endsWith(".amr")
+                || fileName.endsWith(".awb")
+                || fileName.endsWith(".wma")
+                || fileName.endsWith(".ogg");
+    }
+
     public static void collectFiles(final String parentPath, final Set<String> extensionFilters, boolean recursive, final Collection<String> fileList) {
         File parent = new File(parentPath);
         File[] files = parent.listFiles();

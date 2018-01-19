@@ -26,8 +26,7 @@ public class PlayAudioAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        if (readerDataHolder.getMediaManager().isPlaying()) {
-            readerDataHolder.getMediaManager().stop();
+        if (richMedia == null) {
             return;
         }
 

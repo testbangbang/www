@@ -46,7 +46,7 @@ public class PlayAudioRequest extends BaseReaderRequest {
         try {
             File dir = getContext().getDir("temp_audio", Context.MODE_PRIVATE);
             FileUtils.purgeDirectory(dir);
-            tempMp3 = File.createTempFile(UUID.randomUUID().toString(), "mp3", dir);
+            tempMp3 = File.createTempFile(UUID.randomUUID().toString(), "", dir);
             tempMp3.deleteOnExit();
             fos = new FileOutputStream(tempMp3);
             fos.write(data);
