@@ -319,6 +319,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onSearchBookEvent(SearchBookEvent event) {
+        setBundle(null);
         viewEventCallBack.gotoView(SearchBookFragment.class.getName());
     }
 
@@ -426,7 +427,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onModifyLibraryDataEvent(ModifyLibraryDataEvent event) {
         libraryDataBundle.getLibraryViewDataModel().libraryPathList.clear();
-        loadData(libraryDataBundle.getLibraryViewDataModel().lastPage(), false);
+        loadData(libraryBuildQueryArgs(), false);
     }
 
     @Subscribe

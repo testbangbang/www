@@ -397,4 +397,5 @@
     <dimen name="search_result_book_cover_height">93dp</dimen>
     <dimen name="search_result_item_text_margin_left">20dp</dimen>
     <dimen name="search_result_item_text_margin_top">5dp</dimen>
+    <dimen name="search_layout_margin_top">10dp</dimen>
 </resources>
