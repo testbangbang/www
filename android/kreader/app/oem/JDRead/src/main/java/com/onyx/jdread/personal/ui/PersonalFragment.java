@@ -98,7 +98,6 @@ public class PersonalFragment extends BaseFragment {
         if (personalAdapter != null) {
             personalAdapter.setData(personalModel.getPersonalData(), personalModel.getEvents());
         }
-        EncryptHelper.getSaltValue(PersonalDataBundle.getInstance(), null);
     }
 
     private void initView() {

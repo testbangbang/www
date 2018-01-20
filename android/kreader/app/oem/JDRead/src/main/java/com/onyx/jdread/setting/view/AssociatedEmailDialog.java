@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogAssociatedEmailLayoutBinding;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.util.RegularUtil;
 
@@ -75,7 +75,7 @@ public class AssociatedEmailDialog extends Dialog {
         public void bindToEmail() {
             if (checkedEdit()) {
                 bound.set(true);
-                PreferenceManager.setStringValue(JDReadApplication.getInstance(), R.string.email_address_key, emailAddress.get());
+                JDPreferenceManager.setStringValue(R.string.email_address_key, emailAddress.get());
                 title.set(JDReadApplication.getInstance().getString(R.string.email_bound));
             }
         }
@@ -83,7 +83,7 @@ public class AssociatedEmailDialog extends Dialog {
         public void unbindToEmail() {
             emailAddress.set(null);
             bound.set(false);
-            PreferenceManager.setStringValue(JDReadApplication.getInstance(), R.string.email_address_key, null);
+            JDPreferenceManager.setStringValue(R.string.email_address_key, null);
             title.set(JDReadApplication.getInstance().getString(R.string.bind_to_email));
         }
     }
