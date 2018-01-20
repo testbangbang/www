@@ -28,7 +28,8 @@ public class ScribbleMenuCategory {
     public static final int SPACE = 6;
     public static final int ENTER = 7;
     public static final int KEYBOARD = 8;
-
+    public static final int NORMAL_PEN_STYLE = 9;
+    public static final int BRUSH_PEN_STYLE = 10;
 
     public
     @ScribbleMenuCategoryDef
