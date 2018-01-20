@@ -12,6 +12,7 @@ import com.onyx.android.sdk.wifi.AccessPoint;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemWifiBinding;
+import com.onyx.jdread.main.common.ResManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,12 +40,12 @@ public class WifiSettingAdapter extends PageRecyclerView.PageAdapter implements 
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.wifi_setting_adapter_row);
+        return ResManager.getInteger(R.integer.wifi_setting_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.wifi_setting_adapter_col);
+        return ResManager.getInteger(R.integer.wifi_setting_adapter_col);
     }
 
     @Override

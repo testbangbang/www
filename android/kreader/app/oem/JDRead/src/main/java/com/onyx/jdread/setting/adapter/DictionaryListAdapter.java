@@ -11,6 +11,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DeviceInfoItemBinding;
 import com.onyx.jdread.databinding.DictionaryItemBinding;
 import com.onyx.jdread.main.common.PageAdapter;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.model.DeviceInformationModel;
 import com.onyx.jdread.setting.model.DictionaryModel;
 
@@ -21,8 +22,8 @@ import java.util.List;
  */
 
 public class DictionaryListAdapter extends PageAdapter<DictionaryListAdapter.ViewHolder, DictionaryModel.DictionaryItem, DictionaryModel.DictionaryItem> {
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.dictionary_list_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.dictionary_list_col);
+    private int row = ResManager.getInteger(R.integer.dictionary_list_row);
+    private int col = ResManager.getInteger(R.integer.dictionary_list_col);
 
     public void setRowAndCol(int row, int col) {
         this.row = row;

@@ -67,6 +67,7 @@ public class LoginHelper {
         final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(activity), null, false);
         userLoginBinding.setLoginViewModel(userLoginViewModel);
         userLoginViewModel.setContext(activity);
+        EncryptHelper.getSaltValue(PersonalDataBundle.getInstance(), null);
         if (userLoginDialog == null) {
             final AlertDialog.Builder userLoginDialogBuild = new AlertDialog.Builder(activity);
             userLoginDialogBuild.setView(userLoginBinding.getRoot());

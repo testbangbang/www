@@ -10,6 +10,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemRefreshBinding;
+import com.onyx.jdread.main.common.ResManager;
 
 /**
  * Created by li on 2017/12/21.
@@ -22,12 +23,12 @@ public class LockScreenAdapter extends PageRecyclerView.PageAdapter implements V
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.lock_screen_adapter_row);
+        return ResManager.getInteger(R.integer.lock_screen_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.lock_screen_adapter_col);
+        return ResManager.getInteger(R.integer.lock_screen_adapter_col);
     }
 
     @Override
