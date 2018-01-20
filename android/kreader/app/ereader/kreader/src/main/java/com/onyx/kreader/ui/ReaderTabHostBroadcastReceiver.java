@@ -154,6 +154,10 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Debug.d(getClass(), "onReceive: " + intent);
         if (callback == null) {
+            if (ReaderTabHostActivity.isBackPressed.get()) {
+                return;
+            }
+
             Intent i = new Intent();
             i.setClass(context, ReaderTabHostActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

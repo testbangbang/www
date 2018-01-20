@@ -57,6 +57,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     public static AtomicBoolean tabWidgetVisible = new AtomicBoolean(true);
     public static AtomicBoolean enableDebugLog = null;
 
+    public static AtomicBoolean isBackPressed = new AtomicBoolean(false);
+
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
 
     private ReaderTabManager tabManager = ReaderTabManager.create();
@@ -219,6 +221,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         acquireStartupWakeLock();
         super.onCreate(savedInstanceState);
 
+        isBackPressed.set(false);
+
         setContentView(R.layout.activity_reader_host);
         initComponents();
         restoreReaderTabState();
@@ -290,6 +294,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     @Override
     public void onBackPressed() {
         Debug.d(getClass(), "onBackPressed");
+
+        isBackPressed.set(true);
+
         if (isSideReading) {
             quitSideReadingMode();
         }
