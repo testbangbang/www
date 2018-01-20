@@ -43,8 +43,8 @@ public class ShopDataBindingUtil {
         }
     }
 
-    @BindingAdapter({"subjectVipItems"})
-    public static void setVIpSubjectItems(PageRecyclerView recyclerView, List items) {
+    @BindingAdapter({"vipItems"})
+    public static void setVIpItems(PageRecyclerView recyclerView, List items) {
         SubjectWithVipAdapter adapter = (SubjectWithVipAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
@@ -136,8 +136,8 @@ public class ShopDataBindingUtil {
         }
     }
 
-    @BindingAdapter({"vipItems"})
-    public static void setVipItems(PageRecyclerView recyclerView, List items) {
+    @BindingAdapter({"vipSubjectItems"})
+    public static void setVipSubjectItems(PageRecyclerView recyclerView, List items) {
         VipReadAdapter adapter = (VipReadAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());

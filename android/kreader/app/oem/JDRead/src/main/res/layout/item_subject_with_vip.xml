@@ -43,7 +43,7 @@
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/recycler_view_suject"
-            subjectVipItems="@{viewModel.modelBean.bookList}"
+            vipItems="@{viewModel.modelBean.bookList}"
             android:layout_width="match_parent"
             android:layout_height="@dimen/recycle_view_height_with_vip"
             android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
