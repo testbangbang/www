@@ -9,12 +9,15 @@ import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.Library_Table;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Method;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -72,8 +75,9 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         libraryList.clear();
         DataManagerHelper.loadLibraryList(getDataProvider(), libraryList, queryArgs);
 
-        if (loadMetadata) {
-            totalCount = getDataProvider().count(getAppContext(), queryArgs);
+        totalCount = getDataProvider().count(getAppContext(), queryArgs) + getDataProvider().libraryCount(queryArgs.libraryUniqueId);
+        if (loadMetadata && libraryList.size() < queryArgs.limit) {
+            queryArgs.offset = (int) (queryArgs.offset - getDataProvider().libraryCount(queryArgs.libraryUniqueId));
             List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getAppContext(), getDataManager(),
                     queryArgs, loadFromCache);
             if (!CollectionUtils.isNullOrEmpty(metadataList)) {

@@ -486,8 +486,8 @@ public class LibraryFragment extends BaseFragment {
 
     private void processLibraryItem(DataModel model) {
         addLibraryToParentRefList(model);
-        loadData(libraryBuildQueryArgs(), false);
         libraryDataBundle.getLibraryViewDataModel().getSelectHelper().putLibrarySelectedModelMap(model.idString.get());
+        loadData(libraryBuildQueryArgs(), false);
     }
 
     private void addLibraryToParentRefList(DataModel model) {

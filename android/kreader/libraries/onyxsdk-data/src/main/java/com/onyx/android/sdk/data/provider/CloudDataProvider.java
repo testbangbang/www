@@ -13,6 +13,7 @@ import com.onyx.android.sdk.data.converter.QueryArgsFilter;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.Library_Table;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.ProductResult;
@@ -489,6 +490,11 @@ public class CloudDataProvider implements DataProviderBase {
     @Override
     public void clearSearchHistory() {
         new Delete().from(SearchHistory.class).query();
+    }
+
+    @Override
+    public long libraryCount(String parentUniqueId) {
+        return new Select(Method.count()).from(CloudLibrary.class).where(CloudLibrary_Table.parentUniqueId.eq(parentUniqueId)).count();
     }
 
     private ContentService getContentService() {
