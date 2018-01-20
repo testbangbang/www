@@ -33,6 +33,7 @@ public class LoginHelper {
                 UserInfoBean userInfoBean = userInfoAction.getUserInfoData();
                 UserInfo data = userInfoBean.data;
                 if (data != null) {
+                    setUserInfo(data.yun_mid_image_url,data.nickname);
                     dataBundle.getEventBus().post(new UserInfoEvent(data));
                 }
             }
@@ -45,8 +46,7 @@ public class LoginHelper {
         });
     }
 
-    private void setUserInfo(String nickName, String imgUrl, String userName) {
-        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NICK_NAME, nickName);
+    public static void setUserInfo(String imgUrl, String userName) {
         PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_IMAGE_URL, imgUrl);
         PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NAME, userName);
     }

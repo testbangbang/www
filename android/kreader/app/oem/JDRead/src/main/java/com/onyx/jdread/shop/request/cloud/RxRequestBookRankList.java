@@ -33,7 +33,7 @@ public class RxRequestBookRankList extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
+        ReadContentService getCommonService = CloudApiContext.getServiceNoCookie(CloudApiContext.getJDBooxBaseUrl());
         Call<RecommendListResultBean> call = getCall(getCommonService);
         resultBean = done(call);
     }

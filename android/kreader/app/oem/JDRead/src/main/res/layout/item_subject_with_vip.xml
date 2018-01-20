@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="SubjectWithVipBinding">
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.onyx.jdread.shop.model.SubjectViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_no_stoke_background"
+                android:text="@{viewModel.modelBean.show_name}"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/text_no_stoke_background"
+                android:drawablePadding="@dimen/view_all_drawable_padding"
+                android:drawableRight="@mipmap/ic_go_view_all"
+                android:gravity="center"
+                android:onClick="@{()->viewModel.onViewAllClick()}"
+                android:text="@string/view_all"
+                android:textSize="@dimen/level_three_heading_font" />
+
+        </RelativeLayout>
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/recycler_view_suject"
+            subjectVipItems="@{viewModel.modelBean.bookList}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/recycle_view_height_with_vip"
+            android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_subject_common_next_title_margin_top"
+            android:visibility="@{viewModel.showNextTitle ? View.VISIBLE : View.GONE}">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_no_stoke_background"
+                android:text="@{viewModel.modelBeanNext.show_name}"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/text_no_stoke_background"
+                android:drawablePadding="@dimen/view_all_drawable_padding"
+                android:drawableRight="@mipmap/ic_go_view_all"
+                android:gravity="center"
+                android:onClick="@{()->viewModel.onNextViewAllClick()}"
+                android:text="@string/view_all"
+                android:textSize="@dimen/level_three_heading_font" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</layout>

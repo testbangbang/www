@@ -32,7 +32,7 @@ public class RxRequestRecommendList extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
+        ReadContentService getCommonService = CloudApiContext.getServiceNoCookie(CloudApiContext.getJDBooxBaseUrl());
         Call<RecommendListResultBean> call = getCall(getCommonService);
         recommendListResultBean = done(call);
         checkQuestResult();

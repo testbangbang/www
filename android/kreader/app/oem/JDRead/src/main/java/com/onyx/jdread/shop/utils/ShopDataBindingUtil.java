@@ -15,6 +15,8 @@ import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
+import com.onyx.jdread.shop.adapter.SubjectWithVipAdapter;
+import com.onyx.jdread.shop.adapter.VipReadAdapter;
 import com.onyx.jdread.shop.common.ManageImageCache;
 import com.onyx.jdread.shop.view.HtmlTextView;
 
@@ -36,6 +38,14 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"subjectItems"})
     public static void setItems(PageRecyclerView recyclerView, List items) {
         SubjectAdapter adapter = (SubjectAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"subjectVipItems"})
+    public static void setVIpSubjectItems(PageRecyclerView recyclerView, List items) {
+        SubjectWithVipAdapter adapter = (SubjectWithVipAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }
@@ -121,6 +131,14 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"subjectModels"})
     public static void setSubjectModels(PageRecyclerView recyclerView, List items) {
         BookRankAdapter adapter = (BookRankAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"vipItems"})
+    public static void setVipItems(PageRecyclerView recyclerView, List items) {
+        VipReadAdapter adapter = (VipReadAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }

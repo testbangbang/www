@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.GPaginator;
-import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
@@ -17,29 +17,34 @@ import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.shop.adapter.BookRankAdapter;
+import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.shop.adapter.VipReadAdapter;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.VipReadViewModel;
+import com.onyx.jdread.shop.model.VipUserInfoViewModel;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
+
 /**
  * Created by jackdeng on 2018/1/16.
  */
 
 public class BookVIPReadFragment extends BaseFragment {
-    private int SCROLL_TOTAL = 1;
     private FragmentBookVipReadBinding bookVipReadBinding;
-    private int bookDetailSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_detail_recycle_view_space);
+    private int space = JDReadApplication.getInstance().getResources().getInteger(R.integer.vip_read_recycle_view_space);
     private DividerItemDecoration itemDecoration;
     private PageRecyclerView recyclerView;
     private GPaginator paginator;
+    private VipReadAdapter adapter;
 
     @Nullable
     @Override
@@ -58,21 +63,39 @@ public class BookVIPReadFragment extends BaseFragment {
     }
 
     private void initData() {
+        List<SubjectViewModel> rankItems = getShopDataBundle().getRankViewModel().getRankItems();
+        VipUserInfoViewModel vipUserInfoViewModel = new VipUserInfoViewModel(getEventBus());
+        String imgUrl = LoginHelper.getImgUrl();
+        String userName = LoginHelper.getUserName();
+        vipUserInfoViewModel.name.set(userName);
+        vipUserInfoViewModel.vipStatus.set("");
+        vipUserInfoViewModel.imageUrl.set(imgUrl);
+        if (adapter != null) {
+            adapter.setInfoViewModel(vipUserInfoViewModel);
+        }
+        getVipReadViewModel().setSubjectModels(rankItems);
+        if (rankItems != null) {
+            initPageIndicator(rankItems.size());
+        }
+    }
 
+    private void initPageIndicator(int size) {
+        paginator.resize(adapter.getRowCount(), adapter.getColumnCount(), size + Constants.PAGE_STEP);
+        int pages = paginator.pages();
+        bookVipReadBinding.scrollBar.setTotal(pages);
     }
 
     private void initView() {
         initDividerItemDecoration();
         setRecycleView();
-        bookVipReadBinding.scrollBar.setTotal(SCROLL_TOTAL);
         bookVipReadBinding.setViewModel(getVipReadViewModel());
         getVipReadViewModel().getTitleBarViewModel().leftText = getString(R.string.vip);
     }
 
     private void setRecycleView() {
-        BookRankAdapter adapter = new BookRankAdapter();
+        adapter = new VipReadAdapter();
         recyclerView = bookVipReadBinding.recyclerViewVipRead;
-        recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerView.setLayoutManager(new DisableScrollLinearManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
         paginator = recyclerView.getPaginator();
@@ -88,7 +111,7 @@ public class BookVIPReadFragment extends BaseFragment {
     private void initDividerItemDecoration() {
         itemDecoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         itemDecoration.setDrawLine(false);
-        itemDecoration.setSpace(bookDetailSpace);
+        itemDecoration.setSpace(space);
     }
 
     @Override
