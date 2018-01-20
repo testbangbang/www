@@ -111,12 +111,96 @@
 
     </android.support.v7.widget.Toolbar>
 
+    <RelativeLayout
+        android:id="@+id/layout_main_menu"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/onyx_main_note_menu_height"
+        android:layout_below="@id/tool_bar">
+
+        <com.onyx.android.sdk.ui.view.ContentView
+            android:id="@+id/function_content_view"
+            android:layout_width="@dimen/onyx_note_style_width"
+            android:layout_height="match_parent" />
+
+        <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+            android:id="@+id/page_count_control"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/onyx_note_sub_menu_img_top_margin"
+            android:layout_toLeftOf="@+id/page_indicator"
+            android:layout_toRightOf="@+id/function_content_view"
+            android:orientation="horizontal">
+
+            <com.onyx.android.sdk.ui.view.CustomIconView
+                android:id="@+id/button_delete_page"
+                android:layout_width="@dimen/onyx_main_note_menu_height"
+                android:layout_height="@dimen/onyx_note_item_img_size"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_delete"
+                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
+                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
+
+            <com.onyx.android.sdk.ui.view.CustomIconView
+                android:id="@+id/button_add_page"
+                android:layout_width="@dimen/onyx_main_note_menu_height"
+                android:layout_height="@dimen/onyx_note_item_img_size"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/button_delete_page"
+                android:src="@drawable/ic_add"
+                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
+                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
+
+        </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            android:id="@+id/page_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/onyx_note_sub_menu_img_top_margin"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.onyx.android.sdk.ui.view.CustomIconView
+                android:id="@+id/button_previous_page"
+                android:layout_width="@dimen/onyx_main_note_menu_height"
+                android:layout_height="@dimen/onyx_note_item_img_size"
+                android:src="@drawable/ic_note_prev_page_black"
+                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
+                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
+
+            <Button
+                android:id="@+id/button_page_progress"
+                android:layout_width="@dimen/onyx_scribble_btn_page_progress_width"
+                android:layout_height="@dimen/onyx_note_item_img_size"
+                android:background="@drawable/imagebtn_bg"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/paged_init_text"
+                android:textSize="@dimen/onyx_scribble_activity_text_size" />
+
+            <com.onyx.android.sdk.ui.view.CustomIconView
+                android:id="@+id/button_next_page"
+                android:layout_width="@dimen/onyx_main_note_menu_height"
+                android:layout_height="@dimen/onyx_note_item_img_size"
+                android:src="@drawable/ic_note_next_page_black"
+                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
+                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/divider"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"
+        android:layout_below="@+id/layout_main_menu" />
+
     <FrameLayout
         android:id="@+id/work_view"
-        android:layout_above="@+id/divider"
-        android:layout_below="@+id/tool_bar"
+        android:layout_below="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
 
         <com.onyx.android.note.view.LinedEditText
             android:background="@android:color/white"
@@ -143,87 +227,4 @@
 
     </FrameLayout>
 
-    <View
-        android:id="@+id/divider"
-        style="@style/single_line_X_axis_View"
-        android:layout_height="1dp"
-        android:layout_above="@+id/layout_footer" />
-
-    <RelativeLayout
-        android:id="@+id/layout_footer"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/onyx_main_note_menu_height"
-        android:layout_alignParentBottom="true">
-
-        <com.onyx.android.sdk.ui.view.ContentView
-            android:id="@+id/function_content_view"
-            android:layout_width="@dimen/onyx_note_style_width"
-            android:layout_height="match_parent" />
-
-        <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
-            android:id="@+id/page_count_control"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/page_indicator"
-            android:layout_toRightOf="@+id/function_content_view"
-            android:orientation="horizontal">
-
-            <com.onyx.android.sdk.ui.view.CustomIconView
-                android:id="@+id/button_delete_page"
-                android:layout_width="@dimen/onyx_main_note_menu_height"
-                android:layout_height="@dimen/onyx_main_note_menu_height"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_delete"
-                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
-                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
-
-            <com.onyx.android.sdk.ui.view.CustomIconView
-                android:id="@+id/button_add_page"
-                android:layout_width="@dimen/onyx_main_note_menu_height"
-                android:layout_height="@dimen/onyx_main_note_menu_height"
-                android:layout_marginRight="5dp"
-                android:layout_toLeftOf="@+id/button_delete_page"
-                android:src="@drawable/ic_add"
-                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
-                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
-
-        </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
-
-        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
-            android:id="@+id/page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <com.onyx.android.sdk.ui.view.CustomIconView
-                android:id="@+id/button_previous_page"
-                android:layout_width="@dimen/onyx_main_note_menu_height"
-                android:layout_height="@dimen/onyx_main_note_menu_height"
-                android:src="@drawable/ic_note_prev_page_black"
-                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
-                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
-
-            <Button
-                android:id="@+id/button_page_progress"
-                android:layout_width="@dimen/onyx_scribble_btn_page_progress_width"
-                android:layout_height="match_parent"
-                android:background="@drawable/imagebtn_bg"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="@string/paged_init_text"
-                android:textSize="@dimen/onyx_scribble_activity_text_size" />
-
-            <com.onyx.android.sdk.ui.view.CustomIconView
-                android:id="@+id/button_next_page"
-                android:layout_width="@dimen/onyx_main_note_menu_height"
-                android:layout_height="@dimen/onyx_main_note_menu_height"
-                android:src="@drawable/ic_note_next_page_black"
-                app:iconDrawingSize="@dimen/onyx_note_item_img_size"
-                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable" />
-        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
-    </RelativeLayout>
 </RelativeLayout>

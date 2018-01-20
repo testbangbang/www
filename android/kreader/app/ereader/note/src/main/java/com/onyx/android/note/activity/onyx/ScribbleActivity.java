@@ -71,6 +71,7 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.request.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -89,6 +90,9 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
+
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_BRUSH_SCRIBBLE;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
 
 
 /**
@@ -182,7 +186,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         if (digestionSpanMenu(category)) {
                             return;
                         }
-                        getScribbleSubMenu().show(category, isLineLayoutMode());
+                        if (!invokeMainMeuItem(category)) {
+                            getScribbleSubMenu().show(category, isLineLayoutMode());
+                        }
                     }
                 });
             }
@@ -833,10 +839,27 @@ public class ScribbleActivity extends BaseScribbleActivity {
                                 }
                             });
                         }
-                    }, R.id.divider, true
+                    }, R.id.divider, false
             );
         }
         return scribbleSubMenu;
+    }
+
+    private boolean invokeMainMeuItem(int itemID){
+        boolean returnValue = false;
+        switch (itemID){
+            case ScribbleMenuCategory.NORMAL_PEN_STYLE:
+                hidePotentialShowSubMenu();
+                onNoteShapeChanged(true, true, ShapeFactory.SHAPE_PENCIL_SCRIBBLE, null);
+                returnValue = true;
+                break;
+            case ScribbleMenuCategory.BRUSH_PEN_STYLE:
+                hidePotentialShowSubMenu();
+                onNoteShapeChanged(true, true, ShapeFactory.SHAPE_BRUSH_SCRIBBLE, null);
+                returnValue = true;
+                break;
+        }
+        return returnValue;
     }
 
     private void invokeSubMenuItem(@ScribbleSubMenuID.ScribbleSubMenuIDDef int item) {
@@ -857,12 +880,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 break;
             case ScribbleSubMenuID.ERASE_TOTALLY:
                 onEraseClicked(false);
-                break;
-            case ScribbleSubMenuID.NORMAL_PEN_STYLE:
-                onNoteShapeChanged(true, true, ShapeFactory.SHAPE_PENCIL_SCRIBBLE, null);
-                break;
-            case ScribbleSubMenuID.BRUSH_PEN_STYLE:
-                onNoteShapeChanged(true, true, ShapeFactory.SHAPE_BRUSH_SCRIBBLE, null);
                 break;
             case ScribbleSubMenuID.LINE_STYLE:
                 onNoteShapeChanged(true, false, ShapeFactory.SHAPE_LINE, null);
@@ -1025,6 +1042,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private HashMap<String, Integer> getItemViewDataMap() {
         HashMap<String, Integer> mapping = new HashMap<>();
         mapping.put(GAdapterUtil.TAG_IMAGE_RESOURCE, R.id.item_img);
+        mapping.put(GAdapterUtil.TAG_SELECTABLE, R.id.item_indicator);
         return mapping;
     }
 
@@ -1045,6 +1063,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
         }
         if (getNoteViewHelper().supportColor(this)){
             adapter.addObject(createFunctionItem(R.drawable.ic_color, ScribbleMenuCategory.COLOR));
+        }
+        adapter.addObject(createFunctionItem(R.drawable.ic_shape_pencil, ScribbleMenuCategory.NORMAL_PEN_STYLE));
+        if (NoteAppConfig.sharedInstance(this).isEnablePressStressDetect()) {
+            adapter.addObject(createFunctionItem(R.drawable.ic_shape_brush, ScribbleMenuCategory.BRUSH_PEN_STYLE));
         }
         return adapter;
     }
@@ -1233,6 +1255,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private void onEraseClicked(boolean isPartialErase) {
         if (isPartialErase) {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
+            functionContentView.unCheckAllViews();
             syncWithCallback(true, false, null);
         } else {
             boolean resume = shouldResume();
@@ -1245,12 +1268,60 @@ public class ScribbleActivity extends BaseScribbleActivity {
     protected void updateDataInfo(final BaseNoteRequest request) {
         super.updateDataInfo(request);
         getScribbleSubMenu().setCurShapeDataInfo(shapeDataInfo);
+        updatePenStyleInfo(shapeDataInfo);
     }
 
-    private GObject createFunctionItem(final int functionIconRes,
-                                       @ScribbleMenuCategory.ScribbleMenuCategoryDef int menuCategory) {
+
+    private GObject getPenStyleObject(int category) {
+        for (GObject o : functionContentView.getCurrentAdapter().getList()) {
+            if (o.getInt(GAdapterUtil.TAG_UNIQUE_ID) == category) {
+                return o;
+            }
+        }
+        return null;
+    }
+
+    private void updatePenStyleInfo(ShapeDataInfo shapeDataInfo){
+        int targetPattern;
+        int shapeType = shapeDataInfo.getCurrentShapeType();
+        switch (shapeType) {
+            case SHAPE_PENCIL_SCRIBBLE:
+                targetPattern = ScribbleMenuCategory.NORMAL_PEN_STYLE;
+                break;
+            case SHAPE_BRUSH_SCRIBBLE:
+                targetPattern = ScribbleMenuCategory.BRUSH_PEN_STYLE;
+                break;
+            default:
+                targetPattern = Integer.MAX_VALUE;
+                break;
+        }
+
+        updatePenStyleIndicator(getPenStyleObject(targetPattern), targetPattern);
+    }
+
+    private void updatePenStyleIndicator(GObject menuItem, int targetPattern) {
+        int dataIndex = functionContentView.getCurrentAdapter().getGObjectIndex(menuItem);
+        setSelected(menuItem, true);
+        functionContentView.getCurrentAdapter().setObject(dataIndex, menuItem);
+        if (targetPattern == Integer.MAX_VALUE) {
+            functionContentView.unCheckAllViews();
+        } else {
+            functionContentView.unCheckOtherViews(dataIndex);
+        }
+        functionContentView.updateCurrentPage();
+    }
+
+    private void setSelected(GObject object, boolean value) {
+        if (object == null) {
+            return;
+        }
+        object.putBoolean(GAdapterUtil.TAG_SELECTABLE, value);
+    }
+
+    private GObject createFunctionItem(final int functionIconRes, int menuCategory) {
         GObject object = GAdapterUtil.createTableItem(0, 0, functionIconRes, 0, null);
         object.putInt(GAdapterUtil.TAG_UNIQUE_ID, menuCategory);
+        object.putBoolean(GAdapterUtil.TAG_SELECTABLE, false);
         return object;
     }
 

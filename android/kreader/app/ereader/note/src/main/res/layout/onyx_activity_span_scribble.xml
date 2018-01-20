@@ -145,10 +145,10 @@
         android:id="@+id/divider"
         style="@style/single_line_X_axis_View"
         android:layout_height="1dp"
-        android:layout_above="@+id/layout_footer" />
+        android:layout_above="@+id/layout_main_menu" />
 
     <RelativeLayout
-        android:id="@+id/layout_footer"
+        android:id="@+id/layout_main_menu"
         android:layout_width="match_parent"
         android:layout_height="@dimen/onyx_main_note_menu_height"
         android:layout_alignParentBottom="true">
