@@ -308,7 +308,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void quitMultiSelectionMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
-        libraryDataBundle.getLibraryViewDataModel().clearSelectedData(true);
+        libraryDataBundle.getLibraryViewDataModel().quitMultiSelectionMode();
         setTitle();
         showMangeMenu();
     }
@@ -457,7 +457,7 @@ public class LibraryFragment extends BaseFragment {
         moveToAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                libraryDataBundle.getLibraryViewDataModel().clearSelectedData(false);
+                libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
                 int deletePageCount = libraryDataBundle.getLibraryViewDataModel().getDeletePageCount();
                 loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
             }
@@ -469,7 +469,7 @@ public class LibraryFragment extends BaseFragment {
         metadataDeleteAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                libraryDataBundle.getLibraryViewDataModel().clearSelectedData(false);
+                libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
                 int deletePageCount = libraryDataBundle.getLibraryViewDataModel().getDeletePageCount();
                 loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
             }

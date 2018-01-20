@@ -344,16 +344,21 @@ public class LibraryViewDataModel extends Observable {
         return selectHelper.getLibrarySelectedModel(getLibraryIdString());
     }
 
-    public void clearSelectedData(boolean quitMultiSelectionMode) {
-        if (quitMultiSelectionMode) {
-            selectHelper.getChildLibrarySelectedMap().clear();
-        } else {
-            selectHelper.clearSelectedData();
-        }
+    public void clearSelectedData() {
+        selectHelper.clearSelectedData();
+        clearCurrentLibrarySelectedData();
+    }
+
+    private void clearCurrentLibrarySelectedData() {
         getLibrarySelectedModel().setSelectedAll(false);
         setSelectAllBtnText();
         clearItemSelectedList();
         checkedOrCancelAll(false);
+    }
+
+    public void quitMultiSelectionMode() {
+        selectHelper.getChildLibrarySelectedMap().clear();
+        clearCurrentLibrarySelectedData();
     }
 
     public void delete() {
