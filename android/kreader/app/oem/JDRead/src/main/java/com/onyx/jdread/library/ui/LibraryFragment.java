@@ -293,6 +293,7 @@ public class LibraryFragment extends BaseFragment {
     private void removeLastParentLibrary() {
         libraryDataBundle.getLibraryViewDataModel().libraryPathList.remove(libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
         setTitle();
+        showMangeMenu();
         loadData();
     }
 
@@ -307,7 +308,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void quitMultiSelectionMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
-        libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
+        libraryDataBundle.getLibraryViewDataModel().quitMultiSelectionMode();
         setTitle();
         showMangeMenu();
     }
@@ -319,6 +320,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onSearchBookEvent(SearchBookEvent event) {
+        setBundle(null);
         viewEventCallBack.gotoView(SearchBookFragment.class.getName());
     }
 
@@ -339,12 +341,12 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onSortByTimeEvent(SortByTimeEvent event) {
-        libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.CreationTime, SortOrder.Asc);
+        libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.CreationTime, SortOrder.Desc);
         refreshData();
     }
 
     private void refreshData() {
-        loadData(libraryDataBundle.getLibraryViewDataModel().lastPage(), false);
+        loadData(libraryBuildQueryArgs(), false);
     }
 
     @Subscribe
@@ -426,7 +428,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onModifyLibraryDataEvent(ModifyLibraryDataEvent event) {
         libraryDataBundle.getLibraryViewDataModel().libraryPathList.clear();
-        loadData(libraryDataBundle.getLibraryViewDataModel().lastPage(), false);
+        loadData(libraryBuildQueryArgs(), false);
     }
 
     @Subscribe
@@ -495,7 +497,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void showMangeMenu() {
-        libraryDataBundle.getLibraryViewDataModel().setShowTopMenu(!isMultiSelectionMode());
+        libraryDataBundle.getLibraryViewDataModel().setShowTopMenu(!isMultiSelectionMode() && libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() == 0);
         libraryDataBundle.getLibraryViewDataModel().setShowBottomMenu(isMultiSelectionMode());
         viewEventCallBack.hideOrShowFunctionBar(!isMultiSelectionMode());
     }

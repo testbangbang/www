@@ -12,16 +12,23 @@
         <variable
             name="searchModel"
             type="com.onyx.jdread.library.model.SearchBookModel" />
+
+        <variable
+            name="indicatorModel"
+            type="com.onyx.jdread.library.model.PageIndicatorModel" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="@dimen/fragment_content_padding"
+        android:paddingLeft="@dimen/fragment_content_padding"
+        android:paddingRight="@dimen/fragment_content_padding"
+        android:paddingBottom="@dimen/fragment_content_padding"
         tools:context="com.onyx.jdread.library.ui.SearchBookFragment">
 
         <LinearLayout
+            android:layout_marginTop="@dimen/search_layout_margin_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -144,7 +151,9 @@
                 android:layout_weight="1"
                 android:orientation="vertical" />
 
-            <include layout="@layout/page_indicator_layout" />
+            <include
+                app:model="@{indicatorModel}"
+                layout="@layout/page_indicator_layout" />
         </LinearLayout>
     </LinearLayout>
 </layout>

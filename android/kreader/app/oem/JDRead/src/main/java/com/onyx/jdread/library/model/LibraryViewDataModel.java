@@ -345,11 +345,20 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public void clearSelectedData() {
-        getSelectHelper().getChildLibrarySelectedMap().clear();
+        selectHelper.clearSelectedData();
+        clearCurrentLibrarySelectedData();
+    }
+
+    private void clearCurrentLibrarySelectedData() {
         getLibrarySelectedModel().setSelectedAll(false);
         setSelectAllBtnText();
         clearItemSelectedList();
         checkedOrCancelAll(false);
+    }
+
+    public void quitMultiSelectionMode() {
+        selectHelper.getChildLibrarySelectedMap().clear();
+        clearCurrentLibrarySelectedData();
     }
 
     public void delete() {

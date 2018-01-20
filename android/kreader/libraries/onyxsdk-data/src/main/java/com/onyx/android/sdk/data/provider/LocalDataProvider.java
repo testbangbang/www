@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -375,6 +376,7 @@ public class LocalDataProvider implements DataProviderBase {
         if (single == null) {
             searchHistory.save();
         }else {
+            single.setCreatedAt(new Date());
             single.update();
         }
     }
