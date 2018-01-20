@@ -174,7 +174,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         functionContentView.setCallback(new ContentView.ContentViewCallback() {
             @Override
             public void onItemClick(ContentItemView view) {
-                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                if (getNoteViewHelper().isInRawDrawing()){
                     return;
                 }
                 final GObject temp = view.getData();
@@ -239,7 +239,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         addPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                if (getNoteViewHelper().isInRawDrawing()){
                     return;
                 }
                 onAddNewPage();
@@ -248,7 +248,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         deletePageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                if (getNoteViewHelper().isInRawDrawing()){
                     return;
                 }
                 onDeletePage();
@@ -258,7 +258,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void onClick(View v) {
                 hidePotentialShowSubMenu();
-                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                if (getNoteViewHelper().isInRawDrawing()){
                     return;
                 }
                 onPrevPage();
@@ -268,7 +268,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void onClick(View v) {
                 hidePotentialShowSubMenu();
-                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                if (getNoteViewHelper().isInRawDrawing()){
                     return;
                 }
                 onNextPage();
@@ -277,7 +277,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         pageIndicator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                if (getNoteViewHelper().isInRawDrawing()){
                     return;
                 }
                 syncWithCallback(true, false, new BaseCallback() {
@@ -295,7 +295,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         switchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                if (getNoteViewHelper().isInRawDrawing()){
                     return;
                 }
                 toggleLineLayoutMode();
@@ -862,7 +862,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void invokeSubMenuItem(@ScribbleSubMenuID.ScribbleSubMenuIDDef int item) {
-        if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()) {
+        if (getNoteViewHelper().isInRawDrawing()) {
             return;
         }
         switch (item) {
