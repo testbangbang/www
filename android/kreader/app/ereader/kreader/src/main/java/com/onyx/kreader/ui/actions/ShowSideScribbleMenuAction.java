@@ -357,14 +357,20 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     }
 
     private void toggleSideNotePos(final ReaderDataHolder readerDataHolder) {
-        readerDataHolder.toggleSideNoteArea();
-        readerDataHolder.redrawPage(new BaseCallback() {
+        final PauseDrawingRequest pauseDrawingRequest = new PauseDrawingRequest(readerDataHolder.getVisiblePages());
+        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), pauseDrawingRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new ResumeDrawingAction(readerDataHolder.getVisiblePages()).execute(readerDataHolder, new BaseCallback() {
+                readerDataHolder.toggleSideNoteArea();
+                readerDataHolder.redrawPage(new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        show(readerDataHolder);
+                        new ResumeDrawingAction(readerDataHolder.getVisiblePages()).execute(readerDataHolder, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                show(readerDataHolder);
+                            }
+                        });
                     }
                 });
             }
