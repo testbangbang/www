@@ -120,7 +120,7 @@ public class ScribbleFragment extends BaseFragment {
     public void onDestroy() {
         DataBundle.getInstance().unregister(this);
         unregisterDeviceReceiver();
-        changePenState(false, false, null);
+        changePenState(false, false, false, null);
         super.onDestroy();
     }
 
@@ -184,7 +184,7 @@ public class ScribbleFragment extends BaseFragment {
                 loadPageReview(getCurrentPageIndex(), new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        changePenState(shouldResume(), true, null);
+                        changePenState(shouldResume(), true, true, null);
                     }
                 });
             }
@@ -447,8 +447,8 @@ public class ScribbleFragment extends BaseFragment {
         action.execute(getNoteViewHelper(), callback);
     }
 
-    public void changePenState(boolean resume, boolean render, BaseCallback callback) {
-        new ChangePenStateAction(resume, render).execute(getNoteViewHelper(), callback);
+    public void changePenState(boolean resume, boolean render, boolean updateShapeData, BaseCallback callback) {
+        new ChangePenStateAction(resume, render, updateShapeData).execute(getNoteViewHelper(), callback);
     }
 
     private void registerDeviceReceiver() {
