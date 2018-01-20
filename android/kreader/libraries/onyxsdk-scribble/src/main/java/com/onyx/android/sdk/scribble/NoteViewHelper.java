@@ -118,6 +118,12 @@ public class NoteViewHelper {
     private volatile boolean isDrawing = false;
     private boolean enableTouchEvent = true;
 
+    public boolean isDisableMenuFunctionWhenRawScribble() {
+        return disableMenuFunctionWhenRawScribble;
+    }
+
+    private volatile boolean disableMenuFunctionWhenRawScribble = false;
+    
     private Rect customLimitRect = null;
 
     public void reset(final View view) {
@@ -482,6 +488,7 @@ public class NoteViewHelper {
             public void onBeginRawData(boolean shortcut, TouchPoint point) {
                 if (callback != null) {
                     callback.onBeginRawData();
+                    disableMenuFunctionWhenRawScribble = true;
                 }
             }
 
@@ -493,6 +500,7 @@ public class NoteViewHelper {
             @Override
             public void onRawTouchPointListReceived(TouchPointList pointList) {
                 NoteViewHelper.this.onNewTouchPointListReceived(pointList);
+                disableMenuFunctionWhenRawScribble = false;
             }
 
             @Override

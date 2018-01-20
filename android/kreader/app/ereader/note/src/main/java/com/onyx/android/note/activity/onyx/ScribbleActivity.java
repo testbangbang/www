@@ -174,6 +174,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         functionContentView.setCallback(new ContentView.ContentViewCallback() {
             @Override
             public void onItemClick(ContentItemView view) {
+                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                    return;
+                }
                 final GObject temp = view.getData();
                 syncWithCallback(true, false, new BaseCallback() {
                     @Override
@@ -188,32 +191,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
             }
         });
 
-        addPageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onAddNewPage();
-            }
-        });
-        deletePageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onDeletePage();
-            }
-        });
-        prevPageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hidePotentialShowSubMenu();
-                onPrevPage();
-            }
-        });
-        nextPageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hidePotentialShowSubMenu();
-                onNextPage();
-            }
-        });
         undoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,9 +235,51 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 showExportMenu();
             }
         });
+
+        addPageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                    return;
+                }
+                onAddNewPage();
+            }
+        });
+        deletePageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                    return;
+                }
+                onDeletePage();
+            }
+        });
+        prevPageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hidePotentialShowSubMenu();
+                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                    return;
+                }
+                onPrevPage();
+            }
+        });
+        nextPageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hidePotentialShowSubMenu();
+                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                    return;
+                }
+                onNextPage();
+            }
+        });
         pageIndicator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                    return;
+                }
                 syncWithCallback(true, false, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -276,6 +295,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
         switchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()){
+                    return;
+                }
                 toggleLineLayoutMode();
                 syncWithCallback(true, true, !isLineLayoutMode(), new BaseCallback() {
                     @Override
@@ -840,6 +862,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void invokeSubMenuItem(@ScribbleSubMenuID.ScribbleSubMenuIDDef int item) {
+        if (getNoteViewHelper().isDisableMenuFunctionWhenRawScribble()) {
+            return;
+        }
         switch (item) {
             case ScribbleSubMenuID.THICKNESS_ULTRA_LIGHT:
             case ScribbleSubMenuID.THICKNESS_LIGHT:
