@@ -3,6 +3,7 @@ package com.onyx.android.dr.activity;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.DividerItemDecoration;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,10 +15,13 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.EBookListAdapter;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.AddToCartEvent;
 import com.onyx.android.dr.event.BookDetailEvent;
+import com.onyx.android.dr.event.DownloadFailedEvent;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
+import com.onyx.android.dr.event.PayActivityStopEvent;
 import com.onyx.android.dr.event.PayForEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.interfaces.EBookStoreView;
@@ -28,10 +32,12 @@ import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.utils.NetworkUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -42,6 +48,7 @@ import butterknife.OnClick;
  */
 
 public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
+    private static final String TAG = EBookStoreActivity.class.getSimpleName();
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.image)
@@ -71,6 +78,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     private EBookStorePresenter eBookStorePresenter;
     private EBookListAdapter listAdapter;
     private PageIndicator pageIndicator;
+    private List<Metadata> metadataList;
 
     @Override
     protected Integer getLayoutId() {
@@ -79,7 +87,6 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
 
     @Override
     protected void initConfig() {
-
     }
 
     @Override
@@ -101,6 +108,8 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
         ebookStoreTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
+                showProgressDialog("", null);
                 loadBooks(tab.getText().toString(), getDataHolder());
             }
 
@@ -132,6 +141,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
 
     @Override
     protected void initData() {
+        metadataList = new ArrayList<>();
         eBookStorePresenter = new EBookStorePresenter(this);
         eBookStorePresenter.getRootLibraryList(getParentLibraryId());
         showProgressDialog("", null);
@@ -159,9 +169,13 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
 
     @Override
     public void setBooks(List<Metadata> result) {
-        listAdapter.setEBookList(result);
-        updatePageIndicator();
-        dismissAllProgressDialog();
+        Log.i(TAG, "setBooks:" + result.size());
+        if (result != null && result.size() > 0) {
+            metadataList = result;
+            listAdapter.setEBookList(result);
+            updatePageIndicator();
+            dismissAllProgressDialog();
+        }
     }
 
     @Override
@@ -201,7 +215,6 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
         getDataHolder().getCloudManager().getCloudDataProvider().saveMetadata(DRApplication.getInstance(), event.getMetadata());
     }
 
-
     private LibraryDataHolder getDataHolder() {
         return DRApplication.getLibraryDataHolder();
     }
@@ -209,7 +222,6 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        loadBooks(ebookStoreTab.getTabAt(ebookStoreTab.getSelectedTabPosition()).getText().toString(), getDataHolder());
     }
 
     private void updatePageIndicator() {
@@ -277,9 +289,23 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
         eBookStorePresenter.addToCart(event.getBookId());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadFailedEvent(DownloadFailedEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.apk_download_fail));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPayActivityStopEvent(PayActivityStopEvent event) {
+        loadBooks(ebookStoreTab.getTabAt(ebookStoreTab.getSelectedTabPosition()).getText().toString(), getDataHolder());
+        Log.i(TAG, "onActivityResult:" + ebookStoreTab.getTabAt(ebookStoreTab.getSelectedTabPosition()).getText().toString());
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        if (listAdapter != null) {
+            listAdapter.notifyDataSetChanged();
+        }
         displayCartCount();
     }
 

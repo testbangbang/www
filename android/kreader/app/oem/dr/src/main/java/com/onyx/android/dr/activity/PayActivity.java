@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.OrderPaidEvent;
+import com.onyx.android.dr.event.PayActivityStopEvent;
 import com.onyx.android.dr.interfaces.PayActivityView;
 import com.onyx.android.dr.presenter.PayPresenter;
 import com.onyx.android.dr.service.QueryPayResultService;
@@ -21,6 +23,7 @@ import com.onyx.android.dr.util.AppConfig;
 import com.onyx.android.dr.util.QRCodeUtil;
 import com.onyx.android.sdk.data.model.v2.PayBean;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -31,6 +34,7 @@ import butterknife.Bind;
  */
 
 public class PayActivity extends BaseActivity implements PayActivityView {
+    private final String TAG = PayActivity.class.getSimpleName();
     @Bind(R.id.pay_qr_code)
     ImageView payQrCode;
     @Bind(R.id.order_number)
@@ -97,8 +101,14 @@ public class PayActivity extends BaseActivity implements PayActivityView {
 
     @Override
     public void setPayBean(PayBean payBean) {
+        if (payBean == null) {
+            return;
+        }
+        Log.i(TAG, "PayBean:" + payBean);
         Bitmap qrImage = QRCodeUtil.createQRImage(payBean.code_url, getResources().getInteger(R.integer.pay_qr_code_width), getResources().getInteger(R.integer.pay_qr_code_width));
-        payQrCode.setImageBitmap(qrImage);
+        if (qrImage != null) {
+            payQrCode.setImageBitmap(qrImage);
+        }
         loadingLayout.setVisibility(View.GONE);
         orderNumber.setText(String.format(getString(R.string.order_num), orderId));
         orderPrice.setText(String.format(getString(R.string.order_price), Float.valueOf(payBean.total)));
@@ -116,6 +126,7 @@ public class PayActivity extends BaseActivity implements PayActivityView {
         super.onStop();
         myBinder.setWait(false);
         unbindService(connection);
+        EventBus.getDefault().post(new PayActivityStopEvent());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

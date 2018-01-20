@@ -1,7 +1,9 @@
 package com.onyx.android.dr.presenter;
 
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.data.MainFragmentData;
 import com.onyx.android.dr.interfaces.MainFragmentView;
+import com.onyx.android.dr.request.local.CloudMetadataDelete;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.QueryArgs;
@@ -57,6 +59,15 @@ public class MainViewFragmentPresenter {
                 queryResult.list = req.getList();
                 queryResult.count = req.getList().size();
                 fragmentView.setNowReading(queryResult);
+            }
+        });
+    }
+
+    public void deleteMetadata() {
+        final CloudMetadataDelete rq = new CloudMetadataDelete();
+        mainFragmentData.deleteMetadata(DRApplication.getInstance(), rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
             }
         });
     }

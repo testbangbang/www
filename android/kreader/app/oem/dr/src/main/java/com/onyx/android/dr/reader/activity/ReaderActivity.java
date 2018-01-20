@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -29,7 +30,6 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.GoodSentenceBean;
-import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.reader.action.ShowQuickPreviewAction;
@@ -341,7 +341,6 @@ public class ReaderActivity extends Activity implements ReaderView {
             case KeyEvent.KEYCODE_MENU:
             case KeyEvent.KEYCODE_BACK:
                 finish();
-                ActivityManager.startMainActivity(this);
                 break;
         }
         if (readerPresenter.getHandlerManger().onKeyDown(keyCode, event)) {
