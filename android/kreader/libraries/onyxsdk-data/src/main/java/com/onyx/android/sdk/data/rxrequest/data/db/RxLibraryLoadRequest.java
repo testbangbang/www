@@ -9,15 +9,12 @@ import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
-import com.onyx.android.sdk.data.model.Library_Table;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.Method;
 
 import org.greenrobot.eventbus.EventBus;
 
