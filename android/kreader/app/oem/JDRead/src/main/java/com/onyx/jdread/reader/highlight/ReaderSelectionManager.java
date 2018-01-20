@@ -70,6 +70,16 @@ public class ReaderSelectionManager {
         return null;
     }
 
+    public String getSelectText(){
+        String result = "";
+        for(ReaderSelectionInfo readerSelectionInfo : readerSelectionInfos.values()){
+            if(readerSelectionInfo.getCurrentSelection() != null){
+                result += readerSelectionInfo.getCurrentSelection().getText();
+            }
+        }
+        return result;
+    }
+
     public boolean normalize(String pagePosition) {
         ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {

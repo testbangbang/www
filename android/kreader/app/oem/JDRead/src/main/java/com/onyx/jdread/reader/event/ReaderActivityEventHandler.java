@@ -7,10 +7,12 @@ import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
+import com.onyx.jdread.reader.actions.SelectTextCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
+import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
@@ -153,5 +155,30 @@ public class ReaderActivityEventHandler {
         UpdateReaderViewInfoEvent event = new UpdateReaderViewInfoEvent();
         event.setReaderViewInfo(request.getReaderViewInfo());
         EventBus.getDefault().post(event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupLineationClickEvent(PopupLineationClickEvent event){
+        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Lineation");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupNoteClickEvent(PopupNoteClickEvent event){
+        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Note");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupCopyClickEvent(PopupCopyClickEvent event){
+        new SelectTextCopyToClipboardAction().execute(readerViewModel.getReaderDataHolder(),null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupTranslationClickEvent(PopupTranslationClickEvent event){
+        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Translation");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupBaidupediaClickEvent(PopupBaidupediaClickEvent event){
+        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Baidupedia");
     }
 }

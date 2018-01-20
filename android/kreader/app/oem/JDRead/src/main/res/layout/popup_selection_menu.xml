@@ -13,46 +13,57 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_stroke"
         android:orientation="vertical"
         android:visibility="@{selectMenuModel.isShowSelectMenu?View.VISIBLE:View.GONE}">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/rectangle_stroke"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/reader_select_menu_padding_bottom"
-            android:paddingLeft="@dimen/reader_select_menu_padding_left"
-            android:paddingRight="@dimen/reader_select_menu_padding_right"
-            android:paddingTop="@dimen/reader_select_menu_padding_top">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 style="@style/reader_popup_selection_menu_style"
+                android:onClick="@{()->selectMenuModel.onLineationClick()}"
                 android:text="@string/lineation" />
 
             <TextView
                 style="@style/reader_popup_selection_menu_style"
+                android:onClick="@{()->selectMenuModel.onNoteClick()}"
                 android:text="@string/reader_book_info_note" />
 
             <TextView
                 style="@style/reader_popup_selection_menu_style"
+                android:onClick="@{()->selectMenuModel.onCopyClick()}"
                 android:text="@string/copy" />
 
             <TextView
                 style="@style/reader_popup_selection_menu_style"
+                android:onClick="@{()->selectMenuModel.onTranslationClick()}"
                 android:text="@string/translation" />
 
             <TextView
                 style="@style/reader_popup_selection_menu_style"
+                android:onClick="@{()->selectMenuModel.onBaidupediaClick()}"
                 android:text="@string/baidupedia" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:visibility="@{selectMenuModel.isShowDictionaryMenu?View.VISIBLE:View.GONE}">
 
+            <View style="@style/reader_dotted_line_style" />
+
+            <com.onyx.jdread.shop.view.AutoPagedWebView
+                android:id="@+id/translate_content_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/darker_gray"/>
         </LinearLayout>
     </LinearLayout>
 

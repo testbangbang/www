@@ -363,4 +363,5 @@
     <string name="search_hot_words">热门搜索</string>
     <string name="in_library">位置：书架</string>
     <string name="in_shop">位置：书店</string>
+    <string name="reader_copy_success">已复制</string>
 </resources>

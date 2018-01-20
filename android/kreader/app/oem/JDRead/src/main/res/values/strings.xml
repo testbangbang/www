@@ -380,4 +380,5 @@
     <string name="search_hot_words">Popular searches</string>
     <string name="in_library">Location ：Library</string>
     <string name="in_shop">Location ：Shop</string>
+    <string name="reader_copy_success">Copy success</string>
 </resources>
