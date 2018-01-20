@@ -4,6 +4,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxRequestUserInfo;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
 /**
@@ -15,9 +16,12 @@ public class UserInfoAction extends BaseAction {
 
     @Override
     public void execute(PersonalDataBundle dataBundle, final RxCallback rxCallback) {
-        JDAppBaseInfo requestBean = new JDAppBaseInfo();
+        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
+        baseInfo.removeApp();
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.GET_USER_INFO);
+        baseInfo.setSign(signValue);
         final RxRequestUserInfo rq = new RxRequestUserInfo();
-        rq.setUserInfoRequestBean(requestBean);
+        rq.setUserInfoRequestBean(baseInfo);
         rq.setSaltValue(dataBundle.getSalt());
         rq.execute(new RxCallback() {
             @Override

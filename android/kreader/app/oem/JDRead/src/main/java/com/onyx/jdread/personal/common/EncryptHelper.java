@@ -16,6 +16,7 @@ import java.io.IOException;
  */
 
 public class EncryptHelper {
+    private static String path;
 
     public static String getEncryptKey(String salt) {
         char[] chars = salt.toCharArray();
@@ -32,9 +33,14 @@ public class EncryptHelper {
     public static String getEncryptParams(String key, String signStr) {
         File encryptFile = getEncryptFile();
         FileUtils.appendContentToFile(key, encryptFile);
-        String path = encryptFile.getParent() + "/";
+        path = encryptFile.getParent() + File.separator;
         String atencrypting = decryptionoperation.atencrypting(signStr, path, 0);
         return atencrypting;
+    }
+
+    public static String getDecryptContent(String encryptContent) {
+        String atdecryption = decryptionoperation.atdecryption(encryptContent, path, 0);
+        return atdecryption;
     }
 
     public static File getEncryptFile() {

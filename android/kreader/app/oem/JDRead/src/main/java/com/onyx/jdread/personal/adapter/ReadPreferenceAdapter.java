@@ -11,6 +11,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemReadPreferenceBinding;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 
 import java.util.List;
@@ -24,12 +25,12 @@ public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implemen
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.read_preference_row);
+        return ResManager.getInteger(R.integer.read_preference_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.read_preference_col);
+        return ResManager.getInteger(R.integer.read_preference_col);
     }
 
     @Override

@@ -20,7 +20,9 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.AppBaseInfo;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.setting.feedback.OnyxAttachmentUriProvider;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
@@ -81,9 +83,8 @@ public class JDReadApplication extends MultiDexApplication {
         DataManager.init(instance, null);
         initContentProvider(this);
         initFrescoLoader();
-        PreferenceManager.init(instance);
-        OnyxDownloadManager.init(this.getApplicationContext());
-        OnyxDownloadManager.getInstance();
+        JDPreferenceManager.initWithAppContext(instance);
+        ResManager.init(instance);
         initEventListener();
         initDownloadManager();
     }

@@ -1,13 +1,12 @@
 package com.onyx.jdread.personal.model;
 
 import android.app.Activity;
-import android.databinding.BaseObservable;
 import android.databinding.ObservableField;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.event.CancelUserLoginDialogEvent;
 import com.onyx.jdread.personal.event.ForgetPasswordEvent;
@@ -62,9 +61,9 @@ public class UserLoginViewModel {
     }
 
     public void onChangePasswordVisibleViewClick() {
-        boolean showPassword = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), Constants.SP_KEY_SHOW_PASSWORD, false);
+        boolean showPassword = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_SHOW_PASSWORD, false);
         isShowPassword.set(!showPassword);
-        PreferenceManager.setBooleanValue(JDReadApplication.getInstance(),Constants.SP_KEY_SHOW_PASSWORD,!showPassword);
+        JDPreferenceManager.setBooleanValue(Constants.SP_KEY_SHOW_PASSWORD,!showPassword);
     }
 
     public void onRegisterViewClick() {

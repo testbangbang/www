@@ -80,6 +80,7 @@ ext {
     avoscloudpush = '4.3.2'
     rxandroid = '2.0.1'
     rxjava = '2.1.8'
+    converterScalers = '2.0.0'
 
 
     //compatible

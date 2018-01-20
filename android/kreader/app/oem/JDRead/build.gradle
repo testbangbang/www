@@ -82,4 +82,5 @@ dependencies {
     compile "com.evernote:android-sdk:$rootProject.evernoteVersion"
     compile "ch.acra:acra-http:$rootProject.acraVersion"
     compile "ch.acra:acra-dialog:$rootProject.acraVersion"
+    compile "com.squareup.retrofit2:converter-scalars:$rootProject.converterScalers"
 }
