@@ -30,6 +30,7 @@ public class Constants {
     public static final String SP_KEY_SUBJECT_NAME = "subject_name";
     public static final String SP_KEY_SUBJECT_MODEL_ID = "subject_model_id";
     public static final String SP_KEY_SUBJECT_MODEL_TYPE = "subject_model_type";
+    public static final String SP_KEY_SUBJECT_RANK_TYPE = "subject_rank_type";
     public static final String SP_KEY_KEYWORD = "Keyword";
     public static final String SP_KEY_BOOK_LIST_TYPE = "book_list_type";
 

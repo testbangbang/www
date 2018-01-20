@@ -136,9 +136,6 @@ public class BookSaleFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
-        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, event.modelId);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, event.modelType);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
         }

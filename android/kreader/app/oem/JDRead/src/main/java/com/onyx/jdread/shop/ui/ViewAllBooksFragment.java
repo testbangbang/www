@@ -75,8 +75,8 @@ public class ViewAllBooksFragment extends BaseFragment {
             modelType = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
             getBookModelData(currentPage);
         } else if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_RANK) {
-            modelType = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
-            getBookRankData(modelType,currentPage);
+            int rankType = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_RANK_TYPE, -1);
+            getBookRankData(rankType,currentPage);
         }
     }
 
@@ -92,8 +92,8 @@ public class ViewAllBooksFragment extends BaseFragment {
         });
     }
 
-    private void getBookRankData(int modelId, int currentPage) {
-        BookRankListAction booksAction = new BookRankListAction(modelId, currentPage);
+    private void getBookRankData(int rankId, int currentPage) {
+        BookRankListAction booksAction = new BookRankListAction(rankId, currentPage);
         booksAction.execute(getShopDataBundle(), new RxCallback<BookRankListAction>() {
             @Override
             public void onNext(BookRankListAction booksAction) {

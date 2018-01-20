@@ -27,6 +27,7 @@ import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryViewClick;
 import com.onyx.jdread.shop.event.EnjoyReadViewClick;
@@ -350,12 +351,15 @@ public class ShopFragment extends BaseFragment {
         if (checkWfiDisConnected()) {
             return;
         }
-        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, event.modelId);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, event.modelType);
-        if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+        BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
+        if (modulesBean != null) {
+            PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
+            PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+            PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
+            PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
+            if (getViewEventCallBack() != null) {
+                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+            }
         }
     }
 

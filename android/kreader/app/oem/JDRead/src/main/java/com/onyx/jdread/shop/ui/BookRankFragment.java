@@ -20,6 +20,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookRankAction;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
@@ -149,11 +150,14 @@ public class BookRankFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
-        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_RANK);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, event.modelType);
-        if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+        BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
+        if (modulesBean != null) {
+            PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
+            PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_RANK);
+            PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_RANK_TYPE, modulesBean.rank_type);
+            if (getViewEventCallBack() != null) {
+                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+            }
         }
     }
 
