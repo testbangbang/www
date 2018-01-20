@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         initFragmentManager();
         notifyChildViewChangeWindow();
         BaseFragment baseFragment = getPageView(childViewName);
-        if (currentFragment != null && currentFragment.getBundle() != null) {
+        if (currentFragment != null) {
             baseFragment.setBundle(currentFragment.getBundle());
         }
         transaction.replace(R.id.main_content_view, baseFragment);

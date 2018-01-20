@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.device.ReaderDeviceManager;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -20,6 +21,7 @@ import com.onyx.jdread.reader.actions.UpdateViewPageAction;
 import com.onyx.jdread.reader.common.SelectWordInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.highlight.HighlightCursor;
+import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,7 +35,7 @@ public class WordSelectionHandler extends BaseHandler {
     private static final String TAG = WordSelectionHandler.class.getSimpleName();
     private static final int MAX_WORD_CHINESE_COUNT = 10;
 
-    private int moveRangeAfterLongPress = 15;
+    private int moveRangeAfterLongPress = 25;
 
     private float movePointOffsetHeight;
     private Point lastMovedPoint = null;
@@ -49,7 +51,8 @@ public class WordSelectionHandler extends BaseHandler {
     private float lastMoveY = 0;
     private int crossScreenTouchRegionMinWidth;
     private int crossScreenTouchRegionMinHeight;
-    private String pagePosition;
+    private boolean isCrossScreenSelect = false;
+    private String downPagePosition;
 
     public WordSelectionHandler(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder);
@@ -60,11 +63,6 @@ public class WordSelectionHandler extends BaseHandler {
 
     @Override
     public void onLongPress(MotionEvent event) {
-        pagePosition = getReaderDataHolder().getReaderViewInfo().getFirstVisiblePageName();
-
-        if (isCrossScreenSelectText(event)) {
-            return;
-        }
         if (tryPageImage(event.getX(), event.getY())) {
             quitWordSelection();
             return;
@@ -80,27 +78,31 @@ public class WordSelectionHandler extends BaseHandler {
             showSelectionCursor = false;
             lastSelectStartPosition = 0;
             lastSelectEndPosition = 0;
+            isCrossScreenSelect = false;
+            downPagePosition = getReaderDataHolder().getCurrentPagePosition();
+            getReaderDataHolder().getReaderSelectionManager().setMoveSelectCount(0);
             selectWord(getStartPoint().x, getStartPoint().y, event.getX(), event.getY());
         } else if (cursorSelected < 0) {
             quitWordSelection();
         }
     }
 
-    private boolean isCrossScreenSelectText(MotionEvent event) {
-        if (getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(pagePosition) != null) {
+    private boolean isCrossScreenSelectText(float x, float y) {
+        if (getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition()) != null &&
+                getReaderDataHolder().getReaderSelectionManager().getMoveSelectCount() <= 0) {
             int height = getReaderDataHolder().getReaderTouchHelper().getSurfaceView().getHeight();
             int width = getReaderDataHolder().getReaderTouchHelper().getSurfaceView().getWidth();
-            float x = event.getX();
-            float y = event.getY();
             if (x < crossScreenTouchRegionMinWidth && y < crossScreenTouchRegionMinHeight) {
                 if (getReaderDataHolder().getReaderViewInfo().canPrevScreen) {
-                    new PrevPageSelectTextAction().execute(getReaderDataHolder());
+                    isCrossScreenSelect = true;
+                    new PrevPageSelectTextAction(getReaderDataHolder().getReaderSelectionManager()).execute(getReaderDataHolder(),crossScreenSelectActionCallBack);
                 }
                 return true;
             }
             if (x > (width - crossScreenTouchRegionMinWidth) && y > (height - crossScreenTouchRegionMinHeight)) {
                 if (getReaderDataHolder().getReaderViewInfo().canNextScreen) {
-                    new NextPageSelectTextAction().execute(getReaderDataHolder());
+                    isCrossScreenSelect = true;
+                    new NextPageSelectTextAction(getReaderDataHolder().getReaderSelectionManager()).execute(getReaderDataHolder(),crossScreenSelectActionCallBack);
                 }
                 return true;
             }
@@ -114,6 +116,7 @@ public class WordSelectionHandler extends BaseHandler {
 
     public boolean onDown(MotionEvent event) {
         cursorSelected = getCursorSelected((int) event.getX(), (int) event.getY());
+        downPagePosition = getReaderDataHolder().getCurrentPagePosition();
         return super.onDown(event);
     }
 
@@ -139,14 +142,14 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public void onReleaseClick() {
-        if (getReaderDataHolder().getReaderUserDataInfo().hasHighlightResult()) {
-            String text = getReaderDataHolder().getReaderUserDataInfo().getHighlightResult().getText();
+        ReaderSelection readerSelection = getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition());
+        if (readerSelection != null) {
+            String text = readerSelection.getText();
             if (!StringUtils.isNullOrEmpty(text)) {
                 boolean isWord = isWord(text);
                 showSelectionMenu(isWord);
             }
         }
-        updateHighLightRect();
     }
 
     private boolean isWord(String text) {
@@ -160,18 +163,24 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private void updateHighLightRect() {
-        if (getReaderDataHolder().getReaderUserDataInfo().hasHighlightResult()) {
-            final ReaderSelection selection = getReaderDataHolder().getReaderUserDataInfo().getHighlightResult();
+        ReaderSelection readerSelection = getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition());
+        if (readerSelection != null) {
             if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
-                highLightBeginTop = RectUtils.getBeginTop(selection.getRectangles());
+                highLightBeginTop = RectUtils.getBeginTop(readerSelection.getRectangles());
             } else {
-                highLightEndBottom = RectUtils.getEndBottom(selection.getRectangles());
+                highLightEndBottom = RectUtils.getEndBottom(readerSelection.getRectangles());
             }
         }
     }
 
     private void showSelectionMenu(boolean isWord) {
+        getReaderDataHolder().getSelectMenuModel().requestLayoutView(getReaderDataHolder());
+        getReaderDataHolder().getSelectMenuModel().setIsShowSelectMenu(true);
         enableSelectionCursor();
+    }
+
+    public void hideTextSelectionPopupWindow() {
+        getReaderDataHolder().getSelectMenuModel().setIsShowSelectMenu(false);
     }
 
     public boolean onScrollAfterLongPress(final float x1, final float y1, final float x2, final float y2) {
@@ -204,24 +213,37 @@ public class WordSelectionHandler extends BaseHandler {
             case MotionEvent.ACTION_DOWN:
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (cursorSelected < 0 && showSelectionCursor) {
+                if (!isCrossScreenSelect(x, y)) {
                     return true;
                 }
-
-                if (filterMoveAfterLongPress(x, y)) {
-                    return true;
-                }
-                if (Math.abs(lastMoveX - x) <= 0 || Math.abs(lastMoveY - y) <= 0) {
-                    return true;
-                }
-                lastMoveX = x;
-                lastMoveY = y;
                 highlightAlongTouchMoved(x, y, cursorSelected);
                 break;
             case MotionEvent.ACTION_UP:
                 break;
             default:
                 break;
+        }
+        return true;
+    }
+
+    private boolean isCrossScreenSelect(float x, float y) {
+        if (cursorSelected < 0 && showSelectionCursor) {
+            return false;
+        }
+
+        if (filterMoveAfterLongPress(x, y)) {
+            return false;
+        }
+        if (Math.abs(lastMoveX - x) <= 0 || Math.abs(lastMoveY - y) <= 0) {
+            return false;
+        }
+        lastMoveX = x;
+        lastMoveY = y;
+        if (isCrossScreenSelect) {
+            return false;
+        }
+        if (downPagePosition != null && !downPagePosition.equals(getReaderDataHolder().getCurrentPagePosition())) {
+            return false;
         }
         return true;
     }
@@ -241,45 +263,48 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public void highlightAlongTouchMoved(float x, float y, int cursorSelected) {
+        if (isCrossScreenSelectText(x, y)) {
+            return;
+        }
         hideTextSelectionPopupWindow();
         selectText(longPressPoint.x, longPressPoint.y, x, y);
     }
 
     public void selectWord(final float x1, final float y1, final float x2, final float y2) {
-        SelectWordInfo info = new SelectWordInfo(getReaderDataHolder().getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition(),
+        SelectWordInfo info = new SelectWordInfo(getReaderDataHolder().getCurrentPagePosition(),
                 new PointF(x1, y1),
                 new PointF(x2, y2),
                 new PointF(x2, y2));
         SelectWordAction action = new SelectWordAction(info);
-        action.execute(getReaderDataHolder());
+        action.execute(getReaderDataHolder(),selectActionCallBack);
     }
 
     public void selectText(final float x1, final float y1, final float x2, final float y2) {
         PointF touchPoint = new PointF(x2, y2);
         if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
-            highLightBeginTop = new PointF(x2, y2 - getMovePointOffsetHeight());
+            highLightBeginTop = new PointF(x2, y2);
         } else {
-            highLightEndBottom = new PointF(x2, y2 - getMovePointOffsetHeight());
+            highLightEndBottom = new PointF(x2, y2);
         }
 
-        SelectWordInfo info = new SelectWordInfo(getReaderDataHolder().getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition(),
+        SelectWordInfo info = new SelectWordInfo(getReaderDataHolder().getCurrentPagePosition(),
                 highLightBeginTop,
                 highLightEndBottom,
                 touchPoint);
         SelectTextAction action = new SelectTextAction(info);
-        action.execute(getReaderDataHolder());
+        action.execute(getReaderDataHolder(),selectActionCallBack);
     }
 
     private float getMovePointOffsetHeight() {
-        if (!getReaderDataHolder().getReaderSelectionManager().isEnable(pagePosition)) {
+        if (!getReaderDataHolder().getReaderSelectionManager().isEnable(getReaderDataHolder().getCurrentPagePosition())) {
             return 0f;
         }
         return movePointOffsetHeight;
     }
 
-    private void updateCursorSelected(ReaderSelection selection) {
-        final ReaderSelection updatedSelection = getReaderDataHolder().getReaderUserDataInfo().getHighlightResult();
-        if (updatedSelection == null || selection == null) {
+    private void updateCursorSelected() {
+        final ReaderSelection selection = getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition());
+        if (selection == null) {
             return;
         }
 
@@ -300,22 +325,25 @@ public class WordSelectionHandler extends BaseHandler {
         }
     }
 
-    public void hideTextSelectionPopupWindow() {
-    }
-
     public boolean hasSelectionWord() {
-        return getReaderDataHolder().getReaderUserDataInfo().hasHighlightResult();
+        return getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition()) != null;
     }
 
     public int getCursorSelected(int x, int y) {
-        HighlightCursor beginHighlightCursor = getReaderDataHolder().getReaderSelectionManager().getHighlightCursor(pagePosition,HighlightCursor.BEGIN_CURSOR_INDEX);
-        HighlightCursor endHighlightCursor = getReaderDataHolder().getReaderSelectionManager().getHighlightCursor(pagePosition,HighlightCursor.END_CURSOR_INDEX);
+        HighlightCursor beginHighlightCursor = getReaderDataHolder().getReaderSelectionManager().getHighlightCursor(getReaderDataHolder().getCurrentPagePosition(),
+                HighlightCursor.BEGIN_CURSOR_INDEX);
+        HighlightCursor endHighlightCursor = getReaderDataHolder().getReaderSelectionManager().getHighlightCursor(getReaderDataHolder().getCurrentPagePosition(),
+                HighlightCursor.END_CURSOR_INDEX);
 
         if (endHighlightCursor != null && endHighlightCursor.hitTest(x, y)) {
-            return HighlightCursor.END_CURSOR_INDEX;
+            if(endHighlightCursor.getShowState()) {
+                return HighlightCursor.END_CURSOR_INDEX;
+            }
         }
         if (beginHighlightCursor != null && beginHighlightCursor.hitTest(x, y)) {
-            return HighlightCursor.BEGIN_CURSOR_INDEX;
+            if(beginHighlightCursor.getShowState()) {
+                return HighlightCursor.BEGIN_CURSOR_INDEX;
+            }
         }
         return -1;
     }
@@ -323,15 +351,46 @@ public class WordSelectionHandler extends BaseHandler {
     public void quitWordSelection() {
         ReaderDeviceManager.enableRegal();
         clearWordSelection();
+        hideTextSelectionPopupWindow();
     }
 
     private void clearWordSelection() {
-        new UpdateViewPageAction().execute(getReaderDataHolder());
+        new UpdateViewPageAction().execute(getReaderDataHolder(),null);
         getReaderDataHolder().getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
-        getReaderDataHolder().getReaderSelectionManager().clear(pagePosition);
+        getReaderDataHolder().getReaderSelectionManager().clear();
     }
 
     private void enableSelectionCursor() {
         showSelectionCursor = true;
     }
+
+    private RxCallback selectActionCallBack = new RxCallback() {
+        @Override
+        public void onNext(Object o) {
+
+        }
+
+        @Override
+        public void onFinally() {
+            updateCursorSelected();
+            updateHighLightRect();
+        }
+    };
+
+    private RxCallback crossScreenSelectActionCallBack = new RxCallback() {
+        @Override
+        public void onNext(Object o) {
+
+        }
+
+        @Override
+        public void onFinally() {
+            ReaderSelectionInfo readerSelectionInfo = getReaderDataHolder().getReaderSelectionManager().getReaderSelectionInfo(getReaderDataHolder().getCurrentPagePosition());
+            if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection() != null) {
+                highLightBeginTop = readerSelectionInfo.getHighLightBeginTop();
+                highLightEndBottom = readerSelectionInfo.getHighLightEndBottom();
+            }
+            isCrossScreenSelect = false;
+        }
+    };
 }

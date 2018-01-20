@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.sql.language.property.Property;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -218,7 +219,7 @@ public class LocalDataProvider implements DataProviderBase {
     @Override
     public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
         Operator condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
-        return new Select().from(Library.class).where(condition).queryList();
+        return new Select().from(Library.class).where(condition).offset(queryArgs.offset).limit(queryArgs.limit).queryList();
     }
 
     @Override
@@ -375,6 +376,7 @@ public class LocalDataProvider implements DataProviderBase {
         if (single == null) {
             searchHistory.save();
         }else {
+            single.setCreatedAt(new Date());
             single.update();
         }
     }
@@ -382,5 +384,10 @@ public class LocalDataProvider implements DataProviderBase {
     @Override
     public void clearSearchHistory() {
         new Delete().from(SearchHistory.class).query();
+    }
+
+    @Override
+    public long libraryCount(String parentUniqueId) {
+        return new Select(Method.count()).from(Library.class).where(Library_Table.parentUniqueId.eq(parentUniqueId)).count();
     }
 }

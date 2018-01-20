@@ -61,17 +61,17 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onMenuAreaEvent(MenuAreaEvent event) {
-        new ShowSettingMenuAction().execute(readerViewModel.getReaderDataHolder());
+        new ShowSettingMenuAction().execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe
     public void onPrevPageEvent(PrevPageEvent event) {
-        new PrevPageAction().execute(readerViewModel.getReaderDataHolder());
+        new PrevPageAction().execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe
     public void onNextPageEvent(NextPageEvent event) {
-        new NextPageAction().execute(readerViewModel.getReaderDataHolder());
+        new NextPageAction().execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe
@@ -109,7 +109,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInitPageViewInfoEvent(InitPageViewInfoEvent event) {
-        new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder());
+        new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

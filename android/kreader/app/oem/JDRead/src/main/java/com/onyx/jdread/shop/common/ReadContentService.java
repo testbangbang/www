@@ -8,7 +8,6 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadUnlimitedResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SaltResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddBookToSmoothCardBookBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
@@ -102,7 +101,7 @@ public interface ReadContentService {
 
 
     @GET(CloudApiContext.User.GET_USER_INFO)
-    Call<UserInfoBean> getUserInfo(@QueryMap Map<String, String> map);
+    Call<String> getUserInfo(@QueryMap Map<String, String> map);
 
     @GET("now")
     Call<SaltResultBean> getSalt(@QueryMap Map<String, String> map);

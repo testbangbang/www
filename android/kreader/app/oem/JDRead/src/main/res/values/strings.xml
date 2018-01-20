@@ -368,6 +368,8 @@
     <string name="target_language">Target language: %s</string>
     <string name="input_number_for_contact">Please enter your mobile phone number so that the staff can contact you.</string>
     <string name="installed">installed</string>
+    <string name="copy">Copy</string>
+    <string name="baidupedia">Baidupedia</string>
     <string name="input_number_un_encrypt">Please enter a numeric password to unencrypt it.</string>
     <string name="encryption_success">Encryption success</string>
     <string name="total">total:</string>

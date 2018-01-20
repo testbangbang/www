@@ -11,6 +11,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemShopCartBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 
 import java.util.ArrayList;
@@ -25,12 +26,12 @@ public class ShopCartAdapter extends PageRecyclerView.PageAdapter implements Vie
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_cart_row);
+        return ResManager.getInteger(R.integer.shop_cart_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_cart_col);
+        return ResManager.getInteger(R.integer.shop_cart_col);
     }
 
     @Override

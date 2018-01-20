@@ -22,6 +22,7 @@ import com.onyx.jdread.setting.ui.DeviceConfigFragment;
 import com.onyx.jdread.setting.ui.DeviceInformationFragment;
 import com.onyx.jdread.setting.ui.DictionaryFragment;
 import com.onyx.jdread.setting.ui.FeedbackFragment;
+import com.onyx.jdread.setting.ui.FeedbackRecordFragment;
 import com.onyx.jdread.setting.ui.HelpFragment;
 import com.onyx.jdread.setting.ui.LaboratoryFragment;
 import com.onyx.jdread.setting.ui.LockScreenFragment;
@@ -98,6 +99,7 @@ public class ViewConfig {
         childViewInfo.put(BrightnessFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(TranslateFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(DictionaryFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(FeedbackRecordFragment.class.getName(),FunctionModule.SETTING);
         //personal
         childViewInfo.put(PersonalFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(PersonalExperienceFragment.class.getName(), FunctionModule.PERSONAL);

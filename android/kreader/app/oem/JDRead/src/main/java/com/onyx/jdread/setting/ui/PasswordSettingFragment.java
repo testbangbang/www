@@ -10,6 +10,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentPasswordSettingsBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.setting.event.BackToDeviceConfigEvent;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
@@ -62,7 +63,7 @@ public class PasswordSettingFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToDeviceConfigEvent(BackToDeviceConfigEvent event) {
-        ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.encryption_success));
+        ToastUtil.showToast(ResManager.getString(R.string.encryption_success));
         Utils.hideSoftWindow(getActivity());
         viewEventCallBack.viewBack();
     }

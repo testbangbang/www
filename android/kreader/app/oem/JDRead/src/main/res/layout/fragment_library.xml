@@ -36,55 +36,53 @@
                 android:id="@+id/page_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@drawable/imagebtn_bg"
                 android:drawableLeft="@mipmap/ic_read_back"
                 android:drawablePadding="@dimen/title_bar_drawable_padding"
                 android:gravity="center_vertical"
-                android:layout_centerVertical="true"
                 android:onClick="@{()->libraryModel.onBackClick()}"
-                android:text="@{libraryModel.title}"
                 android:paddingLeft="@dimen/library_manage_layout_padding"
-                android:background="@drawable/imagebtn_bg"
+                android:text="@{libraryModel.title}"
                 android:textSize="@dimen/level_one_heading_font"
                 android:visibility="@{StringUtils.isNullOrEmpty(libraryModel.title)?View.INVISIBLE:View.VISIBLE}" />
 
-            <ImageView
-                android:id="@+id/image_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:onClick="@{()->libraryModel.onMenuClick()}"
-                android:src="@mipmap/ic_menu"
-                android:padding="@dimen/library_manage_layout_padding"
-                android:visibility="@{libraryModel.showTopMenu?View.VISIBLE:View.INVISIBLE}" />
 
-            <ImageView
-                android:id="@+id/image_manage"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/library_manage_margin_right"
-                android:layout_toLeftOf="@id/image_menu"
-                android:onClick="@{()->libraryModel.onManageClick()}"
-                android:src="@mipmap/ic_manage"
-                android:padding="@dimen/library_manage_layout_padding"
-                android:visibility="@{libraryModel.showTopMenu?View.VISIBLE:View.INVISIBLE}" />
+                android:visibility="@{libraryModel.showTopMenu?View.VISIBLE:View.INVISIBLE}">
 
-            <ImageView
-                android:id="@+id/image_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/library_search_margin_right"
-                android:layout_toLeftOf="@id/image_manage"
-                android:onClick="@{()->libraryModel.onSearchClick()}"
-                android:src="@mipmap/ic_search"
-                android:padding="@dimen/library_manage_layout_padding"
-                android:visibility="@{libraryModel.showTopMenu?View.VISIBLE:View.INVISIBLE}" />
+                <ImageView
+                    android:id="@+id/image_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->libraryModel.onSearchClick()}"
+                    android:padding="@dimen/library_manage_layout_padding"
+                    android:src="@mipmap/ic_search" />
+
+                <ImageView
+                    android:id="@+id/image_manage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->libraryModel.onManageClick()}"
+                    android:padding="@dimen/library_manage_layout_padding"
+                    android:src="@mipmap/ic_manage" />
+
+                <ImageView
+                    android:id="@+id/image_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->libraryModel.onMenuClick()}"
+                    android:padding="@dimen/library_manage_layout_padding"
+                    android:src="@mipmap/ic_menu" />
+            </LinearLayout>
         </RelativeLayout>
 
         <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
             android:id="@+id/content_pageView"
-            items="@{libraryModel.visibleItems}"
+            items="@{libraryModel.items}"
             android:layout_width="match_parent"
             android:layout_height="@dimen/library_content_page_view_height" />
 
@@ -124,8 +122,8 @@
                 android:layout_marginTop="@dimen/function_bar_item_image_margin"
                 android:drawablePadding="@dimen/function_bar_item_name_margin"
                 android:drawableTop="@mipmap/ic_shelf_delete_book"
-                android:text="@string/delete"
                 android:onClick="@{()->libraryModel.delete()}"
+                android:text="@string/delete"
                 android:textSize="@dimen/level_one_heading_font" />
 
             <TextView

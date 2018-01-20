@@ -11,6 +11,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemPersonalBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.model.PersonalData;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,12 +34,12 @@ public class PersonalAdapter extends PageRecyclerView.PageAdapter implements Vie
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_adapter_row);
+        return ResManager.getInteger(R.integer.personal_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_adapter_col);
+        return ResManager.getInteger(R.integer.personal_adapter_col);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class SearchBookAction extends BaseAction<LibraryDataBundle> {
             saveSearchHistory(libraryDataBundle);
         }
         QueryArgs queryArgs = QueryBuilder.searchQuery(libraryDataBundle.getSearchBookModel().searchKey.get(), SortBy.None, SortOrder.Asc);
-        RxSearchBookRequest request = new RxSearchBookRequest(libraryDataBundle.getDataManager(), queryArgs);
+        RxSearchBookRequest request = new RxSearchBookRequest(libraryDataBundle.getDataManager(), queryArgs, libraryDataBundle.getEventBus());
         request.execute(new RxCallback<RxSearchBookRequest>() {
             @Override
             public void onNext(RxSearchBookRequest loadRequest) {
@@ -49,7 +49,7 @@ public class SearchBookAction extends BaseAction<LibraryDataBundle> {
     private void saveSearchHistory(LibraryDataBundle libraryDataBundle) {
         SearchHistory searchHistory = new SearchHistory();
         searchHistory.setContent(libraryDataBundle.getSearchBookModel().searchKey.get());
-        RxSaveSearchHistoryRequest saveSearchHistoryRequest = new RxSaveSearchHistoryRequest(libraryDataBundle.getDataManager(),searchHistory);
+        RxSaveSearchHistoryRequest saveSearchHistoryRequest = new RxSaveSearchHistoryRequest(libraryDataBundle.getDataManager(), searchHistory);
         saveSearchHistoryRequest.execute(null);
     }
 }

@@ -222,6 +222,12 @@ public class JDAppBaseInfo {
         return sign;
     }
 
+    public void clear() {
+        if (requestParamsMap != null && requestParamsMap.size() > 0) {
+            requestParamsMap.clear();
+        }
+    }
+
     public void addRequestParams(Map<String,String> requestParamsMap) {
         if (requestParamsMap != null) {
             this.requestParamsMap.putAll(requestParamsMap);

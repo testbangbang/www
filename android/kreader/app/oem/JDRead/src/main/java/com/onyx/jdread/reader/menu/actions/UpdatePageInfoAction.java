@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.menu.actions;
 
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.common.ReaderPageInfoFormat;
@@ -21,7 +22,7 @@ public class UpdatePageInfoAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         String bookName = ReaderPageInfoFormat.getChapterName(readerDataHolder);
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setBookName(bookName);
 

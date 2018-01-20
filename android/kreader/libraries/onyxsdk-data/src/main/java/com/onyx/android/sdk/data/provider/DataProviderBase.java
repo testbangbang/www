@@ -121,4 +121,6 @@ public interface DataProviderBase {
     void saveSearchHistory(final Context context, SearchHistory searchHistory);
 
     void clearSearchHistory();
+
+    long libraryCount(String parentUniqueId);
 }

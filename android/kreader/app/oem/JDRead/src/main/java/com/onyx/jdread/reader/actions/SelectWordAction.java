@@ -4,6 +4,7 @@ import com.onyx.android.sdk.reader.host.impl.ReaderHitTestOptionsImpl;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.common.SelectWordInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.request.ReaderBaseRequest;
 import com.onyx.jdread.reader.request.SelectRequest;
 
 /**
@@ -17,7 +18,7 @@ public class SelectWordAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
         final SelectRequest request = new SelectRequest(readerDataHolder.getReader(),
                 selectWordInfo.pagePosition,
                 selectWordInfo.startPoint,
@@ -25,11 +26,28 @@ public class SelectWordAction extends BaseReaderAction {
                 selectWordInfo.touchPoint,
                 ReaderHitTestOptionsImpl.create(true),
                 readerDataHolder.getReaderSelectionManager());
+
+        final String pagePosition = readerDataHolder.getCurrentPagePosition();
+        readerDataHolder.getReaderSelectionManager().incrementSelectCount();
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                readerDataHolder.setReaderUserDataInfo(request.getReaderUserDataInfo());
+
+            }
+
+            @Override
+            public void onFinally() {
+                readerDataHolder.getReaderSelectionManager().decrementSelectCount();
+                updateData(readerDataHolder,request,pagePosition,baseCallback);
             }
         });
+    }
+
+    private void updateData(ReaderDataHolder readerDataHolder, ReaderBaseRequest request,String pagePosition,RxCallback baseCallback){
+        readerDataHolder.setReaderUserDataInfo(request.getReaderUserDataInfo());
+        readerDataHolder.setReaderViewInfo(request.getReaderViewInfo());
+        if(baseCallback != null){
+            baseCallback.onFinally();
+        }
     }
 }

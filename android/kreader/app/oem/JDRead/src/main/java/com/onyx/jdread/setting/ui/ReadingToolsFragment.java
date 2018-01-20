@@ -14,6 +14,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentReadingToolsBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.manager.EvernoteManager;
 import com.onyx.jdread.setting.adapter.DeviceInfoAdapter;
@@ -25,6 +26,7 @@ import com.onyx.jdread.setting.event.TranslationToolsEvent;
 import com.onyx.jdread.setting.model.ReadingToolsModel;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.view.AssociatedEmailDialog;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -93,6 +95,10 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
 
     @Subscribe
     public void onAssociatedNotesToolsEvent(AssociatedNotesToolsEvent event) {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+            return;
+        }
         EvernoteManager.getEvernoteSession(JDReadApplication.getInstance()).authenticate(getActivity());
     }
 

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemAccountBinding;
+import com.onyx.jdread.main.common.ResManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -30,12 +31,12 @@ public class PersonalAccountAdapter extends PageRecyclerView.PageAdapter impleme
 
     @Override
     public int getRowCount() {
-        return 5;
+        return ResManager.getInteger(R.integer.personal_account_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return 1;
+        return ResManager.getInteger(R.integer.personal_account_adapter_col);
     }
 
     @Override

@@ -34,4 +34,13 @@ public class LibrarySelectHelper {
         }
         return this.librarySelectedModel;
     }
+
+    public void clearSelectedData() {
+        for (LibrarySelectedModel selectedModel : childLibrarySelectedMap.values()) {
+            selectedModel.getSelectedList().clear();
+            selectedModel.setSelectedAll(false);
+        }
+        librarySelectedModel.setSelectedAll(false);
+        librarySelectedModel.getSelectedList().clear();
+    }
 }

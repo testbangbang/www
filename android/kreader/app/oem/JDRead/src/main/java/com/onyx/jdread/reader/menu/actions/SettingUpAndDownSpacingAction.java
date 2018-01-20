@@ -20,7 +20,7 @@ public class SettingUpAndDownSpacingAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         ReaderTextStyle.PageMargin pageMargin = style.getPageMargin();
 
         ReaderTextStyle.Percentage topMargin = pageMargin.getTopMargin();
