@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
@@ -159,7 +160,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupLineationClickEvent(PopupLineationClickEvent event){
-        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Lineation");
+        new AddAnnotationAction().execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
