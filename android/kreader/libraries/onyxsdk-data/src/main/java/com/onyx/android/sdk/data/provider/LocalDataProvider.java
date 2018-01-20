@@ -219,7 +219,7 @@ public class LocalDataProvider implements DataProviderBase {
     @Override
     public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
         Operator condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
-        return new Select().from(Library.class).where(condition).queryList();
+        return new Select().from(Library.class).where(condition).offset(queryArgs.offset).limit(queryArgs.limit).queryList();
     }
 
     @Override
@@ -384,5 +384,10 @@ public class LocalDataProvider implements DataProviderBase {
     @Override
     public void clearSearchHistory() {
         new Delete().from(SearchHistory.class).query();
+    }
+
+    @Override
+    public long libraryCount(String parentUniqueId) {
+        return new Select(Method.count()).from(Library.class).where(Library_Table.parentUniqueId.eq(parentUniqueId)).count();
     }
 }

@@ -82,7 +82,7 @@
 
         <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
             android:id="@+id/content_pageView"
-            items="@{libraryModel.visibleItems}"
+            items="@{libraryModel.items}"
             android:layout_width="match_parent"
             android:layout_height="@dimen/library_content_page_view_height" />
 
