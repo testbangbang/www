@@ -75,7 +75,9 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
             List<ShapeModel> shapeList = ShapeDataProvider.loadShapeList(getContext(), question.uniqueId);
             if (!CollectionUtils.isNullOrEmpty(shapeList)) {
                 for (ShapeModel shapeModel : shapeList) {
-                    shapeModel.setState(ShapeState.REVIEWED);
+                    if (shapeModel.getState() == ShapeState.NORMAL) {
+                        shapeModel.setState(ShapeState.REVIEWED);
+                    }
                 }
                 ShapeDataProvider.saveShapeList(getContext(), shapeList);
             }
