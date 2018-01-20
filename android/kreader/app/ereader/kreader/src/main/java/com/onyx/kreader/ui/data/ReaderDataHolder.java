@@ -701,7 +701,7 @@ public class ReaderDataHolder {
         new CloseNoteMenuAction().execute(this, null);
     }
 
-    private void closeTts() {
+    public void closeTts() {
         if (ttsManager != null) {
             ttsManager.shutdown();
             ttsManager = null;

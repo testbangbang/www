@@ -108,6 +108,11 @@ public class TtsHandler extends BaseHandler {
         readerDataHolder.submitRenderRequest(new RenderRequest());
     }
 
+    public void ttsShutdown() {
+        ttsStop();
+        readerDataHolder.closeTts();
+    }
+
     public void setInitialPosition(String initialPosition) {
         this.initialPosition = initialPosition;
     }
