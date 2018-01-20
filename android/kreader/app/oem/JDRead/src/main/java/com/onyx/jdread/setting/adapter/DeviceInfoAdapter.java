@@ -10,6 +10,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DeviceInfoItemBinding;
 import com.onyx.jdread.main.common.PageAdapter;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.model.DeviceInformationModel;
 
 import java.util.List;
@@ -19,8 +20,8 @@ import java.util.List;
  */
 
 public class DeviceInfoAdapter extends PageAdapter<DeviceInfoAdapter.ViewHolder, DeviceInformationModel.ItemModel, DeviceInformationModel.ItemModel> {
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.device_info_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.device_info_col);
+    private int row = ResManager.getInteger(R.integer.device_info_row);
+    private int col = ResManager.getInteger(R.integer.device_info_col);
 
     public void setRowAndCol(int row, int col) {
         this.row = row;

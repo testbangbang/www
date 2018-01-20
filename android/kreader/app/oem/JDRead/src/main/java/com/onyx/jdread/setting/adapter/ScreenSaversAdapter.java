@@ -10,6 +10,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ScreenSaversItemBinding;
 import com.onyx.jdread.main.common.PageAdapter;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.model.ScreenSaversModel;
 
 import java.util.List;
@@ -21,12 +22,12 @@ import java.util.List;
 public class ScreenSaversAdapter extends PageAdapter<ScreenSaversAdapter.ViewHolder, ScreenSaversModel.ItemModel, ScreenSaversModel.ItemModel> {
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.screen_savers_row);
+        return ResManager.getInteger(R.integer.screen_savers_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.screen_savers_col);
+        return ResManager.getInteger(R.integer.screen_savers_col);
     }
 
     @Override
