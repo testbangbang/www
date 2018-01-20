@@ -22,7 +22,6 @@ public class SubjectViewModel extends BaseObservable {
     private BookModelConfigResultBean.DataBean.ModulesBean modelBean;
     private BookModelConfigResultBean.DataBean.ModulesBean modelBeanNext;
     private boolean showNextTitle;
-    private int index;
 
     public BookModelConfigResultBean.DataBean getDataBean() {
         return dataBean;
@@ -64,7 +63,7 @@ public class SubjectViewModel extends BaseObservable {
         return modelBeanNext;
     }
 
-    private void setModelBeanNext(BookModelConfigResultBean.DataBean.ModulesBean modelBeanNext) {
+    public void setModelBeanNext(BookModelConfigResultBean.DataBean.ModulesBean modelBeanNext) {
         this.modelBeanNext = modelBeanNext;
         notifyChange();
     }
@@ -79,10 +78,10 @@ public class SubjectViewModel extends BaseObservable {
     }
 
     public void onViewAllClick() {
-        getEventBus().post(new ViewAllClickEvent(modelBean.id, modelBean.f_type, modelBean.show_name));
+        getEventBus().post(new ViewAllClickEvent(modelBean));
     }
 
     public void onNextViewAllClick() {
-        getEventBus().post(new ViewAllClickEvent(modelBeanNext.id, modelBeanNext.f_type, modelBeanNext.show_name));
+        getEventBus().post(new ViewAllClickEvent(modelBeanNext));
     }
 }

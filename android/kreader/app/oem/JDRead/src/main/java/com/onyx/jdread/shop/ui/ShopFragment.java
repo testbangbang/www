@@ -11,30 +11,38 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookShopBinding;
 import com.onyx.jdread.databinding.FragmentBookShopOneBinding;
 import com.onyx.jdread.databinding.FragmentBookShopThreeBinding;
 import com.onyx.jdread.databinding.FragmentBookShopTwoBinding;
+import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryViewClick;
+import com.onyx.jdread.shop.event.EnjoyReadViewClick;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
+import com.onyx.jdread.shop.event.NewBookViewClick;
 import com.onyx.jdread.shop.event.RankViewClick;
+import com.onyx.jdread.shop.event.SaleViewClick;
+import com.onyx.jdread.shop.event.SearchViewClickEvent;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
 import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -256,21 +264,67 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRankViewClick(RankViewClick event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookRankFragment.class.getName());
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEnjoyReadViewClick(EnjoyReadViewClick event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookVIPReadFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSaleViewClick(SaleViewClick event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookSaleFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNewBookViewClick(NewBookViewClick event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookNewBooksFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryViewClick(CategoryViewClick event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSearchViewClickEvent(SearchViewClickEvent event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(SearchBookFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
@@ -278,21 +332,34 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShopMainViewAllBookEvent(ShopMainViewAllBookEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
-        PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, event.subjectName);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, event.modelId);
-        PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, event.modelType);
-        if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
+        if (modulesBean != null) {
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
+            if (getViewEventCallBack() != null) {
+                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+            }
         }
     }
 
@@ -304,5 +371,13 @@ public class ShopFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
+    }
+
+    private boolean checkWfiDisConnected() {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            return true;
+        }
+        return false;
     }
 }

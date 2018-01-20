@@ -35,7 +35,7 @@ public class RxRequestCategoryList extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
+        ReadContentService getCommonService = CloudApiContext.getServiceNoCookie(CloudApiContext.getJDBooxBaseUrl());
         Call<CategoryListResultBean> call = getCall(getCommonService);
         categoryListResultBean = done(call);
         checkQuestResult();

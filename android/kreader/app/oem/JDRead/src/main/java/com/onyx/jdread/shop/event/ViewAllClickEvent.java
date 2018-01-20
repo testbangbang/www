@@ -1,16 +1,16 @@
 package com.onyx.jdread.shop.event;
 
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
+
 /**
  * Created by jackdeng on 2018/1/9.
  */
 
 public class ViewAllClickEvent {
-    public int modelId;
-    public int modelType;
-    public String subjectName;
-    public ViewAllClickEvent(int modelId, int modelType, String subjectName) {
-        this.modelId = modelId;
-        this.modelType = modelType;
-        this.subjectName = subjectName;
+
+    public BookModelConfigResultBean.DataBean.ModulesBean modulesBean;
+
+    public ViewAllClickEvent(BookModelConfigResultBean.DataBean.ModulesBean modulesBean) {
+        this.modulesBean = modulesBean;
     }
 }

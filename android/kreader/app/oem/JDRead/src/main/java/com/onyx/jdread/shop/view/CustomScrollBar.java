@@ -47,6 +47,7 @@ public class CustomScrollBar extends View {
 
     public void setTotal(int total) {
         this.total = total;
+        invalidate();
     }
 
     public void setFocusPosition(int focusPosition) {

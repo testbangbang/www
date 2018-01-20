@@ -16,7 +16,6 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDownloadUrlResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookModuleListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
@@ -56,19 +55,9 @@ public interface ReadContentService {
                                @Query(AppBaseInfo.BODY_KEY) String body);
 
     @POST("client.action")
-    Call<BookCommentsResultBean> getBookCommentsList(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                     @Query(AppBaseInfo.BODY_KEY) String body,
-                                                     @QueryMap Map<String, String> map);
-
-    @POST("client.action")
     Call<BookDownloadUrlResultBean> getBookDownloadUrl(@QueryMap Map<String, String> map,
                                                        @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
                                                        @Query(AppBaseInfo.BODY_KEY) String body);
-
-    @POST("client.action")
-    Call<BookModuleListResultBean> getBookShopModuleList(@QueryMap Map<String, String> map,
-                                                         @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                         @Query(AppBaseInfo.BODY_KEY) String body);
 
     @POST("client.action")
     Call<BoughtBookResultBean> getBoughtBook(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
@@ -76,8 +65,7 @@ public interface ReadContentService {
                                              @QueryMap Map<String, String> map);
 
     @GET("search")
-    Call<BookModelBooksResultBean> getCategoryLevel2BookList(@QueryMap Map<String, String> baseInfoMap,
-                                                             @QueryMap Map<String, String> queryMap);
+    Call<BookModelBooksResultBean> getSearchBooks(@QueryMap Map<String, String> baseInfoMap);
 
     @GET("category")
     Call<CategoryListResultBean> getCategoryList(@QueryMap Map<String, String> baseInfoMap);
@@ -102,11 +90,6 @@ public interface ReadContentService {
                                                @QueryMap Map<String, String> map);
 
     @POST("client.action")
-    Call<RecommendListResultBean> getRecommendList(@QueryMap Map<String, String> map,
-                                                   @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                   @Query(AppBaseInfo.BODY_KEY) String body);
-
-    @POST("client.action")
     Call<ShoppingCartBookIdsBean> getCartBookIds(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
                                                  @Query(AppBaseInfo.BODY_KEY) String body,
                                                  @QueryMap Map<String, String> map);
@@ -129,8 +112,7 @@ public interface ReadContentService {
     @GET("module/{f_type}/{module_id}")
     Call<BookModelBooksResultBean> getBookShopModule(@Path("f_type") int fType,
                                                      @Path("module_id") int moduleId,
-                                                     @QueryMap Map<String, String> baseInfoMap,
-                                                     @QueryMap Map<String, String> queryMap);
+                                                     @QueryMap Map<String, String> baseInfoMap);
 
     @GET("channel/{cid}")
     Call<BookModelConfigResultBean> getShopMainConfig(@Path("cid") int cid,
@@ -145,6 +127,19 @@ public interface ReadContentService {
 
     @GET("search/key_word")
     Call<SearchHotWord> getSearchHot(@Query(JDAppBaseInfo.APP_KEY) String app);
+
+    @GET("ebook/{bookId}/comment")
+    Call<BookCommentsResultBean> getBookCommentsList(@Path("bookId") long bookId,
+                                                     @QueryMap Map<String, String> baseInfoMap);
+
+    @GET("ebook/{bookId}/recommend")
+    Call<RecommendListResultBean> getRecommendList(@Path("bookId") long bookId,
+                                                   @QueryMap Map<String, String> baseInfoMap);
+
+    @GET("rank/{module_type}/{type}")
+    Call<RecommendListResultBean> getBookRankList(@Path("module_type") int moduleType,
+                                                     @Path("type") String type,
+                                                     @QueryMap Map<String, String> baseInfoMap);
 
     @POST(CloudApiContext.GotoOrder.CART)
     Call<UpdateCartBean> updateCart(@QueryMap Map<String, String> map,
