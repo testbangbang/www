@@ -31,7 +31,7 @@ public class InitReaderViewFunctionBarAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         functionBarModel.itemModels.clear();
         ReaderFunctionBarItem catalog = new ReaderFunctionBarItem(ViewConfig.FunctionModule.LIBRARY,LibraryFragment.class.getName(),
                 readerDataHolder.getAppContext().getString(R.string.reader_menu_catalog), R.mipmap.ic_read_list,new ReaderFunctionItemCatalogEvent());

@@ -4,15 +4,13 @@ import android.content.Context;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.api.ReaderDocument;
-import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
-import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
+import com.onyx.jdread.reader.model.SelectMenuModel;
 
 /**
  * Created by huxiaomao on 2017/12/20.
@@ -31,10 +29,19 @@ public class ReaderDataHolder {
     private HandlerManger handlerManger;
     private Context appContext;
     private ReaderTouchHelper readerTouchHelper;
+    private SelectMenuModel selectMenuModel;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
         setAppContext(appContext);
+    }
+
+    public SelectMenuModel getSelectMenuModel() {
+        return selectMenuModel;
+    }
+
+    public void setSelectMenuModel(SelectMenuModel selectMenuModel) {
+        this.selectMenuModel = selectMenuModel;
     }
 
     public ReaderTouchHelper getReaderTouchHelper() {
@@ -124,5 +131,9 @@ public class ReaderDataHolder {
 
     public void setAppContext(Context appContext) {
         this.appContext = appContext;
+    }
+
+    public String getCurrentPagePosition() {
+        return getReaderViewInfo().getFirstVisiblePage().getPositionSafely();
     }
 }

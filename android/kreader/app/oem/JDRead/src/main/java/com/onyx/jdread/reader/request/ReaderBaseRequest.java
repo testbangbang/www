@@ -18,6 +18,7 @@ public abstract class ReaderBaseRequest extends RxRequest {
     static final ExecutorService executorService = new ExecutorContext().getSingleThreadPool();
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
+    public boolean isSuccess = true;
 
     public ReaderViewInfo createReaderViewInfo() {
         readerViewInfo = new ReaderViewInfo();

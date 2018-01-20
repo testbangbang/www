@@ -22,7 +22,7 @@ public class HighlightCursor {
 
     public static final int BEGIN_CURSOR_INDEX = 0;
     public static final int END_CURSOR_INDEX   = 1;
-    public static final int HIT_TEST_SCALE_VALUE = 1;
+    public static final int HIT_TEST_SCALE_VALUE = 2;
 
     private Bitmap startCursorBitmap;
     private Bitmap endCursorBitmap;
@@ -36,6 +36,7 @@ public class HighlightCursor {
     static private boolean debugHitTest = false;
     static private boolean debugHotRect = false;
     private boolean enable = false;
+    private boolean isShow = true;
 
     public HighlightCursor(final Context context, int startResId, int endResId, Type t) {
         super();
@@ -148,5 +149,13 @@ public class HighlightCursor {
 
     public boolean isEnable() {
         return enable;
+    }
+
+    public void isShow(boolean isShow) {
+        this.isShow = isShow;
+    }
+
+    public boolean getShowState() {
+        return isShow;
     }
 }

@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.actions;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 /**
@@ -7,7 +8,9 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
  */
 
 public class CloseDocumentAction extends BaseReaderAction {
+
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+
     }
 }

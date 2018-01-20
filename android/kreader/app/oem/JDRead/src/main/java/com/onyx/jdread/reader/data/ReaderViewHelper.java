@@ -61,10 +61,14 @@ public class ReaderViewHelper {
     }
 
     public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
+        updatePageView(reader, readerViewInfo, null);
+    }
+
+    public void updatePageView(Reader reader, ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
         try {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, readerViewInfo);
-            draw(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo, readerViewInfo, null);
+            draw(reader, context.renderingBitmap.getBitmap(), readerViewInfo, readerSelectionManager);
 
             reader.getReaderHelper().saveToCache(context.renderingBitmap);
         } catch (Exception e) {
@@ -72,7 +76,7 @@ public class ReaderViewHelper {
         }
     }
 
-    public void draw(Reader reader, Bitmap bitmap, final ReaderUserDataInfo readerUserDataInfo, final ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
+    public void draw(Reader reader, Bitmap bitmap, final ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
         if (readPageView == null) {
             return;
         }
@@ -83,12 +87,13 @@ public class ReaderViewHelper {
         Canvas canvas = readPageView.getHolder().lockCanvas();
         canvas.drawColor(Color.WHITE);
         paint.setColor(Color.BLACK);
+
         canvas.drawBitmap(bitmap, 0, 0, paint);
-        drawHighlightResult(null, canvas, paint, reader, readerUserDataInfo, readerViewInfo, readerSelectionManager);
+        drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
         readPageView.getHolder().unlockCanvasAndPost(canvas);
     }
 
-    public void showTouchFunctionRegion(Canvas canvas,Context context) {
+    public void showTouchFunctionRegion(Canvas canvas, Context context) {
         Paint.Style oldStyle = paint.getStyle();
         paint.setStyle(Paint.Style.STROKE);
         int oldColor = paint.getColor();
@@ -109,17 +114,15 @@ public class ReaderViewHelper {
         paint.setStyle(oldStyle);
     }
 
-    private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final Reader reader,
-                                     final ReaderUserDataInfo readerUserDataInfo, final ReaderViewInfo readerViewInfo,
+    private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final Reader reader, final ReaderViewInfo readerViewInfo,
                                      ReaderSelectionManager readerSelectionManager) {
-        if (readerViewInfo != null && readerUserDataInfo != null && readerUserDataInfo.hasHighlightResult()) {
+        if(readerSelectionManager != null) {
             String pagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
-            readerSelectionManager.update(pagePosition, reader.getReaderHelper().getContext());
-
-            readerSelectionManager.updateDisplayPosition(pagePosition);
-            readerSelectionManager.setEnable(pagePosition, true);
-            drawReaderSelection(context, canvas, paint, readerViewInfo, readerUserDataInfo.getHighlightResult());
-            drawSelectionCursor(canvas, paint, readerSelectionManager,pagePosition);
+            ReaderSelection readerSelection = readerSelectionManager.getCurrentSelection(pagePosition);
+            if (readerViewInfo != null && readerSelection != null) {
+                drawReaderSelection(context, canvas, paint, readerViewInfo, readerSelection);
+                drawSelectionCursor(canvas, paint, readerSelectionManager, pagePosition);
+            }
         }
     }
 
@@ -130,7 +133,7 @@ public class ReaderViewHelper {
         }
     }
 
-    private void drawSelectionCursor(Canvas canvas, Paint paint, ReaderSelectionManager selectionManager,String pagePosition) {
+    private void drawSelectionCursor(Canvas canvas, Paint paint, ReaderSelectionManager selectionManager, String pagePosition) {
         selectionManager.draw(pagePosition, canvas, paint);
     }
 

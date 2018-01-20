@@ -74,7 +74,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     private void initData() {
         initTitleBar();
         binding.setReaderBookInfoModel(new ReaderBookInfoModel());
-        new GetDocumentInfoAction().execute(readerBookInfoDialogHandler.getReaderDataHolder());
+        new GetDocumentInfoAction().execute(readerBookInfoDialogHandler.getReaderDataHolder(),null);
     }
 
     private void initView() {
