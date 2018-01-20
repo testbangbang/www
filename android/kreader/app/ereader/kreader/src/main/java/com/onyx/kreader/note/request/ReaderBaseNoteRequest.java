@@ -295,8 +295,17 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 canvas.drawRect(dirty, paint);
 
                 if (docBitmap != null) {
-                    canvas.drawBitmap(docBitmap.getBitmap(), RectUtils.toRect(dirty),
-                            RectUtils.toRect(dirty), null);
+                    PageInfo docPage = null;
+                    for (PageInfo p : getVisiblePages()) {
+                        if (!parent.isSidePage(p)) {
+                            docPage = p;
+                            break;
+                        }
+                    }
+                    if (docPage != null && RectF.intersects(dirty, docPage.getVisibleRect())) {
+                        canvas.drawBitmap(docBitmap.getBitmap(), RectUtils.toRect(dirty),
+                                RectUtils.toRect(dirty), null);
+                    }
                 }
                 drawBackground(canvas, paint, parent.getNoteDocument().getBackground(), dirty);
             }
