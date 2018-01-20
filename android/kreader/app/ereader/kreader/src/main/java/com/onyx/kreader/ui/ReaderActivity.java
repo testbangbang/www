@@ -1195,11 +1195,12 @@ public class ReaderActivity extends OnyxBaseActivity {
             onBackPressed();
         }
 
+        getReaderDataHolder().getEventBus().unregister(this);
+
         final CloseActionChain closeAction = new CloseActionChain();
         closeAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                getReaderDataHolder().getEventBus().unregister(this);
                 releaseStartupWakeLock();
                 finish();
                 postFinish();
