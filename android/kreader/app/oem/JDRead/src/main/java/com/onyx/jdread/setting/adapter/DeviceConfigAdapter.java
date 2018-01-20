@@ -13,6 +13,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemDeviceConfigBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.event.DeviceConfigEvent;
 import com.onyx.jdread.setting.model.DeviceConfigData;
 import com.onyx.jdread.util.Utils;
@@ -39,12 +40,12 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.device_config_adapter_row);
+        return ResManager.getInteger(R.integer.device_config_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.device_config_adapter_col);
+        return ResManager.getInteger(R.integer.device_config_adapter_col);
     }
 
     @Override

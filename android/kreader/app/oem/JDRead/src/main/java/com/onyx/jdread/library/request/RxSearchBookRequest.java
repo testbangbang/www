@@ -29,7 +29,6 @@ import io.reactivex.Scheduler;
 public class RxSearchBookRequest extends RxBaseDBRequest {
 
     private boolean loadFromCache = true;
-    private boolean loadMetadata = true;
     private QueryArgs queryArgs;
     private Map<String, CloseableReference<Bitmap>> thumbnailMap = new HashMap<>();
 
@@ -43,11 +42,10 @@ public class RxSearchBookRequest extends RxBaseDBRequest {
         this.queryArgs = queryArgs;
     }
 
-    public RxSearchBookRequest(DataManager dataManager, QueryArgs queryArgs, EventBus eventBus, boolean loadMetadata) {
+    public RxSearchBookRequest(DataManager dataManager, QueryArgs queryArgs, EventBus eventBus) {
         super(dataManager);
         this.eventBus = eventBus;
         this.queryArgs = queryArgs;
-        this.loadMetadata = loadMetadata;
     }
 
     @Override
@@ -63,13 +61,11 @@ public class RxSearchBookRequest extends RxBaseDBRequest {
     public RxSearchBookRequest call() throws Exception {
         bookList.clear();
 
-        if (loadMetadata) {
-            List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getAppContext(), getDataManager(),
-                    queryArgs, loadFromCache);
-            if (!CollectionUtils.isNullOrEmpty(metadataList)) {
-                bookList.addAll(metadataList);
-                loadBitmaps(getAppContext(), getDataManager());
-            }
+        List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getAppContext(), getDataManager(),
+                queryArgs, loadFromCache);
+        if (!CollectionUtils.isNullOrEmpty(metadataList)) {
+            bookList.addAll(metadataList);
+            loadBitmaps(getAppContext(), getDataManager());
         }
 
         models.clear();

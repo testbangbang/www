@@ -10,6 +10,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemSettingBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.model.SettingItemData;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,12 +33,12 @@ public class SettingAdapter extends PageRecyclerView.PageAdapter implements View
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.setting_adapter_row);
+        return ResManager.getInteger(R.integer.setting_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.setting_adapter_col);
+        return ResManager.getInteger(R.integer.setting_adapter_col);
     }
 
     @Override

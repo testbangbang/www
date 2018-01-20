@@ -1,8 +1,8 @@
 package com.onyx.jdread.setting.model;
 
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.setting.utils.UpdateUtil;
 
 /**
@@ -23,11 +23,11 @@ public class SettingUpdateModel {
 
     public void saveDownloadVersion(String version) {
         if (StringUtils.isNotBlank(version)) {
-            PreferenceManager.setStringValue(JDReadApplication.getInstance(), DOWNLOAD_VERSION, version);
+            JDPreferenceManager.setStringValue(DOWNLOAD_VERSION, version);
         }
     }
 
     public String getDownloadVersion() {
-        return PreferenceManager.getStringValue(JDReadApplication.getInstance(), DOWNLOAD_VERSION, UpdateUtil.getAPPVersionName(JDReadApplication.getInstance()));
+        return JDPreferenceManager.getStringValue(DOWNLOAD_VERSION, UpdateUtil.getAPPVersionName(JDReadApplication.getInstance()));
     }
 }

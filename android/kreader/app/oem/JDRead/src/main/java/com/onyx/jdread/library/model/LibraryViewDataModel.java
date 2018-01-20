@@ -43,7 +43,6 @@ import java.util.Observable;
 
 public class LibraryViewDataModel extends Observable {
     public final ObservableList<DataModel> items = new ObservableArrayList<>();
-    public final ObservableList<DataModel> visibleItems = new ObservableArrayList<>();
     public final ObservableField<String> title = new ObservableField<>();
     public final ObservableField<String> selectAllBtnText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.select_all));
     public final ObservableInt count = new ObservableInt();
@@ -83,7 +82,6 @@ public class LibraryViewDataModel extends Observable {
         queryArgs.order = sortOrder;
     }
 
-
     public void setCurrentSortOrder(SortOrder sortOrder) {
         this.queryArgs.order = sortOrder;
     }
@@ -98,14 +96,7 @@ public class LibraryViewDataModel extends Observable {
 
     public int getOffset(int currentPage) {
         int itemsPerPage = queryPagination.itemsPerPage();
-        int offset = currentPage * itemsPerPage - libraryCount.get();
-        if (offset < 0) {
-            if (currentPage <= libraryCount.get() / itemsPerPage) {
-                offset = 0;
-            } else {
-                offset = itemsPerPage + offset;
-            }
-        }
+        int offset = currentPage * itemsPerPage;
         return offset;
     }
 
@@ -190,29 +181,15 @@ public class LibraryViewDataModel extends Observable {
         this.queryArgs = args;
     }
 
-    public void getPageLibraryDataModel() {
-        visibleItems.clear();
-        int currentPage = queryPagination.getCurrentPage();
-        int itemsPerPage = queryPagination.itemsPerPage();
-        if (currentPage > libraryCount.get() / itemsPerPage) {
-            for (int i = libraryCount.get(); i < Math.min((currentPage + 1) * itemsPerPage, items.size()); i++) {
-                DataModel dataModel = items.get(i);
-                dataModel.id.set(currentPage * itemsPerPage + visibleItems.size());
-                if (dataModel.type.get() == ModelType.TYPE_LIBRARY) {
-                    dataModel.selectedCount.set(getSelectCount(dataModel));
-                }
-                visibleItems.add(dataModel);
-            }
-        } else {
-            for (int i = currentPage * itemsPerPage; i < Math.min((currentPage + 1) * itemsPerPage, items.size()); i++) {
-                DataModel dataModel = items.get(i);
-                dataModel.id.set(currentPage * itemsPerPage + visibleItems.size());
-                if (dataModel.type.get() == ModelType.TYPE_LIBRARY) {
-                    dataModel.selectedCount.set(getSelectCount(dataModel));
-                }
-                visibleItems.add(dataModel);
+    public void setPageData(List<DataModel> pageData) {
+        items.clear();
+        for (DataModel model : pageData) {
+            if (model.type.get() == ModelType.TYPE_LIBRARY) {
+                model.selectedCount.set(getSelectCount(model));
             }
         }
+        items.addAll(pageData);
+        setSelectAllBtnText();
     }
 
     public List<DataModel> getListSelected() {
@@ -336,7 +313,7 @@ public class LibraryViewDataModel extends Observable {
         selectAllBtnText.set(isSelectAll() ? JDReadApplication.getInstance().getString(R.string.cancel) : JDReadApplication.getInstance().getString(R.string.select_all));
     }
 
-    public boolean isSelectAll() {
+    private boolean isSelectAll() {
         return (getLibrarySelectedModel().isSelectedAll() && getListSelected().size() == 0) || (!getLibrarySelectedModel().isSelectedAll() && getListSelected().size() == count.get());
     }
 
@@ -345,11 +322,20 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public void clearSelectedData() {
-        getSelectHelper().getChildLibrarySelectedMap().clear();
+        selectHelper.clearSelectedData();
+        clearCurrentLibrarySelectedData();
+    }
+
+    private void clearCurrentLibrarySelectedData() {
         getLibrarySelectedModel().setSelectedAll(false);
         setSelectAllBtnText();
         clearItemSelectedList();
         checkedOrCancelAll(false);
+    }
+
+    public void quitMultiSelectionMode() {
+        selectHelper.getChildLibrarySelectedMap().clear();
+        clearCurrentLibrarySelectedData();
     }
 
     public void delete() {

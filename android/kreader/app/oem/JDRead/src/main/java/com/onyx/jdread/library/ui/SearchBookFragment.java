@@ -4,13 +4,20 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.data.event.ItemClickEvent;
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentSearchBookBinding;
 import com.onyx.jdread.library.action.ClearSearchHistoryAction;
@@ -24,14 +31,22 @@ import com.onyx.jdread.library.event.ClearSearchHistoryEvent;
 import com.onyx.jdread.library.event.SearchBookKeyEvent;
 import com.onyx.jdread.library.event.SubmitSearchBookEvent;
 import com.onyx.jdread.library.model.LibraryDataBundle;
+import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.model.SearchBookModel;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.reader.common.DocumentInfo;
+import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.shop.action.SearchHotWordAction;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.ui.BookDetailFragment;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.io.File;
 
 /**
  * Created by hehai on 18-1-17.
@@ -44,13 +59,15 @@ public class SearchBookFragment extends BaseFragment {
     private HotSearchAdapter hotSearchAdapter;
     private SearchHintAdapter searchHintAdapter;
     private SearchResultAdapter searchResultAdapter;
+    private PageIndicatorModel pageIndicatorModel;
+    private GPaginator pagination;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentSearchBookBinding.inflate(inflater, container, false);
         initView();
-        initData(getBundle());
+        initData();
         initEvent();
         return binding.getRoot();
     }
@@ -68,61 +85,108 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchResultRecycler.addItemDecoration(new DashLineItemDivider());
         searchResultAdapter = new SearchResultAdapter();
         binding.searchResultRecycler.setAdapter(searchResultAdapter);
+        initPageIndicator();
+    }
+
+    private void initPageIndicator() {
+        pagination = binding.searchResultRecycler.getPaginator();
+        pageIndicatorModel = new PageIndicatorModel(pagination, new PageIndicatorModel.PageChangedListener() {
+            @Override
+            public void prev() {
+
+            }
+
+            @Override
+            public void next() {
+
+            }
+
+            @Override
+            public void gotoPage(int currentPage) {
+
+            }
+
+            @Override
+            public void onRefresh() {
+
+            }
+        });
+        binding.setIndicatorModel(pageIndicatorModel);
     }
 
     private void initEvent() {
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchBookModel.isInputting.set(false);
-                searchBookModel.searchKey.set(query);
-                checkView();
-                SearchBookAction searchBookAction = new SearchBookAction(true);
-                searchBookAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
-                    @Override
-                    public void onNext(Object o) {
-                        searchResultAdapter.notifyDataSetChanged();
-                        loadSearchHistory();
-                    }
-                });
+                queryTextSubmit(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchBookModel.isInputting.set(StringUtils.isNotBlank(newText));
-                searchBookModel.searchKey.set(newText);
-                checkView();
-                SearchBookAction searchBookAction = new SearchBookAction(false);
-                searchBookAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
-                    @Override
-                    public void onNext(Object o) {
-                        searchHintAdapter.notifyDataSetChanged();
-                    }
-                });
+                queryTextChange(newText);
                 return false;
             }
         });
+
+        binding.searchResultRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPageChange(int position, int itemCount, int pageSize) {
+                updatePageIndicator();
+            }
+        });
+    }
+
+    private void queryTextChange(String newText) {
+        searchBookModel.isInputting.set(StringUtils.isNotBlank(newText));
+        searchBookModel.searchKey.set(newText);
+        checkView();
+        SearchBookAction searchBookAction = new SearchBookAction(false);
+        searchBookAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                searchHintAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void queryTextSubmit(String query) {
+        Utils.hideSoftWindow(getActivity());
+        searchBookModel.isInputting.set(false);
+        searchBookModel.searchKey.set(query);
+        checkView();
+        SearchBookAction searchBookAction = new SearchBookAction(true);
+        searchBookAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                searchResultAdapter.notifyDataSetChanged();
+                updatePageIndicator();
+                loadSearchHistory();
+            }
+        });
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = searchBookModel.searchResult.size();
+        pagination.resize(searchResultAdapter.getRowCount(), searchResultAdapter.getColumnCount(), totalCount);
+        pageIndicatorModel.updateCurrentPage(totalCount);
+        pageIndicatorModel.setTotalFormat(getString(R.string.total));
+        pageIndicatorModel.updateTotal(totalCount);
     }
 
     private void checkView() {
         binding.searchHotHistoryLayout.setVisibility(StringUtils.isNullOrEmpty(searchBookModel.searchKey.get()) ? View.VISIBLE : View.GONE);
         binding.searchHintLayout.setVisibility(searchBookModel.showHintList() ? View.VISIBLE : View.GONE);
         binding.searchResultLayout.setVisibility(searchBookModel.showResult() ? View.VISIBLE : View.GONE);
+        updatePageIndicator();
     }
 
-    private void initData(Bundle savedInstanceState) {
+    private void initData() {
         searchBookModel = LibraryDataBundle.getInstance().getSearchBookModel();
         binding.setSearchModel(searchBookModel);
-        if (savedInstanceState != null) {
-            String searchKey = savedInstanceState.getString(getString(R.string.search_name_key));
-            if (StringUtils.isNotBlank(searchKey)) {
-                binding.searchView.setQuery(searchKey, true);
-            }
-        }
-        checkView();
         loadHotSearchKey();
         loadSearchHistory();
+        checkView();
     }
 
     private void loadSearchHistory() {
@@ -149,12 +213,19 @@ public class SearchBookFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         getEventBus().unregister(this);
+        binding.searchView.setQuery("",false);
     }
 
     @Override
     public void onStart() {
         super.onStart();
         getEventBus().register(this);
+        if (getBundle() != null) {
+            String searchKey = getBundle().getString(getString(R.string.search_name_key));
+            if (StringUtils.isNotBlank(searchKey)) {
+                binding.searchView.setQuery(searchKey, true);
+            }
+        }
     }
 
     public EventBus getEventBus() {
@@ -188,5 +259,36 @@ public class SearchBookFragment extends BaseFragment {
 
             }
         });
+    }
+
+    @Subscribe
+    public void onItemClickEvent(ItemClickEvent event) {
+        DataModel model = event.getModel();
+        if (StringUtils.isNullOrEmpty(model.absolutePath.get())) {
+            gotoBookDetail(model);
+        } else {
+            openBook(model);
+        }
+    }
+
+    private void openBook(DataModel model) {
+        String filePath = model.absolutePath.get();
+        if (StringUtils.isNullOrEmpty(filePath)) {
+            return;
+        }
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return;
+        }
+        DocumentInfo documentInfo = new DocumentInfo();
+        documentInfo.setBookPath(filePath);
+        OpenBookHelper.openBook(getContext(), documentInfo);
+    }
+
+    private void gotoBookDetail(DataModel model) {
+        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, model.cloudId.get());
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+        }
     }
 }

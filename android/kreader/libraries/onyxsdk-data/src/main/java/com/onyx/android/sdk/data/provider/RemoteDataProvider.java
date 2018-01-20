@@ -484,4 +484,10 @@ public class RemoteDataProvider implements DataProviderBase {
     public void clearSearchHistory() {
 
     }
+
+    @Override
+    public long libraryCount(String parentUniqueId) {
+        Operator condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentUniqueId);
+        return ContentUtils.queryList(OnyxLibraryProvider.CONTENT_URI, Library.class, OperatorGroup.clause().and(condition), null).size();
+    }
 }

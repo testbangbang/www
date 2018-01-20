@@ -404,4 +404,5 @@
     <dimen name="reader_popup_selection_divider_height">20dp</dimen>
     <dimen name="reader_dictionary_window_height">220dp</dimen>
     <dimen name="reader_popup_select_menu_height">50dp</dimen>
+    <dimen name="search_layout_margin_top">10dp</dimen>
 </resources>

@@ -12,7 +12,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -20,6 +19,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.SystemUpdateBinding;
 import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.action.CheckApkUpdateAction;
@@ -255,7 +255,7 @@ public class SystemUpdateFragment extends BaseFragment {
 
             @Override
             public void onComplete() {
-                PreferenceManager.setIntValue(JDReadApplication.getInstance(), UpdateUtil.DOWNLOAD_UPDATE_CODE, UpdateUtil.UPDATE_CODE);
+                JDPreferenceManager.setIntValue(UpdateUtil.DOWNLOAD_UPDATE_CODE, UpdateUtil.UPDATE_CODE);
             }
         });
     }

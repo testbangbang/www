@@ -12,6 +12,7 @@ import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 
 import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 
 import java.util.Observable;
@@ -120,5 +121,9 @@ public class SystemBarModel extends Observable {
     public void unRegisterReceiver(Context context){
         context.unregisterReceiver(phoneBatteryReceiver);
         context.unregisterReceiver(wifiReceiver);
+    }
+
+    public void toggleWifi(){
+        NetworkUtil.toggleWiFi(JDReadApplication.getInstance());
     }
 }

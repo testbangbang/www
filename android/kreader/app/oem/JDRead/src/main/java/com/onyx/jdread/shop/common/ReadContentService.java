@@ -22,10 +22,13 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ShoppingCartBookIdsBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateCartBean;
 
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -142,4 +145,8 @@ public interface ReadContentService {
 
     @GET("search/key_word")
     Call<SearchHotWord> getSearchHot(@Query(JDAppBaseInfo.APP_KEY) String app);
+
+    @POST(CloudApiContext.GotoOrder.CART)
+    Call<UpdateCartBean> updateCart(@QueryMap Map<String, String> map,
+                                    @Body RequestBody body);
 }

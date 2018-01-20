@@ -2,9 +2,10 @@ package com.onyx.jdread.setting.model;
 
 import android.databinding.ObservableBoolean;
 
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
@@ -22,9 +23,9 @@ public class LaboratoryModel extends Observable {
     public final ObservableBoolean showBack = new ObservableBoolean();
 
     public LaboratoryModel() {
-        titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.laboratory));
+        titleBarModel.title.set(ResManager.getString(R.string.laboratory));
         titleBarModel.backEvent.set(new BackToSettingFragmentEvent());
-        boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
+        boolean show = JDPreferenceManager.getBooleanValue(R.string.show_back_tab_key, false);
         showBack.set(show);
     }
 
