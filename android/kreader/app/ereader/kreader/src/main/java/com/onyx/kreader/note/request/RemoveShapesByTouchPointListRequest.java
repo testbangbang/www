@@ -132,7 +132,16 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.WHITE);
         canvas.drawRect(rect, paint);
-        canvas.drawBitmap(docBitmap.getBitmap(), 0, 0, paint);
+        PageInfo docPage = null;
+        for (PageInfo p : getVisiblePages()) {
+            if (!noteManager.isSidePage(p)) {
+                docPage = p;
+                break;
+            }
+        }
+        if (docPage != null) {
+            canvas.drawBitmap(docBitmap.getBitmap(), docPage.getVisibleRect().left, 0, paint);
+        }
         Bitmap bitmap = noteManager.getRenderBitmap();
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, 0, 0, paint);
