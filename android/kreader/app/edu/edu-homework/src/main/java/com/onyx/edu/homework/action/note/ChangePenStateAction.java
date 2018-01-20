@@ -15,15 +15,17 @@ public class ChangePenStateAction extends BaseNoteAction {
 
     private boolean resume;
     private boolean render;
+    private boolean updateShapeData;
 
-    public ChangePenStateAction(boolean resume, boolean render) {
+    public ChangePenStateAction(boolean resume, boolean render, boolean update) {
         this.resume = resume;
         this.render = render;
+        updateShapeData = update;
     }
 
     @Override
     public void execute(NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        final ChangePenStateRequest penStateRequest = new ChangePenStateRequest(resume, render);
+        final ChangePenStateRequest penStateRequest = new ChangePenStateRequest(resume, render, updateShapeData);
         noteViewHelper.submit(getAppContext(), penStateRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

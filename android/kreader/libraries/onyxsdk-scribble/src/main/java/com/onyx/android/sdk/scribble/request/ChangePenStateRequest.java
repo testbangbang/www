@@ -10,10 +10,12 @@ public class ChangePenStateRequest extends BaseNoteRequest {
 
     private volatile boolean resume;
     private volatile boolean render;
+    private volatile boolean updateShapeData;
 
-    public ChangePenStateRequest(boolean resume, boolean render) {
+    public ChangePenStateRequest(boolean resume, boolean render, boolean update) {
         this.resume = resume;
         this.render = render;
+        updateShapeData = update;
     }
 
     @Override
@@ -21,6 +23,8 @@ public class ChangePenStateRequest extends BaseNoteRequest {
         setRender(render);
         setResumeInputProcessor(resume);
         renderCurrentPage(helper);
-        updateShapeDataInfo(helper);
+        if (updateShapeData) {
+            updateShapeDataInfo(helper);
+        }
     }
 }
