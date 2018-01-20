@@ -11,13 +11,13 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentViewAllBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
@@ -66,7 +66,7 @@ public class SearchBookListFragment extends BaseFragment {
     }
 
     private void initData() {
-        keyWord = PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_KEYWORD, "");
+        keyWord = JDPreferenceManager.getStringValue(Constants.SP_KEY_KEYWORD, "");
         getTitleBarViewModel().leftText = keyWord;
         getBooksData("", currentPage, CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES, CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES, keyWord);
     }
@@ -166,7 +166,7 @@ public class SearchBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
+        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }

@@ -11,13 +11,13 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentCategoryBookListBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
@@ -34,8 +34,8 @@ import com.onyx.jdread.shop.event.TopRightTitle2Event;
 import com.onyx.jdread.shop.event.TopRightTitle3Event;
 import com.onyx.jdread.shop.model.AllCategoryViewModel;
 import com.onyx.jdread.shop.model.BookShopViewModel;
-import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.CategoryBookListViewModel;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.TitleBarViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -82,10 +82,10 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void initData() {
-        catOneId = PreferenceManager.getIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, 0);
-        catTwoId = PreferenceManager.getIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
-        currentCatName = PreferenceManager.getStringValue(getContextJD(), Constants.SP_KEY_CATEGORY_NAME, "");
-        typeFree = PreferenceManager.getBooleanValue(getContextJD(), Constants.SP_KEY_CATEGORY_ISFREE, false);
+        catOneId = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, 0);
+        catTwoId = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
+        currentCatName = JDPreferenceManager.getStringValue(Constants.SP_KEY_CATEGORY_NAME, "");
+        typeFree = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_CATEGORY_ISFREE, false);
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
         getCategoryBookListViewModel().getTitleBarViewModel().showRightText2 = true;
         getCategoryBookListViewModel().getTitleBarViewModel().showRightText3 = true;
@@ -228,7 +228,7 @@ public class CategoryBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
+        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }

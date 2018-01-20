@@ -46,13 +46,13 @@ public class LoginHelper {
         });
     }
 
-    private void setUserInfo(String imgUrl, String userName) {
+    private static void setUserInfo(String imgUrl, String userName) {
         JDPreferenceManager.setStringValue(Constants.SP_KEY_USER_IMAGE_URL, imgUrl);
         JDPreferenceManager.setStringValue(Constants.SP_KEY_USER_NAME, userName);
     }
 
     public static String getNickName() {
-        return JDPreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NICK_NAME, "");
+        return JDPreferenceManager.getStringValue(Constants.SP_KEY_USER_NICK_NAME, "");
     }
 
     public static String getImgUrl() {
@@ -72,7 +72,7 @@ public class LoginHelper {
             userLoginDialogBuild.setView(userLoginBinding.getRoot());
             userLoginDialogBuild.setCancelable(true);
             userLoginDialog = userLoginDialogBuild.create();
-            boolean showPassword = JDPreferenceManager.getBooleanValue(JDReadApplication.getInstance(), Constants.SP_KEY_SHOW_PASSWORD, false);
+            boolean showPassword = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_SHOW_PASSWORD, false);
             userLoginViewModel.isShowPassword.set(showPassword);
             userLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override

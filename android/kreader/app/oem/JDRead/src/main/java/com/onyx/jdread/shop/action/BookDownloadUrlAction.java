@@ -2,10 +2,10 @@ package com.onyx.jdread.shop.action;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDownloadUrlResultBean;
@@ -34,7 +34,7 @@ public class BookDownloadUrlAction extends BaseAction {
         body.put(CloudApiContext.BookDownloadUrl.ORDER_ID, bookDetailBean.order_id);
         body.put(CloudApiContext.BookDownloadUrl.UUID, dataBundle.getAppBaseInfo().getUuid());
         body.put(CloudApiContext.BookDownloadUrl.EBOOK_ID, bookDetailBean.ebook_id);
-        body.put(CloudApiContext.BookDownloadUrl.USER_ID, PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NICK_NAME, ""));
+        body.put(CloudApiContext.BookDownloadUrl.USER_ID, JDPreferenceManager.getStringValue(Constants.SP_KEY_USER_NICK_NAME, ""));
         baseRequestBean.setBody(body.toString());
         final RxRequestBookDownloadUrl req = new RxRequestBookDownloadUrl();
         req.setBaseRequestBean(baseRequestBean);

@@ -11,13 +11,13 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentViewAllBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.BookModelAction;
 import com.onyx.jdread.shop.action.BookRankListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
@@ -67,15 +67,15 @@ public class ViewAllBooksFragment extends BaseFragment {
     }
 
     private void initData() {
-        String title= PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, "");
+        String title= JDPreferenceManager.getStringValue(Constants.SP_KEY_SUBJECT_NAME, "");
         getTitleBarViewModel().leftText = title;
-        int bookListType= PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_LIST_TYPE, -1);
+        int bookListType= JDPreferenceManager.getIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, -1);
         if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_MODEL) {
-            modelId = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
-            modelType = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
+            modelId = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
+            modelType = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
             getBookModelData(currentPage);
         } else if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_RANK) {
-            int rankType = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_RANK_TYPE, -1);
+            int rankType = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_RANK_TYPE, -1);
             getBookRankData(rankType,currentPage);
         }
     }
@@ -187,7 +187,7 @@ public class ViewAllBooksFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
+        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }

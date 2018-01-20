@@ -18,7 +18,6 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -28,6 +27,7 @@ import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
@@ -134,7 +134,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void initData() {
         cleanData();
-        ebookId = PreferenceManager.getLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, 0);
+        ebookId = JDPreferenceManager.getLongValue(Constants.SP_KEY_BOOK_ID, 0);
         getBookDetail();
     }
 
@@ -733,7 +733,7 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookSearchKeyWordrEvent(BookSearchKeyWordrEvent event) {
         if (getViewEventCallBack() != null) {
-            PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_KEYWORD, event.keyWord);
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, event.keyWord);
             getViewEventCallBack().gotoView(SearchBookListFragment.class.getName());
         }
     }

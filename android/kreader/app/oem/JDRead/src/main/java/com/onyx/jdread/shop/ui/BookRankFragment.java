@@ -10,7 +10,6 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookRankBinding;
@@ -18,6 +17,7 @@ import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.BookRankAction;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
@@ -152,9 +152,9 @@ public class BookRankFragment extends BaseFragment {
     public void onViewAllClickEvent(ViewAllClickEvent event) {
         BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
         if (modulesBean != null) {
-            PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
-            PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_RANK);
-            PreferenceManager.setIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_RANK_TYPE, modulesBean.rank_type);
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_RANK);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_RANK_TYPE, modulesBean.rank_type);
             if (getViewEventCallBack() != null) {
                 getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
             }
@@ -163,7 +163,7 @@ public class BookRankFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
+        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
