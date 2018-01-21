@@ -62,7 +62,7 @@ public class SelectRequest extends ReaderBaseRequest {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
             getReaderUserDataInfo().setTouchPoint(touchPoint);
             updateReaderSelectInfo(pagePosition,pageInfo);
-            reader.getReaderViewHelper().draw(reader,
+            reader.getReaderViewHelper().renderAll(reader,
                     reader.getReaderHelper().getCurrentPageBitmap().getBitmap(), getReaderUserDataInfo(),getReaderViewInfo(),
                     readerSelectionManager);
 
