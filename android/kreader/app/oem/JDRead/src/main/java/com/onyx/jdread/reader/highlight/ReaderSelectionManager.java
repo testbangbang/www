@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.jdread.R;
@@ -70,6 +71,16 @@ public class ReaderSelectionManager {
         return null;
     }
 
+    public String getSelectText(){
+        String result = "";
+        for(ReaderSelectionInfo readerSelectionInfo : readerSelectionInfos.values()){
+            if(readerSelectionInfo.getCurrentSelection() != null){
+                result += readerSelectionInfo.getCurrentSelection().getText();
+            }
+        }
+        return result;
+    }
+
     public boolean normalize(String pagePosition) {
         ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
@@ -116,12 +127,14 @@ public class ReaderSelectionManager {
         readerSelectionInfos.clear();
     }
 
-    public synchronized boolean update(String pagePosition, final Context context, ReaderSelection readerSelection,PointF lastPoint) {
+    public synchronized boolean update(String pagePosition, final Context context,
+                                       ReaderSelection readerSelection, PointF lastPoint,
+                                       PageInfo pageInfo) {
         ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo == null || readerSelectionInfo.getCurrentSelection() == null) {
-            readerSelectionInfo = addPageSelection(pagePosition, readerSelection);
+            readerSelectionInfo = addPageSelection(pagePosition, readerSelection,pageInfo);
         } else {
-            readerSelectionInfo.setCurrentSelection(readerSelection);
+            readerSelectionInfo.setCurrentSelection(readerSelection,pageInfo);
         }
         readerSelectionInfo.setTouchPoint(lastPoint);
         List<RectF> rects = readerSelectionInfo.getCurrentSelection().getRectangles();
@@ -147,9 +160,9 @@ public class ReaderSelectionManager {
         return true;
     }
 
-    private ReaderSelectionInfo addPageSelection(String pagePosition, ReaderSelection readerSelection) {
+    private ReaderSelectionInfo addPageSelection(String pagePosition, ReaderSelection readerSelection,PageInfo pageInfo) {
         ReaderSelectionInfo readerSelectionInfo = new ReaderSelectionInfo();
-        readerSelectionInfo.setCurrentSelection(readerSelection);
+        readerSelectionInfo.setCurrentSelection(readerSelection,pageInfo);
         readerSelectionInfos.put(pagePosition, readerSelectionInfo);
 
         return readerSelectionInfo;
@@ -187,5 +200,9 @@ public class ReaderSelectionManager {
             }
         }
         return false;
+    }
+
+    public Map<String, ReaderSelectionInfo> getReaderSelectionInfos() {
+        return readerSelectionInfos;
     }
 }
