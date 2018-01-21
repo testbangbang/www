@@ -357,7 +357,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     }
 
     private void toggleSideNotePos(final ReaderDataHolder readerDataHolder) {
-        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), false,
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true,
                 false, true, false, false);
         flushNoteAction.setPauseNote(true);
         flushNoteAction.execute(readerDataHolder, new BaseCallback() {
