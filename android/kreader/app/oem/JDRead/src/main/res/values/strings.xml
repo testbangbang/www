@@ -381,4 +381,8 @@
     <string name="in_library">Location ：Library</string>
     <string name="in_shop">Location ：Shop</string>
     <string name="reader_copy_success">Copy success</string>
+    <string name="reader_edit">Edit</string>
+    <string name="reader_save">Save</string>
+    <string name="reader_original">Original</string>
+    <string name="reader_changes">Changes</string>
 </resources>

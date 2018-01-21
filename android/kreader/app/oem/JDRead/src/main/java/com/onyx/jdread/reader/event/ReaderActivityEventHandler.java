@@ -14,6 +14,7 @@ import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.common.ToastMessage;
+import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
@@ -34,6 +35,7 @@ public class ReaderActivityEventHandler {
     private ReaderViewModel readerViewModel;
     private ReaderViewBack readerViewBack;
     private ReaderSettingMenuDialog readerSettingMenuDialog;
+    private ReaderNoteDialog readerNoteDialog;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -165,7 +167,12 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupNoteClickEvent(PopupNoteClickEvent event){
-        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Note");
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+        readerNoteDialog = new ReaderNoteDialog(readerViewModel.getReaderDataHolder(), activity);
+        readerNoteDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

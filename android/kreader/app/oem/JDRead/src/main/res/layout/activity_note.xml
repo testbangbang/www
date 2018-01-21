@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.text.InputType" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="noteViewModel"
+            type="com.onyx.jdread.reader.model.NoteViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/reader_note_padding_left"
+            android:paddingRight="@dimen/reader_note_padding_right">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_weight="3"
+                android:gravity="center_vertical">
+
+                <TextView
+                    style="@style/ReaderTitleBarBuyStyle"
+                    android:layout_marginRight="@dimen/reader_title_back_margin_right"
+                    android:drawableLeft="@mipmap/ic_read_back"
+                    android:drawablePadding="@dimen/reader_title_bar_drawable_padding"
+                    android:gravity="center_vertical"
+                    android:onClick="@{()->noteViewModel.backClick()}"
+                    android:padding="@dimen/reader_title_back_padding" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:text="@{noteViewModel.title}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:drawableLeft="@{noteViewModel.saveIcon}"
+                    android:onClick="@{()->noteViewModel.saveClick()}"
+                    android:text="@{noteViewModel.isEdit?@string/save:@string/reader_edit}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/reader_note_padding_bottom"
+            android:paddingLeft="@dimen/reader_note_padding_left"
+            android:paddingRight="@dimen/reader_note_padding_right"
+            android:paddingTop="@dimen/reader_note_padding_top">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="@{noteViewModel.chapterName}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@{noteViewModel.createNoteDate}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/reader_note_padding_left"
+            android:paddingRight="@dimen/reader_note_padding_right">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ic_read_light_black"
+                android:drawablePadding="5dp"
+                android:text="@string/reader_book_info_note"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:gravity="top"
+                android:padding="10dp"
+                android:text="@={noteViewModel.newNote}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+        </LinearLayout>
+
+        <View
+            style="@style/reader_dotted_line_style"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/reader_note_padding_left"
+            android:paddingRight="@dimen/reader_note_padding_right">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:drawableLeft="@mipmap/ic_read_light_black"
+                    android:drawablePadding="5dp"
+                    android:text="@string/reader_original"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_one_heading_font" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:drawableLeft="@mipmap/ic_read_light_black"
+                    android:drawablePadding="5dp"
+                    android:text="@string/reader_changes"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_one_heading_font"
+                    android:visibility="@{noteViewModel.isSrcNoteModify?View.VISIBLE:View.GONE}" />
+            </RelativeLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:gravity="top"
+                android:inputType="@{noteViewModel.isEdit?InputType.TYPE_CLASS_TEXT:InputType.TYPE_NULL}"
+                android:padding="10dp"
+                android:text="@={noteViewModel.srcNote}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
