@@ -89,7 +89,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     private void initTitleBar() {
         TitleBarModel titleBarModel = new TitleBarModel(EventBus.getDefault());
         titleBarModel.backEvent.set(new ReaderBookInfoTitleBackEvent());
-        titleBarModel.title.set(readerBookInfoDialogHandler.getReaderDataHolder().getReader().getDocumentInfo().getBookName());
+        titleBarModel.title.set(readerBookInfoDialogHandler.getReaderDataHolder().getBookName());
         binding.readerBookInfoTitleBar.setTitleModel(titleBarModel);
     }
 

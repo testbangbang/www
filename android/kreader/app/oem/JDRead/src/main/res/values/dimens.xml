@@ -405,6 +405,10 @@
     <dimen name="reader_dictionary_window_height">220dp</dimen>
     <dimen name="reader_popup_select_menu_height">50dp</dimen>
     <dimen name="search_layout_margin_top">10dp</dimen>
+    <dimen name="reader_note_padding_left">20dp</dimen>
+    <dimen name="reader_note_padding_right">20dp</dimen>
+    <dimen name="reader_note_padding_top">10dp</dimen>
+    <dimen name="reader_note_padding_bottom">10dp</dimen>
     <dimen name="vip_user_info_container_padding">20dp</dimen>
     <dimen name="renew_vip_button_padding_left_and_right">20dp</dimen>
     <dimen name="recycle_view_height_with_vip">150dp</dimen>

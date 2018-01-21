@@ -70,7 +70,7 @@ public class ReaderViewHelper {
         try {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, readerViewInfo);
-            draw(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo,readerViewInfo, readerSelectionManager);
+            renderAll(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo,readerViewInfo, readerSelectionManager);
 
             reader.getReaderHelper().saveToCache(context.renderingBitmap);
         } catch (Exception e) {
@@ -78,7 +78,7 @@ public class ReaderViewHelper {
         }
     }
 
-    public void draw(Reader reader, Bitmap bitmap, ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
+    public void renderAll(Reader reader, Bitmap bitmap, ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
         if (readPageView == null) {
             return;
         }
@@ -87,13 +87,18 @@ public class ReaderViewHelper {
         }
         paint.setDither(true);
         Canvas canvas = readPageView.getHolder().lockCanvas();
-        canvas.drawColor(Color.WHITE);
-        paint.setColor(Color.BLACK);
 
-        canvas.drawBitmap(bitmap, 0, 0, paint);
+        drawPageContent(canvas,bitmap);
         drawPageAnnotations(canvas,reader,readerUserDataInfo,readerViewInfo);
         drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
+
         readPageView.getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    public void drawPageContent(Canvas canvas,Bitmap bitmap){
+        canvas.drawColor(Color.WHITE);
+        paint.setColor(Color.BLACK);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
     public void showTouchFunctionRegion(Canvas canvas, Context context) {

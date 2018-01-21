@@ -8,10 +8,6 @@ import android.net.wifi.WifiManager;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.onyx.android.sdk.utils.NetworkUtil;
-import com.onyx.jdread.main.common.ManagerActivityUtils;
-import com.onyx.jdread.util.Utils;
-
 import org.acra.ACRA;
 
 /**

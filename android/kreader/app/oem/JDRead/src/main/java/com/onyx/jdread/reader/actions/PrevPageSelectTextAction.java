@@ -12,28 +12,22 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  */
 
 public class PrevPageSelectTextAction extends BaseReaderAction {
-    private ReaderSelectionManager readerSelectionManager;
-
-    public PrevPageSelectTextAction(ReaderSelectionManager readerSelectionManager) {
-        this.readerSelectionManager = readerSelectionManager;
-    }
-
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
         ReaderTextStyle style = readerDataHolder.getStyleCopy();
         final String pagePosition = readerDataHolder.getCurrentPagePosition();
 
-        final PreviousPageSelectTextRequest request = new PreviousPageSelectTextRequest(readerDataHolder.getReader(), style, readerSelectionManager);
-        readerDataHolder.getReaderSelectionManager().incrementSelectCount();
+        final PreviousPageSelectTextRequest request = new PreviousPageSelectTextRequest(readerDataHolder.getReader(), style);
+        readerDataHolder.getSelectionInfoManager().incrementSelectCount();
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                readerDataHolder.getSelectionInfoManager().updateSelectInfo(request.getSelectionInfoManager().getReaderSelectionInfos());
             }
 
             @Override
             public void onFinally() {
-                readerDataHolder.getReaderSelectionManager().decrementSelectCount();
+                readerDataHolder.getSelectionInfoManager().decrementSelectCount();
                 if (request.isSuccess) {
                     updateData(readerDataHolder, request, pagePosition);
                 }

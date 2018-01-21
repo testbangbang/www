@@ -36,15 +36,15 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
     private void saveAnnotation() {
         for (ReaderSelectionInfo readerSelectionInfo : readerSelectionInfos.values()) {
             ReaderSelection selection = readerSelectionInfo.getCurrentSelection();
-            PageInfo pageInfo = readerSelectionInfo.pageInfo;
-            Annotation annotation = createAnnotation(pageInfo, selection.getStartPosition(), selection.getEndPosition(),
+            Annotation annotation = createAnnotation(reader,readerSelectionInfo.pageInfo,
+                    selection.getStartPosition(), selection.getEndPosition(),
                     selection.getRectangles(), selection.getText(), "");
 
             ContentSdkDataUtils.getDataProvider().addAnnotation(annotation);
         }
     }
 
-    private Annotation createAnnotation(PageInfo pageInfo, String locationBegin, String locationEnd,
+    public static Annotation createAnnotation(Reader reader,PageInfo pageInfo, String locationBegin, String locationEnd,
                                         List<RectF> rects, String quote, String note) {
         Annotation annotation = new Annotation();
         annotation.setIdString(reader.getReaderHelper().getDocumentMd5());

@@ -1,9 +1,8 @@
-package com.onyx.jdread.main.common;
+package com.onyx.jdread.manager;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.LockScreenActivity;

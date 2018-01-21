@@ -12,22 +12,20 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class ReaderSchedulers {
-
     private static Scheduler readerScheduler;
 
     public static Scheduler readerScheduler() {
         if (readerScheduler == null) {
             ExecutorService singleThreadPool = Executors.newSingleThreadExecutor(new ThreadFactory() {
-                    @Override
-                    public Thread newThread(Runnable r) {
-                        Thread t = new Thread(r);
-                        t.setPriority(Thread.MAX_PRIORITY);
-                        return t;
-                    }
-                });
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r);
+                    t.setPriority(Thread.MAX_PRIORITY);
+                    return t;
+                }
+            });
             readerScheduler = Schedulers.from(singleThreadPool);
         }
-
         return readerScheduler;
     }
 }
