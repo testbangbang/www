@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.request;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.rx.RxRequest;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
+import com.onyx.jdread.reader.highlight.SelectionInfoManager;
 
 import io.reactivex.Scheduler;
 
@@ -13,6 +14,7 @@ import io.reactivex.Scheduler;
 public abstract class ReaderBaseRequest extends RxRequest {
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
+    private SelectionInfoManager selectionInfoManager;
     public boolean isSuccess = true;
 
     public ReaderViewInfo createReaderViewInfo() {
@@ -32,6 +34,13 @@ public abstract class ReaderBaseRequest extends RxRequest {
             readerViewInfo = new ReaderViewInfo();
         }
         return readerViewInfo;
+    }
+
+    public SelectionInfoManager getSelectionInfoManager() {
+        if(selectionInfoManager == null){
+            selectionInfoManager = new SelectionInfoManager();
+        }
+        return selectionInfoManager;
     }
 
     @Override

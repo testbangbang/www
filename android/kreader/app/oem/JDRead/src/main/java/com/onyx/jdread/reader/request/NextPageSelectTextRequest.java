@@ -28,16 +28,16 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
     private PointF currentPageTouchPoint;
     private PageInfo pageInfo;
 
-    public NextPageSelectTextRequest(Reader reader, ReaderTextStyle style, ReaderSelectionManager readerSelectionManager) {
+    public NextPageSelectTextRequest(Reader reader, ReaderTextStyle style) {
         this.reader = reader;
         this.style = style;
-        this.readerSelectionManager = readerSelectionManager;
     }
 
     @Override
     public NextPageSelectTextRequest call() throws Exception {
         width = reader.getReaderViewHelper().getPageViewWidth();
         height = reader.getReaderViewHelper().getPageViewHeight();
+        readerSelectionManager = reader.getReaderSelectionManager();
         currentPagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
 
         if (!extendCurrentPageLowerRightSelectTextRegion()) {
@@ -66,6 +66,7 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
         } else {
             cleanCurrentPageInfo();
         }
+        getSelectionInfoManager().updateSelectInfo(readerSelectionManager.getReaderSelectionInfos());
         return this;
     }
 

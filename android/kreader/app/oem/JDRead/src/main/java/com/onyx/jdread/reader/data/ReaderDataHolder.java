@@ -10,6 +10,7 @@ import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
+import com.onyx.jdread.reader.highlight.SelectionInfoManager;
 import com.onyx.jdread.reader.model.SelectMenuModel;
 
 /**
@@ -25,12 +26,12 @@ public class ReaderDataHolder {
     private ImageReflowSettings settings;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
-    private ReaderSelectionManager readerSelectionManager;
     private HandlerManger handlerManger;
     private Context appContext;
     private ReaderTouchHelper readerTouchHelper;
     private SelectMenuModel selectMenuModel;
     private DocumentInfo documentInfo;
+    private SelectionInfoManager selectionInfoManager;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
@@ -49,11 +50,11 @@ public class ReaderDataHolder {
         return readerTouchHelper;
     }
 
-    public ReaderSelectionManager getReaderSelectionManager() {
-        if (readerSelectionManager == null) {
-            readerSelectionManager = new ReaderSelectionManager();
+    public SelectionInfoManager getSelectionInfoManager(){
+        if (selectionInfoManager == null) {
+            selectionInfoManager = new SelectionInfoManager();
         }
-        return readerSelectionManager;
+        return selectionInfoManager;
     }
 
     public HandlerManger getHandlerManger() {

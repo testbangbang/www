@@ -14,6 +14,7 @@ import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.reader.actions.CleanSelectionAction;
 import com.onyx.jdread.reader.actions.NextPageSelectTextAction;
 import com.onyx.jdread.reader.actions.PrevPageSelectTextAction;
 import com.onyx.jdread.reader.actions.SelectTextAction;
@@ -81,7 +82,7 @@ public class WordSelectionHandler extends BaseHandler {
             lastSelectEndPosition = 0;
             isCrossScreenSelect = false;
             downPagePosition = getReaderDataHolder().getCurrentPagePosition();
-            getReaderDataHolder().getReaderSelectionManager().setMoveSelectCount(0);
+            getReaderDataHolder().getSelectionInfoManager().setMoveSelectCount(0);
             selectWord(getStartPoint().x, getStartPoint().y, event.getX(), event.getY());
         } else if (cursorSelected < 0) {
             quitWordSelection();
@@ -89,21 +90,21 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private boolean isCrossScreenSelectText(float x, float y) {
-        if (getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition()) != null &&
-                getReaderDataHolder().getReaderSelectionManager().getMoveSelectCount() <= 0) {
+        if (getReaderDataHolder().getSelectionInfoManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition()) != null &&
+                getReaderDataHolder().getSelectionInfoManager().getMoveSelectCount() <= 0) {
             int height = getReaderDataHolder().getReaderTouchHelper().getSurfaceView().getHeight();
             int width = getReaderDataHolder().getReaderTouchHelper().getSurfaceView().getWidth();
             if (x < crossScreenTouchRegionMinWidth && y < crossScreenTouchRegionMinHeight) {
                 if (getReaderDataHolder().getReaderViewInfo().canPrevScreen) {
                     isCrossScreenSelect = true;
-                    new PrevPageSelectTextAction(getReaderDataHolder().getReaderSelectionManager()).execute(getReaderDataHolder(), crossScreenSelectActionCallBack);
+                    new PrevPageSelectTextAction().execute(getReaderDataHolder(), crossScreenSelectActionCallBack);
                 }
                 return true;
             }
             if (x > (width - crossScreenTouchRegionMinWidth) && y > (height - crossScreenTouchRegionMinHeight)) {
                 if (getReaderDataHolder().getReaderViewInfo().canNextScreen) {
                     isCrossScreenSelect = true;
-                    new NextPageSelectTextAction(getReaderDataHolder().getReaderSelectionManager()).execute(getReaderDataHolder(), crossScreenSelectActionCallBack);
+                    new NextPageSelectTextAction().execute(getReaderDataHolder(), crossScreenSelectActionCallBack);
                 }
                 return true;
             }
@@ -147,9 +148,9 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private void onShowPopupMenu() {
-        ReaderSelection readerSelection = getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition());
-        if (getReaderDataHolder().getReaderSelectionManager().getMoveSelectCount() <= 0 && readerSelection != null) {
-            String text = getReaderDataHolder().getReaderSelectionManager().getSelectText();
+        ReaderSelection readerSelection = getReaderDataHolder().getSelectionInfoManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition());
+        if (getReaderDataHolder().getSelectionInfoManager().getMoveSelectCount() <= 0 && readerSelection != null) {
+            String text = getReaderDataHolder().getSelectionInfoManager().getSelectText();
             if (!StringUtils.isNullOrEmpty(text)) {
                 boolean isWord = isWord(text);
                 showSelectionMenu(isWord);
@@ -168,7 +169,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private void updateHighLightRect() {
-        ReaderSelection readerSelection = getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition());
+        ReaderSelection readerSelection = getReaderDataHolder().getSelectionInfoManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition());
         if (readerSelection != null) {
             if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
                 highLightBeginTop = RectUtils.getBeginTop(readerSelection.getRectangles());
@@ -304,15 +305,8 @@ public class WordSelectionHandler extends BaseHandler {
         action.execute(getReaderDataHolder(), selectActionCallBack);
     }
 
-    private float getMovePointOffsetHeight() {
-        if (!getReaderDataHolder().getReaderSelectionManager().isEnable(getReaderDataHolder().getCurrentPagePosition())) {
-            return 0f;
-        }
-        return movePointOffsetHeight;
-    }
-
     private void updateCursorSelected() {
-        final ReaderSelection selection = getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition());
+        final ReaderSelection selection = getReaderDataHolder().getSelectionInfoManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition());
         if (selection == null) {
             return;
         }
@@ -335,13 +329,13 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public boolean hasSelectionWord() {
-        return getReaderDataHolder().getReaderSelectionManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition()) != null;
+        return getReaderDataHolder().getSelectionInfoManager().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition()) != null;
     }
 
     public int getCursorSelected(int x, int y) {
-        HighlightCursor beginHighlightCursor = getReaderDataHolder().getReaderSelectionManager().getHighlightCursor(getReaderDataHolder().getCurrentPagePosition(),
+        HighlightCursor beginHighlightCursor = getReaderDataHolder().getSelectionInfoManager().getHighlightCursor(getReaderDataHolder().getCurrentPagePosition(),
                 HighlightCursor.BEGIN_CURSOR_INDEX);
-        HighlightCursor endHighlightCursor = getReaderDataHolder().getReaderSelectionManager().getHighlightCursor(getReaderDataHolder().getCurrentPagePosition(),
+        HighlightCursor endHighlightCursor = getReaderDataHolder().getSelectionInfoManager().getHighlightCursor(getReaderDataHolder().getCurrentPagePosition(),
                 HighlightCursor.END_CURSOR_INDEX);
 
         if (endHighlightCursor != null && endHighlightCursor.hitTest(x, y)) {
@@ -366,7 +360,8 @@ public class WordSelectionHandler extends BaseHandler {
     private void clearWordSelection() {
         new UpdateViewPageAction().execute(getReaderDataHolder(), null);
         getReaderDataHolder().getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
-        getReaderDataHolder().getReaderSelectionManager().clear();
+        getReaderDataHolder().getSelectionInfoManager().clear();
+        new CleanSelectionAction().execute(getReaderDataHolder(),null);
     }
 
     private void enableSelectionCursor() {
@@ -394,7 +389,7 @@ public class WordSelectionHandler extends BaseHandler {
 
         @Override
         public void onFinally() {
-            ReaderSelectionInfo readerSelectionInfo = getReaderDataHolder().getReaderSelectionManager().getReaderSelectionInfo(getReaderDataHolder().getCurrentPagePosition());
+            ReaderSelectionInfo readerSelectionInfo = getReaderDataHolder().getSelectionInfoManager().getReaderSelectionInfo(getReaderDataHolder().getCurrentPagePosition());
             if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection() != null) {
                 highLightBeginTop = readerSelectionInfo.getHighLightBeginTop();
                 highLightEndBottom = readerSelectionInfo.getHighLightEndBottom();

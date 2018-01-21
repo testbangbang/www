@@ -29,14 +29,13 @@ public class SelectRequest extends ReaderBaseRequest {
     private ReaderSelectionManager readerSelectionManager;
 
     public SelectRequest(Reader reader, final String pagePosition, final PointF startPoint, final PointF endPoint, final PointF touchPoint,
-                         final ReaderHitTestOptions hitTestOptions, ReaderSelectionManager readerSelectionManager) {
+                         final ReaderHitTestOptions hitTestOptions) {
         start.set(startPoint.x, startPoint.y);
         end.set(endPoint.x, endPoint.y);
         this.touchPoint.set(touchPoint.x, touchPoint.y);
         this.pagePosition = pagePosition;
         this.hitTestOptions = hitTestOptions;
         this.reader = reader;
-        this.readerSelectionManager = readerSelectionManager;
     }
 
     public PointF getstart() {
@@ -52,6 +51,7 @@ public class SelectRequest extends ReaderBaseRequest {
         if (!reader.getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().canHitTest()) {
             return this;
         }
+        readerSelectionManager = reader.getReaderSelectionManager();
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
         PageInfo pageInfo = reader.getReaderHelper().getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);
@@ -68,6 +68,7 @@ public class SelectRequest extends ReaderBaseRequest {
 
             HitTestTextHelper.saveLastHighLightPosition(pagePosition,readerSelectionManager,start,end);
         }
+        getSelectionInfoManager().updateSelectInfo(readerSelectionManager.getReaderSelectionInfos());
         return this;
     }
 
