@@ -15,6 +15,8 @@ import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
+import com.onyx.jdread.shop.adapter.SubjectWithVipAdapter;
+import com.onyx.jdread.shop.adapter.VipReadAdapter;
 import com.onyx.jdread.shop.common.ManageImageCache;
 import com.onyx.jdread.shop.view.HtmlTextView;
 
@@ -36,6 +38,14 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"subjectItems"})
     public static void setItems(PageRecyclerView recyclerView, List items) {
         SubjectAdapter adapter = (SubjectAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"vipItems"})
+    public static void setVIpItems(PageRecyclerView recyclerView, List items) {
+        SubjectWithVipAdapter adapter = (SubjectWithVipAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }
@@ -91,6 +101,17 @@ public class ShopDataBindingUtil {
 
     @BindingAdapter({"htmlContent"})
     public static void setHtmlContent(HtmlTextView htmlTextView, String content) {
+        String title = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce) + ":";
+        if (!StringUtils.isNullOrEmpty(content)){
+            htmlTextView.setHtml(title + content);
+        } else {
+            String emptyCOntent = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_empty_introduce);
+            htmlTextView.setHtml(title + emptyCOntent);
+        }
+    }
+
+    @BindingAdapter({"htmlContentDialog"})
+    public static void setHtmlContentDialog(HtmlTextView htmlTextView, String content) {
         if (!StringUtils.isNullOrEmpty(content)){
             htmlTextView.setHtml(content);
         } else {
@@ -107,9 +128,17 @@ public class ShopDataBindingUtil {
         }
     }
 
-    @BindingAdapter({"rankItems"})
-    public static void setRankItems(PageRecyclerView recyclerView, List items) {
+    @BindingAdapter({"subjectModels"})
+    public static void setSubjectModels(PageRecyclerView recyclerView, List items) {
         BookRankAdapter adapter = (BookRankAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"vipSubjectItems"})
+    public static void setVipSubjectItems(PageRecyclerView recyclerView, List items) {
+        VipReadAdapter adapter = (VipReadAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }

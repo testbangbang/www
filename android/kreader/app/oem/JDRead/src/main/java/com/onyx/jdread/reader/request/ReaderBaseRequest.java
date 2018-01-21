@@ -17,11 +17,6 @@ public abstract class ReaderBaseRequest extends RxRequest {
     private SelectionInfoManager selectionInfoManager;
     public boolean isSuccess = true;
 
-    public ReaderViewInfo createReaderViewInfo() {
-        readerViewInfo = new ReaderViewInfo();
-        return readerViewInfo;
-    }
-
     public final ReaderUserDataInfo getReaderUserDataInfo() {
         if (readerUserDataInfo == null) {
             readerUserDataInfo = new ReaderUserDataInfo();

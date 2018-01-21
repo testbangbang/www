@@ -5,6 +5,8 @@ import android.databinding.BaseObservable;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
+import com.onyx.jdread.shop.event.BookDetailViewInfoEvent;
+import com.onyx.jdread.shop.event.BookSearchKeyWordrEvent;
 import com.onyx.jdread.shop.event.BookDetailReadNowEvent;
 import com.onyx.jdread.shop.event.CopyrightCancelEvent;
 import com.onyx.jdread.shop.event.CopyrightEvent;
@@ -30,6 +32,14 @@ public class BookDetailViewModel extends BaseObservable {
     private int currentPage;
     private int totalPage;
     private TitleBarViewModel titleBarViewModel;
+    private DialogBookInfoViewModel dialogBookInfoViewModel;
+
+    public DialogBookInfoViewModel getDialogBookInfoViewModel() {
+        if (dialogBookInfoViewModel == null) {
+            dialogBookInfoViewModel = new DialogBookInfoViewModel();
+        }
+        return dialogBookInfoViewModel;
+    }
 
     public TitleBarViewModel getTitleBarViewModel() {
         return titleBarViewModel;
@@ -49,7 +59,7 @@ public class BookDetailViewModel extends BaseObservable {
     }
 
     public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
+        this.currentPage = Math.max(1, currentPage);
         notifyChange();
     }
 
@@ -58,7 +68,7 @@ public class BookDetailViewModel extends BaseObservable {
     }
 
     public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
+        this.totalPage = Math.max(1, totalPage);
         notifyChange();
     }
 
@@ -91,11 +101,11 @@ public class BookDetailViewModel extends BaseObservable {
     }
 
     public void onNowReadClick() {
-        getEventBus().post(new BookDetailReadNowEvent(bookDetailResultBean.data));
+        getEventBus().post(new BookDetailReadNowEvent(bookDetailResultBean));
     }
 
     public void onDownBookClick() {
-        getEventBus().post(new DownloadWholeBookEvent(bookDetailResultBean.data));
+        getEventBus().post(new DownloadWholeBookEvent(bookDetailResultBean));
     }
 
     public void onShoppingCartClick() {
@@ -104,6 +114,30 @@ public class BookDetailViewModel extends BaseObservable {
 
     public void onViewDirectoryClick() {
 
+    }
+
+    public void onInfoClick() {
+        if (bookDetailResultBean != null && bookDetailResultBean.data != null) {
+            getEventBus().post(new BookDetailViewInfoEvent(bookDetailResultBean.data.info));
+        }
+    }
+
+    public void onAuthorClick() {
+        if (bookDetailResultBean != null && bookDetailResultBean.data != null) {
+            getEventBus().post(new BookSearchKeyWordrEvent(bookDetailResultBean.data.author));
+        }
+    }
+
+    public void onCategoryPathLevelTwoClick() {
+        if (bookDetailResultBean != null && bookDetailResultBean.data != null) {
+            getEventBus().post(new BookSearchKeyWordrEvent(bookDetailResultBean.data.second_catid1_str));
+        }
+    }
+
+    public void onCategoryPathLevelThreeClick() {
+        if (bookDetailResultBean != null && bookDetailResultBean.data != null) {
+            getEventBus().post(new BookSearchKeyWordrEvent(bookDetailResultBean.data.third_catid1_str));
+        }
     }
 
     public void onViewCommentClick() {

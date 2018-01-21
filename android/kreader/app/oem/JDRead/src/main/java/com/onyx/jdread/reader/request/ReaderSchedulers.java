@@ -8,7 +8,7 @@ import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * Created by huxiaomao on 2018/1/21.
+ * Created by john on 21/1/2018.
  */
 
 public class ReaderSchedulers {

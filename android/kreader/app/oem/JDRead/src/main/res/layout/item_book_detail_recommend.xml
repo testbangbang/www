@@ -20,7 +20,7 @@
             android:layout_width="@dimen/item_book_detail_recommend_width"
             android:layout_height="@dimen/item_book_detail_recommend_height"
             android:scaleType="fitXY"
-            bind:cover="@{bookBean.imageUrl}" />
+            bind:cover="@{bookBean.image_url}" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 

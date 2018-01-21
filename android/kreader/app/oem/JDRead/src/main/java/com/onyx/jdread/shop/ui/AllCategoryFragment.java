@@ -11,13 +11,13 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookAllCategoryBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
@@ -233,8 +233,8 @@ public class AllCategoryFragment extends BaseFragment {
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
         if (categoryBean != null) {
-            PreferenceManager.setIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, categoryBean.id);
-            PreferenceManager.setStringValue(getContextJD(), Constants.SP_KEY_CATEGORY_NAME, categoryBean.name);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, categoryBean.id);
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_CATEGORY_NAME, categoryBean.name);
             getViewEventCallBack().gotoView(CategoryBookListFragment.class.getName());
         }
     }
@@ -242,7 +242,7 @@ public class AllCategoryFragment extends BaseFragment {
     public void saveCurCategoryLevelOneCateId(int index) {
         if (categoryBeanLevelOneList != null) {
             int catId = categoryBeanLevelOneList.get(index).id;
-            PreferenceManager.setIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, catId);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, catId);
         }
     }
 
@@ -253,12 +253,14 @@ public class AllCategoryFragment extends BaseFragment {
         saveCurCategoryLevelOneCateId(currentType);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
-        showLoadingDialog(getString(event.getResId()));
+        if (isAdded()) {
+            showLoadingDialog(getString(event.getResId()));
+        }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
         hideLoadingDialog();
     }

@@ -227,4 +227,10 @@ public class JDAppBaseInfo {
             requestParamsMap.clear();
         }
     }
+
+    public void addRequestParams(Map<String,String> requestParamsMap) {
+        if (requestParamsMap != null) {
+            this.requestParamsMap.putAll(requestParamsMap);
+        }
+    }
 }

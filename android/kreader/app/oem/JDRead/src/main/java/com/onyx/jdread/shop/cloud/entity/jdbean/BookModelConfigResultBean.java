@@ -34,6 +34,7 @@ public class BookModelConfigResultBean {
         public static class ModulesBean {
             public int id;
             public int module_type;
+            public int rank_type;
             public int f_type;
             public String show_name;
             public String pic_address;

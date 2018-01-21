@@ -7,9 +7,6 @@ import android.os.Environment;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
-
-import java.text.DecimalFormat;
 
 /**
  * Created by huxiaomao on 2016/11/30.
@@ -50,10 +47,6 @@ public class CommonUtils {
         return LOCAL_JDBOOKS_PATH;
     }
 
-    public static String getYueDouPrice(float price) {
-        return String.valueOf(new DecimalFormat("0").format(price * 100));
-    }
-
     public static String array2String(String[] bookIds) {
         StringBuilder stringBuilder = new StringBuilder();
         if (bookIds != null && bookIds.length > 0) {
@@ -77,13 +70,5 @@ public class CommonUtils {
             }
         }
         return bookArr;
-    }
-
-    public static boolean isCanNowRead(BookDetailResultBean.DetailBean detailBean){
-        boolean canNowRead = false;
-        if (detailBean != null) {
-            canNowRead = detailBean.can_try;
-        }
-        return canNowRead;
     }
 }

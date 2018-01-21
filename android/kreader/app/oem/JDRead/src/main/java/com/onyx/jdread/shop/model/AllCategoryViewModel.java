@@ -28,7 +28,7 @@ public class AllCategoryViewModel extends BaseObservable{
     public final ObservableField<String> titleThree = new ObservableField();
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems;
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> topCategoryItems;
-    public SubjectListViewModel subjectListViewModel;
+    public CategoryBookListViewModel categoryBookListViewModel;
 
     public AllCategoryViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -80,11 +80,11 @@ public class AllCategoryViewModel extends BaseObservable{
         notifyChange();
     }
 
-    public SubjectListViewModel getSubjectListViewModel() {
-        if (subjectListViewModel == null){
-            subjectListViewModel = new SubjectListViewModel(getEventBus());
+    public CategoryBookListViewModel getCategoryBookListViewModel() {
+        if (categoryBookListViewModel == null){
+            categoryBookListViewModel = new CategoryBookListViewModel(getEventBus());
         }
-        return subjectListViewModel;
+        return categoryBookListViewModel;
     }
 
     public void onTitleOneClick(){

@@ -55,17 +55,23 @@ public class CloudApiContext {
         public static final String NEW_BOUGHT_BOOK_ORDER = "newBuyedEbookOrderList";
     }
 
+    public static class BookShopURI {
+        public static final String SHOP_MAIN_CONFIG_URI = "channel/%s";
+        public static final String CATEGORY_URI = "category";
+        public static final String SEARCH_URI = "search";
+        public static final String BOOK_MODULE_URI = "module/%1s/%2s";
+        public static final String BOOK_DETAIL_URI = "ebook/%s";
+        public static final String BOOK_RANK_URI = "rank/modules";
+        public static final String BOOK_COMMENT_LIST_URI = "ebook/%s/comment";
+        public static final String BOOK_RECOMMEND_LIST_URI = "ebook/%s/recommend";
+        public static final String BOOK_RANK_LIST_URI = "rank/%1s/%2s";
+    }
+
     public static class AddToSmooth {
         public static final String EBOOK_ID = "ebook_id";
         public static final String CURRENT_PAGE = "currentPage";
         public static final String PAGE_SIZE = "pageSize";
         public static final String SMOOTH_READ_BOOK_LIST = "myNewCardReadBook";
-    }
-
-    public static class BookShopModuleList {
-        public static final String SYS_ID = "sysId";
-        public static final String RETURN_MESSAGE = "returnMessage";
-        public static final String API_GET_MAIN_THEME_INFO = "getMainThemeInfo";
     }
 
     public static class CategoryLevel2BookList {
@@ -87,12 +93,8 @@ public class CloudApiContext {
         public static final int SORT_TYPE_NEWEST = 3;
     }
 
-    public static class RecommendList {
-        public static final String BOOK_ID = "bookId";
-        public static final String BOOK_DETAIL_RECOMMEND_LIST_V2 = "bookDetailRecommendListV2";
-        public static final String BOOK_TYPE = "ebook";
-        public static final String BOOK_TYPE_ID = "eBookId";
-        public static final String PAGE_BOOK_ID = "paperBookId";
+    public static class BookRankList {
+        public static final String RANK_LIST_TIME_TYPE = "week";
     }
 
     public static class SearchBook {
@@ -112,6 +114,10 @@ public class CloudApiContext {
         public static final String PAGE_SIZE = "page_size";
         public static final String CURRENT_PAGE = "page";
         public static final int PAGE_SIZE_COUNT = 20;
+        public static final int FILTER_DEFAULT = 0;
+        public static final int FILTER_VIP = 1;
+        public static final int FILTER_SALE = 2;
+        public static final int FILTER_FREE = 3;
     }
 
     public static class BookDownloadUrl {
@@ -199,6 +205,21 @@ public class CloudApiContext {
                 .baseUrl(baseUrl)
                 .client(CloudApiContext.getClient())
                 .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+        return retrofit.create(ReadContentService.class);
+    }
+
+    public static OkHttpClient getClientNoCookie() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .build();
+        return client;
+    }
+
+    public static ReadContentService getServiceNoCookie(String baseUrl) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(CloudApiContext.getClientNoCookie())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
         return retrofit.create(ReadContentService.class);
     }

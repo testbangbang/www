@@ -11,22 +11,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.databinding.DialogBookInfoBinding;
 import com.onyx.jdread.databinding.FragmentBookDetailBinding;
 import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.manager.ManagerActivityUtils;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
@@ -38,6 +40,7 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
+import com.onyx.jdread.setting.ui.WifiFragment;
 import com.onyx.jdread.shop.action.AddBookToSmoothCardAction;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.BookDetailAction;
@@ -45,14 +48,18 @@ import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.action.BookshelfInsertAction;
 import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.action.MetadataQueryAction;
+import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.PageTagConstants;
 import com.onyx.jdread.shop.event.BookDetailReadNowEvent;
+import com.onyx.jdread.shop.event.BookDetailViewInfoEvent;
+import com.onyx.jdread.shop.event.BookSearchKeyWordrEvent;
 import com.onyx.jdread.shop.event.BuyBookSuccessEvent;
 import com.onyx.jdread.shop.event.CopyrightCancelEvent;
 import com.onyx.jdread.shop.event.CopyrightEvent;
@@ -63,15 +70,19 @@ import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
+import com.onyx.jdread.shop.event.MenuWifiSettingEvent;
 import com.onyx.jdread.shop.event.RecommendItemClickEvent;
 import com.onyx.jdread.shop.event.RecommendNextPageEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewCommentEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
+import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
+import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -102,6 +113,8 @@ public class BookDetailFragment extends BaseFragment {
     private boolean isDataBaseHaveBook;
     private int percentage;
     private boolean isWholeBook;
+    private GPaginator paginator;
+    private AlertDialog infoDialog;
 
     @Nullable
     @Override
@@ -121,7 +134,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void initData() {
         cleanData();
-        ebookId = PreferenceManager.getLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, 0);
+        ebookId = JDPreferenceManager.getLongValue(Constants.SP_KEY_BOOK_ID, 0);
         getBookDetail();
     }
 
@@ -156,7 +169,6 @@ public class BookDetailFragment extends BaseFragment {
 
     private void initView() {
         bookDetailBinding.setBookDetailViewModel(getBookDetailViewModel());
-        bookDetailBinding.bookDetailInfo.bookDetailAuthor.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         bookDetailBinding.bookDetailInfo.bookDetailYuedouPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         bookDetailBinding.bookDetailInfo.bookDetailCategorySecondPath.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         bookDetailBinding.bookDetailInfo.bookDetailCategoryThirdPath.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
@@ -175,6 +187,13 @@ public class BookDetailFragment extends BaseFragment {
         recyclerViewRecommend.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewRecommend.addItemDecoration(itemDecoration);
         recyclerViewRecommend.setAdapter(adapter);
+        paginator = recyclerViewRecommend.getPaginator();
+        recyclerViewRecommend.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPageChange(int position, int itemCount, int pageSize) {
+
+            }
+        });
     }
 
     private void initDividerItemDecoration() {
@@ -208,8 +227,15 @@ public class BookDetailFragment extends BaseFragment {
         bookDetailAction.execute(getShopDataBundle(), new RxCallback<BookDetailAction>() {
             @Override
             public void onNext(BookDetailAction bookDetailAction) {
-                if (bookDetailAction.getBookDetailResultBean() != null) {
-                    bookDetailBean = bookDetailAction.getBookDetailResultBean().data;
+                BookDetailResultBean bookDetailResultBean = bookDetailAction.getBookDetailResultBean();
+                if (bookDetailResultBean != null) {
+                    if (bookDetailResultBean.result_code != Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
+                        if (!StringUtils.isNullOrEmpty(bookDetailResultBean.message)) {
+                            ToastUtil.showToast(bookDetailResultBean.message);
+                        }
+                        return;
+                    }
+                    bookDetailBean = bookDetailResultBean.data;
                     //TODO set NowReadButton show or hide with free and set buyBookButton text;
 
                     if (StringUtils.isNullOrEmpty(bookDetailBean.try_url)) {
@@ -217,6 +243,29 @@ public class BookDetailFragment extends BaseFragment {
                     }
                     if (!bookDetailBean.can_buy) {
                         buyBookButton.setVisibility(View.GONE);
+                    }
+                    if (!StringUtils.isNullOrEmpty(bookDetailBean.author) && !getString(R.string.content_empty).equals(bookDetailBean.author)) {
+                        getAuthorBooksData(bookDetailBean.author);
+                    } else {
+                        bookDetailBean.setAuthor(getString(R.string.error_content_author_unknown));
+                    }
+                }
+            }
+        });
+    }
+
+    private void getAuthorBooksData(String keyWord) {
+        SearchBookListAction booksAction = new SearchBookListAction("", 0, CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES,
+                CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES, keyWord, CloudApiContext.SearchBook.FILTER_DEFAULT);
+        booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
+            @Override
+            public void onNext(SearchBookListAction action) {
+                BookModelBooksResultBean booksResultBean = action.getBooksResultBean();
+                if (booksResultBean != null && booksResultBean.data != null) {
+                    if (booksResultBean.data.items != null && booksResultBean.data.items.size() > 0) {
+                        bookDetailBinding.bookDetailInfo.bookDetailAuthor.setEnabled(true);
+                        bookDetailBinding.bookDetailInfo.bookDetailAuthor.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+                        bookDetailBinding.bookDetailInfo.bookDetailAuthor.setCompoundDrawables(null,null,getContext().getResources().getDrawable(R.mipmap.ic_go_view_all),null);
                     }
                 }
             }
@@ -236,14 +285,22 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
     public void onRecommendItemClickEvent(RecommendItemClickEvent event) {
         ResultBookBean bookBean = event.getBookBean();
-        cleanData();
-        setBookId(bookBean.ebook_id);
+        if (bookBean != null) {
+            cleanData();
+            setBookId(bookBean.ebook_id);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecommendNextPageEvent(RecommendNextPageEvent event) {
         if (recyclerViewRecommend != null){
-            recyclerViewRecommend.nextPage();
+            if (paginator != null) {
+                if (paginator.isLastPage()) {
+                    recyclerViewRecommend.gotoPage(0);
+                } else {
+                    recyclerViewRecommend.nextPage();
+                }
+            }
         }
     }
 
@@ -256,6 +313,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewCommentEvent(ViewCommentEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(CommentFragment.class.getName());
         }
@@ -263,14 +323,28 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadWholeBookEvent(DownloadWholeBookEvent event) {
-        bookDetailBean = event.getBookDetailBean();
-        BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-        bookDetailBean.bookExtraInfoBean = extraInfoBean;
-        if (!JDReadApplication.getInstance().getLogin()) {
-            LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
-        } else {
-            smoothDownload();
+        if (checkWfiDisConnected()) {
+            return;
         }
+        BookDetailResultBean bookDetailResultBean = event.getBookDetailResultBean();
+        if (bookDetailResultBean != null) {
+            bookDetailBean = bookDetailResultBean.data;
+            BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
+            bookDetailBean.bookExtraInfoBean = extraInfoBean;
+            if (!JDReadApplication.getInstance().getLogin()) {
+                LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
+            } else {
+                smoothDownload();
+            }
+        }
+    }
+
+    private boolean checkWfiDisConnected() {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            return true;
+        }
+        return false;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -280,6 +354,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCopyrightEvent(CopyrightEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         showCopyRightDialog();
     }
 
@@ -290,6 +367,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (bookDetailBean != null) {
             addToCart(bookDetailBean.ebook_id);
         }
@@ -297,10 +377,16 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailReadNowEvent(BookDetailReadNowEvent event) {
-        bookDetailBean = event.getBookDetailBean();
-        BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-        bookDetailBean.bookExtraInfoBean = extraInfoBean;
-        tryDownload(bookDetailBean);
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        BookDetailResultBean bookDetailResultBean = event.getBookDetailResultBean();
+        if (bookDetailResultBean != null) {
+            bookDetailBean = bookDetailResultBean.data;
+            BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
+            bookDetailBean.bookExtraInfoBean = extraInfoBean;
+            tryDownload(bookDetailBean);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -405,6 +491,11 @@ public class BookDetailFragment extends BaseFragment {
             }
         }
 
+        if (!CommonUtils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ManagerActivityUtils.showWifiDialog(getActivity());
+            return;
+        }
+
         if (bookDetailBean.can_read || bookDetailBean.isAlreadyBuy) {
             BookDownloadUtils.download(bookDetailBean,getShopDataBundle());
             return;
@@ -488,7 +579,7 @@ public class BookDetailFragment extends BaseFragment {
             openBook(bookDetailBean.name, localPath);
             return;
         }
-        if (!CommonUtils.isCanNowRead(bookDetailBean)) {
+        if (!ViewHelper.isCanNowRead(bookDetailBean)) {
             ToastUtil.showToast(getContext(), getResources().getString(R.string.the_book_unsupported_try_read));
             return;
         }
@@ -601,7 +692,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
-        showLoadingDialog(getString(event.getResId()));
+        if (isAdded()) {
+            showLoadingDialog(getString(event.getResId()));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -625,12 +718,68 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
-        getBookDetailData();
+        if(JDReadApplication.getInstance().getString(R.string.login_success).equals(event.getMessage())) {
+            getBookDetailData();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMenuWifiSettingEvent(MenuWifiSettingEvent event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(WifiFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookSearchKeyWordrEvent(BookSearchKeyWordrEvent event) {
+        if (getViewEventCallBack() != null) {
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, event.keyWord);
+            getViewEventCallBack().gotoView(SearchBookListFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookDetailViewInfoEvent(BookDetailViewInfoEvent event) {
+        showInfoDialog(event.info);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
+        dismissCopyRightDialog();
+        dismissInfoDialog();
+    }
+
+    private void showInfoDialog(String content) {
+        if (StringUtils.isNullOrEmpty(content)) {
+            return;
+        }
+        DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
+        DialogBookInfoViewModel dialogBookInfoViewModel = getBookDetailViewModel().getDialogBookInfoViewModel();
+        dialogBookInfoViewModel.content.set(content);
+        dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce));
+        infoBinding.setViewModel(dialogBookInfoViewModel);
+        if (infoDialog == null) {
+            AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+            build.setView(infoBinding.getRoot());
+            build.setCancelable(true);
+            infoBinding.setListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismissInfoDialog();
+                }
+            });
+            infoDialog = build.create();
+        }
+        if (infoDialog != null) {
+            infoDialog.show();
+        }
+    }
+
+    private void dismissInfoDialog() {
+        if (infoDialog != null && infoDialog.isShowing()) {
+            infoDialog.dismiss();
+        }
     }
 }

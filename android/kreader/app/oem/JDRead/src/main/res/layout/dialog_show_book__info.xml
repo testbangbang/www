@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data class="DialogBookInfoBinding">
+
+        <variable
+            name="viewModel"
+            type="com.onyx.jdread.shop.model.DialogBookInfoViewModel" />
+
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_stroke"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/book_copyright_contain_padding_bottom"
+        android:paddingLeft="@dimen/book_copyright_contain_padding"
+        android:paddingRight="@dimen/book_copyright_contain_padding">
+
+        <ImageView
+            android:layout_width="@dimen/book_copyright_cancel_button_width_and_height"
+            android:layout_height="@dimen/book_copyright_cancel_button_width_and_height"
+            android:layout_gravity="right"
+            android:layout_marginTop="@dimen/book_copyright_cancel_button_margin_top"
+            android:background="@drawable/normal_selected_background"
+            android:onClick="@{(view)->listener.onClick(view)}"
+            android:padding="@dimen/cancel_button_padding"
+            android:src="@mipmap/ic_cancel" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@{viewModel.title}"
+            android:textSize="@dimen/level_two_heading_font"
+            android:textStyle="bold" />
+
+        <com.onyx.jdread.shop.view.HtmlTextView
+            android:id="@+id/book_detail_content_introduction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/book_detail_common_margin_top"
+            android:textSize="@dimen/level_three_heading_font"
+            bind:htmlContentDialog="@{viewModel.content}" />
+
+    </LinearLayout>
+
+</layout>

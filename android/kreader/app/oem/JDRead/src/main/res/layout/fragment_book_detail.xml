@@ -26,19 +26,12 @@
             android:layout_height="wrap_content"
             bind:titleBarViewModel="@{bookDetailViewModel.titleBarViewModel}" />
 
-        <FrameLayout
+        <include
+            android:id="@+id/book_detail_info"
+            layout="@layout/layout_book_detail_info"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <include
-                android:id="@+id/book_detail_info"
-                layout="@layout/layout_book_detail_info"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible"
-                bind:bookDetailViewModel="@{bookDetailViewModel}" />
-
-        </FrameLayout>
+            android:layout_height="match_parent"
+            bind:bookDetailViewModel="@{bookDetailViewModel}" />
 
     </LinearLayout>
 

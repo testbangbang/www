@@ -24,6 +24,9 @@ public class ShopDataBundle {
     private BuyReadVipModel buyReadVipModel;
     private BookDetailResultBean.DetailBean bookDetail;
     private ViewAllViewModel viewAllViewModel;
+    private BookSaleViewModel bookSaleViewModel;
+    private NewBookViewModel newBookViewModel;
+    private VipReadViewModel vipReadViewModel;
 
     private ShopDataBundle() {
 
@@ -67,6 +70,39 @@ public class ShopDataBundle {
             }
         }
         return bookDetailViewModel;
+    }
+
+    public NewBookViewModel getNewBookViewModel() {
+        if (newBookViewModel == null) {
+            synchronized (NewBookViewModel.class) {
+                if (newBookViewModel == null) {
+                    newBookViewModel = new NewBookViewModel(getEventBus());
+                }
+            }
+        }
+        return newBookViewModel;
+    }
+
+    public BookSaleViewModel getBookSaleViewModel() {
+        if (bookSaleViewModel == null) {
+            synchronized (BookSaleViewModel.class) {
+                if (bookSaleViewModel == null) {
+                    bookSaleViewModel = new BookSaleViewModel(getEventBus());
+                }
+            }
+        }
+        return bookSaleViewModel;
+    }
+
+    public VipReadViewModel getVipReadViewModel() {
+        if (vipReadViewModel == null) {
+            synchronized (VipReadViewModel.class) {
+                if (vipReadViewModel == null) {
+                    vipReadViewModel = new VipReadViewModel(getEventBus());
+                }
+            }
+        }
+        return vipReadViewModel;
     }
 
     public RankViewModel getRankViewModel() {

@@ -3,15 +3,14 @@ package com.onyx.jdread;
 import android.test.ApplicationTestCase;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BookCommentsRequestBean;
-import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.request.cloud.RxRequestGetBookCommentList;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -25,23 +24,27 @@ public class BookCommentListTest extends ApplicationTestCase<JDReadApplication> 
         super(JDReadApplication.class);
     }
 
-    private final String EBOOK = "ebook";
-    private final int bookId = 30310588;
-    private final String QUALITYEBOOK = "qualityEbook";
-    private final String PAPEREBOOK = "paperBook";
+    private final int bookId = 34009864;
 
     public void testBookCommentList() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         BookCommentsRequestBean bookCommentsRequestBean = new BookCommentsRequestBean();
-        bookCommentsRequestBean.setAppBaseInfo(ShopDataBundle.getInstance().getAppBaseInfo());
-        String bookCommentsJsonBody = getBookCommentsJsonBody(EBOOK, bookId, "1");
-        bookCommentsRequestBean.setBody(bookCommentsJsonBody);
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        Map<String, String> queryArgs = new HashMap();
+        queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, Constants.BOOK_PAGE_SIZE);
+        queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, 1 + "");
+        appBaseInfo.addRequestParams(queryArgs);
+        String sign = String.format(CloudApiContext.BookShopURI.BOOK_COMMENT_LIST_URI, String.valueOf(bookId));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
+        bookCommentsRequestBean.setAppBaseInfo(appBaseInfo);
+        bookCommentsRequestBean.bookId = bookId;
         final RxRequestGetBookCommentList rq = new RxRequestGetBookCommentList();
         rq.setBookCommentsRequestBean(bookCommentsRequestBean);
         rq.execute(new RxCallback<RxRequestGetBookCommentList>() {
             @Override
             public void onNext(RxRequestGetBookCommentList request) {
                 assertNotNull(request.getBookCommentsResultBean());
+                assertNotNull(request.getBookCommentsResultBean().data);
                 countDownLatch.countDown();
             }
 
@@ -54,47 +57,5 @@ public class BookCommentListTest extends ApplicationTestCase<JDReadApplication> 
             }
         });
         countDownLatch.await();
-    }
-
-    private String getWriteCommentJsonBody(int bookid, String content, float rating, String users) {
-        JSONObject json = new JSONObject();
-        try {
-            json.put("content", URLEncoder.encode(content, "utf-8"));
-            json.put("at_user_ids", users);
-            json.put("book_id", bookid);
-            json.put("rating", rating);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return json.toString();
-    }
-
-    public String getBookCommentsJsonBody(String bookType, long eBookId, String currentPage) {
-        final JSONObject json = new JSONObject();
-        try {
-            if (bookType.equals("ebook"))
-                json.put("eBookId", eBookId);
-            else {
-                json.put("paperBookId", eBookId);
-            }
-            json.put("currentPage", currentPage);
-            json.put("pageSize", 20);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return json.toString();
-    }
-
-    private String getCommentGetScoreBody(long bookId) {
-        JSONObject jsobj = new JSONObject();
-        try {
-            jsobj.put("bookId", bookId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsobj.toString();
     }
 }
