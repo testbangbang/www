@@ -1,0 +1,61 @@
+package com.onyx.jdread.reader.request;
+
+import android.graphics.RectF;
+
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by huxiaomao on 2018/1/20.
+ */
+
+public class AddAnnotationRequest extends ReaderBaseRequest {
+    private Reader reader;
+    private Map<String, ReaderSelectionInfo> readerSelectionInfos;
+
+    public AddAnnotationRequest(Reader reader, Map<String, ReaderSelectionInfo> readerSelectionInfos) {
+        this.reader = reader;
+        this.readerSelectionInfos = readerSelectionInfos;
+    }
+
+    @Override
+    public AddAnnotationRequest call() throws Exception {
+        saveAnnotation();
+        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
+        return this;
+    }
+
+    private void saveAnnotation() {
+        for (ReaderSelectionInfo readerSelectionInfo : readerSelectionInfos.values()) {
+            ReaderSelection selection = readerSelectionInfo.getCurrentSelection();
+            PageInfo pageInfo = readerSelectionInfo.pageInfo;
+            Annotation annotation = createAnnotation(pageInfo, selection.getStartPosition(), selection.getEndPosition(),
+                    selection.getRectangles(), selection.getText(), "");
+
+            ContentSdkDataUtils.getDataProvider().addAnnotation(annotation);
+        }
+    }
+
+    private Annotation createAnnotation(PageInfo pageInfo, String locationBegin, String locationEnd,
+                                        List<RectF> rects, String quote, String note) {
+        Annotation annotation = new Annotation();
+        annotation.setIdString(reader.getReaderHelper().getDocumentMd5());
+        annotation.setApplication(reader.getReaderHelper().getPlugin().displayName());
+        annotation.setPosition(pageInfo.getPosition());
+        annotation.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));
+        annotation.setLocationBegin(locationBegin);
+        annotation.setLocationEnd(locationEnd);
+        annotation.setQuote(quote);
+        annotation.setNote(note);
+        annotation.setRectangles(rects);
+        return annotation;
+    }
+}
