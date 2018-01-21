@@ -15,15 +15,9 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public abstract class ReaderBaseRequest extends RxRequest {
-    static final ExecutorService executorService = new ExecutorContext().getSingleThreadPool();
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
     public boolean isSuccess = true;
-
-    public ReaderViewInfo createReaderViewInfo() {
-        readerViewInfo = new ReaderViewInfo();
-        return readerViewInfo;
-    }
 
     public final ReaderUserDataInfo getReaderUserDataInfo() {
         if (readerUserDataInfo == null) {
@@ -41,6 +35,6 @@ public abstract class ReaderBaseRequest extends RxRequest {
 
     @Override
     public Scheduler subscribeScheduler() {
-        return Schedulers.from(executorService);
+        return ReaderSchedulers.readerScheduler();
     }
 }
