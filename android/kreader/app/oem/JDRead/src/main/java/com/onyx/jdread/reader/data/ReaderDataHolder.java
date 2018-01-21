@@ -30,6 +30,7 @@ public class ReaderDataHolder {
     private Context appContext;
     private ReaderTouchHelper readerTouchHelper;
     private SelectMenuModel selectMenuModel;
+    private DocumentInfo documentInfo;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
@@ -96,6 +97,7 @@ public class ReaderDataHolder {
 
     public void initReaderDataHolder(final DocumentInfo documentInfo) {
         documentState = DocumentState.INIT;
+        this.documentInfo = documentInfo;
         reader = ReaderManager.getReader(documentInfo,getAppContext());
         readerTouchHelper.setReaderDataHolder(this);
     }
@@ -135,5 +137,13 @@ public class ReaderDataHolder {
 
     public String getCurrentPagePosition() {
         return getReaderViewInfo().getFirstVisiblePage().getPositionSafely();
+    }
+
+    public String getBookName(){
+        return getDocumentInfo().getBookName();
+    }
+
+    public DocumentInfo getDocumentInfo() {
+        return documentInfo;
     }
 }

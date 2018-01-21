@@ -11,7 +11,7 @@ import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
-import com.onyx.jdread.main.common.ManagerActivityUtils;
+import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserLoginResultErrorBean;
