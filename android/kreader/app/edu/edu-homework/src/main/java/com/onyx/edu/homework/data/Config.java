@@ -14,7 +14,7 @@ public class Config {
     private Config() {
     }
 
-    private boolean showScore = false;
+    private boolean showScore = true;
 
     public boolean isShowScore() {
         return showScore;

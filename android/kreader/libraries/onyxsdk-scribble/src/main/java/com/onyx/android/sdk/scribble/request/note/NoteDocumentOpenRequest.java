@@ -22,16 +22,13 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
 
     private NoteModel noteModel;
 
-    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create) {
-        this(id, parentUniqueId, create,null);
-    }
-
-    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create, String groupId) {
+    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create, String groupId, boolean render) {
         newCreate = create;
         setParentLibraryId(parentUniqueId);
         setGroupId(groupId);
         documentUniqueId = id;
         setPauseInputProcessor(true);
+        setRender(render);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {

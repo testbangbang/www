@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -150,7 +151,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void loadPageReview(int page, final BaseCallback callback) {
-        if (!getDataBundle().canCheckAnswer()
+        if (!getDataBundle().isReview()
                 || question.isChoiceQuestion()
                 || question.review == null
                 || CollectionUtils.isNullOrEmpty(question.review.attachmentUrl)) {
@@ -162,6 +163,12 @@ public class ScribbleFragment extends BaseFragment {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 getNoteViewHelper().updateReviewBitmap(resource);
+                BaseCallback.invoke(callback, null, null);
+            }
+
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
                 BaseCallback.invoke(callback, null, null);
             }
         });
@@ -178,7 +185,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void openDocument(final String uniqueId, final String parentUniqueId, final String groupId, boolean create) {
-        new DocumentOpenAction(uniqueId, parentUniqueId, groupId, create).execute(getNoteViewHelper(), new BaseCallback() {
+        new DocumentOpenAction(uniqueId, parentUniqueId, groupId, create, false).execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 loadPageReview(getCurrentPageIndex(), new BaseCallback() {

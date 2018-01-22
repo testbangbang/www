@@ -19,10 +19,9 @@ public class CheckWifiRequest extends BaseDataRequest {
     private volatile boolean isConnected;
 
     @Override
-    public void execute(DataManager dataManager) throws Exception {
+    public void execute(final DataManager dataManager) throws Exception {
         if (NetworkUtil.isWiFiConnected(getContext())) {
             setConnected(true);
-            getCallback().done(CheckWifiRequest.this, null);
             return;
         }
         networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
