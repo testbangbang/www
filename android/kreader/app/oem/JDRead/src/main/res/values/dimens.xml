@@ -414,4 +414,5 @@
     <dimen name="recycle_view_height_with_vip">150dp</dimen>
     <dimen name="book_cover_width_with_vip">90dp</dimen>
     <dimen name="book_cover_width_height_vip">110dp</dimen>
+    <dimen name="control_panel_floating_tittle_text_size">28sp</dimen>
 </resources>

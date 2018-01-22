@@ -49,7 +49,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     private void initSelectMenu(){
         selectMenuModel = new SelectMenuModel();
         binding.readerPopupSelectionMenu.setSelectMenuModel(selectMenuModel);
-        selectMenuModel.setSelectMenuRootView(binding.readerPopupSelectionMenu.getRoot());
+        selectMenuModel.setBinding(binding.readerPopupSelectionMenu);
         readerViewModel.getReaderDataHolder().setSelectMenuModel(selectMenuModel);
     }
 
