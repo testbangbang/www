@@ -150,7 +150,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void loadPageReview(int page, final BaseCallback callback) {
-        if (!getDataBundle().canCheckAnswer()
+        if (!getDataBundle().isReview()
                 || question.isChoiceQuestion()
                 || question.review == null
                 || CollectionUtils.isNullOrEmpty(question.review.attachmentUrl)) {

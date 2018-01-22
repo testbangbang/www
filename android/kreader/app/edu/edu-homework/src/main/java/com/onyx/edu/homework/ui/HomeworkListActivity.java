@@ -520,7 +520,7 @@ public class HomeworkListActivity extends BaseActivity {
 
     private void updateViewState() {
         binding.analysis.setVisibility(getDataBundle().canCheckAnswer() ? View.VISIBLE : View.GONE);
-        binding.answerIcon.setVisibility(getDataBundle().canCheckAnswer() ? View.VISIBLE : View.GONE);
+        binding.answerIcon.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
         binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
         binding.result.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
