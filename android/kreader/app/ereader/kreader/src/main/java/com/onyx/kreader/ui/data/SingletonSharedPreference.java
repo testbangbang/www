@@ -185,6 +185,10 @@ public class SingletonSharedPreference {
         return getBooleanByStringID(context, R.string.settings_hyperlink_key, true);
     }
 
+    public static boolean isShowPageCropRegionIndicator(Context context) {
+        return getBooleanByStringID(context, R.string.settings_show_page_crop_region_key, true);
+    }
+
     public static boolean isEnableDithering(Context context) {
         return getBooleanByStringID(context, R.string.settings_dithering_key, false);
     }

@@ -66,7 +66,7 @@ public class ReaderPainter {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap, readerDataHolder);
-        drawCropRectIndicator(canvas, paint, viewInfo);
+        drawCropRectIndicator(context, canvas, paint, viewInfo);
         drawViewportOverlayIndicator(canvas, paint, viewInfo);
         drawBookmark(context, canvas, readerDataHolder, userDataInfo, viewInfo);
         drawSearchResults(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, annotationHighlightStyle);
@@ -120,7 +120,10 @@ public class ReaderPainter {
         return viewInfo.subScreenCount <= 1;
     }
 
-    private void drawCropRectIndicator(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
+    private void drawCropRectIndicator(Context context, final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
+        if (!SingletonSharedPreference.isShowPageCropRegionIndicator(context)) {
+            return;
+        }
         if (viewInfo.cropRegionInViewport == null ||
                 viewInfo.cropRegionInViewport.isEmpty() ||
                 skipCropRectIndicator(viewInfo)) {
