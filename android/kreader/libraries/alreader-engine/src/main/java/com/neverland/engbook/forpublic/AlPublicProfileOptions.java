@@ -125,7 +125,7 @@ public class AlPublicProfileOptions {
 	*/
 	public int					paragraphSpacing = 30;
 	public boolean				noUseVerticalMarginsFromCSS = false;
-	public boolean				verticalAlign = false;
+	public boolean				verticalAlign = true;
 
 	/**
 	 * метод задает значение левого отсупа на странице
