@@ -2677,11 +2677,14 @@ public abstract class AlFormat {
 
                 if (ch == 0xad) {
 
-                } else if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0) {
+                } else
+                if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0) {
 
-                } else if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE1) {
+                } else
+                if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE1) {
 
-                } else if (ch < 0x20) {
+                } else
+                if (ch < 0x20) {
                     switch (ch) {
                         case AlStyles.CHAR_SOFTPAR:
                             res.append(' ');
@@ -2709,23 +2712,29 @@ public abstract class AlFormat {
                             isInvisible = false;
                             break;
                     }
-                } else if (isInvisible) {
+                } else
+                if (isInvisible) {
 
-                } else if (isAccept) {
+                } else
+                if (isAccept) {
                     if (ch == 0x20) {
                         if (ap.start + j >= posEnd)
                             break;
                         if (res.length() > 0 && res.charAt(res.length() - 1) > 0x20)
                             res.append(ch);
-                    } else if (ch == 0x301) {
+                    } else
+                    if (ch == 0x301) {
 
                     } else {
                         res.append(ch);
+                        if (AlUnicode.isChineze(ch) && ap.start + j >= posEnd)
+                            break;
                     }
                 } else {
                     if (ch == 0x20 || AlUnicode.isChineze(ch)) {
                         res.setLength(0);
-                    } else if (ch == 0x301) {
+                    } else
+                    if (ch == 0x301) {
 
                     } else {
                         res.append(ch);
