@@ -4,10 +4,10 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.main.util.RegularUtil;
@@ -36,7 +36,7 @@ public class PswSettingModel extends Observable {
         this.eventBus = eventBus;
         titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.password_setting));
         titleBarModel.backEvent.set(new BackToDeviceConfigFragment());
-        password = PreferenceManager.getStringValue(JDReadApplication.getInstance(), R.string.password_key, null);
+        password = JDPreferenceManager.getStringValue(R.string.password_key, null);
         encrypted.set(StringUtils.isNotBlank(password));
     }
 
@@ -47,12 +47,12 @@ public class PswSettingModel extends Observable {
             return;
         }
 
-        if (!RegularUtil.isMobile(phoneEdit.get())) {
+        if (StringUtils.isNullOrEmpty(phoneEdit.get()) || !RegularUtil.isMobile(phoneEdit.get())) {
             ToastUtil.showToast(JDReadApplication.getInstance(), R.string.phone_number_format_error);
             return;
         }
         // TODO: 18-1-2 save password
-        PreferenceManager.setStringValue(JDReadApplication.getInstance(), R.string.password_key, FileUtils.computeMD5(passwordEdit.get()));
+        JDPreferenceManager.setStringValue(R.string.password_key, FileUtils.computeMD5(passwordEdit.get()));
         eventBus.post(new BackToDeviceConfigEvent());
         //encrypted.set(true);
     }
@@ -60,11 +60,11 @@ public class PswSettingModel extends Observable {
     public void unlockPassword() {
         String unlockPassword = unlockPasswordEdit.get();
         if (StringUtils.isNullOrEmpty(password)) {
-            password = PreferenceManager.getStringValue(JDReadApplication.getInstance(), R.string.password_key, null);
+            password = JDPreferenceManager.getStringValue(R.string.password_key, null);
         }
         if (StringUtils.isNotBlank(unlockPassword) && FileUtils.computeMD5(unlockPassword).equals(password)) {
             // TODO: 18-1-2 unlock password
-            PreferenceManager.setStringValue(JDReadApplication.getInstance(), R.string.password_key, "");
+            JDPreferenceManager.setStringValue(R.string.password_key, "");
             encrypted.set(false);
         } else {
             ToastUtil.showToast(JDReadApplication.getInstance(), R.string.wrong_password);

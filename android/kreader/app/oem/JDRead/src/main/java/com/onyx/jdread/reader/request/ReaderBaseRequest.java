@@ -1,28 +1,21 @@
 package com.onyx.jdread.reader.request;
 
-import com.onyx.android.sdk.common.request.ExecutorContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.rx.RxRequest;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
-
-import java.util.concurrent.ExecutorService;
+import com.onyx.jdread.reader.highlight.SelectionInfoManager;
 
 import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by huxiaomao on 2017/12/26.
  */
 
 public abstract class ReaderBaseRequest extends RxRequest {
-    static final ExecutorService executorService = new ExecutorContext().getSingleThreadPool();
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
-
-    public ReaderViewInfo createReaderViewInfo() {
-        readerViewInfo = new ReaderViewInfo();
-        return readerViewInfo;
-    }
+    private SelectionInfoManager selectionInfoManager;
+    public boolean isSuccess = true;
 
     public final ReaderUserDataInfo getReaderUserDataInfo() {
         if (readerUserDataInfo == null) {
@@ -32,14 +25,21 @@ public abstract class ReaderBaseRequest extends RxRequest {
     }
 
     public ReaderViewInfo getReaderViewInfo() {
-        if(readerViewInfo == null) {
+        if (readerViewInfo == null) {
             readerViewInfo = new ReaderViewInfo();
         }
         return readerViewInfo;
     }
 
+    public SelectionInfoManager getSelectionInfoManager() {
+        if(selectionInfoManager == null){
+            selectionInfoManager = new SelectionInfoManager();
+        }
+        return selectionInfoManager;
+    }
+
     @Override
     public Scheduler subscribeScheduler() {
-        return Schedulers.from(executorService);
+        return ReaderSchedulers.readerScheduler();
     }
 }

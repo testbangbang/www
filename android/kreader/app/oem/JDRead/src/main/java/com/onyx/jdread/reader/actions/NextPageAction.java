@@ -5,7 +5,6 @@ import android.graphics.Rect;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
-import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
@@ -19,7 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class NextPageAction extends BaseReaderAction {
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         final NextScreenRequest request = new NextScreenRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
@@ -30,7 +29,7 @@ public class NextPageAction extends BaseReaderAction {
         });
     }
 
-    public static Rect getRegionOne(Context context){
+    public static Rect getRegionOne(Context context) {
         Rect rect = new Rect();
         rect.left = context.getResources().getInteger(R.integer.next_page_touch_one_region_left);
         rect.top = context.getResources().getInteger(R.integer.next_page_touch_one_region_top);
@@ -39,7 +38,7 @@ public class NextPageAction extends BaseReaderAction {
         return rect;
     }
 
-    public static Rect getRegionTwo(Context context){
+    public static Rect getRegionTwo(Context context) {
         Rect rect = new Rect();
         rect.left = context.getResources().getInteger(R.integer.next_page_touch_two_region_left);
         rect.top = context.getResources().getInteger(R.integer.next_page_touch_two_region_top);

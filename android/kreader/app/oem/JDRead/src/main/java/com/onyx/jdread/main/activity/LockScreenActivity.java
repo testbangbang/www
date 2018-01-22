@@ -8,7 +8,7 @@ import android.view.KeyEvent;
 
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityLockScreenBinding;
-import com.onyx.jdread.main.common.ManagerActivityUtils;
+import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.main.event.PasswordIsCorrectEvent;
 import com.onyx.jdread.main.model.LockScreenModel;
 

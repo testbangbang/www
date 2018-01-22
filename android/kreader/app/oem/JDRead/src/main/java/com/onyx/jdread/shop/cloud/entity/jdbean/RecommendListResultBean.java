@@ -7,6 +7,7 @@ import java.util.List;
  */
 
 public class RecommendListResultBean {
-    public String code;
-    public List<ResultBookBean> recommend;
+    public int resultCode;
+    public String message;
+    public List<ResultBookBean> data;
 }

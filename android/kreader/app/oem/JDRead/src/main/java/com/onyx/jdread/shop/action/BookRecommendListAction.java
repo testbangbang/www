@@ -1,10 +1,10 @@
 package com.onyx.jdread.shop.action;
 
-import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
+import com.onyx.jdread.shop.cloud.entity.BookRecommendListRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestRecommendList;
@@ -29,19 +29,20 @@ public class BookRecommendListAction extends BaseAction<ShopDataBundle> {
     @Override
     public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
-        BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
-        JSONObject body = new JSONObject();
-        body.put(CloudApiContext.RecommendList.BOOK_ID, bookID);
-        baseRequestBean.setBody(body.toJSONString());
+        BookRecommendListRequestBean requestBean = new BookRecommendListRequestBean();
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        String sign = String.format(CloudApiContext.BookShopURI.BOOK_RECOMMEND_LIST_URI, String.valueOf(bookID));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
+        requestBean.setAppBaseInfo(appBaseInfo);
+        requestBean.bookId = bookID;
         final RxRequestRecommendList rq = new RxRequestRecommendList();
-        rq.setBaseRequestBean(baseRequestBean);
+        rq.setRequestBean(requestBean);
         rq.execute(new RxCallback<RxRequestRecommendList>() {
             @Override
             public void onNext(RxRequestRecommendList request) {
                 recommendListResultBean = request.getRecommendListResultBean();
                 if (recommendListResultBean != null) {
-                    bookDetailViewModel.setRecommendList(recommendListResultBean.recommend);
+                    bookDetailViewModel.setRecommendList(recommendListResultBean.data);
                 }
                 if (rxCallback != null) {
                     rxCallback.onNext(BookRecommendListAction.this);

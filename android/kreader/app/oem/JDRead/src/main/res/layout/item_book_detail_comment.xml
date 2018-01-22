@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{commentEntity.nickname}"
+                android:text="@{commentEntity.nick_name}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
@@ -34,7 +34,7 @@
                 android:layout_alignParentRight="true"
                 android:isIndicator="true"
                 android:numStars="5"
-                android:rating="@{commentEntity.score}" />
+                android:rating="@{commentEntity.star}" />
 
         </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
 
@@ -47,13 +47,6 @@
             android:text="@{commentEntity.contents}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dashed_line_height"
-            android:layout_marginBottom="@dimen/book_detail_margin"
-            android:layout_marginTop="@dimen/book_detail_margin"
-            android:background="@mipmap/ic_dashed_line" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 

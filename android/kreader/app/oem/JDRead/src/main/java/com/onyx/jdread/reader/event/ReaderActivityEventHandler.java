@@ -4,13 +4,17 @@ import android.app.Activity;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
+import com.onyx.jdread.reader.actions.SelectTextCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
+import com.onyx.jdread.reader.common.ToastMessage;
+import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
@@ -31,6 +35,7 @@ public class ReaderActivityEventHandler {
     private ReaderViewModel readerViewModel;
     private ReaderViewBack readerViewBack;
     private ReaderSettingMenuDialog readerSettingMenuDialog;
+    private ReaderNoteDialog readerNoteDialog;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -61,17 +66,17 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onMenuAreaEvent(MenuAreaEvent event) {
-        new ShowSettingMenuAction().execute(readerViewModel.getReaderDataHolder());
+        new ShowSettingMenuAction().execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe
     public void onPrevPageEvent(PrevPageEvent event) {
-        new PrevPageAction().execute(readerViewModel.getReaderDataHolder());
+        new PrevPageAction().execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe
     public void onNextPageEvent(NextPageEvent event) {
-        new NextPageAction().execute(readerViewModel.getReaderDataHolder());
+        new NextPageAction().execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe
@@ -109,7 +114,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInitPageViewInfoEvent(InitPageViewInfoEvent event) {
-        new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder());
+        new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -153,5 +158,35 @@ public class ReaderActivityEventHandler {
         UpdateReaderViewInfoEvent event = new UpdateReaderViewInfoEvent();
         event.setReaderViewInfo(request.getReaderViewInfo());
         EventBus.getDefault().post(event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupLineationClickEvent(PopupLineationClickEvent event){
+        new AddAnnotationAction().execute(readerViewModel.getReaderDataHolder(),null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupNoteClickEvent(PopupNoteClickEvent event){
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+        readerNoteDialog = new ReaderNoteDialog(readerViewModel.getReaderDataHolder(), activity);
+        readerNoteDialog.show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupCopyClickEvent(PopupCopyClickEvent event){
+        new SelectTextCopyToClipboardAction().execute(readerViewModel.getReaderDataHolder(),null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupTranslationClickEvent(PopupTranslationClickEvent event){
+        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Translation");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupBaidupediaClickEvent(PopupBaidupediaClickEvent event){
+        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Baidupedia");
     }
 }

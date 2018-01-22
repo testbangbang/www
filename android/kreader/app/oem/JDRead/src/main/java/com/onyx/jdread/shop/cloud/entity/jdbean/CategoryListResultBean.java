@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 public class CategoryListResultBean {
-    public int result_code;
+    public int resultCode;
     public String message;
     public List<CategoryBeanLevelOne> data;
 

@@ -1,12 +1,11 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
+import com.onyx.jdread.shop.cloud.entity.BookRecommendListRequestBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
-import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 
 import retrofit2.Call;
 
@@ -15,15 +14,15 @@ import retrofit2.Call;
  */
 
 public class RxRequestRecommendList extends RxBaseCloudRequest {
-    private BaseRequestBean baseRequestBean;
+    private BookRecommendListRequestBean requestBean;
     private RecommendListResultBean recommendListResultBean;
 
     public RecommendListResultBean getRecommendListResultBean() {
         return recommendListResultBean;
     }
 
-    public void setBaseRequestBean(BaseRequestBean baseRequestBean) {
-        this.baseRequestBean = baseRequestBean;
+    public void setRequestBean(BookRecommendListRequestBean requestBean) {
+        this.requestBean = requestBean;
     }
 
     @Override
@@ -33,7 +32,7 @@ public class RxRequestRecommendList extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
+        ReadContentService getCommonService = CloudApiContext.getServiceNoCookie(CloudApiContext.getJDBooxBaseUrl());
         Call<RecommendListResultBean> call = getCall(getCommonService);
         recommendListResultBean = done(call);
         checkQuestResult();
@@ -46,18 +45,12 @@ public class RxRequestRecommendList extends RxBaseCloudRequest {
     }
 
     private void checkQuestResult() {
-        if (recommendListResultBean != null && StringUtils.isNullOrEmpty(recommendListResultBean.code)) {
-            switch (recommendListResultBean.code) {
-                default:
-                    break;
-            }
+        if (recommendListResultBean != null && recommendListResultBean.data != null) {
+
         }
     }
 
     private Call<RecommendListResultBean> getCall(ReadContentService getCommonService) {
-        return getCommonService.getRecommendList(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
-                CloudApiContext.RecommendList.BOOK_DETAIL_RECOMMEND_LIST_V2,
-                baseRequestBean.getBody()
-        );
+        return getCommonService.getRecommendList(requestBean.bookId, requestBean.getAppBaseInfo().getRequestParamsMap());
     }
 }

@@ -18,16 +18,18 @@ public class KSICibaTranslate {
     private static KSCibaEngine mKsCibaEngine = null;
     static long mCompanyID = 65892187L;
     private static int mSearchType = 2;
+    public static final String BR = "<br>";
+    public static final String DICT_PATH = "dicts";
 
     private static String seachKeyWords;
 
-    static String dictPath = JDReadApplication.getInstance().getCacheDir() + File.separator + "dict";
+    static String dictPath = JDReadApplication.getInstance().getCacheDir() + File.separator + DICT_PATH;
 
     public static KSICibaTranslate getInstance() {
         if (instance == null) {
             instance = new KSICibaTranslate();
             mKsCibaEngine = new KSCibaEngine(JDReadApplication.getInstance());
-            dictPath = Device.currentDevice.getExternalStorageDirectory() + File.separator + "dict";
+            dictPath = Device.currentDevice.getExternalStorageDirectory() + File.separator + DICT_PATH;
             mKsCibaEngine.installEngine(dictPath, mCompanyID);
         }
         return instance;
@@ -98,14 +100,14 @@ public class KSICibaTranslate {
                     spellObject = spells.getJSONObject(n);
                     spell = spellObject.optString("spell");
                     if (strBuffer.length() != 0) {
-                        strBuffer.append("\n\n");
+                        strBuffer.append(BR + BR);
                     }
                     strBuffer.append("[" + spell + "]");
                     means = spellObject.optJSONArray("means");
                     if (means != null) {
                         for (int i = 0; i < means.length(); i++) {
                             if (strBuffer.length() != 0) {
-                                strBuffer.append("\n");
+                                strBuffer.append(BR);
                             }
                             strBuffer.append(means.optString(i));
                         }
@@ -123,18 +125,18 @@ public class KSICibaTranslate {
                         symbol = symbols.getJSONObject(n);
                         word_symbol = symbol.optString("word_symbol");
                         if (strBuffer.length() != 0) {
-                            strBuffer.append("\n\n");
+                            strBuffer.append(BR + BR);
                         }
                         strBuffer.append("[" + word_symbol + "]");
                         parts = symbol.getJSONArray("parts");
                         for (int i = 0; i < parts.length(); i++) {
                             part = parts.getJSONObject(i);
                             if (strBuffer.length() != 0) {
-                                strBuffer.append("\n");
+                                strBuffer.append(BR);
                             }
                             partstr = part.optString("part");
                             if (!partstr.equals("")) {
-                                strBuffer.append(partstr + "\n");
+                                strBuffer.append(partstr + BR);
                             }
                             means = part.getJSONArray("means");
                             for (int k = 0; k < means.length(); k++) {

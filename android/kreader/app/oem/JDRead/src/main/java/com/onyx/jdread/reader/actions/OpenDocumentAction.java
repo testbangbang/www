@@ -17,12 +17,9 @@ import org.greenrobot.eventbus.EventBus;
 public class OpenDocumentAction extends BaseReaderAction {
     private ReaderDataHolder readerDataHolder;
 
-    public OpenDocumentAction(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
-    }
-
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+        this.readerDataHolder = readerDataHolder;
         loadDocumentOptions(readerDataHolder);
     }
 
@@ -55,7 +52,7 @@ public class OpenDocumentAction extends BaseReaderAction {
 
     private void analysisOpenDocumentSuccessResult() {
         InitPageViewAction createPageViewAction = new InitPageViewAction();
-        createPageViewAction.execute(readerDataHolder);
+        createPageViewAction.execute(readerDataHolder,null);
     }
 
     private void analysisOpenDocumentErrorResult(ReaderDataHolder readerDataHolder,Throwable throwable) {

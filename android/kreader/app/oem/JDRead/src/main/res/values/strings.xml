@@ -3,7 +3,7 @@
     <string name="page_count" translatable="false">%1$d/%2$d</string>
     <string name="book_total" translatable="false">total %s</string>
     <string name="library_name">Library</string>
-    <string name="shop_name">Shopping</string>
+    <string name="shop_name">Bookstore</string>
     <string name="back_name">Back</string>
     <string name="setting_name">Setting</string>
     <string name="personal_name">Personal</string>
@@ -121,7 +121,7 @@
     <string name="book_detail_button_buy_whole_book">Buy the whole book</string>
     <string name="cart">Cart</string>
     <string name="book_detail_text_view_content_introduce">Introduce</string>
-    <string name="book_detail_view_directory">Directory</string>
+    <string name="book_detail_view_catalog">Catalog</string>
     <string name="book_detail_view_comments">Comments</string>
     <string name="book_detail_view_copyright">CopyRight</string>
     <string name="book_detail_text_view_recommend_title">Book Recommend</string>
@@ -180,7 +180,7 @@
     <string name="login_resutl_params_error">params error</string>
     <string name="login_resutl_no_function">no function</string>
     <string name="login_resutl_not_login">The account is not login, please login again</string>
-    <string name="login_resutl_server_error">system error</string>
+    <string name="login_resutl_unknown_error">unknown error</string>
     <string name="the_book_unsupported_try_read">The book unsupported probation</string>
     <string name="the_book_unsupported_fluent_read">The book unsupported fluent read</string>
     <string name="you_unsupported_fluent_read">You unsupported fluent read</string>
@@ -316,7 +316,7 @@
     <string name="screen_saver_key">screen_saver_key</string>
     <string name="no_selected">No merchandise is selected</string>
     <string name="subject_list_sort_type_hot">Hot</string>
-    <string name="subject_list_sort_type_sales">Sales</string>
+    <string name="subject_list_sort_type_price">Price</string>
     <string name="subject_list_sort_type_newest">Newest</string>
     <string name="subject_list_all">All</string>
     <string name="subject_list_just_vip">Just  look at VIP</string>
@@ -368,6 +368,8 @@
     <string name="target_language">Target language: %s</string>
     <string name="input_number_for_contact">Please enter your mobile phone number so that the staff can contact you.</string>
     <string name="installed">installed</string>
+    <string name="copy">Copy</string>
+    <string name="baidupedia">Baidupedia</string>
     <string name="input_number_un_encrypt">Please enter a numeric password to unencrypt it.</string>
     <string name="encryption_success">Encryption success</string>
     <string name="total">total:</string>
@@ -378,4 +380,13 @@
     <string name="search_hot_words">Popular searches</string>
     <string name="in_library">Location ：Library</string>
     <string name="in_shop">Location ：Shop</string>
+    <string name="vip">VIP</string>
+    <string name="content_empty">null</string>
+    <string name="error_content_author_unknown">unknown author</string>
+    <string name="renew_vip">renew vip</string>
+    <string name="reader_copy_success">Copy success</string>
+    <string name="reader_edit">Edit</string>
+    <string name="reader_save">Save</string>
+    <string name="reader_original">Original</string>
+    <string name="reader_changes">Changes</string>
 </resources>

@@ -21,7 +21,7 @@ import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.main.common.JDPreferenceManager;
-import com.onyx.jdread.main.common.ManagerActivityUtils;
+import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.setting.feedback.OnyxAttachmentUriProvider;

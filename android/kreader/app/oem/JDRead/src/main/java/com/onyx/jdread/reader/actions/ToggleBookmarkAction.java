@@ -30,7 +30,7 @@ public class ToggleBookmarkAction extends  BaseReaderAction{
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         if (toggleSwitch == ToggleSwitch.On) {
             final AddBookmarkRequest request = new AddBookmarkRequest(readerDataHolder.getReader(),pageInfo);
             request.execute(new RxCallback() {

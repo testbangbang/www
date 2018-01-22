@@ -2,7 +2,7 @@
     <string name="book_total" translatable="false">总计:%s</string>
     <string name="app_name">京东阅读</string>
     <string name="library_name">书架</string>
-    <string name="shop_name">书店</string>
+    <string name="shop_name">书城</string>
     <string name="back_name">返回</string>
     <string name="setting_name">设置</string>
     <string name="personal_name">我的</string>
@@ -119,7 +119,7 @@
     <string name="book_detail_button_buy_whole_book">全本购买</string>
     <string name="cart">购物车</string>
     <string name="book_detail_text_view_content_introduce">内容简介</string>
-    <string name="book_detail_view_directory">查看目录</string>
+    <string name="book_detail_view_catalog">查看目录</string>
     <string name="book_detail_view_comments">查看评论</string>
     <string name="book_detail_view_copyright">版权信息</string>
     <string name="book_detail_text_view_recommend_title">为您推荐</string>
@@ -176,7 +176,7 @@
     <string name="login_resutl_params_error">参数错误</string>
     <string name="login_resutl_no_function">接口不存在</string>
     <string name="login_resutl_not_login">账号未登录,请重新登录</string>
-    <string name="login_resutl_server_error">系统错误</string>
+    <string name="login_resutl_unknown_error">未知错误</string>
     <string name="the_book_unsupported_try_read">抱歉,该图书不支持试读!</string>
     <string name="the_book_unsupported_fluent_read">抱歉,该图书不支持畅读!</string>
     <string name="you_unsupported_fluent_read">抱歉,您不支持畅读该书!</string>
@@ -302,7 +302,7 @@
     <string name="network_password">密码</string>
     <string name="no_selected">未选中任何商品</string>
     <string name="subject_list_sort_type_hot">热门</string>
-    <string name="subject_list_sort_type_sales">销量</string>
+    <string name="subject_list_sort_type_price">价格</string>
     <string name="subject_list_sort_type_newest">最新</string>
     <string name="subject_list_all">全部</string>
     <string name="subject_list_just_vip">只看畅读VIP</string>
@@ -352,13 +352,23 @@
     <string name="target_language">目标语言:%s</string>
     <string name="input_number_for_contact">请输入手机号，方便工作人员与您联系</string>
     <string name="installed">已安装</string>
+    <string name="copy">复制</string>
+    <string name="baidupedia">百度百科</string>
     <string name="input_number_un_encrypt">请输入数字密码解除加密</string>
     <string name="encryption_success">加密成功</string>
     <string name="total">总计:</string>
     <string name="bosom">组内:</string>
+    <string name="vip">会员</string>
+    <string name="error_content_author_unknown">作者未知</string>
     <string name="related_books">相关图书</string>
     <string name="search_history">搜索历史</string>
     <string name="search_hot_words">热门搜索</string>
     <string name="in_library">位置：书架</string>
     <string name="in_shop">位置：书店</string>
+    <string name="renew_vip">续费会员</string>
+    <string name="reader_copy_success">已复制</string>
+    <string name="reader_edit">编辑</string>
+    <string name="reader_save">完成</string>
+    <string name="reader_original">原文</string>
+    <string name="reader_changes">有修改</string>
 </resources>

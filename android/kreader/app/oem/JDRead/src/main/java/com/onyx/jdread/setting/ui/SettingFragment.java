@@ -14,7 +14,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SettingBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.ManagerActivityUtils;
+import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.setting.adapter.SettingAdapter;
 import com.onyx.jdread.setting.event.FeedbackEvent;
 import com.onyx.jdread.setting.event.IntensityEvent;

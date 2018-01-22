@@ -11,15 +11,18 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentViewAllBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.BookModelAction;
+import com.onyx.jdread.shop.action.BookRankListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
@@ -27,7 +30,6 @@ import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.TitleBarViewModel;
 import com.onyx.jdread.shop.model.ViewAllViewModel;
-import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -65,14 +67,20 @@ public class ViewAllBooksFragment extends BaseFragment {
     }
 
     private void initData() {
-        String title= PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_NAME, "");
-        modelId = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
-        modelType = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
+        String title= JDPreferenceManager.getStringValue(Constants.SP_KEY_SUBJECT_NAME, "");
         getTitleBarViewModel().leftText = title;
-        getBooksData(currentPage);
+        int bookListType= JDPreferenceManager.getIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, -1);
+        if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_MODEL) {
+            modelId = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
+            modelType = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
+            getBookModelData(currentPage);
+        } else if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_RANK) {
+            int rankType = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_RANK_TYPE, -1);
+            getBookRankData(rankType,currentPage);
+        }
     }
 
-    private void getBooksData(int currentPage) {
+    private void getBookModelData(int currentPage) {
         BookModelAction booksAction = new BookModelAction(modelId,modelType,currentPage);
         booksAction.execute(getShopDataBundle(), new RxCallback<BookModelAction>() {
             @Override
@@ -84,11 +92,23 @@ public class ViewAllBooksFragment extends BaseFragment {
         });
     }
 
+    private void getBookRankData(int rankId, int currentPage) {
+        BookRankListAction booksAction = new BookRankListAction(rankId, currentPage);
+        booksAction.execute(getShopDataBundle(), new RxCallback<BookRankListAction>() {
+            @Override
+            public void onNext(BookRankListAction booksAction) {
+                RecommendListResultBean bookModelResultBean = booksAction.getBookModelResultBean();
+                getViewAllViewModel().setBookList(bookModelResultBean.data);
+                updateContentView();
+            }
+        });
+    }
+
     private void initView() {
         SubjectListAdapter adapter = new SubjectListAdapter(getEventBus());
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContextJD(), DividerItemDecoration.VERTICAL_LIST);
-        itemDecoration.setDrawLine(false);
+        DashLineItemDivider itemDecoration = new DashLineItemDivider();
         recyclerView = viewAllBinding.recyclerViewSubjectList;
+        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.setAdapter(adapter);
         paginator = recyclerView.getPaginator();
@@ -167,7 +187,7 @@ public class ViewAllBooksFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
+        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
@@ -175,7 +195,9 @@ public class ViewAllBooksFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
-        showLoadingDialog(getString(event.getResId()));
+        if (isAdded()) {
+            showLoadingDialog(getString(event.getResId()));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

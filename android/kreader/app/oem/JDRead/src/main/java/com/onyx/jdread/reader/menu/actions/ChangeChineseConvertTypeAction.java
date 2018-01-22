@@ -19,7 +19,7 @@ public class ChangeChineseConvertTypeAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         final ChangeChineseConvertTypeRequest request = new ChangeChineseConvertTypeRequest(readerDataHolder.getReader(),convertType);
         request.execute(new RxCallback() {
             @Override

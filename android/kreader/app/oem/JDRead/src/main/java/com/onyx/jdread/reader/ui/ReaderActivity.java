@@ -16,6 +16,7 @@ import com.onyx.jdread.reader.actions.ParserOpenDocumentInfoAction;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.model.ReaderViewModel;
+import com.onyx.jdread.reader.model.SelectMenuModel;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -25,6 +26,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     private ActivityReaderBinding binding;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private ReaderViewModel readerViewModel;
+    private SelectMenuModel selectMenuModel;
     private ReaderActivityEventHandler readerActivityEventHandler;
 
     @Override
@@ -41,15 +43,23 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         binding.setReadViewModel(readerViewModel);
         readerActivityEventHandler = new ReaderActivityEventHandler(readerViewModel,this);
         initSurfaceView();
+        initSelectMenu();
+    }
+
+    private void initSelectMenu(){
+        selectMenuModel = new SelectMenuModel();
+        binding.readerPopupSelectionMenu.setSelectMenuModel(selectMenuModel);
+        selectMenuModel.setBinding(binding.readerPopupSelectionMenu);
+        readerViewModel.getReaderDataHolder().setSelectMenuModel(selectMenuModel);
     }
 
     private void initData() {
         ParserOpenDocumentInfoAction parserOpenDocumentInfoAction = new ParserOpenDocumentInfoAction(getIntent());
-        parserOpenDocumentInfoAction.execute(readerViewModel.getReaderDataHolder());
+        parserOpenDocumentInfoAction.execute(readerViewModel.getReaderDataHolder(),null);
         if (binding.getReadViewModel().setDocumentInfo(parserOpenDocumentInfoAction.getDocumentInfo())) {
             readerViewModel.setReaderPageView(binding.readerPageView);
-            OpenDocumentAction openDocumentAction = new OpenDocumentAction(readerViewModel.getReaderDataHolder());
-            openDocumentAction.execute(readerViewModel.getReaderDataHolder());
+            OpenDocumentAction openDocumentAction = new OpenDocumentAction();
+            openDocumentAction.execute(readerViewModel.getReaderDataHolder(),null);
         }
     }
 

@@ -1,10 +1,10 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -31,7 +31,9 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         GetBookDetailRequestBean baseRequestBean = new GetBookDetailRequestBean();
-        JDAppBaseInfo appBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        String sign = String.format(CloudApiContext.BookShopURI.BOOK_DETAIL_URI, String.valueOf(bookID));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         baseRequestBean.setAppBaseInfo(appBaseInfo);
         baseRequestBean.bookId = bookID;
         final RxRequestBookDetail rq = new RxRequestBookDetail();

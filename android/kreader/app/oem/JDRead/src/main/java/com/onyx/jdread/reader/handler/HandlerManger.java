@@ -19,11 +19,7 @@ public class HandlerManger {
     private ReaderDataHolder readerDataHolder;
     private int activeProviderType;
 
-    public Map<Integer, BaseHandler> handlerList = null;
-
-    public int getActiveProviderType() {
-        return activeProviderType;
-    }
+    public Map<Integer, BaseHandler> handlers = null;
 
     public boolean isTtsModel(){
         if(activeProviderType == TTS_PROVIDER){
@@ -39,37 +35,36 @@ public class HandlerManger {
     }
 
     public void initHandler() {
-        handlerList = new HashMap<>();
-        handlerList.put(READING_PROVIDER, new ReadingHandler(readerDataHolder));
-        handlerList.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(readerDataHolder));
+        handlers = new HashMap<>();
+        handlers.put(READING_PROVIDER, new ReadingHandler(readerDataHolder));
+        handlers.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(readerDataHolder));
 
         activeProviderType = READING_PROVIDER;
     }
 
     public boolean onKeyDown(int keyCode, android.view.KeyEvent event) {
-        return handlerList.get(activeProviderType).onKeyDown(keyCode, event);
+        return getActiveProvider().onKeyDown(keyCode, event);
     }
 
-
     public boolean onTouchEvent(MotionEvent event) {
-        return handlerList.get(activeProviderType).onTouchEvent(event);
+        return getActiveProvider().onTouchEvent(event);
     }
 
     public boolean onActionUp(MotionEvent event) {
-        return handlerList.get(activeProviderType).onActionUp(event);
+        return getActiveProvider().onActionUp(event);
     }
 
     public boolean onActionCancel(MotionEvent event) {
-        return handlerList.get(activeProviderType).onActionCancel(event);
+        return getActiveProvider().onActionCancel(event);
     }
 
     public boolean onDown(MotionEvent event) {
-        return handlerList.get(activeProviderType).onDown(event);
+        return getActiveProvider().onDown(event);
     }
 
     public void onLongPress(MotionEvent event) {
         updateActionProviderType(WORD_SELECTION_PROVIDER);
-        handlerList.get(activeProviderType).onLongPress(event);
+        handlers.get(activeProviderType).onLongPress(event);
     }
 
     public boolean onScroll(MotionEvent event1, MotionEvent event2, float distanceX, float distanceY) {
@@ -77,27 +72,35 @@ public class HandlerManger {
     }
 
     public boolean onSingleTapUp(MotionEvent event) {
-        return handlerList.get(activeProviderType).onSingleTapUp(event);
+        return getActiveProvider().onSingleTapUp(event);
     }
 
     public boolean onSingleTapConfirmed(MotionEvent event) {
-        return handlerList.get(activeProviderType).onSingleTapConfirmed(event);
+        return getActiveProvider().onSingleTapConfirmed(event);
     }
 
     public void updateActionProviderType(int type) {
         activeProviderType = type;
     }
 
+    public int getActiveProviderType() {
+        return activeProviderType;
+    }
+
+    public BaseHandler getActiveProvider() {
+        return handlers.get(activeProviderType);
+    }
+
     public void resetTouchStartPosition() {
-        handlerList.get(activeProviderType).resetTouchStartPosition();
+        getActiveProvider().resetTouchStartPosition();
     }
 
     public void setTouchStartEvent(MotionEvent event) {
-        handlerList.get(activeProviderType).setTouchStartEvent(event);
+        getActiveProvider().setTouchStartEvent(event);
     }
 
     public void onStop(){
-        handlerList.get(activeProviderType).onStop();
+        getActiveProvider().onStop();
         updateActionProviderType(READING_PROVIDER);
     }
 }

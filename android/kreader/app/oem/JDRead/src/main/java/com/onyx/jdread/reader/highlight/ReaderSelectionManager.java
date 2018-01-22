@@ -6,11 +6,11 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.jdread.R;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +40,10 @@ public class ReaderSelectionManager {
         return null;
     }
 
+    public ReaderSelectionInfo getReaderSelectionInfo(String pagePosition) {
+        return readerSelectionInfos.get(pagePosition);
+    }
+
     public HighlightCursor getHighlightCursor(String pagePosition, int index) {
         ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
@@ -50,6 +54,15 @@ public class ReaderSelectionManager {
         return null;
     }
 
+    public String getSelectText(){
+        String result = "";
+        for(ReaderSelectionInfo readerSelectionInfo : readerSelectionInfos.values()){
+            if(readerSelectionInfo.getCurrentSelection() != null){
+                result += readerSelectionInfo.getCurrentSelection().getText();
+            }
+        }
+        return result;
+    }
 
     public boolean normalize(String pagePosition) {
         ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
@@ -86,25 +99,27 @@ public class ReaderSelectionManager {
         ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
-                cursor.draw(canvas, paint);
+                if(cursor.getShowState()) {
+                    cursor.draw(canvas, paint);
+                }
             }
         }
     }
 
-    public void clear(String pagePosition) {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
-        if (readerSelectionInfo != null) {
-            for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
-                cursor.clear();
-            }
-        }
+    public void clear() {
+        readerSelectionInfos.clear();
     }
 
-    public boolean update(String pagePosition, final Context context) {
+    public synchronized boolean update(String pagePosition, final Context context,
+                                       ReaderSelection readerSelection, PointF lastPoint,
+                                       PageInfo pageInfo) {
         ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo == null || readerSelectionInfo.getCurrentSelection() == null) {
-            return false;
+            readerSelectionInfo = addPageSelection(pagePosition, readerSelection,pageInfo);
+        } else {
+            readerSelectionInfo.setCurrentSelection(readerSelection,pageInfo);
         }
+        readerSelectionInfo.setTouchPoint(lastPoint);
         List<RectF> rects = readerSelectionInfo.getCurrentSelection().getRectangles();
         if (rects == null || rects.size() <= 0) {
             return false;
@@ -126,6 +141,18 @@ public class ReaderSelectionManager {
         cursor.setOriginPosition(endBottom.x, endBottom.y);
         cursor.setCursorType(HighlightCursor.Type.END_CURSOR);
         return true;
+    }
+
+    private ReaderSelectionInfo addPageSelection(String pagePosition, ReaderSelection readerSelection,PageInfo pageInfo) {
+        ReaderSelectionInfo readerSelectionInfo = new ReaderSelectionInfo();
+        readerSelectionInfo.setCurrentSelection(readerSelection,pageInfo);
+        readerSelectionInfos.put(pagePosition, readerSelectionInfo);
+
+        return readerSelectionInfo;
+    }
+
+    public void deletePageSelection(String pagePosition){
+        readerSelectionInfos.remove(pagePosition);
     }
 
     public void updateDisplayPosition(String pagePosition) {
@@ -156,5 +183,9 @@ public class ReaderSelectionManager {
             }
         }
         return false;
+    }
+
+    public Map<String, ReaderSelectionInfo> getReaderSelectionInfos() {
+        return readerSelectionInfos;
     }
 }

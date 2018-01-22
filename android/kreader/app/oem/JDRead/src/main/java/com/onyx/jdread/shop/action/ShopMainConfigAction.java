@@ -1,11 +1,11 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.ShopMainConfigRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BannerViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -27,8 +27,10 @@ public class ShopMainConfigAction extends BaseAction {
     @Override
     public void execute(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         ShopMainConfigRequestBean requestBean = new ShopMainConfigRequestBean();
-        JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        requestBean.setAppBaseInfo(jdAppBaseInfo);
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        String uri = String.format(CloudApiContext.BookShopURI.SHOP_MAIN_CONFIG_URI, String.valueOf(Constants.BOOK_SHOP_DEFAULT_CID));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(uri));
+        requestBean.setAppBaseInfo(appBaseInfo);
         requestBean.setCid(Constants.BOOK_SHOP_DEFAULT_CID);
         RxRequestShopMainConfig request = new RxRequestShopMainConfig();
         request.setRequestBean(requestBean);

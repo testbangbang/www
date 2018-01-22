@@ -9,6 +9,7 @@ import com.onyx.android.sdk.reader.api.ReaderHitTestOptions;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.highlight.HitTestTextHelper;
 import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
 import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 
@@ -17,6 +18,7 @@ import com.onyx.jdread.reader.layout.LayoutProviderUtils;
  */
 
 public class SelectRequest extends ReaderBaseRequest {
+    private static final String TAG = SelectRequest.class.getSimpleName();
     private PointF start = new PointF();
     private PointF end = new PointF();
     private PointF touchPoint = new PointF();
@@ -27,14 +29,13 @@ public class SelectRequest extends ReaderBaseRequest {
     private ReaderSelectionManager readerSelectionManager;
 
     public SelectRequest(Reader reader, final String pagePosition, final PointF startPoint, final PointF endPoint, final PointF touchPoint,
-                         final ReaderHitTestOptions hitTestOptions,ReaderSelectionManager readerSelectionManager) {
+                         final ReaderHitTestOptions hitTestOptions) {
         start.set(startPoint.x, startPoint.y);
         end.set(endPoint.x, endPoint.y);
         this.touchPoint.set(touchPoint.x, touchPoint.y);
         this.pagePosition = pagePosition;
         this.hitTestOptions = hitTestOptions;
         this.reader = reader;
-        this.readerSelectionManager = readerSelectionManager;
     }
 
     public PointF getstart() {
@@ -50,6 +51,7 @@ public class SelectRequest extends ReaderBaseRequest {
         if (!reader.getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().canHitTest()) {
             return this;
         }
+        readerSelectionManager = reader.getReaderSelectionHelper();
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
         PageInfo pageInfo = reader.getReaderHelper().getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);
@@ -59,12 +61,24 @@ public class SelectRequest extends ReaderBaseRequest {
         if (selection != null && selection.getRectangles().size() > 0) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
             getReaderUserDataInfo().setTouchPoint(touchPoint);
-            reader.getReaderViewHelper().draw(reader,
-                    reader.getReaderHelper().getCurrentPageBitmap().getBitmap(),
-                    getReaderUserDataInfo(), getReaderViewInfo(),
+            updateReaderSelectInfo(pagePosition,pageInfo);
+            reader.getReaderViewHelper().renderAll(reader,
+                    reader.getReaderHelper().getCurrentPageBitmap().getBitmap(), getReaderUserDataInfo(),getReaderViewInfo(),
                     readerSelectionManager);
+
+            HitTestTextHelper.saveLastHighLightPosition(pagePosition,readerSelectionManager,start,end);
         }
+        getSelectionInfoManager().updateSelectInfo(readerSelectionManager.getReaderSelectionInfos());
         return this;
+    }
+
+    private void updateReaderSelectInfo(String pagePosition,PageInfo pageInfo) {
+        readerSelectionManager.update(pagePosition, reader.getReaderHelper().getContext(),
+                getReaderUserDataInfo().getHighlightResult(),
+                getReaderUserDataInfo().getTouchPoint(),
+                pageInfo);
+        readerSelectionManager.updateDisplayPosition(pagePosition);
+        readerSelectionManager.setEnable(pagePosition, true);
     }
 
     public static ReaderSelection translateToScreen(PageInfo pageInfo, ReaderSelection selection) {

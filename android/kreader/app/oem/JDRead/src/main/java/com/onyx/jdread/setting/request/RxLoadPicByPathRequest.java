@@ -4,15 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.rxrequest.data.fs.RxBaseFSRequest;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.setting.model.ScreenSaversBean;
 import com.onyx.jdread.setting.model.ScreenSaversModel;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +36,7 @@ public class RxLoadPicByPathRequest extends RxBaseFSRequest {
         }
         File config = new File(dir, "config.txt");
         if (config.exists()) {
-            String checkedPath = PreferenceManager.getStringValue(getAppContext(), R.string.screen_saver_key, null);
+            String checkedPath = JDPreferenceManager.getStringValue(R.string.screen_saver_key, null);
             List<ScreenSaversBean> beans = JSONObject.parseArray(FileUtils.readContentOfFile(config), ScreenSaversBean.class);
             for (ScreenSaversBean bean : beans) {
                 ScreenSaversModel.ItemModel itemModel = new ScreenSaversModel.ItemModel();

@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.actions;
 
 import android.content.Intent;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
@@ -20,7 +21,7 @@ public class ParserOpenDocumentInfoAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         setDocumentInfo();
         setSecurityInfo();
     }

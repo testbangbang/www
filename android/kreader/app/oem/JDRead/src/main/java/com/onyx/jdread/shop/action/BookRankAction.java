@@ -1,11 +1,11 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
@@ -29,8 +29,9 @@ public class BookRankAction extends BaseAction<ShopDataBundle> {
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         BaseRequestInfo requestBean = new BaseRequestInfo();
-        JDAppBaseInfo jdAppBaseInfo = JDReadApplication.getInstance().getJDAppBaseInfo();
-        requestBean.setAppBaseInfo(jdAppBaseInfo);
+        JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
+        appBaseInfo.setSign(appBaseInfo.getSignValue(CloudApiContext.BookShopURI.BOOK_RANK_URI));
+        requestBean.setAppBaseInfo(appBaseInfo);
         RxRequestBookRank request = new RxRequestBookRank();
         request.setRequestBean(requestBean);
         request.execute(new RxCallback<RxRequestBookRank>() {
