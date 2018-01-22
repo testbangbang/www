@@ -2,10 +2,12 @@ package com.onyx.android.sdk.data.model;
 
 import android.databinding.BaseObservable;
 import android.databinding.Observable;
+import android.databinding.ObservableArrayList;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableFloat;
 import android.databinding.ObservableInt;
+import android.databinding.ObservableList;
 import android.databinding.ObservableLong;
 import android.graphics.Bitmap;
 
@@ -42,6 +44,7 @@ public class DataModel extends BaseObservable {
     public final ObservableBoolean isDocument = new ObservableBoolean(false);
     public final ObservableField<String> childCount = new ObservableField<>();
     public final ObservableField<String> selectedCount = new ObservableField<>();
+    public final ObservableList<DataModel> childList = new ObservableArrayList<>();
     private EventBus eventBus;
 
     public DataModel(EventBus eventBus) {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.onyx.android.sdk.data.model.DataModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/library_cover_space">
+
+        <ImageView
+            android:id="@+id/image_cover"
+            thumbnail="@{model.coverBitmap}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/rectangle_stroke_width"
+            android:scaleType="fitXY"
+            android:src="@{model.coverDefault}" />
+    </LinearLayout>
+</layout>
