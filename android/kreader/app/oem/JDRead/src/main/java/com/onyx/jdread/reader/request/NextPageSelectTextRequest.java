@@ -8,8 +8,8 @@ import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.highlight.HitTestTextHelper;
-import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
-import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
+import com.onyx.jdread.reader.highlight.SelectionInfo;
+import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
 /**
@@ -19,7 +19,7 @@ import com.onyx.jdread.reader.menu.common.ReaderConfig;
 public class NextPageSelectTextRequest extends ReaderBaseRequest {
     private Reader reader;
     private ReaderTextStyle style;
-    private ReaderSelectionManager readerSelectionManager;
+    private ReaderSelectionHelper readerSelectionManager;
     private String currentPagePosition;
     private String newPagePosition;
     private float width;
@@ -48,7 +48,7 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
         reader.getReaderHelper().getReaderLayoutManager().nextScreen();
         newPagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
 
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(newPagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(newPagePosition);
         if (readerSelectionInfo == null) {
             PointF start = new PointF(style.getPageMargin().getLeftMargin().getPercent(), style.getPageMargin().getTopMargin().getPercent());
             PointF end = new PointF(width, height);
@@ -87,7 +87,7 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
     private void cleanCurrentPageInfo() {
         readerSelectionManager.deletePageSelection(currentPagePosition);
 
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(newPagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(newPagePosition);
         if (readerSelectionInfo != null) {
             PointF start = readerSelectionInfo.getHighLightBeginTop();
             PointF end = readerSelectionInfo.getHighLightEndBottom();
@@ -103,11 +103,11 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
     }
 
     private boolean extendCurrentPageLowerRightSelectTextRegion() {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(currentPagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(currentPagePosition);
 
         PointF start = new PointF(width, height);
         PointF end = new PointF(style.getPageMargin().getLeftMargin().getPercent(), style.getPageMargin().getTopMargin().getPercent());
-        ReaderSelectionInfo newReaderSelectionInfo = HitTestTextHelper.hitTestTextRegion(start, end, -ReaderConfig.HIT_TEST_TEXT_STEP, reader, getReaderUserDataInfo(), false, currentPagePosition);
+        SelectionInfo newReaderSelectionInfo = HitTestTextHelper.hitTestTextRegion(start, end, -ReaderConfig.HIT_TEST_TEXT_STEP, reader, getReaderUserDataInfo(), false, currentPagePosition);
         if (newReaderSelectionInfo != null) {
             readerSelectionInfo.setHighLightEndBottom(newReaderSelectionInfo.getHighLightEndBottom());
 
