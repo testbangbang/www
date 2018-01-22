@@ -26,9 +26,9 @@ public class CloudMetadataDelete extends BaseDataRequest {
 
     private void clearGoodSentence() {
        List<CloudMetadata> metadataBefore = new Select().from(CloudMetadata.class).queryList();
-        Log.i(TAG, "Delete之前Metadata_size:" + metadataBefore.size());
+        Log.i(TAG, "Delete_before_Metadata_size:" + metadataBefore.size());
         new Delete().from(CloudMetadata.class).queryList();
         List<CloudMetadata> metadataAfter = new Select().from(CloudMetadata.class).queryList();
-        Log.i(TAG, "Delete之后Metadata_size:" + metadataAfter.size());
+        Log.i(TAG, "Delete_after_Metadata_size:" + metadataAfter.size());
     }
 }
