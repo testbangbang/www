@@ -48,6 +48,7 @@ public class ShapeRemoveByPointListRequest extends BaseNoteRequest {
 
     private void renderToScreen(final NoteViewHelper helper) {
         EpdController.enablePost(surfaceView, 1);
+        EpdController.resetUpdateMode(surfaceView);
         if (surfaceView == null) {
             return;
         }
