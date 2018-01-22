@@ -217,7 +217,7 @@ public class BaseNoteRequest extends BaseRequest {
 
     private void drawReviewBitmap(Canvas canvas, NoteViewHelper noteViewHelper) {
         Bitmap bitmap = noteViewHelper.getReviewBitmap();
-        if (bitmap == null) {
+        if (bitmap == null || bitmap.isRecycled()) {
             return;
         }
         canvas.drawBitmap(bitmap, 0, 0, null);
