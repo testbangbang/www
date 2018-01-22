@@ -59,7 +59,7 @@
 
             <View style="@style/reader_dotted_line_style" />
 
-            <com.onyx.jdread.shop.view.AutoPagedWebView
+            <View
                 android:id="@+id/translate_content_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
