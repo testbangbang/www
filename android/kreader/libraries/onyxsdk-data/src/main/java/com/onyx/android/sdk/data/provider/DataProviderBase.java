@@ -71,6 +71,8 @@ public interface DataProviderBase {
 
     void deleteLibrary(Library library);
 
+    void deleteLibraryByParentId(String parentId);
+
     void clearLibrary();
 
     void clearThumbnails();

@@ -335,11 +335,7 @@ public class DataManagerHelper {
     }
 
     public static List<Library> fetchLibraryLibraryList(Context context, DataProviderBase dataProvider, QueryArgs queryArgs) {
-        List<Library> libraryList = dataProvider.loadAllLibrary(queryArgs.libraryUniqueId, queryArgs);
-        if (!FetchPolicy.isDataFromMemDb(queryArgs.fetchPolicy, NetworkUtil.isWiFiConnected(context))) {
-            DataManagerHelper.saveLibraryListToLocal(dataProvider, libraryList);
-        }
-        return libraryList;
+        return dataProvider.loadAllLibrary(queryArgs.libraryUniqueId, queryArgs);
     }
 
     public static void saveLibraryListToLocal(DataProviderBase dataProvider, List<Library> libraryList) {
