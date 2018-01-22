@@ -1,13 +1,16 @@
 package com.onyx.jdread.reader.model;
 
 import android.databinding.ObservableBoolean;
+import android.databinding.ObservableField;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
+import com.onyx.jdread.databinding.PopupSelectionMenuBinding;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.highlight.HighlightCursor;
 import com.onyx.jdread.reader.event.PopupBaidupediaClickEvent;
@@ -15,6 +18,9 @@ import com.onyx.jdread.reader.event.PopupCopyClickEvent;
 import com.onyx.jdread.reader.event.PopupLineationClickEvent;
 import com.onyx.jdread.reader.event.PopupNoteClickEvent;
 import com.onyx.jdread.reader.event.PopupTranslationClickEvent;
+import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
+import com.onyx.jdread.setting.action.TranslateAction;
+import com.onyx.jdread.setting.model.SettingBundle;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,8 +31,19 @@ import org.greenrobot.eventbus.EventBus;
 public class SelectMenuModel {
     private ObservableBoolean isShowSelectMenu = new ObservableBoolean(false);
     private ObservableBoolean isShowDictionaryMenu = new ObservableBoolean(false);
+    private ObservableField<String> page = new ObservableField<>();
     private View selectMenuRootView;
     private float selectY = 0;
+    private PopupSelectionMenuBinding binding;
+    private String inputWords = "";
+
+    public ObservableField<String> getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page.set(page);
+    }
 
     public ObservableBoolean getIsShowSelectMenu() {
         return isShowSelectMenu;
@@ -44,8 +61,19 @@ public class SelectMenuModel {
         this.isShowDictionaryMenu.set(isShowDictionaryMenu);
     }
 
-    public void setSelectMenuRootView(View selectMenuRootView) {
-        this.selectMenuRootView = selectMenuRootView;
+    public void setBinding(PopupSelectionMenuBinding binding) {
+        this.binding = binding;
+        this.selectMenuRootView = binding.getRoot();
+        this.binding.translateContentView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
+            @Override
+            public void onPageChanged(int totalPage, int curPage) {
+                updatePageNumber(totalPage,curPage);
+            }
+        });
+    }
+
+    private void updatePageNumber(int totalPage,int curPage){
+        setPage(curPage + "/" + totalPage);
     }
 
     public void onLineationClick() {
@@ -107,19 +135,20 @@ public class SelectMenuModel {
 
         final float dividerHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_popup_selection_divider_height);
         if ((diffTop - measuredHeight - dividerHeight) > 0) {
-            updateSelectMenuViewPotion(x,diffTop - dividerHeight - measuredHeight);
+            updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffTop - dividerHeight - measuredHeight);
             return;
         }
 
         if ((diffBottom + measuredHeight + dividerHeight) < screenHeight) {
-            updateSelectMenuViewPotion(x,diffBottom + dividerHeight);
+            updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffBottom + dividerHeight);
             return;
         }
 
-        updateSelectMenuViewPotion(x,screenHeight / 2);
+        updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,screenHeight / 2);
     }
 
-    private void updateSelectMenuViewPotion(float x,float y) {
+    private void updateSelectMenuViewPotion(ReaderDataHolder readerDataHolder,boolean isDictionary,float x,float y) {
+        isSearch(readerDataHolder,isDictionary);
         if (Math.abs(selectY - y) <= 0) {
             return;
         }
@@ -138,5 +167,29 @@ public class SelectMenuModel {
     public void setLayoutParams(int w, int h) {
         FrameLayout.LayoutParams p = new FrameLayout.LayoutParams(w, h);
         selectMenuRootView.setLayoutParams(p);
+    }
+
+    private void isSearch(ReaderDataHolder readerDataHolder,boolean isDictionary){
+        if(isDictionary) {
+            String text = readerDataHolder.getReaderSelectionInfo().getSelectText();
+            if(text != null && !text.equals(inputWords)){
+                inputWords = text;
+                translate();
+            }
+        }
+    }
+
+    private void translate() {
+        final TranslateAction action = new TranslateAction(inputWords);
+        action.execute(SettingBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                updateTranslateResult(action.getTranslateResult());
+            }
+        });
+    }
+
+    public void updateTranslateResult(String result){
+        binding.translateContentView.loadData(result, "text/html; charset=UTF-8", null);
     }
 }
