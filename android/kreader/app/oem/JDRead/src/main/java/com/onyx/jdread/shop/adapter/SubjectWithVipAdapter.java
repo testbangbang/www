@@ -53,7 +53,7 @@ public class SubjectWithVipAdapter extends PageAdapter<PageRecyclerView.ViewHold
 
     @Override
     public PageRecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subject_model_with_vip, null));
+        return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subject_book_model_with_vip, null));
     }
 
     @Override

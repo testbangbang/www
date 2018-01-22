@@ -47,6 +47,21 @@
                     layout="@layout/fragment_book_shop_three"
                     bind:viewModel="@{viewModel}" />
 
+                <include
+                    android:id="@+id/book_shop_four"
+                    layout="@layout/fragment_book_shop_four"
+                    bind:viewModel="@{viewModel}" />
+
+                <include
+                    android:id="@+id/book_shop_five"
+                    layout="@layout/fragment_book_shop_five"
+                    bind:viewModel="@{viewModel}" />
+
+                <include
+                    android:id="@+id/book_shop_six"
+                    layout="@layout/fragment_book_shop_six"
+                    bind:viewModel="@{viewModel}" />
+
             </LinearLayout>
 
             <com.onyx.jdread.shop.view.CustomScrollBar

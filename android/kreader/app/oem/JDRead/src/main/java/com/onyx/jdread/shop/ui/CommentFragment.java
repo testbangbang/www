@@ -200,7 +200,7 @@ public class CommentFragment extends BaseFragment {
         DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         DialogBookInfoViewModel dialogBookInfoViewModel = getBookDetailViewModel().getDialogBookInfoViewModel();
         dialogBookInfoViewModel.content.set(content);
-        dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce));
+        dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_comment_detail));
         infoBinding.setViewModel(dialogBookInfoViewModel);
         if (infoDialog == null) {
             AlertDialog.Builder build = new AlertDialog.Builder(getActivity());

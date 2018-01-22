@@ -8,6 +8,8 @@
             name="viewModel"
             type="com.onyx.jdread.shop.model.BookShopViewModel" />
 
+        <import type="com.onyx.jdread.main.common.Constants" />
+
     </data>
 
     <LinearLayout
@@ -45,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_no_stoke_background"
-                    android:text="@{viewModel.coverSubjectOneItems.modelBean.show_name}"
+                    android:text="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_ZERO).modelBean.show_name}"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
@@ -57,7 +59,7 @@
                     android:drawablePadding="@dimen/view_all_drawable_padding"
                     android:drawableRight="@mipmap/ic_go_view_all"
                     android:gravity="center"
-                    android:onClick="@{()->viewModel.coverSubjectOneItems.onViewAllClick()}"
+                    android:onClick="@{()->viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_ZERO).onViewAllClick()}"
                     android:text="@string/view_all"
                     android:textSize="@dimen/level_three_heading_font" />
 
@@ -65,7 +67,7 @@
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/recycler_view_cover_subject_one"
-                subjectItems="@{viewModel.coverSubjectOneItems.modelBean.bookList}"
+                subjectItems="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_ZERO).modelBean.bookList}"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/book_shop_recycler_height"
                 android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
@@ -87,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_no_stoke_background"
-                    android:text="@{viewModel.coverSubjectTwoItems.modelBean.show_name}"
+                    android:text="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_ONE).modelBean.show_name}"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
@@ -99,7 +101,7 @@
                     android:drawablePadding="@dimen/view_all_drawable_padding"
                     android:drawableRight="@mipmap/ic_go_view_all"
                     android:gravity="center"
-                    android:onClick="@{()->viewModel.coverSubjectTwoItems.onViewAllClick()}"
+                    android:onClick="@{()->viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_ONE).onViewAllClick()}"
                     android:text="@string/view_all"
                     android:textSize="@dimen/level_three_heading_font" />
 
@@ -107,7 +109,7 @@
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/recycler_view_cover_subject_two_back_up"
-                subjectItems="@{viewModel.coverSubjectTwoItems.modelBean.bookList}"
+                subjectItems="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_ONE).modelBean.bookList}"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/book_shop_recycler_height"
                 android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
