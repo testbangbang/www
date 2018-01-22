@@ -134,6 +134,9 @@
     <string name="wrong_question_record">Wrong question</string>
 
     <string name="homework_set_format">《%s》has been arranged</string>
+    <string name="homework_check_format">《%s》has been revised</string>
+    <string name="homework_delay_format">《%1$s》It\'s deadline has been delayed to %2$s</string>
+    <string name="homework_answer_format">《%s》has published answer</string>
     <string name="homework_format">%s Homework</string>
     <string name="goto_look">Go to</string>
     <string name="notification">Notification</string>
