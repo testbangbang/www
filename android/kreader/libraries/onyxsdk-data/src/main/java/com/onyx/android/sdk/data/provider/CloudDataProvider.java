@@ -318,7 +318,16 @@ public class CloudDataProvider implements DataProviderBase {
 
     @Override
     public void deleteLibrary(Library library) {
+        new Delete().from(CloudLibrary.class)
+                .where(CloudLibrary_Table.idString.eq(library.getIdString()))
+                .execute();
+    }
 
+    @Override
+    public void deleteLibraryByParentId(String parentId) {
+        new Delete().from(CloudLibrary.class)
+                .where(CloudLibrary_Table.parentUniqueId.eq(parentId))
+                .execute();
     }
 
     @Override
