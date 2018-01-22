@@ -352,10 +352,12 @@ public class BaseNoteRequest extends BaseRequest {
 
     public void currentPageAsVisiblePage(final NoteViewHelper helper) {
         final NotePage notePage = helper.getNoteDocument().getCurrentPage(getContext());
-        getVisiblePages().clear();
-        PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
-        pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height()));
-        getVisiblePages().add(pageInfo);
+        if (notePage != null) {
+            getVisiblePages().clear();
+            PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
+            pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height()));
+            getVisiblePages().add(pageInfo);
+        }
     }
 
     public void renderCurrentPage(final NoteViewHelper helper) {
