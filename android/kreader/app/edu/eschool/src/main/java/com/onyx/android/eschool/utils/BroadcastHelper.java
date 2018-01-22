@@ -18,7 +18,8 @@ public class BroadcastHelper {
     public static final String NOTIFICATION_TYPE = "type";
     public static final String NOTIFICATION_DATA = "data";
 
-    public static final String NOTIFICATION_TYPE_HOMEWORK = "homework";
+    public static final String NOTIFY_MESSAGE_TRIGGER = "notify_message_trigger";
+    public final static String STATUS_BAR_MESSAGE_SHOW_ACTION = "status_bar_show_message";
 
     public static void sendDialogOpenBroadcast(Context context, String dialogType) {
         context.sendBroadcast(intentWith(SYSTEM_UI_DIALOG_OPEN_ACTION, DIALOG_TYPE, dialogType));
@@ -26,6 +27,10 @@ public class BroadcastHelper {
 
     public static void sendDialogCloseBroadcast(Context context, String dialogType) {
         context.sendBroadcast(intentWith(SYSTEM_UI_DIALOG_CLOSE_ACTION, DIALOG_TYPE, dialogType));
+    }
+
+    public static void sendStatusBarMessageShowBroadcast(Context context) {
+        context.sendBroadcast(new Intent(STATUS_BAR_MESSAGE_SHOW_ACTION));
     }
 
     public static void sendNotificationBroadcast(Context context, String type, String data) {
