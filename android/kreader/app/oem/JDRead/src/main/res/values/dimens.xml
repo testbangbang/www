@@ -415,4 +415,8 @@
     <dimen name="book_cover_width_with_vip">90dp</dimen>
     <dimen name="book_cover_width_height_vip">110dp</dimen>
     <dimen name="control_panel_floating_tittle_text_size">28sp</dimen>
+    <dimen name="reader_dict_title_padding_left">10dp</dimen>
+    <dimen name="reader_dict_title_padding_right">10dp</dimen>
+    <dimen name="reader_dict_title_padding_top">15dp</dimen>
+    <dimen name="reader_dict_title_padding_bottom">15dp</dimen>
 </resources>

@@ -14,6 +14,7 @@ import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.common.ToastMessage;
+import com.onyx.jdread.reader.dialog.DialogDict;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
@@ -187,6 +188,13 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupBaidupediaClickEvent(PopupBaidupediaClickEvent event){
-        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Baidupedia");
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
+        DialogDict dialogDict = new DialogDict(activity,text);
+        dialogDict.show();
+
     }
 }
