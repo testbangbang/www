@@ -33,6 +33,7 @@ public class Constants {
     public static final String SP_KEY_SUBJECT_RANK_TYPE = "subject_rank_type";
     public static final String SP_KEY_KEYWORD = "Keyword";
     public static final String SP_KEY_BOOK_LIST_TYPE = "book_list_type";
+    public static final String SP_KEY_SEARCH_BOOK_CAT_ID = "book_search_book_cat_id";
 
     public static final int BOOK_SHOP_DEFAULT_CID = 11;
     public static final int BOOK_COMMENT_PAGE_SIZE = 20;
@@ -83,4 +84,5 @@ public class Constants {
     public static final int REMOVE_PRODUCTION_TEST_PRESS_COUNT = 5;
     public static final int BOOK_LIST_TYPE_BOOK_MODEL = 1;
     public static final int BOOK_LIST_TYPE_BOOK_RANK = 2;
+    public static final int WEB_VIEW_TEXT_ZOOM = 100;
 }

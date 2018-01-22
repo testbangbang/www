@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -32,6 +33,7 @@ import com.onyx.jdread.shop.event.TopRightTitleEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.view.AutoPagedWebView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -198,7 +200,7 @@ public class CommentFragment extends BaseFragment {
             return;
         }
         DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
-        DialogBookInfoViewModel dialogBookInfoViewModel = getBookDetailViewModel().getDialogBookInfoViewModel();
+        final DialogBookInfoViewModel dialogBookInfoViewModel = getBookDetailViewModel().getDialogBookInfoViewModel();
         dialogBookInfoViewModel.content.set(content);
         dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_comment_detail));
         infoBinding.setViewModel(dialogBookInfoViewModel);
@@ -206,6 +208,17 @@ public class CommentFragment extends BaseFragment {
             AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
             build.setView(infoBinding.getRoot());
             build.setCancelable(true);
+            AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
+            WebSettings settings = pagedWebView.getSettings();
+            settings.setSupportZoom(true);
+            settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
+            pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
+                @Override
+                public void onPageChanged(int currentPage, int totalPage) {
+                    dialogBookInfoViewModel.currentPage.set(currentPage);
+                    dialogBookInfoViewModel.totalPage.set(totalPage);
+                }
+            });
             infoBinding.setListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
