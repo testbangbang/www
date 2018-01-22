@@ -38,6 +38,7 @@ public class AlProfileOptions {
 	public int						textIndentDefaultEm;
 	public boolean					textIndentOverrideFromCSS;
 	public int						paragraphSpacing;
+	public boolean					noUseVerticalMarginsFromCSS;
 
 	/*public int		       			margin1Style;
 	public int		        		margin2Style;

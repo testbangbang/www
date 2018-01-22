@@ -1,14 +1,14 @@
 package com.neverland.engbook.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_HYPH_LANG;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class AlHyph {
 	
@@ -113,12 +113,15 @@ public class AlHyph {
 		hyph[1] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
 		for (i = 1; i <= count + 1; i++) {
 			if (wordIn[i] == ' ') {
-				if (i + 1 <= count && hyph[i + 1] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE/*'B'*/)
+				if (i + 1 <= count && hyph[i + 1] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE)
 					hyph[i + 1] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
-				if (i - 1 > 0 && hyph[i - 1] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE/*'B'*/)
+				if (i - 1 > 0 && hyph[i - 1] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE)
 					hyph[i - 1] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
-				if (i - 2 > 0 && hyph[i - 2] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE/*'B'*/)
+				if (i - 2 > 0 && hyph[i - 2] != InternalConst.TAL_HYPH_INPLACE_PREDISABLE)
 					hyph[i - 2] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;//'A';
+			}
+			if (AlUnicode.isChinezeSpecial(text[i]) && AlUnicode.isChinezeSpecial(text[i - 1])) {
+				hyph[i - 0] = InternalConst.TAL_HYPH_INPLACE_DISABLESPACE;
 			}
 		}	
 		

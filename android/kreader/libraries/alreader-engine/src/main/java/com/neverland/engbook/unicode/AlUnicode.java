@@ -124,18 +124,27 @@ public class AlUnicode {
 
 	public static boolean isChinezeSpecial(char c) {
 		switch (c) {
-			case 0xff01: //１
-			case 0xff02: //＂
-			case 0xff07: //＇
-			case 0xff09: //）
-			case 0xff0c: //，
-			case 0xff0e: //．
-			case 0xff1a: //：
-			case 0xff1b: //；
-			case 0xff1f: //？
+			case 0xff01: //!
+			case 0xff02: //" --
+			case 0xff07: //'
+			case 0xff09: //) --
+			case 0xff0c: //,
+			case 0xff0e: //.
+			case 0xff1a: //:
+			case 0xff1b: //;
+			case 0xff1f: //?
+			case 0x2019: // right '
+			case 0x201d: // right "
 
-			case 0x3001: //、
-			case 0x3002: //。
+			case 0x2024: // .
+			case 0x2025: // ..
+			case 0x2026: // ...
+
+			case 0x3000: // comma 、
+			case 0x3001: // comma 、
+			case 0x3002: // full stop 。
+			case 0x300b: // right double bracket 》
+			case 0x3011: // right lenticular bracket 】
 				return true;
 		}
 		return false;

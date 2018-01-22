@@ -462,6 +462,7 @@ public class AlBookEng{
 
 		preferences.justify = prof.justify;
         preferences.sectionNewScreen = prof.sectionNewScreen;
+		preferences.vjustifyRequest = prof.verticalAlign;
 
         preferences.notesOnPage = false;
         if (preferences.calcPagesModeRequest == TAL_SCREEN_PAGES_COUNT.SIZE) {
@@ -489,6 +490,7 @@ public class AlBookEng{
 		profiles.margin3Style = prof.margin3Style;*/
 
 		profiles.textIndentOverrideFromCSS = prof.textIndentOverrideFromCSS;
+		profiles.noUseVerticalMarginsFromCSS = prof.noUseVerticalMarginsFromCSS;
 		profiles.textIndentDefaultEm = 2;
 		if (prof.textIndentDefaultEm >= 0 && prof.textIndentDefaultEm < 16)
 			profiles.textIndentDefaultEm = prof.textIndentDefaultEm;
@@ -566,8 +568,8 @@ public class AlBookEng{
 				(profiles.colors[InternalConst.TAL_PROFILE_COLOR_BACK] & 0xff0000) > 0xa00000;
 
 		preferences.vjustifyUsed = preferences.vjustifyRequest;
-		if (preferences.vjustifyUsed && (profiles.twoColumnUsed || profiles.specialModeRoll))
-			preferences.vjustifyUsed = false;
+		//if (preferences.vjustifyUsed && (profiles.twoColumnUsed || profiles.specialModeRoll))
+		//	preferences.vjustifyUsed = false;
 
 		calc.clearMainWidth();
 		fonts.clearFontCache();
@@ -3316,7 +3318,9 @@ public class AlBookEng{
 				}
 			}
 
-			vP = (oi.prop & (AlParProperty.SL2_MARGT_MASK/* - AlParProperty::SL2_MARGT_MASK_EM*/)) >> AlParProperty.SL2_MARGT_SHIFT;
+			vP = 0;
+			if (!profiles.noUseVerticalMarginsFromCSS)
+				vP = (oi.prop & (AlParProperty.SL2_MARGT_MASK/* - AlParProperty::SL2_MARGT_MASK_EM*/)) >> AlParProperty.SL2_MARGT_SHIFT;
 			if (vP != 0) {
 				//v = (int32_t)(((double)page->pageHeight) * v / 100) * profiles.multiplexer;
 				vP = (int)(fontParam.em_width * vP / 2);//(int)(((double)width) * vP / 100.0);
@@ -3556,7 +3560,7 @@ public class AlBookEng{
                     }
                 }
 
-                if (ch == 0x20) {
+                if (ch == 0x20/* || ch == 0x3000*/) {
                     if (note_word.count != 0) {
                         if (addWord(note_word, page, width, TAL_CALC_MODE.ROWS))
                         return false;
@@ -3577,7 +3581,11 @@ public class AlBookEng{
 
                         note_word.count++;
                         note_word.hyph[note_word.count] = InternalConst.TAL_HYPH_INPLACE_DISABLE;
-                        if (note_word.count >= EngBookMyType.AL_WORD_LEN) {
+                        //if (note_word.count >= EngBookMyType.AL_WORD_LEN || (ch >= 0x3000 && AlUnicode.isChinezeSpecial(ch))) {
+						if (note_word.count >= EngBookMyType.AL_WORD_LEN ||
+								(note_word.count >= EngBookMyType.AL_WORD_LEN_FOR_TEST_CHINA && ch >= 0x3000 &&
+										!AlUnicode.isChinezeSpecial(ch) &&
+										AlUnicode.isChinezeSpecial(note_word.text[note_word.count - 2]))) {
                             note_word.need_flags |= InternalConst.AL_ONEWORD_FLAG_NOINSERTALL;
                             if (addWord(note_word, page, width, TAL_CALC_MODE.ROWS))
                             	return false;
@@ -3644,7 +3652,7 @@ public class AlBookEng{
 					}
 				}
 				
-				if (ch == 0x20 || ch == 0x3000) {// || AlUnicode::isChineze(ch)) {
+				if (ch == 0x20/* || ch == 0x3000*/) {// || AlUnicode::isChineze(ch)) {
 					if (note_word.count != 0) {
 						if (addWord(note_word, page, width, TAL_CALC_MODE.NOTES))
 							return false;			
@@ -3664,7 +3672,11 @@ public class AlBookEng{
 						
 						note_word.count++;
 						note_word.hyph[note_word.count]	= InternalConst.TAL_HYPH_INPLACE_DISABLE;
-						if (note_word.count >= EngBookMyType.AL_WORD_LEN) {
+						//if (note_word.count >= EngBookMyType.AL_WORD_LEN || (ch >= 0x3000 && AlUnicode.isChinezeSpecial(ch))) {
+						if (note_word.count >= EngBookMyType.AL_WORD_LEN ||
+								(note_word.count >= EngBookMyType.AL_WORD_LEN_FOR_TEST_CHINA && ch >= 0x3000 &&
+										!AlUnicode.isChinezeSpecial(ch) &&
+										AlUnicode.isChinezeSpecial(note_word.text[note_word.count - 2]))) {
 							note_word.need_flags |= InternalConst.AL_ONEWORD_FLAG_NOINSERTALL;
 							if (addWord(note_word, page, width, TAL_CALC_MODE.NOTES))
 								return false;
@@ -3867,7 +3879,7 @@ public class AlBookEng{
                     } else {
 						if (tword.text[0] >= 0x3000 && ((tword.need_flags & InternalConst.AL_ONEWORD_FLAG_NOINSERTALL) != 0)) {
 							int wwlen = word_len, wchina = tword.count;
-							while ((--wchina) > 8 && wwlen > oi.allWidth + (fontParam.space_width_standart << 4)) {
+							while ((--wchina) > 8 && wwlen > oi.allWidth + (oi.allWidth >> 1) + (fontParam.space_width_standart << 4)) {
 								tword.hyph[wchina] = '8';
 								wwlen -= tword.width[wchina];
 							}
@@ -5199,7 +5211,7 @@ public class AlBookEng{
 					}
 				}
 
-				if (ch == 0x20 ) {
+				if (ch == 0x20/* || ch == 0x3000*/) {
 					if (tmp_word.count != 0) {
 						if (addWord(tmp_word, page, width, TAL_CALC_MODE.NORMAL/*calc_mode*/))
 							return;
@@ -5220,7 +5232,11 @@ public class AlBookEng{
 						
 						tmp_word.count++;
 						tmp_word.hyph[tmp_word.count]	= InternalConst.TAL_HYPH_INPLACE_DISABLE;
-						if (tmp_word.count >= EngBookMyType.AL_WORD_LEN) {
+						//if (tmp_word.count >= EngBookMyType.AL_WORD_LEN || (ch >= 0x3000 && AlUnicode.isChinezeSpecial(ch))) {
+						if (tmp_word.count >= EngBookMyType.AL_WORD_LEN ||
+								(tmp_word.count >= EngBookMyType.AL_WORD_LEN_FOR_TEST_CHINA && ch >= 0x3000 &&
+										!AlUnicode.isChinezeSpecial(ch) &&
+										AlUnicode.isChinezeSpecial(tmp_word.text[tmp_word.count - 2]))) {
 							tmp_word.need_flags |= InternalConst.AL_ONEWORD_FLAG_NOINSERTALL;
 							if (addWord(tmp_word, page, width, TAL_CALC_MODE.NORMAL/*calc_mode*/))
 								return;
