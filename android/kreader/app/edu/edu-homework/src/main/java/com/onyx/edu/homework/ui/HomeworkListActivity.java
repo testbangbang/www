@@ -104,7 +104,8 @@ public class HomeworkListActivity extends BaseActivity {
                 nextPage(v);
             }
         });
-        binding.total.setText(getString(R.string.total, 0));
+        binding.totalScore.setText(getString(R.string.total_score, 0f));
+        binding.singleScore.setText(getString(R.string.single_score, 0f));
         binding.hasAnswer.setText(getString(R.string.has_answer, 0));
         binding.notAnswer.setText(getString(R.string.not_answer, 0));
         binding.submit.setText(R.string.submit);
@@ -240,7 +241,7 @@ public class HomeworkListActivity extends BaseActivity {
                 hideRecordFragment(false);
                 reloadQuestionFragment(currentPage);
                 updateViewState();
-                showTotalScore();
+                showHomeworkScore();
                 binding.newMessage.setVisibility(View.GONE);
             }
         });
@@ -279,7 +280,7 @@ public class HomeworkListActivity extends BaseActivity {
                 initToolbarTitle();
                 hideMessage();
                 updateViewState();
-                showTotalScore();
+                showHomeworkScore();
                 initQuestions(questions);
                 initOnyxNotificationReceiver();
                 countDownEndTime();
@@ -387,11 +388,11 @@ public class HomeworkListActivity extends BaseActivity {
         binding.message.setVisibility(View.GONE);
     }
 
-    private void showTotalScore() {
+    private void showHomeworkScore() {
         if (!Config.getInstance().isShowScore()) {
             return;
         }
-        if (!getDataBundle().isReview() || questions == null) {
+        if (!getDataBundle().isReview() || CollectionUtils.isNullOrEmpty(questions)) {
             return;
         }
         float score = 0f;
@@ -402,7 +403,26 @@ public class HomeworkListActivity extends BaseActivity {
             }
             score += review.score;
         }
-        binding.result.setText(getString(R.string.score, score));
+        binding.totalScore.setText(getString(R.string.total_score, score));
+    }
+
+    private void showQuestionScore() {
+        if (!getDataBundle().isReview()
+                || CollectionUtils.isNullOrEmpty(questions)) {
+            return;
+        }
+        if (!Config.getInstance().isShowScore()) {
+            return;
+        }
+        if (currentPage >= questions.size()) {
+            return;
+        }
+        Question current = questions.get(currentPage);
+        QuestionReview review = current.review;
+        if (review == null) {
+            return;
+        }
+        binding.singleScore.setText(getString(R.string.single_score, review.score));
     }
 
     private void initQuestions(final List<Question> questions) {
@@ -411,13 +431,8 @@ public class HomeworkListActivity extends BaseActivity {
         }
         questionFragment = QuestionFragment.newInstance(questions.get(0));
         getSupportFragmentManager().beginTransaction().replace(R.id.question_layout, questionFragment).commit();
-        updateShowInfo();
         checkAnswer();
         updateOnPageChanged(0);
-    }
-
-    private void updateShowInfo() {
-        binding.total.setText(getString(R.string.total, questions.size()));
     }
 
     @Subscribe
@@ -468,6 +483,8 @@ public class HomeworkListActivity extends BaseActivity {
                 binding.answerIcon.setImageResource(question.review.isRightAnswer() ? R.drawable.ic_right : R.drawable.ic_wrong);
             }
         }
+
+        showQuestionScore();
     }
 
     @Override
@@ -523,11 +540,14 @@ public class HomeworkListActivity extends BaseActivity {
         binding.answerIcon.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
         binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
-        binding.result.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
         binding.getResultLayout.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
         binding.submit.setText(getDataBundle().isDoing() ? R.string.submit : R.string.submited);
         binding.submit.setEnabled(getDataBundle().isDoing());
         binding.newMessage.setVisibility(getDataBundle().canGetReview() ? View.VISIBLE : View.GONE);
+        binding.hasAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
+        binding.notAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
+        binding.totalScore.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        binding.singleScore.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
     }
 
     @Override
