@@ -209,7 +209,7 @@ public class ShopFragment extends BaseFragment {
 
     private void setRecyclerViewCoverSubjectOne() {
         SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewOne = shopOneBinding.recyclerViewCoverSubjectOne;
+        PageRecyclerView recyclerViewOne = shopOneBinding.sujectItemOne.recyclerViewSuject;
         recyclerViewOne.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewOne.addItemDecoration(itemDecoration);
         recyclerViewOne.setAdapter(recyclerViewOneAdapter);
@@ -217,7 +217,7 @@ public class ShopFragment extends BaseFragment {
 
     private void setRecyclerViewCoverSubjectTwoBackUp() {
         SubjectAdapter recyclerViewTwoAdapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewTwo = shopOneBinding.recyclerViewCoverSubjectTwoBackUp;
+        PageRecyclerView recyclerViewTwo = shopOneBinding.sujectItemTwo.recyclerViewSuject;
         recyclerViewTwo.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewTwo.addItemDecoration(itemDecoration);
         recyclerViewTwo.setAdapter(recyclerViewTwoAdapter);
@@ -225,7 +225,7 @@ public class ShopFragment extends BaseFragment {
 
     private void setRecyclerViewCoverSubjectTwo() {
         SubjectAdapter adapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerView = shopTwoBinding.recyclerViewCoverSubjectTwo;
+        PageRecyclerView recyclerView = shopTwoBinding.sujectItemOne.recyclerViewSuject;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
@@ -240,7 +240,7 @@ public class ShopFragment extends BaseFragment {
 
     private void setRecyclerViewCoverSubjectCommon() {
         SubjectAdapter adapterFourBackup = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewFourBackup = shopTwoBinding.recyclerViewCoverSubjectFourBackup;
+        PageRecyclerView recyclerViewFourBackup = shopTwoBinding.sujectItemTwo.recyclerViewSuject;
         recyclerViewFourBackup.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewFourBackup.setAdapter(adapterFourBackup);
         SubjectAdapter adapterOne = new SubjectAdapter(getEventBus());
