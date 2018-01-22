@@ -14,11 +14,11 @@ public class SelectionInfoManager {
     private Map<String, ReaderSelectionInfo> readerSelectionInfos = new HashMap<>();
     private int moveSelectCount = 0;
 
-    public synchronized void incrementSelectCount() {
+    public synchronized void increaseSelectCount() {
         moveSelectCount++;
     }
 
-    public synchronized void decrementSelectCount() {
+    public synchronized void decreaseSelectCount() {
         moveSelectCount--;
     }
 

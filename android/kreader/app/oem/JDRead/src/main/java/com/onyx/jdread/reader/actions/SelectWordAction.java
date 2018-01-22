@@ -27,16 +27,16 @@ public class SelectWordAction extends BaseReaderAction {
                 ReaderHitTestOptionsImpl.create(true));
 
         final String pagePosition = readerDataHolder.getCurrentPagePosition();
-        readerDataHolder.getSelectionInfoManager().incrementSelectCount();
+        readerDataHolder.getReaderSelectionInfo().increaseSelectCount();
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                readerDataHolder.getSelectionInfoManager().updateSelectInfo(request.getSelectionInfoManager().getReaderSelectionInfos());
+                readerDataHolder.getReaderSelectionInfo().updateSelectInfo(request.getSelectionInfoManager().getReaderSelectionInfos());
             }
 
             @Override
             public void onFinally() {
-                readerDataHolder.getSelectionInfoManager().decrementSelectCount();
+                readerDataHolder.getReaderSelectionInfo().decreaseSelectCount();
                 updateData(readerDataHolder,request,pagePosition,baseCallback);
             }
         });

@@ -21,16 +21,16 @@ public class NextPageSelectTextAction extends BaseReaderAction {
         final String pagePosition = readerDataHolder.getCurrentPagePosition();
 
         final NextPageSelectTextRequest request = new NextPageSelectTextRequest(readerDataHolder.getReader(), style);
-        readerDataHolder.getSelectionInfoManager().incrementSelectCount();
+        readerDataHolder.getReaderSelectionInfo().increaseSelectCount();
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                readerDataHolder.getSelectionInfoManager().updateSelectInfo(request.getSelectionInfoManager().getReaderSelectionInfos());
+                readerDataHolder.getReaderSelectionInfo().updateSelectInfo(request.getSelectionInfoManager().getReaderSelectionInfos());
             }
 
             @Override
             public void onFinally() {
-                readerDataHolder.getSelectionInfoManager().decrementSelectCount();
+                readerDataHolder.getReaderSelectionInfo().decreaseSelectCount();
                 if (request.isSuccess) {
                     updateData(readerDataHolder, request, pagePosition);
                 }

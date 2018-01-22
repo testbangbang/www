@@ -21,7 +21,7 @@ public class UpdateAnnotationAction extends BaseReaderAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
-        ReaderSelectionInfo readerSelectionInfo = readerDataHolder.getSelectionInfoManager().getReaderSelectionInfo(pagePosition);
+        ReaderSelectionInfo readerSelectionInfo = readerDataHolder.getReaderSelectionInfo().getReaderSelectionInfo(pagePosition);
 
         final UpdateAnnotationRequest request = new UpdateAnnotationRequest(readerDataHolder.getReader(), readerSelectionInfo, noteInfo);
         request.execute(new RxCallback() {

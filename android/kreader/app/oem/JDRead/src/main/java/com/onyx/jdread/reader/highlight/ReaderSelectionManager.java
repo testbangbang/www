@@ -27,23 +27,6 @@ import java.util.Map;
  */
 public class ReaderSelectionManager {
     private Map<String, ReaderSelectionInfo> readerSelectionInfos = new HashMap<>();
-    private int moveSelectCount = 0;
-
-    public synchronized void incrementSelectCount() {
-        moveSelectCount++;
-    }
-
-    public synchronized void decrementSelectCount() {
-        moveSelectCount--;
-    }
-
-    public synchronized int getMoveSelectCount() {
-        return moveSelectCount;
-    }
-
-    public synchronized void setMoveSelectCount(int selectCount) {
-        this.moveSelectCount = selectCount;
-    }
 
     public ReaderSelectionManager() {
         super();

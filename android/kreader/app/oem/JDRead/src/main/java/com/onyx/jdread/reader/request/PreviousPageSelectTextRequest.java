@@ -37,7 +37,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
     public PreviousPageSelectTextRequest call() throws Exception {
         width = reader.getReaderViewHelper().getPageViewWidth();
         height = reader.getReaderViewHelper().getPageViewHeight();
-        readerSelectionManager = reader.getReaderSelectionManager();
+        readerSelectionManager = reader.getReaderSelectionHelper();
 
         currentPagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
 

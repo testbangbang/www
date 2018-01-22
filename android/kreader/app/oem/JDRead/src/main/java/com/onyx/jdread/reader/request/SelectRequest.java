@@ -51,7 +51,7 @@ public class SelectRequest extends ReaderBaseRequest {
         if (!reader.getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().canHitTest()) {
             return this;
         }
-        readerSelectionManager = reader.getReaderSelectionManager();
+        readerSelectionManager = reader.getReaderSelectionHelper();
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
         PageInfo pageInfo = reader.getReaderHelper().getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);

@@ -13,7 +13,7 @@ public class Reader {
     private ReaderHelper readerHelper;
     private DocumentInfo documentInfo;
     private ReaderViewHelper readerViewHelper;
-    private ReaderSelectionManager readerSelectionManager;
+    private ReaderSelectionManager readerSelectionHelper;
 
     public Reader(DocumentInfo documentInfo,Context context) {
         this.documentInfo = documentInfo;
@@ -33,10 +33,10 @@ public class Reader {
         return readerViewHelper;
     }
 
-    public ReaderSelectionManager getReaderSelectionManager() {
-        if (readerSelectionManager == null) {
-            readerSelectionManager = new ReaderSelectionManager();
+    public ReaderSelectionManager getReaderSelectionHelper() {
+        if (readerSelectionHelper == null) {
+            readerSelectionHelper = new ReaderSelectionManager();
         }
-        return readerSelectionManager;
+        return readerSelectionHelper;
     }
 }

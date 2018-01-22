@@ -16,7 +16,7 @@ public class CreateNoteAction extends BaseReaderAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         String pagePosition = readerDataHolder.getCurrentPagePosition();
-        ReaderSelectionInfo readerSelectionInfo = readerDataHolder.getSelectionInfoManager().getReaderSelectionInfo(pagePosition);
+        ReaderSelectionInfo readerSelectionInfo = readerDataHolder.getReaderSelectionInfo().getReaderSelectionInfo(pagePosition);
         getNoteInfo(readerSelectionInfo, pagePosition, readerDataHolder.getBookName());
         if (baseCallback != null) {
             baseCallback.onNext(null);
