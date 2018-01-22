@@ -7,11 +7,14 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -35,6 +38,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
     private boolean selectAll = false;
     private QueryArgs queryArgs;
     private Map<String, CloseableReference<Bitmap>> thumbnailMap = new HashMap<>();
+    private Map<String, List<DataModel>> libraryChildMap = new HashMap<>();
 
     private List<Metadata> bookList = new ArrayList<>();
     private List<Library> libraryList = new ArrayList<>();
@@ -71,6 +75,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         bookList.clear();
         libraryList.clear();
         DataManagerHelper.loadLibraryList(getDataProvider(), libraryList, queryArgs);
+        loadLibraryCover();
 
         totalCount = getDataProvider().count(getAppContext(), queryArgs) + getDataProvider().libraryCount(queryArgs.libraryUniqueId);
         if (loadMetadata && libraryList.size() < queryArgs.limit) {
@@ -84,12 +89,29 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         }
 
         models.clear();
-        DataModelUtil.libraryToDataModel(getDataProvider(), eventBus, models, libraryList, false, R.drawable.library_default_cover);
+        DataModelUtil.libraryToDataModel(getDataProvider(), eventBus, models, libraryList, libraryChildMap, false, R.drawable.library_default_cover);
         DataModelUtil.metadataToDataModel(eventBus, models, bookList, thumbnailMap, ThumbnailUtils.defaultThumbnailMapping());
         if (selectAll || !CollectionUtils.isNullOrEmpty(selectedList)) {
             setChecked(models);
         }
+
         return this;
+    }
+
+    private void loadLibraryCover() {
+        for (Library library : libraryList) {
+            QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.LastOpenTime, SortOrder.Desc);
+            queryArgs.libraryUniqueId = library.getIdString();
+            queryArgs.limit = 4;
+            QueryBuilder.generateMetadataInQueryArgs(queryArgs);
+            List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getAppContext(), getDataManager(),
+                    queryArgs, false);
+            List<DataModel> childModels = new ArrayList<>();
+            Map<String, CloseableReference<Bitmap>> map = DataManagerHelper.loadThumbnailBitmapsWithCache(getAppContext(), getDataManager(), metadataList);
+            DataModelUtil.metadataToDataModel(eventBus, childModels, metadataList, map, ThumbnailUtils.defaultThumbnailMapping());
+            libraryChildMap.put(library.getIdString(), childModels);
+            thumbnailMap.putAll(map);
+        }
     }
 
     private void setChecked(List<DataModel> models) {
