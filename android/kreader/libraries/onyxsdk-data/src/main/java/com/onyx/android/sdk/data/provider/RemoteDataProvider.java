@@ -35,7 +35,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Operator;
 import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
@@ -278,6 +277,13 @@ public class RemoteDataProvider implements DataProviderBase {
     @Override
     public void deleteLibrary(Library library) {
         ContentUtils.delete(OnyxLibraryProvider.CONTENT_URI, library);
+    }
+
+    @Override
+    public void deleteLibraryByParentId(String parentId) {
+        OperatorGroup group = OperatorGroup.clause().and(Library_Table.parentUniqueId.eq(parentId));
+        FlowManager.getContext().getContentResolver().delete(OnyxLibraryProvider.CONTENT_URI,
+                group.getQuery(), null);
     }
 
     @Override

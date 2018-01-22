@@ -202,6 +202,13 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
+    public void deleteLibraryByParentId(String parentId) {
+        new Delete().from(Library.class)
+                .where(Library_Table.parentUniqueId.eq(parentId))
+                .execute();
+    }
+
+    @Override
     public void clearLibrary() {
         Delete.table(Library.class);
     }
