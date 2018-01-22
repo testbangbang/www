@@ -32,6 +32,7 @@ import com.onyx.android.note.actions.scribble.ClearAllFreeShapesAction;
 import com.onyx.android.note.actions.scribble.ClearPageUndoRedoAction;
 import com.onyx.android.note.actions.scribble.DocumentCreateAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
+import com.onyx.android.note.actions.scribble.DocumentEditAction;
 import com.onyx.android.note.actions.scribble.DocumentFlushAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
 import com.onyx.android.note.actions.scribble.ExportEditedPicAction;
@@ -1116,6 +1117,17 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 action.dismissLoadingDialog();
                 onRequestFinished((BaseNoteRequest) request, true);
                 checkCustomDefaultWidth();
+                updatePenStyleInfo(shapeDataInfo);
+            }
+        });
+    }
+
+    protected void handleDocumentEdit(final String uniqueId, final String parentId) {
+        final DocumentEditAction<BaseScribbleActivity> action = new DocumentEditAction<>(uniqueId, parentId);
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                updatePenStyleInfo(shapeDataInfo);
             }
         });
     }
@@ -1264,9 +1276,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
         saveAction.execute(ScribbleActivity.this, null);
     }
 
-    private void onNoteShapeChanged(boolean render, boolean resume, int type, BaseCallback callback) {
+    private void onNoteShapeChanged(boolean render, boolean resume, int type, final BaseCallback callback) {
         setCurrentShapeType(type);
-        syncWithCallback(render, resume, callback);
+        syncWithCallback(render, resume, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                updatePenStyleInfo(shapeDataInfo);
+                BaseCallback.invoke(callback, request, e);
+            }
+        });
     }
 
     private void onStrokeWidthChanged(float width, BaseCallback callback) {
@@ -1293,7 +1311,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
     protected void updateDataInfo(final BaseNoteRequest request) {
         super.updateDataInfo(request);
         getScribbleSubMenu().setCurShapeDataInfo(shapeDataInfo);
-        updatePenStyleInfo(shapeDataInfo);
     }
 
 
