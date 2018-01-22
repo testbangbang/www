@@ -47,6 +47,10 @@ public class CloudContentRefreshRequest extends BaseCloudRequest {
     public void execute(CloudManager cloudManager) throws Exception {
         checkQueryCloudPolicy(queryArgs);
         libraryResult = loadLibraryQueryResult(cloudManager);
+        if (!libraryResult.hasException()) {
+            deleteLibrary(cloudManager.getCloudDataProvider(), queryArgs.libraryUniqueId);
+            saveLibrary(cloudManager.getCloudDataProvider(), libraryResult);
+        }
         queryResult = DataManagerHelper.cloudMetadataFromDataProvider(getContext(),
                 cloudManager.getCloudDataProvider(), queryArgs);
         if (queryResult == null || queryResult.hasException()) {
@@ -94,5 +98,13 @@ public class CloudContentRefreshRequest extends BaseCloudRequest {
                 queryArgs);
         queryResult.count = CollectionUtils.getSize(queryResult.list);
         return queryResult;
+    }
+
+    private void deleteLibrary(DataProviderBase dataProvider, String parentId) {
+        dataProvider.deleteLibraryByParentId(parentId);
+    }
+
+    private void saveLibrary(DataProviderBase dataProvider, QueryResult<Library> queryResult) {
+        DataManagerHelper.saveLibraryListToLocal(dataProvider, queryResult.list);
     }
 }

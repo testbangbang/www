@@ -275,6 +275,13 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
+    public void deleteLibraryByParentId(String parentId) {
+        OperatorGroup group = OperatorGroup.clause().and(Library_Table.parentUniqueId.eq(parentId));
+        FlowManager.getContext().getContentResolver().delete(OnyxLibraryProvider.CONTENT_URI,
+                group.getQuery(), null);
+    }
+
+    @Override
     public void clearLibrary() {
         FlowManager.getContext().getContentResolver().delete(OnyxLibraryProvider.CONTENT_URI,
                 null, null);

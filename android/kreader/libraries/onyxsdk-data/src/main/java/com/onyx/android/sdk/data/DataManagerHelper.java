@@ -23,7 +23,9 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.io.File;
@@ -238,11 +240,7 @@ public class DataManagerHelper {
     }
 
     public static List<Library> fetchLibraryLibraryList(Context context, DataProviderBase dataProvider, QueryArgs queryArgs) {
-        List<Library> libraryList = dataProvider.loadAllLibrary(queryArgs.libraryUniqueId, queryArgs);
-        if (!FetchPolicy.isDataFromMemDb(queryArgs.fetchPolicy, NetworkUtil.isWiFiConnected(context))) {
-            DataManagerHelper.saveLibraryListToLocal(dataProvider, libraryList);
-        }
-        return libraryList;
+        return dataProvider.loadAllLibrary(queryArgs.libraryUniqueId, queryArgs);
     }
 
     public static void saveLibraryListToLocal(DataProviderBase dataProvider, List<Library> libraryList) {
@@ -355,5 +353,16 @@ public class DataManagerHelper {
         }
         database.setTransactionSuccessful();
         database.endTransaction();
+    }
+
+    public static OperatorGroup getPropertyOrCondition(List<String> valueList, Property<String> property) {
+        if (CollectionUtils.isNullOrEmpty(valueList)) {
+            return null;
+        }
+        OperatorGroup condition = OperatorGroup.clause();
+        for (String value : valueList) {
+            condition.or(property.eq(value));
+        }
+        return condition;
     }
 }
