@@ -326,6 +326,7 @@ public class NoteViewHelper {
 
     public void quitDrawing() {
         EpdController.setScreenHandWritingPenState(surfaceView, PEN_STOP);
+        EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_PENCIL);
         if (!useRawInput()) {
             return;
         }
