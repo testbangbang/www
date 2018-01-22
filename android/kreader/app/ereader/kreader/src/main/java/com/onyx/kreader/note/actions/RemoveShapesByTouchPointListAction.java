@@ -44,7 +44,6 @@ public class RemoveShapesByTouchPointListAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 docBitmap.close();
-                readerDataHolder.getEventBus().post(ShapeRenderFinishEvent.shapeReadyEvent());
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
