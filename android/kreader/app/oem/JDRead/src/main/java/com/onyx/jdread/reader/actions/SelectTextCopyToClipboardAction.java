@@ -15,7 +15,7 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
 public class SelectTextCopyToClipboardAction extends BaseReaderAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        String text = readerDataHolder.getSelectionInfoManager().getSelectText();
+        String text = readerDataHolder.getReaderSelectionInfo().getSelectText();
 
         ClipboardManager clipboardManager = (ClipboardManager) readerDataHolder.getAppContext().getSystemService(Context.CLIPBOARD_SERVICE);
         clipboardManager.setText(text);

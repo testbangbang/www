@@ -16,7 +16,7 @@ public class AddAnnotationAction extends BaseReaderAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         Map<String,ReaderSelectionInfo> readerSelectionInfos = new HashMap<>();
-        readerSelectionInfos.putAll(readerDataHolder.getSelectionInfoManager().getReaderSelectionInfos());
+        readerSelectionInfos.putAll(readerDataHolder.getReaderSelectionInfo().getReaderSelectionInfos());
 
         final AddAnnotationRequest request = new AddAnnotationRequest(readerDataHolder.getReader(),readerSelectionInfos);
         request.execute(new RxCallback() {

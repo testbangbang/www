@@ -75,8 +75,8 @@ public class SelectMenuModel {
 
     public void requestLayoutView(ReaderDataHolder readerDataHolder,boolean isDictionary) {
         String pagePosition = readerDataHolder.getCurrentPagePosition();
-        HighlightCursor beginHighlightCursor = readerDataHolder.getSelectionInfoManager().getHighlightCursor(pagePosition, HighlightCursor.BEGIN_CURSOR_INDEX);
-        HighlightCursor endHighlightCursor = readerDataHolder.getSelectionInfoManager().getHighlightCursor(pagePosition, HighlightCursor.END_CURSOR_INDEX);
+        HighlightCursor beginHighlightCursor = readerDataHolder.getReaderSelectionInfo().getHighlightCursor(pagePosition, HighlightCursor.BEGIN_CURSOR_INDEX);
+        HighlightCursor endHighlightCursor = readerDataHolder.getReaderSelectionInfo().getHighlightCursor(pagePosition, HighlightCursor.END_CURSOR_INDEX);
         if (beginHighlightCursor == null || endHighlightCursor == null) {
             return;
         }

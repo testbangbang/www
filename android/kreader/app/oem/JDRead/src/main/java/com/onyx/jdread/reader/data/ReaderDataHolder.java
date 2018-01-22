@@ -31,7 +31,7 @@ public class ReaderDataHolder {
     private ReaderTouchHelper readerTouchHelper;
     private SelectMenuModel selectMenuModel;
     private DocumentInfo documentInfo;
-    private SelectionInfoManager selectionInfoManager;
+    private SelectionInfoManager readerSelectionInfo;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
@@ -50,11 +50,11 @@ public class ReaderDataHolder {
         return readerTouchHelper;
     }
 
-    public SelectionInfoManager getSelectionInfoManager(){
-        if (selectionInfoManager == null) {
-            selectionInfoManager = new SelectionInfoManager();
+    public SelectionInfoManager getReaderSelectionInfo(){
+        if (readerSelectionInfo == null) {
+            readerSelectionInfo = new SelectionInfoManager();
         }
-        return selectionInfoManager;
+        return readerSelectionInfo;
     }
 
     public HandlerManger getHandlerManger() {

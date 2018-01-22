@@ -15,7 +15,7 @@ public class CleanSelectionRequest extends ReaderBaseRequest {
 
     @Override
     public CleanSelectionRequest call() throws Exception {
-        reader.getReaderSelectionManager().clear();
+        reader.getReaderSelectionHelper().clear();
         return this;
     }
 }
