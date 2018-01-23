@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
@@ -63,18 +64,21 @@ public class CloudLibraryContentListRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        libraryQueryResult = loadLibraryQueryResult(parent);
+        libraryQueryResult = loadLibraryQueryResult(parent.getCloudDataProvider());
         metadataQueryResult = loadMetadataQueryResult(getContext(), parent, queryArgs);
         if (loadThumbnail && QueryResult.isValidQueryResult(metadataQueryResult)) {
             thumbnailBitmap = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(getContext(), parent, metadataQueryResult.list);
         }
     }
 
-    private QueryResult<Library> loadLibraryQueryResult(CloudManager parent) {
+    private QueryResult<Library> loadLibraryQueryResult(DataProviderBase dataProvider) {
         QueryResult<Library> queryResult = new QueryResult<>();
-        queryResult.list = DataManagerHelper.fetchLibraryLibraryList(getContext(), parent.getCloudDataProvider(),
+        queryResult.list = DataManagerHelper.fetchLibraryLibraryList(getContext(), dataProvider,
                 queryArgs);
         queryResult.count = CollectionUtils.getSize(queryResult.list);
+        if (!FetchPolicy.isDataFromMemDb(queryArgs.fetchPolicy, NetworkUtil.isWiFiConnected(getContext()))) {
+            DataManagerHelper.saveLibraryListToLocal(dataProvider, queryResult.list);
+        }
         return queryResult;
     }
 
