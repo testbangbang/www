@@ -6,6 +6,7 @@ import android.view.SurfaceView;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.handler.HandlerManger;
@@ -145,5 +146,17 @@ public class ReaderDataHolder {
 
     public DocumentInfo getDocumentInfo() {
         return documentInfo;
+    }
+
+    public String getCurrentPageName() {
+        return getReaderViewInfo().getFirstVisiblePage().getName();
+    }
+
+    public int getCurrentPage() {
+        return PagePositionUtils.getPageNumber(getCurrentPageName());
+    }
+
+    public int getPageCount() {
+        return getReaderViewInfo().getTotalPage();
     }
 }

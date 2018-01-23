@@ -242,6 +242,9 @@ public class ReaderSettingMenuDialogHandler {
 
     public PageInfo getFirstVisiblePageWithBookmark() {
         for (PageInfo pageInfo : getVisiblePages()) {
+            if(readerDataHolder.getReaderUserDataInfo() == null){
+                continue;
+            }
             if (readerDataHolder.getReaderUserDataInfo().hasBookmark(pageInfo)) {
                 return pageInfo;
             }

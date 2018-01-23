@@ -36,6 +36,15 @@ public class ReaderViewInfo {
     public int subScreenCount = 1;
     public boolean layoutChanged = false;
     public boolean autoCropForEachBlock = false;
+    public int totalPage;
+
+    public int getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage(int totalPage) {
+        this.totalPage = totalPage;
+    }
 
     public final List<PageInfo> getVisiblePages() {
         return visiblePages;

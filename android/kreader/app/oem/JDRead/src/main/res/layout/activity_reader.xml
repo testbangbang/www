@@ -20,13 +20,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <com.onyx.jdread.setting.view.OnyxDigitalClock
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/reader_time_margin_bottom"
+            android:layout_marginLeft="@dimen/reader_time_margin_left"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="@dimen/reader_page_number_margin_bottom"
+            android:layout_marginRight="@dimen/reader_page_number_margin_right"
+            android:text="@{readViewModel.page}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font" />
+
         <include
             android:id="@+id/reader_popup_selection_menu"
             layout="@layout/popup_selection_menu"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:visibility="gone" />
 
         <TextView
