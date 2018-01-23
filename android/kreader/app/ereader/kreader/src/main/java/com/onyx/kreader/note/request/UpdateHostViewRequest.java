@@ -4,7 +4,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.SurfaceView;
 
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.note.NoteManager;
 
 import java.util.ArrayList;
@@ -16,20 +15,29 @@ import java.util.List;
 
 public class UpdateHostViewRequest extends ReaderBaseNoteRequest {
     private SurfaceView surfaceView;
+    private boolean isUpdatingVisibleRect;
     private Rect visibleRect = new Rect();
+    private boolean isUpdatingExcludeRect;
     private ArrayList<RectF> excludeRectList = new ArrayList<>();
+
     private int orientation;
 
-    public UpdateHostViewRequest(final SurfaceView sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {
+    public UpdateHostViewRequest(final SurfaceView sv, boolean isUpdatingVisibleRect, final Rect visibleDrawRect, boolean isUpdatingExcludeRect, final List<RectF> excludeRect, int orientation) {
         setPauseRawInputProcessor(false);
         surfaceView = sv;
-        visibleRect.set(visibleDrawRect);
-        excludeRectList.addAll(excludeRect);
+        this.isUpdatingVisibleRect = isUpdatingVisibleRect;
+        if (isUpdatingVisibleRect) {
+            visibleRect.set(visibleDrawRect);
+        }
+        this.isUpdatingExcludeRect = isUpdatingExcludeRect;
+        if (isUpdatingExcludeRect) {
+            excludeRectList.addAll(excludeRect);
+        }
         this.orientation = orientation;
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
-        noteManager.updateHostView(getContext(), surfaceView, visibleRect, excludeRectList, orientation);
+        noteManager.updateHostView(getContext(), surfaceView, isUpdatingVisibleRect, visibleRect, isUpdatingExcludeRect, excludeRectList, orientation);
     }
 
 }

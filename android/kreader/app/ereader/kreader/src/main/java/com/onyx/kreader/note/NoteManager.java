@@ -152,17 +152,22 @@ public class NoteManager {
         getTouchHelper().getTouchReader().setSupportBigPen(noteConfig.supportBigPen());
     }
 
-    public void updateHostView(final Context context, final SurfaceView sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {
+    public void updateHostView(final Context context, final SurfaceView sv, boolean isUpdatingVisibleRect, final Rect visibleDrawRect, boolean isUpdatingExcludeRect, final List<RectF> excludeRect, int orientation) {
         if (noteConfig == null || mappingConfig == null) {
             initNoteArgs(context);
         }
         surfaceView = sv;
-        this.visibleDrawRect = new Rect(visibleDrawRect);
-        this.excludeRegions = RectUtils.toRectList(excludeRect);
         getTouchHelper().setup(surfaceView);
 
-        List<Rect> limitRegions = getLimitRegionOfVisiblePages();
-        getTouchHelper().setLimitRect(limitRegions, excludeRegions);
+        if (isUpdatingVisibleRect) {
+            this.visibleDrawRect = new Rect(visibleDrawRect);
+            List<Rect> limitRegions = getLimitRegionOfVisiblePages();
+            getTouchHelper().setLimitRect(limitRegions);
+        }
+        if (isUpdatingExcludeRect) {
+            this.excludeRegions = RectUtils.toRectList(excludeRect);
+            getTouchHelper().setExcludeRect(excludeRegions);
+        }
     }
 
     public final TouchHelper getTouchHelper() {
