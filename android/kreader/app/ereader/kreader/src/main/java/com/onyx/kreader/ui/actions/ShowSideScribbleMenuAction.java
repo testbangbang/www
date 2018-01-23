@@ -98,16 +98,18 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     }
 
     private void onMenuViewSizeChange(ViewGroup parent) {
-        layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                List<RectF> excludeRectFs = new ArrayList<>();
-                collectExcludeRectFs(excludeRectFs, sideMenu.getMainMenu());
-                collectExcludeRectFs(excludeRectFs, sideMenu.getSubMenu());
-                readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(excludeRectFs));
-            }
-        };
-        parent.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
+        if (layoutListener == null) {
+            layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    List<RectF> excludeRectFs = new ArrayList<>();
+                    collectExcludeRectFs(excludeRectFs, sideMenu.getMainMenu());
+                    collectExcludeRectFs(excludeRectFs, sideMenu.getSubMenu());
+                    readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(excludeRectFs));
+                }
+            };
+            parent.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
+        }
     }
 
     private void addDividerLine(ViewGroup parent) {
@@ -301,7 +303,9 @@ public class ShowSideScribbleMenuAction extends BaseAction {
 
     @Subscribe
     public void close(CloseScribbleMenuEvent event) {
-        TreeObserverUtils.removeGlobalOnLayoutListener(parent.getViewTreeObserver(), layoutListener);
+        if (layoutListener != null) {
+            TreeObserverUtils.removeGlobalOnLayoutListener(parent.getViewTreeObserver(), layoutListener);
+        }
         removeMenu();
         parent.removeView(dividerLine);
         readerDataHolder.getEventBus().unregister(this);
