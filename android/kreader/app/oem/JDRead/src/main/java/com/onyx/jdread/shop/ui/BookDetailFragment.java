@@ -245,6 +245,7 @@ public class BookDetailFragment extends BaseFragment {
                     }
                     if (!bookDetailBean.can_buy) {
                         buyBookButton.setVisibility(View.GONE);
+                        bookDetailBinding.bookDetailInfo.shopCartContainer.setVisibility(View.GONE);
                     }
                     if (!StringUtils.isNullOrEmpty(bookDetailBean.author) && !getString(R.string.content_empty).equals(bookDetailBean.author)) {
                         getAuthorBooksData(bookDetailBean.author);
@@ -659,6 +660,7 @@ public class BookDetailFragment extends BaseFragment {
 
     public void setBookId(long ebookId) {
         this.ebookId = ebookId;
+        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, ebookId);
         queryMetadata();
         getBookDetail();
     }
