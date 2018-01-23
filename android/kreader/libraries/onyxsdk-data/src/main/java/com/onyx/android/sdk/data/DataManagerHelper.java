@@ -8,7 +8,6 @@ import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.manager.CacheManager;
-import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -20,7 +19,6 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
@@ -45,8 +43,8 @@ public class DataManagerHelper {
         return DataProviderManager.getLocalDataProvider();
     }
 
-    public static List<Library> loadLibraryList(DataManager dataManager, List<Library> list, String parentId) {
-        List<Library> tmpList = dataManager.getRemoteContentProvider().loadAllLibrary(parentId, null);
+    public static List<Library> loadLibraryList(DataProviderBase dataProvider, List<Library> list, QueryArgs queryArgs) {
+        List<Library> tmpList = dataProvider.loadAllLibrary(queryArgs.libraryUniqueId, queryArgs);
         if (tmpList.size() > 0) {
             list.addAll(tmpList);
         }
@@ -54,9 +52,16 @@ public class DataManagerHelper {
     }
 
     public static void loadLibraryRecursive(DataManager dataManager, List<Library> list, String targetId) {
-        List<Library> tmpList = loadLibraryList(dataManager, list, targetId);
+        QueryArgs queryArgs = new QueryArgs();
+        queryArgs.libraryUniqueId = targetId;
+        loadLibraryRecursive(dataManager.getRemoteContentProvider(), list, queryArgs);
+    }
+
+    public static void loadLibraryRecursive(DataProviderBase dataProvider, List<Library> list, QueryArgs queryArgs) {
+        List<Library> tmpList = loadLibraryList(dataProvider, list, queryArgs);
         for (Library library : tmpList) {
-            loadLibraryRecursive(dataManager, list, library.getIdString());
+            queryArgs.libraryUniqueId = library.getIdString();
+            loadLibraryRecursive(dataProvider, list, queryArgs);
         }
     }
 
