@@ -15,6 +15,8 @@ public class TimeUtils {
     public static final String DATA_FORMAT = "yyyy-MM-dd";
     public static final String DATA_HOUR_FORMAT = "yyyy-MM-dd_HH-mm";
     public static final String DATA_HOUR_FORMAT_CAST = "yyyyMMddHHmm";
+    public static final String DATA_TIME = "HH:mm";
+    public static final SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat(DATA_TIME);
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat(DATA_TIME_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_DATE = new SimpleDateFormat(DATA_FORMAT);
     public static final SimpleDateFormat DATA_HOUR_FORMAT_DATE = new SimpleDateFormat(DATA_HOUR_FORMAT);
@@ -34,6 +36,10 @@ public class TimeUtils {
 
     public static String getDate(long timeInMillis) {
         return getTime(timeInMillis, DATE_FORMAT_DATE);
+    }
+
+    public static String getCurrentTime(){
+        return getTime(getCurrentTimeInLong(),DEFAULT_TIME_FORMAT);
     }
 
     public static long getCurrentTimeInLong() {
