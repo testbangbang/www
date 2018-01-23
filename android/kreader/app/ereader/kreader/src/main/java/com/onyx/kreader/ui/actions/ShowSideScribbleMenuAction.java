@@ -97,11 +97,10 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         }
     }
 
-    private void onMenuViewSizeChange(final ViewGroup parent) {
+    private void onMenuViewSizeChange(ViewGroup parent) {
         layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                TreeObserverUtils.removeGlobalOnLayoutListener(parent.getViewTreeObserver(), layoutListener);
                 List<RectF> excludeRectFs = new ArrayList<>();
                 collectExcludeRectFs(excludeRectFs, sideMenu.getMainMenu());
                 collectExcludeRectFs(excludeRectFs, sideMenu.getSubMenu());
