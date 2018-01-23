@@ -23,16 +23,18 @@
             android:gravity="center"
             android:padding="@dimen/dialog_single_manage_close_padding"
             android:text="@{dialogModel.title}"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{StringUtils.isNullOrEmpty(dialogModel.title)?View.GONE:View.VISIBLE}" />
 
         <EditText
             android:layout_width="@dimen/dialog_build_edit_width"
-            android:layout_gravity="center_horizontal"
             android:layout_height="@dimen/dialog_build_edit_height"
+            android:layout_gravity="center_horizontal"
             android:hint="@string/build_library_hint"
-            android:text="@={dialogModel.libraryName}"
             android:maxLength="@integer/library_name_length"
+            android:textColor="@android:color/black"
+            android:text="@={dialogModel.libraryName}"
             android:textSize="@dimen/level_two_heading_font" />
 
         <LinearLayout
@@ -49,6 +51,7 @@
                 android:gravity="center"
                 android:onClick="@{()->dialogModel.onPositiveClick()}"
                 android:text="@{dialogModel.positiveText}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <TextView
@@ -58,7 +61,8 @@
                 android:background="@drawable/selected_background"
                 android:gravity="center"
                 android:onClick="@{()->dialogModel.onNegativeClick()}"
-                android:text="@{dialogModel.negativeText}" />
+                android:text="@{dialogModel.negativeText}"
+                android:textColor="@android:color/black" />
         </LinearLayout>
     </LinearLayout>
 

@@ -53,7 +53,7 @@ public class SubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, Res
 
     @Override
     public PageRecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subject_model, null));
+        return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subject_book_model, null));
     }
 
     @Override

@@ -18,6 +18,7 @@
             android:gravity="center_vertical"
             android:padding="@dimen/book_detail_dialog_message_margin_left"
             android:text="@string/book_detail_dialog_fluent"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
         <include layout="@layout/layout_line" />
@@ -33,6 +34,7 @@
         android:gravity="center_vertical"
         android:padding="@dimen/book_detail_dialog_message_margin_left"
         android:text="@string/book_detail_dialog_buy"
+        android:textColor="@android:color/black"
         android:textSize="@dimen/level_two_heading_font" />
 
     <include layout="@layout/layout_line" />
@@ -46,6 +48,7 @@
         android:gravity="center_vertical"
         android:padding="@dimen/book_detail_dialog_message_margin_left"
         android:text="@string/book_detail_dialog_add_cart"
+        android:textColor="@android:color/black"
         android:textSize="@dimen/level_two_heading_font" />
 
 </LinearLayout>

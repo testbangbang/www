@@ -4,6 +4,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.shop.cloud.cache.EnhancedCacheInterceptor;
 import com.onyx.jdread.shop.request.JavaNetCookieJar;
 import com.onyx.jdread.shop.request.PersistentCookieStore;
 
@@ -211,6 +212,7 @@ public class CloudApiContext {
 
     public static OkHttpClient getClientNoCookie() {
         OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new EnhancedCacheInterceptor())
                 .build();
         return client;
     }

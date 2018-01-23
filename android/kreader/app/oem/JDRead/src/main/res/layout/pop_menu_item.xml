@@ -8,5 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/pop_menu_item_padding"
+        android:textColor="@android:color/black"
         android:textSize="@dimen/level_two_heading_font" />
 </RelativeLayout>

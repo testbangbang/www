@@ -83,12 +83,14 @@
                 android:id="@+id/setting_start_test"
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:textColor="@android:color/black"
                 android:layout_height="match_parent" />
 
             <TextView
                 android:id="@+id/setting_remove_test"
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:textColor="@android:color/black"
                 android:layout_height="match_parent" />
         </LinearLayout>
     </LinearLayout>

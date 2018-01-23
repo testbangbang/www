@@ -1,10 +1,8 @@
 package com.onyx.android.sdk.data.utils;
 
 import android.graphics.Bitmap;
-import android.renderscript.ScriptIntrinsicYuvToRGB;
 
 import com.facebook.common.references.CloseableReference;
-import com.liulishuo.filedownloader.i.IFileDownloadIPCCallback;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.FileModel;
 import com.onyx.android.sdk.data.model.Library;
@@ -29,7 +27,7 @@ import java.util.Map;
  */
 
 public class DataModelUtil {
-    public static void libraryToDataModel(DataProviderBase dataProvider, EventBus eventBus, List<DataModel> dataModels, List<Library> libraryList, boolean loadEmpty, int defaultCoverRes) {
+    public static void libraryToDataModel(DataProviderBase dataProvider, EventBus eventBus, List<DataModel> dataModels, List<Library> libraryList, Map<String, List<DataModel>> libraryChildMap, boolean loadEmpty, int defaultCoverRes) {
         if (CollectionUtils.isNullOrEmpty(libraryList)) {
             return;
         }
@@ -50,7 +48,7 @@ public class DataModelUtil {
             model.title.set(library.getName());
             model.desc.set(library.getDescription());
             model.checked.set(false);
-            model.coverDefault.set(defaultCoverRes);
+            model.childList.addAll(libraryChildMap.get(library.getIdString()));
             model.childCount.set(String.valueOf(metadataCount));
             dataModels.add(model);
         }
@@ -69,7 +67,7 @@ public class DataModelUtil {
             }
             model.title.set(metadata.getName());
             model.author.set(StringUtils.isNullOrEmpty(metadata.getAuthors()) ? "" : metadata.getAuthors());
-            model.format.set(metadata.getType());
+            model.format.set(metadata.getType().toUpperCase());
             model.size.set(metadata.getSize());
             model.progress.set(StringUtils.isNullOrEmpty(metadata.getProgress()) ? "" : metadata.getProgress());
             model.desc.set(metadata.getDescription());

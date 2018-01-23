@@ -44,6 +44,7 @@
             android:layout_marginLeft="@dimen/top_up_tips_margin_left"
             android:layout_marginTop="@dimen/top_up_tips_margin_top"
             android:text="@string/top_up_tips"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
 
         <TextView
@@ -51,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/top_up_tips_margin_left"
             android:text="gbajgoasidjgdj"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView

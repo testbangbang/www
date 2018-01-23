@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.onyx.jdread.shop.model.BookShopViewModel"/>
+            type="com.onyx.jdread.shop.model.BookShopViewModel" />
 
     </data>
 
@@ -17,122 +16,127 @@
         tools:showIn="@layout/fragment_book_shop_one">
 
         <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/normal_selected_background"
+            android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onRankViewClick()}"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <ImageView
-                android:src="@mipmap/ic_rank"
                 android:layout_width="@dimen/layout_book_shop_top_function_width_and_height"
-                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"/>
+                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"
+                android:src="@mipmap/ic_rank" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_book_shop_top_function_title_margin_top"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/ranking"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="@android:color/black" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/normal_selected_background"
+            android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onEnjoyReadViewClick()}"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <ImageView
-                android:src="@mipmap/ic_enjoy_read"
                 android:layout_width="@dimen/layout_book_shop_top_function_width_and_height"
-                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"/>
+                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"
+                android:src="@mipmap/ic_enjoy_read" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_book_shop_top_function_title_margin_top"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/vip"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="@android:color/black" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/normal_selected_background"
+            android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onSaleViewClick()}"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <ImageView
-                android:src="@mipmap/ic_sale"
                 android:layout_width="@dimen/layout_book_shop_top_function_width_and_height"
-                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"/>
+                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"
+                android:src="@mipmap/ic_sale" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_book_shop_top_function_title_margin_top"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/sale"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="@android:color/black" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/normal_selected_background"
+            android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onNewBookViewClick()}"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <ImageView
-                android:src="@mipmap/ic_new_book"
                 android:layout_width="@dimen/layout_book_shop_top_function_width_and_height"
-                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"/>
+                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"
+                android:src="@mipmap/ic_new_book" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_book_shop_top_function_title_margin_top"
-                android:text="@string/new_book"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:text="@string/new_book"
+                android:textColor="@android:color/black" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:background="@drawable/normal_selected_background"
-            android:onClick="@{()->viewModel.onCategoryViewClick()}"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:background="@drawable/normal_selected_background"
+            android:gravity="center_horizontal"
+            android:onClick="@{()->viewModel.onCategoryViewClick()}"
+            android:orientation="vertical">
 
             <ImageView
-                android:src="@mipmap/ic_category"
                 android:layout_width="@dimen/layout_book_shop_top_function_width_and_height"
-                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"/>
+                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"
+                android:src="@mipmap/ic_category" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_book_shop_top_function_title_margin_top"
-                android:text="@string/category"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:text="@string/category"
+                android:textColor="@android:color/black" />
 
         </LinearLayout>
 

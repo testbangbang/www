@@ -17,23 +17,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:onClick="@{()->model.itemClicked()}"
-        android:onLongClick="@{()->model.itemLongClick()}"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="@dimen/model_item_cover_width"
-            android:layout_height="@dimen/model_item_cover_height">
+            android:layout_height="@dimen/model_item_cover_height"
+            android:onClick="@{()->model.itemClicked()}"
+            android:onLongClick="@{()->model.itemLongClick()}">
 
             <ImageView
                 android:id="@+id/image_cover"
                 thumbnail="@{model.coverBitmap}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/rectangle_stroke"
-                android:padding="@dimen/rectangle_stroke_width"
                 android:scaleType="fitXY"
-                android:src="@{model.coverDefault}" />
+                android:src="@mipmap/ic_shelf_cover"
+                android:visibility="@{StringUtils.isNotBlank(model.childCount)?View.GONE:View.VISIBLE}" />
+
+            <com.onyx.jdread.library.view.NonClickableRelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.onyx.android.sdk.ui.view.PageRecyclerView
+                    android:id="@+id/libraryCover_recycler"
+                    items="@{model.childList}"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rectangle_stroke"
+                    android:padding="@dimen/rectangle_stroke_width"
+                    android:visibility="@{StringUtils.isNotBlank(model.childCount)?View.VISIBLE:View.GONE}" />
+            </com.onyx.jdread.library.view.NonClickableRelativeLayout>
 
             <ImageView
                 android:layout_width="match_parent"
@@ -48,8 +61,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
-                android:text="@{model.childCount}"
                 android:padding="@dimen/model_item_child_count_padding"
+                android:text="@{model.childCount}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <CheckBox
@@ -73,8 +87,19 @@
                 android:gravity="center"
                 android:onClick="@{()->model.itemClicked()}"
                 android:text="@{model.selectedCount}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font"
                 android:visibility="@{model.showCheckCount()?View.VISIBLE:View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/book_format_margin_left"
+                android:layout_marginTop="@dimen/book_format_margin_top"
+                android:text="@{model.format}"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/level_large_heading_font"
+                android:visibility="@{model.showFormat()?View.VISIBLE:View.GONE}" />
 
         </RelativeLayout>
 
@@ -87,6 +112,7 @@
             android:lines="2"
             android:maxLines="2"
             android:text="@{model.title}"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
     </LinearLayout>

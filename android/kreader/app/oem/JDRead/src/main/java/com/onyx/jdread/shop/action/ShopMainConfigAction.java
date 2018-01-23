@@ -12,6 +12,9 @@ import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestShopMainConfig;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jackdeng on 2018/1/10.
  */
@@ -82,18 +85,15 @@ public class ShopMainConfigAction extends BaseAction {
             banerViewModel.setEventBus(dataBundle.getEventBus());
             banerViewModel.setDataBean(resultBean.data);
             dataBundle.getShopViewModel().setBannerSubjectIems(banerViewModel);
-            SubjectViewModel subjectViewModelOne = new SubjectViewModel();
-            subjectViewModelOne.setEventBus(dataBundle.getEventBus());
-            subjectViewModelOne.setDataBean(resultBean.data, Constants.SHOP_MAIN_INDEX_THREE);
-            SubjectViewModel subjectViewModelTwo = new SubjectViewModel();
-            subjectViewModelTwo.setEventBus(dataBundle.getEventBus());
-            subjectViewModelTwo.setDataBean(resultBean.data, Constants.SHOP_MAIN_INDEX_FOUR);
-            SubjectViewModel subjectViewModelFour = new SubjectViewModel();
-            subjectViewModelFour.setEventBus(dataBundle.getEventBus());
-            subjectViewModelFour.setDataBean(resultBean.data, Constants.SHOP_MAIN_INDEX_FIVE);
-            dataBundle.getShopViewModel().setCoverSubjectOneItems(subjectViewModelOne);
-            dataBundle.getShopViewModel().setCoverSubjectTwoItems(subjectViewModelTwo);
-            dataBundle.getShopViewModel().setCoverSubjectFourItems(subjectViewModelFour);
+            BookModelConfigResultBean.DataBean data = resultBean.data;
+            List<SubjectViewModel> subjectViewModelList = new ArrayList<>();
+            for (int i = Constants.SHOP_MAIN_INDEX_THREE; i < data.modules.size(); i++) {
+                SubjectViewModel subjectViewModel = new SubjectViewModel();
+                subjectViewModel.setDataBean(data, i);
+                subjectViewModel.setEventBus(dataBundle.getEventBus());
+                subjectViewModelList.add(subjectViewModel);
+            }
+            dataBundle.getShopViewModel().setCommonSubjcet(subjectViewModelList);
         }
     }
 }

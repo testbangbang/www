@@ -27,15 +27,16 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/fragment_help_item_height"
-                android:paddingLeft="@dimen/fragment_content_padding"
-                android:paddingRight="@dimen/fragment_content_padding"
+                android:gravity="center_vertical"
                 android:onClick="@{()->helpModel.gotoManual()}"
-                android:gravity="center_vertical">
+                android:paddingLeft="@dimen/fragment_content_padding"
+                android:paddingRight="@dimen/fragment_content_padding">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/manual"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <ImageView
@@ -45,21 +46,21 @@
                     android:src="@mipmap/ic_read_next" />
             </RelativeLayout>
 
-            <View
-                style="@style/DottedLineStyle" />
+            <View style="@style/DottedLineStyle" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/fragment_help_item_height"
-                android:paddingLeft="@dimen/fragment_content_padding"
-                android:paddingRight="@dimen/fragment_content_padding"
+                android:gravity="center_vertical"
                 android:onClick="@{()->helpModel.gotoFeedBack()}"
-                android:gravity="center_vertical">
+                android:paddingLeft="@dimen/fragment_content_padding"
+                android:paddingRight="@dimen/fragment_content_padding">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/feedback"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <ImageView
@@ -69,21 +70,21 @@
                     android:src="@mipmap/ic_read_next" />
             </RelativeLayout>
 
-            <View
-                style="@style/DottedLineStyle" />
+            <View style="@style/DottedLineStyle" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/fragment_help_item_height"
+                android:gravity="center_vertical"
                 android:onClick="@{()->helpModel.gotoContactUs()}"
                 android:paddingLeft="@dimen/fragment_content_padding"
-                android:paddingRight="@dimen/fragment_content_padding"
-                android:gravity="center_vertical">
+                android:paddingRight="@dimen/fragment_content_padding">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/contact_us"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <ImageView
@@ -93,8 +94,7 @@
                     android:src="@mipmap/ic_read_next" />
             </RelativeLayout>
 
-            <View
-                style="@style/DottedLineStyle" />
+            <View style="@style/DottedLineStyle" />
         </LinearLayout>
 
     </LinearLayout>

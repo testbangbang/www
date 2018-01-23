@@ -947,6 +947,7 @@ public class MimeTypeUtils {
             docExtension.add("fb2");
             docExtension.add("txt");
             docExtension.add("mobi");
+            docExtension.add("jeb");
         }
         return docExtension;
     }

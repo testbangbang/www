@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="model"
+            type="com.onyx.android.sdk.data.model.DataModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/library_cover_space">
+
+        <ImageView
+            android:id="@+id/image_cover"
+            thumbnail="@{model.coverBitmap}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/rectangle_stroke_width"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ic_shelf_cover" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/library_cover_child_format_margin_left"
+            android:layout_marginTop="@dimen/library_cover_child_format_margin_top"
+            android:text="@{model.format}"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/level_three_heading_font"
+            android:visibility="@{model.showFormat()?View.VISIBLE:View.GONE}" />
+    </RelativeLayout>
+</layout>

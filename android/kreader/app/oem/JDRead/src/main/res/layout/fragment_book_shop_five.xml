@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.onyx.jdread.shop.model.BookShopViewModel" />
+
+        <import type="com.onyx.jdread.main.common.Constants" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/book_shop_padding_left"
+        android:paddingRight="@dimen/book_shop_padding_right"
+        android:paddingTop="@dimen/book_shop_padding_top">
+
+        <include
+            android:id="@+id/suject_item_one"
+            layout="@layout/item_subject_common"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_SIX)}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:gravity="center_vertical">
+
+            <include
+                android:id="@+id/suject_item_two"
+                layout="@layout/item_subject_common"
+                bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_SEVEN)}" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>

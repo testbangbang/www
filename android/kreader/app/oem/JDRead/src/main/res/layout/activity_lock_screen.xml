@@ -36,6 +36,7 @@
             android:padding="@dimen/edit_text_padding"
             android:layout_marginTop="@dimen/unlock_password_text_margin_top"
             android:gravity="center"
+            android:textColor="@android:color/black"
             android:onClick="@{()->screenLockModel.unlockScreen()}"
             android:text="@string/confirm" />
     </LinearLayout>
