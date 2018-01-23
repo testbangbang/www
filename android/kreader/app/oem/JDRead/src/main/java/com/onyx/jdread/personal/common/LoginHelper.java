@@ -5,9 +5,9 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.DialogUserLoginBinding;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
@@ -79,6 +79,12 @@ public class LoginHelper {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     userLoginViewModel.cleanInput();
+                }
+            });
+            userLoginBinding.setListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismissUserLoginDialog();
                 }
             });
         }

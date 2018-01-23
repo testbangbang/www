@@ -15,12 +15,11 @@ import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.utils.RectUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
-import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
+import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 
 import java.util.List;
 
@@ -66,7 +65,7 @@ public class ReaderViewHelper {
         updatePageView(reader, readerUserDataInfo,readerViewInfo, null);
     }
 
-    public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
+    public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo, ReaderSelectionHelper readerSelectionManager) {
         try {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, readerViewInfo);
@@ -78,7 +77,7 @@ public class ReaderViewHelper {
         }
     }
 
-    public void renderAll(Reader reader, Bitmap bitmap, ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
+    public void renderAll(Reader reader, Bitmap bitmap, ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo, ReaderSelectionHelper readerSelectionManager) {
         if (readPageView == null) {
             return;
         }
@@ -123,7 +122,7 @@ public class ReaderViewHelper {
     }
 
     private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final Reader reader, final ReaderViewInfo readerViewInfo,
-                                     ReaderSelectionManager readerSelectionManager) {
+                                     ReaderSelectionHelper readerSelectionManager) {
         if(readerSelectionManager != null) {
             String pagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
             ReaderSelection readerSelection = readerSelectionManager.getCurrentSelection(pagePosition);
@@ -141,7 +140,7 @@ public class ReaderViewHelper {
         }
     }
 
-    private void drawSelectionCursor(Canvas canvas, Paint paint, ReaderSelectionManager selectionManager, String pagePosition) {
+    private void drawSelectionCursor(Canvas canvas, Paint paint, ReaderSelectionHelper selectionManager, String pagePosition) {
         selectionManager.draw(pagePosition, canvas, paint);
     }
 

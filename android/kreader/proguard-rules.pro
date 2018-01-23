@@ -134,3 +134,6 @@
 -dontwarn com.evernote.**
 -keep class com.evernote.** { *; }
 -dontwarn org.**
+
+# for gson
+-keep class com.google.gson.stream.** { *; }

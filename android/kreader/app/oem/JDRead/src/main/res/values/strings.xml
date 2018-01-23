@@ -121,6 +121,7 @@
     <string name="book_detail_button_buy_whole_book">Buy the whole book</string>
     <string name="cart">Cart</string>
     <string name="book_detail_text_view_content_introduce">Introduce</string>
+    <string name="book_comment_detail">Comment Detail</string>
     <string name="book_detail_view_catalog">Catalog</string>
     <string name="book_detail_view_comments">Comments</string>
     <string name="book_detail_view_copyright">CopyRight</string>
@@ -389,4 +390,7 @@
     <string name="reader_save">Save</string>
     <string name="reader_original">Original</string>
     <string name="reader_changes">Changes</string>
+    <string name="source_language">Source language:</string>
+    <string name="simplified_chinese">Simplified chinese</string>
+    <string name="reader_target_language">Target language:</string>
 </resources>

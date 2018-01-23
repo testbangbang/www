@@ -6,7 +6,6 @@ import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
-import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestSearchBooks;
 
@@ -28,7 +27,6 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
     private String catId;
     private String keyWord;
     private int filter;
-    private BookShopViewModel shopViewModel;
     private BookModelBooksResultBean resultBean;
 
     public SearchBookListAction(String catId, int currentPage, int sortKey, int sortType, String keyWord, int filter) {
@@ -42,7 +40,6 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
 
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
-        shopViewModel = shopDataBundle.getShopViewModel();
         SearchBooksRequestBean requestBean = new SearchBooksRequestBean();
         JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
         Map<String, String> queryArgs = new HashMap<>();

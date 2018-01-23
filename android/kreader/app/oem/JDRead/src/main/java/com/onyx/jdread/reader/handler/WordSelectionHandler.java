@@ -2,7 +2,6 @@ package com.onyx.jdread.reader.handler;
 
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -23,7 +22,7 @@ import com.onyx.jdread.reader.actions.UpdateViewPageAction;
 import com.onyx.jdread.reader.common.SelectWordInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.highlight.HighlightCursor;
-import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
+import com.onyx.jdread.reader.highlight.SelectionInfo;
 
 /**
  * Created with IntelliJ IDEA.
@@ -389,7 +388,7 @@ public class WordSelectionHandler extends BaseHandler {
 
         @Override
         public void onFinally() {
-            ReaderSelectionInfo readerSelectionInfo = getReaderDataHolder().getReaderSelectionInfo().getReaderSelectionInfo(getReaderDataHolder().getCurrentPagePosition());
+            SelectionInfo readerSelectionInfo = getReaderDataHolder().getReaderSelectionInfo().getReaderSelectionInfo(getReaderDataHolder().getCurrentPagePosition());
             if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection() != null) {
                 highLightBeginTop = readerSelectionInfo.getHighLightBeginTop();
                 highLightEndBottom = readerSelectionInfo.getHighLightEndBottom();

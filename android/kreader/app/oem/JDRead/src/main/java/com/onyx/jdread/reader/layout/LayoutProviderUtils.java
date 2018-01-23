@@ -154,6 +154,7 @@ public class LayoutProviderUtils {
             readerViewInfo.autoCropForEachBlock = layoutManager.getCurrentLayoutProvider().getNavigationArgs().isAutoCropForEachBlock();
         }
         readerViewInfo.layoutChanged = layoutManager.isLayoutChanged();
+        readerViewInfo.setTotalPage(reader.getReaderHelper().getNavigator().getTotalPage());
     }
 
     static private void updateVisiblePagesForFlowDocument(final Reader reader,

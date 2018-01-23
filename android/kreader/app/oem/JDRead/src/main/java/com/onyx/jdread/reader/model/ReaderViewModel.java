@@ -19,6 +19,15 @@ public class ReaderViewModel extends BaseObservable {
     private ReaderDataHolder readerDataHolder;
     private ObservableBoolean isShowTipMessage = new ObservableBoolean(false);
     private ObservableField<String> tipMessage = new ObservableField<>();
+    private ObservableField<String> page = new ObservableField<>();
+
+    public ObservableField<String> getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page.set(page);
+    }
 
     public boolean setDocumentInfo(DocumentInfo documentInfo) {
         if(!checkOpenBookParameter(documentInfo)){

@@ -16,16 +16,16 @@ import com.onyx.jdread.reader.request.SelectRequest;
  */
 
 public class HitTestTextHelper {
-    public static ReaderSelectionInfo hitTestTextRegion(PointF newPageStartPosition,
-                                                    PointF newPageEndPosition,
-                                                    int step,
-                                                    Reader reader,
-                                                    ReaderUserDataInfo readerUserDataInfo,
-                                                    boolean isNext,
-                                                    String pagePosition) {
+    public static SelectionInfo hitTestTextRegion(PointF newPageStartPosition,
+                                                  PointF newPageEndPosition,
+                                                  int step,
+                                                  Reader reader,
+                                                  ReaderUserDataInfo readerUserDataInfo,
+                                                  boolean isNext,
+                                                  String pagePosition) {
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
         PageInfo pageInfo = reader.getReaderHelper().getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
-        ReaderSelectionInfo readerSelectionInfo;
+        SelectionInfo readerSelectionInfo;
         if (isNext) {
             readerSelectionInfo = nextPageHitTestText(newPageStartPosition, newPageEndPosition, step, pagePosition, pageInfo, hitTestManager, readerUserDataInfo);
         } else {
@@ -34,14 +34,14 @@ public class HitTestTextHelper {
         return readerSelectionInfo;
     }
 
-    private static ReaderSelectionInfo nextPageHitTestText(PointF newPageStartPosition,
-                                                       PointF newPageEndPosition,
-                                                       int step,
-                                                       String pagePosition,
-                                                       PageInfo pageInfo,
-                                                       ReaderHitTestManager hitTestManager,
-                                                       ReaderUserDataInfo readerUserDataInfo) {
-        ReaderSelectionInfo readerSelectionInfo;
+    private static SelectionInfo nextPageHitTestText(PointF newPageStartPosition,
+                                                     PointF newPageEndPosition,
+                                                     int step,
+                                                     String pagePosition,
+                                                     PageInfo pageInfo,
+                                                     ReaderHitTestManager hitTestManager,
+                                                     ReaderUserDataInfo readerUserDataInfo) {
+        SelectionInfo readerSelectionInfo;
         for (float y = newPageStartPosition.y; y < newPageEndPosition.y; y += step) {
             for (float x = newPageStartPosition.x; x < newPageEndPosition.x; x += step) {
                 PointF start = new PointF(x, y);
@@ -58,14 +58,14 @@ public class HitTestTextHelper {
         return null;
     }
 
-    private static ReaderSelectionInfo prevPageHitTestText(PointF newPageStartPosition,
-                                                       PointF newPageEndPosition,
-                                                       int step,
-                                                       String pagePosition,
-                                                       PageInfo pageInfo,
-                                                       ReaderHitTestManager hitTestManager,
-                                                       ReaderUserDataInfo readerUserDataInfo) {
-        ReaderSelectionInfo readerSelectionInfo;
+    private static SelectionInfo prevPageHitTestText(PointF newPageStartPosition,
+                                                     PointF newPageEndPosition,
+                                                     int step,
+                                                     String pagePosition,
+                                                     PageInfo pageInfo,
+                                                     ReaderHitTestManager hitTestManager,
+                                                     ReaderUserDataInfo readerUserDataInfo) {
+        SelectionInfo readerSelectionInfo;
         for (float y = newPageStartPosition.y; y > newPageEndPosition.y; y += step) {
             for (float x = newPageStartPosition.x; x > newPageEndPosition.x; x += step) {
                 PointF start = new PointF(x, y);
@@ -81,7 +81,7 @@ public class HitTestTextHelper {
         return null;
     }
 
-    public static ReaderSelectionInfo selectOnScreen(PointF start, PointF end, String pagePosition, PageInfo pageInfo, ReaderHitTestManager hitTestManager, ReaderUserDataInfo readerUserDataInfo) {
+    public static SelectionInfo selectOnScreen(PointF start, PointF end, String pagePosition, PageInfo pageInfo, ReaderHitTestManager hitTestManager, ReaderUserDataInfo readerUserDataInfo) {
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, end);
         ReaderSelection selection = hitTestManager.selectOnScreen(argsStart, argsEnd, ReaderHitTestOptionsImpl.create(false));
@@ -89,15 +89,15 @@ public class HitTestTextHelper {
             PointF touchPoint = new PointF(end.x, end.y);
             readerUserDataInfo.saveHighlightResult(SelectRequest.translateToScreen(pageInfo, selection));
             readerUserDataInfo.setTouchPoint(touchPoint);
-            ReaderSelectionInfo readerSelectionInfo = new ReaderSelectionInfo();
+            SelectionInfo readerSelectionInfo = new SelectionInfo();
             readerSelectionInfo.setCurrentSelection(selection,pageInfo);
             return readerSelectionInfo;
         }
         return null;
     }
 
-    public static void saveLastHighLightPosition(String pagePosition,ReaderSelectionManager readerSelectionManager,PointF start,PointF end){
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(pagePosition);
+    public static void saveLastHighLightPosition(String pagePosition, ReaderSelectionHelper readerSelectionManager, PointF start, PointF end){
+        SelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(pagePosition);
         if(readerSelectionInfo != null){
             readerSelectionInfo.setHighLightBeginTop(start);
             readerSelectionInfo.setHighLightEndBottom(end);

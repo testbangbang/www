@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -107,6 +108,9 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
         }
 
         public void bindTo(DataModel model) {
+            bind.libraryCoverRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            LibraryCoverAdapter adapter = new LibraryCoverAdapter();
+            bind.libraryCoverRecycler.setAdapter(adapter);
             bind.setModel(model);
             bind.executePendingBindings();
         }

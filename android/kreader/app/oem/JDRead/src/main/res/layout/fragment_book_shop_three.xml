@@ -8,9 +8,11 @@
             name="viewModel"
             type="com.onyx.jdread.shop.model.BookShopViewModel" />
 
+        <import type="com.onyx.jdread.main.common.Constants" />
+
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -18,80 +20,27 @@
         android:paddingRight="@dimen/book_shop_padding_right"
         android:paddingTop="@dimen/book_shop_padding_top">
 
+        <include
+            android:id="@+id/suject_item_one"
+            layout="@layout/item_subject_common"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_TWO)}" />
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:gravity="center_vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/text_no_stoke_background"
-                        android:text="@{viewModel.coverSubjectFourItems.modelBean.show_name}"
-                        android:textSize="@dimen/level_two_heading_font" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:background="@drawable/text_no_stoke_background"
-                        android:drawablePadding="@dimen/view_all_drawable_padding"
-                        android:drawableRight="@mipmap/ic_go_view_all"
-                        android:gravity="center"
-                        android:onClick="@{()->viewModel.coverSubjectFourItems.onViewAllClick()}"
-                        android:text="@string/view_all"
-                        android:textSize="@dimen/level_three_heading_font" />
-
-                </RelativeLayout>
-
-                <com.onyx.android.sdk.ui.view.PageRecyclerView
-                    android:id="@+id/recycler_view_cover_subject_four"
-                    subjectItems="@{viewModel.coverSubjectFourItems.modelBean.bookList}"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/book_shop_recycler_height"
-                    android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/book_shop_contain_recycler_margin_top"
-                android:drawablePadding="@dimen/view_all_drawable_padding"
-                android:drawableRight="@mipmap/ic_go_view_all"
-                android:gravity="center"
-                android:onClick="@{()->viewModel.onViewAllBookViewClick()}"
-                android:text="@string/view_all_books"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+            <include
+                android:id="@+id/suject_item_two"
+                layout="@layout/item_subject_common"
+                bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_THREE)}" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/back_top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/shop_back_top_button_margin_bottom"
-            android:background="@drawable/selected_button_background"
-            android:gravity="center"
-            android:onClick="@{()->viewModel.onBackTopViewClick()}"
-            android:padding="@dimen/shop_back_top_button_padding"
-            android:text="@string/back_to_top"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_two_heading_font" />
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </layout>

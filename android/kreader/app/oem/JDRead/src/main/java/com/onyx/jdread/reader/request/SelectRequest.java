@@ -10,7 +10,7 @@ import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.highlight.HitTestTextHelper;
-import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
+import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 
 /**
@@ -26,7 +26,7 @@ public class SelectRequest extends ReaderBaseRequest {
     private String pagePosition;
     private ReaderHitTestOptions hitTestOptions;
     private Reader reader;
-    private ReaderSelectionManager readerSelectionManager;
+    private ReaderSelectionHelper readerSelectionManager;
 
     public SelectRequest(Reader reader, final String pagePosition, final PointF startPoint, final PointF endPoint, final PointF touchPoint,
                          final ReaderHitTestOptions hitTestOptions) {
