@@ -66,8 +66,8 @@ public class ReaderPainter {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap, readerDataHolder);
-        drawCropRectIndicator(context, canvas, paint, viewInfo);
-        drawViewportOverlayIndicator(canvas, paint, viewInfo);
+        drawCropRectIndicator(context, canvas, paint, readerDataHolder, viewInfo);
+        drawViewportOverlayIndicator(canvas, paint, readerDataHolder, viewInfo);
         drawBookmark(context, canvas, readerDataHolder, userDataInfo, viewInfo);
         drawSearchResults(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, annotationHighlightStyle);
         drawHighlightResult(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, selectionManager, annotationHighlightStyle);
@@ -120,7 +120,7 @@ public class ReaderPainter {
         return viewInfo.subScreenCount <= 1;
     }
 
-    private void drawCropRectIndicator(Context context, final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
+    private void drawCropRectIndicator(Context context, final Canvas canvas, final Paint paint, ReaderDataHolder readerDataHolder, final ReaderViewInfo viewInfo) {
         if (!SingletonSharedPreference.isShowPageCropRegionIndicator(context)) {
             return;
         }
@@ -130,15 +130,21 @@ public class ReaderPainter {
             return;
         }
         initPaintWithAuxiliaryLineStyle(paint);
-        canvas.drawRect(viewInfo.cropRegionInViewport, paint);
+        canvas.drawRect(viewInfo.cropRegionInViewport.left + readerDataHolder.getDocPageLeft(),
+                viewInfo.cropRegionInViewport.top,
+                viewInfo.cropRegionInViewport.right + readerDataHolder.getDocPageLeft(),
+                viewInfo.cropRegionInViewport.bottom,
+                paint);
         resetPaintFromAuxiliaryLineStyle(paint);
     }
 
-    private void drawViewportOverlayIndicator(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {
+    private void drawViewportOverlayIndicator(final Canvas canvas, final Paint paint, ReaderDataHolder readerDataHolder, final ReaderViewInfo viewInfo) {
         if (viewInfo.getLastViewportOverlayPosition() != null) {
             initPaintWithAuxiliaryLineStyle(paint);
-            canvas.drawLine(0, viewInfo.getLastViewportOverlayPosition().y,
-                    viewInfo.viewportInDoc.width(), viewInfo.getLastViewportOverlayPosition().y,
+            canvas.drawLine(readerDataHolder.getDocPageLeft(),
+                    viewInfo.getLastViewportOverlayPosition().y,
+                    viewInfo.viewportInDoc.width() + readerDataHolder.getDocPageLeft(),
+                    viewInfo.getLastViewportOverlayPosition().y,
                     paint);
             resetPaintFromAuxiliaryLineStyle(paint);
         }
