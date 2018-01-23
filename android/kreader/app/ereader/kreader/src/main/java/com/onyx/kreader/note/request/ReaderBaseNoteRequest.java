@@ -283,30 +283,24 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 }
                 RectF dirty = dirtyRects.get(notePage.getSubPageUniqueId());
                 if (dirty == null) {
-                    dirty = new RectF(page.getDisplayRect());
+                    dirty = new RectF(page.getVisibleRect());
                 } else {
                     dirty = new RectF(dirty);
                     Matrix matrix = new Matrix();
                     updateMatrix(matrix, page);
                     matrix.mapRect(dirty);
                 }
+                dirty.intersect(page.getVisibleRect());
+
                 paint.setColor(Color.WHITE);
                 paint.setStyle(Paint.Style.FILL);
                 canvas.drawRect(dirty, paint);
 
-                if (docBitmap != null) {
-                    PageInfo docPage = null;
-                    for (PageInfo p : getVisiblePages()) {
-                        if (!parent.isSidePage(p)) {
-                            docPage = p;
-                            break;
-                        }
-                    }
-                    if (docPage != null && RectF.intersects(dirty, docPage.getVisibleRect())) {
-                        canvas.drawBitmap(docBitmap.getBitmap(), RectUtils.toRect(dirty),
-                                RectUtils.toRect(dirty), null);
-                    }
+                if (docBitmap != null && !parent.isSidePage(page) && RectF.intersects(dirty, page.getVisibleRect())) {
+                    canvas.drawBitmap(docBitmap.getBitmap(), RectUtils.toRect(dirty),
+                            RectUtils.toRect(dirty), null);
                 }
+
                 drawBackground(canvas, paint, parent.getNoteDocument().getBackground(), dirty);
             }
         }
