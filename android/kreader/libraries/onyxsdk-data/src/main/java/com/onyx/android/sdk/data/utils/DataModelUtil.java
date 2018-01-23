@@ -67,7 +67,7 @@ public class DataModelUtil {
             }
             model.title.set(metadata.getName());
             model.author.set(StringUtils.isNullOrEmpty(metadata.getAuthors()) ? "" : metadata.getAuthors());
-            model.format.set(metadata.getType());
+            model.format.set(metadata.getType().toUpperCase());
             model.size.set(metadata.getSize());
             model.progress.set(StringUtils.isNullOrEmpty(metadata.getProgress()) ? "" : metadata.getProgress());
             model.desc.set(metadata.getDescription());
