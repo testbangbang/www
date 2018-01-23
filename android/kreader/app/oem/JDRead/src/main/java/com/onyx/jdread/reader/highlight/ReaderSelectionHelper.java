@@ -25,27 +25,27 @@ import java.util.Map;
  * * move by caller
  * * draw
  */
-public class ReaderSelectionManager {
-    private Map<String, ReaderSelectionInfo> readerSelectionInfos = new HashMap<>();
+public class ReaderSelectionHelper {
+    private Map<String, SelectionInfo> readerSelectionInfos = new HashMap<>();
 
-    public ReaderSelectionManager() {
+    public ReaderSelectionHelper() {
         super();
     }
 
     public ReaderSelection getCurrentSelection(String pagePosition) {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             return readerSelectionInfo.getCurrentSelection();
         }
         return null;
     }
 
-    public ReaderSelectionInfo getReaderSelectionInfo(String pagePosition) {
+    public SelectionInfo getReaderSelectionInfo(String pagePosition) {
         return readerSelectionInfos.get(pagePosition);
     }
 
     public HighlightCursor getHighlightCursor(String pagePosition, int index) {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             if (index >= 0 && index < readerSelectionInfo.getCursors().size()) {
                 return readerSelectionInfo.getCursors().get(index);
@@ -56,7 +56,7 @@ public class ReaderSelectionManager {
 
     public String getSelectText(){
         String result = "";
-        for(ReaderSelectionInfo readerSelectionInfo : readerSelectionInfos.values()){
+        for(SelectionInfo readerSelectionInfo : readerSelectionInfos.values()){
             if(readerSelectionInfo.getCurrentSelection() != null){
                 result += readerSelectionInfo.getCurrentSelection().getText();
             }
@@ -65,7 +65,7 @@ public class ReaderSelectionManager {
     }
 
     public boolean normalize(String pagePosition) {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             RectF begin = readerSelectionInfo.getCursors().get(0).getHotPoint();
             RectF end = readerSelectionInfo.getCursors().get(1).getHotPoint();
@@ -84,7 +84,7 @@ public class ReaderSelectionManager {
     }
 
     public int tracking(String pagePosition, final float sx, final float sy, final float ex, final float ey) {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             for (int i = 0; i < readerSelectionInfo.getCursors().size(); ++i) {
                 if (readerSelectionInfo.getCursors().get(i).tracking(sx, sy, ex, ey)) {
@@ -96,7 +96,7 @@ public class ReaderSelectionManager {
     }
 
     public void draw(String pagePosition, Canvas canvas, Paint paint) {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
                 if(cursor.getShowState()) {
@@ -113,7 +113,7 @@ public class ReaderSelectionManager {
     public synchronized boolean update(String pagePosition, final Context context,
                                        ReaderSelection readerSelection, PointF lastPoint,
                                        PageInfo pageInfo) {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo == null || readerSelectionInfo.getCurrentSelection() == null) {
             readerSelectionInfo = addPageSelection(pagePosition, readerSelection,pageInfo);
         } else {
@@ -143,8 +143,8 @@ public class ReaderSelectionManager {
         return true;
     }
 
-    private ReaderSelectionInfo addPageSelection(String pagePosition, ReaderSelection readerSelection,PageInfo pageInfo) {
-        ReaderSelectionInfo readerSelectionInfo = new ReaderSelectionInfo();
+    private SelectionInfo addPageSelection(String pagePosition, ReaderSelection readerSelection, PageInfo pageInfo) {
+        SelectionInfo readerSelectionInfo = new SelectionInfo();
         readerSelectionInfo.setCurrentSelection(readerSelection,pageInfo);
         readerSelectionInfos.put(pagePosition, readerSelectionInfo);
 
@@ -156,7 +156,7 @@ public class ReaderSelectionManager {
     }
 
     public void updateDisplayPosition(String pagePosition) {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
                 cursor.updateDisplayPosition();
@@ -165,7 +165,7 @@ public class ReaderSelectionManager {
     }
 
     public void setEnable(String pagePosition, boolean enable) {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
                 cursor.setEnable(enable);
@@ -174,7 +174,7 @@ public class ReaderSelectionManager {
     }
 
     public boolean isEnable(String pagePosition) {
-        ReaderSelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
                 if (cursor != null) {
@@ -185,7 +185,7 @@ public class ReaderSelectionManager {
         return false;
     }
 
-    public Map<String, ReaderSelectionInfo> getReaderSelectionInfos() {
+    public Map<String, SelectionInfo> getReaderSelectionInfos() {
         return readerSelectionInfos;
     }
 }

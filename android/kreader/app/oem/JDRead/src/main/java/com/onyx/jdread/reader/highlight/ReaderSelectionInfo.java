@@ -1,64 +1,76 @@
 package com.onyx.jdread.reader.highlight;
 
-import android.graphics.PointF;
-
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by huxiaomao on 2018/1/16.
+ * Created by huxiaomao on 2018/1/21.
  */
 
 public class ReaderSelectionInfo {
-    private ReaderSelection currentSelection;
-    private List<HighlightCursor> cursors = new ArrayList<HighlightCursor>();
-    private PointF highLightBeginTop;
-    private PointF highLightEndBottom;
-    private PointF touchPoint;
-    public PageInfo pageInfo;
+    private Map<String, SelectionInfo> readerSelectionInfos = new HashMap<>();
+    private int moveSelectCount = 0;
 
-    public PointF getTouchPoint() {
-        return touchPoint;
+    public void increaseSelectCount() {
+        moveSelectCount++;
     }
 
-    public void setTouchPoint(PointF touchPoint) {
-        this.touchPoint = touchPoint;
+    public void decreaseSelectCount() {
+        moveSelectCount--;
     }
 
-    public ReaderSelection getCurrentSelection() {
-        return currentSelection;
+    public void setMoveSelectCount(int selectCount) {
+        this.moveSelectCount = selectCount;
     }
 
-    public void setCurrentSelection(ReaderSelection currentSelection,PageInfo pageInfo) {
-        this.currentSelection = currentSelection;
-        this.pageInfo = pageInfo;
+    public int getMoveSelectCount() {
+        return moveSelectCount;
     }
 
-    public List<HighlightCursor> getCursors() {
-        return cursors;
+    public Map<String, SelectionInfo> getReaderSelectionInfos() {
+        return readerSelectionInfos;
     }
 
-    public void setCursors(List<HighlightCursor> cursors) {
-        this.cursors.clear();
-        this.cursors.addAll(cursors);
+    public SelectionInfo getReaderSelectionInfo(String pagePosition) {
+        return readerSelectionInfos.get(pagePosition);
     }
 
-    public PointF getHighLightBeginTop() {
-        return highLightBeginTop;
+    public String getSelectText(){
+        String result = "";
+        for(SelectionInfo readerSelectionInfo : readerSelectionInfos.values()){
+            if(readerSelectionInfo.getCurrentSelection() != null){
+                result += readerSelectionInfo.getCurrentSelection().getText();
+            }
+        }
+        return result;
     }
 
-    public void setHighLightBeginTop(PointF highLightBeginTop) {
-        this.highLightBeginTop = highLightBeginTop;
+    public void clear() {
+        readerSelectionInfos.clear();
     }
 
-    public PointF getHighLightEndBottom() {
-        return highLightEndBottom;
+    public ReaderSelection getCurrentSelection(String pagePosition) {
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            return readerSelectionInfo.getCurrentSelection();
+        }
+        return null;
     }
 
-    public void setHighLightEndBottom(PointF highLightEndBottom) {
-        this.highLightEndBottom = highLightEndBottom;
+    public HighlightCursor getHighlightCursor(String pagePosition, int index) {
+        SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
+        if (readerSelectionInfo != null) {
+            if (index >= 0 && index < readerSelectionInfo.getCursors().size()) {
+                return readerSelectionInfo.getCursors().get(index);
+            }
+        }
+        return null;
+    }
+
+    public synchronized  void updateSelectInfo(Map<String, SelectionInfo> readerSelectionInfos){
+        this.readerSelectionInfos.clear();
+        this.readerSelectionInfos.putAll(readerSelectionInfos);
     }
 }
