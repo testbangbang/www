@@ -51,7 +51,6 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private ReaderDataHolder readerDataHolder;
     private View dividerLine, readerStatusBar;
     private ShowScribbleMenuAction.ActionCallback actionCallback;
-    private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
 
     public ShowSideScribbleMenuAction(ViewGroup parent,View readerStatusBar ,ShowScribbleMenuAction.ActionCallback actionCallback) {
         this.parent = parent;
@@ -98,10 +97,10 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     }
 
     private void onMenuViewSizeChange(final ViewGroup parent) {
-        layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        final ViewTreeObserver.OnGlobalLayoutListener layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                TreeObserverUtils.removeGlobalOnLayoutListener(parent.getViewTreeObserver(), layoutListener);
+                TreeObserverUtils.removeGlobalOnLayoutListener(parent.getViewTreeObserver(), this);
                 List<RectF> excludeRectFs = new ArrayList<>();
                 collectExcludeRectFs(excludeRectFs, sideMenu.getMainMenu());
                 collectExcludeRectFs(excludeRectFs, sideMenu.getSubMenu());
@@ -302,7 +301,6 @@ public class ShowSideScribbleMenuAction extends BaseAction {
 
     @Subscribe
     public void close(CloseScribbleMenuEvent event) {
-        TreeObserverUtils.removeGlobalOnLayoutListener(parent.getViewTreeObserver(), layoutListener);
         removeMenu();
         parent.removeView(dividerLine);
         readerDataHolder.getEventBus().unregister(this);
