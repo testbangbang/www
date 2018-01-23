@@ -13,6 +13,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.AnnotationListAdapter;
 import com.onyx.android.dr.bean.AnnotationStatisticsBean;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.dialog.ExportSuccessHintDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
@@ -127,6 +128,7 @@ public class AnnotationListActivity extends BaseActivity implements AnnotationVi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
+                ActivityManager.startMyNotesActivity(this);
                 finish();
                 break;
             case R.id.title_bar_right_icon_one:

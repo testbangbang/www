@@ -109,7 +109,10 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
         return false;
     }
 
-    @OnClick({R.id.now_reading_book_cover, R.id.image_next, R.id.search_book})
+    @OnClick({R.id.now_reading_book_cover,
+            R.id.image_next,
+            R.id.page_count,
+            R.id.search_book})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.now_reading_book_cover:
@@ -121,7 +124,15 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
             case R.id.search_book:
                 search();
                 break;
+            case R.id.page_count:
+                deleteMetadataData();
+                break;
         }
+    }
+
+    private void deleteMetadataData() {
+        presenter.deleteMetadata();
+        presenter.loadData("");
     }
 
     private void search() {

@@ -751,4 +751,5 @@
     <string name="good_sententce_title">好句内容</string>
     <string name="has_buy">已购买</string>
     <string name="amend">修改</string>
+    <string name="being_downloading">正在下载</string>
 </resources>

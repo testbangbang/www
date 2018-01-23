@@ -45,7 +45,7 @@ public class InformalEssayData {
 
     public void insertInformalEssay(Context context, InformalEssayInsert req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
-    }
+}
 
     public void deleteInformalEssay(Context context, InformalEssayDelete req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);

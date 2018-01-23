@@ -303,6 +303,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
+                ActivityManager.startMyNotesActivity(this);
                 finish();
                 break;
             case R.id.book_report_list_page_left:

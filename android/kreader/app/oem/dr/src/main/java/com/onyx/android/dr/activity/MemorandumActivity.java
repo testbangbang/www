@@ -239,6 +239,7 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView, 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
+                ActivityManager.startMyNotesActivity(this);
                 finish();
                 break;
             case R.id.memorandum_activity_sunday_date_of_week:

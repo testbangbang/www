@@ -2,6 +2,7 @@ package com.onyx.android.dr.adapter;
 
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.AddToCartEvent;
@@ -56,9 +58,10 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_col);
     private boolean newPage = false;
+    private boolean downloading = false;
     private int noThumbnailPosition = 0;
     private boolean isVisibleToUser = false;
-    private List<Metadata> eBookList;
+    private List<Metadata> eBookList = new ArrayList<>();
 
     public void setEBookList(List<Metadata> EBookList) {
         this.eBookList = EBookList;
@@ -98,11 +101,20 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     }
 
     @Override
-    public void onPageBindViewHolder(LibraryItemViewHolder viewHolder, int position) {
+    public void onPageBindViewHolder(final LibraryItemViewHolder viewHolder, final int position) {
         viewHolder.itemView.setTag(position);
-        final Metadata eBook = getEBookList().get(position);
+        final Metadata eBook = eBookList.get(position);
         viewHolder.titleView.setVisibility(View.VISIBLE);
         viewHolder.titleView.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.price_format), eBook.getPrice()));
+        if (isFileExists(eBook)) {
+            viewHolder.paid.setText(DRApplication.getInstance().getResources().getString(R.string.read));
+        } else {
+            if (downloading) {
+                viewHolder.paid.setText(DRApplication.getInstance().getString(R.string.being_downloading));
+            } else {
+                viewHolder.paid.setText(DRApplication.getInstance().getResources().getString(R.string.download));
+            }
+        }
         viewHolder.paid.setText(isFileExists(eBook) ? DRApplication.getInstance().getResources().getString(R.string.read) : DRApplication.getInstance().getResources().getString(R.string.download));
         Bitmap bitmap = getBitmap(eBook.getAssociationId());
         if (bitmap == null) {
@@ -132,22 +144,23 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         viewHolder.paid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openBookOrDownload(eBook);
+                openBookOrDownload(eBook, position);
             }
         });
         viewHolder.buyLayout.setVisibility(eBook.isPaid() ? View.GONE : View.VISIBLE);
         viewHolder.paid.setVisibility(eBook.isPaid() ? View.VISIBLE : View.GONE);
     }
 
-    private void openBookOrDownload(Metadata eBook) {
+    private void openBookOrDownload(Metadata eBook, int position) {
         if (isFileExists(eBook)) {
             openCloudFile(eBook);
             return;
         }
         if (enableWifiOpenAndDetect()) {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
             return;
         }
-        startDownload(eBook);
+        startDownload(eBook, position);
     }
 
     @Override
@@ -156,11 +169,13 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
             return;
         }
         int position = (int) v.getTag();
-        Metadata book = getEBookList().get(position);
+        Log.i(TAG, "onClick_position:" + position);
+        Log.i(TAG, "onClick_eBookList.size():" + eBookList.size());
+        Metadata book = eBookList.get(position);
         EventBus.getDefault().post(new BookDetailEvent(book.getCloudId()));
     }
 
-    private void startDownload(final Metadata eBook) {
+    private void startDownload(final Metadata eBook, final int position) {
         final String filePath = getDataSaveFilePath(eBook);
         String bookDownloadUrl = DeviceConfig.sharedInstance(DRApplication.getInstance()).getBookDownloadUrl(eBook.getGuid());
         String token = DRApplication.getCloudStore().getCloudManager().getToken();
@@ -169,16 +184,19 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         OnyxDownloadManager downLoaderManager = getDownLoaderManager();
         BaseDownloadTask download = downLoaderManager.download(DRApplication.getInstance(), header, bookDownloadUrl, filePath, eBook.getGuid(), new BaseCallback() {
             @Override
-            public void done(BaseRequest request, Throwable e) {
+                public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
+                    downloading = false;
                     setCloudMetadataNativeAbsolutePath(eBook, filePath);
-                    notifyDataSetChanged();
+                } else {
+                    downloading = true;
                 }
+                notifyItemChanged(position);
             }
 
             @Override
             public void progress(BaseRequest request, ProgressInfo info) {
-
+                Log.i(TAG, "progress:" + info.progress);
             }
         });
         getDownLoaderManager().startDownload(download);

@@ -186,6 +186,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
+                ActivityManager.startMyNotesActivity(this);
                 finish();
                 break;
             case R.id.title_bar_right_icon_four:

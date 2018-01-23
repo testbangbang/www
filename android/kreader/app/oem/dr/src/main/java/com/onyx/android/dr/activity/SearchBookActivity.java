@@ -113,6 +113,7 @@ public class SearchBookActivity extends BaseActivity implements SearchBookView {
     @Override
     protected void initData() {
         titleBarTitle.setText(getString(R.string.search));
+        image.setVisibility(View.GONE);
         customSearchView.setEditTextHint(getString(R.string.search_hint));
     }
 

@@ -11,7 +11,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
@@ -122,9 +121,13 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
     @Override
     public void setBookDetail(CloudMetadata metadata) {
         this.metadata = metadata;
-        Glide.with(this).load(metadata.getCoverUrl()).placeholder(R.drawable.book_cover).into(bookDetailBookCover);
+        Glide.with(DRApplication.getInstance()).load(metadata.getCoverUrl()).placeholder(R.drawable.book_cover).into(bookDetailBookCover);
         bookDetailBookName.setText(String.format(getString(R.string.book_detail_book_name), metadata.getName()));
-        bookDetailBookPublisher.setText(String.format(getString(R.string.book_detail_book_publisher), metadata.getPublisher()));
+        if (StringUtils.isNullOrEmpty(metadata.getPublisher())) {
+            bookDetailBookPublisher.setText(getString(R.string.nothing));
+        } else {
+            bookDetailBookPublisher.setText(String.format(getString(R.string.book_detail_book_publisher), metadata.getPublisher()));
+        }
         bookDetailLanguage.setText(String.format(getString(R.string.book_detail_book_language), metadata.getLanguage()));
         bookDetailPrice.setText(String.format(getString(R.string.book_detail_book_price), metadata.getPrice()));
         bookDetailBuyLayout.setVisibility(metadata.isPaid() ? View.GONE : View.VISIBLE);
@@ -177,6 +180,7 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
         if (enableWifiOpenAndDetect()) {
             return;
         }
+        bookDetailRead.setText(getString(R.string.being_downloading));
         startDownload(metadata);
     }
 
@@ -192,6 +196,8 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
                     setCloudMetadataNativeAbsolutePath(eBook, filePath);
+                } else {
+                    bookDetailRead.setText(getString(R.string.apk_download_fail));
                 }
             }
 
@@ -201,7 +207,6 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
             }
         });
         getDownLoaderManager().startDownload(download);
-        CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.downloading));
     }
 
     private String getDataSaveFilePath(Metadata book) {
@@ -231,6 +236,7 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
         book.setNativeAbsolutePath(path);
         DownloadSucceedEvent event = new DownloadSucceedEvent(book);
         EventBus.getDefault().post(event);
+        bookDetailRead.setText(isFileExists(book) ? getString(R.string.read) : getString(R.string.download));
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

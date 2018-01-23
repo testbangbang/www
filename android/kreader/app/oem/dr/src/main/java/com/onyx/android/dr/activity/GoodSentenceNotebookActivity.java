@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GoodSentenceAdapter;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
@@ -240,6 +241,7 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
+                ActivityManager.startMyNotesActivity(this);
                 finish();
                 break;
             case R.id.title_bar_right_select_time:

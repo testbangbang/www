@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data.request.cloud.v2;
 
+import android.util.Log;
+
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.db.ContentDatabase;
@@ -19,10 +21,9 @@ import java.util.List;
  * Created by hehai on 2017/8/2.
  */
 public class CloudChildLibraryListLoadRequest extends BaseCloudRequest {
-
+    private static final String TAG = CloudChildLibraryListLoadRequest.class.getSimpleName();
     private String parentId;
     private QueryArgs queryArgs = new QueryArgs();
-
     private List<Library> libraryList;
 
     public CloudChildLibraryListLoadRequest(String parentId) {
@@ -37,6 +38,7 @@ public class CloudChildLibraryListLoadRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         queryArgs.cloudToken = parent.getToken();
         libraryList = parent.getCloudDataProvider().loadChildLibrary(parentId, queryArgs);
+        Log.i(TAG, "libraryList:" + libraryList.size());
         saveLibraryListToLocal(parent.getCloudDataProvider(), queryArgs.fetchPolicy);
     }
 
@@ -47,7 +49,7 @@ public class CloudChildLibraryListLoadRequest extends BaseCloudRequest {
         saveLibraryListToLocal(dataProvider, libraryList);
     }
 
-    private void saveLibraryListToLocal(DataProviderBase dataProvider, List<Library> libraryList) {
+    private synchronized  void saveLibraryListToLocal(DataProviderBase dataProvider, List<Library> libraryList) {
         if (CollectionUtils.isNullOrEmpty(libraryList)) {
             return;
         }
