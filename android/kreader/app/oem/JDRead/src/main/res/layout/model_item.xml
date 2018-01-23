@@ -22,10 +22,8 @@
         <RelativeLayout
             android:layout_width="@dimen/model_item_cover_width"
             android:layout_height="@dimen/model_item_cover_height"
-            android:background="@drawable/rectangle_stroke"
             android:onClick="@{()->model.itemClicked()}"
-            android:onLongClick="@{()->model.itemLongClick()}"
-            android:padding="@dimen/rectangle_stroke_width">
+            android:onLongClick="@{()->model.itemLongClick()}">
 
             <ImageView
                 android:id="@+id/image_cover"
@@ -33,6 +31,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
+                android:background="@drawable/rectangle_stroke"
+                android:padding="@dimen/rectangle_stroke_width"
                 android:src="@{model.coverDefault}"
                 android:visibility="@{StringUtils.isNotBlank(model.childCount)?View.GONE:View.VISIBLE}" />
 
@@ -41,6 +41,8 @@
                 android:layout_height="match_parent">
 
                 <com.onyx.android.sdk.ui.view.PageRecyclerView
+                    android:background="@drawable/rectangle_stroke"
+                    android:padding="@dimen/rectangle_stroke_width"
                     android:id="@+id/libraryCover_recycler"
                     items="@{model.childList}"
                     android:layout_width="match_parent"

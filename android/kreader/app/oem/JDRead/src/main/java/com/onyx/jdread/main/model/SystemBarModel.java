@@ -14,7 +14,10 @@ import android.os.BatteryManager;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.util.TimeUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Observable;
 
 /**
@@ -82,6 +85,16 @@ public class SystemBarModel extends Observable {
     public final ObservableInt wifiImageRes = new ObservableInt();
     public final ObservableInt batteryImageRes = new ObservableInt();
     public final ObservableField<String> battery = new ObservableField<>();
+    public final ObservableField<String> time = new ObservableField<>();
+
+    public SystemBarModel() {
+        updateTime();
+    }
+
+    public void updateTime() {
+        String time = TimeUtils.getTime(System.currentTimeMillis(), new SimpleDateFormat(TimeUtils.DATA_TIME));
+        this.time.set(time);
+    }
 
     private BroadcastReceiver phoneBatteryReceiver = new BroadcastReceiver() {
         @Override
