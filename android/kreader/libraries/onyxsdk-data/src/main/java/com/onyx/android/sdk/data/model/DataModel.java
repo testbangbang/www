@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.event.ItemClickEvent;
 import com.onyx.android.sdk.data.event.ItemLongClickEvent;
+import com.onyx.android.sdk.dataprovider.R;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -127,6 +128,6 @@ public class DataModel extends BaseObservable {
 
 
     public boolean showFormat() {
-        return coverBitmap != null;
+        return coverBitmap.get() == null;
     }
 }

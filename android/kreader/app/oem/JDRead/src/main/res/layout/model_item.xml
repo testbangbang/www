@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
-                android:src="@mipmap/ic_shelf_cover"
+                android:src="@{model.coverDefault}"
                 android:visibility="@{StringUtils.isNotBlank(model.childCount)?View.GONE:View.VISIBLE}" />
 
             <com.onyx.jdread.library.view.NonClickableRelativeLayout
