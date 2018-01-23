@@ -237,6 +237,11 @@ public class TouchHelper {
         return this;
     }
 
+    public TouchHelper setExcludeRect(List<Rect> list) {
+        getRawInputManager().setExcludeRect(list);
+        return this;
+    }
+
     public TouchHelper setStrokeWidth(float w) {
         getRawInputManager().setStrokeWidth(w);
         return this;

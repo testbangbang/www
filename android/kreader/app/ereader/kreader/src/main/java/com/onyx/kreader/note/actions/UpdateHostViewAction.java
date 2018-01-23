@@ -6,8 +6,6 @@ import android.view.SurfaceView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.kreader.note.request.ResumeDrawingRequest;
 import com.onyx.kreader.note.request.UpdateHostViewRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -21,21 +19,40 @@ import java.util.List;
 
 public class UpdateHostViewAction extends BaseAction {
     private SurfaceView surfaceView;
+    private boolean isUpdatingVisibleRect;
     private Rect visibleRect = new Rect();
+    private boolean isUpdatingExcludeRect;
     private ArrayList<RectF> excludeRectList = new ArrayList<>();
     private int orientation;
 
-    public UpdateHostViewAction(final SurfaceView sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {
+    private UpdateHostViewAction(final SurfaceView sv, boolean isUpdatingVisibleRect, final Rect visibleDrawRect, boolean isUpdatingExcludeRect, final List<RectF> excludeRect, int orientation) {
         surfaceView = sv;
-        visibleRect.set(visibleDrawRect);
-        excludeRectList.addAll(excludeRect);
+        this.isUpdatingVisibleRect = isUpdatingVisibleRect;
+        if (isUpdatingVisibleRect) {
+            visibleRect.set(visibleDrawRect);
+        }
+        this.isUpdatingExcludeRect = isUpdatingExcludeRect;
+        if (isUpdatingExcludeRect) {
+            excludeRectList.addAll(excludeRect);
+        }
         this.orientation = orientation;
     }
 
+    public static UpdateHostViewAction updateVisibleRegion(final SurfaceView sv, final Rect visibleDrawRect, int orientation) {
+        return new UpdateHostViewAction(sv, true, visibleDrawRect, false, null, orientation);
+    }
+
+    public static UpdateHostViewAction updateVisibleRegion(final SurfaceView sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {
+        return new UpdateHostViewAction(sv, true, visibleDrawRect, true, excludeRect, orientation);
+    }
+
+    public static UpdateHostViewAction updateExcludeRegion(final SurfaceView sv, final List<RectF> excludeRect, int orientation) {
+        return new UpdateHostViewAction(sv, false, null, true, excludeRect, orientation);
+    }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        final UpdateHostViewRequest clearPageRequest = new UpdateHostViewRequest(surfaceView, visibleRect, excludeRectList, orientation);
+        final UpdateHostViewRequest clearPageRequest = new UpdateHostViewRequest(surfaceView, isUpdatingVisibleRect, visibleRect, isUpdatingExcludeRect, excludeRectList, orientation);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), clearPageRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

@@ -928,7 +928,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
 
-        UpdateHostViewAction action = new UpdateHostViewAction(surfaceView, visibleDrawRect, new ArrayList<RectF>(), rotation);
+        UpdateHostViewAction action = UpdateHostViewAction.updateVisibleRegion(surfaceView, visibleDrawRect, rotation);
         action.execute(getReaderDataHolder(), null);
     }
 
@@ -987,7 +987,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        UpdateHostViewAction action = new UpdateHostViewAction(surfaceView, rect, getExcludeRect(event.getExcludeRects()), rotation);
+        UpdateHostViewAction action = UpdateHostViewAction.updateVisibleRegion(surfaceView, rect, getExcludeRect(event.getExcludeRects()), rotation);
         action.execute(getReaderDataHolder(), null);
     }
 

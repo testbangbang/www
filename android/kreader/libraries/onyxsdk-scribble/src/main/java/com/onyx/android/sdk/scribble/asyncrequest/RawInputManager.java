@@ -179,6 +179,11 @@ public class RawInputManager {
         return this;
     }
 
+    public RawInputManager setExcludeRect(List<Rect> list) {
+        getRawInputReader().setExcludeRect(list);
+        return this;
+    }
+
     private RawInputReader getRawInputReader() {
         if (rawInputReader == null) {
             rawInputReader = new RawInputReader();
