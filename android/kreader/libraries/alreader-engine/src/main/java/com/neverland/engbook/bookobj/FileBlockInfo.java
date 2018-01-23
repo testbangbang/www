@@ -35,7 +35,7 @@ public class FileBlockInfo {
     public static final int EPUB_HEAD_SIZE = VERSION_LENGTH + MD5_LENGTH + FILE_BLOCK_NUMBER_SIZE + LAST_BLOCK_INFO_SIZE + TEXT_DATA_SIZE_LENGTH + EXTEND_SIZE;
     public static final int BLOCK_SIZE = 3 * BYTE_4;
 
-    private static final String[] HTML = {".xhtml", ".html"};
+    private static final String[] HTML = {".xhtml", ".html","htm"};
     private int blockSize;
     private int paragraphOffset;
     private int paragraphNumber;

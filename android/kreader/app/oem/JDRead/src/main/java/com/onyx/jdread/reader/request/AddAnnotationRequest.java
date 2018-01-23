@@ -8,7 +8,7 @@ import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.jdread.reader.data.Reader;
-import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
+import com.onyx.jdread.reader.highlight.SelectionInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -19,9 +19,9 @@ import java.util.Map;
 
 public class AddAnnotationRequest extends ReaderBaseRequest {
     private Reader reader;
-    private Map<String, ReaderSelectionInfo> readerSelectionInfos;
+    private Map<String, SelectionInfo> readerSelectionInfos;
 
-    public AddAnnotationRequest(Reader reader, Map<String, ReaderSelectionInfo> readerSelectionInfos) {
+    public AddAnnotationRequest(Reader reader, Map<String, SelectionInfo> readerSelectionInfos) {
         this.reader = reader;
         this.readerSelectionInfos = readerSelectionInfos;
     }
@@ -34,7 +34,7 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
     }
 
     private void saveAnnotation() {
-        for (ReaderSelectionInfo readerSelectionInfo : readerSelectionInfos.values()) {
+        for (SelectionInfo readerSelectionInfo : readerSelectionInfos.values()) {
             ReaderSelection selection = readerSelectionInfo.getCurrentSelection();
             Annotation annotation = createAnnotation(reader,readerSelectionInfo.pageInfo,
                     selection.getStartPosition(), selection.getEndPosition(),
