@@ -20,13 +20,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.onyx.jdread.setting.view.OnyxDigitalClock
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginBottom="@dimen/reader_time_margin_bottom"
             android:layout_marginLeft="@dimen/reader_time_margin_left"
             android:gravity="center"
+            android:text="@{readViewModel.time}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
 

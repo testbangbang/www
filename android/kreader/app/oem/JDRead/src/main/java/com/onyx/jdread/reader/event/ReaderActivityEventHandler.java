@@ -24,6 +24,7 @@ import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
 import com.onyx.jdread.reader.menu.event.SearchContentEvent;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
+import com.onyx.jdread.util.TimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -115,6 +116,8 @@ public class ReaderActivityEventHandler {
     }
 
     private void updatePageNumber(){
+        String time = TimeUtils.getCurrentTime();
+        readerViewModel.setTime(time);
         int current = readerViewModel.getReaderDataHolder().getCurrentPage() + 1;
         int total = readerViewModel.getReaderDataHolder().getPageCount();
         readerViewModel.setPage(current + "/" + total);
