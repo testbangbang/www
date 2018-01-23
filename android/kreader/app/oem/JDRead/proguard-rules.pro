@@ -62,3 +62,7 @@
 -keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig$* { *; }
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig$* { *; }
+
+# keep javabean
+-keep class com.onyx.jdread.shop.cloud.entity** { *; }
+-keep class com.onyx.jdread.personal.cloud.entity** { *; }

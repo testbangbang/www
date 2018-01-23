@@ -15,7 +15,7 @@
     <RelativeLayout
         android:paddingLeft="@dimen/book_shop_padding_left"
         android:paddingRight="@dimen/book_shop_padding_right"
-        android:layout_marginTop="@dimen/book_shop_padding_top"
+        android:layout_marginTop="@dimen/book_shop_search_view_padding_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:showIn="@layout/fragment_book_shop_one">

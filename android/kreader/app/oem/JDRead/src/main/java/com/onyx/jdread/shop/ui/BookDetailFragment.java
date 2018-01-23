@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.widget.TextView;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
@@ -33,7 +34,6 @@ import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.common.LoginHelper;
-import com.onyx.jdread.personal.event.CancelUserLoginDialogEvent;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
@@ -59,7 +59,8 @@ import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.PageTagConstants;
 import com.onyx.jdread.shop.event.BookDetailReadNowEvent;
 import com.onyx.jdread.shop.event.BookDetailViewInfoEvent;
-import com.onyx.jdread.shop.event.BookSearchKeyWordrEvent;
+import com.onyx.jdread.shop.event.BookSearchKeyWordEvent;
+import com.onyx.jdread.shop.event.BookSearchPathEvent;
 import com.onyx.jdread.shop.event.BuyBookSuccessEvent;
 import com.onyx.jdread.shop.event.CopyrightCancelEvent;
 import com.onyx.jdread.shop.event.CopyrightEvent;
@@ -81,6 +82,7 @@ import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.shop.utils.ViewHelper;
+import com.onyx.jdread.shop.view.AutoPagedWebView;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.util.Utils;
 
@@ -169,7 +171,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void initView() {
         bookDetailBinding.setBookDetailViewModel(getBookDetailViewModel());
-        bookDetailBinding.bookDetailInfo.bookDetailYuedouPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        //TODO  Do not do temporarily:  bookDetailBinding.bookDetailInfo.bookDetailYuedouPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         bookDetailBinding.bookDetailInfo.bookDetailCategorySecondPath.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         bookDetailBinding.bookDetailInfo.bookDetailCategoryThirdPath.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         nowReadButton = bookDetailBinding.bookDetailInfo.bookDetailNowRead;
@@ -243,6 +245,7 @@ public class BookDetailFragment extends BaseFragment {
                     }
                     if (!bookDetailBean.can_buy) {
                         buyBookButton.setVisibility(View.GONE);
+                        bookDetailBinding.bookDetailInfo.shopCartContainer.setVisibility(View.GONE);
                     }
                     if (!StringUtils.isNullOrEmpty(bookDetailBean.author) && !getString(R.string.content_empty).equals(bookDetailBean.author)) {
                         getAuthorBooksData(bookDetailBean.author);
@@ -255,7 +258,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void getAuthorBooksData(String keyWord) {
-        SearchBookListAction booksAction = new SearchBookListAction("", 0, CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES,
+        SearchBookListAction booksAction = new SearchBookListAction("", 1, CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES,
                 CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES, keyWord, CloudApiContext.SearchBook.FILTER_DEFAULT);
         booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
             @Override
@@ -345,11 +348,6 @@ public class BookDetailFragment extends BaseFragment {
             return true;
         }
         return false;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCancelUserLoginDialogEvent(CancelUserLoginDialogEvent event) {
-        LoginHelper.dismissUserLoginDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -662,6 +660,7 @@ public class BookDetailFragment extends BaseFragment {
 
     public void setBookId(long ebookId) {
         this.ebookId = ebookId;
+        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, ebookId);
         queryMetadata();
         getBookDetail();
     }
@@ -731,9 +730,19 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookSearchKeyWordrEvent(BookSearchKeyWordrEvent event) {
+    public void onBookSearchKeyWordEvent(BookSearchKeyWordEvent event) {
         if (getViewEventCallBack() != null) {
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
             JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, event.keyWord);
+            getViewEventCallBack().gotoView(SearchBookListFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookSearchPathEvent(BookSearchPathEvent event) {
+        if (getViewEventCallBack() != null) {
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, "");
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, event.catId);
             getViewEventCallBack().gotoView(SearchBookListFragment.class.getName());
         }
     }
@@ -756,7 +765,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
         DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
-        DialogBookInfoViewModel dialogBookInfoViewModel = getBookDetailViewModel().getDialogBookInfoViewModel();
+        final DialogBookInfoViewModel dialogBookInfoViewModel = getBookDetailViewModel().getDialogBookInfoViewModel();
         dialogBookInfoViewModel.content.set(content);
         dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce));
         infoBinding.setViewModel(dialogBookInfoViewModel);
@@ -764,6 +773,17 @@ public class BookDetailFragment extends BaseFragment {
             AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
             build.setView(infoBinding.getRoot());
             build.setCancelable(true);
+            AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
+            WebSettings settings = pagedWebView.getSettings();
+            settings.setSupportZoom(true);
+            settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
+            pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
+                @Override
+                public void onPageChanged(int currentPage, int totalPage) {
+                    dialogBookInfoViewModel.currentPage.set(currentPage);
+                    dialogBookInfoViewModel.totalPage.set(totalPage);
+                }
+            });
             infoBinding.setListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
