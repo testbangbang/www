@@ -425,6 +425,7 @@
     <dimen name="reader_time_margin_bottom">10dp</dimen>
     <dimen name="reader_page_number_margin_right">20dp</dimen>
     <dimen name="reader_page_number_margin_bottom">10dp</dimen>
+    <dimen name="reader_page_translate_window_margin_bottom">10dp</dimen>
     <dimen name="book_format_margin_top">60dp</dimen>
     <dimen name="book_format_margin_left">60dp</dimen>
     <dimen name="library_cover_child_format_margin_top">25dp</dimen>
