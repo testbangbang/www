@@ -36,6 +36,8 @@ public interface DataProviderBase {
 
     Metadata findMetadataByHashTag(final Context context, final String path, String hashTag);
 
+    void deleteMetadata(final Context context, final String docId);
+
     long count(final Context context, final QueryArgs queryArgs);
 
     void removeMetadata(final Context context, final Metadata metadata);

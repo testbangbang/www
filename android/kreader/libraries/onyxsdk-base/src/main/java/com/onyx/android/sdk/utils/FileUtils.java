@@ -422,6 +422,20 @@ public class FileUtils {
         return false;
     }
 
+    public static boolean ensureFileDelete(final String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            return false;
+        }
+        if (file.isDirectory()) {
+            File[] children = file.listFiles();
+            for (File child : children) {
+                ensureFileDelete(child.getAbsolutePath());
+            }
+        }
+        return file.delete();
+    }
+
     public static boolean ensureFileExists(String path) {
         File file = new File(path);
         if (file.exists()) {
