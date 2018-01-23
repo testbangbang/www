@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.widget.TextView;
 
 import java.util.Calendar;
 
@@ -15,7 +16,7 @@ import java.util.Calendar;
  * Created by hehai on 18-1-12.
  */
 
-public class OnyxDigitalClock extends android.widget.DigitalClock {
+public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextView {
     Calendar mCalendar;
     private final static String m12 = "h:mm";
     private final static String m24 = "k:mm";
@@ -70,7 +71,7 @@ public class OnyxDigitalClock extends android.widget.DigitalClock {
                 setText(DateFormat.format(mFormat, mCalendar));
                 invalidate();
                 long now = SystemClock.uptimeMillis();
-                long next = now + (1000 - now % 1000);
+                long next = now + (1000 * 60 - now % (1000 * 60));
                 mHandler.postAtTime(mTicker, next);
             }
         };

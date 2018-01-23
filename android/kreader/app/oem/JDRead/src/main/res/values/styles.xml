@@ -17,6 +17,8 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowBackground">@drawable/rectangle_stroke</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:backgroundDimAmount">0</item>
     </style>
 
     <style name="DottedLineStyle">
@@ -230,9 +232,13 @@
         <item name="android:maxHeight">@dimen/menu_seek_bar_height</item>
         <item name="android:minHeight">@dimen/menu_seek_bar_height</item>
         <item name="android:paddingTop">@dimen/reader_page_info_menu_reading_process_padding</item>
-        <item name="android:paddingBottom">@dimen/reader_page_info_menu_reading_process_padding</item>
-        <item name="android:paddingLeft">@dimen/reader_page_info_menu_reading_process_padding_left</item>
-        <item name="android:paddingRight">@dimen/reader_page_info_menu_reading_process_padding_left</item>
+        <item name="android:paddingBottom">@dimen/reader_page_info_menu_reading_process_padding
+        </item>
+        <item name="android:paddingLeft">@dimen/reader_page_info_menu_reading_process_padding_left
+        </item>
+        <item name="android:paddingRight">
+            @dimen/reader_page_info_menu_reading_process_padding_left
+        </item>
         <item name="android:progressDrawable">@drawable/seekbar_progress</item>
         <item name="android:thumb">@drawable/seekbar_thumb</item>
     </style>
@@ -264,6 +270,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">@dimen/edit_text_padding</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="ReaderTitleBarBuyStyle">
@@ -325,6 +332,7 @@
         <item name="android:paddingBottom">16dp</item>
         <item name="android:layout_marginBottom">5dp</item>
     </style>
+
     <style name="reader_popup_selection_menu_style">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
@@ -336,6 +344,7 @@
         <item name="android:paddingTop">@dimen/reader_select_menu_padding_top</item>
         <item name="android:paddingBottom">@dimen/reader_select_menu_padding_bottom</item>
     </style>
+
     <style name="reader_dotted_line_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">2dp</item>

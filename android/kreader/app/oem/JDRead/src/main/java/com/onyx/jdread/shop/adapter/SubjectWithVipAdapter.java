@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.databinding.SubjectModelVipItemBinding;
+import com.onyx.jdread.databinding.ItemSubjectBookModelWithVipBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 
@@ -86,14 +86,14 @@ public class SubjectWithVipAdapter extends PageAdapter<PageRecyclerView.ViewHold
 
     static class ModelViewHolder extends PageRecyclerView.ViewHolder {
 
-        private final SubjectModelVipItemBinding bind;
+        private final ItemSubjectBookModelWithVipBinding bind;
 
         public ModelViewHolder(View view) {
             super(view);
             bind = DataBindingUtil.bind(view);
         }
 
-        public SubjectModelVipItemBinding getBind() {
+        public ItemSubjectBookModelWithVipBinding getBind() {
             return bind;
         }
 

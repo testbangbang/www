@@ -39,6 +39,7 @@
                 android:layout_marginTop="@dimen/item_top_up_margin_top"
                 android:text="@{bean.valueGift}"
                 android:textSize="@dimen/level_three_heading_font"
+                android:textColor="@android:color/black"
                 android:visibility="@{StringUtils.isNullOrEmpty(bean.valueGift) ? View.GONE : View.VISIBLE}" />
         </LinearLayout>
     </LinearLayout>

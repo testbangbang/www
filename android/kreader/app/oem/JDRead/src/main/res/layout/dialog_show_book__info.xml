@@ -39,6 +39,7 @@
             android:layout_gravity="center_horizontal"
             android:text="@{viewModel.title}"
             android:textSize="@dimen/level_two_heading_font"
+            android:textColor="@android:color/black"
             android:textStyle="bold" />
 
         <com.onyx.jdread.shop.view.AutoPagedWebView

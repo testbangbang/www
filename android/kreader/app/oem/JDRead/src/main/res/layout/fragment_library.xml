@@ -44,6 +44,7 @@
                 android:onClick="@{()->libraryModel.onBackClick()}"
                 android:paddingLeft="@dimen/library_manage_layout_padding"
                 android:text="@{libraryModel.title}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font"
                 android:visibility="@{StringUtils.isNullOrEmpty(libraryModel.title)?View.INVISIBLE:View.VISIBLE}" />
 
@@ -112,6 +113,7 @@
                 android:drawableTop="@mipmap/ic_shelf_check_all"
                 android:onClick="@{()->libraryModel.selectAll()}"
                 android:text="@{libraryModel.selectAllBtnText}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
 
             <TextView
@@ -124,6 +126,7 @@
                 android:drawableTop="@mipmap/ic_shelf_delete_book"
                 android:onClick="@{()->libraryModel.delete()}"
                 android:text="@string/delete"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
 
             <TextView
@@ -134,6 +137,7 @@
                 android:drawableTop="@mipmap/ic_shelf_move"
                 android:onClick="@{()->libraryModel.moveTo()}"
                 android:text="@string/move_to"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
         </LinearLayout>
     </LinearLayout>

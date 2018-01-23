@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="@{itemModel.text}"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_one_heading_font" />
 
         <ImageView

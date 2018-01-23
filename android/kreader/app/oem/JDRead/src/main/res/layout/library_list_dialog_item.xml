@@ -17,8 +17,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:paddingTop="@dimen/library_list_dialog_item_padding"
             android:paddingBottom="@dimen/library_list_dialog_item_padding"
-            android:text="@{library.title}" />
+            android:paddingTop="@dimen/library_list_dialog_item_padding"
+            android:text="@{library.title}"
+            android:textColor="@android:color/black" />
     </LinearLayout>
 </layout>

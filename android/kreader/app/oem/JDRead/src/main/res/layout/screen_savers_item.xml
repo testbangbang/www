@@ -30,7 +30,8 @@
             android:layout_below="@id/screen_saver_image"
             android:layout_marginTop="@dimen/screen_savers_item_text_margin"
             android:gravity="center"
-            android:text="@{itemModel.name}" />
+            android:text="@{itemModel.name}"
+            android:textColor="@android:color/black" />
 
     </RelativeLayout>
 </layout>

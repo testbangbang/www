@@ -56,6 +56,7 @@
                 android:background="@drawable/imagebtn_bg"
                 android:onClick="@{()->brightnessModel.maxBrightness()}"
                 android:text="@string/brightest_brightness"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
         </LinearLayout>
 
