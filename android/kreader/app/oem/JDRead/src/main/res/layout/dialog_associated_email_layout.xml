@@ -27,6 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="@{dialogModel.title}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
 
             <ImageView
@@ -54,6 +55,7 @@
             android:hint="@string/email_address_hint"
             android:text="@={dialogModel.emailAddress}"
             android:textSize="@dimen/level_two_heading_font"
+            android:textColor="@android:color/black"
             android:visibility="@{dialogModel.bound?View.GONE:View.VISIBLE}" />
 
         <TextView

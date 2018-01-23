@@ -12,6 +12,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.LibraryCoverItemBinding;
 import com.onyx.jdread.main.common.PageAdapter;
+import com.onyx.jdread.main.common.ResManager;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ import java.util.List;
  */
 
 public class LibraryCoverAdapter extends PageAdapter<LibraryCoverAdapter.ViewHolder, DataModel, DataModel> {
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.library_cover_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.library_cover_col);
+    private int row = ResManager.getInteger(R.integer.library_cover_row);
+    private int col = ResManager.getInteger(R.integer.library_cover_col);
 
     public LibraryCoverAdapter() {
 

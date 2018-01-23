@@ -124,4 +124,9 @@ public class DataModel extends BaseObservable {
     public boolean showCheckCount() {
         return enableSelection.get() && type.get() == ModelType.TYPE_LIBRARY;
     }
+
+
+    public boolean showFormat() {
+        return coverBitmap != null;
+    }
 }
