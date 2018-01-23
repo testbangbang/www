@@ -82,7 +82,7 @@ public class SystemBarModel extends Observable {
         this.isShow.set(isShow);
     }
 
-    public final ObservableInt wifiImageRes = new ObservableInt();
+    public final ObservableInt wifiImageRes = new ObservableInt(R.drawable.ic_qs_wifi);
     public final ObservableInt batteryImageRes = new ObservableInt();
     public final ObservableField<String> battery = new ObservableField<>();
     public final ObservableField<String> time = new ObservableField<>();
