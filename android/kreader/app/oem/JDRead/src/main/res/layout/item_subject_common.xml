@@ -25,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/text_no_stoke_background"
                 android:text="@{viewModel.modelBean.show_name}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <TextView

@@ -120,11 +120,12 @@
                             android:id="@+id/book_detail_yuedou_price_old"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{@string/book_detail_yuedou_price(ViewHelper.getYueDouPrice(bookDetailViewModel.bookDetailResultBean.data.price))}"
+                            android:text="@{@string/book_detail_yuedou_price(ViewHelper.getYueDouPrice(bookDetailViewModel.bookDetailResultBean.data.jd_price))}"
                             android:textColor="@android:color/darker_gray"
                             android:textSize="@dimen/level_three_heading_font" />
 
                         <TextView
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/book_detail_sub_info_margin_left"
@@ -133,6 +134,7 @@
                             android:textSize="@dimen/level_three_heading_font" />
 
                         <TextView
+                            android:visibility="gone"
                             android:id="@+id/book_detail_discount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -225,6 +227,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/shop_cart_container"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/book_detail_button_margin"
@@ -233,8 +236,7 @@
                     android:background="@drawable/normal_selected_background"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onShoppingCartClick()}"
-                    android:orientation="vertical"
-                    android:visibility="@{bookDetailViewModel.bookDetailResultBean.data.can_buy ? View.VISIBLE : View.GONE}">
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="@dimen/search_view_shop_car_icon_width_and_height"

@@ -6,11 +6,11 @@ import android.view.SurfaceView;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.handler.HandlerManger;
-import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
-import com.onyx.jdread.reader.highlight.SelectionInfoManager;
+import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
 import com.onyx.jdread.reader.model.SelectMenuModel;
 
 /**
@@ -31,7 +31,7 @@ public class ReaderDataHolder {
     private ReaderTouchHelper readerTouchHelper;
     private SelectMenuModel selectMenuModel;
     private DocumentInfo documentInfo;
-    private SelectionInfoManager readerSelectionInfo;
+    private ReaderSelectionInfo readerSelectionInfo;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
@@ -50,9 +50,9 @@ public class ReaderDataHolder {
         return readerTouchHelper;
     }
 
-    public SelectionInfoManager getReaderSelectionInfo(){
+    public ReaderSelectionInfo getReaderSelectionInfo(){
         if (readerSelectionInfo == null) {
-            readerSelectionInfo = new SelectionInfoManager();
+            readerSelectionInfo = new ReaderSelectionInfo();
         }
         return readerSelectionInfo;
     }
@@ -146,5 +146,17 @@ public class ReaderDataHolder {
 
     public DocumentInfo getDocumentInfo() {
         return documentInfo;
+    }
+
+    public String getCurrentPageName() {
+        return getReaderViewInfo().getFirstVisiblePage().getName();
+    }
+
+    public int getCurrentPage() {
+        return PagePositionUtils.getPageNumber(getCurrentPageName());
+    }
+
+    public int getPageCount() {
+        return getReaderViewInfo().getTotalPage();
     }
 }

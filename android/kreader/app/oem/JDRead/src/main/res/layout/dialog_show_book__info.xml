@@ -42,13 +42,21 @@
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
-        <com.onyx.jdread.shop.view.HtmlTextView
-            android:id="@+id/book_detail_content_introduction"
+        <com.onyx.jdread.shop.view.AutoPagedWebView
+            android:id="@+id/book_info_web_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:layout_marginTop="@dimen/book_detail_common_margin_top"
             android:textSize="@dimen/level_three_heading_font"
-            bind:htmlContentDialog="@{viewModel.content}" />
+            bind:bookInfoWebView="@{viewModel.content}" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingBottom="@dimen/book_comment_indicator_padding"
+            android:paddingTop="@dimen/book_comment_indicator_padding"
+            android:text="@{@string/book_comment_indicator_value(viewModel.currentPage,viewModel.totalPage)}" />
 
     </LinearLayout>
 

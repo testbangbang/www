@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
 
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.CategoryViewClick;
 import com.onyx.jdread.shop.event.EnjoyReadViewClick;
@@ -23,16 +24,9 @@ import java.util.List;
 
 public class BookShopViewModel extends BaseObservable {
     public BannerViewModel bannerSubjectIems;
-    public SubjectViewModel coverSubjectOneItems;
-    public SubjectViewModel coverSubjectTwoItems;
-    public SubjectViewModel coverSubjectThreeItems;
-    public SubjectViewModel coverSubjectFourItems;
-    public SubjectViewModel coverSubjectFiveItems;
-    public SubjectViewModel coverSubjectSixItems;
-    public SubjectViewModel titleSubjectIems;
-    public SubjectViewModel specialTodaySubjectIems;
+    public List<SubjectViewModel> commonSubjcet;
     public AllCategoryViewModel allCategoryViewModel;
-    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categorySubjectItems;
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> titleSubjectItems;
     public String searchContent;
     public EventBus eventBus;
 
@@ -60,24 +54,6 @@ public class BookShopViewModel extends BaseObservable {
         notifyChange();
     }
 
-    public SubjectViewModel getCoverSubjectOneItems() {
-        return coverSubjectOneItems;
-    }
-
-    public void setCoverSubjectOneItems(SubjectViewModel coverSubjectOneItems) {
-        this.coverSubjectOneItems = coverSubjectOneItems;
-        notifyChange();
-    }
-
-    public SubjectViewModel getTitleSubjectIems() {
-        return titleSubjectIems;
-    }
-
-    public void setTitleSubjectIems(SubjectViewModel titleSubjectIems) {
-        this.titleSubjectIems = titleSubjectIems;
-        notifyChange();
-    }
-
     public String getSearchContent() {
         return searchContent;
     }
@@ -86,65 +62,31 @@ public class BookShopViewModel extends BaseObservable {
         this.searchContent = searchContent;
     }
 
-    public SubjectViewModel getSpecialTodaySubjectIems() {
-        return specialTodaySubjectIems;
-    }
-
-    public void setSpecialTodaySubjectIems(SubjectViewModel specialTodaySubjectIems) {
-        this.specialTodaySubjectIems = specialTodaySubjectIems;
-        notifyChange();
-    }
-
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getCategorySubjectItems() {
-        return categorySubjectItems;
+        return titleSubjectItems;
     }
 
     public void setCategorySubjectItems(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categorySubjectItems) {
-        this.categorySubjectItems = categorySubjectItems;
+        this.titleSubjectItems = categorySubjectItems;
         notifyChange();
     }
 
-    public SubjectViewModel getCoverSubjectFourItems() {
-        return coverSubjectFourItems;
+    public List<SubjectViewModel> getCommonSubjcet() {
+        return commonSubjcet;
     }
 
-    public void setCoverSubjectFourItems(SubjectViewModel coverSubjectFourItems) {
-        this.coverSubjectFourItems = coverSubjectFourItems;
-    }
-
-    public SubjectViewModel getCoverSubjectTwoItems() {
-        return coverSubjectTwoItems;
-    }
-
-    public void setCoverSubjectTwoItems(SubjectViewModel coverSubjectTwoItems) {
-        this.coverSubjectTwoItems = coverSubjectTwoItems;
-        notifyChange();
-    }
-
-    public SubjectViewModel getCoverSubjectThreeItems() {
-        return coverSubjectThreeItems;
-    }
-
-    public void setCoverSubjectThreeItems(SubjectViewModel coverSubjectThreeItems) {
-        this.coverSubjectThreeItems = coverSubjectThreeItems;
-        notifyChange();
-    }
-
-    public SubjectViewModel getCoverSubjectFiveItems() {
-        return coverSubjectFiveItems;
-    }
-
-    public void setCoverSubjectFiveItems(SubjectViewModel coverSubjectFiveItems) {
-        this.coverSubjectFiveItems = coverSubjectFiveItems;
-        notifyChange();
-    }
-
-    public SubjectViewModel getCoverSubjectSixItems() {
-        return coverSubjectSixItems;
-    }
-
-    public void setCoverSubjectSixItems(SubjectViewModel coverSubjectSixItems) {
-        this.coverSubjectSixItems = coverSubjectSixItems;
+    public void setCommonSubjcet(List<SubjectViewModel> commonSubjcet) {
+        this.commonSubjcet = commonSubjcet;
+        if (commonSubjcet != null) {
+            for (int i = 0; i < commonSubjcet.size(); i++) {
+                if (i >= Constants.SHOP_MAIN_INDEX_THREE && i % 2 == 1) {
+                    SubjectViewModel subjectViewModel = commonSubjcet.get(i);
+                    SubjectViewModel nextSubjectViewModel = commonSubjcet.get(i + 1);
+                    subjectViewModel.setShowNextTitle(true);
+                    subjectViewModel.setModelBeanNext(nextSubjectViewModel.getModelBean());
+                }
+            }
+        }
         notifyChange();
     }
 

@@ -8,6 +8,8 @@
             name="viewModel"
             type="com.onyx.jdread.shop.model.BookShopViewModel" />
 
+        <import type="com.onyx.jdread.main.common.Constants" />
+
     </data>
 
     <LinearLayout
@@ -31,9 +33,12 @@
             android:layout_marginBottom="@dimen/book_shop_banner_recycler_margin_top_and_bottom"
             android:layout_marginTop="@dimen/book_shop_banner_recycler_margin_top_and_bottom" />
 
-        <LinearLayout
+        <include
+            android:id="@+id/suject_item_one"
+            layout="@layout/item_subject_common"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:orientation="vertical">
 
             <RelativeLayout
@@ -72,11 +77,17 @@
                 android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
 
         </LinearLayout>
+=======
+            bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_ZERO)}" />
+>>>>>>> 9e36d7ff4f418ff85790bfd67424aa21fb06c8d2
 
-        <LinearLayout
+        <include
+            android:id="@+id/suject_item_two"
+            layout="@layout/item_subject_common"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/book_shop_contain_recycler_margin_top"
+<<<<<<< HEAD
             android:orientation="vertical">
 
             <RelativeLayout
@@ -116,6 +127,9 @@
                 android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
 
         </LinearLayout>
+=======
+            bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_ONE)}" />
+>>>>>>> 9e36d7ff4f418ff85790bfd67424aa21fb06c8d2
 
     </LinearLayout>
 

@@ -8,7 +8,6 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.personal.action.UserLoginAction;
-import com.onyx.jdread.personal.event.CancelUserLoginDialogEvent;
 import com.onyx.jdread.personal.event.ForgetPasswordEvent;
 import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.event.UserRegisterJDAccountEvent;
@@ -68,10 +67,6 @@ public class UserLoginViewModel {
 
     public void onRegisterViewClick() {
         getEventBus().post(new UserRegisterJDAccountEvent());
-    }
-
-    public void onCancelDialogViewClick() {
-        getEventBus().post(new CancelUserLoginDialogEvent());
     }
 
     public void onForgetPasswordClick() {

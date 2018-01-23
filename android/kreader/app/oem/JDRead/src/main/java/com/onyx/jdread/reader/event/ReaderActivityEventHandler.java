@@ -14,7 +14,9 @@ import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.common.ToastMessage;
+import com.onyx.jdread.reader.dialog.DialogDict;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
+import com.onyx.jdread.reader.dialog.TranslateDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
@@ -109,7 +111,13 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPageViewUpdateEvent(PageViewUpdateEvent event) {
+        updatePageNumber();
+    }
 
+    private void updatePageNumber(){
+        int current = readerViewModel.getReaderDataHolder().getCurrentPage() + 1;
+        int total = readerViewModel.getReaderDataHolder().getPageCount();
+        readerViewModel.setPage(current + "/" + total);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -182,11 +190,23 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupTranslationClickEvent(PopupTranslationClickEvent event){
-        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Translation");
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
+        TranslateDialog translateDialog = new TranslateDialog(activity,text);
+        translateDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupBaidupediaClickEvent(PopupBaidupediaClickEvent event){
-        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),"Baidupedia");
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
+        DialogDict dialogDict = new DialogDict(activity,text);
+        dialogDict.show();
     }
 }

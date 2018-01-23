@@ -3,7 +3,6 @@ package com.onyx.jdread.reader.actions;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
-import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
 import com.onyx.jdread.reader.request.PreviousPageSelectTextRequest;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 

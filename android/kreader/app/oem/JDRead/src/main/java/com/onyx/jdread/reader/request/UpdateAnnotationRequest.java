@@ -5,7 +5,7 @@ import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.data.Reader;
-import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
+import com.onyx.jdread.reader.highlight.SelectionInfo;
 
 /**
  * Created by huxiaomao on 2018/1/21.
@@ -13,10 +13,10 @@ import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
 
 public class UpdateAnnotationRequest extends ReaderBaseRequest {
     private Reader reader;
-    private ReaderSelectionInfo readerSelectionInfo;
+    private SelectionInfo readerSelectionInfo;
     private NoteInfo noteInfo;
 
-    public UpdateAnnotationRequest(Reader reader, ReaderSelectionInfo readerSelectionInfo, NoteInfo noteInfo) {
+    public UpdateAnnotationRequest(Reader reader, SelectionInfo readerSelectionInfo, NoteInfo noteInfo) {
         this.reader = reader;
         this.readerSelectionInfo = readerSelectionInfo;
         this.noteInfo = noteInfo;

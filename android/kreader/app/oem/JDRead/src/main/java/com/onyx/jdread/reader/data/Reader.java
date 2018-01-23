@@ -3,7 +3,7 @@ package com.onyx.jdread.reader.data;
 import android.content.Context;
 
 import com.onyx.jdread.reader.common.DocumentInfo;
-import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
+import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 
 /**
  * Created by huxiaomao on 2017/12/20.
@@ -13,7 +13,7 @@ public class Reader {
     private ReaderHelper readerHelper;
     private DocumentInfo documentInfo;
     private ReaderViewHelper readerViewHelper;
-    private ReaderSelectionManager readerSelectionHelper;
+    private ReaderSelectionHelper readerSelectionHelper;
 
     public Reader(DocumentInfo documentInfo,Context context) {
         this.documentInfo = documentInfo;
@@ -33,9 +33,9 @@ public class Reader {
         return readerViewHelper;
     }
 
-    public ReaderSelectionManager getReaderSelectionHelper() {
+    public ReaderSelectionHelper getReaderSelectionHelper() {
         if (readerSelectionHelper == null) {
-            readerSelectionHelper = new ReaderSelectionManager();
+            readerSelectionHelper = new ReaderSelectionHelper();
         }
         return readerSelectionHelper;
     }

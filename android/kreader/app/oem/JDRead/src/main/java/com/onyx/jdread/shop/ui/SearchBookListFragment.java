@@ -48,6 +48,7 @@ public class SearchBookListFragment extends BaseFragment {
     private GPaginator paginator;
     private int currentPage = 1;
     private String keyWord = "";
+    private String catId = "";
 
     @Nullable
     @Override
@@ -67,8 +68,9 @@ public class SearchBookListFragment extends BaseFragment {
 
     private void initData() {
         keyWord = JDPreferenceManager.getStringValue(Constants.SP_KEY_KEYWORD, "");
+        catId = JDPreferenceManager.getStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
         getTitleBarViewModel().leftText = keyWord;
-        getBooksData("", currentPage, CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES, CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES, keyWord);
+        getBooksData(catId, currentPage, CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES, CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES, keyWord);
     }
 
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType, String keyWord) {
