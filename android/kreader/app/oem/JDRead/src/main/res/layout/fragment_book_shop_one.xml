@@ -38,48 +38,7 @@
             layout="@layout/item_subject_common"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-<<<<<<< HEAD
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/title_one"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/text_no_stoke_background"
-                    android:text="@{viewModel.coverSubjectOneItems.modelBean.show_name}"
-                    android:textSize="@dimen/level_two_heading_font" />
-
-                <TextView
-                    android:id="@+id/view_all_one"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/text_no_stoke_background"
-                    android:drawablePadding="@dimen/view_all_drawable_padding"
-                    android:drawableRight="@mipmap/ic_go_view_all"
-                    android:gravity="center"
-                    android:onClick="@{()->viewModel.coverSubjectOneItems.onViewAllClick()}"
-                    android:text="@string/view_all"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
-
-            </RelativeLayout>
-
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/recycler_view_cover_subject_one"
-                subjectItems="@{viewModel.coverSubjectOneItems.modelBean.bookList}"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/book_shop_recycler_height"
-                android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
-
-        </LinearLayout>
-=======
             bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_ZERO)}" />
->>>>>>> 9e36d7ff4f418ff85790bfd67424aa21fb06c8d2
 
         <include
             android:id="@+id/suject_item_two"
@@ -87,49 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/book_shop_contain_recycler_margin_top"
-<<<<<<< HEAD
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/title_two"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/text_no_stoke_background"
-                    android:text="@{viewModel.coverSubjectTwoItems.modelBean.show_name}"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_two_heading_font" />
-
-                <TextView
-                    android:id="@+id/view_all_two"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/text_no_stoke_background"
-                    android:drawablePadding="@dimen/view_all_drawable_padding"
-                    android:drawableRight="@mipmap/ic_go_view_all"
-                    android:gravity="center"
-                    android:onClick="@{()->viewModel.coverSubjectTwoItems.onViewAllClick()}"
-                    android:text="@string/view_all"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
-
-            </RelativeLayout>
-
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/recycler_view_cover_subject_two_back_up"
-                subjectItems="@{viewModel.coverSubjectTwoItems.modelBean.bookList}"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/book_shop_recycler_height"
-                android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
-
-        </LinearLayout>
-=======
             bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_ONE)}" />
->>>>>>> 9e36d7ff4f418ff85790bfd67424aa21fb06c8d2
 
     </LinearLayout>
 
