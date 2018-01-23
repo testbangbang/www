@@ -68,6 +68,13 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
+    public void deleteMetadata(Context context, String docId) {
+        new Delete().from(Metadata.class)
+                .where(Metadata_Table.idString.eq(docId))
+                .execute();
+    }
+
+    @Override
     public QueryResult<Metadata> findMetadataResultByQueryArgs(Context context, QueryArgs queryArgs) {
         QueryResult<Metadata> result = new QueryResult<>();
         result.list = findMetadataByQueryArgs(context, queryArgs);

@@ -26,7 +26,6 @@ import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.utils.CloudConf;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.data.utils.ResultCode;
 import com.onyx.android.sdk.data.utils.RetrofitUtils;
@@ -173,6 +172,13 @@ public class CloudDataProvider implements DataProviderBase {
     @Override
     public Metadata findMetadataByHashTag(Context context, String path, String hashTag) {
         return null;
+    }
+
+    @Override
+    public void deleteMetadata(Context context, String docId) {
+        new Delete().from(CloudMetadata.class)
+                .where(CloudMetadata_Table.idString.eq(docId))
+                .execute();
     }
 
     @Override
