@@ -56,7 +56,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{@string/input_language(model.inputLanguage)}" />
+                    android:text="@{@string/input_language(model.inputLanguage)}"
+                    android:textColor="@android:color/black" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -81,9 +82,9 @@
                 android:id="@+id/translate_result"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/translate_result_height"
-                android:padding="@dimen/translate_content_padding"
                 android:clickable="true"
                 android:fadeScrollbars="false"
+                android:padding="@dimen/translate_content_padding"
                 android:scrollbars="vertical"
                 android:text="@{model.translateResult}" />
 
@@ -93,16 +94,17 @@
                 android:background="@android:color/black" />
 
             <TextView
-                android:layout_marginTop="@dimen/translate_button_margin_top"
                 android:layout_width="@dimen/translate_button_width"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="@dimen/translate_button_margin_top"
                 android:background="@drawable/rectangle_stroke"
                 android:clickable="true"
                 android:gravity="center"
                 android:onClick="@{()->model.translate()}"
                 android:padding="@dimen/user_login_edit_text_delete_button_margin"
                 android:text="@string/translation"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
         </LinearLayout>

@@ -22,15 +22,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingBottom="@dimen/fragment_content_padding"
         android:paddingLeft="@dimen/fragment_content_padding"
         android:paddingRight="@dimen/fragment_content_padding"
-        android:paddingBottom="@dimen/fragment_content_padding"
         tools:context="com.onyx.jdread.library.ui.SearchBookFragment">
 
         <LinearLayout
-            android:layout_marginTop="@dimen/search_layout_margin_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/search_layout_margin_top"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -70,6 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/search_hot_words"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
@@ -94,6 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/search_history"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <ImageView
@@ -152,8 +154,8 @@
                 android:orientation="vertical" />
 
             <include
-                app:model="@{indicatorModel}"
-                layout="@layout/page_indicator_layout" />
+                layout="@layout/page_indicator_layout"
+                app:model="@{indicatorModel}" />
         </LinearLayout>
     </LinearLayout>
 </layout>

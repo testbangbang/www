@@ -102,6 +102,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/book_detail_sub_info_margin_left"
                                 android:text="@{@string/book_detail_star(bookDetailViewModel.bookDetailResultBean.data.star)}"
+                                android:textColor="@android:color/black"
                                 android:textSize="@dimen/level_three_heading_font" />
 
                         </LinearLayout>
@@ -159,7 +160,8 @@
                             android:drawablePadding="@dimen/view_all_drawable_padding"
                             android:drawableRight="@mipmap/ic_go_view_all"
                             android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelTwoClick()}"
-                            android:text="@{bookDetailViewModel.bookDetailResultBean.data.second_catid1_str}" />
+                            android:text="@{bookDetailViewModel.bookDetailResultBean.data.second_catid1_str}"
+                            android:textColor="@android:color/black" />
 
                         <TextView
                             android:id="@+id/book_detail_category_third_path"
@@ -169,7 +171,8 @@
                             android:drawablePadding="@dimen/view_all_drawable_padding"
                             android:drawableRight="@mipmap/ic_go_view_all"
                             android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelThreeClick()}"
-                            android:text="@{bookDetailViewModel.bookDetailResultBean.data.third_catid1_str}" />
+                            android:text="@{bookDetailViewModel.bookDetailResultBean.data.third_catid1_str}"
+                            android:textColor="@android:color/black" />
 
                     </LinearLayout>
 
@@ -294,6 +297,7 @@
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onViewCommentClick()}"
                     android:text="@string/book_detail_view_comments"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
                 <TextView
@@ -306,6 +310,7 @@
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onCopyrightClick()}"
                     android:text="@string/book_detail_view_copyright"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
             </RelativeLayout>
@@ -345,7 +350,6 @@
                     android:layout_weight="1" />
 
                 <ImageView
-                    android:visibility="@{bookDetailViewModel.recommendList.size() > 4 ? View.VISIBLE : View.GONE}"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
@@ -354,7 +358,8 @@
                     android:background="@drawable/normal_selected_background"
                     android:onClick="@{()->bookDetailViewModel.onRecommendNextPageClick()}"
                     android:padding="@dimen/book_detail_button_padding"
-                    android:src="@mipmap/ic_page_next" />
+                    android:src="@mipmap/ic_page_next"
+                    android:visibility="@{bookDetailViewModel.recommendList.size() > 4 ? View.VISIBLE : View.GONE}" />
 
             </LinearLayout>
 

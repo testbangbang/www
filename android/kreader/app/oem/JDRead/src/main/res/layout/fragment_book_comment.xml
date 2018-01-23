@@ -32,9 +32,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="@dimen/book_detail_margin"
             android:layout_marginLeft="@dimen/book_detail_margin"
             android:layout_marginRight="@dimen/book_detail_margin"
+            android:layout_marginTop="@dimen/book_detail_margin"
             android:layout_weight="1" />
 
         <TextView
@@ -43,7 +43,8 @@
             android:gravity="right"
             android:paddingBottom="@dimen/book_comment_indicator_padding"
             android:paddingTop="@dimen/book_comment_indicator_padding"
-            android:text="@{@string/book_comment_indicator_value(bookDetailViewModel.currentPage,bookDetailViewModel.totalPage)}" />
+            android:text="@{@string/book_comment_indicator_value(bookDetailViewModel.currentPage,bookDetailViewModel.totalPage)}"
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 

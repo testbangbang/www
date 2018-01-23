@@ -60,6 +60,7 @@
                         android:background="@drawable/normal_selected_background"
                         android:onClick="@{()->viewModel.onSortKeyHotClick()}"
                         android:padding="@dimen/subject_list_sort_button_padding"
+                        android:textColor="@android:color/black"
                         android:text="@string/subject_list_sort_type_hot" />
 
                     <TextView
@@ -78,6 +79,7 @@
                         android:background="@drawable/normal_selected_background"
                         android:onClick="@{()->viewModel.onSortKeyPriceClick()}"
                         android:padding="@dimen/subject_list_sort_button_padding"
+                        android:textColor="@android:color/black"
                         android:text="@string/subject_list_sort_type_price" />
 
                 </LinearLayout>

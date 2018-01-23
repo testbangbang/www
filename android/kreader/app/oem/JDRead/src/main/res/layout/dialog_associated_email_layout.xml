@@ -37,7 +37,8 @@
                 android:paddingBottom="@dimen/dialog_single_manage_close_padding"
                 android:paddingRight="@dimen/dialog_single_manage_close_padding_right"
                 android:paddingTop="@dimen/dialog_single_manage_close_padding"
-                android:src="@mipmap/ic_shelf_close" />
+                android:src="@mipmap/ic_shelf_close"
+                android:textColor="@android:color/black" />
         </RelativeLayout>
 
         <View
@@ -61,6 +62,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dialog_associated_edit_margin_top"
             android:text="@{@string/email_address_format(dialogModel.emailAddress)}"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.bound?View.VISIBLE:View.GONE}" />
 
@@ -74,6 +76,7 @@
             android:gravity="center"
             android:onClick="@{()->dialogModel.bindToEmail()}"
             android:text="@string/confirm_bind"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.bound?View.GONE:View.VISIBLE}" />
 
@@ -87,6 +90,7 @@
             android:gravity="center"
             android:onClick="@{()->dialogModel.unbindToEmail()}"
             android:text="@string/unbind_to_email"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.bound?View.VISIBLE:View.GONE}" />
 

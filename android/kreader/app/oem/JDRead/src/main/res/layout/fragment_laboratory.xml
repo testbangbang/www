@@ -34,6 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/quick_back_button"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_one_heading_font" />
 
                 <Switch
@@ -61,10 +62,10 @@
                     <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="@={laboratoryModel.showBack}"
-                        android:onClick="@{()->laboratoryModel.toggleBackTab()}"
                         android:background="@drawable/toggle_selector"
-                        android:button="@null" />
+                        android:button="@null"
+                        android:checked="@={laboratoryModel.showBack}"
+                        android:onClick="@{()->laboratoryModel.toggleBackTab()}" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -63,6 +63,7 @@
                 android:layout_alignParentLeft="true"
                 android:padding="@dimen/model_item_child_count_padding"
                 android:text="@{model.childCount}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <CheckBox
@@ -86,6 +87,7 @@
                 android:gravity="center"
                 android:onClick="@{()->model.itemClicked()}"
                 android:text="@{model.selectedCount}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font"
                 android:visibility="@{model.showCheckCount()?View.VISIBLE:View.GONE}" />
 
@@ -100,6 +102,7 @@
             android:lines="2"
             android:maxLines="2"
             android:text="@{model.title}"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
     </LinearLayout>

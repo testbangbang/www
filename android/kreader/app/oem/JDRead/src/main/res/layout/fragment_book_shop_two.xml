@@ -31,6 +31,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
                     android:background="@drawable/text_no_stoke_background"
                     android:text="@{viewModel.coverSubjectTwoItems.modelBean.show_name}"
                     android:textSize="@dimen/level_two_heading_font" />
@@ -90,6 +91,7 @@
                     android:drawablePadding="@dimen/view_all_drawable_padding"
                     android:drawableRight="@mipmap/ic_go_view_all"
                     android:gravity="center"
+                    android:textColor="@android:color/black"
                     android:onClick="@{()->viewModel.coverSubjectFourItems.onViewAllClick()}"
                     android:text="@string/view_all"
                     android:textSize="@dimen/level_three_heading_font" />

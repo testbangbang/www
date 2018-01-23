@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="@{itemModel.appName}"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
         <TextView
@@ -27,6 +28,7 @@
             android:background="@drawable/rectangle_stroke"
             android:padding="@dimen/dictionary_status_item_padding"
             android:text="@string/installed"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
     </RelativeLayout>
 

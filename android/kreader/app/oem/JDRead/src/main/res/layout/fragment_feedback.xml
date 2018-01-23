@@ -20,9 +20,9 @@
             layout="@layout/title_bar" />
 
         <LinearLayout
-            android:layout_marginTop="@dimen/fragment_content_padding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fragment_content_padding"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -46,11 +46,11 @@
                 android:layout_marginLeft="@dimen/fragment_content_padding"
                 android:layout_marginRight="@dimen/fragment_content_padding"
                 android:background="@null"
+                android:hint="@string/input_number_for_contact"
                 android:inputType="phone"
                 android:padding="@dimen/fragment_content_padding"
                 android:singleLine="true"
                 android:text="@={feedbackModel.phone}"
-                android:hint="@string/input_number_for_contact"
                 android:textSize="@dimen/level_one_heading_font" />
 
             <View style="@style/DottedLineStyle" />
@@ -65,6 +65,7 @@
                 android:onClick="@{()->feedbackModel.commitFeedback()}"
                 android:padding="@dimen/button_padding"
                 android:text="@string/commit"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
         </LinearLayout>

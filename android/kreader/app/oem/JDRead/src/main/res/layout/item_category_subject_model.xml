@@ -26,6 +26,7 @@
             android:ellipsize="middle"
             android:gravity="center"
             android:maxLines="2"
+            android:textColor="@android:color/black"
             android:text="@{categoryBean.name}"
             android:textSize="@dimen/level_three_heading_font" />
 

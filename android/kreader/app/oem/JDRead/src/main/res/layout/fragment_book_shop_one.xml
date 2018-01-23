@@ -59,6 +59,7 @@
                     android:gravity="center"
                     android:onClick="@{()->viewModel.coverSubjectOneItems.onViewAllClick()}"
                     android:text="@string/view_all"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
             </RelativeLayout>
@@ -88,6 +89,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_no_stoke_background"
                     android:text="@{viewModel.coverSubjectTwoItems.modelBean.show_name}"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
@@ -101,6 +103,7 @@
                     android:gravity="center"
                     android:onClick="@{()->viewModel.coverSubjectTwoItems.onViewAllClick()}"
                     android:text="@string/view_all"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
             </RelativeLayout>

@@ -52,6 +52,7 @@
                     android:text="@string/refresh_mode"
                     android:gravity="center_vertical"
                     android:drawablePadding="@dimen/refresh_mode_drawable_padding"
+                    android:textColor="@android:color/black"
                     android:drawableLeft="@mipmap/ic_setting_speed_refresh"
                     android:textSize="@dimen/level_two_heading_font" />
 
