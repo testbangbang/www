@@ -367,12 +367,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 readerDataHolder.redrawPage(new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        new ResumeDrawingAction(readerDataHolder.getVisiblePages()).execute(readerDataHolder, new BaseCallback() {
-                            @Override
-                            public void done(BaseRequest request, Throwable e) {
-                                show(readerDataHolder);
-                            }
-                        });
+                        show(readerDataHolder);
+                        new ResumeDrawingAction(readerDataHolder.getVisiblePages()).execute(readerDataHolder, null);
                     }
                 });
             }
