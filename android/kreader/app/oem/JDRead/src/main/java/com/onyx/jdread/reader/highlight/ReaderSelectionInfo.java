@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.highlight;
 
 import android.graphics.PointF;
 
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class ReaderSelectionInfo {
     private PointF highLightBeginTop;
     private PointF highLightEndBottom;
     private PointF touchPoint;
+    public PageInfo pageInfo;
 
     public PointF getTouchPoint() {
         return touchPoint;
@@ -30,8 +32,9 @@ public class ReaderSelectionInfo {
         return currentSelection;
     }
 
-    public void setCurrentSelection(ReaderSelection currentSelection) {
+    public void setCurrentSelection(ReaderSelection currentSelection,PageInfo pageInfo) {
         this.currentSelection = currentSelection;
+        this.pageInfo = pageInfo;
     }
 
     public List<HighlightCursor> getCursors() {

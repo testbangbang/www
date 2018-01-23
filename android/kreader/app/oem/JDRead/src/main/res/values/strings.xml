@@ -385,4 +385,9 @@
     <string name="content_empty">null</string>
     <string name="error_content_author_unknown">unknown author</string>
     <string name="renew_vip">renew vip</string>
+    <string name="reader_copy_success">Copy success</string>
+    <string name="reader_edit">Edit</string>
+    <string name="reader_save">Save</string>
+    <string name="reader_original">Original</string>
+    <string name="reader_changes">Changes</string>
 </resources>

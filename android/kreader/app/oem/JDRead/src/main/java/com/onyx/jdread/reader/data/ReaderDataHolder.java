@@ -10,6 +10,7 @@ import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.ReaderSelectionManager;
+import com.onyx.jdread.reader.highlight.SelectionInfoManager;
 import com.onyx.jdread.reader.model.SelectMenuModel;
 
 /**
@@ -25,11 +26,12 @@ public class ReaderDataHolder {
     private ImageReflowSettings settings;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
-    private ReaderSelectionManager readerSelectionManager;
     private HandlerManger handlerManger;
     private Context appContext;
     private ReaderTouchHelper readerTouchHelper;
     private SelectMenuModel selectMenuModel;
+    private DocumentInfo documentInfo;
+    private SelectionInfoManager readerSelectionInfo;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
@@ -48,11 +50,11 @@ public class ReaderDataHolder {
         return readerTouchHelper;
     }
 
-    public ReaderSelectionManager getReaderSelectionManager() {
-        if (readerSelectionManager == null) {
-            readerSelectionManager = new ReaderSelectionManager();
+    public SelectionInfoManager getReaderSelectionInfo(){
+        if (readerSelectionInfo == null) {
+            readerSelectionInfo = new SelectionInfoManager();
         }
-        return readerSelectionManager;
+        return readerSelectionInfo;
     }
 
     public HandlerManger getHandlerManger() {
@@ -96,6 +98,7 @@ public class ReaderDataHolder {
 
     public void initReaderDataHolder(final DocumentInfo documentInfo) {
         documentState = DocumentState.INIT;
+        this.documentInfo = documentInfo;
         reader = ReaderManager.getReader(documentInfo,getAppContext());
         readerTouchHelper.setReaderDataHolder(this);
     }
@@ -135,5 +138,13 @@ public class ReaderDataHolder {
 
     public String getCurrentPagePosition() {
         return getReaderViewInfo().getFirstVisiblePage().getPositionSafely();
+    }
+
+    public String getBookName(){
+        return getDocumentInfo().getBookName();
+    }
+
+    public DocumentInfo getDocumentInfo() {
+        return documentInfo;
     }
 }

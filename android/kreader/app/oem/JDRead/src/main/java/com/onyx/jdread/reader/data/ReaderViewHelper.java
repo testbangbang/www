@@ -11,9 +11,11 @@ import android.view.SurfaceView;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.utils.RectUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
@@ -61,14 +63,14 @@ public class ReaderViewHelper {
     }
 
     public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
-        updatePageView(reader, readerViewInfo, null);
+        updatePageView(reader, readerUserDataInfo,readerViewInfo, null);
     }
 
-    public void updatePageView(Reader reader, ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
+    public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
         try {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, readerViewInfo);
-            draw(reader, context.renderingBitmap.getBitmap(), readerViewInfo, readerSelectionManager);
+            renderAll(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo,readerViewInfo, readerSelectionManager);
 
             reader.getReaderHelper().saveToCache(context.renderingBitmap);
         } catch (Exception e) {
@@ -76,7 +78,7 @@ public class ReaderViewHelper {
         }
     }
 
-    public void draw(Reader reader, Bitmap bitmap, final ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
+    public void renderAll(Reader reader, Bitmap bitmap, ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo, ReaderSelectionManager readerSelectionManager) {
         if (readPageView == null) {
             return;
         }
@@ -85,12 +87,18 @@ public class ReaderViewHelper {
         }
         paint.setDither(true);
         Canvas canvas = readPageView.getHolder().lockCanvas();
+
+        drawPageContent(canvas,bitmap);
+        drawPageAnnotations(canvas,reader,readerUserDataInfo,readerViewInfo);
+        drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
+
+        readPageView.getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    public void drawPageContent(Canvas canvas,Bitmap bitmap){
         canvas.drawColor(Color.WHITE);
         paint.setColor(Color.BLACK);
-
         canvas.drawBitmap(bitmap, 0, 0, paint);
-        drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
-        readPageView.getHolder().unlockCanvasAndPost(canvas);
     }
 
     public void showTouchFunctionRegion(Canvas canvas, Context context) {
@@ -153,5 +161,23 @@ public class ReaderViewHelper {
         for (int i = 0; i < size; ++i) {
             canvas.drawLine(rectangles.get(i).left, rectangles.get(i).bottom, rectangles.get(i).right, rectangles.get(i).bottom, paint);
         }
+    }
+
+    private void drawPageAnnotations(Canvas canvas,Reader reader,ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo){
+        readerUserDataInfo.loadPageAnnotations(reader.getReaderHelper().getContext(),
+                reader.getReaderHelper().getRendererFeatures().supportScale(),
+                reader.getReaderHelper().getPlugin().displayName(),
+                reader.getReaderHelper().getDocumentMd5(),
+                reader.getReaderHelper().getNavigator(),
+                readerViewInfo.getVisiblePages());
+        for (PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
+            if (readerUserDataInfo.hasPageAnnotations(pageInfo)) {
+                List<PageAnnotation> annotations = readerUserDataInfo.getPageAnnotations(pageInfo);
+                for (PageAnnotation annotation : annotations) {
+                    drawHighlightRectangles(reader.getReaderHelper().getContext(), canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
+                }
+            }
+        }
+
     }
 }

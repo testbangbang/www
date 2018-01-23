@@ -12,10 +12,7 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  */
 
 public class NextPageSelectTextAction extends BaseReaderAction {
-    private ReaderSelectionManager readerSelectionManager;
-
-    public NextPageSelectTextAction(ReaderSelectionManager readerSelectionManager) {
-        this.readerSelectionManager = readerSelectionManager;
+    public NextPageSelectTextAction() {
     }
 
     @Override
@@ -23,17 +20,17 @@ public class NextPageSelectTextAction extends BaseReaderAction {
         ReaderTextStyle style = readerDataHolder.getStyleCopy();
         final String pagePosition = readerDataHolder.getCurrentPagePosition();
 
-        final NextPageSelectTextRequest request = new NextPageSelectTextRequest(readerDataHolder.getReader(), style, readerSelectionManager);
-        readerDataHolder.getReaderSelectionManager().incrementSelectCount();
+        final NextPageSelectTextRequest request = new NextPageSelectTextRequest(readerDataHolder.getReader(), style);
+        readerDataHolder.getReaderSelectionInfo().increaseSelectCount();
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                readerDataHolder.getReaderSelectionInfo().updateSelectInfo(request.getSelectionInfoManager().getReaderSelectionInfos());
             }
 
             @Override
             public void onFinally() {
-                readerDataHolder.getReaderSelectionManager().decrementSelectCount();
+                readerDataHolder.getReaderSelectionInfo().decreaseSelectCount();
                 if (request.isSuccess) {
                     updateData(readerDataHolder, request, pagePosition);
                 }

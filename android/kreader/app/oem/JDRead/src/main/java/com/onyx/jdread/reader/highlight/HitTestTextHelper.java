@@ -50,6 +50,7 @@ public class HitTestTextHelper {
                 if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection().getRectangles().size() >= 0) {
                     readerSelectionInfo.setHighLightBeginTop(start);
                     readerSelectionInfo.setHighLightEndBottom(end);
+                    readerSelectionInfo.pageInfo = pageInfo;
                     return readerSelectionInfo;
                 }
             }
@@ -89,7 +90,7 @@ public class HitTestTextHelper {
             readerUserDataInfo.saveHighlightResult(SelectRequest.translateToScreen(pageInfo, selection));
             readerUserDataInfo.setTouchPoint(touchPoint);
             ReaderSelectionInfo readerSelectionInfo = new ReaderSelectionInfo();
-            readerSelectionInfo.setCurrentSelection(selection);
+            readerSelectionInfo.setCurrentSelection(selection,pageInfo);
             return readerSelectionInfo;
         }
         return null;

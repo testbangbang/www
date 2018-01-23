@@ -26,17 +26,18 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
     private float height;
     private ReaderSelection currentPageReaderSelect;
     private PointF currentPageTouchPoint;
+    private PageInfo pageInfo;
 
-    public NextPageSelectTextRequest(Reader reader, ReaderTextStyle style, ReaderSelectionManager readerSelectionManager) {
+    public NextPageSelectTextRequest(Reader reader, ReaderTextStyle style) {
         this.reader = reader;
         this.style = style;
-        this.readerSelectionManager = readerSelectionManager;
     }
 
     @Override
     public NextPageSelectTextRequest call() throws Exception {
         width = reader.getReaderViewHelper().getPageViewWidth();
         height = reader.getReaderViewHelper().getPageViewHeight();
+        readerSelectionManager = reader.getReaderSelectionHelper();
         currentPagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
 
         if (!extendCurrentPageLowerRightSelectTextRegion()) {
@@ -57,21 +58,23 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
                 reader.getReaderHelper().getReaderLayoutManager().prevScreen();
                 return this;
             }
-            updateReaderSelectInfo(newPagePosition);
+            updateReaderSelectInfo(newPagePosition,readerSelectionInfo.pageInfo);
             updateCursorState(newPagePosition,0,false);
             updateCurrentPageReaderSelect();
-            reader.getReaderViewHelper().updatePageView(reader, getReaderViewInfo(), readerSelectionManager);
+            reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo(), readerSelectionManager);
             HitTestTextHelper.saveLastHighLightPosition(newPagePosition, readerSelectionManager, readerSelectionInfo.getHighLightBeginTop(), readerSelectionInfo.getHighLightEndBottom());
         } else {
             cleanCurrentPageInfo();
         }
+        getSelectionInfoManager().updateSelectInfo(readerSelectionManager.getReaderSelectionInfos());
         return this;
     }
 
-    private void updateReaderSelectInfo(String pagePosition) {
+    private void updateReaderSelectInfo(String pagePosition,PageInfo pageInfo) {
         readerSelectionManager.update(pagePosition, reader.getReaderHelper().getContext(),
                 getReaderUserDataInfo().getHighlightResult(),
-                getReaderUserDataInfo().getTouchPoint());
+                getReaderUserDataInfo().getTouchPoint(),
+                pageInfo);
         readerSelectionManager.updateDisplayPosition(pagePosition);
         readerSelectionManager.setEnable(pagePosition, true);
 
@@ -92,9 +95,9 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
             PageInfo pageInfo = reader.getReaderHelper().getReaderLayoutManager().getPageManager().getPageInfo(newPagePosition);
             readerSelectionInfo = HitTestTextHelper.selectOnScreen(start, end, newPagePosition, pageInfo, hitTestManager, getReaderUserDataInfo());
             if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection() != null) {
-                updateReaderSelectInfo(newPagePosition);
+                updateReaderSelectInfo(newPagePosition,pageInfo);
                 updateCursorState(newPagePosition,0,true);
-                reader.getReaderViewHelper().updatePageView(reader, getReaderViewInfo(), readerSelectionManager);
+                reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo(), readerSelectionManager);
             }
         }
     }
@@ -118,6 +121,7 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
             if (newReaderSelectionInfo != null && newReaderSelectionInfo.getCurrentSelection() != null) {
                 currentPageReaderSelect = getReaderUserDataInfo().getHighlightResult();
                 currentPageTouchPoint = getReaderUserDataInfo().getTouchPoint();
+                this.pageInfo = pageInfo;
                 return true;
             }
         }
@@ -127,7 +131,8 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
     private void updateCurrentPageReaderSelect() {
         readerSelectionManager.update(currentPagePosition, reader.getReaderHelper().getContext(),
                 currentPageReaderSelect,
-                currentPageTouchPoint);
+                currentPageTouchPoint,
+                pageInfo);
         readerSelectionManager.updateDisplayPosition(currentPagePosition);
         readerSelectionManager.setEnable(currentPagePosition, true);
     }

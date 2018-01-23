@@ -388,6 +388,7 @@ public class LocalDataProvider implements DataProviderBase {
 
     @Override
     public long libraryCount(String parentUniqueId) {
-        return new Select(Method.count()).from(Library.class).where(Library_Table.parentUniqueId.eq(parentUniqueId)).count();
+        Operator condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentUniqueId);
+        return new Select(Method.count()).from(Library.class).where(condition).count();
     }
 }

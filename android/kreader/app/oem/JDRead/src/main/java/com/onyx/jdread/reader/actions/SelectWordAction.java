@@ -24,20 +24,19 @@ public class SelectWordAction extends BaseReaderAction {
                 selectWordInfo.startPoint,
                 selectWordInfo.endPoint,
                 selectWordInfo.touchPoint,
-                ReaderHitTestOptionsImpl.create(true),
-                readerDataHolder.getReaderSelectionManager());
+                ReaderHitTestOptionsImpl.create(true));
 
         final String pagePosition = readerDataHolder.getCurrentPagePosition();
-        readerDataHolder.getReaderSelectionManager().incrementSelectCount();
+        readerDataHolder.getReaderSelectionInfo().increaseSelectCount();
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                readerDataHolder.getReaderSelectionInfo().updateSelectInfo(request.getSelectionInfoManager().getReaderSelectionInfos());
             }
 
             @Override
             public void onFinally() {
-                readerDataHolder.getReaderSelectionManager().decrementSelectCount();
+                readerDataHolder.getReaderSelectionInfo().decreaseSelectCount();
                 updateData(readerDataHolder,request,pagePosition,baseCallback);
             }
         });

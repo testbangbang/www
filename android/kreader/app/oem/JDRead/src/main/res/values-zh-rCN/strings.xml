@@ -367,4 +367,9 @@
     <string name="in_library">位置：书架</string>
     <string name="in_shop">位置：书店</string>
     <string name="renew_vip">续费会员</string>
+    <string name="reader_copy_success">已复制</string>
+    <string name="reader_edit">编辑</string>
+    <string name="reader_save">完成</string>
+    <string name="reader_original">原文</string>
+    <string name="reader_changes">有修改</string>
 </resources>
