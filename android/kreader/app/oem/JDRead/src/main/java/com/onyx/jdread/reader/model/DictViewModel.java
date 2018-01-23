@@ -4,7 +4,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.onyx.jdread.databinding.ActivityDictBinding;
-import com.onyx.jdread.reader.dialog.DictViewCallBack;
+import com.onyx.jdread.reader.dialog.ViewCallBack;
 
 /**
  * Created by huxiaomao on 2018/1/22.
@@ -14,9 +14,9 @@ public class DictViewModel {
     public static final String BAIDU_BAIKE =  "http://wapbaike.baidu.com/search/word?word=";
     public static final String ENCODE = "&pic=1&enc-utf8";
     private ActivityDictBinding binding;
-    private DictViewCallBack callBack;
+    private ViewCallBack callBack;
 
-    public void setCallBack(DictViewCallBack callBack) {
+    public void setCallBack(ViewCallBack callBack) {
         this.callBack = callBack;
     }
 

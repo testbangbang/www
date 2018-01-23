@@ -6,6 +6,6 @@ import android.app.Dialog;
  * Created by huxiaomao on 2018/1/22.
  */
 
-public interface DictViewCallBack {
+public interface ViewCallBack {
     Dialog getContent();
 }

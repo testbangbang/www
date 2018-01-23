@@ -1,6 +1,5 @@
 package com.onyx.jdread.reader.dialog;
 
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.databinding.DataBindingUtil;
@@ -9,18 +8,22 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 
 import com.onyx.jdread.R;
-import com.onyx.jdread.databinding.ActivityDictBinding;
-import com.onyx.jdread.reader.model.DictViewModel;
+import com.onyx.jdread.databinding.ActivityTranslateBinding;
+import com.onyx.jdread.reader.model.TranslateViewModel;
 
-public class DialogDict extends Dialog implements ViewCallBack {
+/**
+ * Created by huxiaomao on 2018/1/22.
+ */
+
+public class TranslateDialog extends Dialog implements ViewCallBack {
     private static final String TAG = ReaderNoteDialog.class.getSimpleName();
-    private ActivityDictBinding binding;
-    private DictViewModel dictViewModel;
-    private String inputWord;
+    private ActivityTranslateBinding binding;
+    private TranslateViewModel translateViewModel;
+    private String text;
 
-    public DialogDict(@NonNull Activity activity,String inputWord) {
+    public TranslateDialog(@NonNull Activity activity, String text) {
         super(activity, android.R.style.Theme_NoTitleBar);
-        this.inputWord = inputWord;
+        this.text = text;
     }
 
     @Override
@@ -32,17 +35,17 @@ public class DialogDict extends Dialog implements ViewCallBack {
     }
 
     private void initView() {
-        binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.activity_dict, null, false);
+        binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.activity_translate, null, false);
         setContentView(binding.getRoot());
 
-        dictViewModel = new DictViewModel();
-        binding.setDictViewModel(dictViewModel);
-        dictViewModel.setBinding(binding);
-        dictViewModel.setCallBack(this);
+        translateViewModel = new TranslateViewModel();
+        binding.setTranslateViewModel(translateViewModel);
+        translateViewModel.setBinding(binding);
+        translateViewModel.setViewCallBack(this);
     }
 
     private void initData() {
-        dictViewModel.loadUrl(inputWord);
+        translateViewModel.setText(text);
     }
 
     @Override
