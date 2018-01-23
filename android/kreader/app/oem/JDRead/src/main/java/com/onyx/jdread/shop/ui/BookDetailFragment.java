@@ -55,6 +55,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.PageTagConstants;
 import com.onyx.jdread.shop.event.BookDetailReadNowEvent;
@@ -551,15 +552,15 @@ public class BookDetailFragment extends BaseFragment {
         addOrDeleteCartAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                AddOrDelFromCartBean.ResultBean result = addOrDeleteCartAction.getResult();
-                if (result != null){
-                    setAddOrDelFromCart(result);
+                UpdateBean data = addOrDeleteCartAction.getData();
+                if (data != null) {
+                    setAddOrDelFromCart(data);
                 }
             }
         });
     }
 
-    public void setAddOrDelFromCart(AddOrDelFromCartBean.ResultBean result) {
+    public void setAddOrDelFromCart(UpdateBean result) {
         gotoShopCartFragment();
     }
 
