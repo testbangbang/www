@@ -13,7 +13,6 @@ import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
-import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.dialog.DialogDict;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
@@ -200,6 +199,7 @@ public class ReaderActivityEventHandler {
         String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
         TranslateDialog translateDialog = new TranslateDialog(activity,text);
         translateDialog.show();
+        translateDialog.setCanceledOnTouchOutside(true);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

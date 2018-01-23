@@ -423,4 +423,5 @@
     <dimen name="reader_time_margin_bottom">10dp</dimen>
     <dimen name="reader_page_number_margin_right">20dp</dimen>
     <dimen name="reader_page_number_margin_bottom">10dp</dimen>
+    <dimen name="reader_page_translate_window_margin_bottom">10dp</dimen>
 </resources>
