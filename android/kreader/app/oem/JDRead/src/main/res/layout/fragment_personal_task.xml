@@ -26,11 +26,6 @@
                 android:id="@+id/personal_task_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/personal_task_recycler_height" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line_width"
-                android:background="@color/divider_color" />
         </LinearLayout>
     </LinearLayout>
 </layout>

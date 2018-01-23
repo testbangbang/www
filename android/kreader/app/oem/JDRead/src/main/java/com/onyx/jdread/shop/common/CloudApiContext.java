@@ -38,6 +38,7 @@ public class CloudApiContext {
         public static final String SIGN_CHECK = "sign/check";
         public static final String SIGN = "sign";
         public static final String READING_VOUCHER = "reading/voucher";
+        public static final String USER_GIFT = "gift/{sn}";
     }
 
     public static class NewBookDetail {

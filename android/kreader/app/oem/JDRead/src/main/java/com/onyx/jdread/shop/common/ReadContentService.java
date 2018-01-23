@@ -86,16 +86,6 @@ public interface ReadContentService {
                                                @Query(AppBaseInfo.BODY_KEY) String body,
                                                @QueryMap Map<String, String> map);
 
-    @POST("client.action")
-    Call<ShoppingCartBookIdsBean> getCartBookIds(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                 @Query(AppBaseInfo.BODY_KEY) String body,
-                                                 @QueryMap Map<String, String> map);
-
-    @POST("client.action")
-    Call<BookCartItemBean> getBookCartItem(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                           @Query(AppBaseInfo.BODY_KEY) String body,
-                                           @QueryMap Map<String, String> map);
-
     @GET(CloudApiContext.User.SYNC_INFO)
     Call<SyncLoginInfoBean> getSyncLoginInfo(@QueryMap Map<String, String> map);
 
@@ -161,4 +151,8 @@ public interface ReadContentService {
 
     @GET(CloudApiContext.User.READING_VOUCHER)
     Call<String> readForVoucher(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.User.USER_GIFT)
+    Call<String> getGiftInfo(@Path("sn") int sn,
+                             @QueryMap Map<String, String> map);
 }

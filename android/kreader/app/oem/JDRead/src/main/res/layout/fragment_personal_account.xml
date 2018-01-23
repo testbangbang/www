@@ -29,122 +29,100 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="120"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="120"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/personal_account_dec_margin_top"
+                        android:gravity="center"
+                        android:text="@string/read_bean"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/level_three_heading_font" />
+                </LinearLayout>
 
                 <View
                     android:layout_width="@dimen/line_width"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/personal_account_line_height"
                     android:background="@color/divider_color" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="120"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
-
-                <View
-                    android:layout_width="@dimen/line_width"
-                    android:layout_height="wrap_content"
-                    android:background="@color/divider_color" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="120"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
-
-                <View
-                    android:layout_width="@dimen/line_width"
-                    android:layout_height="wrap_content"
-                    android:background="@color/divider_color" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="120"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/personal_account_dec_margin_top"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/read_bean"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="120"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/personal_account_dec_margin_top"
                         android:gravity="center"
                         android:text="@string/vouchers"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/available_read"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
+                <View
+                    android:layout_width="@dimen/line_width"
+                    android:layout_height="@dimen/personal_account_line_height"
+                    android:background="@color/divider_color" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="@string/integral"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="120"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/personal_account_dec_margin_top"
+                        android:gravity="center"
+                        android:text="@string/available_read"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/level_three_heading_font" />
+                </LinearLayout>
             </LinearLayout>
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line_width"
-                android:layout_marginTop="@dimen/personal_account_divider_margin_top"
-                android:background="@color/divider_color" />
+                style="@style/NoPaddingDottedLineType"
+                android:layout_marginTop="@dimen/personal_account_divider_margin_top" />
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/account_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/personal_account_recycler_height" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line_width"
-                android:background="@color/divider_color" />
         </LinearLayout>
     </LinearLayout>
 </layout>
