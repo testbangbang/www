@@ -54,12 +54,12 @@ public class ReaderViewHelper {
         this.contentView = contentView;
     }
 
-    public int getContentWidth(Context context) {
-        return ReaderViewConfig.getContentWidth(context,contentView);
+    public int getContentWidth() {
+        return ReaderViewConfig.getContentWidth(contentView);
     }
 
-    public int getContentHeight(Context context) {
-        return ReaderViewConfig.getContentHeight(context,contentView);
+    public int getContentHeight() {
+        return ReaderViewConfig.getContentHeight(contentView);
     }
 
     public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {

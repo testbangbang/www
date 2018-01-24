@@ -66,8 +66,8 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private void updateView() throws Exception {
-        width = reader.getReaderViewHelper().getContentWidth(reader.getReaderHelper().getContext());
-        height = reader.getReaderViewHelper().getContentHeight(reader.getReaderHelper().getContext());
+        width = reader.getReaderViewHelper().getContentWidth();
+        height = reader.getReaderViewHelper().getContentHeight();
         reader.getReaderHelper().updateViewportSize(width, height);
     }
 

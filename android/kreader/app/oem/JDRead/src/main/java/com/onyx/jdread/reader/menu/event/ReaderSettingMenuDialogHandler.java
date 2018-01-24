@@ -278,8 +278,8 @@ public class ReaderSettingMenuDialogHandler {
 
             RectF pageRect = new RectF(0, 0, subNotePage.getOriginWidth(),
                     subNotePage.getOriginHeight());
-            int displayWidth = readerDataHolder.getReaderTouchHelper().getContentWidth(readerDataHolder.getAppContext());
-            int displayHeight = readerDataHolder.getReaderTouchHelper().getContentHeight(readerDataHolder.getAppContext());
+            int displayWidth = readerDataHolder.getReaderTouchHelper().getContentWidth();
+            int displayHeight = readerDataHolder.getReaderTouchHelper().getContentHeight();
             RectF viewportRect = new RectF(displayWidth / 2, 0, displayWidth, displayHeight);
             float scale = PageUtils.scaleToFitRect(pageRect, viewportRect);
 

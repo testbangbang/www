@@ -10,12 +10,21 @@ import com.onyx.jdread.R;
  */
 
 public class ReaderViewConfig {
-    public static int getContentWidth(Context context,SurfaceView contentView) {
+    private static float readerBottomStateBarHeight;
+
+    public static void setReaderBottomStateBarHeight(float readerBottomStateBarHeight) {
+        ReaderViewConfig.readerBottomStateBarHeight = readerBottomStateBarHeight;
+    }
+
+    public static float getReaderBottomStateBarHeight() {
+        return readerBottomStateBarHeight;
+    }
+
+    public static int getContentWidth(SurfaceView contentView) {
         return contentView.getWidth();
     }
 
-    public static int getContentHeight(Context context,SurfaceView contentView) {
-        final float readerBottomStateBarHeight = context.getResources().getDimension(R.dimen.reader_content_view_bottom_state_bar_height);
+    public static int getContentHeight(SurfaceView contentView) {
         int height = (int)(contentView.getHeight() - readerBottomStateBarHeight);
         return height;
     }

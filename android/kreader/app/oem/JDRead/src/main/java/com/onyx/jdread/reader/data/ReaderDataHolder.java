@@ -7,8 +7,10 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.jdread.R;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
+import com.onyx.jdread.reader.common.ReaderViewConfig;
 import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
 import com.onyx.jdread.reader.model.SelectMenuModel;
@@ -39,6 +41,12 @@ public class ReaderDataHolder {
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
         setAppContext(appContext);
+        initView(appContext);
+    }
+
+    private void initView(Context context){
+        float readerBottomStateBarHeight = context.getResources().getDimension(R.dimen.reader_content_view_bottom_state_bar_height);
+        ReaderViewConfig.setReaderBottomStateBarHeight(readerBottomStateBarHeight);
     }
 
     public EventBus getEventBus() {
