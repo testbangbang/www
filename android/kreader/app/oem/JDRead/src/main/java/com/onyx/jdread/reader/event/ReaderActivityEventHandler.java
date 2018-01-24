@@ -112,15 +112,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPageViewUpdateEvent(PageViewUpdateEvent event) {
-        updatePageNumber();
-    }
 
-    private void updatePageNumber(){
-        String time = TimeUtils.getCurrentTime();
-        readerViewModel.setTime(time);
-        int current = readerViewModel.getReaderDataHolder().getCurrentPage() + 1;
-        int total = readerViewModel.getReaderDataHolder().getPageCount();
-        readerViewModel.setPage(current + "/" + total);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

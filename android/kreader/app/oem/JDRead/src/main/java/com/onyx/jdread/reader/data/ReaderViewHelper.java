@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.SurfaceView;
@@ -14,6 +15,7 @@ import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
@@ -21,6 +23,7 @@ import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewConfig;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
+import com.onyx.jdread.util.TimeUtils;
 
 import java.util.List;
 
@@ -91,7 +94,8 @@ public class ReaderViewHelper {
         drawPageContent(canvas,bitmap);
         drawPageAnnotations(canvas,reader,readerUserDataInfo,readerViewInfo);
         drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
-
+        drawTime(canvas,reader,readerViewInfo);
+        drawPageNumber(canvas,reader,readerViewInfo);
         contentView.getHolder().unlockCanvasAndPost(canvas);
     }
 
@@ -178,6 +182,39 @@ public class ReaderViewHelper {
                 }
             }
         }
+    }
 
+    public void drawTime(Canvas canvas,Reader reader,ReaderViewInfo readerViewInfo){
+        float textSize = paint.getTextSize();
+        paint.setTextSize(ReaderViewConfig.getTimeFontSize());
+        String time = TimeUtils.getCurrentTime();
+        PointF timePoint = ReaderViewConfig.getTimePoint(contentView);
+
+        Rect bounds = new Rect();;
+        paint.getTextBounds(time,0, time.length(),bounds);
+        float x = timePoint.x;
+        float y = timePoint.y - bounds.height();
+
+        canvas.drawText(time,x,y,paint);
+        paint.setTextSize(textSize);
+    }
+
+    public void drawPageNumber(Canvas canvas,Reader reader,ReaderViewInfo readerViewInfo){
+        float textSize = paint.getTextSize();
+        paint.setTextSize(ReaderViewConfig.getPageNumberFontSize());
+        int currentPage = PagePositionUtils.getPageNumber(readerViewInfo.getFirstVisiblePage().getName());
+        int totalPage = readerViewInfo.getTotalPage();
+        String page = currentPage + "/" + totalPage;
+        PointF timePoint = ReaderViewConfig.getPageNumberPoint(contentView);
+
+        float textWidth = paint.measureText(page);
+
+        Rect bounds = new Rect();;
+        paint.getTextBounds(page,0, page.length(),bounds);
+
+        float x = timePoint.x - textWidth;
+        float y = timePoint.y - bounds.height();
+        canvas.drawText(page,x,y,paint);
+        paint.setTextSize(textSize);
     }
 }
