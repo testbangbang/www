@@ -16,6 +16,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogReadSearchBinding;
 import com.onyx.jdread.reader.adapter.SearchAdapter;
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.event.CloseSearchDialogEvent;
 import com.onyx.jdread.reader.menu.event.SearchEvent;
 import com.onyx.jdread.reader.menu.model.ReaderSearchModel;
@@ -31,6 +32,11 @@ import org.greenrobot.eventbus.ThreadMode;
 public class ReadSearchDialog extends DialogFragment {
     private DialogReadSearchBinding binding;
     private SearchAdapter searchAdapter;
+    private ReaderSearchModel model;
+
+    public void setReaderDataHolder(EventBus eventBus) {
+        model = new ReaderSearchModel(eventBus);
+    }
 
     @Nullable
     @Override
@@ -50,11 +56,10 @@ public class ReadSearchDialog extends DialogFragment {
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = ViewGroup.LayoutParams.MATCH_PARENT;
         window.setAttributes(params);
-        EventBus.getDefault().register(this);
+        model.getEventBus().register(this);
     }
 
     private void initData() {
-        ReaderSearchModel model = new ReaderSearchModel();
         binding.setModel(model);
     }
 
@@ -82,6 +87,6 @@ public class ReadSearchDialog extends DialogFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        model.getEventBus().unregister(this);
     }
 }

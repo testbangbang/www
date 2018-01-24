@@ -5,6 +5,7 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.actions.SettingFontSizeAction;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.ChangeChineseConvertTypeEvent;
@@ -30,6 +31,12 @@ public class ReaderTextModel {
     private ObservableField<ReaderTypeface> currentTypeface = new ObservableField<>(boldFaceType);
     private ObservableField<ReaderFontSize> currentFontSize = new ObservableField<>(ReaderFontSize.LevelThreeFontSize);
     private ObservableField<Language> currentLanguage = new ObservableField<>(Language.Simplified);
+    private EventBus eventBus;
+
+    public ReaderTextModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
     public enum Language{
         Simplified,Traditional
     }
@@ -83,11 +90,11 @@ public class ReaderTextModel {
     }
 
     public void onBackPDFClick() {
-        EventBus.getDefault().post(new ReaderSettingMenuItemBackPdfEvent());
+        eventBus.post(new ReaderSettingMenuItemBackPdfEvent());
     }
 
     public void onCustomizeItemClick() {
-        EventBus.getDefault().post(new ReaderSettingMenuItemCustomizeEvent());
+        eventBus.post(new ReaderSettingMenuItemCustomizeEvent());
     }
 
     public void onBoldfaceTypefaceClick() {
@@ -113,7 +120,7 @@ public class ReaderTextModel {
     public void setTypeface(String typeface){
         ReaderSettingTypefaceEvent event = new ReaderSettingTypefaceEvent();
         event.typeFace = typeface;
-        EventBus.getDefault().post(event);
+        eventBus.post(event);
     }
 
     public void onLevelOneClick() {
@@ -149,7 +156,7 @@ public class ReaderTextModel {
     private void setFontSize(int fontSize){
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
         event.fontSize = fontSize;
-        EventBus.getDefault().post(event);
+        eventBus.post(event);
     }
 
     public void onChangeChineseClick(){
@@ -162,6 +169,6 @@ public class ReaderTextModel {
             setCurrentLanguage(Language.Simplified);
         }
 
-        EventBus.getDefault().post(event);
+        eventBus.post(event);
     }
 }

@@ -13,6 +13,7 @@ import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogDict;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
@@ -45,14 +46,14 @@ public class ReaderActivityEventHandler {
     }
 
     public void registerListener() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+        if (!readerViewModel.getEventBus().isRegistered(this)) {
+            readerViewModel.getEventBus().register(this);
         }
     }
 
     public void unregisterListener() {
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+        if (readerViewModel.getEventBus().isRegistered(this)) {
+            readerViewModel.getEventBus().unregister(this);
         }
     }
 
@@ -143,12 +144,12 @@ public class ReaderActivityEventHandler {
         }
     }
 
-    public static void updateViewSetting(ImageReflowSettings settings, ReaderTextStyle style, ReaderUserDataInfo readerUserDataInfo) {
+    public static void updateViewSetting(ReaderDataHolder readerDataHolder,ImageReflowSettings settings, ReaderTextStyle style, ReaderUserDataInfo readerUserDataInfo) {
         UpdateViewSettingEvent event = new UpdateViewSettingEvent();
         event.setStyle(style);
         event.setSettings(settings);
         event.setReaderUserDataInfo(readerUserDataInfo);
-        EventBus.getDefault().post(event);
+        readerDataHolder.getEventBus().post(event);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -159,15 +160,16 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSearchContentEvent(SearchContentEvent event) {
-        EventBus.getDefault().post(new CloseReaderSettingMenuEvent());
+        readerViewModel.getEventBus().post(new CloseReaderSettingMenuEvent());
         ReadSearchDialog dialog = new ReadSearchDialog();
+        dialog.setReaderDataHolder(readerViewModel.getEventBus());
         dialog.show(readerViewBack.getContext().getFragmentManager(), "");
     }
 
-    public static void updateReaderViewInfo(ReaderBaseRequest request){
+    public static void updateReaderViewInfo(ReaderDataHolder readerDataHolder,ReaderBaseRequest request){
         UpdateReaderViewInfoEvent event = new UpdateReaderViewInfoEvent();
         event.setReaderViewInfo(request.getReaderViewInfo());
-        EventBus.getDefault().post(event);
+        readerDataHolder.getEventBus().post(event);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

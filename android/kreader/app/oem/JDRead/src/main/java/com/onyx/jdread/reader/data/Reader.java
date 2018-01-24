@@ -5,6 +5,8 @@ import android.content.Context;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by huxiaomao on 2017/12/20.
  */
@@ -14,6 +16,7 @@ public class Reader {
     private DocumentInfo documentInfo;
     private ReaderViewHelper readerViewHelper;
     private ReaderSelectionHelper readerSelectionHelper;
+    private EventBus eventBus = EventBus.getDefault();
 
     public Reader(DocumentInfo documentInfo,Context context) {
         this.documentInfo = documentInfo;
@@ -38,5 +41,9 @@ public class Reader {
             readerSelectionHelper = new ReaderSelectionHelper();
         }
         return readerSelectionHelper;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 }

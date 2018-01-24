@@ -62,6 +62,6 @@ public class OpenDocumentAction extends BaseReaderAction {
             message = readerDataHolder.getAppContext().getString(R.string.open_book_fail);
         }
         event.setMessage(message);
-        EventBus.getDefault().post(event);
+        readerDataHolder.getEventBus().post(event);
     }
 }

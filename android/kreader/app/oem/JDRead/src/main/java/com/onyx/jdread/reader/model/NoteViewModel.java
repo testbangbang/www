@@ -28,14 +28,14 @@ public class NoteViewModel {
     private ObservableInt saveIcon = new ObservableInt(R.mipmap.ic_read_edit);
     private ObservableField<String> chapterName = new ObservableField<>();
     private String pagePosition;
-    private ReaderDataHolder readerDataHolder;
+    private EventBus eventBus;
 
-    public ReaderDataHolder getReaderDataHolder() {
-        return readerDataHolder;
+    public void setReaderDataHolder(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
-    public void setReaderDataHolder(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public String getPagePosition() {
@@ -49,7 +49,7 @@ public class NoteViewModel {
     public void setNoteInfo(Context context, NoteInfo noteInfo) {
         if (noteInfo == null) {
             ToastUtil.showToast(context, R.string.login_resutl_params_error);
-            EventBus.getDefault().post(new NoteBackEvent());
+            getEventBus().post(new NoteBackEvent());
             return;
         }
         update(noteInfo);
@@ -128,13 +128,12 @@ public class NoteViewModel {
     }
 
     public void backClick() {
-        EventBus.getDefault().post(new NoteBackEvent());
+        getEventBus().post(new NoteBackEvent());
     }
 
     public void saveClick() {
         if (isEdit.get()) {
-
-            EventBus.getDefault().post(new SaveNoteEvent());
+            getEventBus().post(new SaveNoteEvent());
         } else {
             setIsEdit(true);
         }

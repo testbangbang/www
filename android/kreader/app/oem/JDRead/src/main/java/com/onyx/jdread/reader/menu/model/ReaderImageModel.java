@@ -4,6 +4,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.GammaCorrectionEvent;
 import com.onyx.jdread.reader.menu.event.ImageReflowEvent;
@@ -21,6 +22,15 @@ public class ReaderImageModel {
     private ObservableBoolean isShow = new ObservableBoolean(false);
     private ObservableField<ImageShowMode> currentImageMode = new ObservableField<>(ImageShowMode.defaultMode);
     private ObservableInt currentFontColorDepth = new ObservableInt(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
+    private EventBus eventBus;
+
+    public ReaderImageModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
+    }
 
     public enum ImageShowMode {
         defaultMode, comicMode
@@ -54,13 +64,13 @@ public class ReaderImageModel {
     public void onDefaultModeClick() {
         setCurrentImageMode(ImageShowMode.defaultMode);
         ResetNavigationEvent event = new ResetNavigationEvent();
-        EventBus.getDefault().post(event);
+        getEventBus().post(event);
     }
 
     public void onComicModeClick() {
         setCurrentImageMode(ImageShowMode.comicMode);
         SwitchNavigationToComicModeEvent showModeEvent = new SwitchNavigationToComicModeEvent();
-        EventBus.getDefault().post(showModeEvent);
+        getEventBus().post(showModeEvent);
     }
 
     public void onOneFontColorDepthClick(){
@@ -90,21 +100,21 @@ public class ReaderImageModel {
     private void setFontColorDepth(int textGamma){
         GammaCorrectionEvent event = new GammaCorrectionEvent();
         event.textGamma = textGamma;
-        EventBus.getDefault().post(event);
+        getEventBus().post(event);
     }
 
     public void onResetModeClick(){
         ResetNavigationEvent event = new ResetNavigationEvent();
-        EventBus.getDefault().post(event);
+        getEventBus().post(event);
     }
 
     public void onRearrangeClick(){
         ImageReflowEvent event = new ImageReflowEvent();
-        EventBus.getDefault().post(event);
+        getEventBus().post(event);
     }
 
     public void onTrimmingClick(){
         ScaleToPageCropEvent event = new ScaleToPageCropEvent();
-        EventBus.getDefault().post(event);
+        getEventBus().post(event);
     }
 }

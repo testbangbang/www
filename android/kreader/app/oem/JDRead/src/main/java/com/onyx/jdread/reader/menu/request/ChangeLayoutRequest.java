@@ -31,8 +31,8 @@ public class ChangeLayoutRequest extends ReaderBaseRequest {
 
     private void updateSetting(Reader reader) {
         if (settings != null) {
-            settings.dev_width = reader.getReaderViewHelper().getPageViewWidth();
-            settings.dev_height = reader.getReaderViewHelper().getPageViewHeight();
+            settings.dev_width = reader.getReaderViewHelper().getContentWidth();
+            settings.dev_height = reader.getReaderViewHelper().getContentHeight();
             settings.justification = 3;
             reader.getReaderHelper().getImageReflowManager().updateSettings(settings);
             reader.getReaderHelper().getImageReflowManager().notifySettingsUpdated();
