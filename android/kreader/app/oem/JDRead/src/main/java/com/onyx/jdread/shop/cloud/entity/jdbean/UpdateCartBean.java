@@ -7,4 +7,5 @@ package com.onyx.jdread.shop.cloud.entity.jdbean;
 public class UpdateCartBean {
     public int result_code;
     public UpdateBean data;
+    public String message;
 }

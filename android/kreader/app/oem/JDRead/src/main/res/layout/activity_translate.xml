@@ -11,20 +11,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="@drawable/rectangle_stroke"
+        android:orientation="vertical"
+        android:padding="3dp">
 
-        <WebView
-            android:id="@+id/dict_view"
+        <com.onyx.jdread.reader.ui.view.HTMLReaderWebView
+            android:id="@+id/translate_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="9"
             android:padding="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:padding="8dp"
+            android:text="@{translateViewModel.page}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font" />
 
         <View style="@style/reader_dotted_line_style" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
@@ -34,31 +47,39 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/source_language" />
+                android:text="@string/source_language"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{translateViewModel.sourceLanguage}" />
+                android:layout_marginLeft="5dp"
+                android:text="@{translateViewModel.currentLanguage?@string/simplified_chinese:@string/english}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@mipmap/ic_read_exchange" />
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/reader_target_language" />
+                android:text="@string/reader_target_language"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{translateViewModel.targetLanguage}" />
+                android:layout_marginLeft="5dp"
+                android:text="@{translateViewModel.currentLanguage?@string/english:@string/simplified_chinese}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
         </LinearLayout>
     </LinearLayout>
 </layout>

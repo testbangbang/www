@@ -40,7 +40,8 @@
             android:gravity="right"
             android:paddingBottom="@dimen/book_comment_indicator_padding"
             android:paddingTop="@dimen/book_comment_indicator_padding"
-            android:text="@{@string/book_comment_indicator_value(viewModel.currentPosition,viewModel.totalPage)}" />
+            android:text="@{@string/book_comment_indicator_value(viewModel.currentPosition,viewModel.totalPage)}"
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 

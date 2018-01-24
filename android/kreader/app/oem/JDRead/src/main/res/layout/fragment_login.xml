@@ -30,6 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/fragment_switch_account_JD_login"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <EditText
@@ -66,6 +67,7 @@
                     android:layout_height="wrap_content"
                     android:onClick="@{()->model.onForgetPasswordClick()}"
                     android:text="@string/fragment_switch_account_text_view_forget"
+                    android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
                 <TextView

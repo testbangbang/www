@@ -230,6 +230,7 @@ public class LibraryFragment extends BaseFragment {
         }
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(libraryDataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
         loadAction.setLoadMetadata(isLoadMetadata());
+        loadAction.setLoadFromCache(false);
         loadAction.execute(libraryDataBundle, null);
     }
 
@@ -263,6 +264,7 @@ public class LibraryFragment extends BaseFragment {
         }
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(libraryDataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
         loadAction.setLoadMetadata(isLoadMetadata());
+        loadAction.setLoadFromCache(false);
         loadAction.execute(libraryDataBundle, null);
     }
 
@@ -326,6 +328,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onLibraryManageEvent(LibraryManageEvent event) {
+        libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
         libraryDataBundle.getLibraryViewDataModel().title.set(getString(R.string.manage_book));
         modelAdapter.setMultiSelectionMode(SelectionMode.MULTISELECT_MODE);
         getIntoMultiSelectMode();
@@ -404,6 +407,7 @@ public class LibraryFragment extends BaseFragment {
             return;
         }
         DataModel currentChosenModel = event.getDataModel();
+        libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
         libraryDataBundle.getLibraryViewDataModel().addItemSelected(currentChosenModel, true);
         showSingleMangeDialog(currentChosenModel);
     }

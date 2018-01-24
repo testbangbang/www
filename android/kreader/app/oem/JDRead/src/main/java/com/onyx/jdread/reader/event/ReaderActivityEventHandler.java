@@ -13,7 +13,6 @@ import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
-import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.dialog.DialogDict;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
@@ -24,6 +23,7 @@ import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
 import com.onyx.jdread.reader.menu.event.SearchContentEvent;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
+import com.onyx.jdread.util.TimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -111,7 +111,15 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPageViewUpdateEvent(PageViewUpdateEvent event) {
+        updatePageNumber();
+    }
 
+    private void updatePageNumber(){
+        String time = TimeUtils.getCurrentTime();
+        readerViewModel.setTime(time);
+        int current = readerViewModel.getReaderDataHolder().getCurrentPage() + 1;
+        int total = readerViewModel.getReaderDataHolder().getPageCount();
+        readerViewModel.setPage(current + "/" + total);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -191,6 +199,7 @@ public class ReaderActivityEventHandler {
         String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
         TranslateDialog translateDialog = new TranslateDialog(activity,text);
         translateDialog.show();
+        translateDialog.setCanceledOnTouchOutside(true);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

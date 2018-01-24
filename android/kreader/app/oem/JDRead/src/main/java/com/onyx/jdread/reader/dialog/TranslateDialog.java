@@ -5,7 +5,11 @@ import android.app.Dialog;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityTranslateBinding;
@@ -29,7 +33,6 @@ public class TranslateDialog extends Dialog implements ViewCallBack {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setCanceledOnTouchOutside(false);
         initView();
         initData();
     }
@@ -44,6 +47,12 @@ public class TranslateDialog extends Dialog implements ViewCallBack {
         translateViewModel.setViewCallBack(this);
     }
 
+    @Override
+    public void show() {
+        setDialogParams(this);
+        super.show();
+    }
+
     private void initData() {
         translateViewModel.setText(text);
     }
@@ -56,5 +65,19 @@ public class TranslateDialog extends Dialog implements ViewCallBack {
     @Override
     public Dialog getContent() {
         return this;
+    }
+
+    public void setDialogParams(Dialog dialog){
+        Window dialogWindow = dialog.getWindow();
+        WindowManager.LayoutParams params = dialogWindow.getAttributes();
+        dialogWindow.setGravity(Gravity.LEFT | Gravity.TOP);
+        WindowManager manager = dialogWindow.getWindowManager();
+        Display display = manager.getDefaultDisplay();
+        params.height = (int)(display.getHeight() * 0.5f);
+        params.width = (int)(display.getWidth() * 0.9f);
+        params.x = (display.getWidth() - params.width) / 2;
+        final float marginBottom = getContext().getResources().getDimension(R.dimen.reader_page_translate_window_margin_bottom);
+        params.y = (int)(display.getHeight() - params.height - marginBottom);
+        dialogWindow.setAttributes(params);
     }
 }

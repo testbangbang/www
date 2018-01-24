@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="@dimen/dialog_single_manage_close_padding"
+            android:textColor="@android:color/black"
             android:text="@string/add_wifi_configuration" />
 
         <View
@@ -41,6 +42,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
                 android:text="@string/network_ssid" />
 
             <EditText
@@ -62,6 +64,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
                 android:text="@string/network_ssid" />
 
             <Spinner
@@ -85,6 +88,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
                 android:text="@string/network_password" />
 
             <EditText
@@ -112,6 +116,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/selected_background"
                 android:gravity="center"
+                android:textColor="@android:color/black"
                 android:onClick="@{()->dialogModel.onPositiveClick()}"
                 android:text="@{dialogModel.positiveText}"
                 android:textSize="@dimen/level_two_heading_font" />
@@ -122,6 +127,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/selected_background"
                 android:gravity="center"
+                android:textColor="@android:color/black"
                 android:onClick="@{()->dialogModel.onNegativeClick()}"
                 android:text="@{dialogModel.negativeText}" />
         </LinearLayout>

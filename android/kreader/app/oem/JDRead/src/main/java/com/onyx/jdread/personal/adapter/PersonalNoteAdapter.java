@@ -46,7 +46,6 @@ public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter implements
         PersonalNoteViewHolder viewHolder = (PersonalNoteViewHolder) holder;
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
-        viewHolder.getBinding().setShowBox(show);
     }
 
     public void showBox(boolean show) {

@@ -34,6 +34,11 @@ public class CloudApiContext {
     public static class User {
         public static final String SYNC_INFO = "user/sync";
         public static final String GET_USER_INFO = "user";
+        public static final String READ_PREFERENCE = "user/features";
+        public static final String SIGN_CHECK = "sign/check";
+        public static final String SIGN = "sign";
+        public static final String READING_VOUCHER = "reading/voucher";
+        public static final String USER_GIFT = "gift/{sn}";
     }
 
     public static class NewBookDetail {
@@ -166,6 +171,7 @@ public class CloudApiContext {
         public static final String IS_SUPPORT_JS = "isSupportJs";
         public static final String BOOLEAN = "true";
         public static final String CART = "cart";
+        public static final String CART_DETAIL = "cart/detail";
     }
 
     public static String getJDBooxBaseUrl() {

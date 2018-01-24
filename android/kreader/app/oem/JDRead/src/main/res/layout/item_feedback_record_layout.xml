@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
         <TextView
@@ -23,6 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:singleLine="true"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
     </LinearLayout>
 </layout>

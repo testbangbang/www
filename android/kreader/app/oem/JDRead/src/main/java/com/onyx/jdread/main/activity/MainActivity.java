@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         transaction.commitAllowingStateLoss();
         changeFunctionItem(childViewName);
         saveChildViewInfo(childViewName, baseFragment);
+        systemBarModel.updateTime();
     }
 
     private void changeFunctionItem(String childViewName) {

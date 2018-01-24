@@ -6,13 +6,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalNoteBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.adapter.PersonalNoteAdapter;
@@ -58,7 +57,7 @@ public class PersonalNoteFragment extends BaseFragment {
 
     private void initView() {
         binding.personalNoteRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        OnyxPageDividerItemDecoration decoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        DashLineItemDivider decoration = new DashLineItemDivider();
         binding.personalNoteRecycler.addItemDecoration(decoration);
         personalNoteAdapter = new PersonalNoteAdapter();
         binding.personalNoteRecycler.setAdapter(personalNoteAdapter);

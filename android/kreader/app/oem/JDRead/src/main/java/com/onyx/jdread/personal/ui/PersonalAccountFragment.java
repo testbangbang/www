@@ -9,11 +9,12 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalAccountBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.adapter.PersonalAccountAdapter;
@@ -33,7 +34,6 @@ import com.onyx.jdread.personal.event.TwoHundredYuanEvent;
 import com.onyx.jdread.personal.model.PersonalAccountModel;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
-import com.onyx.jdread.setting.model.SettingTitleModel;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -48,7 +48,6 @@ import java.util.List;
 public class PersonalAccountFragment extends BaseFragment {
     private PersonalAccountBinding binding;
     private PersonalAccountAdapter personalAccountAdapter;
-    private OnyxPageDividerItemDecoration decoration;
 
     @Nullable
     @Override
@@ -73,21 +72,20 @@ public class PersonalAccountFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.personal_account));
+        titleModel.title.set(ResManager.getString(R.string.personal_account));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.accountTitleBar.setTitleModel(titleModel);
 
         PersonalAccountModel personalAccountModel = PersonalDataBundle.getInstance().getPersonalAccountModel();
         if (personalAccountAdapter != null) {
-            decoration.setBlankCount(personalAccountModel.getAccountTitles().length);
             personalAccountAdapter.setData(personalAccountModel.getAccountTitles(), personalAccountModel.getAccountEvents());
         }
     }
 
     private void initView() {
         binding.accountRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        decoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
-        binding.accountRecycler.addItemDecoration(decoration);
+        DashLineItemDivider divider = new DashLineItemDivider();
+        binding.accountRecycler.addItemDecoration(divider);
         personalAccountAdapter = new PersonalAccountAdapter(PersonalDataBundle.getInstance().getEventBus());
         binding.accountRecycler.setAdapter(personalAccountAdapter);
     }

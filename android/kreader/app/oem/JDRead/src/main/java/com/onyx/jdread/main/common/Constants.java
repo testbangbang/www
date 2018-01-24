@@ -52,9 +52,11 @@ public class Constants {
     public static final int PASSWORD_MIN_LENGTH = 6;
     public static final String CODE_STATE_THREE = "3";
     public static final String CODE_STATE_FOUR = "4";
-    public static final String CART_TYPE_GET = "1";
-    public static final String CART_TYPE_ADD = "2";
-    public static final String CART_TYPE_DEL = "3";
+    public static final String CART_TYPE_GET = "get";
+    public static final String CART_TYPE_ADD = "update";
+    public static final String CART_TYPE_DEL = "delete";
+    public static final String CART_TYPE = "type";
+    public static final String CART_BOOK_LIST = "book_list";
     public static final String RANDOW_VALUE = "0";
     public static final String HAS_CERT_VALUE = "0";
     public static final int ORDER_TYPE = 0;
@@ -86,5 +88,6 @@ public class Constants {
     public static final int REMOVE_PRODUCTION_TEST_PRESS_COUNT = 5;
     public static final int BOOK_LIST_TYPE_BOOK_MODEL = 1;
     public static final int BOOK_LIST_TYPE_BOOK_RANK = 2;
+    public static final String PARSE_JSON_TYPE = "application/json";
     public static final int WEB_VIEW_TEXT_ZOOM = 100;
 }

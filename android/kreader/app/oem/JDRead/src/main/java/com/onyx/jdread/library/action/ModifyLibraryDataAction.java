@@ -5,6 +5,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.action.BaseAction;
+import com.onyx.jdread.main.common.SupportType;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class ModifyLibraryDataAction extends BaseAction<LibraryDataBundle> {
             return;
         }
         RxFileChangeRequest rxFileChangeRequest = new RxFileChangeRequest(libraryDataBundle.getDataManager(), pathList);
+        rxFileChangeRequest.setExtensionFilterSet(SupportType.getDocumentExtension());
         rxFileChangeRequest.execute(baseCallback);
     }
 }

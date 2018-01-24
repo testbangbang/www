@@ -38,6 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{dataModel.title}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <TextView
@@ -45,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/search_result_item_text_margin_top"
                 android:text="@{dataModel.author}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_four_heading_font" />
 
             <TextView
@@ -52,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/search_result_item_text_margin_top"
                 android:text="@{StringUtils.isNotBlank(dataModel.absolutePath)?@string/in_library:@string/in_shop}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_four_heading_font" />
 
         </LinearLayout>

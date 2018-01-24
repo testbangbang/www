@@ -19,16 +19,34 @@ public class ReaderViewModel extends BaseObservable {
     private ReaderDataHolder readerDataHolder;
     private ObservableBoolean isShowTipMessage = new ObservableBoolean(false);
     private ObservableField<String> tipMessage = new ObservableField<>();
+    private ObservableField<String> page = new ObservableField<>();
+    private ObservableField<String> time = new ObservableField<>();
+
+    public ObservableField<String> getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page.set(page);
+    }
+
+    public ObservableField<String> getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time.set(time);
+    }
 
     public boolean setDocumentInfo(DocumentInfo documentInfo) {
-        if(!checkOpenBookParameter(documentInfo)){
+        if (!checkOpenBookParameter(documentInfo)) {
             return false;
         }
         openDocument(documentInfo);
         return true;
     }
 
-    private boolean checkOpenBookParameter(DocumentInfo documentInfo){
+    private boolean checkOpenBookParameter(DocumentInfo documentInfo) {
         if (documentInfo.getMessageId() != Integer.MAX_VALUE) {
             setTipMessage(JDReadApplication.getInstance().getString(documentInfo.getMessageId()));
             return false;
@@ -64,11 +82,11 @@ public class ReaderViewModel extends BaseObservable {
         return tipMessage;
     }
 
-    public void clearSurfaceView(SurfaceView surfaceView){
+    public void clearSurfaceView(SurfaceView surfaceView) {
         ReaderViewUtil.clearSurfaceView(surfaceView);
     }
 
-    public void setReaderPageView(SurfaceView surfaceView){
+    public void setReaderPageView(SurfaceView surfaceView) {
         readerDataHolder.setReadPageView(surfaceView);
         RegionFunctionManager.initRegionAction(readerDataHolder.getAppContext());
     }
