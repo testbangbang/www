@@ -70,6 +70,7 @@ public class ConversionFragment extends Fragment {
 
     public void changeCategory(int category) {
         this.category = category;
+        reset();
         initInputUnitSelector();
         initOutPutUnitSelector();
         updateConversionResult();
@@ -162,5 +163,9 @@ public class ConversionFragment extends Fragment {
 
             }
         });
+    }
+
+    private void reset() {
+        toUnitIndex = ALL_OUTPUT;
     }
 }
