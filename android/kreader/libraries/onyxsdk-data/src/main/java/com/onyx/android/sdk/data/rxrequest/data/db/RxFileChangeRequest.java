@@ -1,7 +1,5 @@
 package com.onyx.android.sdk.data.rxrequest.data.db;
 
-import android.util.Log;
-
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.Library;
@@ -10,7 +8,6 @@ import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 

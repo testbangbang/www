@@ -73,7 +73,7 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         metadata.setLocation(StringUtils.isNullOrEmpty(detailBean.downLoadUrl) ? detailBean.try_url : detailBean.downLoadUrl);
         metadata.setCoverUrl(detailBean.large_image_url);
         metadata.setSize((long) detailBean.file_size);
-        metadata.setHashTag(String.valueOf(detailBean.ebook_id));
+        metadata.setHashTag(localPath);
         metadata.setType(FileUtils.getFileExtension(metadata.getNativeAbsolutePath()));
         BookExtraInfoBean extraInfo = detailBean.bookExtraInfoBean;
         if (extraInfo != null) {
