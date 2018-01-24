@@ -3,12 +3,14 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.db.RxRequestBookshelfInsert;
+import com.onyx.jdread.shop.request.db.RxSaveCloudBookThumbnailRequest;
 
 /**
  * Created by jackdeng on 2017/12/21.
@@ -54,6 +56,9 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
                 }
             }
         });
+
+        RxSaveCloudBookThumbnailRequest rxSaveCloudBookThumbnail = new RxSaveCloudBookThumbnailRequest(dataBundle.getDataManager(), metadata);
+        rxSaveCloudBookThumbnail.execute(null);
     }
 
     private Metadata convertBookDetailEntityToMetadata(BookDetailResultBean.DetailBean detailBean) {
@@ -68,6 +73,8 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         metadata.setLocation(StringUtils.isNullOrEmpty(detailBean.downLoadUrl) ? detailBean.try_url : detailBean.downLoadUrl);
         metadata.setCoverUrl(detailBean.large_image_url);
         metadata.setSize((long) detailBean.file_size);
+        metadata.setHashTag(String.valueOf(detailBean.ebook_id));
+        metadata.setType(FileUtils.getFileExtension(metadata.getNativeAbsolutePath()));
         BookExtraInfoBean extraInfo = detailBean.bookExtraInfoBean;
         if (extraInfo != null) {
             metadata.setExtraAttributes(JSONObjectParseUtils.toJson(extraInfo));
