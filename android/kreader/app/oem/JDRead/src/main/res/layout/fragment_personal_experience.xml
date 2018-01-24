@@ -209,7 +209,6 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="@dimen/book_detail_margin"
-                    android:background="@drawable/normal_selected_background"
                     android:padding="@dimen/book_detail_button_padding"
                     android:src="@mipmap/ic_page_next" />
             </LinearLayout>

@@ -19,7 +19,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/normal_selected_background"
             android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onRankViewClick()}"
             android:orientation="vertical">
@@ -44,7 +43,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/normal_selected_background"
             android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onEnjoyReadViewClick()}"
             android:orientation="vertical">
@@ -69,7 +67,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/normal_selected_background"
             android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onSaleViewClick()}"
             android:orientation="vertical">
@@ -94,7 +91,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/normal_selected_background"
             android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onNewBookViewClick()}"
             android:orientation="vertical">
@@ -119,7 +115,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/normal_selected_background"
             android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onCategoryViewClick()}"
             android:orientation="vertical">

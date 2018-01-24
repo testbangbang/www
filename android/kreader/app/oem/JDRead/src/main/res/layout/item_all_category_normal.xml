@@ -20,7 +20,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/text_no_stoke_background"
             android:ellipsize="middle"
             android:gravity="center"
             android:maxLines="2"

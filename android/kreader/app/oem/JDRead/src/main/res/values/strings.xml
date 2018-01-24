@@ -150,16 +150,12 @@
     <string name="book_detail_downloading">Downloading</string>
     <string name="book_detail_try_read">Try read the book</string>
     <string name="book_detail_download_add_shelf">Trying to read file has started to download and add a bookcase</string>
-    <string name="book_detail_dialog_fluent">Smooth Reading immediately(the book supported)</string>
-    <string name="book_detail_dialog_buy">Direct purchase</string>
-    <string name="book_detail_dialog_add_cart">Add to cart, buy later</string>
     <string name="book_detail_cannot_fluent">Cannot smooth read</string>
     <string name="book_detail_no_card">No effective smooth card in your account, so we can not get through the book</string>
     <string name="book_detail_go_buy">Buy</string>
     <string name="book_detail_already_buy">Have been buying</string>
     <string name="book_detail_success_add_cart">Add to cart successfully!</string>
     <string name="book_detail_already_add_cart">The goods have been added to the shopping cart!</string>
-    <string name="book_detail_download_with_vip">Download (VIP)</string>
     <string name="confirm">confirm</string>
     <string name="menu_wifi_setting">WIFI Setting</string>
     <string name="fragment_book_bought_download_status_read">Read</string>

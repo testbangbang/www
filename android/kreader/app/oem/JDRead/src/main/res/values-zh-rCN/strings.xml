@@ -146,16 +146,12 @@
     <string name="book_detail_downloading">正在下载</string>
     <string name="book_detail_try_read">试读本书</string>
     <string name="book_detail_download_add_shelf">试读文件已开始下载并加入书架</string>
-    <string name="book_detail_dialog_fluent">立即畅读(本书支持畅读)</string>
-    <string name="book_detail_dialog_buy">直接购买</string>
-    <string name="book_detail_dialog_add_cart">加入购物车，稍后购买</string>
     <string name="book_detail_cannot_fluent">无法畅读</string>
     <string name="book_detail_no_card">您的账号中没有有效的畅读卡，因此无法畅读此书</string>
     <string name="book_detail_go_buy">去购买</string>
     <string name="book_detail_already_buy">已经购买过</string>
     <string name="book_detail_success_add_cart">成功加入购物车！</string>
     <string name="book_detail_already_add_cart">该商品已经加入购物车！</string>
-    <string name="book_detail_download_with_vip">下载(畅读VIP)</string>
     <string name="confirm">确定</string>
     <string name="menu_wifi_setting">WIFI 设置</string>
     <string name="fragment_book_bought_download_status_read">阅读</string>

@@ -50,7 +50,6 @@ import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.action.MetadataQueryAction;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
-import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
@@ -118,6 +117,7 @@ public class BookDetailFragment extends BaseFragment {
     private boolean isWholeBookDownLoad;
     private GPaginator paginator;
     private AlertDialog infoDialog;
+    private boolean hasAddToCart = false;
 
     @Nullable
     @Override
@@ -368,8 +368,12 @@ public class BookDetailFragment extends BaseFragment {
         if (checkWfiDisConnected()) {
             return;
         }
-        if (bookDetailBean != null) {
-            addToCart(bookDetailBean.ebook_id);
+        if (!hasAddToCart) {
+            if (bookDetailBean != null) {
+                addToCart(bookDetailBean.ebook_id);
+            }
+        } else {
+            gotoShopCartFragment();
         }
     }
 
@@ -555,7 +559,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     public void setAddOrDelFromCart(UpdateBean result) {
-        gotoShopCartFragment();
+        hasAddToCart = true;
     }
 
     private void gotoShopCartFragment() {
