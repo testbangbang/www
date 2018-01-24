@@ -18,8 +18,8 @@ import org.greenrobot.eventbus.EventBus;
 public class ShowSettingMenuAction extends BaseReaderAction {
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        EventBus.getDefault().post(new ShowReaderSettingMenuEvent());
+    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+        readerDataHolder.getEventBus().post(new ShowReaderSettingMenuEvent());
     }
 
     public static Rect getRegionOne(Context context) {

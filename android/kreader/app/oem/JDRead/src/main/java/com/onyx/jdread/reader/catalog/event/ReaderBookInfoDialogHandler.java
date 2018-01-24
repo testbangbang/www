@@ -38,14 +38,14 @@ public class ReaderBookInfoDialogHandler {
     }
 
     public void registerListener() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+        if (!readerDataHolder.getEventBus().isRegistered(this)) {
+            readerDataHolder.getEventBus().register(this);
         }
     }
 
     public void unregisterListener() {
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+        if (readerDataHolder.getEventBus().isRegistered(this)) {
+            readerDataHolder.getEventBus().unregister(this);
         }
     }
 

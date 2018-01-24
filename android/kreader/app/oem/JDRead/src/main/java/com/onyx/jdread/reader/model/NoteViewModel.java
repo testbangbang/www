@@ -49,7 +49,7 @@ public class NoteViewModel {
     public void setNoteInfo(Context context, NoteInfo noteInfo) {
         if (noteInfo == null) {
             ToastUtil.showToast(context, R.string.login_resutl_params_error);
-            EventBus.getDefault().post(new NoteBackEvent());
+            readerDataHolder.getEventBus().post(new NoteBackEvent());
             return;
         }
         update(noteInfo);
@@ -128,13 +128,12 @@ public class NoteViewModel {
     }
 
     public void backClick() {
-        EventBus.getDefault().post(new NoteBackEvent());
+        readerDataHolder.getEventBus().post(new NoteBackEvent());
     }
 
     public void saveClick() {
         if (isEdit.get()) {
-
-            EventBus.getDefault().post(new SaveNoteEvent());
+            readerDataHolder.getEventBus().post(new SaveNoteEvent());
         } else {
             setIsEdit(true);
         }

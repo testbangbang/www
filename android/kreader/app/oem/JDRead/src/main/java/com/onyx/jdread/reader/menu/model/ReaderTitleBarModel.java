@@ -5,6 +5,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
 import com.onyx.jdread.R;
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.menu.event.BuyBookClickEvent;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
@@ -22,27 +23,27 @@ public class ReaderTitleBarModel extends BaseObservable {
     private ObservableBoolean isSearchContext = new ObservableBoolean(true);
     private ObservableInt bookMarkImageId = new ObservableInt(R.mipmap.ic_read_bm_normal);
     private ObservableBoolean isShow = new ObservableBoolean(true);
+    private ReaderDataHolder readerDataHolder;
 
-    public ReaderTitleBarModel() {
-
+    public ReaderTitleBarModel(ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
     }
 
     public void backClick() {
-        EventBus.getDefault().post(new CloseReaderSettingMenuEvent());
-        EventBus.getDefault().post(new CloseDocumentEvent());
+        readerDataHolder.getEventBus().post(new CloseReaderSettingMenuEvent());
+        readerDataHolder.getEventBus().post(new CloseDocumentEvent());
     }
 
     public void buyBookClick() {
-        EventBus.getDefault().post(new BuyBookClickEvent());
+        readerDataHolder.getEventBus().post(new BuyBookClickEvent());
     }
 
     public void searchContextClick() {
-        EventBus.getDefault().post(new SearchContentEvent());
+        readerDataHolder.getEventBus().post(new SearchContentEvent());
     }
 
     public void bookmarkCLick() {
-        ToggleBookmarkEvent event = new ToggleBookmarkEvent();
-        EventBus.getDefault().post(event);
+        readerDataHolder.getEventBus().post(new ToggleBookmarkEvent());
     }
 
     public ObservableBoolean getIsBuy() {

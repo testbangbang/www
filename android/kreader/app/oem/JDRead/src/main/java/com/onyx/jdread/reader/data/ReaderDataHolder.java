@@ -13,6 +13,8 @@ import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
 import com.onyx.jdread.reader.model.SelectMenuModel;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by huxiaomao on 2017/12/20.
  */
@@ -36,6 +38,10 @@ public class ReaderDataHolder {
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
         setAppContext(appContext);
+    }
+
+    public EventBus getEventBus() {
+        return reader.getEventBus();
     }
 
     public SelectMenuModel getSelectMenuModel() {

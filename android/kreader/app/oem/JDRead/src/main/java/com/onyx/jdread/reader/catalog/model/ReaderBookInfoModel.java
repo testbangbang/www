@@ -12,6 +12,7 @@ import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.jdread.reader.catalog.event.TabBookmarkClickEvent;
 import com.onyx.jdread.reader.catalog.event.TabCatalogClickEvent;
 import com.onyx.jdread.reader.catalog.event.TabNoteClickEvent;
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 
 import org.greenrobot.eventbus.EventBus;
@@ -29,6 +30,11 @@ public class ReaderBookInfoModel {
     private ObservableInt currentTab = new ObservableInt(ReaderBookInfoDialogConfig.CATALOG_MODE);
     public final ObservableList<BookmarkModel> bookmarks = new ObservableArrayList<>();
     public final ObservableList<NoteModel> notes = new ObservableArrayList<>();
+    private ReaderDataHolder readerDataHolder;
+
+    public ReaderBookInfoModel(ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
+    }
 
     public ObservableInt getCurrentTab() {
         return currentTab;
@@ -74,16 +80,16 @@ public class ReaderBookInfoModel {
 
     public void onTabCatalogClick(){
         setCurrentTab(ReaderBookInfoDialogConfig.CATALOG_MODE);
-        EventBus.getDefault().post(new TabCatalogClickEvent());
+        readerDataHolder.getEventBus().post(new TabCatalogClickEvent());
     }
 
     public void onTabBookmarkClick(){
         setCurrentTab(ReaderBookInfoDialogConfig.BOOKMARK_MODE);
-        EventBus.getDefault().post(new TabBookmarkClickEvent());
+        readerDataHolder.getEventBus().post(new TabBookmarkClickEvent());
     }
 
     public void onTabNoteClick(){
         setCurrentTab(ReaderBookInfoDialogConfig.NOTE_MODE);
-        EventBus.getDefault().post(new TabNoteClickEvent());
+        readerDataHolder.getEventBus().post(new TabNoteClickEvent());
     }
 }

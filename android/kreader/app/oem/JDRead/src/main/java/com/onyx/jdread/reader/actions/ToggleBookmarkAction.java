@@ -30,14 +30,14 @@ public class ToggleBookmarkAction extends  BaseReaderAction{
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         if (toggleSwitch == ToggleSwitch.On) {
             final AddBookmarkRequest request = new AddBookmarkRequest(readerDataHolder.getReader(),pageInfo);
             request.execute(new RxCallback() {
                 @Override
                 public void onNext(Object o) {
-                    EventBus.getDefault().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
-                    ReaderActivityEventHandler.updateReaderViewInfo(request);
+                    readerDataHolder.getEventBus().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
+                    ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
                 }
             });
         } else if (toggleSwitch == ToggleSwitch.Off) {
@@ -46,8 +46,8 @@ public class ToggleBookmarkAction extends  BaseReaderAction{
             request.execute(new RxCallback() {
                 @Override
                 public void onNext(Object o) {
-                    EventBus.getDefault().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
-                    ReaderActivityEventHandler.updateReaderViewInfo(request);
+                    readerDataHolder.getEventBus().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
+                    ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
                 }
             });
         }

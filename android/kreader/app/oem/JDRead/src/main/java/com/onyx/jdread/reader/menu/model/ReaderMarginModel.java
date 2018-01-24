@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.menu.model;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.SettingLeftAndRightSpacingEvent;
 import com.onyx.jdread.reader.menu.event.SettingLineSpacingEvent;
@@ -28,6 +29,12 @@ public class ReaderMarginModel {
     public final ObservableInt upAndDownProgress = new ObservableInt();
     public final ObservableInt maxUpAndDownSpacing = new ObservableInt(ReaderConfig.PageUpAndDownSpacing.MAX_UP_AND_DOWN_SPACING);
 
+    private ReaderDataHolder readerDataHolder;
+
+    public ReaderMarginModel(ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
+    }
+
     private ObservableBoolean isShow = new ObservableBoolean(false);
 
     public ObservableBoolean getIsShow() {
@@ -45,7 +52,7 @@ public class ReaderMarginModel {
     public void setLineSpacingProgress(int progress){
         SettingLineSpacingEvent event = new SettingLineSpacingEvent();
         event.margin = progress;
-        EventBus.getDefault().post(event);
+        readerDataHolder.getEventBus().post(event);
     }
 
     public ObservableInt getSegmentProgress() {
@@ -55,7 +62,7 @@ public class ReaderMarginModel {
     public void setSegmentProgress(int progress){
         SettingParagraphSpacingEvent event = new SettingParagraphSpacingEvent();
         event.margin = progress;
-        EventBus.getDefault().post(event);
+        readerDataHolder.getEventBus().post(event);
     }
 
     public ObservableInt getLeftAndRightProgress() {
@@ -65,7 +72,7 @@ public class ReaderMarginModel {
     public void setLeftAndRightProgress(int progress){
         SettingLeftAndRightSpacingEvent event = new SettingLeftAndRightSpacingEvent();
         event.margin = progress;
-        EventBus.getDefault().post(event);
+        readerDataHolder.getEventBus().post(event);
     }
 
     public ObservableInt getUpAndDownProgress() {
@@ -75,7 +82,7 @@ public class ReaderMarginModel {
     public void setUpAndDownProgress(int progress){
         SettingUpAndDownSpacingEvent event = new SettingUpAndDownSpacingEvent();
         event.margin = progress;
-        EventBus.getDefault().post(event);
+        readerDataHolder.getEventBus().post(event);
     }
 
     public void onLineSpacingMinusClick(){

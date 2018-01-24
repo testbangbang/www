@@ -4,6 +4,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.event.GotoPageEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemNextChapterEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemPreviousChapterEvent;
@@ -20,6 +21,11 @@ public class ReaderPageInfoModel {
     private ObservableInt pageTotal = new ObservableInt(0);
     private ObservableInt currentPage = new ObservableInt(0);
     private ObservableBoolean isShow = new ObservableBoolean(true);
+    private ReaderDataHolder readerDataHolder;
+
+    public ReaderPageInfoModel(ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
+    }
 
     public ObservableField<String> getBookName() {
         return bookName;
@@ -54,11 +60,11 @@ public class ReaderPageInfoModel {
     }
 
     public void nextChapter(){
-        EventBus.getDefault().post(new ReaderSettingMenuItemNextChapterEvent());
+        readerDataHolder.getEventBus().post(new ReaderSettingMenuItemNextChapterEvent());
     }
 
     public void previousChapter(){
-        EventBus.getDefault().post(new ReaderSettingMenuItemPreviousChapterEvent());
+        readerDataHolder.getEventBus().post(new ReaderSettingMenuItemPreviousChapterEvent());
     }
 
     public ObservableBoolean getIsShow() {

@@ -36,6 +36,7 @@ public class SelectMenuModel {
     private float selectY = 0;
     private PopupSelectionMenuBinding binding;
     private String inputWords = "";
+    private ReaderDataHolder readerDataHolder;
 
     public ObservableField<String> getPage() {
         return page;
@@ -61,7 +62,8 @@ public class SelectMenuModel {
         this.isShowDictionaryMenu.set(isShowDictionaryMenu);
     }
 
-    public void setBinding(PopupSelectionMenuBinding binding) {
+    public void setBinding(ReaderDataHolder readerDataHolder,PopupSelectionMenuBinding binding) {
+        this.readerDataHolder = readerDataHolder;
         this.binding = binding;
         this.selectMenuRootView = binding.getRoot();
         this.binding.translateContentView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
@@ -77,27 +79,27 @@ public class SelectMenuModel {
     }
 
     public void onLineationClick() {
-        EventBus.getDefault().post(new PopupLineationClickEvent());
+        readerDataHolder.getEventBus().post(new PopupLineationClickEvent());
         setIsShowSelectMenu(false);
     }
 
     public void onNoteClick() {
-        EventBus.getDefault().post(new PopupNoteClickEvent());
+        readerDataHolder.getEventBus().post(new PopupNoteClickEvent());
         setIsShowSelectMenu(false);
     }
 
     public void onCopyClick() {
-        EventBus.getDefault().post(new PopupCopyClickEvent());
+        readerDataHolder.getEventBus().post(new PopupCopyClickEvent());
         setIsShowSelectMenu(false);
     }
 
     public void onTranslationClick() {
-        EventBus.getDefault().post(new PopupTranslationClickEvent());
+        readerDataHolder.getEventBus().post(new PopupTranslationClickEvent());
         setIsShowSelectMenu(false);
     }
 
     public void onBaidupediaClick() {
-        EventBus.getDefault().post(new PopupBaidupediaClickEvent());
+        readerDataHolder.getEventBus().post(new PopupBaidupediaClickEvent());
         setIsShowSelectMenu(false);
     }
 

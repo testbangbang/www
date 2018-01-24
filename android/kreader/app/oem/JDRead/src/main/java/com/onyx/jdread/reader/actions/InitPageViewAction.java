@@ -15,13 +15,13 @@ import org.greenrobot.eventbus.EventBus;
 public class InitPageViewAction extends BaseReaderAction {
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         final InitFirstPageViewRequest request = new InitFirstPageViewRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                EventBus.getDefault().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
-                ReaderActivityEventHandler.updateReaderViewInfo(request);
+                readerDataHolder.getEventBus().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
             }
 
             @Override
