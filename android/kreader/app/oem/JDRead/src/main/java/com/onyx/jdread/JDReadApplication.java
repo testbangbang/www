@@ -21,6 +21,7 @@ import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.SupportType;
 import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
@@ -101,7 +102,7 @@ public class JDReadApplication extends MultiDexApplication {
                 Uri data = intent.getData();
                 if (data != null && StringUtils.isNotBlank(data.getPath())) {
                     File file = new File(data.getPath());
-                    if (MimeTypeUtils.getDocumentExtension().contains(FileUtils.getFileExtension(file))) {
+                    if (SupportType.getDocumentExtension().contains(FileUtils.getFileExtension(file))) {
                         mtpBuffer.add(data.getPath());
                     }
                 }
