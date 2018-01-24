@@ -140,7 +140,7 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
             }
         }
         if (docPage != null) {
-            canvas.drawBitmap(docBitmap.getBitmap(), docPage.getVisibleRect().left, 0, paint);
+            canvas.drawBitmap(docBitmap.getBitmap(), 0, 0, paint);
         }
         Bitmap bitmap = noteManager.getRenderBitmap();
         if (bitmap != null) {

@@ -135,7 +135,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_ADD_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_DELETE_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_MINIMIZE.ordinal());
-        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
+//        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_CLOSE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal());
@@ -152,7 +152,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private List<Integer> getMainMenuActions() {
         List<Integer> menuActions = new ArrayList<>();
         menuActions.add(ReaderMenuAction.SCRIBBLE_MAXIMIZE.ordinal());
-        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
+//        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_CLOSE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal());
