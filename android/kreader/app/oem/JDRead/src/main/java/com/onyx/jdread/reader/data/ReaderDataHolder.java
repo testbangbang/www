@@ -126,7 +126,7 @@ public class ReaderDataHolder {
     }
 
     public SurfaceView getReadPageView() {
-        return reader.getReaderViewHelper().getReadPageView();
+        return reader.getReaderViewHelper().getContentView();
     }
 
     public void setReadPageView(SurfaceView readPageView) {

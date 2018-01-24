@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public class ReaderViewHelper {
-    private SurfaceView readPageView;
+    private SurfaceView contentView;
     private Paint paint = new Paint();
     private static final int DEFAULT_MULTIPLEX = 1;
     public float dpiMultiplex = 1.0f;
@@ -45,20 +45,20 @@ public class ReaderViewHelper {
         paint.setStrokeWidth(0);
     }
 
-    public SurfaceView getReadPageView() {
-        return readPageView;
+    public SurfaceView getContentView() {
+        return contentView;
     }
 
-    public void setReadPageView(SurfaceView readPageView) {
-        this.readPageView = readPageView;
+    public void setReadPageView(SurfaceView contentView) {
+        this.contentView = contentView;
     }
 
-    public int getPageViewWidth() {
-        return readPageView.getWidth();
+    public int getContentWidth() {
+        return contentView.getWidth();
     }
 
-    public int getPageViewHeight() {
-        return readPageView.getHeight();
+    public int getContentHeight() {
+        return contentView.getHeight();
     }
 
     public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
@@ -78,20 +78,20 @@ public class ReaderViewHelper {
     }
 
     public void renderAll(Reader reader, Bitmap bitmap, ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo, ReaderSelectionHelper readerSelectionManager) {
-        if (readPageView == null) {
+        if (contentView == null) {
             return;
         }
         if (bitmap == null) {
             return;
         }
         paint.setDither(true);
-        Canvas canvas = readPageView.getHolder().lockCanvas();
+        Canvas canvas = contentView.getHolder().lockCanvas();
 
         drawPageContent(canvas,bitmap);
         drawPageAnnotations(canvas,reader,readerUserDataInfo,readerViewInfo);
         drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
 
-        readPageView.getHolder().unlockCanvasAndPost(canvas);
+        contentView.getHolder().unlockCanvasAndPost(canvas);
     }
 
     public void drawPageContent(Canvas canvas,Bitmap bitmap){
