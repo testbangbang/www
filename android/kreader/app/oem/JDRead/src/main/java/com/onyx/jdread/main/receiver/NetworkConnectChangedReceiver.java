@@ -42,7 +42,7 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
                 boolean isConnected = state == NetworkInfo.State.CONNECTED;
                 Log.i(TAG, "isConnected:" + isConnected);
                 if (isConnected) {
-                    ACRA.getErrorReporter().handleSilentException(null);
+//                    ACRA.getErrorReporter().handleSilentException(null);
                 }
             }
         }

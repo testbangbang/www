@@ -42,12 +42,12 @@ import java.util.List;
 /**
  * Created by hehai on 17-12-6.
  */
-@AcraCore(buildConfigClass = BuildConfig.class,
-        attachmentUriProvider = OnyxAttachmentUriProvider.class)
-@AcraHttpSender(httpMethod = HttpSender.Method.POST,
-        uri = "http://120.78.15.79:5984/acra-onyxjd/_design/acra-storage/_update/report",
-        basicAuthLogin = "onyx",
-        basicAuthPassword = "boox8686")
+//@AcraCore(buildConfigClass = BuildConfig.class,
+//        attachmentUriProvider = OnyxAttachmentUriProvider.class)
+//@AcraHttpSender(httpMethod = HttpSender.Method.POST,
+//        uri = "http://120.78.15.79:5984/acra-onyxjd/_design/acra-storage/_update/report",
+//        basicAuthLogin = "onyx",
+//        basicAuthPassword = "boox8686")
 public class JDReadApplication extends MultiDexApplication {
     private static final String TAG = JDReadApplication.class.getSimpleName();
     private static JDReadApplication instance = null;
@@ -62,7 +62,7 @@ public class JDReadApplication extends MultiDexApplication {
     protected void attachBaseContext(Context context) {
         super.attachBaseContext(context);
         MultiDex.install(JDReadApplication.this);
-        ACRA.init(this);
+//        ACRA.init(this);
     }
 
     @Override

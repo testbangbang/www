@@ -42,8 +42,8 @@ public class FeedbackModel extends Observable {
             return;
         }
 
-        ErrorReporter reporter = ACRA.getErrorReporter();
-        reporter.putCustomData(phone.get(), feedback.get());
-        reporter.handleException(null);
+//        ErrorReporter reporter = ACRA.getErrorReporter();
+//        reporter.putCustomData(phone.get(), feedback.get());
+//        reporter.handleException(null);
     }
 }
