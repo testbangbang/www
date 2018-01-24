@@ -47,6 +47,8 @@ public class Constants {
     public static final String RESULT_CODE_NOT_LOGIN = "3";
     public static final String RESULT_CODE_PARAMS_ERROR = "4";
     public static final String RESULT_CODE_PARAMS_LENGTH_ERROR = "5";
+    public static final String RESULT_CODE_PARAMS_LACK = "6";
+    public static final String RESULT_CODE_PARAMS_FORMAT_ERRO = "7";
     public static final int PASSWORD_MIN_LENGTH = 6;
     public static final String CODE_STATE_THREE = "3";
     public static final String CODE_STATE_FOUR = "4";

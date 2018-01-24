@@ -131,6 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle_stroke"
+            android:enabled="@{loginViewModel.loginButtonEnabled}"
             android:gravity="center"
             android:onClick="@{()->loginViewModel.onLoginViewClick()}"
             android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"

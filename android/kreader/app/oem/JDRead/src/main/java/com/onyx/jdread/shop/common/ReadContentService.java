@@ -144,4 +144,9 @@ public interface ReadContentService {
     @POST(CloudApiContext.GotoOrder.CART)
     Call<UpdateCartBean> updateCart(@QueryMap Map<String, String> map,
                                     @Body RequestBody body);
+
+    @GET("{bookId}/download")
+    Call<String> getDownLoadBookInfo(@Path("bookId") long bookId,
+                                                   @QueryMap Map<String, String> baseInfoMap);
+
 }

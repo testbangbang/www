@@ -69,6 +69,30 @@ public class ToastUtil {
         showToast(JDReadApplication.getInstance(), message);
     }
 
+    public static void showToastErrorMsg(String errorCode) {
+        showToast(JDReadApplication.getInstance(), getErrorMsgByCode(errorCode));
+    }
+
+    public static String getErrorMsgByCode(String errorCode){
+        String errorMsg = ResManager.getString(R.string.login_resutl_unknown_error);
+        if (Constants.RESULT_CODE_UNKNOWN_ERROR.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_unknown_error);
+        } else if (Constants.RESULT_CODE_NO_FUNCTION.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_no_function);
+        } else if (Constants.RESULT_CODE_NOT_LOGIN.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_not_login);
+        } else if (Constants.RESULT_CODE_PARAMS_ERROR.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_params_error);
+        } else if (Constants.RESULT_CODE_PARAMS_LENGTH_ERROR.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_params_error);
+        } else if (Constants.RESULT_CODE_PARAMS_LACK.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_params_error);
+        } else if (Constants.RESULT_CODE_PARAMS_FORMAT_ERRO.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_params_error);
+        }
+        return errorMsg;
+    }
+
     private static void setBackground(@NonNull View view, Drawable drawable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             view.setBackground(drawable);
