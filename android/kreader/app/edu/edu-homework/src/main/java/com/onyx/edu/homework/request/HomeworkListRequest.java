@@ -4,10 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.homework.Homework;
-import com.onyx.android.sdk.data.model.homework.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.data.model.homework.QuestionOption;
-import com.onyx.android.sdk.data.model.homework.QuestionReview;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -29,12 +27,14 @@ import retrofit2.Response;
 
 public class HomeworkListRequest extends BaseCloudRequest {
 
-    private String libraryId;
+    private String publicHomeworkId;
+    private String personalHomeworkId;
     private Homework homework;
     private HomeworkState homeworkState = HomeworkState.DOING;
 
-    public HomeworkListRequest(String libraryId) {
-        this.libraryId = libraryId;
+    public HomeworkListRequest(String publicHomeworkId, String personalHomeworkId) {
+        this.publicHomeworkId = publicHomeworkId;
+        this.personalHomeworkId = personalHomeworkId;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class HomeworkListRequest extends BaseCloudRequest {
     }
 
     private void loadFromLocal() {
-        List<QuestionModel> questionModels = DBDataProvider.loadQuestions(libraryId);
+        List<QuestionModel> questionModels = DBDataProvider.loadQuestions(personalHomeworkId);
         if (CollectionUtils.isNullOrEmpty(questionModels)) {
             return;
         }
@@ -60,14 +60,14 @@ public class HomeworkListRequest extends BaseCloudRequest {
             questions.add(question);
         }
 
-        HomeworkModel homeworkModel = DBDataProvider.loadHomework(libraryId);
-        homework = new Homework(libraryId);
+        HomeworkModel homeworkModel = DBDataProvider.loadHomework(publicHomeworkId);
+        homework = new Homework(personalHomeworkId);
         homework.setQuestions(questions);
         DataProvider.loadHomeworkFromModel(homework, homeworkModel);
     }
 
     private void loadFromCloud(CloudManager parent) throws Exception {
-        Response<Homework> response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).getHomeworks(libraryId));
+        Response<Homework> response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).getHomeworks(publicHomeworkId));
         homework = response.body();
         if (response.isSuccessful()) {
             saveHomework(homework);
@@ -77,29 +77,33 @@ public class HomeworkListRequest extends BaseCloudRequest {
     }
 
     private void saveHomework(Homework homework) {
-        HomeworkModel homeworkModel = DBDataProvider.loadHomework(libraryId);
+        HomeworkModel homeworkModel = DBDataProvider.loadHomework(personalHomeworkId);
         if (homeworkModel == null) {
-            homeworkModel = HomeworkModel.create(libraryId);
+            homeworkModel = HomeworkModel.create(personalHomeworkId);
         }
         homeworkModel.loadFromHomework(homework);
         homeworkModel.save();
-        saveQuestions(homework.questions);
+        syncQuestions(homework.questions);
     }
 
-    private void saveQuestions(List<Question> questions) {
+    private void syncQuestions(List<Question> questions) {
         for (Question question : questions) {
-            QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());
+            QuestionModel model = DBDataProvider.loadQuestion(question.getQuestionId(), personalHomeworkId);
             if (model == null) {
-                model = QuestionModel.create(question.getUniqueId(),
-                        question.getQuestionId(),
-                        libraryId);
+                model = QuestionModel.create(question.getQuestionId(),
+                        personalHomeworkId);
             }
 
             model.loadFromQuestion(question);
             DBDataProvider.saveQuestion(model);
             loadUserSelectOption(question, model);
             loadQuestionReview(question, model);
+            syncQuestionUniqueId(question, model);
         }
+    }
+
+    private void syncQuestionUniqueId(Question question, QuestionModel model) {
+        question.setUniqueId(model.getUniqueId());
     }
 
     private void loadQuestionReview(Question question, QuestionModel model) {
@@ -133,9 +137,9 @@ public class HomeworkListRequest extends BaseCloudRequest {
     }
 
     private void loadHomeworkState() {
-        HomeworkModel homeworkModel = DBDataProvider.loadHomework(libraryId);
+        HomeworkModel homeworkModel = DBDataProvider.loadHomework(personalHomeworkId);
         if (homeworkModel == null) {
-            homeworkModel = HomeworkModel.create(libraryId);
+            homeworkModel = HomeworkModel.create(personalHomeworkId);
         }
         int state = homeworkModel.getState();
         homeworkState = HomeworkState.getHomeworkState(state);

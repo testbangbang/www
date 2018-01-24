@@ -21,14 +21,16 @@ import java.util.List;
 
 public class GetHomeworkReviewsAction extends BaseAction {
 
-    private String homeworkId;
+    private String publicHomeworkId;
+    private String personalHomeworkId;
     private List<Question> questions;
     private boolean showLoading = false;
     private HomeworkState currentState;
     private boolean checkWifi;
 
-    public GetHomeworkReviewsAction(String homeworkId, List<Question> questions, boolean show, boolean wifi) {
-        this.homeworkId = homeworkId;
+    public GetHomeworkReviewsAction(String publicHomeworkId, String personalHomeworkId, List<Question> questions, boolean show, boolean wifi) {
+        this.publicHomeworkId = publicHomeworkId;
+        this.personalHomeworkId = personalHomeworkId;
         this.questions = questions;
         showLoading = show;
         checkWifi = wifi;
@@ -59,7 +61,7 @@ public class GetHomeworkReviewsAction extends BaseAction {
         if (showLoading) {
             showLoadingDialog(context, context.getString(R.string.fetching_review));
         }
-        final GetHomeworkReviewsRequest answersRequest = new GetHomeworkReviewsRequest(questions, homeworkId);
+        final GetHomeworkReviewsRequest answersRequest = new GetHomeworkReviewsRequest(questions, publicHomeworkId, personalHomeworkId);
         getCloudManager().submitRequest(context, answersRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

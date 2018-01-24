@@ -7,10 +7,8 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.base.ActionChain;
 import com.onyx.edu.homework.base.BaseAction;
-import com.onyx.edu.homework.ui.HomeworkListActivity;
 
 import java.util.List;
 
@@ -20,17 +18,19 @@ import java.util.List;
 
 public class HomeworkListActionChain extends BaseAction {
 
-    private String homeworkId;
+    private String publicHomeworkId;
+    private String personalHomeworkId;
     private List<Question> questions;
 
-    public HomeworkListActionChain(String homeworkId) {
-        this.homeworkId = homeworkId;
+    public HomeworkListActionChain(String publicHomeworkId, String personalHomeworkId) {
+        this.publicHomeworkId = publicHomeworkId;
+        this.personalHomeworkId = personalHomeworkId;
     }
 
     @Override
     public void execute(final Context context, final BaseCallback baseCallback) {
-        final HomeworkListAction homeworkListAction = new HomeworkListAction(homeworkId);
-        final GetHomeworkReviewsAction answersAction = new GetHomeworkReviewsAction(homeworkId, homeworkListAction.getQuestions(), false, false);
+        final HomeworkListAction homeworkListAction = new HomeworkListAction(publicHomeworkId, personalHomeworkId);
+        final GetHomeworkReviewsAction answersAction = new GetHomeworkReviewsAction(publicHomeworkId, personalHomeworkId, homeworkListAction.getQuestions(), false, false);
         final ActionChain chain = new ActionChain(false);
         chain.addAction(new CloudIndexServiceAction());
         chain.addAction(new GetTokenFromLocalAction());

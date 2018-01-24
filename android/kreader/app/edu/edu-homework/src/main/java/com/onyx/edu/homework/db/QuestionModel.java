@@ -10,6 +10,7 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by lxm on 2017/12/11.
@@ -152,10 +153,14 @@ public class QuestionModel extends BaseModel {
         this.options = options;
     }
 
-    public static QuestionModel create(String uniqueId, String questionId, String homeworkId) {
+    public String generateUniqueId() {
+        return uniqueId = UUID.randomUUID().toString();
+    }
+
+    public static QuestionModel create(String questionId, String homeworkId) {
         QuestionModel model = new QuestionModel();
+        model.generateUniqueId();
         model.setQuestionId(questionId);
-        model.setUniqueId(uniqueId);
         model.setHomeworkId(homeworkId);
         return model;
     }

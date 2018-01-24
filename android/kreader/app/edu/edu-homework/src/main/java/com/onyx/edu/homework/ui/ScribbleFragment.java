@@ -132,7 +132,7 @@ public class ScribbleFragment extends BaseFragment {
                 public void surfaceCreated(SurfaceHolder holder) {
                     clearSurfaceView();
                     getNoteViewHelper().setView(getActivity(), getScribbleView(), inputCallback());
-                    String homeworkId = DataBundle.getInstance().getHomeworkId();
+                    String homeworkId = DataBundle.getInstance().getPersonalHomeworkId();
                     checkDocument(question.getUniqueId(), homeworkId, question.getQuestionId());
                 }
 

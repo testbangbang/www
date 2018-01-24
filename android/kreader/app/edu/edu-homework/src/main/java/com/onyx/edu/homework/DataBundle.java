@@ -44,6 +44,8 @@ public class DataBundle {
     private EventBus eventBus;
     private NoteViewHelper noteViewHelper;
     private HomeworkState state = HomeworkState.DOING;
+    private String publicHomeworkId;
+    private String personalHomeworkId;
 
     public CloudManager getCloudManager() {
         return cloudManager;
@@ -56,9 +58,22 @@ public class DataBundle {
         return dataManager;
     }
 
-    @Nullable
-    public String getHomeworkId() {
-        return getHomework()._id;
+    public DataBundle setPersonalHomeworkId(String personalHomeworkId) {
+        this.personalHomeworkId = personalHomeworkId;
+        return this;
+    }
+
+    public DataBundle setPublicHomeworkId(String publicHomeworkId) {
+        this.publicHomeworkId = publicHomeworkId;
+        return this;
+    }
+
+    public String getPublicHomeworkId() {
+        return publicHomeworkId;
+    }
+
+    public String getPersonalHomeworkId() {
+        return personalHomeworkId;
     }
 
     public void setHomeworkId(String id) {

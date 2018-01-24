@@ -29,26 +29,28 @@ import retrofit2.Response;
 public class GetHomeworkReviewsRequest extends BaseCloudRequest {
 
     private List<Question> questions;
-    private String homeworkId;
+    private String publicHomeworkId;
+    private String personalHomeworkId;
     private HomeworkState currentState;
 
-    public GetHomeworkReviewsRequest(List<Question> questions, String homeworkId) {
+    public GetHomeworkReviewsRequest(List<Question> questions, String publicHomeworkId, String personalHomeworkId) {
         this.questions = questions;
-        this.homeworkId = homeworkId;
+        this.publicHomeworkId = publicHomeworkId;
+        this.personalHomeworkId = personalHomeworkId;
     }
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        HomeworkModel model = DBDataProvider.loadHomework(homeworkId);
+        HomeworkModel model = DBDataProvider.loadHomework(personalHomeworkId);
         if (model == null) {
-            model = HomeworkModel.create(homeworkId);
+            model = HomeworkModel.create(personalHomeworkId);
         }
         int state = model.getState();
         currentState = HomeworkState.getHomeworkState(state);
         if (currentState == HomeworkState.DOING) {
             return;
         }
-        Response<HomeworkReviewResult> response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).getAnwsers(homeworkId));
+        Response<HomeworkReviewResult> response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).getAnwsers(publicHomeworkId));
         if (response.isSuccessful()) {
             HomeworkReviewResult result = response.body();
             if (result.checked) {
@@ -91,9 +93,8 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
         for (Question question : questions) {
             QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());
             if (model == null) {
-                model = QuestionModel.create(question.getUniqueId(),
-                        question.getQuestionId(),
-                        homeworkId);
+                model = QuestionModel.create(question.getQuestionId(),
+                        personalHomeworkId);
             }
             setQuestionReview(question, model, reviews);
             DBDataProvider.saveQuestion(model);

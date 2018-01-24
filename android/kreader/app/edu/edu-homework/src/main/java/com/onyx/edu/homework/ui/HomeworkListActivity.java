@@ -229,7 +229,7 @@ public class HomeworkListActivity extends BaseActivity {
 
     private void getHomeworkReview() {
         getDataBundle().post(new StopNoteEvent(false));
-        GetHomeworkReviewsAction reviewsAction = new GetHomeworkReviewsAction(getDataBundle().getHomeworkId(), questions, true, true);
+        GetHomeworkReviewsAction reviewsAction = new GetHomeworkReviewsAction(getDataBundle().getPublicHomeworkId(), getDataBundle().getPersonalHomeworkId(), questions, true, true);
         reviewsAction.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -260,13 +260,16 @@ public class HomeworkListActivity extends BaseActivity {
             showMessage(R.string.no_find_homework);
             return;
         }
-        String libraryId = homeworkIntent.child._id;
-        if (StringUtils.isNullOrEmpty(libraryId)) {
+        String publicHomeworkId = homeworkIntent.child._id;
+        String personalHomeworkId = homeworkIntent._id;
+        if (StringUtils.isNullOrEmpty(publicHomeworkId)
+                || StringUtils.isNullOrEmpty(personalHomeworkId)) {
             showMessage(R.string.no_find_homework);
             return;
         }
+        getDataBundle().setPublicHomeworkId(publicHomeworkId).setPersonalHomeworkId(personalHomeworkId);
         showMessage(R.string.loading_questions);
-        final HomeworkListActionChain actionChain = new HomeworkListActionChain(libraryId);
+        final HomeworkListActionChain actionChain = new HomeworkListActionChain(publicHomeworkId, personalHomeworkId);
         actionChain.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -306,7 +309,7 @@ public class HomeworkListActivity extends BaseActivity {
 
     private void handleOnyxNotification(NotificationType type, String data) {
         HomeworkIntent homework = JSONObject.parseObject(data, HomeworkIntent.class);
-        if (homework.child._id.equals(DataBundle.getInstance().getHomeworkId())) {
+        if (homework._id.equals(getDataBundle().getPersonalHomeworkId())) {
             updateHomeworkFromIntent(homework);
             updateViewState();
             setEndTimeText();
