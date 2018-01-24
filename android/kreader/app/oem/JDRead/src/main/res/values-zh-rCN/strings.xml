@@ -300,6 +300,7 @@
     <string name="security_wep">WEP</string>
     <string name="security_psk">PSK</string>
     <string name="add_wifi_configuration">添加网络</string>
+    <string name="wifi_name">网络名称</string>
     <string name="network_password">密码</string>
     <string name="no_selected">未选中任何商品</string>
     <string name="subject_list_sort_type_hot">热门</string>

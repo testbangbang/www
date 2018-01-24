@@ -75,7 +75,11 @@ public class SilentInstall {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (process != null) {
+            try {
+                if (process != null) {
+                    process.exitValue();
+                }
+            } catch (IllegalThreadStateException e) {
                 process.destroy();
             }
         }

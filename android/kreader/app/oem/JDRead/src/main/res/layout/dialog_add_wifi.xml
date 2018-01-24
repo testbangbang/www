@@ -24,8 +24,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:padding="@dimen/dialog_single_manage_close_padding"
-            android:textColor="@android:color/black"
-            android:text="@string/add_wifi_configuration" />
+            android:text="@string/add_wifi_configuration"
+            android:textColor="@android:color/black" />
 
         <View
             android:layout_width="wrap_content"
@@ -42,8 +42,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:text="@string/network_ssid" />
+                android:text="@string/network_ssid"
+                android:textColor="@android:color/black" />
 
             <EditText
                 android:layout_width="@dimen/dialog_build_edit_width"
@@ -64,8 +64,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:text="@string/network_ssid" />
+                android:text="@string/network_ssid"
+                android:textColor="@android:color/black" />
 
             <Spinner
                 android:id="@+id/security_spinner"
@@ -88,8 +88,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                android:text="@string/network_password" />
+                android:text="@string/network_password"
+                android:textColor="@android:color/black" />
 
             <EditText
                 android:layout_width="@dimen/dialog_build_edit_width"
@@ -116,9 +116,9 @@
                 android:layout_weight="1"
                 android:background="@drawable/selected_background"
                 android:gravity="center"
+                android:onClick="@{()->dialogModel.onNegativeClick()}"
+                android:text="@{dialogModel.negativeText}"
                 android:textColor="@android:color/black"
-                android:onClick="@{()->dialogModel.onPositiveClick()}"
-                android:text="@{dialogModel.positiveText}"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <TextView
@@ -127,9 +127,9 @@
                 android:layout_weight="1"
                 android:background="@drawable/selected_background"
                 android:gravity="center"
-                android:textColor="@android:color/black"
-                android:onClick="@{()->dialogModel.onNegativeClick()}"
-                android:text="@{dialogModel.negativeText}" />
+                android:onClick="@{()->dialogModel.onPositiveClick()}"
+                android:text="@{dialogModel.positiveText}"
+                android:textColor="@android:color/black" />
         </LinearLayout>
     </LinearLayout>
 </layout>
