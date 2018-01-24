@@ -113,13 +113,13 @@ public class ConversionFragment extends Fragment {
             for (int i = 0; i < items.size(); i++) {
                 SingleUnit unit = items.get(i);
                 double p = UnitCollection.convert(getActivity(), category, fromUnitIndex, i, inputNumber);
-                Pair<String, String> pair = new Pair<>(UnitCollection.getUnitName(getContext(), unit), UnitUtils.getFormattedValueStr(p).toString());
+                Pair<String, String> pair = new Pair<>(UnitCollection.getUnitName(getContext(), unit), UnitUtils.getValueStr(p));
                 conversionResult.add(pair);
             }
         }else {
             SingleUnit unit = items.get(toUnitIndex);
             double p = UnitCollection.convert(getActivity(), category, fromUnitIndex, toUnitIndex, inputNumber);
-            Pair<String, String> pair = new Pair<>(UnitCollection.getUnitName(getContext(), unit), UnitUtils.getFormattedValueStr(p).toString());
+            Pair<String, String> pair = new Pair<>(UnitCollection.getUnitName(getContext(), unit), UnitUtils.getValueStr(p));
             conversionResult.add(pair);
         }
 
