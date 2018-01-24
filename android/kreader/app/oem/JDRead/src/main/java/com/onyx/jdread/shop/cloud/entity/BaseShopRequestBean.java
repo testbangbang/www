@@ -10,7 +10,7 @@ import okhttp3.RequestBody;
  * Created by li on 2018/1/19.
  */
 
-public class UpdateCartRequestBean {
+public class BaseShopRequestBean {
     private JDAppBaseInfo baseInfo;
     private RequestBody body;
 

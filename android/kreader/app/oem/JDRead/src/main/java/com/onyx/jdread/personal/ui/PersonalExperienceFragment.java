@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalExperienceBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.GetReadOverAction;
@@ -24,8 +24,6 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
-import com.onyx.jdread.setting.model.SettingTitleModel;
-import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.util.TimeUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -109,7 +107,7 @@ public class PersonalExperienceFragment extends BaseFragment {
 
     private void initView() {
         binding.experienceRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        DividerItemDecoration decoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
+        DashLineItemDivider decoration = new DashLineItemDivider();
         binding.experienceRecycler.addItemDecoration(decoration);
         adapter = new PersonalExperienceAdapter();
         binding.experienceRecycler.setAdapter(adapter);

@@ -75,8 +75,8 @@ public class DataModelUtil {
             CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());
             if (bitmap != null) {
                 model.coverBitmap.set(bitmap);
-            } else {
-                model.coverDefault.set(defaultCoverResMap.get(metadata.getType()));
+            }else {
+                model.coverDefault.set(R.drawable.ic_shelf_cover);
             }
 
             dataModels.add(model);

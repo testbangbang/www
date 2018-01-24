@@ -1,13 +1,21 @@
 package com.onyx.jdread.shop.action;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
+import com.onyx.jdread.shop.cloud.entity.BaseShopRequestBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateCartBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.request.cloud.RxRequestAddOrDeleteCart;
+import com.onyx.jdread.shop.request.cloud.RxRequestUpdateCart;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 /**
  * Created by jackdeng on 2017/12/29.
@@ -17,8 +25,7 @@ public class AddOrDeleteCartAction extends BaseAction {
 
     private String[] bookIds;
     private String cartType;
-    private AddOrDelFromCartBean.ResultBean result;
-    private AddOrDelFromCartBean addOrDelFromCartBean;
+    private UpdateBean data;
 
     public AddOrDeleteCartAction(String[] bookIds, String cartType) {
         this.bookIds = bookIds;
@@ -27,18 +34,28 @@ public class AddOrDeleteCartAction extends BaseAction {
 
     @Override
     public void execute(ShopDataBundle dataBundle, final RxCallback rxCallback) {
-        BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setAppBaseInfo(dataBundle.getAppBaseInfo());
-        String body = getShoppingCartBody(CommonUtils.array2String(bookIds), cartType);
-        baseRequestBean.setBody(body);
-        RxRequestAddOrDeleteCart rq = new RxRequestAddOrDeleteCart();
-        rq.setRequestBean(baseRequestBean);
-        rq.execute(new RxCallback<RxRequestAddOrDeleteCart>() {
+        BaseShopRequestBean bean = new BaseShopRequestBean();
+        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
+        String signValue = baseInfo.getSignValue(CloudApiContext.GotoOrder.CART);
+        baseInfo.setSign(signValue);
+        bean.setBaseInfo(baseInfo);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(Constants.CART_TYPE, cartType);
+        if (bookIds != null && bookIds.length > 0) {
+            map.put(Constants.CART_BOOK_LIST, bookIds);
+        }
+        String s = JSON.toJSONString(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse(Constants.PARSE_JSON_TYPE), s);
+        bean.setBody(requestBody);
+        final RxRequestUpdateCart rq = new RxRequestUpdateCart();
+        rq.setBaseShopRequestBean(bean);
+        rq.execute(new RxCallback<RxRequestUpdateCart>() {
             @Override
-            public void onNext(RxRequestAddOrDeleteCart rq) {
-                addOrDelFromCartBean = rq.getResultBean();
-                if (addOrDelFromCartBean != null) {
-                    result = addOrDelFromCartBean.getResult();
+            public void onNext(RxRequestUpdateCart rq) {
+                UpdateCartBean resultBean = rq.getResultBean();
+                if (resultBean != null) {
+                    data = resultBean.data;
                 }
                 if (rxCallback != null) {
                     rxCallback.onNext(AddOrDeleteCartAction.this);
@@ -52,24 +69,10 @@ public class AddOrDeleteCartAction extends BaseAction {
                     rxCallback.onError(throwable);
                 }
             }
-
-            @Override
-            public void onComplete() {
-                super.onComplete();
-                if (addOrDelFromCartBean != null) {
-                    if (Constants.CODE_STATE_THREE.equals(addOrDelFromCartBean.getCode()) || Constants.CODE_STATE_FOUR.equals(addOrDelFromCartBean.getCode())) {
-                        JDReadApplication.getInstance().setLogin(false);
-                        //TODO autoLogin();
-                    }
-                }
-                if (rxCallback != null) {
-                    rxCallback.onComplete();
-                }
-            }
         });
     }
 
-    public AddOrDelFromCartBean.ResultBean getResult() {
-        return result;
+    public UpdateBean getData() {
+        return data;
     }
 }

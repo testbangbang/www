@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
-                android:src="@mipmap/ic_shelf_cover"
+                android:src="@{model.coverDefault}"
                 android:visibility="@{StringUtils.isNotBlank(model.childCount)?View.GONE:View.VISIBLE}" />
 
             <com.onyx.jdread.library.view.NonClickableRelativeLayout
@@ -94,7 +94,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/book_format_margin_left"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/book_format_margin_right"
                 android:layout_marginTop="@dimen/book_format_margin_top"
                 android:text="@{model.format}"
                 android:textColor="@color/gray"

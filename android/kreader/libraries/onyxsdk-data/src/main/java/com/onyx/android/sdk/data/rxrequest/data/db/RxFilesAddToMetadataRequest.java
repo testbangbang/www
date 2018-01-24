@@ -43,6 +43,7 @@ public class RxFilesAddToMetadataRequest extends RxBaseDBRequest {
 
     private void createMetadataAndSave(DataManager dataManager, File file) {
         Metadata metadata = Metadata.createFromFile(file, false);
+        metadata.setHashTag(metadata.getNativeAbsolutePath());
         if (metadata != null) {
             metadata.setStorageId(storageId);
             getDataProvider().saveMetadata(getAppContext(), metadata);

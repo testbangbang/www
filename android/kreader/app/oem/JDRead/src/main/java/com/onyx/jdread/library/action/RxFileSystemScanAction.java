@@ -15,6 +15,7 @@ import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.action.BaseAction;
+import com.onyx.jdread.main.common.SupportType;
 import com.raizlabs.android.dbflow.sql.language.Operator;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class RxFileSystemScanAction extends BaseAction<LibraryDataBundle> {
     private void startFileSystemScan(final LibraryDataBundle dataHolder, final RxCallback baseCallback,
                                      final String storageId, List<String> bookDirList) {
         final RxFileSystemScanRequest fileSystemScanRequest = new RxFileSystemScanRequest(dataHolder.getDataManager(), storageId, bookDirList, true);
-        fileSystemScanRequest.setExtensionFilterSet(MimeTypeUtils.getDocumentExtension());
+        fileSystemScanRequest.setExtensionFilterSet(SupportType.getDocumentExtension());
         fileSystemScanRequest.execute(new RxCallback<RxFileSystemScanRequest>() {
             @Override
             public void onNext(RxFileSystemScanRequest rxFileSystemScanRequest) {
