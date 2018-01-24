@@ -144,4 +144,6 @@
     <integer name="library_cover_col">2</integer>
     <integer name="cloud_book_cover_width">128</integer>
     <integer name="cloud_book_cover_height">185</integer>
+    <integer name="add_wifi_dialog_x">0</integer>
+    <integer name="add_wifi_dialog_y">30</integer>
 </resources>

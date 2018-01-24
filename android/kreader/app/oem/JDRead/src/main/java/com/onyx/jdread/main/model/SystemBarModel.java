@@ -17,7 +17,6 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.util.TimeUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Observable;
 
 /**
@@ -92,8 +91,12 @@ public class SystemBarModel extends Observable {
     }
 
     public void updateTime() {
-        String time = TimeUtils.getTime(System.currentTimeMillis(), new SimpleDateFormat(TimeUtils.DATA_TIME));
+        String time = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DEFAULT_TIME_FORMAT);
         this.time.set(time);
+    }
+
+    public void setTimeFormat(boolean is24Hour) {
+        TimeUtils.setFormat(new SimpleDateFormat(is24Hour ? TimeUtils.DATA_TIME_24 : TimeUtils.DATA_TIME_12));
     }
 
     private BroadcastReceiver phoneBatteryReceiver = new BroadcastReceiver() {
