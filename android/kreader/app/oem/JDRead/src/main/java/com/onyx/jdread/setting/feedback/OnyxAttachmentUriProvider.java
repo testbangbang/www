@@ -34,14 +34,14 @@ public class OnyxAttachmentUriProvider implements AttachmentUriProvider {
     public List<Uri> getAttachments(@NonNull Context context, @NonNull CoreConfiguration configuration) {
         List<Uri> result = new ArrayList<>();
 
-        List<String> attachFileModels = initFile();
-        for (String uriString : attachFileModels) {
-            try {
-                result.add(Uri.parse(uriString));
-            } catch (Exception e) {
-                ACRA.log.e(LOG_TAG, "Failed to parse Uri " + uriString, e);
-            }
-        }
+//        List<String> attachFileModels = initFile();
+//        for (String uriString : attachFileModels) {
+//            try {
+//                result.add(Uri.parse(uriString));
+//            } catch (Exception e) {
+//                ACRA.log.e(LOG_TAG, "Failed to parse Uri " + uriString, e);
+//            }
+//        }
         return result;
     }
 
