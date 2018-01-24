@@ -119,6 +119,13 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
+    public void deleteMetadata(Context context, String docId) {
+        OperatorGroup group = OperatorGroup.clause().and(Metadata_Table.idString.eq(docId));
+        FlowManager.getContext().getContentResolver().delete(OnyxMetadataProvider.CONTENT_URI,
+                group.getQuery(), null);
+    }
+
+    @Override
     public long count(Context context, QueryArgs queryArgs) {
         Cursor cursor = null;
         try {
