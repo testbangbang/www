@@ -16,7 +16,6 @@ public class Reader {
     private DocumentInfo documentInfo;
     private ReaderViewHelper readerViewHelper;
     private ReaderSelectionHelper readerSelectionHelper;
-    private EventBus eventBus = EventBus.getDefault();
 
     public Reader(DocumentInfo documentInfo,Context context) {
         this.documentInfo = documentInfo;
@@ -41,9 +40,5 @@ public class Reader {
             readerSelectionHelper = new ReaderSelectionHelper();
         }
         return readerSelectionHelper;
-    }
-
-    public EventBus getEventBus() {
-        return eventBus;
     }
 }

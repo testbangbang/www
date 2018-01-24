@@ -1,11 +1,13 @@
 package com.onyx.jdread.reader.data;
 
+import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.reader.common.ReaderViewConfig;
 import com.onyx.jdread.reader.ui.gesture.ReaderOnGestureListener;
 
 /**
@@ -18,11 +20,11 @@ public class ReaderTouchHelper {
     private SurfaceView contentView;
 
     public int getContentWidth() {
-        return contentView.getWidth();
+        return ReaderViewConfig.getContentWidth(contentView);
     }
 
     public int getContentHeight() {
-        return contentView.getHeight();
+        return ReaderViewConfig.getContentHeight(contentView);
     }
 
     public void setReaderDataHolder(ReaderDataHolder readerDataHolder) {

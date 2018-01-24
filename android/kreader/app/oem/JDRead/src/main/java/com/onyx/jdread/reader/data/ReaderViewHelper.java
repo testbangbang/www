@@ -19,6 +19,7 @@ import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
+import com.onyx.jdread.reader.common.ReaderViewConfig;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 
 import java.util.List;
@@ -54,11 +55,11 @@ public class ReaderViewHelper {
     }
 
     public int getContentWidth() {
-        return contentView.getWidth();
+        return ReaderViewConfig.getContentWidth(contentView);
     }
 
     public int getContentHeight() {
-        return contentView.getHeight();
+        return ReaderViewConfig.getContentHeight(contentView);
     }
 
     public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
