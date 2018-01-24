@@ -21,6 +21,7 @@ public class SupportType {
             docExtension.add("ebk");
             docExtension.add("png");
             docExtension.add("jpeg");
+            docExtension.add("jpg");
         }
         return docExtension;
     }
