@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.manager.OTAManager;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
-import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.utils.DeviceInfoUtil;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -68,10 +68,7 @@ public class UpdateUtil {
         firmware.lang = Locale.getDefault().toString();
         firmware.widthPixels = point.x;
         firmware.heightPixels = point.y;
-        Device device = Device.updateCurrentDeviceInfo(context);
-        if(device != null) {
-            firmware.deviceMAC = device.macAddress;
-        }
+        firmware.deviceMAC = getMacAddressFromWifiManager(context);
         return new RxFirmwareUpdateRequest(cloudManager, firmware);
     }
 
@@ -85,10 +82,7 @@ public class UpdateUtil {
         update.platform = PackageUtils.getAppPlatform(JDReadApplication.getInstance());
         update.size = PackageUtils.getApkFileSize(JDReadApplication.getInstance(), JDReadApplication.getInstance().getPackageName());
         update.model = Build.MODEL;
-        Device device = Device.updateCurrentDeviceInfo(JDReadApplication.getInstance());
-        if (device != null) {
-            update.macAddress = device.macAddress;
-        }
+        update.macAddress = getMacAddressFromWifiManager(JDReadApplication.getInstance());
         return update;
     }
 
@@ -131,5 +125,13 @@ public class UpdateUtil {
             e.printStackTrace();
         }
         return currentVersionCode;
+    }
+
+    private static String getMacAddressFromWifiManager(final Context context) {
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager != null) {
+            return wifiManager.getConnectionInfo().getMacAddress();
+        }
+        return "";
     }
 }

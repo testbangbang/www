@@ -313,6 +313,7 @@
     <string name="security_wep">WEP</string>
     <string name="security_psk">PSK</string>
     <string name="add_wifi_configuration">Add wifi</string>
+    <string name="wifi_name">Network name</string>
     <string name="network_password">Password</string>
     <string name="screen_saver_key">screen_saver_key</string>
     <string name="no_selected">No merchandise is selected</string>

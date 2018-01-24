@@ -15,11 +15,13 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.SystemUpdateBinding;
 import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.action.CheckApkUpdateAction;
@@ -33,11 +35,10 @@ import com.onyx.jdread.setting.event.DelayEvent;
 import com.onyx.jdread.setting.event.ExecuteUpdateEvent;
 import com.onyx.jdread.setting.model.DeviceConfigData;
 import com.onyx.jdread.setting.model.SettingBundle;
-import com.onyx.jdread.setting.model.SettingTitleModel;
 import com.onyx.jdread.setting.model.SettingUpdateModel;
 import com.onyx.jdread.setting.model.SystemUpdateData;
-import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.setting.utils.UpdateUtil;
+import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -88,6 +89,10 @@ public class SystemUpdateFragment extends BaseFragment {
         binding.upgradeImmediately.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+                    ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+                    return;
+                }
                 if (JDReadApplication.getInstance().getString(R.string.download_update_package).equals(systemUpdateData.getUpdateDes())) {
                     downloadUpdatePackage();
                 } else if (JDReadApplication.getInstance().getString(R.string.upgrade_immediately).equals(systemUpdateData.getUpdateDes())) {
