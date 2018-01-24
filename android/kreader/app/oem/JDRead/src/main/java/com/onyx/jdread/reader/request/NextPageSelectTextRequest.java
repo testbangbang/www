@@ -35,8 +35,8 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
 
     @Override
     public NextPageSelectTextRequest call() throws Exception {
-        width = reader.getReaderViewHelper().getContentWidth();
-        height = reader.getReaderViewHelper().getContentHeight();
+        width = reader.getReaderViewHelper().getContentWidth(reader.getReaderHelper().getContext());
+        height = reader.getReaderViewHelper().getContentHeight(reader.getReaderHelper().getContext());
         readerSelectionManager = reader.getReaderSelectionHelper();
         currentPagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
 
