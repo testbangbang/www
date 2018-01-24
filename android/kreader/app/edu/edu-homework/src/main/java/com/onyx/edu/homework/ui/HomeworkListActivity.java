@@ -318,6 +318,9 @@ public class HomeworkListActivity extends BaseActivity {
             if (reload) {
                 reloadQuestionFragment(currentPage);
             }
+            if (type == NotificationType.HOMEWORK_END_TIME) {
+                countDownEndTime();
+            }
         }
     }
 
