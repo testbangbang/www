@@ -8,20 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.GiftCenterBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.model.TitleBarModel;
-import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.adapter.GiftCenterAdapter;
-import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
-import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -65,7 +62,8 @@ public class GiftCenterFragment extends BaseFragment {
 
     private void initView() {
         binding.giftCenterRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        binding.giftCenterRecycler.addItemDecoration(new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL));
+        DashLineItemDivider decoration = new DashLineItemDivider();
+        binding.giftCenterRecycler.addItemDecoration(decoration);
         giftCenterAdapter = new GiftCenterAdapter();
         binding.giftCenterRecycler.setAdapter(giftCenterAdapter);
     }

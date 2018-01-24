@@ -1,14 +1,10 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.main.common.CommonUtils;
-import com.onyx.jdread.shop.cloud.entity.UpdateCartRequestBean;
+import com.onyx.jdread.shop.cloud.entity.BaseShopRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateCartBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
-
-import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -18,15 +14,15 @@ import retrofit2.Response;
  */
 
 public class RxRequestUpdateCart extends RxBaseCloudRequest {
-    private UpdateCartRequestBean updateCartRequestBean;
+    private BaseShopRequestBean baseShopRequestBean;
     private UpdateCartBean resultBean;
 
     public UpdateCartBean getResultBean() {
         return resultBean;
     }
 
-    public void setUpdateCartRequestBean(UpdateCartRequestBean updateCartRequestBean) {
-        this.updateCartRequestBean = updateCartRequestBean;
+    public void setBaseShopRequestBean(BaseShopRequestBean baseShopRequestBean) {
+        this.baseShopRequestBean = baseShopRequestBean;
     }
 
     @Override
@@ -46,7 +42,7 @@ public class RxRequestUpdateCart extends RxBaseCloudRequest {
     }
 
     private Call<UpdateCartBean> getCall(ReadContentService service) {
-        return service.updateCart(updateCartRequestBean.getBaseInfo().getRequestParamsMap(),
-                updateCartRequestBean.getBody());
+        return service.updateCart(baseShopRequestBean.getBaseInfo().getRequestParamsMap(),
+                baseShopRequestBean.getBody());
     }
 }

@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.model;
 import android.databinding.BaseObservable;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.PromotionalEntityBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SimplifiedDetail;
 
 /**
@@ -13,7 +14,7 @@ public class ShopCartItemData extends BaseObservable {
     public SimplifiedDetail detail;
     public boolean checked;
     public boolean hasPromotion;
-    public BookCartItemBean.CartResultBean.SuitEntityListBean.PromotionalEntityBean promotionalEntity;
+    public PromotionalEntityBean promotionalEntity;
     public double reAmount;
     public int shopNum;
 
@@ -44,11 +45,11 @@ public class ShopCartItemData extends BaseObservable {
         notifyChange();
     }
 
-    public BookCartItemBean.CartResultBean.SuitEntityListBean.PromotionalEntityBean getPromotionalEntity() {
+    public PromotionalEntityBean getPromotionalEntity() {
         return promotionalEntity;
     }
 
-    public void setPromotionalEntity(BookCartItemBean.CartResultBean.SuitEntityListBean.PromotionalEntityBean promotionalEntity) {
+    public void setPromotionalEntity(PromotionalEntityBean promotionalEntity) {
         this.promotionalEntity = promotionalEntity;
         notifyChange();
     }

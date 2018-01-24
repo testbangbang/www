@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.common;
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtBookResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadUnlimitedResultBean;
@@ -16,6 +17,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDownloadUrlResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.CartDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
@@ -43,11 +45,6 @@ public interface ReadContentService {
     Call<AddBookToSmoothCardBookBean> addBookToSmoothCardBook(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
                                                               @Query(AppBaseInfo.BODY_KEY) String body,
                                                               @QueryMap Map<String, String> map);
-
-    @POST("client.action")
-    Call<AddOrDelFromCartBean> addOrDeleteFromCart(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                   @Query(AppBaseInfo.BODY_KEY) String body,
-                                                   @QueryMap Map<String, String> map);
 
     @POST("client.action")
     Call<CertBean> getBookCert(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
@@ -89,16 +86,6 @@ public interface ReadContentService {
                                                @Query(AppBaseInfo.BODY_KEY) String body,
                                                @QueryMap Map<String, String> map);
 
-    @POST("client.action")
-    Call<ShoppingCartBookIdsBean> getCartBookIds(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                 @Query(AppBaseInfo.BODY_KEY) String body,
-                                                 @QueryMap Map<String, String> map);
-
-    @POST("client.action")
-    Call<BookCartItemBean> getBookCartItem(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                           @Query(AppBaseInfo.BODY_KEY) String body,
-                                           @QueryMap Map<String, String> map);
-
     @GET(CloudApiContext.User.SYNC_INFO)
     Call<SyncLoginInfoBean> getSyncLoginInfo(@QueryMap Map<String, String> map);
 
@@ -138,10 +125,34 @@ public interface ReadContentService {
 
     @GET("rank/{module_type}/{type}")
     Call<RecommendListResultBean> getBookRankList(@Path("module_type") int moduleType,
-                                                     @Path("type") String type,
-                                                     @QueryMap Map<String, String> baseInfoMap);
+                                                  @Path("type") String type,
+                                                  @QueryMap Map<String, String> baseInfoMap);
 
     @POST(CloudApiContext.GotoOrder.CART)
     Call<UpdateCartBean> updateCart(@QueryMap Map<String, String> map,
                                     @Body RequestBody body);
+
+    @POST(CloudApiContext.GotoOrder.CART_DETAIL)
+    Call<CartDetailResultBean> getCartDetail(@QueryMap Map<String, String> map,
+                                             @Body RequestBody body);
+
+    @POST(CloudApiContext.User.READ_PREFERENCE)
+    Call<String> setReadPreference(@QueryMap Map<String, String> map,
+                                   @Body RequestBody body);
+
+    @GET(CloudApiContext.User.READ_PREFERENCE)
+    Call<GetReadPreferenceBean> getReadPreference(@QueryMap Map<String, String> map);
+
+    @POST(CloudApiContext.User.SIGN_CHECK)
+    Call<String> verifySign(@QueryMap Map<String, String> map);
+
+    @POST(CloudApiContext.User.SIGN)
+    Call<String> signForVoucher(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.User.READING_VOUCHER)
+    Call<String> readForVoucher(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.User.USER_GIFT)
+    Call<String> getGiftInfo(@Path("sn") int sn,
+                             @QueryMap Map<String, String> map);
 }

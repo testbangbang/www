@@ -24,9 +24,9 @@ import com.onyx.jdread.personal.adapter.ShopCartAdapter;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
-import com.onyx.jdread.shop.action.GetShopCartIdsAction;
 import com.onyx.jdread.shop.action.GetShopCartItemsAction;
-import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 import com.onyx.jdread.shop.model.ShopCartModel;
@@ -69,25 +69,28 @@ public class ShopCartFragment extends BaseFragment {
 
     private void initData() {
         shopCartModel = ShopDataBundle.getInstance().getShopCartModel();
-        final GetShopCartIdsAction getShopCartIdsAction = new GetShopCartIdsAction();
+        final AddOrDeleteCartAction getShopCartIdsAction = new AddOrDeleteCartAction(null, Constants.CART_TYPE_GET);
         getShopCartIdsAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                String[] bookIds = getShopCartIdsAction.getBookIds();
-                if (bookIds != null && bookIds.length > 0) {
-                    getItems(bookIds);
+                UpdateBean data = getShopCartIdsAction.getData();
+                if (data != null) {
+                    List<BookCartBean> ebooks = data.ebooks;
+                    if (ebooks != null && ebooks.size() > 0) {
+                        getCartItems(ebooks);
+                    }
                 }
             }
         });
     }
 
-    private void getItems(String[] bookIds) {
-        GetShopCartItemsAction action = new GetShopCartItemsAction(bookIds);
+    private void getCartItems(List<BookCartBean> ebooks) {
+        GetShopCartItemsAction action = new GetShopCartItemsAction(ebooks);
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 List<ShopCartItemData> datas = shopCartModel.getDatas();
-                if (datas != null && datas.size() > 0) {
+                if (datas != null) {
                     shopCartModel.setSize(datas.size() + "");
                     shopCartModel.setSelectedAll(true);
                     binding.setModel(shopCartModel);
@@ -204,11 +207,12 @@ public class ShopCartFragment extends BaseFragment {
             addOrDeleteCartAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
                 @Override
                 public void onNext(Object o) {
-                    AddOrDelFromCartBean.ResultBean result = addOrDeleteCartAction.getResult();
-                    if (result != null) {
-                        String bookList = result.getBookList();
-                        String[] lists = CommonUtils.string2Arr(bookList);
-                        getItems(lists);
+                    UpdateBean updateBean = addOrDeleteCartAction.getData();
+                    if (updateBean != null) {
+                        List<BookCartBean> ebooks = updateBean.ebooks;
+                        if (ebooks != null) {
+                            getCartItems(ebooks);
+                        }
                     }
                 }
             });

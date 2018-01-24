@@ -84,7 +84,8 @@ public class PersonalFragment extends BaseFragment {
         binding.personalLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                binding.setIsLogin(false);
+                JDReadApplication.getInstance().setLogin(false);
             }
         });
     }

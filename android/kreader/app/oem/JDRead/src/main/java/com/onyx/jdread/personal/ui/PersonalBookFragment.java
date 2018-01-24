@@ -14,13 +14,13 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalBookBinding;
 import com.onyx.jdread.library.model.PopMenuModel;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.model.TitleBarModel;
@@ -86,7 +86,7 @@ public class PersonalBookFragment extends BaseFragment {
 
     private void initView() {
         binding.personalBookRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        OnyxPageDividerItemDecoration decoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        DashLineItemDivider decoration = new DashLineItemDivider();
         binding.personalBookRecycler.addItemDecoration(decoration);
         personalBookAdapter = new PersonalBookAdapter();
         binding.personalBookRecycler.setAdapter(personalBookAdapter);

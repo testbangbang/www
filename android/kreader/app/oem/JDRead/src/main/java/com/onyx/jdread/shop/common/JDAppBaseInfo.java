@@ -76,7 +76,7 @@ public class JDAppBaseInfo {
         subUnionId = AppInformationUtils.getPropertiesValue(AppInformationUtils.CPA_PROPERTIES);
         os = OS_KEY_DEFAULT_VALUE;
         client = CLIENT_KEY_DEFAULT_VALUE;
-        uuid = DrmTools.hashDevicesInfo(JDReadApplication.getInstance());
+        uuid = Build.SERIAL;
         unionId = AppInformationUtils.getPropertiesValue(AppInformationUtils.CPA_PROPERTIES);
         model = Build.MODEL;
         brand = Build.BRAND;
