@@ -11,6 +11,8 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.data.RegionFunctionManager;
 import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by huxiaomao on 2017/12/21.
  */
@@ -21,6 +23,10 @@ public class ReaderViewModel extends BaseObservable {
     private ObservableField<String> tipMessage = new ObservableField<>();
     private ObservableField<String> page = new ObservableField<>();
     private ObservableField<String> time = new ObservableField<>();
+
+    public EventBus getEventBus() {
+        return getReaderDataHolder().getEventBus();
+    }
 
     public ObservableField<String> getPage() {
         return page;

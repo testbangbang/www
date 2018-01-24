@@ -17,8 +17,12 @@ public class ReaderTouchHelper {
     private GestureDetector gestureDetector;
     private SurfaceView surfaceView;
 
-    public SurfaceView getSurfaceView() {
-        return surfaceView;
+    public int getPageViewWidth() {
+        return surfaceView.getWidth();
+    }
+
+    public int getPageViewHeight() {
+        return surfaceView.getHeight();
     }
 
     public void setReaderDataHolder(ReaderDataHolder readerDataHolder) {

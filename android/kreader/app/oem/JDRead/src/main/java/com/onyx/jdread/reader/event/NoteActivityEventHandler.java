@@ -41,11 +41,11 @@ public class NoteActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSaveNoteEvent(SaveNoteEvent event) {
         UpdateAnnotationAction action = new UpdateAnnotationAction(noteViewModel.getNoteInfo(), noteViewModel.getPagePosition());
-        action.execute(noteViewModel.getReaderDataHolder(), new RxCallback() {
+        action.execute(readerDataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 noteViewBack.getContent().dismiss();
-                new UpdateViewPageAction().execute(noteViewModel.getReaderDataHolder(), null);
+                new UpdateViewPageAction().execute(readerDataHolder, null);
             }
         });
     }

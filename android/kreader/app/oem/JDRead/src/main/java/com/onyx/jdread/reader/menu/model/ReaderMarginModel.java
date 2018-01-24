@@ -29,10 +29,14 @@ public class ReaderMarginModel {
     public final ObservableInt upAndDownProgress = new ObservableInt();
     public final ObservableInt maxUpAndDownSpacing = new ObservableInt(ReaderConfig.PageUpAndDownSpacing.MAX_UP_AND_DOWN_SPACING);
 
-    private ReaderDataHolder readerDataHolder;
+    private EventBus eventBus;
 
-    public ReaderMarginModel(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public ReaderMarginModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     private ObservableBoolean isShow = new ObservableBoolean(false);
@@ -52,7 +56,7 @@ public class ReaderMarginModel {
     public void setLineSpacingProgress(int progress){
         SettingLineSpacingEvent event = new SettingLineSpacingEvent();
         event.margin = progress;
-        readerDataHolder.getEventBus().post(event);
+        getEventBus().post(event);
     }
 
     public ObservableInt getSegmentProgress() {
@@ -62,7 +66,7 @@ public class ReaderMarginModel {
     public void setSegmentProgress(int progress){
         SettingParagraphSpacingEvent event = new SettingParagraphSpacingEvent();
         event.margin = progress;
-        readerDataHolder.getEventBus().post(event);
+        getEventBus().post(event);
     }
 
     public ObservableInt getLeftAndRightProgress() {
@@ -72,7 +76,7 @@ public class ReaderMarginModel {
     public void setLeftAndRightProgress(int progress){
         SettingLeftAndRightSpacingEvent event = new SettingLeftAndRightSpacingEvent();
         event.margin = progress;
-        readerDataHolder.getEventBus().post(event);
+        getEventBus().post(event);
     }
 
     public ObservableInt getUpAndDownProgress() {
@@ -82,7 +86,7 @@ public class ReaderMarginModel {
     public void setUpAndDownProgress(int progress){
         SettingUpAndDownSpacingEvent event = new SettingUpAndDownSpacingEvent();
         event.margin = progress;
-        readerDataHolder.getEventBus().post(event);
+        getEventBus().post(event);
     }
 
     public void onLineSpacingMinusClick(){

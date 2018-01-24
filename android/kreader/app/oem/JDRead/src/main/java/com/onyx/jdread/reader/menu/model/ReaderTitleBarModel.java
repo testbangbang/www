@@ -23,27 +23,31 @@ public class ReaderTitleBarModel extends BaseObservable {
     private ObservableBoolean isSearchContext = new ObservableBoolean(true);
     private ObservableInt bookMarkImageId = new ObservableInt(R.mipmap.ic_read_bm_normal);
     private ObservableBoolean isShow = new ObservableBoolean(true);
-    private ReaderDataHolder readerDataHolder;
+    private EventBus eventBus;
 
-    public ReaderTitleBarModel(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public ReaderTitleBarModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public void backClick() {
-        readerDataHolder.getEventBus().post(new CloseReaderSettingMenuEvent());
-        readerDataHolder.getEventBus().post(new CloseDocumentEvent());
+        getEventBus().post(new CloseReaderSettingMenuEvent());
+        getEventBus().post(new CloseDocumentEvent());
     }
 
     public void buyBookClick() {
-        readerDataHolder.getEventBus().post(new BuyBookClickEvent());
+        getEventBus().post(new BuyBookClickEvent());
     }
 
     public void searchContextClick() {
-        readerDataHolder.getEventBus().post(new SearchContentEvent());
+        getEventBus().post(new SearchContentEvent());
     }
 
     public void bookmarkCLick() {
-        readerDataHolder.getEventBus().post(new ToggleBookmarkEvent());
+        getEventBus().post(new ToggleBookmarkEvent());
     }
 
     public ObservableBoolean getIsBuy() {

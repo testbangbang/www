@@ -31,10 +31,10 @@ public class ReaderTextModel {
     private ObservableField<ReaderTypeface> currentTypeface = new ObservableField<>(boldFaceType);
     private ObservableField<ReaderFontSize> currentFontSize = new ObservableField<>(ReaderFontSize.LevelThreeFontSize);
     private ObservableField<Language> currentLanguage = new ObservableField<>(Language.Simplified);
-    private ReaderDataHolder readerDataHolder;
+    private EventBus eventBus;
 
-    public ReaderTextModel(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public ReaderTextModel(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     public enum Language{
@@ -90,11 +90,11 @@ public class ReaderTextModel {
     }
 
     public void onBackPDFClick() {
-        readerDataHolder.getEventBus().post(new ReaderSettingMenuItemBackPdfEvent());
+        eventBus.post(new ReaderSettingMenuItemBackPdfEvent());
     }
 
     public void onCustomizeItemClick() {
-        readerDataHolder.getEventBus().post(new ReaderSettingMenuItemCustomizeEvent());
+        eventBus.post(new ReaderSettingMenuItemCustomizeEvent());
     }
 
     public void onBoldfaceTypefaceClick() {
@@ -120,7 +120,7 @@ public class ReaderTextModel {
     public void setTypeface(String typeface){
         ReaderSettingTypefaceEvent event = new ReaderSettingTypefaceEvent();
         event.typeFace = typeface;
-        readerDataHolder.getEventBus().post(event);
+        eventBus.post(event);
     }
 
     public void onLevelOneClick() {
@@ -156,7 +156,7 @@ public class ReaderTextModel {
     private void setFontSize(int fontSize){
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
         event.fontSize = fontSize;
-        readerDataHolder.getEventBus().post(event);
+        eventBus.post(event);
     }
 
     public void onChangeChineseClick(){
@@ -169,6 +169,6 @@ public class ReaderTextModel {
             setCurrentLanguage(Language.Simplified);
         }
 
-        readerDataHolder.getEventBus().post(event);
+        eventBus.post(event);
     }
 }

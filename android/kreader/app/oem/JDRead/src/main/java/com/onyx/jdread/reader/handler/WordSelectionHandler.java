@@ -91,8 +91,8 @@ public class WordSelectionHandler extends BaseHandler {
     private boolean isCrossScreenSelectText(float x, float y) {
         if (getReaderDataHolder().getReaderSelectionInfo().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition()) != null &&
                 getReaderDataHolder().getReaderSelectionInfo().getMoveSelectCount() <= 0) {
-            int height = getReaderDataHolder().getReaderTouchHelper().getSurfaceView().getHeight();
-            int width = getReaderDataHolder().getReaderTouchHelper().getSurfaceView().getWidth();
+            int height = getReaderDataHolder().getReaderTouchHelper().getPageViewHeight();
+            int width = getReaderDataHolder().getReaderTouchHelper().getPageViewWidth();
             if (x < crossScreenTouchRegionMinWidth && y < crossScreenTouchRegionMinHeight) {
                 if (getReaderDataHolder().getReaderViewInfo().canPrevScreen) {
                     isCrossScreenSelect = true;

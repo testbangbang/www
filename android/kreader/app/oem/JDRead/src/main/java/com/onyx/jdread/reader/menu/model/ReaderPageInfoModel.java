@@ -21,10 +21,14 @@ public class ReaderPageInfoModel {
     private ObservableInt pageTotal = new ObservableInt(0);
     private ObservableInt currentPage = new ObservableInt(0);
     private ObservableBoolean isShow = new ObservableBoolean(true);
-    private ReaderDataHolder readerDataHolder;
+    private EventBus eventBus;
 
-    public ReaderPageInfoModel(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public ReaderPageInfoModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public ObservableField<String> getBookName() {
@@ -60,11 +64,11 @@ public class ReaderPageInfoModel {
     }
 
     public void nextChapter(){
-        readerDataHolder.getEventBus().post(new ReaderSettingMenuItemNextChapterEvent());
+        getEventBus().post(new ReaderSettingMenuItemNextChapterEvent());
     }
 
     public void previousChapter(){
-        readerDataHolder.getEventBus().post(new ReaderSettingMenuItemPreviousChapterEvent());
+        getEventBus().post(new ReaderSettingMenuItemPreviousChapterEvent());
     }
 
     public ObservableBoolean getIsShow() {

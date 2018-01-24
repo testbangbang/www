@@ -91,11 +91,11 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initReaderSettingMenu(){
-        binding.setReaderSettingModel(new ReaderSettingModel(readerDataHolder));
+        binding.setReaderSettingModel(new ReaderSettingModel(readerDataHolder.getEventBus()));
     }
 
     private void initReaderPageInfoBar(){
-        binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel(readerDataHolder));
+        binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel(readerDataHolder.getEventBus()));
         new UpdatePageInfoAction(binding,readerDataHolder.getReaderViewInfo()).execute(readerDataHolder,null);
         initReaderPageInfoEvent();
     }
@@ -126,15 +126,15 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initTextBar(){
-        binding.readerSettingTextSettingBar.setReaderTextModel(new ReaderTextModel(readerDataHolder));
+        binding.readerSettingTextSettingBar.setReaderTextModel(new ReaderTextModel(readerDataHolder.getEventBus()));
     }
 
     private void initImageBar(){
-        binding.readerSettingImageSettingBar.setReaderImageModel(new ReaderImageModel(readerDataHolder));
+        binding.readerSettingImageSettingBar.setReaderImageModel(new ReaderImageModel(readerDataHolder.getEventBus()));
     }
 
     private void initCustomizeBar(){
-        binding.readerSettingCustomizeFormatBar.setReaderMarginModel(new ReaderMarginModel(readerDataHolder));
+        binding.readerSettingCustomizeFormatBar.setReaderMarginModel(new ReaderMarginModel(readerDataHolder.getEventBus()));
         initCustomizeEvent();
     }
 
@@ -224,7 +224,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initReaderTitleBar() {
-        binding.readerSettingTitleBar.setReaderTitleBarModel(new ReaderTitleBarModel(readerDataHolder));
+        binding.readerSettingTitleBar.setReaderTitleBarModel(new ReaderTitleBarModel(readerDataHolder.getEventBus()));
         updateBookmarkState();
     }
 

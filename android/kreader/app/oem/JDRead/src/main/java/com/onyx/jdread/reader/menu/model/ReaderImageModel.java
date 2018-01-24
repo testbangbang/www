@@ -22,10 +22,14 @@ public class ReaderImageModel {
     private ObservableBoolean isShow = new ObservableBoolean(false);
     private ObservableField<ImageShowMode> currentImageMode = new ObservableField<>(ImageShowMode.defaultMode);
     private ObservableInt currentFontColorDepth = new ObservableInt(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
-    private ReaderDataHolder readerDataHolder;
+    private EventBus eventBus;
 
-    public ReaderImageModel(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public ReaderImageModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public enum ImageShowMode {
@@ -60,13 +64,13 @@ public class ReaderImageModel {
     public void onDefaultModeClick() {
         setCurrentImageMode(ImageShowMode.defaultMode);
         ResetNavigationEvent event = new ResetNavigationEvent();
-        readerDataHolder.getEventBus().post(event);
+        getEventBus().post(event);
     }
 
     public void onComicModeClick() {
         setCurrentImageMode(ImageShowMode.comicMode);
         SwitchNavigationToComicModeEvent showModeEvent = new SwitchNavigationToComicModeEvent();
-        readerDataHolder.getEventBus().post(showModeEvent);
+        getEventBus().post(showModeEvent);
     }
 
     public void onOneFontColorDepthClick(){
@@ -96,21 +100,21 @@ public class ReaderImageModel {
     private void setFontColorDepth(int textGamma){
         GammaCorrectionEvent event = new GammaCorrectionEvent();
         event.textGamma = textGamma;
-        readerDataHolder.getEventBus().post(event);
+        getEventBus().post(event);
     }
 
     public void onResetModeClick(){
         ResetNavigationEvent event = new ResetNavigationEvent();
-        readerDataHolder.getEventBus().post(event);
+        getEventBus().post(event);
     }
 
     public void onRearrangeClick(){
         ImageReflowEvent event = new ImageReflowEvent();
-        readerDataHolder.getEventBus().post(event);
+        getEventBus().post(event);
     }
 
     public void onTrimmingClick(){
         ScaleToPageCropEvent event = new ScaleToPageCropEvent();
-        readerDataHolder.getEventBus().post(event);
+        getEventBus().post(event);
     }
 }

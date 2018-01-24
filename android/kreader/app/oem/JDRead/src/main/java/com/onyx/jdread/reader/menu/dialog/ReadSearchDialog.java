@@ -32,10 +32,10 @@ import org.greenrobot.eventbus.ThreadMode;
 public class ReadSearchDialog extends DialogFragment {
     private DialogReadSearchBinding binding;
     private SearchAdapter searchAdapter;
-    private ReaderDataHolder readerDataHolder;
+    private ReaderSearchModel model;
 
-    public void setReaderDataHolder(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public void setReaderDataHolder(EventBus eventBus) {
+        model = new ReaderSearchModel(eventBus);
     }
 
     @Nullable
@@ -56,11 +56,10 @@ public class ReadSearchDialog extends DialogFragment {
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = ViewGroup.LayoutParams.MATCH_PARENT;
         window.setAttributes(params);
-        readerDataHolder.getEventBus().register(this);
+        model.getEventBus().register(this);
     }
 
     private void initData() {
-        ReaderSearchModel model = new ReaderSearchModel(readerDataHolder);
         binding.setModel(model);
     }
 
@@ -88,6 +87,6 @@ public class ReadSearchDialog extends DialogFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        readerDataHolder.getEventBus().unregister(this);
+        model.getEventBus().unregister(this);
     }
 }

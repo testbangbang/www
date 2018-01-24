@@ -46,7 +46,7 @@ public class ReaderNoteDialog extends Dialog implements ReaderNoteViewBack {
         setContentView(binding.getRoot());
 
         noteViewModel = new NoteViewModel();
-        noteViewModel.setReaderDataHolder(readerDataHolder);
+        noteViewModel.setReaderDataHolder(readerDataHolder.getEventBus());
         binding.setNoteViewModel(noteViewModel);
         noteActivityEventHandler = new NoteActivityEventHandler(readerDataHolder,noteViewModel, this);
     }

@@ -10,17 +10,17 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ReaderSettingModel {
-    private ReaderDataHolder readerDataHolder;
+    private EventBus eventBus;
 
     public enum ReaderSystemMenuGroup {
         progressMenuGroup, brightnessMenuGroup, textMenuGroup, imageMenuGroup, customMenuGroup
     }
 
-    public ReaderSettingModel(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public ReaderSettingModel(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     public void dismissZoneClick() {
-        readerDataHolder.getEventBus().post(new CloseReaderSettingMenuEvent());
+        eventBus.post(new CloseReaderSettingMenuEvent());
     }
 }

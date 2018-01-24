@@ -30,10 +30,14 @@ public class ReaderBookInfoModel {
     private ObservableInt currentTab = new ObservableInt(ReaderBookInfoDialogConfig.CATALOG_MODE);
     public final ObservableList<BookmarkModel> bookmarks = new ObservableArrayList<>();
     public final ObservableList<NoteModel> notes = new ObservableArrayList<>();
-    private ReaderDataHolder readerDataHolder;
+    private EventBus eventBus;
 
-    public ReaderBookInfoModel(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public ReaderBookInfoModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public ObservableInt getCurrentTab() {
@@ -80,16 +84,16 @@ public class ReaderBookInfoModel {
 
     public void onTabCatalogClick(){
         setCurrentTab(ReaderBookInfoDialogConfig.CATALOG_MODE);
-        readerDataHolder.getEventBus().post(new TabCatalogClickEvent());
+        getEventBus().post(new TabCatalogClickEvent());
     }
 
     public void onTabBookmarkClick(){
         setCurrentTab(ReaderBookInfoDialogConfig.BOOKMARK_MODE);
-        readerDataHolder.getEventBus().post(new TabBookmarkClickEvent());
+        getEventBus().post(new TabBookmarkClickEvent());
     }
 
     public void onTabNoteClick(){
         setCurrentTab(ReaderBookInfoDialogConfig.NOTE_MODE);
-        readerDataHolder.getEventBus().post(new TabNoteClickEvent());
+        getEventBus().post(new TabNoteClickEvent());
     }
 }

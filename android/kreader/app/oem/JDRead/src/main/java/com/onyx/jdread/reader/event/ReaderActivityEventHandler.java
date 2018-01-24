@@ -46,14 +46,14 @@ public class ReaderActivityEventHandler {
     }
 
     public void registerListener() {
-        if (!readerViewModel.getReaderDataHolder().getEventBus().isRegistered(this)) {
-            readerViewModel.getReaderDataHolder().getEventBus().register(this);
+        if (!readerViewModel.getEventBus().isRegistered(this)) {
+            readerViewModel.getEventBus().register(this);
         }
     }
 
     public void unregisterListener() {
-        if (readerViewModel.getReaderDataHolder().getEventBus().isRegistered(this)) {
-            readerViewModel.getReaderDataHolder().getEventBus().unregister(this);
+        if (readerViewModel.getEventBus().isRegistered(this)) {
+            readerViewModel.getEventBus().unregister(this);
         }
     }
 
@@ -160,9 +160,9 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSearchContentEvent(SearchContentEvent event) {
-        readerViewModel.getReaderDataHolder().getEventBus().post(new CloseReaderSettingMenuEvent());
+        readerViewModel.getEventBus().post(new CloseReaderSettingMenuEvent());
         ReadSearchDialog dialog = new ReadSearchDialog();
-        dialog.setReaderDataHolder(readerViewModel.getReaderDataHolder());
+        dialog.setReaderDataHolder(readerViewModel.getEventBus());
         dialog.show(readerViewBack.getContext().getFragmentManager(), "");
     }
 

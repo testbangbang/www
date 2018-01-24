@@ -15,10 +15,14 @@ import org.greenrobot.eventbus.EventBus;
 public class ReaderSearchModel extends BaseObservable {
     private String searchContent;
     private int searchSize;
-    private ReaderDataHolder readerDataHolder;
+    private EventBus eventBus;
 
-    public ReaderSearchModel(ReaderDataHolder readerDataHolder) {
-        this.readerDataHolder = readerDataHolder;
+    public ReaderSearchModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public String getSearchContent() {
@@ -45,10 +49,10 @@ public class ReaderSearchModel extends BaseObservable {
     }
 
     public void search() {
-        readerDataHolder.getEventBus().post(new SearchEvent(getSearchContent()));
+        getEventBus().post(new SearchEvent(getSearchContent()));
     }
 
     public void back() {
-        readerDataHolder.getEventBus().post(new CloseSearchDialogEvent());
+        getEventBus().post(new CloseSearchDialogEvent());
     }
 }
