@@ -38,6 +38,10 @@ public class Question implements Serializable {
         this.correctOptions = correctOptions;
     }
 
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
     public QuestionReview getReview() {
         return review;
     }

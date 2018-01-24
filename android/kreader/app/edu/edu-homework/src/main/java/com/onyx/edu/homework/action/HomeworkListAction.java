@@ -19,16 +19,18 @@ import java.util.List;
 
 public class HomeworkListAction extends BaseAction {
 
-    private String libraryId;
+    private String publicHomeworkId;
+    private String personalHomeworkId;
     private List<Question> questions = new ArrayList<>();
 
-    public HomeworkListAction(String libraryId) {
-        this.libraryId = libraryId;
+    public HomeworkListAction(String publicHomeworkId, String personalHomeworkId) {
+        this.publicHomeworkId = publicHomeworkId;
+        this.personalHomeworkId = personalHomeworkId;
     }
 
     @Override
     public void execute(Context context, final BaseCallback baseCallback) {
-        final HomeworkListRequest listRequest = new HomeworkListRequest(libraryId);
+        final HomeworkListRequest listRequest = new HomeworkListRequest(publicHomeworkId, personalHomeworkId);
         listRequest.setContext(context.getApplicationContext());
         getCloudManager().submitRequest(context, listRequest, new BaseCallback() {
             @Override

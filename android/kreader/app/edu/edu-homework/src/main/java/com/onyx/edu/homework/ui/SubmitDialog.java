@@ -136,7 +136,9 @@ public class SubmitDialog extends OnyxBaseDialog {
     }
 
     private void submitImpl(List<HomeworkSubmitAnswer> totalAnswers) {
-        new HomeworkSubmitAction(DataBundle.getInstance().getHomeworkId(), totalAnswers).execute(getContext(), new BaseCallback() {
+        new HomeworkSubmitAction(getDataBundle().getPublicHomeworkId(),
+                getDataBundle().getPersonalHomeworkId(),
+                totalAnswers).execute(getContext(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
@@ -146,6 +148,10 @@ public class SubmitDialog extends OnyxBaseDialog {
                 }
             }
         });
+    }
+
+    private DataBundle getDataBundle() {
+        return DataBundle.getInstance();
     }
 
     private void onWifiConnect() {

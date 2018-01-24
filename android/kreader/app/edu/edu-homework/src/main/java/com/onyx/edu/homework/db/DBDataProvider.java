@@ -27,6 +27,14 @@ public class DBDataProvider {
         return where.querySingle();
     }
 
+    public static QuestionModel loadQuestion(String questionId, String homeworkId) {
+        Select select = new Select();
+        Where<QuestionModel> where = select.from(QuestionModel.class)
+                .where(QuestionModel_Table.questionId.eq(questionId))
+                .and(QuestionModel_Table.homeworkId.eq(homeworkId));
+        return where.querySingle();
+    }
+
     public static List<QuestionModel> loadQuestions(String homeworkId) {
         Select select = new Select();
         Where<QuestionModel> where = select.from(QuestionModel.class).where(QuestionModel_Table.homeworkId.eq(homeworkId));

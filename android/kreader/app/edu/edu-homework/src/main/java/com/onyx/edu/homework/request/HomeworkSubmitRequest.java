@@ -30,24 +30,26 @@ import retrofit2.Response;
 
 public class HomeworkSubmitRequest extends BaseCloudRequest {
 
-    private String libraryId;
+    private String publicHomeworkId;
+    private String personalHomeworkId;
     private HomeworkSubmitBody body;
     private Response<ResponseBody> response;
 
-    public HomeworkSubmitRequest(String libraryId, HomeworkSubmitBody body) {
-        this.libraryId = libraryId;
+    public HomeworkSubmitRequest(String publicHomeworkId, String personalHomeworkId, HomeworkSubmitBody body) {
+        this.publicHomeworkId = publicHomeworkId;
         this.body = body;
+        this.personalHomeworkId = personalHomeworkId;
     }
 
     @Override
     public void execute(CloudManager parent) throws Exception {
         benchmarkStart();
-        response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).submitAnswers(libraryId, body, getFilePathMap()));
+        response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).submitAnswers(publicHomeworkId, body, getFilePathMap()));
         Debug.d(getClass(), "submitAnswers:" + benchmarkEnd());
         if (isSuccess()) {
-            HomeworkModel model = DBDataProvider.loadHomework(libraryId);
+            HomeworkModel model = DBDataProvider.loadHomework(personalHomeworkId);
             if (model == null) {
-                model = HomeworkModel.create(libraryId);
+                model = HomeworkModel.create(personalHomeworkId);
             }
             model.setState(HomeworkState.SUBMITTED.ordinal());
             DBDataProvider.saveHomework(model);

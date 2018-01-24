@@ -19,18 +19,20 @@ import java.util.List;
 
 public class HomeworkSubmitAction extends BaseAction {
 
-    private String libraryId;
+    private String publicHomeworkId;
+    private String personalHomeworkId;
 
     private HomeworkSubmitBody body;
 
-    public HomeworkSubmitAction(String libraryId, List<HomeworkSubmitAnswer> anwsers) {
-        this.libraryId = libraryId;
+    public HomeworkSubmitAction(String publicHomeworkId, String personalHomeworkId, List<HomeworkSubmitAnswer> anwsers) {
+        this.publicHomeworkId = publicHomeworkId;
+        this.personalHomeworkId = personalHomeworkId;
         this.body = new HomeworkSubmitBody(anwsers);
     }
 
     @Override
     public void execute(Context context, final BaseCallback baseCallback) {
-        final HomeworkSubmitRequest submitRequest = new HomeworkSubmitRequest(libraryId, body);
+        final HomeworkSubmitRequest submitRequest = new HomeworkSubmitRequest(publicHomeworkId, personalHomeworkId, body);
         getCloudManager().submitRequest(context, submitRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

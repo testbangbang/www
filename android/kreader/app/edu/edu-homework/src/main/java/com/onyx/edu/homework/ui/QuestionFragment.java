@@ -161,7 +161,7 @@ public class QuestionFragment extends BaseFragment {
                 }
                 option.setChecked(isChecked);
                 if (buttonView.isPressed()) {
-                    new DoAnswerAction(question, DataBundle.getInstance().getHomeworkId()).execute(getActivity(), new BaseCallback() {
+                    new DoAnswerAction(question, DataBundle.getInstance().getPersonalHomeworkId()).execute(getActivity(), new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
                             DataBundle.getInstance().post(new DoneAnswerEvent(question));
