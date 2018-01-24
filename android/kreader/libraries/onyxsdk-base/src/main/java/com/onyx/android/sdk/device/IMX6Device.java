@@ -738,7 +738,10 @@ public class IMX6Device extends BaseDevice {
             sModeRegal = value_mode_regional | value_mode_nowait | value_mode_waveform_regal | value_mode_update_partial;
             sModeRegalD = value_mode_regional | value_mode_nowait | value_mode_waveform_regalD | value_mode_waveform_regal | value_mode_update_partial;
 
-            Class<?> deviceControllerClass = ReflectUtil.classForName("android.onyx.hardware.DeviceController");
+            Class<?> deviceControllerClass = ReflectUtil.classForName("android.hardware.DeviceController");
+            if (deviceControllerClass == null) {
+                deviceControllerClass = ReflectUtil.classForName("android.onyx.hardware.DeviceController");
+            }
 
             // new added methods, separating for compatibility
             sMethodOpenFrontLight = ReflectUtil.getMethodSafely(deviceControllerClass, "openFrontLight", Context.class);
