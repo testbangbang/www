@@ -69,11 +69,11 @@ public class ReaderPainter {
         drawCropRectIndicator(context, canvas, paint, readerDataHolder, viewInfo);
         drawViewportOverlayIndicator(canvas, paint, readerDataHolder, viewInfo);
         drawBookmark(context, canvas, readerDataHolder, userDataInfo, viewInfo);
+        drawShapeContents(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, noteManager, visiblePages);
         drawSearchResults(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, annotationHighlightStyle);
         drawHighlightResult(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, selectionManager, annotationHighlightStyle);
         drawAnnotations(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, annotationHighlightStyle);
         drawPageLinks(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo);
-        drawShapeContents(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, noteManager, visiblePages);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
     }
