@@ -311,11 +311,11 @@ public class LocalDataProvider implements DataProviderBase {
 
     @Override
     public void deleteMetadataCollection(Context context, String libraryUniqueId, String associationId) {
-        Where<MetadataCollection> where = SQLite.delete(MetadataCollection.class)
-                .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId));
-        if (StringUtils.isNotBlank(associationId)) {
-            where.and(MetadataCollection_Table.documentUniqueId.eq(associationId));
+        if (StringUtils.isNullOrEmpty(associationId)) {
+            return;
         }
+        Where<MetadataCollection> where = SQLite.delete(MetadataCollection.class)
+                .where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId)).and(MetadataCollection_Table.documentUniqueId.eq(associationId));
         where.execute();
     }
 
