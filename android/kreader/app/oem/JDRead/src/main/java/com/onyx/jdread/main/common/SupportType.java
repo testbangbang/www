@@ -20,7 +20,7 @@ public class SupportType {
             docExtension.add("mobi");
             docExtension.add("ebk");
             docExtension.add("png");
-            docExtension.add("jepg");
+            docExtension.add("jpeg");
         }
         return docExtension;
     }
