@@ -1122,8 +1122,11 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void eraseWholePage(final ReaderDataHolder readerDataHolder) {
-        final ClearPageAction clearPageAction = new ClearPageAction(readerDataHolder.getVisiblePages());
-        clearPageAction.execute(readerDataHolder, null);
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        actionChain.addAction(new ClearPageAction(pages));
+        actionChain.addAction(new ResumeDrawingAction(pages));
+        actionChain.execute(readerDataHolder, null);
     }
 
     public static void startErasing(final ReaderDataHolder readerDataHolder) {
