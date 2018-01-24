@@ -79,11 +79,11 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
 
         totalCount = getDataProvider().count(getAppContext(), queryArgs) + getDataProvider().libraryCount(queryArgs.libraryUniqueId);
         if (loadMetadata && libraryList.size() < queryArgs.limit) {
-            queryArgs.offset = (int) (queryArgs.offset - getDataProvider().libraryCount(this.queryArgs.libraryUniqueId));
+            queryArgs.offset = (int) (queryArgs.offset - getDataProvider().libraryCount(queryArgs.libraryUniqueId));
             int limit = queryArgs.limit;
             queryArgs.limit = queryArgs.limit -libraryList.size();
             List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getAppContext(), getDataManager(),
-                    this.queryArgs, loadFromCache);
+                    queryArgs, loadFromCache);
             queryArgs.limit = limit;
             if (!CollectionUtils.isNullOrEmpty(metadataList)) {
                 bookList.addAll(metadataList);

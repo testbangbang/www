@@ -33,7 +33,7 @@ public class RxSaveCloudBookThumbnailRequest extends RxBaseDBRequest {
     @Override
     public RxSaveCloudBookThumbnailRequest call() throws Exception {
         try {
-            Bitmap bitmap = Glide.with(JDReadApplication.getInstance()).load(metadata.getCoverUrl()).asBitmap().into(
+            Bitmap bitmap = Glide.with(getAppContext()).load(metadata.getCoverUrl()).asBitmap().into(
                     ResManager.getInteger(R.integer.cloud_book_cover_width), ResManager.getInteger(R.integer.cloud_book_cover_height)).get();
             ThumbnailUtils.insertThumbnail(getAppContext(), getDataProvider(), metadata.getNativeAbsolutePath(), metadata.getAssociationId(), bitmap);
         } catch (Exception e) {
