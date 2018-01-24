@@ -34,6 +34,7 @@ public class ReaderDataHolder {
     private SelectMenuModel selectMenuModel;
     private DocumentInfo documentInfo;
     private ReaderSelectionInfo readerSelectionInfo;
+    private EventBus eventBus = EventBus.getDefault();
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
@@ -41,7 +42,7 @@ public class ReaderDataHolder {
     }
 
     public EventBus getEventBus() {
-        return reader.getEventBus();
+        return eventBus;
     }
 
     public SelectMenuModel getSelectMenuModel() {
