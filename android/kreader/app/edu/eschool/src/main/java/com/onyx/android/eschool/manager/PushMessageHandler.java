@@ -12,8 +12,10 @@ import com.onyx.android.eschool.utils.BroadcastHelper;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.v2.Homework;
 import com.onyx.android.sdk.data.model.v2.Homework_Table;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudLibraryDeleteRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.HomeworkUpdateRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.im.data.Message;
@@ -38,6 +40,7 @@ public class PushMessageHandler {
     public static final String TYPE_NOTIFY_HOMEWORK = "homework";
     public static final String TYPE_NOTIFY_HOMEWORK_READ_ACTIVE = "homework_readActive";
     public static final String TYPE_NOTIFY_HOMEWORK_END_TIME = "homework_endTime";
+    public static final String TYPE_NOTIFY_LIBRARY_DELETE = "library_delete";
 
     public interface PushCallback {
         void onMessage(Message message);
@@ -91,6 +94,9 @@ public class PushMessageHandler {
                 break;
             case TYPE_NOTIFY_HOMEWORK_END_TIME:
                 success = processHomeworkEndTime(message);
+                break;
+            case TYPE_NOTIFY_LIBRARY_DELETE:
+                processLibraryDelete(message);
                 break;
             case Message.TYPE_NOTIFICATION:
             case Message.TYPE_TEXT:
@@ -192,6 +198,15 @@ public class PushMessageHandler {
         return true;
     }
 
+    private void processLibraryDelete(Message message) {
+        Library library = getLibraryFromMessage(message);
+        if (library == null) {
+            return;
+        }
+        CloudLibraryDeleteRequest libraryDeleteRequest = new CloudLibraryDeleteRequest(library, true);
+        getCloudManager().submitRequest(getContext(), libraryDeleteRequest, null);
+    }
+
     private Context getContext() {
         return actionContext.context;
     }
@@ -215,6 +230,15 @@ public class PushMessageHandler {
             return null;
         }
         return homework;
+    }
+
+    private Library getLibraryFromMessage(Message message) {
+        final Library library = JSONObjectParseUtils.parseObject(message.getContent(), Library.class);
+        if (!Library.isValid(library)) {
+            dumpInvalidMessage(Library.class);
+            return null;
+        }
+        return library;
     }
 
     private void dumpInvalidMessage(Class clazz) {
