@@ -117,7 +117,7 @@ public class BookTextFragment extends Fragment {
         return fragment;
     }
 
-    private static void resetArgumentsBundle(Bundle bundle, String fragmentName, String libraryId) {
+    public static void resetArgumentsBundle(Bundle bundle, String fragmentName, String libraryId) {
         if (bundle == null) {
             return;
         }
