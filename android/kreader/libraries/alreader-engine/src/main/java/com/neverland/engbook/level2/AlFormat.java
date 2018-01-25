@@ -2,13 +2,11 @@ package com.neverland.engbook.level2;
 
 import android.util.Log;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-
 import com.neverland.engbook.bookobj.AlBookEng.PairTextStyle;
 import com.neverland.engbook.bookobj.FileBlockInfo;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlIntHolder;
+import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_RESULT;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
@@ -16,7 +14,6 @@ import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level1.AlRandomAccessFile;
 import com.neverland.engbook.unicode.AlUnicode;
-import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.util.AlMultiFiles;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlOneLink;
@@ -1162,6 +1159,8 @@ public abstract class AlFormat {
         }*/
 
         if (preference.need_dialog == 2)
+            return;
+        if (((alp.paragraph & (AlStyles.SL_PRESERVE_SPACE)) != 0) || ((alp.prop & (AlParProperty.SL2_JUSTIFY_POEM)) != 0))
             return;
 
         boolean disable_linear = false;
@@ -2797,11 +2796,14 @@ public abstract class AlFormat {
 
                 if (ch == 0xad) {
 
-                } else if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0) {
+                } else
+                if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE0) {
 
-                } else if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE1) {
+                } else
+                if ((ch & AlStyles.STYLE_BASE_MASK) == AlStyles.STYLE_BASE1) {
 
-                } else if (ch < 0x20) {
+                } else
+                if (ch < 0x20) {
                     switch (ch) {
                         case AlStyles.CHAR_SOFTPAR:
                             res.append(' ');
@@ -2829,23 +2831,29 @@ public abstract class AlFormat {
                             isInvisible = false;
                             break;
                     }
-                } else if (isInvisible) {
+                } else
+                if (isInvisible) {
 
-                } else if (isAccept) {
+                } else
+                if (isAccept) {
                     if (ch == 0x20) {
                         if (ap.start + j >= posEnd)
                             break;
                         if (res.length() > 0 && res.charAt(res.length() - 1) > 0x20)
                             res.append(ch);
-                    } else if (ch == 0x301) {
+                    } else
+                    if (ch == 0x301) {
 
                     } else {
                         res.append(ch);
+                        if (AlUnicode.isChineze(ch) && ap.start + j >= posEnd)
+                            break;
                     }
                 } else {
                     if (ch == 0x20 || AlUnicode.isChineze(ch)) {
                         res.setLength(0);
-                    } else if (ch == 0x301) {
+                    } else
+                    if (ch == 0x301) {
 
                     } else {
                         res.append(ch);

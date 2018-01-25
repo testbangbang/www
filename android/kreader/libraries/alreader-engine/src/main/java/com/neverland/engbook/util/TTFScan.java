@@ -1,11 +1,12 @@
 package com.neverland.engbook.util;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
-import android.util.Log;
+import java.util.ArrayList;
 
 public class TTFScan {
 	private TTFScan() {
@@ -85,15 +86,11 @@ public class TTFScan {
 		
 		return null;
 	}
-	
-	private static TTFInfo decodeTable(byte[] buff) {
-		if (getUInt16Buff(buff, 0) != 0x00)
-			return null;
+
+	private static boolean decodeTableByPlatphormId(byte[] buff, TTFInfo ttfi, int PId) {
 		int cnt_rec  = getUInt16Buff(buff, 2);
 		int str_stor = getUInt16Buff(buff, 4);
-		
-		TTFInfo ttfi = new TTFInfo();
-		
+
 		boolean flag1 = true, flag2 = true;
 		int i, PlatformId, PlatfornEnc, LangId, NameId, StrLen, StrOff;
 		for (i = 6; i < cnt_rec * 12; i += 12) {
@@ -103,52 +100,90 @@ public class TTFScan {
 			NameId = getUInt16Buff(buff, i + 6);
 			StrLen = getUInt16Buff(buff, i + 8);
 			StrOff = getUInt16Buff(buff, i + 10);
+
+			if (PId != -1 && PlatformId != PId)
+				continue;
+
 			switch (NameId) {
-			case 1:
-				if (ttfi.Name == null || (PlatformId == 3 && flag1)) {
-					try {
-						String s = new String( buff, str_stor + StrOff, StrLen,
-								PlatformId == 3 ? "UTF-16BE" : "US-ASCII");
-						if (ttfi.Name != null && flag1 && ttfi.Name.equalsIgnoreCase(s)) {
-							flag1 = false;
-						} else {
-							ttfi.Name = s;
+				case 1:
+					if (ttfi.Name == null || (PlatformId == 3 && flag1)) {
+						try {
+							String s = new String( buff, str_stor + StrOff, StrLen,
+									PlatformId == 3 ? "UTF-16BE" : "US-ASCII");;
+							if (ttfi.Name != null && flag1 && ttfi.Name.equalsIgnoreCase(s)) {
+								flag1 = false;
+							} else {
+								ttfi.Name = s;
+							}
+							Log.e("FONT TABLE name ", s);
+						} catch (UnsupportedEncodingException e) {
+							ttfi.Name = null;
 						}
-					} catch (UnsupportedEncodingException e) {
-						ttfi.Name = null;
 					}
-				} 
-				break;
-			case 2:
-				if (ttfi.Type == 0 || flag2) {					
-					try {
-						String s = new String( buff, str_stor + StrOff, StrLen,
-								PlatformId == 3 ? "UTF-16BE" : "US-ASCII");
-						ttfi.Type = 0;
-						s = s.toLowerCase();
-						
-						if (s.contains("bold")) {
-							ttfi.Type += 1;
+					break;
+				case 2:
+					if (flag2) {
+						try {
+							String s = new String( buff, str_stor + StrOff, StrLen,
+									PlatformId == 3 ? "UTF-16BE" : "US-ASCII");
+							ttfi.Type = 0;
+							s = s.toLowerCase();
+
+							String[] arr = s.split(" ");
+							for (String ss : arr) {
+
+								if (ss.indexOf("bold") >= 0) {
+									ttfi.Type |= 1;
+									if (ss.indexOf("italic") >= 0 || ss.indexOf("oblique") >= 0)
+										ttfi.Type |= 2;
+								} else
+								if (ss.indexOf("italic") >= 0 || ss.indexOf("oblique") >= 0) {
+									ttfi.Type |= 2;
+								} else
+								if (ss.indexOf("normal") >= 0 || s.indexOf("regular") >= 0) {
+
+								} else {
+									if (ttfi.AddonName == null)
+										ttfi.AddonName = new ArrayList<>();
+									ttfi.AddonName.add(ss);
+									ttfi.Type |= 4;
+								}
+							}
+
 							flag2 = false;
-						}  
-						if (s.contains("italic") || s.contains("oblique")) {
-							ttfi.Type += 2;
-							flag2 = false;
-						}
-						if (s.contains("normal") || s.contains("regular")) {
-							flag2 = false;
-						}
-					} catch (UnsupportedEncodingException e) {}					
-				} 
-				break;
-			}	
+
+							Log.e("FONT TABLE type ", s);
+						} catch (UnsupportedEncodingException e) {}
+					}
+					break;
+			}
 			if (!flag1 && !flag2)
 				break;
 		}
-		
-		if (ttfi.Name != null)
+
+		if (ttfi.Name != null) {
+			Log.e("FONT TABLE result ", ttfi.Name + ',' + Integer.toString(ttfi.Type));
+			return true;
+		}
+
+		return false;
+	}
+
+	private static TTFInfo decodeTable(byte[] buff) {
+		if (getUInt16Buff(buff, 0) != 0x00)
+			return null;
+
+		TTFInfo ttfi = new TTFInfo();
+
+		if (decodeTableByPlatphormId(buff, ttfi, 3))
 			return ttfi;
-		
+
+		if (decodeTableByPlatphormId(buff, ttfi, 1))
+			return ttfi;
+
+		if (decodeTableByPlatphormId(buff, ttfi, -1))
+			return ttfi;
+
 		return null;
 	}
 	
