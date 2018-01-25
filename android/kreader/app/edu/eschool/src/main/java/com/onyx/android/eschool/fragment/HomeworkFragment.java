@@ -20,6 +20,7 @@ import com.onyx.android.eschool.custom.CustomRadioGroup;
 import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.databinding.FragmentHomeworkBinding;
 import com.onyx.android.eschool.databinding.ItemHomeworkBinding;
+import com.onyx.android.eschool.events.GroupContainerEvent;
 import com.onyx.android.eschool.events.HomeworkEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
@@ -31,7 +32,6 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.QueryBase;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
-import com.onyx.android.sdk.data.model.v2.GroupContainer;
 import com.onyx.android.sdk.data.model.v2.Homework;
 import com.onyx.android.sdk.data.model.v2.HomeworkQuery;
 import com.onyx.android.sdk.data.model.v2.Homework_Table;
@@ -431,10 +431,13 @@ public class HomeworkFragment extends Fragment {
         subjectGroupView.setVisibility(View.VISIBLE);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGroupContainer(GroupContainer groupContainer) {
-        resetArguments(getArguments(), groupContainer.subjectList);
-        updateSubjectGroupView(groupContainer.subjectList);
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onGroupContainerEvent(GroupContainerEvent event) {
+        getEventBus().removeStickyEvent(event);
+        List<Subject> list = event.groupContainer.subjectList;
+        resetArguments(getArguments(), list);
+        updateSubjectGroupView(list);
+        loadData(getQueryArgs(queryLimit, 0), true, null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -448,13 +451,17 @@ public class HomeworkFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
+        getEventBus().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+        getEventBus().unregister(this);
+    }
+
+    private EventBus getEventBus() {
+        return EventBus.getDefault();
     }
 
     private void processItemClick(int position) {
