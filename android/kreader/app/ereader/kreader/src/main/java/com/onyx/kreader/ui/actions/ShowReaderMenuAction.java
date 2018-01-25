@@ -58,6 +58,7 @@ import com.onyx.kreader.note.actions.AddNoteSubPageAction;
 import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.ClearPageAction;
+import com.onyx.kreader.note.actions.ClearSideNotePageAction;
 import com.onyx.kreader.note.actions.DeleteNoteSubPageAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RedoAction;
@@ -1008,6 +1009,9 @@ public class ShowReaderMenuAction extends BaseAction {
             case SCRIBBLE_SIDE_NOTE_DELETE_PAGE:
                 deleteNotePage(readerDataHolder);
                 break;
+            case SCRIBBLE_SIDE_NOTE_ERASER_ALL:
+                eraseSideNotePage(readerDataHolder);
+                break;
             case SCRIBBLE_UNDO:
                 undo(readerDataHolder);
                 break;
@@ -1125,6 +1129,14 @@ public class ShowReaderMenuAction extends BaseAction {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new ClearPageAction(pages));
+        actionChain.addAction(new ResumeDrawingAction(pages));
+        actionChain.execute(readerDataHolder, null);
+    }
+
+    private static void eraseSideNotePage(final ReaderDataHolder readerDataHolder) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        actionChain.addAction(new ClearSideNotePageAction(pages));
         actionChain.addAction(new ResumeDrawingAction(pages));
         actionChain.execute(readerDataHolder, null);
     }
