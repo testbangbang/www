@@ -54,31 +54,43 @@
                     android:orientation="horizontal"
                     android:padding="@dimen/subject_list_sort_button_container_padding">
 
-                    <TextView
+                    <CheckedTextView
+                        android:checked="@{viewModel.sortKeyHotSelected}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/normal_selected_background"
+                        android:background="@drawable/text_stroke_background"
                         android:onClick="@{()->viewModel.onSortKeyHotClick()}"
-                        android:padding="@dimen/subject_list_sort_button_padding"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top"
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top"
+                        android:paddingLeft="@dimen/category_book_list_selected_button_padding_left"
+                        android:paddingRight="@dimen/category_book_list_selected_button_padding_left"
                         android:textColor="@android:color/black"
                         android:text="@string/subject_list_sort_type_hot" />
 
-                    <TextView
+                    <CheckedTextView
+                        android:checked="@{viewModel.sortKeyNewestSelected}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/subject_list_sort_button_margin_left"
-                        android:background="@drawable/normal_selected_background"
+                        android:background="@drawable/text_stroke_background"
                         android:onClick="@{()->viewModel.onSortKeyNewestClick()}"
-                        android:padding="@dimen/subject_list_sort_button_padding"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top"
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top"
+                        android:paddingLeft="@dimen/category_book_list_selected_button_padding_left"
+                        android:paddingRight="@dimen/category_book_list_selected_button_padding_left"
                         android:text="@string/subject_list_sort_type_newest" />
 
-                    <TextView
+                    <CheckedTextView
+                        android:checked="@{viewModel.sortKeyPriceSelected}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/subject_list_sort_button_margin_left"
-                        android:background="@drawable/normal_selected_background"
+                        android:background="@drawable/text_stroke_background"
                         android:onClick="@{()->viewModel.onSortKeyPriceClick()}"
-                        android:padding="@dimen/subject_list_sort_button_padding"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top"
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top"
+                        android:paddingLeft="@dimen/category_book_list_selected_button_padding_left"
+                        android:paddingRight="@dimen/category_book_list_selected_button_padding_left"
                         android:textColor="@android:color/black"
                         android:text="@string/subject_list_sort_type_price" />
 

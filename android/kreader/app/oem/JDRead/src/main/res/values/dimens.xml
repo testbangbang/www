@@ -6,7 +6,7 @@
     <dimen name="rectangle_stroke_width">1dp</dimen>
     <dimen name="function_bar_text_size">18sp</dimen>
     <dimen name="level_large_heading_font">26sp</dimen>
-    <dimen name="level_one_heading_font">22sp</dimen>
+    <dimen name="level_one_heading_font">24sp</dimen>
     <dimen name="level_two_heading_font">18sp</dimen>
     <dimen name="level_three_heading_font">16sp</dimen>
     <dimen name="level_four_heading_font">14sp</dimen>
@@ -83,17 +83,17 @@
     <dimen name="book_shop_padding_left">22dp</dimen>
     <dimen name="book_shop_padding_right">20dp</dimen>
     <dimen name="book_shop_padding_top">30dp</dimen>
-    <dimen name="book_shop_search_view_padding_top">20dp</dimen>
+    <dimen name="book_shop_search_view_padding_top">10dp</dimen>
     <dimen name="book_shop_contain_recycler_margin_top">20dp</dimen>
-    <dimen name="text_no_stoke_background_radius">4dp</dimen>
+    <dimen name="text_no_stoke_background_radius">2dp</dimen>
     <dimen name="book_shop_recycler_view_margin">10dp</dimen>
     <dimen name="book_shop_title_padding">10dp</dimen>
     <dimen name="book_shop_recycler_height">190dp</dimen>
     <dimen name="book_shop_banner_recycler_height">90dp</dimen>
     <dimen name="book_shop_banner_recycler_margin_top_and_bottom">30dp</dimen>
     <dimen name="view_all_drawable_padding">5dp</dimen>
-    <dimen name="search_view_shop_car_icon_margin_left">10dp</dimen>
-    <dimen name="search_view_search_icon_margin_right">8dp</dimen>
+    <dimen name="search_view_shop_car_icon_margin_left">30dp</dimen>
+    <dimen name="search_view_search_icon_margin_left">10dp</dimen>
     <dimen name="search_view_shop_car_icon_width_and_height">35dp</dimen>
     <dimen name="search_view_edit_text_height">40dp</dimen>
     <dimen name="layout_book_shop_top_function_width_and_height">28dp</dimen>
@@ -101,7 +101,8 @@
     <dimen name="book_shop_scroll_bar_width">4dp</dimen>
     <dimen name="search_view_search_icon_width_and_height">34dp</dimen>
     <dimen name="search_view_button_background_padding">4dp</dimen>
-    <dimen name="search_view_edit_text_padding">5dp</dimen>
+    <dimen name="search_view_edit_text_padding_bottom">6dp</dimen>
+    <dimen name="search_view_edit_text_padding_left">15dp</dimen>
     <dimen name="subject_model_item_padding">2dp</dimen>
     <dimen name="subject_model_item_width">105dp</dimen>
     <dimen name="subject_model_item_height">140dp</dimen>
@@ -340,7 +341,8 @@
     <dimen name="item_subject_list_info_marginleft">15dp</dimen>
     <dimen name="title_bar_extra_margin_right">30dp</dimen>
     <dimen name="subject_list_sort_button_margin_left">40dp</dimen>
-    <dimen name="subject_list_sort_button_padding">10dp</dimen>
+    <dimen name="category_book_list_selected_button_padding_left">10dp</dimen>
+    <dimen name="category_book_list_selected_button_padding_top">6dp</dimen>
     <dimen name="subject_list_sort_button_container_padding">5dp</dimen>
     <dimen name="subject_list_just_vip_margin">15dp</dimen>
     <dimen name="subject_list_category_items_container_height">350dp</dimen>
@@ -430,4 +432,5 @@
     <dimen name="book_format_margin_right">20dp</dimen>
     <dimen name="library_cover_child_format_margin_top">25dp</dimen>
     <dimen name="library_cover_child_format_margin_right">5dp</dimen>
+    <dimen name="shop_search_book_edit_text_view_bg_height">6dp</dimen>
 </resources>

@@ -151,6 +151,7 @@ public class CategoryBookListFragment extends BaseFragment {
         categoryBookListBinding.setViewModel(getCategoryBookListViewModel());
         CategorySubjectAdapter categorySubjectAdapter = new CategorySubjectAdapter(getEventBus(), true);
         categorySubjectAdapter.setRowAndCol(catRow, catCol);
+        categorySubjectAdapter.setCanSelected(true);
         PageRecyclerView recyclerViewCategoryList = categoryBookListBinding.recyclerViewCategoryList;
         recyclerViewCategoryList.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewCategoryList.setAdapter(categorySubjectAdapter);

@@ -49,6 +49,7 @@ public class AllCategoryFragment extends BaseFragment {
     private int space = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_recycle_view_space);
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_recycle_view_row);
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_recycle_view_col);
+    private int topCol = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_top_recycle_view_col);
     private PageRecyclerView recyclerView;
     private GPaginator paginator;
     private static final int TYPE_INDEX_ZERO = 0;
@@ -104,11 +105,7 @@ public class AllCategoryFragment extends BaseFragment {
     private void setCategoryData(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categorySubjectItems) {
         if (categorySubjectItems != null) {
             getAllCategoryViewModel().setAllCategoryItems(categorySubjectItems);
-            if (categorySubjectItems.size() <= col) {
-                getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems);
-            } else {
-                getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems.subList(Constants.SHOP_MAIN_INDEX_ZERO, col));
-            }
+            getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems.subList(Constants.SHOP_MAIN_INDEX_ZERO, topCol));
             updateContentView(getAllCategoryViewModel().getAllCategoryItems());
             recyclerView.gotoPage(0);
         }
@@ -130,7 +127,7 @@ public class AllCategoryFragment extends BaseFragment {
                 if (paginator != null) {
                     setCurrentPage(paginator.getCurrentPage());
                 }
-                getAllCategoryViewModel().setTopCategoryItems(getAllCategoryViewModel().getAllCategoryItems().subList(position, position + col));
+                getAllCategoryViewModel().setTopCategoryItems(getAllCategoryViewModel().getAllCategoryItems().subList(position, position + topCol));
             }
         });
 
