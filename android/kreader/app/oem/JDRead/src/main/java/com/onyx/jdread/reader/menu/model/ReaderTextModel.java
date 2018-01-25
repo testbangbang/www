@@ -61,8 +61,12 @@ public class ReaderTextModel {
         return currentTypeface;
     }
 
-    public void setCurrentTypeface(ReaderTypeface typeface) {
+    public boolean setCurrentTypeface(ReaderTypeface typeface) {
+        if(currentTypeface.get() == typeface){
+            return false;
+        }
         this.currentTypeface.set(typeface);
+        return true;
     }
 
     public ObservableField<ReaderFontSize> getCurrentFontSize() {
@@ -98,23 +102,27 @@ public class ReaderTextModel {
     }
 
     public void onBoldfaceTypefaceClick() {
-        setCurrentTypeface(boldFaceType);
-        setTypeface(ReaderConfig.Typeface.BOLD_FACE_TYPEFACE);
+        if(setCurrentTypeface(boldFaceType)) {
+            setTypeface(ReaderConfig.Typeface.BOLD_FACE_TYPEFACE);
+        }
     }
 
     public void onArialTypefaceClick() {
-        setCurrentTypeface(arialTypeface);
-        setTypeface(ReaderConfig.Typeface.ARIAL_TYPEFACE);
+        if(setCurrentTypeface(arialTypeface)) {
+            setTypeface(ReaderConfig.Typeface.ARIAL_TYPEFACE);
+        }
     }
 
     public void onItalicsTypefaceClick() {
-        setCurrentTypeface(italicsTypeface);
-        setTypeface(ReaderConfig.Typeface.ITALICS_TYPEFACE);
+        if(setCurrentTypeface(italicsTypeface)) {
+            setTypeface(ReaderConfig.Typeface.ITALICS_TYPEFACE);
+        }
     }
 
     public void onRoundBodyTypefaceClick() {
-        setCurrentTypeface(roundBodyTypeface);
-        setTypeface(ReaderConfig.Typeface.ROUND_BODY_TYPEFACE);
+        if(setCurrentTypeface(roundBodyTypeface)) {
+            setTypeface(ReaderConfig.Typeface.ROUND_BODY_TYPEFACE);
+        }
     }
 
     public void setTypeface(String typeface){
