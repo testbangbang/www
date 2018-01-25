@@ -389,4 +389,11 @@
     <string name="source_language">Source language:</string>
     <string name="simplified_chinese">Simplified chinese</string>
     <string name="reader_target_language">Target language:</string>
+    <string name="down_book_resutl_no_read_vip">no read vip</string>
+    <string name="down_book_can_not_read">ebook is not can read</string>
+    <string name="down_book_book_not_found">the book not found</string>
+    <string name="down_book_illegal_order">illegal order</string>
+    <string name="down_book_illegal_device">illegal device</string>
+    <string name="down_book_server_error">server error</string>
+    <string name="down_book_cerify_order_error">cerify order error</string>
 </resources>

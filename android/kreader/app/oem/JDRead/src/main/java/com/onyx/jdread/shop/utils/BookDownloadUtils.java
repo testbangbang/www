@@ -48,14 +48,13 @@ public class BookDownloadUtils {
                         bookDetailBean.downLoadUrl = data.content_url;
                         downloadBook(dataBundle, bookDetailBean);
                     } else {
-                        ToastUtil.showToastErrorMsg(resultBean.result_code);
+                        ToastUtil.showToastErrorMsgForDownBook(resultBean.result_code);
                     }
                 }
 
                 @Override
                 public void onError(Throwable throwable) {
                     super.onError(throwable);
-                    ToastUtil.showToastErrorMsg(null);
                 }
             });
         } else {

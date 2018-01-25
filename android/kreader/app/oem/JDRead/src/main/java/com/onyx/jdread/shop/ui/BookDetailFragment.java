@@ -29,6 +29,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
@@ -165,6 +166,7 @@ public class BookDetailFragment extends BaseFragment {
         isSmoothRead = false;
         isDataBaseHaveBook = false;
         isWholeBookDownLoad = false;
+        hasAddToCart = false;
         ebookId = 0;
         downloadTaskState = 0;
         localPath = "";
@@ -344,7 +346,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private boolean checkWfiDisConnected() {
         if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
             return true;
         }
         return false;
@@ -559,6 +561,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     public void setAddOrDelFromCart(UpdateBean result) {
+        ToastUtil.showToast(ResManager.getString(R.string.book_detail_success_add_cart));
         hasAddToCart = true;
     }
 

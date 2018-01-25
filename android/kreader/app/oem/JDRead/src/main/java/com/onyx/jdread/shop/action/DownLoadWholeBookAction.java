@@ -1,5 +1,6 @@
 package com.onyx.jdread.shop.action;
 
+import com.jingdong.app.reader.data.DrmTools;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.cloud.entity.DownLoadWholeBookRequestBean;
@@ -38,9 +39,11 @@ public class DownLoadWholeBookAction extends BaseAction {
         queryArgs.put(CloudApiContext.BookDownLoad.HAS_CERT, CloudApiContext.BookDownLoad.HAS_CERT_DEFAULT_VALUE);
         queryArgs.put(CloudApiContext.BookDownLoad.TYPE, String.valueOf(downLoadType));
         queryArgs.put(CloudApiContext.BookDownLoad.IS_TOB, String.valueOf(CloudApiContext.BookDownLoad.IS_TOB_DEFAULT_VALUE));
+        queryArgs.put(CloudApiContext.BookDownLoad.HARDWARE_ID, DrmTools.getHardwareId(baseInfo.getUuid()));
         baseInfo.addRequestParams(queryArgs);
         baseInfo.removeApp();
-        baseInfo.setSign(baseInfo.getSignValue(CloudApiContext.BookShopURI.DOWN_LOAD_WHOLE_BOOK));
+        String uri = String.format(CloudApiContext.BookShopURI.DOWN_LOAD_WHOLE_BOOK, String.valueOf(bookId));
+        baseInfo.setSign(baseInfo.getSignValue(uri));
         requestBean.setAppBaseInfo(baseInfo);
         requestBean.bookId = bookId;
         requestBean.saltValue = PersonalDataBundle.getInstance().getSalt();

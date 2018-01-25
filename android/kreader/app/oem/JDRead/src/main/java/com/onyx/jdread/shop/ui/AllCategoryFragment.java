@@ -230,6 +230,7 @@ public class AllCategoryFragment extends BaseFragment {
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
         if (categoryBean != null) {
+            categoryBean.isSelect = true;
             JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, categoryBean.id);
             JDPreferenceManager.setStringValue(Constants.SP_KEY_CATEGORY_NAME, categoryBean.name);
             getViewEventCallBack().gotoView(CategoryBookListFragment.class.getName());

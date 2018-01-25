@@ -243,6 +243,9 @@ public class CategoryBookListFragment extends BaseFragment {
         this.currentPage = 1;
         this.sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
+        getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = currentCatName;
+        JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
+        JDPreferenceManager.setStringValue(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
         showOrCloseAllCatButton();
     }
