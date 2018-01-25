@@ -69,9 +69,9 @@ public class AlFormatCHM extends AlFormatBaseHTML {
         cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_HTML);
         if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
             cssStyles.disableExternal = true;
-
+        customSize = 0;
         parser(0, -1);
-
+        size = customSize;
 
     }
 

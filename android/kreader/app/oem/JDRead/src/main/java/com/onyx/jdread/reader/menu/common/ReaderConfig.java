@@ -21,10 +21,10 @@ public class ReaderConfig {
     }
 
     public static class Typeface {
-        public static final String BOLD_FACE_TYPEFACE = TYPEFACE_ROOT_PATH + "GEInspBI.TTF";
+        public static final String BOLD_FACE_TYPEFACE = TYPEFACE_ROOT_PATH + "FZHT_GB18030.TTF";
         public static final String ARIAL_TYPEFACE = TYPEFACE_ROOT_PATH + "PTF55.otf";
         public static final String ITALICS_TYPEFACE = TYPEFACE_ROOT_PATH + "GEInspRg.TTF";
-        public static final String ROUND_BODY_TYPEFACE = TYPEFACE_ROOT_PATH + "xingguangyijiu.ttf";
+        public static final String ROUND_BODY_TYPEFACE = TYPEFACE_ROOT_PATH + "GEInspBd.ttf";
         public static final String DEFAULT_TYPEFACE = BOLD_FACE_TYPEFACE;
     }
 
