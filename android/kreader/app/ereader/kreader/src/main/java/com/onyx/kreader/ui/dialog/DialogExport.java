@@ -113,8 +113,8 @@ public class DialogExport extends OnyxBaseDialog implements CompoundButton.OnChe
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ExportNotesActionChain(SingletonSharedPreference.isExportWithScribble(),
-                        SingletonSharedPreference.isExportWithAnnotation()).execute(readerDataHolder, new BaseCallback() {
+                new ExportNotesActionChain(SingletonSharedPreference.isExportWithAnnotation(),
+                        SingletonSharedPreference.isExportWithScribble()).execute(readerDataHolder, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         String text = getContext().getString(e == null ? R.string.export_success : R.string.export_fail);
