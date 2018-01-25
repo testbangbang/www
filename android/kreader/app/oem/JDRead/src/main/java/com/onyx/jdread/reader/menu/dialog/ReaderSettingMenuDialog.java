@@ -21,6 +21,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.model.FunctionBarModel;
+import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
@@ -122,7 +123,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initSystemBar() {
-        binding.readerSettingSystemBar.setSystemBarModel(new SystemBarModel());
+        binding.readerSettingSystemBar.setSystemBarModel(MainBundle.getInstance().getSystemBarModel());
     }
 
     private void initTextBar(){
