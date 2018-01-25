@@ -138,6 +138,7 @@ public class CloudApiContext {
     public static class BookDownLoad {
         public static final String HAS_CERT = "has_cert";
         public static final String TYPE = "type";
+        public static final String HARDWARE_ID = "hardware_id";
         public static final String IS_TOB = "is_tob"; //is Enterprise Edition
         public static final String HAS_CERT_DEFAULT_VALUE = "0";
         public static final int TYPE_SMOOTH_READ = 1;
