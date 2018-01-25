@@ -93,7 +93,9 @@ public class AlFormatHTML extends AlFormatBaseHTML {
             cssStyles.disableExternal = true;
 
         allState.state_parser = 0;
+        customSize = 0;
         parser(0, aFiles.getSize());
+        size = customSize;
     }
 
     @Override
