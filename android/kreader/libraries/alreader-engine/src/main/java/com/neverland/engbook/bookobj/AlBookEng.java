@@ -1511,7 +1511,10 @@ public class AlBookEng{
 				}
 			}
 			
-			if (oi.justify == AlParProperty.SL2_JUST_NONE) {
+			if (oi.justify == AlParProperty.SL2_JUST_NONE ||
+					(preferences.chinezeFormatting && preferences.justify &&
+							oi.justify == AlParProperty.SL2_JUST_LEFT &&
+							(oi.style[0] & AlStyles.SL_SPECIAL_PARAGRAPGH) == 0)) {
 
 				if (oi.count > 0 && ((oi.style[0] & AlParProperty.SL2_UL_MASK) >> AlParProperty.SL2_UL_SHIFT) == 0) {
 					switch (Character.getType(oi.text[0])) {
