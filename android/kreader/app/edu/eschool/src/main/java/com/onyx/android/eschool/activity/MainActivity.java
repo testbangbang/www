@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -359,10 +359,16 @@ public class MainActivity extends BaseActivity {
         return BookTextFragment.newInstance(fragmentName, libraryId);
     }
 
+    private void resetNewArgument(BookTextFragment fragment, String libraryName, Library library) {
+        String libraryId = library == null ? null : library.getIdString();
+        BookTextFragment.resetArgumentsBundle(fragment.getArguments(), libraryName, libraryId);
+    }
+
     private Fragment getBookTextFragment(String libraryName, Library library) {
         if (bookTextFragment == null) {
             bookTextFragment = getCommonBookFragment(libraryName, library);
         }
+        resetNewArgument(bookTextFragment, libraryName, library);
         return bookTextFragment;
     }
 
@@ -370,6 +376,7 @@ public class MainActivity extends BaseActivity {
         if (teachingAuxiliaryFragment == null) {
             teachingAuxiliaryFragment = getCommonBookFragment(libraryName, library);
         }
+        resetNewArgument(teachingAuxiliaryFragment, libraryName, library);
         return teachingAuxiliaryFragment;
     }
 
@@ -377,6 +384,7 @@ public class MainActivity extends BaseActivity {
         if (bookReadingFragment == null) {
             bookReadingFragment = getCommonBookFragment(libraryName, library);
         }
+        resetNewArgument(bookReadingFragment, libraryName, library);
         return bookReadingFragment;
     }
 
@@ -394,7 +402,7 @@ public class MainActivity extends BaseActivity {
         return studentInfoFragment;
     }
 
-    private class ViewPagerAdapter extends FragmentPagerAdapter {
+    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -404,7 +412,7 @@ public class MainActivity extends BaseActivity {
         public Fragment getItem(int position) {
             String title = getPageTitle(position).toString();
             Library library = libraryMap.get(title);
-            Fragment f = getBookTextFragment(title, library);
+            Fragment f = new Fragment();
             switch (position) {
                 case BOOK_TEXT_TAB:
                     f = getBookTextFragment(title, library);
