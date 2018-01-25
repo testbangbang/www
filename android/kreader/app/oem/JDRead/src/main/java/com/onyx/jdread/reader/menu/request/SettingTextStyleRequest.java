@@ -21,7 +21,15 @@ public class SettingTextStyleRequest extends ReaderBaseRequest {
     @Override
     public SettingTextStyleRequest call() throws Exception {
         reader.getReaderHelper().getTextStyleManager().setStyle(style);
+        reader.getReaderHelper().getBitmapCache().clear();
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
+
+        ReaderTextStyle s = reader.getReaderHelper().getTextStyleManager().getStyle();
+        style = ReaderTextStyle.copy(s);
         return this;
+    }
+
+    public ReaderTextStyle getStyle() {
+        return style;
     }
 }
