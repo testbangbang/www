@@ -10,21 +10,33 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/dialog_export_close"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:padding="@dimen/dialog_export_close_padding"
-            android:src="@mipmap/ic_close" />
+            android:orientation="horizontal"
+            android:padding="@dimen/dialog_export_title_padding">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/export_note_to"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/export_note_to"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <ImageView
+                android:id="@+id/dialog_export_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="@dimen/dialog_export_close_padding"
+                android:src="@mipmap/ic_cancel" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_width"
+            android:background="@color/divider_color" />
 
         <LinearLayout
             android:layout_width="match_parent"

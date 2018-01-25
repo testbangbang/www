@@ -72,7 +72,9 @@ public class WifiFragment extends BaseFragment {
             public void onItemClick(int position) {
                 if (wifiSettingAdapter.getScanResult() != null) {
                     AccessPoint accessPoint = wifiSettingAdapter.getScanResult().get(position);
-                    if (accessPoint.getWifiInfo() != null) {
+                    if(accessPoint.getSecurity() == 0) {
+                        wifiAdmin.connectWifi(accessPoint);
+                    } else if (accessPoint.getWifiInfo() != null) {
                         showConnectDialog(accessPoint);
                     } else if (accessPoint.getWifiConfiguration() == null) {
                         showLoginDialog(accessPoint);

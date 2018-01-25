@@ -23,7 +23,7 @@
             android:layout_centerVertical="true"
             android:text="@{model.configName}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font" />
+            android:textSize="@dimen/level_two_heading_font" />
 
         <TextView
             android:id="@+id/hour_format"
@@ -35,15 +35,15 @@
             android:text="@string/hour_format"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font"
-            android:visibility="@{model.hasToggle ? View.VISIBLE : View.GONE}" />
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/device_config_clock_margin_left"
-            android:layout_toRightOf="@+id/hour_format"
-            android:text="@string/sample_clock"
+            android:layout_marginRight="@dimen/device_config_clock_margin_left"
+            android:layout_toLeftOf="@+id/item_device_config_arrow"
+            android:text="@{@string/sample_clock(model.timeFormat)}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font"
             android:visibility="@{model.hasToggle ? View.VISIBLE : View.GONE}" />

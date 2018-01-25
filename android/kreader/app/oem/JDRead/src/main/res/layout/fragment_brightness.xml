@@ -34,7 +34,7 @@
                 android:background="@drawable/imagebtn_bg"
                 android:onClick="@{()->brightnessModel.closeBrightness()}"
                 android:text="@string/closed"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_two_heading_font" />
 
             <RatingBar
                 android:id="@+id/ratingbar_light_settings"
@@ -57,8 +57,7 @@
                 android:onClick="@{()->brightnessModel.maxBrightness()}"
                 android:text="@string/brightest_brightness"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_two_heading_font" />
         </LinearLayout>
-
     </RelativeLayout>
 </layout>

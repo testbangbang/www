@@ -5,8 +5,13 @@ import android.test.ApplicationTestCase;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendUserBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
+import com.onyx.jdread.personal.request.cloud.RxGetGiftInfoRequest;
 import com.onyx.jdread.personal.request.cloud.RxGetReadPreferenceRequest;
 import com.onyx.jdread.personal.request.cloud.RxReadingForVoucherRequest;
+import com.onyx.jdread.personal.request.cloud.RxRecommendUserRequest;
 import com.onyx.jdread.personal.request.cloud.RxSetReadPreferenceRequest;
 import com.onyx.jdread.personal.request.cloud.RxSignForVoucherRequest;
 import com.onyx.jdread.personal.request.cloud.RxVerifySignRequest;
@@ -52,11 +57,15 @@ public class PersonalTest extends ApplicationTestCase<JDReadApplication> {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                SetReadPreferenceBean resultBean = rq.getResultBean();
+                assertNotNull(resultBean);
+                assertEquals(resultBean.getResult_code(), 0);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onError(Throwable throwable) {
+                assertNull(throwable);
                 countDownLatch.countDown();
             }
         });
@@ -102,6 +111,8 @@ public class PersonalTest extends ApplicationTestCase<JDReadApplication> {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                VerifySignBean verifySignBean = rq.getVerifySignBean();
+                assertNotNull(verifySignBean);
                 countDownLatch.countDown();
             }
 
@@ -117,7 +128,7 @@ public class PersonalTest extends ApplicationTestCase<JDReadApplication> {
     public void testSignForVoucher() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        String signValue = baseInfo.getSignValue(CloudApiContext.User.SIGN_CHECK);
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.SIGN);
         baseInfo.setSign(signValue);
 
         final RxSignForVoucherRequest rq = new RxSignForVoucherRequest();
@@ -148,6 +159,59 @@ public class PersonalTest extends ApplicationTestCase<JDReadApplication> {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                assertNull(throwable);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testGetGiftInfo() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
+        String signValue = baseInfo.getSignValue("gift/sn=123");
+        baseInfo.setSign(signValue);
+
+        RxGetGiftInfoRequest rq = new RxGetGiftInfoRequest();
+        rq.setBaseInfo(baseInfo);
+        rq.setSn(123);
+        rq.execute(new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                assertNull(throwable);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testRecommendUser() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
+        Map<String, String> map = new HashMap<>();
+        map.put("page", "1");
+        map.put("page_size", "20");
+        baseInfo.getRequestParamsMap().putAll(map);
+
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.RECOMMEND_USER);
+        baseInfo.setSign(signValue);
+        final RxRecommendUserRequest rq = new RxRecommendUserRequest();
+        rq.setBaseInfo(baseInfo);
+        rq.execute(new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                RecommendUserBean recommendUserBean = rq.getRecommendUserBean();
+                assertNotNull(recommendUserBean);
                 countDownLatch.countDown();
             }
 
