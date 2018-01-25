@@ -20,13 +20,13 @@ public class GotoPageAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         final GotoPageRequest request = new GotoPageRequest(readerDataHolder.getReader(),page);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                EventBus.getDefault().post(new PageViewUpdateEvent());
-                ReaderActivityEventHandler.updateReaderViewInfo(request);
+                readerDataHolder.getEventBus().post(new PageViewUpdateEvent());
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
             }
         });
     }

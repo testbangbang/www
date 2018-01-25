@@ -14,6 +14,7 @@ public class MainBundle {
     private static MainBundle bundle;
     private Context appContext;
     private EventBus eventBus = new EventBus();
+    private SystemBarModel systemBarModel;
 
     public static MainBundle getInstance() {
         if (bundle == null) {
@@ -32,5 +33,12 @@ public class MainBundle {
 
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    public SystemBarModel getSystemBarModel() {
+        if (systemBarModel == null) {
+            systemBarModel = new SystemBarModel();
+        }
+        return systemBarModel;
     }
 }

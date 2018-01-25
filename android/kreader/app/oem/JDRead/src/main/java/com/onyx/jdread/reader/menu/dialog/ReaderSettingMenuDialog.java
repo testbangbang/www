@@ -21,6 +21,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.model.FunctionBarModel;
+import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
@@ -91,11 +92,11 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initReaderSettingMenu(){
-        binding.setReaderSettingModel(new ReaderSettingModel());
+        binding.setReaderSettingModel(new ReaderSettingModel(readerDataHolder.getEventBus()));
     }
 
     private void initReaderPageInfoBar(){
-        binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel());
+        binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel(readerDataHolder.getEventBus()));
         new UpdatePageInfoAction(binding,readerDataHolder.getReaderViewInfo()).execute(readerDataHolder,null);
         initReaderPageInfoEvent();
     }
@@ -116,25 +117,25 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
             public void onStopTrackingTouch(SeekBar seekBar) {
                 binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(seekBar.getProgress());
                 GotoPageEvent event = new GotoPageEvent(seekBar.getProgress());
-                EventBus.getDefault().post(event);
+                readerDataHolder.getEventBus().post(event);
             }
         });
     }
 
     private void initSystemBar() {
-        binding.readerSettingSystemBar.setSystemBarModel(new SystemBarModel());
+        binding.readerSettingSystemBar.setSystemBarModel(MainBundle.getInstance().getSystemBarModel());
     }
 
     private void initTextBar(){
-        binding.readerSettingTextSettingBar.setReaderTextModel(new ReaderTextModel());
+        binding.readerSettingTextSettingBar.setReaderTextModel(new ReaderTextModel(readerDataHolder.getEventBus()));
     }
 
     private void initImageBar(){
-        binding.readerSettingImageSettingBar.setReaderImageModel(new ReaderImageModel());
+        binding.readerSettingImageSettingBar.setReaderImageModel(new ReaderImageModel(readerDataHolder.getEventBus()));
     }
 
     private void initCustomizeBar(){
-        binding.readerSettingCustomizeFormatBar.setReaderMarginModel(new ReaderMarginModel());
+        binding.readerSettingCustomizeFormatBar.setReaderMarginModel(new ReaderMarginModel(readerDataHolder.getEventBus()));
         initCustomizeEvent();
     }
 
@@ -224,7 +225,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initReaderTitleBar() {
-        binding.readerSettingTitleBar.setReaderTitleBarModel(new ReaderTitleBarModel());
+        binding.readerSettingTitleBar.setReaderTitleBarModel(new ReaderTitleBarModel(readerDataHolder.getEventBus()));
         updateBookmarkState();
     }
 

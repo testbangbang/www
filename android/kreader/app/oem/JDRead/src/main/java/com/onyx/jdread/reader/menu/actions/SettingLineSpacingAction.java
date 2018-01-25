@@ -21,14 +21,14 @@ public class SettingLineSpacingAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         ReaderTextStyle.Percentage oldLineSpacing = style.getLineSpacing();
         oldLineSpacing.setPercent(lineSpacing);
         final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(),style);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                ReaderActivityEventHandler.updateReaderViewInfo(request);
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
             }
 
             @Override

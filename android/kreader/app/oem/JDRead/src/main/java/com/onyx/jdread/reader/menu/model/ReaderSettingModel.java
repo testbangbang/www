@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.menu.model;
 
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -9,11 +10,17 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ReaderSettingModel {
+    private EventBus eventBus;
+
     public enum ReaderSystemMenuGroup {
-        progressMenuGroup, brightnessMenuGroup,textMenuGroup,imageMenuGroup,customMenuGroup
+        progressMenuGroup, brightnessMenuGroup, textMenuGroup, imageMenuGroup, customMenuGroup
+    }
+
+    public ReaderSettingModel(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     public void dismissZoneClick() {
-        EventBus.getDefault().post(new CloseReaderSettingMenuEvent());
+        eventBus.post(new CloseReaderSettingMenuEvent());
     }
 }

@@ -17,6 +17,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogAddWifiBinding;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
+import com.onyx.jdread.main.common.ResManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,8 +106,10 @@ public class AddWIFIConfigurationDialog extends Dialog {
     @Override
     public void show() {
         Window window = getWindow();
-        window.setGravity(Gravity.CENTER);
+        window.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.TOP);
         WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.y = ResManager.getInteger(R.integer.add_wifi_dialog_y);
+        attributes.x = ResManager.getInteger(R.integer.add_wifi_dialog_x);
         attributes.width = getContext().getResources().getInteger(R.integer.add_wifi_dialog_width);
         attributes.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(attributes);

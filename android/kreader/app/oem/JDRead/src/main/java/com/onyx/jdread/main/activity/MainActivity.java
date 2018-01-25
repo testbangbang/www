@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initSystemBar() {
-        systemBarModel = new SystemBarModel();
+        systemBarModel = MainBundle.getInstance().getSystemBarModel();
         binding.mainSystemBar.setSystemBarModel(systemBarModel);
         systemBarModel.registerReceiver(JDReadApplication.getInstance());
     }

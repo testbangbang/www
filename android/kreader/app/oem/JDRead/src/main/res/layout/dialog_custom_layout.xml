@@ -37,10 +37,9 @@
                 android:layout_weight="1"
                 android:background="@drawable/selected_background"
                 android:gravity="center"
-                android:onClick="@{()->dialogModel.onPositiveClick()}"
-                android:text="@{dialogModel.positiveText}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:onClick="@{()->dialogModel.onNegativeClick()}"
+                android:text="@{dialogModel.negativeText}"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:layout_width="0dp"
@@ -48,9 +47,10 @@
                 android:layout_weight="1"
                 android:background="@drawable/selected_background"
                 android:gravity="center"
-                android:onClick="@{()->dialogModel.onNegativeClick()}"
-                android:text="@{dialogModel.negativeText}"
-                android:textColor="@android:color/black" />
+                android:onClick="@{()->dialogModel.onPositiveClick()}"
+                android:text="@{dialogModel.positiveText}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
         </LinearLayout>
     </LinearLayout>
 </layout>

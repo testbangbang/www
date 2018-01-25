@@ -1,22 +1,21 @@
 package com.onyx.jdread.setting.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.provider.Settings;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemDeviceConfigBinding;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.model.MainBundle;
+import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.setting.event.DeviceConfigEvent;
 import com.onyx.jdread.setting.model.DeviceConfigData;
-import com.onyx.jdread.util.Utils;
+import com.onyx.jdread.util.TimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,8 +30,6 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
     private EventBus eventBus;
     private List<DeviceConfigData> data;
     private Map<String, DeviceConfigEvent> configEvents;
-    private static final String HOURS_12 = "12";
-    private static final String HOURS_24 = "24";
 
     public DeviceConfigAdapter(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -64,7 +61,7 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
         DeviceConfigViewHolder viewHolder = (DeviceConfigViewHolder) holder;
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
-        viewHolder.getBinding().itemDataFormatCheck.setChecked(is24Hour());
+        viewHolder.getBinding().itemDataFormatCheck.setChecked(TimeUtils.is24Hour());
         viewHolder.getBinding().itemDataFormatCheck.setOnCheckedChangeListener(this);
         viewHolder.bindTo(data.get(position));
     }
@@ -88,24 +85,17 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
         int position = (int) tag;
         DeviceConfigData deviceConfigData = data.get(position);
         DeviceConfigEvent deviceConfigEvent = configEvents.get(deviceConfigData.getConfigName());
-        deviceConfigEvent.setDeviceConfigData(deviceConfigData);
-        eventBus.post(deviceConfigEvent);
+        if (deviceConfigEvent != null) {
+            deviceConfigEvent.setDeviceConfigData(deviceConfigData);
+            eventBus.post(deviceConfigEvent);
+        }
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        set24Hour(isChecked);
-        Utils.sendTimeChangeBroadcast();
-    }
-
-    private boolean is24Hour() {
-        return DateFormat.is24HourFormat(JDReadApplication.getInstance());
-    }
-
-    private void set24Hour(boolean is24Hour) {
-        Settings.System.putString(JDReadApplication.getInstance().getContentResolver(),
-                Settings.System.TIME_12_24,
-                is24Hour ? HOURS_24 : HOURS_12);
+        SystemBarModel systemBarModel = MainBundle.getInstance().getSystemBarModel();
+        systemBarModel.setTimeFormat(isChecked);
+        systemBarModel.updateTime();
     }
 
     static class DeviceConfigViewHolder extends RecyclerView.ViewHolder {

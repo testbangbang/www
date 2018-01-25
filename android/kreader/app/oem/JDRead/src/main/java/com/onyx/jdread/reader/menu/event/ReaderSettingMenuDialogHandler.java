@@ -64,14 +64,14 @@ public class ReaderSettingMenuDialogHandler {
     }
 
     public void registerListener() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+        if (!readerDataHolder.getEventBus().isRegistered(this)) {
+            readerDataHolder.getEventBus().register(this);
         }
     }
 
     public void unregisterListener() {
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+        if (readerDataHolder.getEventBus().isRegistered(this)) {
+            readerDataHolder.getEventBus().unregister(this);
         }
     }
 
@@ -103,12 +103,12 @@ public class ReaderSettingMenuDialogHandler {
     public void onReaderFunctionItemCatalogEvent(ReaderFunctionItemCatalogEvent event) {
         //catalog
         closeDialog();
-        EventBus.getDefault().post(new ShowReaderCatalogMenuEvent());
+        readerDataHolder.getEventBus().post(new ShowReaderCatalogMenuEvent());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemBackEvent(ReaderFunctionItemBackEvent event) {
-        EventBus.getDefault().post(new CloseDocumentEvent());
+        readerDataHolder.getEventBus().post(new CloseDocumentEvent());
         readerSettingViewBack.getContent().dismiss();
     }
 
@@ -278,8 +278,8 @@ public class ReaderSettingMenuDialogHandler {
 
             RectF pageRect = new RectF(0, 0, subNotePage.getOriginWidth(),
                     subNotePage.getOriginHeight());
-            int displayWidth = readerDataHolder.getReader().getReaderViewHelper().getPageViewWidth();
-            int displayHeight = readerDataHolder.getReader().getReaderViewHelper().getPageViewHeight();
+            int displayWidth = readerDataHolder.getReaderTouchHelper().getContentWidth();
+            int displayHeight = readerDataHolder.getReaderTouchHelper().getContentHeight();
             RectF viewportRect = new RectF(displayWidth / 2, 0, displayWidth, displayHeight);
             float scale = PageUtils.scaleToFitRect(pageRect, viewportRect);
 

@@ -64,8 +64,8 @@ public class LayoutProviderUtils {
         }
         Debug.d(TAG, "hit cache: " + hitCache + ", " + key);
         if (!hitCache) {
-            ReaderBitmapReferenceImpl freeBitmap = cache.getFreeBitmap(reader.getReaderViewHelper().getPageViewWidth(),
-                    reader.getReaderViewHelper().getPageViewHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
+            ReaderBitmapReferenceImpl freeBitmap = cache.getFreeBitmap(reader.getReaderViewHelper().getContentWidth(),
+                    reader.getReaderViewHelper().getContentHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
             try {
                 drawContext.renderingBitmap = new ReaderBitmapReferenceImpl();
                 drawContext.renderingBitmap.attachWith(key, freeBitmap.getBitmapReference());

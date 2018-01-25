@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.menu.model;
 
 import android.databinding.BaseObservable;
 
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.event.CloseSearchDialogEvent;
 import com.onyx.jdread.reader.menu.event.SearchEvent;
 
@@ -14,6 +15,15 @@ import org.greenrobot.eventbus.EventBus;
 public class ReaderSearchModel extends BaseObservable {
     private String searchContent;
     private int searchSize;
+    private EventBus eventBus;
+
+    public ReaderSearchModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
+    }
 
     public String getSearchContent() {
         return searchContent;
@@ -39,10 +49,10 @@ public class ReaderSearchModel extends BaseObservable {
     }
 
     public void search() {
-        EventBus.getDefault().post(new SearchEvent(getSearchContent()));
+        getEventBus().post(new SearchEvent(getSearchContent()));
     }
 
     public void back() {
-        EventBus.getDefault().post(new CloseSearchDialogEvent());
+        getEventBus().post(new CloseSearchDialogEvent());
     }
 }

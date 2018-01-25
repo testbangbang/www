@@ -187,7 +187,7 @@ public class BaseHandler {
 
     private Point bookmarkPosition(Bitmap bitmap) {
         Point point = new Point();
-        point.set(readerDataHolder.getReaderTouchHelper().getSurfaceView().getWidth() - bitmap.getWidth(), 10);
+        point.set(readerDataHolder.getReaderTouchHelper().getContentWidth() - bitmap.getWidth(), 10);
         return point;
     }
 
@@ -232,8 +232,8 @@ public class BaseHandler {
     }
 
     public static String getTouchAreaCode(ReaderDataHolder readerDataHolder, final MotionEvent event) {
-        int displayWidth = readerDataHolder.getReaderTouchHelper().getSurfaceView().getWidth();
-        int displayHeight = readerDataHolder.getReaderTouchHelper().getSurfaceView().getHeight();
+        int displayWidth = readerDataHolder.getReaderTouchHelper().getContentWidth();
+        int displayHeight = readerDataHolder.getReaderTouchHelper().getContentHeight();
         if (event.getX() > displayWidth * TOUCH_VERTICAL_PART / TOUCH_HORIZONTAL_PART &&
                 event.getY() > displayHeight / TOUCH_VERTICAL_PART) {
             return TouchBinding.TOUCH_RIGHT_BOTTOM;

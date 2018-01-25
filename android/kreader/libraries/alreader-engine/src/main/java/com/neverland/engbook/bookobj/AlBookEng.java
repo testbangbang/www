@@ -240,7 +240,7 @@ public class AlBookEng{
 
 	@Override	
 	public void finalize() throws Throwable {
-		uninitializeBookEngine();
+		//uninitializeBookEngine();
 		super.finalize();
 	}
 

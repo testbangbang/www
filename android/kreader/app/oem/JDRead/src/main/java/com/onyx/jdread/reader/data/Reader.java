@@ -5,6 +5,8 @@ import android.content.Context;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by huxiaomao on 2017/12/20.
  */

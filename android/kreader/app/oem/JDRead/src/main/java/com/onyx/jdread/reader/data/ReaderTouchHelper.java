@@ -1,11 +1,13 @@
 package com.onyx.jdread.reader.data;
 
+import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.reader.common.ReaderViewConfig;
 import com.onyx.jdread.reader.ui.gesture.ReaderOnGestureListener;
 
 /**
@@ -15,20 +17,24 @@ import com.onyx.jdread.reader.ui.gesture.ReaderOnGestureListener;
 public class ReaderTouchHelper {
     private ReaderDataHolder readerDataHolder;
     private GestureDetector gestureDetector;
-    private SurfaceView surfaceView;
+    private SurfaceView contentView;
 
-    public SurfaceView getSurfaceView() {
-        return surfaceView;
+    public int getContentWidth() {
+        return ReaderViewConfig.getContentWidth(contentView);
+    }
+
+    public int getContentHeight() {
+        return ReaderViewConfig.getContentHeight(contentView);
     }
 
     public void setReaderDataHolder(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
     }
 
-    public void setReaderViewTouchListener(SurfaceView surfaceView) {
-        this.surfaceView = surfaceView;
-        surfaceView.setOnTouchListener(onTouchEvent);
-        gestureDetector = new GestureDetector(surfaceView.getContext(), new ReaderOnGestureListener(readerDataHolder));
+    public void setReaderViewTouchListener(SurfaceView contentView) {
+        this.contentView = contentView;
+        contentView.setOnTouchListener(onTouchEvent);
+        gestureDetector = new GestureDetector(contentView.getContext(), new ReaderOnGestureListener(readerDataHolder));
     }
 
     public View.OnTouchListener onTouchEvent = new View.OnTouchListener() {

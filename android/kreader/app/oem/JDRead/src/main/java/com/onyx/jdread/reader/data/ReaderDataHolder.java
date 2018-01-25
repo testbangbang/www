@@ -7,11 +7,15 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.jdread.R;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
+import com.onyx.jdread.reader.common.ReaderViewConfig;
 import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
 import com.onyx.jdread.reader.model.SelectMenuModel;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2017/12/20.
@@ -32,10 +36,35 @@ public class ReaderDataHolder {
     private SelectMenuModel selectMenuModel;
     private DocumentInfo documentInfo;
     private ReaderSelectionInfo readerSelectionInfo;
+    private EventBus eventBus = EventBus.getDefault();
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
         setAppContext(appContext);
+        initView(appContext);
+    }
+
+    private void initView(Context context){
+        float readerBottomStateBarHeight = context.getResources().getDimension(R.dimen.reader_content_view_bottom_state_bar_height);
+        ReaderViewConfig.setReaderBottomStateBarHeight(readerBottomStateBarHeight);
+
+        float fontSize = context.getResources().getDimension(R.dimen.level_two_heading_font);
+        ReaderViewConfig.setTimeFontSize(fontSize);
+        ReaderViewConfig.setPageNumberFontSize(fontSize);
+
+        float marginLeft = context.getResources().getDimension(R.dimen.reader_time_margin_left);
+        ReaderViewConfig.setTimeMarginLeft(marginLeft);
+        float marginBottom = context.getResources().getDimension(R.dimen.reader_time_margin_bottom);
+        ReaderViewConfig.setTimeMarginBottom(marginBottom);
+
+        float marginRight = context.getResources().getDimension(R.dimen.reader_page_number_margin_right);
+        ReaderViewConfig.setPageNumberMarginRight(marginRight);
+        marginBottom = context.getResources().getDimension(R.dimen.reader_page_number_margin_bottom);
+        ReaderViewConfig.setPageNumberMarginBottom(marginBottom);
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public SelectMenuModel getSelectMenuModel() {
@@ -120,7 +149,7 @@ public class ReaderDataHolder {
     }
 
     public SurfaceView getReadPageView() {
-        return reader.getReaderViewHelper().getReadPageView();
+        return reader.getReaderViewHelper().getContentView();
     }
 
     public void setReadPageView(SurfaceView readPageView) {
