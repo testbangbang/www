@@ -185,7 +185,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private List<Integer> getEraserMenuActions() {
         List<Integer> menuActions = new ArrayList<>();
         menuActions.add(ReaderMenuAction.SCRIBBLE_ERASER_PART.ordinal());
-        menuActions.add(ReaderMenuAction.SCRIBBLE_ERASER_ALL.ordinal());
+        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_ERASER_ALL.ordinal());
         return menuActions;
     }
 

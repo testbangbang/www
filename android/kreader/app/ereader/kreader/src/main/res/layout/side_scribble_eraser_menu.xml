@@ -36,6 +36,10 @@
             bind:item="@{item[ReaderMenuAction.SCRIBBLE_ERASER_ALL.ordinal()].setMenuIcon(R.drawable.ic_eraser_all)}"
             layout="@layout/scribble_sub_menu"/>
 
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_SIDE_NOTE_ERASER_ALL.ordinal()].setMenuIcon(R.drawable.ic_eraser_all)}"
+            layout="@layout/scribble_sub_menu"/>
+
     </com.google.android.flexbox.FlexboxLayout>
 
 </layout>
