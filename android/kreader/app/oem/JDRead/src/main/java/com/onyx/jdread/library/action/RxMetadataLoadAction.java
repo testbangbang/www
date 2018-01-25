@@ -16,6 +16,7 @@ import com.onyx.jdread.main.action.BaseAction;
 public class RxMetadataLoadAction extends BaseAction<LibraryDataBundle> {
     private boolean showDialog = true;
     private boolean loadFromCache = false;
+    private boolean clearLibraryCache = false;
 
     private QueryArgs queryArgs;
     private boolean loadMetadata = true;
@@ -37,8 +38,16 @@ public class RxMetadataLoadAction extends BaseAction<LibraryDataBundle> {
         this.loadMetadata = loadMetadata;
     }
 
+    public void setClearLibraryCache(boolean clearLibraryCache) {
+        this.clearLibraryCache = clearLibraryCache;
+    }
+
     @Override
     public void execute(final LibraryDataBundle dataHolder, final RxCallback baseCallback) {
+        if (clearLibraryCache) {
+            dataHolder.getDataManager().getCacheManager().clearMetadataCache();
+            dataHolder.getDataManager().getCacheManager().clearLibraryCache();
+        }
         final LibraryViewDataModel dataModel = dataHolder.getLibraryViewDataModel();
         final RxLibraryLoadRequest libraryRequest = new RxLibraryLoadRequest(dataHolder.getDataManager(), queryArgs, dataModel.getLibrarySelectedModel().getSelectedList(), dataModel.getLibrarySelectedModel().isSelectedAll(), dataHolder.getEventBus(), loadMetadata);
         libraryRequest.setLoadFromCache(loadFromCache);

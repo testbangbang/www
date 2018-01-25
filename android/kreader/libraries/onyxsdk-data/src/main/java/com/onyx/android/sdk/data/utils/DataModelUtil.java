@@ -34,12 +34,6 @@ public class DataModelUtil {
         Iterator<Library> iterator = libraryList.iterator();
         while (iterator.hasNext()) {
             Library library = iterator.next();
-            long metadataCount = dataProvider.libraryMetadataCount(library);
-            if (metadataCount == 0 && !loadEmpty) {
-                dataProvider.deleteLibrary(library);
-                iterator.remove();
-                continue;
-            }
             DataModel model = new DataModel(eventBus);
             model.type.set(ModelType.TYPE_LIBRARY);
             model.parentId.set(library.getParentUniqueId());
@@ -49,7 +43,7 @@ public class DataModelUtil {
             model.desc.set(library.getDescription());
             model.checked.set(false);
             model.childList.addAll(libraryChildMap.get(library.getIdString()));
-            model.childCount.set(String.valueOf(metadataCount));
+            model.childCount.set(String.valueOf(dataProvider.libraryMetadataCount(library.getIdString())));
             dataModels.add(model);
         }
     }
@@ -65,6 +59,7 @@ public class DataModelUtil {
             if (StringUtils.isNotBlank(metadata.getCloudId())) {
                 model.cloudId.set(Long.valueOf(metadata.getCloudId()));
             }
+            model.id.set(metadata.getId());
             model.title.set(metadata.getName());
             model.author.set(StringUtils.isNullOrEmpty(metadata.getAuthors()) ? "" : metadata.getAuthors());
             model.format.set(metadata.getType().toUpperCase());
@@ -75,7 +70,7 @@ public class DataModelUtil {
             CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());
             if (bitmap != null) {
                 model.coverBitmap.set(bitmap);
-            }else {
+            } else {
                 model.coverDefault.set(R.drawable.ic_shelf_cover);
             }
 

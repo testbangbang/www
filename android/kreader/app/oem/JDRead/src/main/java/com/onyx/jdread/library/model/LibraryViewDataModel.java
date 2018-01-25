@@ -30,6 +30,7 @@ import com.onyx.jdread.library.event.SortByTimeEvent;
 import com.onyx.jdread.library.event.WifiPassBookEvent;
 
 import org.greenrobot.eventbus.EventBus;
+import org.nanohttpd.util.IFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,12 +51,15 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableBoolean showTopMenu = new ObservableBoolean(true);
     public final ObservableBoolean showBottomMenu = new ObservableBoolean(false);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
+    private List<DataModel> librarySelected = new ArrayList<>();
     private int queryLimit = 9;
     private int deletePageCount = 0;
     private QueryPagination queryPagination = QueryPagination.create(3, 3);
     private QueryArgs queryArgs;
     private EventBus eventBus;
     private LibrarySelectHelper selectHelper;
+    public boolean buildingLibrary;
+    public int parentLibraryPageTag;
 
     public LibraryViewDataModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -186,6 +190,9 @@ public class LibraryViewDataModel extends Observable {
         for (DataModel model : pageData) {
             if (model.type.get() == ModelType.TYPE_LIBRARY) {
                 model.selectedCount.set(getSelectCount(model));
+                if (model.selectedCount.get().equals(model.childCount.get())) {
+                    librarySelected.add(model);
+                }
             }
         }
         items.addAll(pageData);
@@ -212,10 +219,20 @@ public class LibraryViewDataModel extends Observable {
         int prevDelete = 0;
         int currentPage = queryPagination.getCurrentPage();
         int itemsPerPage = queryPagination.itemsPerPage();
-        for (DataModel dataModel : getListSelected()) {
-            if (dataModel.id.get() > currentPage * itemsPerPage) {
+        for (DataModel model : librarySelected) {
+            if (model.id.get() < currentPage * itemsPerPage) {
                 prevDelete++;
             }
+        }
+
+        for (DataModel dataModel : getListSelected()) {
+            if (dataModel.id.get() + libraryCount.get() < currentPage * itemsPerPage) {
+                prevDelete++;
+            }
+        }
+
+        if (currentPage == queryPagination.lastPage() && buildingLibrary) {
+            prevDelete--;
         }
         deletePageCount = prevDelete / itemsPerPage;
     }
@@ -324,6 +341,7 @@ public class LibraryViewDataModel extends Observable {
     public void clearSelectedData() {
         selectHelper.clearSelectedData();
         clearCurrentLibrarySelectedData();
+        librarySelected.clear();
     }
 
     private void clearCurrentLibrarySelectedData() {
@@ -336,6 +354,7 @@ public class LibraryViewDataModel extends Observable {
     public void quitMultiSelectionMode() {
         selectHelper.getChildLibrarySelectedMap().clear();
         clearCurrentLibrarySelectedData();
+        librarySelected.clear();
     }
 
     public void delete() {

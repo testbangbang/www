@@ -76,6 +76,8 @@ public interface DataProviderBase {
 
     void deleteLibrary(Library library);
 
+    void deleteLibrary(String libraryUniqueId);
+
     void clearLibrary();
 
     void clearThumbnails();
@@ -114,7 +116,7 @@ public interface DataProviderBase {
 
     Library findLibraryByName(Context appContext, String name);
 
-    long libraryMetadataCount(Library library);
+    long libraryMetadataCount(String libraryUniqueId);
 
     List<SearchHistory> loadSearchHistory();
 

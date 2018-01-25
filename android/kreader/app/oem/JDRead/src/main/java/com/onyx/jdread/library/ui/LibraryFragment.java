@@ -92,7 +92,7 @@ public class LibraryFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadData(libraryBuildQueryArgs(), false);
+        loadData(libraryBuildQueryArgs(), false, true);
         getEventBus().register(this);
     }
 
@@ -115,20 +115,28 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void loadData(QueryArgs queryArgs) {
-        loadData(queryArgs, true);
+        loadData(queryArgs, true, false);
     }
 
-    private void loadData(QueryArgs queryArgs, boolean loadFromCache) {
+    private void loadData(QueryArgs queryArgs, boolean loadFromCache, boolean clearMetadataCache) {
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(queryArgs);
         loadAction.setLoadFromCache(loadFromCache);
         loadAction.setLoadMetadata(isLoadMetadata());
+        loadAction.setClearLibraryCache(clearMetadataCache);
         loadAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updateContentView();
+                quitEmptyChildLibrary();
             }
         });
         preloadNext();
+    }
+
+    private void quitEmptyChildLibrary() {
+        if (libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() > 0 && libraryDataBundle.getLibraryViewDataModel().items.size() == 0) {
+            processBackRequest();
+        }
     }
 
     private void updateContentView() {
@@ -281,22 +289,28 @@ public class LibraryFragment extends BaseFragment {
     private boolean processBackRequest() {
         if (!CollectionUtils.isNullOrEmpty(libraryDataBundle.getLibraryViewDataModel().libraryPathList)) {
             removeLastParentLibrary();
-            loadData(libraryBuildQueryArgs(), false);
+            backToParentLibraryPage();
             return false;
         }
         if (isMultiSelectionMode()) {
             quitMultiSelectionMode();
-            loadData(libraryBuildQueryArgs(), false);
+            backToParentLibraryPage();
             return false;
         }
         return true;
+    }
+
+    private void backToParentLibraryPage() {
+        QueryArgs queryArgs = libraryBuildQueryArgs();
+        libraryDataBundle.getLibraryViewDataModel().gotoPage(libraryDataBundle.getLibraryViewDataModel().parentLibraryPageTag);
+        loadData(queryArgs, false, false);
+        libraryDataBundle.getLibraryViewDataModel().parentLibraryPageTag = 0;
     }
 
     private void removeLastParentLibrary() {
         libraryDataBundle.getLibraryViewDataModel().libraryPathList.remove(libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
         setTitle();
         showMangeMenu();
-        loadData();
     }
 
     private void setTitle() {
@@ -349,7 +363,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void refreshData() {
-        loadData(libraryBuildQueryArgs(), false);
+        loadData(libraryBuildQueryArgs(), false, true);
     }
 
     @Subscribe
@@ -432,7 +446,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onModifyLibraryDataEvent(ModifyLibraryDataEvent event) {
         libraryDataBundle.getLibraryViewDataModel().libraryPathList.clear();
-        loadData(libraryBuildQueryArgs(), false);
+        loadData(libraryBuildQueryArgs(), false, true);
     }
 
     @Subscribe
@@ -463,7 +477,8 @@ public class LibraryFragment extends BaseFragment {
             public void onNext(Object o) {
                 libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
                 int deletePageCount = libraryDataBundle.getLibraryViewDataModel().getDeletePageCount();
-                loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
+                libraryDataBundle.getLibraryViewDataModel().buildingLibrary = false;
+                loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false, true);
             }
         });
     }
@@ -475,7 +490,7 @@ public class LibraryFragment extends BaseFragment {
             public void onNext(Object o) {
                 libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
                 int deletePageCount = libraryDataBundle.getLibraryViewDataModel().getDeletePageCount();
-                loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
+                loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false, true);
             }
         });
     }
@@ -491,7 +506,10 @@ public class LibraryFragment extends BaseFragment {
     private void processLibraryItem(DataModel model) {
         addLibraryToParentRefList(model);
         libraryDataBundle.getLibraryViewDataModel().getSelectHelper().putLibrarySelectedModelMap(model.idString.get());
-        loadData(libraryBuildQueryArgs(), false);
+        QueryArgs queryArgs = libraryBuildQueryArgs();
+        libraryDataBundle.getLibraryViewDataModel().parentLibraryPageTag = pagination.getCurrentPage();
+        libraryDataBundle.getLibraryViewDataModel().gotoPage(0);
+        loadData(queryArgs, false, true);
     }
 
     private void addLibraryToParentRefList(DataModel model) {

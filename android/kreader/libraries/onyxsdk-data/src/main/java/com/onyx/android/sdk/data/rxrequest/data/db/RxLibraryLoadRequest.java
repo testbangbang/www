@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.rxrequest.data.db;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.DataManager;
@@ -23,6 +24,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +83,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         if (loadMetadata && libraryList.size() < queryArgs.limit) {
             queryArgs.offset = (int) (queryArgs.offset - getDataProvider().libraryCount(queryArgs.libraryUniqueId));
             int limit = queryArgs.limit;
-            queryArgs.limit = queryArgs.limit -libraryList.size();
+            queryArgs.limit = queryArgs.limit - libraryList.size();
             List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getAppContext(), getDataManager(),
                     queryArgs, loadFromCache);
             queryArgs.limit = limit;

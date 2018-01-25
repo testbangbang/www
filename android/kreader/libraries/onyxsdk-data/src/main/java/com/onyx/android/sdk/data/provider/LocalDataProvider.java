@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
-import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Annotation_Table;
@@ -95,6 +93,10 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     public List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs) {
+        if (queryArgs.offset >= count(context, queryArgs)) {
+            queryArgs.offset = (int) (count(context, queryArgs) - queryArgs.limit);
+        }
+        queryArgs.offset = queryArgs.offset < 0 ? 0 : queryArgs.offset;
         if (queryArgs.conditionGroup != null) {
             Where<Metadata> where = new Select(queryArgs.propertyList.toArray(new IProperty[0])).from(Metadata.class)
                     .where(queryArgs.conditionGroup);
@@ -238,6 +240,12 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
+    public void deleteLibrary(String libraryUniqueId) {
+        Operator condition = getNullOrEqualCondition(Library_Table.idString, libraryUniqueId);
+        new Delete().from(Library.class).where(condition).querySingle();
+    }
+
+    @Override
     public void clearLibrary() {
         Delete.table(Library.class);
     }
@@ -361,8 +369,8 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     @Override
-    public long libraryMetadataCount(Library library) {
-        return new Select().from(MetadataCollection.class).where(MetadataCollection_Table.libraryUniqueId.eq(library.getIdString())).queryList().size();
+    public long libraryMetadataCount(String libraryUniqueId) {
+        return new Select().from(MetadataCollection.class).where(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId)).queryList().size();
     }
 
     @Override
@@ -375,7 +383,7 @@ public class LocalDataProvider implements DataProviderBase {
         SearchHistory single = new Select().from(SearchHistory.class).where(SearchHistory_Table.content.eq(searchHistory.getContent())).querySingle();
         if (single == null) {
             searchHistory.save();
-        }else {
+        } else {
             single.setCreatedAt(new Date());
             single.update();
         }
