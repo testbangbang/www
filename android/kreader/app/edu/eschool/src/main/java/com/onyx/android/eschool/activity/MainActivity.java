@@ -25,6 +25,7 @@ import com.onyx.android.eschool.custom.NoSwipePager;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.BookLibraryEvent;
 import com.onyx.android.eschool.events.DataRefreshEvent;
+import com.onyx.android.eschool.events.GroupContainerEvent;
 import com.onyx.android.eschool.events.GroupSelectEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.fragment.AccountFragment;
@@ -106,6 +107,7 @@ public class MainActivity extends BaseActivity {
         if (DeviceConfig.sharedInstance(getApplicationContext()).enableFullRefresh()) {
             EpdController.postInvalidate(getWindow().getDecorView().getRootView(), UpdateMode.GC);
         }
+        loadData();
     }
 
     private String getLibraryParentId() {
@@ -114,7 +116,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        loadData();
     }
 
     private void loadData() {
@@ -152,7 +153,7 @@ public class MainActivity extends BaseActivity {
         if (!CollectionUtils.isNullOrEmpty(groupContainerList)) {
             currentGroup = groupContainerList.get(index).group;
             libraryList = groupContainerList.get(index).libraryList;
-            EventBus.getDefault().postSticky(groupContainerList.get(index));
+            EventBus.getDefault().postSticky(new GroupContainerEvent(groupContainerList.get(index)));
         }
         notifyDataChanged(libraryList);
     }
