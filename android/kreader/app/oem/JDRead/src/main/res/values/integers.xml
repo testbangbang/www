@@ -4,7 +4,7 @@
     <integer name="library_view_type_thumbnail_col">3</integer>
     <integer name="setting_adapter_row">3</integer>
     <integer name="setting_adapter_col">2</integer>
-    <integer name="wifi_setting_adapter_row">5</integer>
+    <integer name="wifi_setting_adapter_row">7</integer>
     <integer name="wifi_setting_adapter_col">1</integer>
     <integer name="refresh_adapter_row">4</integer>
     <integer name="refresh_adapter_col">1</integer>
@@ -109,7 +109,7 @@
     <item name="top_up_dialog_width_rate" type="integer" format="float">0.8</item>
     <item name="top_up_dialog_height_rate" type="integer" format="float">0.6</item>
     <item name="export_dialog_width_rate" type="integer" format="float">0.8</item>
-    <item name="export_dialog_height_rate" type="integer" format="float">0.36</item>
+    <item name="export_dialog_height_rate" type="integer" format="float">0.3</item>
     <integer name="book_info_dialog_mark_row">4</integer>
     <integer name="book_info_dialog_catalog_row">12</integer>
     <integer name="book_info_dialog_note_row">4</integer>
@@ -124,7 +124,7 @@
     <integer name="dictionary_list_col">1</integer>
     <integer name="feedback_record_adapter_row">5</integer>
     <integer name="feedback_record_adapter_col">1</integer>
-    <integer name="gift_center_adapter_row">4</integer>
+    <integer name="gift_center_adapter_row">5</integer>
     <integer name="gift_center_adapter_col">1</integer>
     <integer name="personal_account_adapter_row">5</integer>
     <integer name="personal_account_adapter_col">1</integer>

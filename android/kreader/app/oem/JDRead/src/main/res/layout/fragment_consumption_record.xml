@@ -21,7 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="@dimen/gift_center_recycler_padding" />
+            android:paddingRight="@dimen/gift_center_recycler_padding"
+            android:paddingLeft="@dimen/gift_center_recycler_padding" />
 
         <TextView
             android:layout_width="wrap_content"

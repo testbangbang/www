@@ -20,7 +20,7 @@
             android:layout_weight="1"
             android:text="@{dec}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            android:textSize="@dimen/level_two_heading_font" />
 
         <TextView
             android:layout_width="@dimen/item_personal_task_receive_width"
@@ -31,6 +31,6 @@
             android:padding="@dimen/item_personal_task_receive_padding"
             android:text="@{@string/have_receive}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            android:textSize="@dimen/level_two_heading_font" />
     </LinearLayout>
 </layout>
