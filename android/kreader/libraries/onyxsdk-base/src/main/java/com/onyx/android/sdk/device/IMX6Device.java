@@ -188,6 +188,8 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodEnableTpd;
     private static Method sMethodHasWifi;
 
+    private static Method sMethodMergeDisplayUpdate = null;
+
     private IMX6Device() {
     }
 
@@ -852,6 +854,9 @@ public class IMX6Device extends BaseDevice {
             sMethodSetInfoShowConfig = ReflectUtil.getMethodSafely(cls,"setInfoShowConfig",int.class,int.class,int.class);
 
             sMethodGetRemovableSDCardDirectory = ReflectUtil.getMethodSafely(Environment.class,"getRemovableSDCardDirectory");
+
+            sMethodMergeDisplayUpdate = ReflectUtil.getMethodSafely(cls, "mergeDisplayUpdate", int.class, int.class);
+
             Log.d(TAG, "init device EINK_ONYX_GC_MASK.");
             return sInstance;
         }
@@ -1210,6 +1215,11 @@ public class IMX6Device extends BaseDevice {
             return false;
         }
         return value.booleanValue();
+    }
+
+    @Override
+    public void mergeDisplayUpdate(int timeout, UpdateMode mode) {
+        ReflectUtil.invokeMethodSafely(sMethodMergeDisplayUpdate, null, timeout, getUpdateMode(mode));
     }
 
 }
