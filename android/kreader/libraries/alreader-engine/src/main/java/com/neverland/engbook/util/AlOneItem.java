@@ -13,6 +13,7 @@ public class AlOneItem {
 		public int					isLeft = 0;
 		public int					isRight = 0;
 		public int 				height = 0;
+	public int 				mtop = 0;
 		public int				base_line_up = 0;
 		public int				base_line_down = 0;
 		public long				justify = 0;
@@ -43,7 +44,9 @@ public class AlOneItem {
 
 	public int					blockHeight = 0;
 		//public int					blockLeft = 0;
-		public int					base_line_up4text;
+		public int					base_line_up4text = 0;
+	public int					base_line_upExceptFirst = 0;
+	public int					base_line_downExceptFirst = 0;
 				
 		public static void free(AlOneItem a) {		
 			a.text = null;
@@ -98,6 +101,7 @@ public class AlOneItem {
 		isLeft = a.isLeft;
 		isRight = a.isRight;
 		height = a.height;
+		mtop = a.mtop;
 		base_line_up = a.base_line_up;
 		base_line_down = a.base_line_down;
 		justify = a.justify;
@@ -122,6 +126,8 @@ public class AlOneItem {
 		blockHeight = a.blockHeight;
 		//blockLeft = a.blockLeft;
 		base_line_up4text = a.base_line_up4text;
+		base_line_upExceptFirst = a.base_line_upExceptFirst;
+		base_line_downExceptFirst = a.base_line_downExceptFirst;
 
 		table_start = a.table_start;
 		table_row = a.table_row;

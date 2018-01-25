@@ -9,6 +9,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.utils.RectUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -138,13 +139,15 @@ public class RawInputReader {
         }
     }
 
-    public void setExcludeRect(final List<Rect> rectList) {
-        if (rectList != null && rectList.size() > 0) {
-            nativeSetExcludeRegion(mapToRawTouchRect(rectList));
-
-            EpdController.setScreenHandWritingRegionExclude(hostView,
-                    rectList.toArray(new Rect[0]));
+    public void setExcludeRect(List<Rect> rectList) {
+        // if pass in null or empty rect list, we think it should clear exclude regions
+        if (rectList == null || rectList.size() <= 0) {
+            rectList = Arrays.asList(new Rect[] { new Rect() });
         }
+
+        nativeSetExcludeRegion(mapToRawTouchRect(rectList));
+        EpdController.setScreenHandWritingRegionExclude(hostView,
+                rectList.toArray(new Rect[0]));
     }
 
     private float[] mapToRawTouchRect(final Rect rect) {

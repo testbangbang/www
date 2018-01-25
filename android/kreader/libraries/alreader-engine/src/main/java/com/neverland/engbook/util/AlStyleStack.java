@@ -25,7 +25,7 @@ public class AlStyleStack {
         //activeParagraph = &buffer[0].paragraph;
         //activeProp = &buffer[0].prop;
         buffer[0].paragraph = AlStyles.SL_SIZE_NORMAL;
-        buffer[0].prop = AlParProperty.SL2_INDENT_DEFAULT | AlParProperty.SL2_INTER_FONT;
+        buffer[0].prop = AlParProperty.SL2_INDENT_DEFAULT/* | AlParProperty.SL2_INTER_FONT*/;
     }
 
     /*@Override
@@ -110,7 +110,10 @@ public class AlStyleStack {
 
         res &= ~(AlParProperty.SL2_MARGT_MASK | AlParProperty.SL2_MARG_MASK_WIDTH);
 
-        int top = top = lastMarginBottom, mlPercent, mrPercent, mlEm = 0, mrEm = 0;
+        //if (((buffer[position].prop & AlParProperty.SL2_BREAK_BEFORE) > 0) && lastMarginBottom > 0)
+        //    lastMarginBottom = 0;
+
+        int top = lastMarginBottom, mlPercent, mrPercent, mlEm = 0, mrEm = 0;
         float width = 100.0f, leftPercent = 0, rightPercent = 0;
         for (int i = 0; i <= position; i++) {
             top += (buffer[i].prop & AlParProperty.SL2_MARGT_MASK) >> AlParProperty.SL2_MARGT_SHIFT;
@@ -202,7 +205,7 @@ public class AlStyleStack {
     }
 
     public void clearFlagInAllParentsParagraph(long flag) {
-        for (int i = position; i > 0; i--) {
+        for (int i = position; i >= 0; i--) {
             //if ((buffer[i].paragraph & flag) == 0)
             //	return;
             buffer[i].paragraph &= ~flag;
@@ -210,7 +213,7 @@ public class AlStyleStack {
     }
 
     public void clearFlagInAllParentsProp(long flag) {
-        for (int i = position; i > 0; i--) {
+        for (int i = position; i >= 0; i--) {
             //if ((buffer[i].paragraph & flag) == 0)
             //	return;
             buffer[i].prop &= ~flag;

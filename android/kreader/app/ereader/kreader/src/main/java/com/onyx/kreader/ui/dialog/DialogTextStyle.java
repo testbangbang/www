@@ -611,13 +611,21 @@ public class DialogTextStyle extends DialogBase {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_text_style_sub_font_spacing_view, null, false);
         final CommonViewHolder fontSpacingViewHolder = new CommonViewHolder(view);
 
-        Map<FontLevel, ImageView> spacingViewMap = new HashMap<>();
-        spacingViewMap.put(SMALL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_small_line_spacing));
-        spacingViewMap.put(NORMAL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_middle_line_spacing));
-        spacingViewMap.put(LARGE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_large_line_spacing));
-        spacingViewMap.put(DECREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_decrease_line_spacing));
-        spacingViewMap.put(INCREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_increase_line_spacing));
-        updateFontSpacingView(spacingViewMap, getReaderStyle());
+        Map<FontLevel, ImageView> lineSpacingViewMap = new HashMap<>();
+        lineSpacingViewMap.put(SMALL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_small_line_spacing));
+        lineSpacingViewMap.put(NORMAL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_middle_line_spacing));
+        lineSpacingViewMap.put(LARGE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_large_line_spacing));
+        lineSpacingViewMap.put(DECREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_decrease_line_spacing));
+        lineSpacingViewMap.put(INCREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_increase_line_spacing));
+        updateLineSpacingView(lineSpacingViewMap, getReaderStyle());
+
+        Map<FontLevel, ImageView> paragraphSpacingViewMap = new HashMap<>();
+        paragraphSpacingViewMap.put(SMALL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_small_paragraph_spacing));
+        paragraphSpacingViewMap.put(NORMAL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_middle_paragraph_spacing));
+        paragraphSpacingViewMap.put(LARGE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_large_paragraph_spacing));
+        paragraphSpacingViewMap.put(DECREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_decrease_paragraph_spacing));
+        paragraphSpacingViewMap.put(INCREASE, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_increase_paragraph_spacing));
+        updateParagraphSpacingView(paragraphSpacingViewMap, getReaderStyle());
 
         Map<FontLevel, ImageView> marginViewMap = new HashMap<>();
         marginViewMap.put(SMALL, (ImageView) fontSpacingViewHolder.getView(R.id.image_view_small_page_margins));
@@ -691,11 +699,11 @@ public class DialogTextStyle extends DialogBase {
         SingletonSharedPreference.setLastFontSize(size.getValue());
     }
 
-    private void updateFontSpacingView(final Map<FontLevel, ImageView> spacingViewMap, final ReaderTextStyle readerTextStyle) {
+    private void updateLineSpacingView(final Map<FontLevel, ImageView> spacingViewMap, final ReaderTextStyle readerTextStyle) {
         final Percentage percentage = readerTextStyle.getLineSpacing();
         for (final FontLevel fontLevel : spacingViewMap.keySet()) {
             ImageView spacingView = spacingViewMap.get(fontLevel);
-            spacingView.setActivated(isSelectCurrentPercentage(readerTextStyle, fontLevel));
+            spacingView.setActivated(isSelectCurrentLineSpacingPercentage(readerTextStyle, fontLevel));
             spacingView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -726,14 +734,56 @@ public class DialogTextStyle extends DialogBase {
                     }
                     readerTextStyle.setLineSpacing(percentage);
                     updateReaderStyle(readerTextStyle);
-                    updateFontSpacingView(spacingViewMap, readerTextStyle);
+                    updateLineSpacingView(spacingViewMap, readerTextStyle);
                     SingletonSharedPreference.setLastLineSpacing(percentage.getPercent());
                 }
             });
         }
     }
 
-    private static boolean isSelectCurrentPercentage(ReaderTextStyle readerTextStyle, FontLevel level) {
+    private void updateParagraphSpacingView(final Map<FontLevel, ImageView> spacingViewMap, final ReaderTextStyle readerTextStyle) {
+        final Percentage percentage = readerTextStyle.getParagraphSpacing();
+        for (final FontLevel fontLevel : spacingViewMap.keySet()) {
+            ImageView spacingView = spacingViewMap.get(fontLevel);
+            spacingView.setActivated(isSelectCurrentParagraphSpacingPercentage(readerTextStyle, fontLevel));
+            spacingView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (fontLevel) {
+                        case SMALL:
+                            percentage.setPercent(ReaderTextStyle.SMALL_PARAGRAPH_SPACING.getPercent());
+                            break;
+                        case NORMAL:
+                            percentage.setPercent(ReaderTextStyle.NORMAL_PARAGRAPH_SPACING.getPercent());
+                            break;
+                        case LARGE:
+                            percentage.setPercent(ReaderTextStyle.LARGE_PARAGRAPH_SPACING.getPercent());
+                            break;
+                        case INCREASE:
+                            if (percentage.getPercent() >= ReaderTextStyle.LARGE_PARAGRAPH_SPACING.getPercent()) {
+                                Toast.makeText(getContext(), R.string.already_at_maximum_paragraph_spacing, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            percentage.setPercent(Math.min(ReaderTextStyle.LARGE_PARAGRAPH_SPACING.getPercent(), percentage.getPercent() + ReaderTextStyle.PARAGRAPH_SPACING_STEP.getPercent()));
+                            break;
+                        case DECREASE:
+                            if (percentage.getPercent() <= ReaderTextStyle.SMALL_PARAGRAPH_SPACING.getPercent()) {
+                                Toast.makeText(getContext(), R.string.already_at_minimum_paragraph_spacing, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            percentage.setPercent(Math.max(ReaderTextStyle.SMALL_PARAGRAPH_SPACING.getPercent(), percentage.getPercent() - ReaderTextStyle.PARAGRAPH_SPACING_STEP.getPercent()));
+                            break;
+                    }
+                    readerTextStyle.setParagraphSpacing(percentage);
+                    updateReaderStyle(readerTextStyle);
+                    updateParagraphSpacingView(spacingViewMap, readerTextStyle);
+                    SingletonSharedPreference.setLastLineSpacing(percentage.getPercent());
+                }
+            });
+        }
+    }
+
+    private static boolean isSelectCurrentLineSpacingPercentage(ReaderTextStyle readerTextStyle, FontLevel level) {
         switch (level) {
             case SMALL:
                 return ReaderTextStyle.SMALL_LINE_SPACING.equals(readerTextStyle.getLineSpacing());
@@ -741,6 +791,19 @@ public class DialogTextStyle extends DialogBase {
                 return ReaderTextStyle.NORMAL_LINE_SPACING.equals(readerTextStyle.getLineSpacing());
             case LARGE:
                 return ReaderTextStyle.LARGE_LINE_SPACING.equals(readerTextStyle.getLineSpacing());
+            default:
+                return false;
+        }
+    }
+
+    private static boolean isSelectCurrentParagraphSpacingPercentage(ReaderTextStyle readerTextStyle, FontLevel level) {
+        switch (level) {
+            case SMALL:
+                return ReaderTextStyle.SMALL_PARAGRAPH_SPACING.equals(readerTextStyle.getParagraphSpacing());
+            case NORMAL:
+                return ReaderTextStyle.NORMAL_PARAGRAPH_SPACING.equals(readerTextStyle.getParagraphSpacing());
+            case LARGE:
+                return ReaderTextStyle.LARGE_PARAGRAPH_SPACING.equals(readerTextStyle.getParagraphSpacing());
             default:
                 return false;
         }

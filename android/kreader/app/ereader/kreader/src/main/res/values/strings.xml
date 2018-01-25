@@ -172,6 +172,7 @@
     <string name="settings_note_key" translatable="false">show_note</string>
     <string name="settings_bookmark_tittle">Show bookmark</string>
     <string name="settings_hyperlink_key" translatable="false">show_hyperlink</string>
+    <string name="settings_show_page_crop_region_key" translatable="false">show_page_crop_region_key</string>
     <string name="settings_hyperlink_tittle">Show hyperlink</string>
     <string name="settings_dithering_key" translatable="false">image_dithering</string>
     <string name="settings_dithering_tittle">Image dithering</string>
@@ -445,4 +446,8 @@
     <string name="reader_layer_menu_font_style_indentation">Indentation</string>
     <string name="reader_layer_menu_font_style_indent">Indent</string>
     <string name="reader_layer_menu_font_style_not_indent">Not indent</string>
+    <string name="reader_layer_menu_font_style_font_paragraph_spacing">Paragraph Spacing</string>
+    <string name="already_at_maximum_paragraph_spacing">Already at maximum paragraph spacing!</string>
+    <string name="already_at_minimum_paragraph_spacing">Already at minimum paragraph spacing!</string>
+    <string name="settings_show_page_crop_region_title">Show crop region</string>
 </resources>

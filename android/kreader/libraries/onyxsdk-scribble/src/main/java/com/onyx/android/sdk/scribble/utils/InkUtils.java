@@ -45,10 +45,11 @@ public class InkUtils {
         float[] array = new float[points.size() * 5];
         for (int i = 0; i < points.size(); i++) {
             int idx = 5 * i;
-            src[0] = points.get(i).x;
-            src[1] = points.get(i).y;
-            renderContext.matrix.mapPoints(dst, src);
-
+            dst[0] = src[0] = points.get(i).x;
+            dst[1] = src[1] = points.get(i).y;
+            if (renderContext.matrix != null) {
+                renderContext.matrix.mapPoints(dst, src);
+            }
             array[idx] = dst[0];
             array[idx + 1] = dst[1];
             array[idx + 2] = points.get(i).pressure / maxTouchPressure;

@@ -14,6 +14,9 @@ public class ActionChain {
 
     private List<BaseAction> actionList = new ArrayList<>();
 
+    private BaseRequest callbackRequest;
+    private Throwable callbackException;
+
     public ActionChain addAction(final BaseAction action) {
         actionList.add(action);
         return this;
@@ -28,6 +31,8 @@ public class ActionChain {
         executeAction(readerDataHolder, action, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                callbackRequest = request;
+                callbackException = e;
                 execute(readerDataHolder, callback);
             }
         });
@@ -39,7 +44,7 @@ public class ActionChain {
 
     private boolean isFinished(final BaseCallback callback) {
         if (actionList.size() <= 0) {
-            BaseCallback.invoke(callback, null, null);
+            BaseCallback.invoke(callback, callbackRequest, callbackException);
             return true;
         }
         return false;

@@ -9,6 +9,9 @@ public class AlStateLevel2 {
 	//static	const int64_t	PAR_COVER =				0x0000010000000000L;
 	static	final long	PAR_NOTE =				0x0000040000000000L;
 
+	static	final long	PAR_PRESENT_HTML_PRE =  0x0000010000000000L;
+	static	final long	PAR_PRESENT_HTML_CODE = 0x0000020000000000L;
+
 	public int					state_parser = 0;
 	//public boolean				text_present;
 	//public boolean				letter_present;

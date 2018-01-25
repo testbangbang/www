@@ -207,7 +207,7 @@ public class NoteManager {
 
     public void setStrokeWidth(float strokeWidth, BaseCallback callback) {
         if (shapeDataInfo.isInUserErasing()) {
-            shapeDataInfo.setCurrentShapeType(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
+            shapeDataInfo.setCurrentShapeType(NoteDrawingArgs.defaultShape());
         }
         shapeDataInfo.setStrokeWidth(strokeWidth);
         syncWithCallback(true, true, callback);

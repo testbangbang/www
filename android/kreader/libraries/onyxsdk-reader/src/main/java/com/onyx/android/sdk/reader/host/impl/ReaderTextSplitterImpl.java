@@ -290,7 +290,8 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
         /**
          * The following defines which characters are included in these sets. The values are Unicode code points.
          * - ALPHA
-         *		- 0x0041 - 0x007A Basic Latin
+         *		- 0x0041 - 0x005A Basic Latin [A-Z]
+         *		- 0x0061 - 0x007A Basic Latin [a-z]
          *		- 0x00C0 - 0x00D6 Latin-1 Supplement
          *		- 0x00D8 - 0x00F6 Latin-1 Supplement
          *		- 0x00F8 - 0x00FF Latin-1 Supplement
@@ -304,7 +305,8 @@ public class ReaderTextSplitterImpl implements ReaderTextSplitter {
          *		- 0x1E00 - 0x1EFF Latin Extended Additional
          */
         int codepoint = (int)ch;
-        return (0x0041 <= codepoint && codepoint <= 0x007A) ||
+        return (0x0041 <= codepoint && codepoint <= 0x005A) ||
+                (0x0061 <= codepoint && codepoint <= 0x007A) ||
                 (0x00C0 <= codepoint && codepoint <= 0x00D6) ||
                 (0x00D8 <= codepoint && codepoint <= 0x00F6) ||
                 (0x00F8 <= codepoint && codepoint <= 0x00FF) ||

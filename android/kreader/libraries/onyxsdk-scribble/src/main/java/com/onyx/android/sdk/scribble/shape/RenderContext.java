@@ -4,7 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import com.hanvon.core.Algorithm;
+import android.graphics.Rect;
+import android.graphics.RectF;
 
 /**
  * Created by zhuzeng on 9/15/16.
@@ -15,6 +16,7 @@ public class RenderContext {
     public Canvas canvas;
     public Paint paint;
     public Matrix matrix;
+    public RectF clipRect;
     public boolean force = false;
     public boolean useExternal = false;
     public float handlerSize = 5;
@@ -24,7 +26,6 @@ public class RenderContext {
         if (!useExternal) {
             return;
         }
-        Algorithm.initializeEx(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
     public void flushRenderingBuffer(final Bitmap bitmap) {
@@ -51,6 +52,15 @@ public class RenderContext {
         updateDisplayScale(m);
     }
 
+    public RenderContext(final Bitmap b, final Canvas c, final Paint p, final Matrix m, RectF r) {
+        bitmap = b;
+        canvas = c;
+        paint = p;
+        matrix = m;
+        clipRect = r;
+        updateDisplayScale(m);
+    }
+
     public static RenderContext create(final Canvas c, final Paint p, final Matrix m) {
         return new RenderContext(c, p, m);
     }
@@ -59,11 +69,16 @@ public class RenderContext {
         return new RenderContext(b, c, p, m);
     }
 
-    public void update(final Bitmap b, final Canvas c, final Paint p, final Matrix m) {
+    public static RenderContext create(final Bitmap b, final Canvas c, final Paint p, final Matrix m, RectF r) {
+        return new RenderContext(b, c, p, m, r);
+    }
+
+    public void update(final Bitmap b, final Canvas c, final Paint p, final Matrix m, RectF r) {
         bitmap = b;
         canvas = c;
         paint = p;
         matrix = m;
+        clipRect = r;
         updateDisplayScale(m);
     }
 

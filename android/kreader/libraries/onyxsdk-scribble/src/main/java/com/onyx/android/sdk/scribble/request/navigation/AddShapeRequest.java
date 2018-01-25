@@ -8,7 +8,6 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by zhuzeng on 7/3/16.
