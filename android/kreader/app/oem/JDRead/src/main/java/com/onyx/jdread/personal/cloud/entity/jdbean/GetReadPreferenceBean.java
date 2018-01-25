@@ -9,5 +9,5 @@ import java.util.List;
 public class GetReadPreferenceBean {
     private int result_code;
     private String message;
-    private Object data;
+    private List<Integer> data;
 }
