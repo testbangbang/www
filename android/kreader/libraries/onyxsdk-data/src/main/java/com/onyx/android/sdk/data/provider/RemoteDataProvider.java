@@ -299,6 +299,11 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
+    public void deleteLibrary(String libraryUniqueId) {
+
+    }
+
+    @Override
     public void clearLibrary() {
         FlowManager.getContext().getContentResolver().delete(OnyxLibraryProvider.CONTENT_URI,
                 null, null);
@@ -464,9 +469,9 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public long libraryMetadataCount(Library library) {
+    public long libraryMetadataCount(String libraryUniqueId) {
         List<MetadataCollection> metadataCollections = ContentUtils.queryList(OnyxMetadataCollectionProvider.CONTENT_URI, MetadataCollection.class,
-                OperatorGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(library.getIdString())), null);
+                OperatorGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(libraryUniqueId)), null);
         return metadataCollections == null ? 0 : metadataCollections.size();
     }
 

@@ -45,6 +45,9 @@ public class RxDeleteMetadataFromMultipleLibraryRequest extends RxBaseDBRequest 
                 getDataProvider().deleteMetadataCollection(getAppContext(), libraryId, metadata.getAssociationId());
             }
         }
+        if (StringUtils.isNotBlank(libraryId) && getDataProvider().libraryMetadataCount(libraryId) == 0) {
+            getDataProvider().deleteLibrary(libraryId);
+        }
         database.setTransactionSuccessful();
         database.endTransaction();
 
