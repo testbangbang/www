@@ -438,4 +438,6 @@
     <dimen name="library_cover_child_format_margin_right">5dp</dimen>
     <dimen name="item_setting_name_margin_top">5dp</dimen>
     <dimen name="item_personal_margin_top">8dp</dimen>
+    <dimen name="item_experience_image_width">100dp</dimen>
+    <dimen name="item_experience_image_height">120dp</dimen>
 </resources>

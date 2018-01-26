@@ -394,4 +394,6 @@
     <string name="source_language">Source language:</string>
     <string name="simplified_chinese">Simplified chinese</string>
     <string name="reader_target_language">Target language:</string>
+    <string name="item_consume_record_read_bean">-%d read bean</string>
+    <string name="item_consume_record_voucher">-%d voucher</string>
 </resources>

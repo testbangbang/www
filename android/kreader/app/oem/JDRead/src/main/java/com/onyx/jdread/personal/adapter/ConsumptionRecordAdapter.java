@@ -10,12 +10,17 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemConsumptionRecordBinding;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
+
+import java.util.List;
 
 /**
  * Created by li on 2018/1/2.
  */
 
 public class ConsumptionRecordAdapter extends PageRecyclerView.PageAdapter {
+    private List<ConsumeRecordBean.DataBean> data;
+
     @Override
     public int getRowCount() {
         return ResManager.getInteger(R.integer.personal_consumption_record_row);
@@ -28,7 +33,7 @@ public class ConsumptionRecordAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getDataCount() {
-        return 6;
+        return data == null ? 0 : data.size();
     }
 
     @Override
@@ -39,7 +44,13 @@ public class ConsumptionRecordAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        ConsumptionRecordViewHolder viewHolder = (ConsumptionRecordViewHolder) holder;
+        viewHolder.bindTo(data.get(position));
+    }
 
+    public void setData(List<ConsumeRecordBean.DataBean> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     static class ConsumptionRecordViewHolder extends RecyclerView.ViewHolder {
@@ -52,6 +63,11 @@ public class ConsumptionRecordAdapter extends PageRecyclerView.PageAdapter {
 
         public ItemConsumptionRecordBinding getBind() {
             return bind;
+        }
+
+        public void bindTo(ConsumeRecordBean.DataBean bean) {
+            bind.setBean(bean);
+            bind.executePendingBindings();
         }
     }
 }

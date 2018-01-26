@@ -174,12 +174,14 @@ public class PersonalTest extends ApplicationTestCase<JDReadApplication> {
     public void testGetGiftInfo() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        String signValue = baseInfo.getSignValue("gift/sn=123");
+        Map<String, String> map = new HashMap<>();
+        map.put("sn", "123");
+        baseInfo.addRequestParams(map);
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.USER_GIFT);
         baseInfo.setSign(signValue);
 
         RxGetGiftInfoRequest rq = new RxGetGiftInfoRequest();
         rq.setBaseInfo(baseInfo);
-        rq.setSn(123);
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

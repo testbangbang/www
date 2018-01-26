@@ -38,12 +38,16 @@ public class CloudApiContext {
         public static final String SIGN_CHECK = "sign/check";
         public static final String SIGN = "sign";
         public static final String READING_VOUCHER = "reading/voucher";
-        public static final String USER_GIFT = "gift/{sn}";
+        public static final String USER_GIFT = "gift";
         public static final String RECOMMEND_USER = "recommend/user";
     }
 
     public static class ReadBean {
         public static final String RECHARGE_PACKAGE = "recharge/package";
+        public static final String RECHARGE = "recharge";
+        public static final String RECHARGE_STATUS = "recharge/staus";
+        public static final String CONSUME_RECORD = "yuedou/consum";
+        public static final String READ_BEAN_RECORD = "yuedou/recharge";
     }
 
     public static class NewBookDetail {
