@@ -155,21 +155,25 @@ public class ReaderSettingMenuDialogHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event) {
         new SettingFontSizeAction(readerDataHolder.getStyleCopy(), event.fontSize).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingTypefaceEvent(ReaderSettingTypefaceEvent event) {
         new SettingTypefaceAction(readerDataHolder.getStyleCopy(), event.typeFace).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateImageShowModeEvent(SwitchNavigationToComicModeEvent event) {
         new SwitchNavigationToComicModeAction().execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResetNavigationEvent(ResetNavigationEvent event) {
         new ResetNavigationAction().execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -177,21 +181,25 @@ public class ReaderSettingMenuDialogHandler {
         GammaInfo gammaInfo = new GammaInfo();
         gammaInfo.setTextGamma(event.textGamma);
         new GammaCorrectionAction(gammaInfo).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScaleToPageCropEvent(ScaleToPageCropEvent event) {
         new ScaleToPageCropAction(readerDataHolder.getReaderViewInfo()).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onImageReflowEvent(ImageReflowEvent event) {
         new ImageReflowAction(readerDataHolder.getSettingsCopy()).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChangeChineseConvertTypeEvent(ChangeChineseConvertTypeEvent event) {
         new ChangeChineseConvertTypeAction(event.convertType).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

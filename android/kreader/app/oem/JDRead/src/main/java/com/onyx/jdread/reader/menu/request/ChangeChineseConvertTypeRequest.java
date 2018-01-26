@@ -22,6 +22,7 @@ public class ChangeChineseConvertTypeRequest extends ReaderBaseRequest {
     public ChangeChineseConvertTypeRequest call() throws Exception {
         reader.getReaderHelper().getRenderer().setChineseConvertType(convertType);
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
+        updateSetting(reader);
         return this;
     }
 }

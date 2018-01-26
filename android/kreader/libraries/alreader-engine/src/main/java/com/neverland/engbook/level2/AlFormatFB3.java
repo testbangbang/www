@@ -75,7 +75,9 @@ public class AlFormatFB3 extends AlFormatBaseHTML {
             cssStyles.disableExternal = true;
 
         allState.state_parser = 0;
+        customSize = 0;
         parser(0, -1);//aFiles.getSize());
+        size = customSize;
     }
 
     public static boolean isFB3(AlFiles a) {

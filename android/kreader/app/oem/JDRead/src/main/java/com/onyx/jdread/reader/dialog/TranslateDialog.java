@@ -13,7 +13,10 @@ import android.view.WindowManager;
 
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityTranslateBinding;
+import com.onyx.jdread.reader.event.TranslateDialogEventHandler;
 import com.onyx.jdread.reader.model.TranslateViewModel;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2018/1/22.
@@ -24,10 +27,13 @@ public class TranslateDialog extends Dialog implements ViewCallBack {
     private ActivityTranslateBinding binding;
     private TranslateViewModel translateViewModel;
     private String text;
+    private EventBus eventBus;
+    private TranslateDialogEventHandler handler;
 
-    public TranslateDialog(@NonNull Activity activity, String text) {
+    public TranslateDialog(@NonNull Activity activity, String text, EventBus eventBus) {
         super(activity, android.R.style.Theme_NoTitleBar);
         this.text = text;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -41,10 +47,13 @@ public class TranslateDialog extends Dialog implements ViewCallBack {
         binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.activity_translate, null, false);
         setContentView(binding.getRoot());
 
-        translateViewModel = new TranslateViewModel();
+        translateViewModel = new TranslateViewModel(eventBus);
         binding.setTranslateViewModel(translateViewModel);
         translateViewModel.setBinding(binding);
         translateViewModel.setViewCallBack(this);
+
+        handler = new TranslateDialogEventHandler(translateViewModel);
+        handler.registerListener();
     }
 
     @Override
@@ -59,6 +68,7 @@ public class TranslateDialog extends Dialog implements ViewCallBack {
 
     @Override
     public void dismiss() {
+        handler.unregisterListener();
         super.dismiss();
     }
 

@@ -32,6 +32,6 @@ public class GetViewSettingAction extends BaseReaderAction {
     }
 
     public void notifySaveViewSetting(ReaderDataHolder readerDataHolder,GetViewSettingRequest request) {
-        ReaderActivityEventHandler.updateViewSetting(readerDataHolder,request.getSettings(), request.getStyle(), request.getReaderUserDataInfo());
+        ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
     }
 }
