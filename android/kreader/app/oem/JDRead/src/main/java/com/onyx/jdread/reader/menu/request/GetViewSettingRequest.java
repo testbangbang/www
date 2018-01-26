@@ -7,6 +7,7 @@ import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 /**
@@ -27,6 +28,7 @@ public class GetViewSettingRequest extends ReaderBaseRequest {
         updateSetting(reader);
 
         loadUserData();
+        LayoutProviderUtils.updateReaderViewInfo(reader,getReaderViewInfo(),reader.getReaderHelper().getReaderLayoutManager());
         return this;
     }
 
