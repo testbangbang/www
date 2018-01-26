@@ -45,10 +45,13 @@ public class ReaderLayoutManager {
     private HistoryManager historyManager;
     private PageManager pageManager;
     private String currentProvider;
+    private String currentProviderBackup;
+    private NavigationArgs navigationArgsBackup;
     private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
     private boolean supportScale;
     private boolean supportTextFlow;
     private boolean savePosition = true;
+    private PositionSnapshot sideNotePositionSnapshot;
 
     public ReaderLayoutManager(final ReaderHelper helper,
                                final ReaderDocument document,
@@ -120,6 +123,15 @@ public class ReaderLayoutManager {
         return currentProvider;
     }
 
+    public void saveCurrentLayout() {
+        navigationArgsBackup = getCurrentLayoutProvider().getNavigationArgs();
+        currentProviderBackup = currentProvider;
+    }
+
+    public void restoreCurrentLayout() throws ReaderException {
+        setCurrentLayout(currentProviderBackup, navigationArgsBackup);
+    }
+
     public boolean setCurrentLayout(final String layoutName, NavigationArgs navigationArgs) throws ReaderException {
         if (!provider.containsKey(layoutName)) {
             return false;
@@ -186,6 +198,14 @@ public class ReaderLayoutManager {
 
     public boolean isSavePosition() {
         return savePosition;
+    }
+
+    public PositionSnapshot getSideNotePositionSnapshot() {
+        return sideNotePositionSnapshot;
+    }
+
+    public void setSideNotePositionSnapshot(PositionSnapshot sideNotePositionSnapshot) {
+        this.sideNotePositionSnapshot = sideNotePositionSnapshot;
     }
 
     public float getActualScale() throws ReaderException {
@@ -279,6 +299,16 @@ public class ReaderLayoutManager {
         } catch (Exception e) {
         }
         return null;
+    }
+
+    public boolean restoreBySnapshot(final PositionSnapshot positionSnapshot) {
+        try {
+            setActiveProvider(positionSnapshot.layoutType);
+            getCurrentLayoutProvider().restoreBySnapshot(positionSnapshot);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     /**
