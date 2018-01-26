@@ -54,5 +54,12 @@
         android:summaryOff="@string/settings_disable"
         android:defaultValue="true"
         android:title="@string/settings_regal_mode_tittle"/>
+    <CheckBoxPreference
+        android:key="@string/settings_show_page_crop_region_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summaryOn="@string/settings_enable"
+        android:summaryOff="@string/settings_disable"
+        android:defaultValue="true"
+        android:title="@string/settings_show_page_crop_region_title"/>
 
 </PreferenceScreen>

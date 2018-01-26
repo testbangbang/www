@@ -115,7 +115,7 @@ public class TTFScan {
 							} else {
 								ttfi.Name = s;
 							}
-							Log.e("FONT TABLE name ", s);
+//							Log.e("FONT TABLE name ", s);
 						} catch (UnsupportedEncodingException e) {
 							ttfi.Name = null;
 						}
@@ -152,7 +152,7 @@ public class TTFScan {
 
 							flag2 = false;
 
-							Log.e("FONT TABLE type ", s);
+//							Log.e("FONT TABLE type ", s);
 						} catch (UnsupportedEncodingException e) {}
 					}
 					break;
@@ -162,7 +162,7 @@ public class TTFScan {
 		}
 
 		if (ttfi.Name != null) {
-			Log.e("FONT TABLE result ", ttfi.Name + ',' + Integer.toString(ttfi.Type));
+//			Log.e("FONT TABLE result ", ttfi.Name + ',' + Integer.toString(ttfi.Type));
 			return true;
 		}
 

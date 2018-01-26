@@ -10,6 +10,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 import org.apache.commons.collections4.map.ListOrderedMap;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -282,9 +283,9 @@ public class NoteDocument {
         return true;
     }
 
-    public void removeShapesByTouchPointList(final Context context, final TouchPointList touchPointList, final float scale) {
+    public ArrayList<Shape> removeShapesByTouchPointList(final Context context, final TouchPointList touchPointList, final float scale) {
         final NotePage notePage = getCurrentPage(context);
-        notePage.removeShapesByTouchPointList(touchPointList, noteDrawingArgs.eraserRadius * scale);
+        return notePage.removeShapesByTouchPointList(touchPointList, noteDrawingArgs.eraserRadius * scale);
     }
 
     public List<Shape> selectShapesByTouchPointList(Context context, TouchPointList touchPointList, float scale) {

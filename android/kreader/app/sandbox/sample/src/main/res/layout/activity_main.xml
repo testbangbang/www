@@ -110,6 +110,13 @@
             android:layout_height="wrap_content"
             android:text="Refresh Test Demo" />
 
+        <Button
+            android:id="@+id/button_epdc_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Epdc Test Demo" />
+
+
     </LinearLayout>
 
 </RelativeLayout>

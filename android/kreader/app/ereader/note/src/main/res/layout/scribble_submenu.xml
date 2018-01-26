@@ -8,18 +8,17 @@
         android:background="@android:color/white"
         android:id="@+id/layout_sub_menu"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_height="@dimen/onyx_sub_note_menu_height" />
 
     <View
         android:id="@+id/subMenuTopBoundary"
         style="@style/single_line_X_axis_View"
         android:layout_height="1dp"
-        android:layout_above="@id/layout_sub_menu"/>
+        android:layout_below="@id/layout_sub_menu"/>
 
     <View
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/subMenuTopBoundary"
+        android:layout_below="@id/subMenuTopBoundary"
         android:id="@+id/dismiss_zone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

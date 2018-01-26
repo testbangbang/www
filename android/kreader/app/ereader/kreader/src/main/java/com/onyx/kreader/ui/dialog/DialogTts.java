@@ -185,7 +185,7 @@ public class DialogTts extends OnyxBaseDialog implements View.OnClickListener, C
             @Override
             public void onDismiss(DialogInterface dialog) {
                 ReaderDeviceManager.setGcInterval(gcInterval);
-                ttsHandler.ttsStop();
+                ttsHandler.ttsShutdown();
                 readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.READING_PROVIDER);
                 readerDataHolder.removeActiveDialog(DialogTts.this);
                 readerDataHolder.getEventBus().unregister(DialogTts.this);

@@ -45,6 +45,7 @@
         <activity android:name=".activity.CalligraphyActivity" />
         <activity android:name=".activity.BrushActivity" />
         <activity android:name=".activity.WacomActivity"></activity>
+        <activity android:name=".activity.EpdcTestActivity"></activity>
     </application>
 
 </manifest>

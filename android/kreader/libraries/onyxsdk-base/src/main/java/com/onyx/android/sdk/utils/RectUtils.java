@@ -36,10 +36,17 @@ public class RectUtils {
     }
 
     static public Rect toRect(final RectF source) {
+        if (source == null) {
+            return null;
+        }
         return new Rect((int)source.left, (int)source.top, (int)source.right, (int)source.bottom);
     }
 
     static public List<Rect> toRectList(final List<RectF> source) {
+        if (source == null) {
+            return null;
+        }
+
         ArrayList<Rect> list = new ArrayList<>();
         for (RectF r : source) {
             list.add(toRect(r));
@@ -48,6 +55,9 @@ public class RectUtils {
     }
 
     static public RectF toRectF(final Rect source) {
+        if (source == null) {
+            return null;
+        }
         return new RectF(source.left, source.top, source.right, source.bottom);
     }
 

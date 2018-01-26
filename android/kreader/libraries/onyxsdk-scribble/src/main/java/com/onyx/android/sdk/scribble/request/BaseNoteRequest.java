@@ -11,7 +11,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
 
-import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
@@ -23,7 +22,7 @@ import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -175,21 +174,35 @@ public class BaseNoteRequest extends BaseRequest {
         return shapeDataInfo;
     }
 
+
     public void renderVisiblePages(final NoteViewHelper parent) {
+        renderVisiblePages(parent, null);
+    }
+
+    public void renderVisiblePages(final NoteViewHelper parent, RectF dirtyRect) {
         synchronized (parent) {
             Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
-            bitmap.eraseColor(Color.WHITE);
             Canvas canvas = new Canvas(bitmap);
             Paint paint = preparePaint(parent);
+            if (dirtyRect == null) {
+                canvas.drawColor(Color.WHITE);
+            } else {
+                paint.setColor(Color.WHITE);
+                paint.setStyle(Paint.Style.FILL);
+                canvas.drawRect(dirtyRect, paint);
+
+                preparePaint(parent, paint);
+            }
 
             if (!parent.isLineLayoutMode()) {
                 drawBackground(canvas, paint, parent.getNoteDocument().getBackground(),
-                        parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
+                        parent.getNoteDocument().getNoteDrawingArgs().bgFilePath,
+                        dirtyRect);
             }
             prepareRenderingBuffer(bitmap);
 
             final Matrix renderMatrix = new Matrix();
-            final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
+            final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix, dirtyRect);
             for (PageInfo page : getVisiblePages()) {
                 final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
                 notePage.render(renderContext, null);
@@ -204,24 +217,27 @@ public class BaseNoteRequest extends BaseRequest {
 
     private Paint preparePaint(final NoteViewHelper parent) {
         Paint paint = new Paint();
+        preparePaint(parent, paint);
+        return paint;
+    }
+
+    private void preparePaint(final NoteViewHelper parent, Paint paint) {
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
         paint.setStrokeWidth(parent.getNoteDocument().getStrokeWidth());
-        return paint;
     }
 
     private void prepareRenderingBuffer(final Bitmap bitmap) {
         if (!useExternal) {
             return;
         }
-        Algorithm.initializeEx(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
     private void flushRenderingBuffer(final Bitmap bitmap) {
     }
 
-    private void drawBackground(final Canvas canvas, final Paint paint, int bgType, String bgFilePath) {
+    private void drawBackground(final Canvas canvas, final Paint paint, int bgType, String bgFilePath, RectF dirtyRect) {
         int bgResID = 0;
         switch (bgType) {
             case NoteBackgroundType.EMPTY:
@@ -269,11 +285,11 @@ public class BaseNoteRequest extends BaseRequest {
                 bgResID = Integer.MIN_VALUE;
                 break;
         }
-        drawBackgroundResource(canvas, paint, bgResID, bgFilePath);
+        drawBackgroundResource(canvas, paint, bgResID, bgFilePath, dirtyRect);
 
     }
 
-    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID, String bgFilePath) {
+    private void drawBackgroundResource(Canvas canvas, Paint paint, int resID, String bgFilePath, RectF dirtyRect) {
         Bitmap bitmap;
         Rect dest;
         if (resID == Integer.MIN_VALUE && !TextUtils.isEmpty(bgFilePath)) {
@@ -292,6 +308,14 @@ public class BaseNoteRequest extends BaseRequest {
         if (DeviceConfig.isColorDevice()) {
             canvas.drawBitmap(bitmap, 0, 0, paint);
         } else {
+            if (dirtyRect != null) {
+                float zx = dest.width() / (float)src.width();
+                float zy = dest.height() / (float)src.height();
+                float dx = dirtyRect.left / zx;
+                float dy = dirtyRect.top / zy;
+                src = RectUtils.toRect(new RectF(dx, dy, dx + dirtyRect.width() / zx, dy + dirtyRect.height() / zy));
+                dest = RectUtils.toRect(dirtyRect);
+            }
             canvas.drawBitmap(bitmap, src, dest, paint);
         }
         if (!bitmap.isRecycled()) {
@@ -328,18 +352,24 @@ public class BaseNoteRequest extends BaseRequest {
 
     public void currentPageAsVisiblePage(final NoteViewHelper helper) {
         final NotePage notePage = helper.getNoteDocument().getCurrentPage(getContext());
-        getVisiblePages().clear();
-        PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
-        pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height()));
-        getVisiblePages().add(pageInfo);
+        if (notePage != null) {
+            getVisiblePages().clear();
+            PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
+            pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height()));
+            getVisiblePages().add(pageInfo);
+        }
     }
 
     public void renderCurrentPage(final NoteViewHelper helper) {
+        renderCurrentPage(helper, null);
+    }
+
+    public void renderCurrentPage(final NoteViewHelper helper, final RectF dirtyRect) {
         if (!isRender()) {
             return;
         }
         currentPageAsVisiblePage(helper);
-        renderVisiblePages(helper);
+        renderVisiblePages(helper, dirtyRect);
     }
 
     public void updateShapeDataInfo(final NoteViewHelper parent) {

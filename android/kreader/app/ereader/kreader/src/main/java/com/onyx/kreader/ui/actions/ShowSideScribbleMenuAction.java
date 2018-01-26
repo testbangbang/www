@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.actions;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -23,6 +24,7 @@ import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.kreader.BR;
 import com.onyx.kreader.R;
 import com.onyx.kreader.note.actions.FlushNoteAction;
+import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.request.PauseDrawingRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -68,9 +70,11 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private void show(final ReaderDataHolder readerDataHolder) {
         parent.removeAllViews();
         sideMenu = new MenuManager();
+        addDividerLine(parent);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lp.addRule(readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT ?
+                RelativeLayout.LEFT_OF : RelativeLayout.RIGHT_OF, dividerLine.getId());
         sideMenu.addMainMenu(parent,
                 readerDataHolder.getEventBus(),
                 R.layout.reader_side_scribble_menu,
@@ -78,7 +82,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 lp,
                 MenuItem.createVisibleMenus(getMainMenuActions()));
         updateSideNotePositionText(readerDataHolder);
-        addDividerLine(parent);
+        updateMainMenuBg();
         onMenuViewSizeChange(parent);
         updateMenuHeight(true);
     }
@@ -94,20 +98,24 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     }
 
     private void onMenuViewSizeChange(ViewGroup parent) {
-        layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                List<RectF> excludeRectFs = new ArrayList<>();
-                collectExcludeRectFs(excludeRectFs, sideMenu.getMainMenu());
-                collectExcludeRectFs(excludeRectFs, sideMenu.getSubMenu());
-                readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(excludeRectFs));
-            }
-        };
-        parent.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
+        if (layoutListener == null) {
+            layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    List<RectF> excludeRectFs = new ArrayList<>();
+                    collectExcludeRectFs(excludeRectFs, sideMenu.getMainMenu());
+                    collectExcludeRectFs(excludeRectFs, sideMenu.getSubMenu());
+                    readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(excludeRectFs));
+                }
+            };
+            parent.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
+        }
     }
 
     private void addDividerLine(ViewGroup parent) {
         dividerLine = new View(parent.getContext());
+        dividerLine.setId(Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.JELLY_BEAN_MR1 ? View.generateViewId() : R.id.divider);
         dividerLine.setBackgroundColor(Color.GRAY);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int)
                 parent.getContext().getResources().getDimension(R.dimen.divider_line_size),
@@ -127,6 +135,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_ADD_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_DELETE_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_MINIMIZE.ordinal());
+//        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_CLOSE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal());
@@ -136,12 +145,14 @@ public class ShowSideScribbleMenuAction extends BaseAction {
 
     private void updateMainMenuBg() {
         boolean subMenuShowed = sideMenu.getSubMenu() != null && sideMenu.getSubMenu().isShowing();
-        sideMenu.getMainMenu().getRootView().setBackgroundResource(subMenuShowed ? R.drawable.sub_menu_show_shadow_bg : R.drawable.shadow_bg);
+        sideMenu.getMainMenu().getRootView().setBackgroundResource(subMenuShowed ? R.drawable.sub_menu_show_shadow_bg :
+                (readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT ? R.drawable.left_shadow_bg : R.drawable.shadow_bg));
     }
 
     private List<Integer> getMainMenuActions() {
         List<Integer> menuActions = new ArrayList<>();
         menuActions.add(ReaderMenuAction.SCRIBBLE_MAXIMIZE.ordinal());
+//        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_CLOSE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal());
@@ -163,7 +174,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private List<Integer> getPenShapeMenuActions() {
         List<Integer> menuActions = new ArrayList<>();
         menuActions.add(ReaderMenuAction.SCRIBBLE_PENCIL.ordinal());
-//        menuActions.add(ReaderMenuAction.SCRIBBLE_BRUSH.ordinal());
+        menuActions.add(ReaderMenuAction.SCRIBBLE_BRUSH.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_LINE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_TRIANGLE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_CIRCLE.ordinal());
@@ -174,7 +185,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private List<Integer> getEraserMenuActions() {
         List<Integer> menuActions = new ArrayList<>();
         menuActions.add(ReaderMenuAction.SCRIBBLE_ERASER_PART.ordinal());
-        menuActions.add(ReaderMenuAction.SCRIBBLE_ERASER_ALL.ordinal());
+        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_ERASER_ALL.ordinal());
         return menuActions;
     }
 
@@ -240,6 +251,9 @@ public class ShowSideScribbleMenuAction extends BaseAction {
             case SCRIBBLE_CLOSE:
                 close(null);
                 break;
+            case SCRIBBLE_SIDE_NOTE_EXCHANGE_POS:
+                toggleSideNotePos(readerDataHolder);
+                break;
         }
     }
 
@@ -255,7 +269,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         }
         int mainMenuViewId = sideMenu.getMainMenu().getRootViewId();
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.LEFT_OF, mainMenuViewId);
+        lp.addRule(readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT ?
+                RelativeLayout.LEFT_OF : RelativeLayout.RIGHT_OF, mainMenuViewId);
         lp.addRule(RelativeLayout.ALIGN_TOP, mainMenuViewId);
         sideMenu.addSubMenu(parent,
                 readerDataHolder.getEventBus(),
@@ -288,7 +303,9 @@ public class ShowSideScribbleMenuAction extends BaseAction {
 
     @Subscribe
     public void close(CloseScribbleMenuEvent event) {
-        TreeObserverUtils.removeGlobalOnLayoutListener(parent.getViewTreeObserver(), layoutListener);
+        if (layoutListener != null) {
+            TreeObserverUtils.removeGlobalOnLayoutListener(parent.getViewTreeObserver(), layoutListener);
+        }
         removeMenu();
         parent.removeView(dividerLine);
         readerDataHolder.getEventBus().unregister(this);
@@ -341,6 +358,25 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         if (menu.isShowing()) {
             excludeRectFs.add(new RectF(menuView.getLeft(), menuView.getTop(), menuView.getRight(), menuView.getBottom()));
         }
+    }
+
+    private void toggleSideNotePos(final ReaderDataHolder readerDataHolder) {
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true,
+                false, true, false, false);
+        flushNoteAction.setPauseNote(true);
+        flushNoteAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.toggleSideNoteArea();
+                readerDataHolder.redrawPage(new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        show(readerDataHolder);
+                        new ResumeDrawingAction(readerDataHolder.getVisiblePages()).execute(readerDataHolder, null);
+                    }
+                });
+            }
+        });
     }
 
 }

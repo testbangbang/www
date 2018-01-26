@@ -53,6 +53,7 @@ public class NoteManager {
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
     private volatile SurfaceView surfaceView;
     private volatile Rect visibleDrawRect;
+    private volatile List<Rect> excludeRegions;
 
     private ShapeEventHandler shapeEventHandler;
 
@@ -120,7 +121,7 @@ public class NoteManager {
 
     private void acquireWakeLock(final Context context) {
         if (useWakeLock) {
-            wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 40 * 60 * 1000);
+            wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 3 * 60 * 1000);
         }
     }
 
@@ -151,16 +152,22 @@ public class NoteManager {
         getTouchHelper().getTouchReader().setSupportBigPen(noteConfig.supportBigPen());
     }
 
-    public void updateHostView(final Context context, final SurfaceView sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {
+    public void updateHostView(final Context context, final SurfaceView sv, boolean isUpdatingVisibleRect, final Rect visibleDrawRect, boolean isUpdatingExcludeRect, final List<RectF> excludeRect, int orientation) {
         if (noteConfig == null || mappingConfig == null) {
             initNoteArgs(context);
         }
         surfaceView = sv;
-        this.visibleDrawRect = new Rect(visibleDrawRect);
         getTouchHelper().setup(surfaceView);
 
-        List<Rect> limitRegions = getLimitRegionOfVisiblePages();
-        getTouchHelper().setLimitRect(limitRegions, RectUtils.toRectList(excludeRect));
+        if (isUpdatingVisibleRect) {
+            this.visibleDrawRect = new Rect(visibleDrawRect);
+            List<Rect> limitRegions = getLimitRegionOfVisiblePages();
+            getTouchHelper().setLimitRect(limitRegions);
+        }
+        if (isUpdatingExcludeRect) {
+            this.excludeRegions = RectUtils.toRectList(excludeRect);
+            getTouchHelper().setExcludeRect(excludeRegions);
+        }
     }
 
     public final TouchHelper getTouchHelper() {
@@ -315,6 +322,11 @@ public class NoteManager {
 
     public void restoreCurrentShapeType() {
         getNoteDrawingArgs().restoreCurrentShapeType();
+        if (getNoteDrawingArgs().getCurrentShapeType() == ShapeFactory.SHAPE_BRUSH_SCRIBBLE) {
+            EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_BRUSH);
+        } else {
+            EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_PENCIL);
+        }
         updateInUserErasingState();
         updateRenderByFrameworkState();
     }
@@ -376,7 +388,7 @@ public class NoteManager {
         visiblePages.clear();
         visiblePages.addAll(list);
 
-        getTouchHelper().setLimitRect(getLimitRegionOfVisiblePages());
+        getTouchHelper().setLimitRect(getLimitRegionOfVisiblePages(), excludeRegions);
     }
 
     public final RenderContext getRenderContext() {

@@ -72,6 +72,7 @@ public class TransferDBRequest extends BaseDataRequest {
         if (databaseHolderClass == null) {
             return;
         }
+        FlowManager.close();
         FlowManager.destroy();
         FlowConfig.Builder builder = new FlowConfig.Builder(getContext().getApplicationContext());
         builder.openDatabasesOnInit(true);

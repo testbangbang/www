@@ -928,7 +928,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
 
-        UpdateHostViewAction action = new UpdateHostViewAction(surfaceView, visibleDrawRect, new ArrayList<RectF>(), rotation);
+        UpdateHostViewAction action = UpdateHostViewAction.updateVisibleRegion(surfaceView, visibleDrawRect, rotation);
         action.execute(getReaderDataHolder(), null);
     }
 
@@ -987,7 +987,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        UpdateHostViewAction action = new UpdateHostViewAction(surfaceView, rect, getExcludeRect(event.getExcludeRects()), rotation);
+        UpdateHostViewAction action = UpdateHostViewAction.updateVisibleRegion(surfaceView, rect, getExcludeRect(event.getExcludeRects()), rotation);
         action.execute(getReaderDataHolder(), null);
     }
 
@@ -1195,11 +1195,12 @@ public class ReaderActivity extends OnyxBaseActivity {
             onBackPressed();
         }
 
+        getReaderDataHolder().getEventBus().unregister(this);
+
         final CloseActionChain closeAction = new CloseActionChain();
         closeAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                getReaderDataHolder().getEventBus().unregister(this);
                 releaseStartupWakeLock();
                 finish();
                 postFinish();
@@ -1337,12 +1338,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         new StartSideNoteAction().execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                startSideNodeDrawing(getReaderDataHolder(), ReaderActivity.this);
+                startSideNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
             }
         });
     }
 
-    private void startSideNodeDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
+    private void startSideNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(readerActivity.getExtraView(),
                 readerActivity.getStatusBar(),
                 ShowReaderMenuAction.getScribbleActionCallback(readerDataHolder));

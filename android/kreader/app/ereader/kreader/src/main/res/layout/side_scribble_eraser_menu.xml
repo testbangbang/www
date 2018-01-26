@@ -23,6 +23,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <View
+            android:background="@android:color/black"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+
         <include
             bind:item="@{item[ReaderMenuAction.SCRIBBLE_ERASER_PART.ordinal()].setMenuIcon(R.drawable.ic_eraser_part)}"
             layout="@layout/scribble_sub_menu"/>
@@ -31,11 +36,10 @@
             bind:item="@{item[ReaderMenuAction.SCRIBBLE_ERASER_ALL.ordinal()].setMenuIcon(R.drawable.ic_eraser_all)}"
             layout="@layout/scribble_sub_menu"/>
 
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_SIDE_NOTE_ERASER_ALL.ordinal()].setMenuIcon(R.drawable.ic_eraser_all)}"
+            layout="@layout/scribble_sub_menu"/>
 
-        <View
-            android:background="@android:color/black"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"/>
     </com.google.android.flexbox.FlexboxLayout>
 
 </layout>

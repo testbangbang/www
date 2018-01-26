@@ -82,7 +82,14 @@ public class Debug {
     }
 
     private static String formatString(final String str, final Object... args) {
-        return String.format(null, str, args);
+        if (args.length <= 0) {
+            return str;
+        }
+        try {
+            return String.format(null, str, args);
+        } catch (Throwable tr) {
+            return str;
+        }
     }
 
     private static String verifyTag(String tag) {

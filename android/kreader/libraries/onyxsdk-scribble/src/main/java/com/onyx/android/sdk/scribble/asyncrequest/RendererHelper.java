@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 
-import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.data.PageInfo;
@@ -239,7 +238,6 @@ public class RendererHelper {
         if (!useExternal) {
             return;
         }
-        Algorithm.initializeEx(bitmap.getWidth(), bitmap.getHeight(), bitmap);
     }
 
     private void flushRenderingBuffer(final Bitmap bitmap) {

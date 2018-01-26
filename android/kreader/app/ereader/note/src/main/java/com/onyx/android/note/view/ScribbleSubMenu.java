@@ -392,10 +392,6 @@ public class ScribbleSubMenu extends RelativeLayout {
 
     private GAdapter createPenStyleAdapter() {
         GAdapter styleMenus = new GAdapter();
-        styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_pencil, ScribbleSubMenuID.NORMAL_PEN_STYLE, true));
-        if (NoteAppConfig.sharedInstance(getContext()).isEnablePressStressDetect()) {
-            styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_brush, ScribbleSubMenuID.BRUSH_PEN_STYLE, true));
-        }
         styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_line, ScribbleSubMenuID.LINE_STYLE, true));
         styleMenus.addObject(createImageButtonMenu(R.drawable.ic_shape_triangle, ScribbleSubMenuID.TRIANGLE_STYLE, true));
         if (config.useEduConfig()) {
@@ -474,8 +470,8 @@ public class ScribbleSubMenu extends RelativeLayout {
                 (getResources().getInteger(R.integer.note_menu_columns)));
 
         int height = (int) getContext().getResources().getDimension(R.dimen.onyx_sub_note_menu_height);
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height * rows);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        RelativeLayout.LayoutParams layoutParams = (LayoutParams) mMenuContentView.getLayoutParams();
+        layoutParams.height = height * rows;
         mMenuContentView.setLayoutParams(layoutParams);
 
         mMenuContentView.setSubLayoutParameter(R.layout.onyx_sub_function_item, getMapping());
@@ -507,7 +503,7 @@ public class ScribbleSubMenu extends RelativeLayout {
         } else {
             p.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         }
-        p.addRule(RelativeLayout.BELOW, R.id.tool_bar);
+        p.addRule(RelativeLayout.BELOW, R.id.divider);
         p.addRule(RelativeLayout.CENTER_HORIZONTAL);
         return p;
     }
