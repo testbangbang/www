@@ -54,7 +54,7 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
     private List<DataModel> librarySelected = new ArrayList<>();
     private int queryLimit = 6;
-    private int deletePageCount = 0;
+    private int removePageCount = 0;
     private GPaginator queryPagination = QueryPagination.create(3, 3);
     private QueryArgs queryArgs;
     private EventBus eventBus;
@@ -217,25 +217,25 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public void updateDeletePage() {
-        int prevDelete = 0;
+        int removedCount = 0;
         int currentPage = queryPagination.getCurrentPage();
         int itemsPerPage = queryPagination.itemsPerPage();
         for (DataModel model : librarySelected) {
             if (model.id.get() < currentPage * itemsPerPage) {
-                prevDelete++;
+                removedCount++;
             }
         }
 
         for (DataModel dataModel : getListSelected()) {
             if (dataModel.id.get() + libraryCount.get() < currentPage * itemsPerPage) {
-                prevDelete++;
+                removedCount++;
             }
         }
 
         if (currentPage == queryPagination.lastPage() && buildingLibrary) {
-            prevDelete--;
+            removedCount--;
         }
-        deletePageCount = prevDelete / itemsPerPage;
+        removePageCount = removedCount / itemsPerPage;
     }
 
     public void removeFromSelected(DataModel itemModel) {
@@ -366,8 +366,8 @@ public class LibraryViewDataModel extends Observable {
         eventBus.post(new DeleteBookEvent());
     }
 
-    public int getDeletePageCount() {
-        return deletePageCount;
+    public int getRemovePageCount() {
+        return removePageCount;
     }
 
     public void moveTo() {

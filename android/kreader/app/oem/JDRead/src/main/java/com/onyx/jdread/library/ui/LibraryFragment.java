@@ -483,7 +483,7 @@ public class LibraryFragment extends BaseFragment {
             @Override
             public void onNext(Object o) {
                 libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
-                int deletePageCount = libraryDataBundle.getLibraryViewDataModel().getDeletePageCount();
+                int deletePageCount = libraryDataBundle.getLibraryViewDataModel().getRemovePageCount();
                 libraryDataBundle.getLibraryViewDataModel().buildingLibrary = false;
                 loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false, true);
             }
@@ -496,7 +496,7 @@ public class LibraryFragment extends BaseFragment {
             @Override
             public void onNext(Object o) {
                 libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
-                int deletePageCount = libraryDataBundle.getLibraryViewDataModel().getDeletePageCount();
+                int deletePageCount = libraryDataBundle.getLibraryViewDataModel().getRemovePageCount();
                 loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false, true);
             }
         });
