@@ -17,6 +17,7 @@ public class NextScreenRequest extends ReaderBaseRequest {
     public NextScreenRequest call() throws Exception {
         reader.getReaderHelper().nextScreen();
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
+        updateSetting(reader);
         return this;
     }
 }

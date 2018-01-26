@@ -17,11 +17,11 @@ public class UpdateViewPageRequest extends ReaderBaseRequest {
     @Override
     public UpdateViewPageRequest call() throws Exception {
         updatePageView();
+        updateSetting(reader);
         return this;
     }
 
     public void updatePageView() {
-        reader.getReaderViewHelper().renderAll(reader,
-                reader.getReaderHelper().getCurrentPageBitmap().getBitmap(),getReaderUserDataInfo(),getReaderViewInfo(),null);
+        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo(),null);
     }
 }

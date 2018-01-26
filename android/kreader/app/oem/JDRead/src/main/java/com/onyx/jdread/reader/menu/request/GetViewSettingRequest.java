@@ -15,8 +15,6 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 public class GetViewSettingRequest extends ReaderBaseRequest {
     private Reader reader;
-    private ReaderTextStyle style;
-    private ImageReflowSettings settings;
     private ReaderViewInfo readerViewInfo;
 
     public GetViewSettingRequest(ReaderViewInfo readerViewInfo,Reader reader) {
@@ -26,22 +24,10 @@ public class GetViewSettingRequest extends ReaderBaseRequest {
 
     @Override
     public GetViewSettingRequest call() throws Exception {
-        ReaderTextStyle srcStyle = reader.getReaderHelper().getTextStyleManager().getStyle();
-        style = ReaderTextStyle.copy(srcStyle);
-
-        ImageReflowSettings srcSettings = reader.getReaderHelper().getImageReflowManager().getSettings();
-        settings = ImageReflowSettings.copy(srcSettings);
+        updateSetting(reader);
 
         loadUserData();
         return this;
-    }
-
-    public ReaderTextStyle getStyle() {
-        return style;
-    }
-
-    public ImageReflowSettings getSettings() {
-        return settings;
     }
 
     private void loadUserData() {

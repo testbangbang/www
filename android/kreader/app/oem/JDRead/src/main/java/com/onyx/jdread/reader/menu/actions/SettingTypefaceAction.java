@@ -28,7 +28,7 @@ public class SettingTypefaceAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                ReaderActivityEventHandler.updateViewSetting(readerDataHolder, null, request.getStyle(), null);
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
             }
 
             @Override

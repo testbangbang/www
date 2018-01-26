@@ -11,25 +11,20 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 public class SettingTextStyleRequest extends ReaderBaseRequest {
     private Reader reader;
-    private ReaderTextStyle style;
+    private ReaderTextStyle inputStyle;
 
-    public SettingTextStyleRequest(Reader reader,ReaderTextStyle style) {
+    public SettingTextStyleRequest(Reader reader,ReaderTextStyle inputStyle) {
         this.reader = reader;
-        this.style = style;
+        this.inputStyle = inputStyle;
     }
 
     @Override
     public SettingTextStyleRequest call() throws Exception {
-        reader.getReaderHelper().getTextStyleManager().setStyle(style);
+        reader.getReaderHelper().getTextStyleManager().setStyle(inputStyle);
         reader.getReaderHelper().getBitmapCache().clear();
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
 
-        ReaderTextStyle s = reader.getReaderHelper().getTextStyleManager().getStyle();
-        style = ReaderTextStyle.copy(s);
+        updateSetting(reader);
         return this;
-    }
-
-    public ReaderTextStyle getStyle() {
-        return style;
     }
 }

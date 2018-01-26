@@ -42,6 +42,7 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
 
         if (!extendCurrentPageLowerRightSelectTextRegion()) {
             isSuccess = false;
+            updateSetting(reader);
             return this;
         }
 
@@ -56,6 +57,7 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
             if (readerSelectionInfo == null || readerSelectionInfo.getCurrentSelection().getRectangles().size() <= 0) {
                 isSuccess = false;
                 reader.getReaderHelper().getReaderLayoutManager().prevScreen();
+                updateSetting(reader);
                 return this;
             }
             updateReaderSelectInfo(newPagePosition,readerSelectionInfo.pageInfo);
@@ -67,6 +69,7 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
             cleanCurrentPageInfo();
         }
         getSelectionInfoManager().updateSelectInfo(readerSelectionManager.getReaderSelectionInfos());
+        updateSetting(reader);
         return this;
     }
 

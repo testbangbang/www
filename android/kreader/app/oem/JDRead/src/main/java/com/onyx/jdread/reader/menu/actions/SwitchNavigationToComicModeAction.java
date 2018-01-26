@@ -8,6 +8,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.data.ChangeLayoutParameter;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.request.ChangeLayoutRequest;
 
 /**
@@ -16,15 +17,16 @@ import com.onyx.jdread.reader.menu.request.ChangeLayoutRequest;
 
 public class SwitchNavigationToComicModeAction extends BaseReaderAction {
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         NavigationArgs args = new NavigationArgs();
         RectF limit = new RectF(0, 0, 0, 0);
         args.rowsRightToLeft(NavigationArgs.Type.ALL, 2, 2, limit);
         ChangeLayoutParameter parameter = new ChangeLayoutParameter(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
-        new ChangeLayoutRequest(readerDataHolder.getReader(), parameter, null).execute(new RxCallback() {
+        final ChangeLayoutRequest request = new ChangeLayoutRequest(readerDataHolder.getReader(), parameter, null);
+        request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
             }
         });
     }
