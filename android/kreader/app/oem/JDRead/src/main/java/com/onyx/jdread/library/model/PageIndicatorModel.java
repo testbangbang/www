@@ -44,6 +44,8 @@ public class PageIndicatorModel extends BaseObservable {
     public void updateCurrentPage(int total) {
         if (gPaginator.pages() > 0 && gPaginator.getCurrentPage() > gPaginator.pages() - 1) {
             gPaginator.setCurrentPage(gPaginator.pages() - 1);
+        } else if (gPaginator.getCurrentPage() < 0) {
+            gPaginator.setCurrentPage(0);
         }
         int currentPage = gPaginator.getCurrentPage() + 1;
         int itemsPerPage = gPaginator.itemsPerPage();

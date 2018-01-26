@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.event.ItemClickEvent;
@@ -233,7 +234,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void preloadNext() {
         int preLoadPage = pagination.getCurrentPage() + 1;
-        if (preLoadPage >= pagination.pages()) {
+        if (pagination.getSize() > 0 && preLoadPage >= pagination.pages()) {
             preLoadPage = 0;
         }
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(libraryDataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
@@ -301,10 +302,16 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void backToParentLibraryPage() {
+        resetLibraryPagination();
         QueryArgs queryArgs = libraryBuildQueryArgs();
-        libraryDataBundle.getLibraryViewDataModel().gotoPage(libraryDataBundle.getLibraryViewDataModel().parentLibraryPageTag);
+        queryArgs.offset = libraryDataBundle.getLibraryViewDataModel().getOffset();
         loadData(queryArgs, false, false);
-        libraryDataBundle.getLibraryViewDataModel().parentLibraryPageTag = 0;
+    }
+
+    private void resetLibraryPagination() {
+        pagination = libraryDataBundle.getLibraryViewDataModel().pageStack.pop();
+        libraryDataBundle.getLibraryViewDataModel().setQueryPagination(pagination);
+        pageIndicatorModel.resetGPaginator(pagination);
     }
 
     private void removeLastParentLibrary() {
@@ -504,12 +511,18 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void processLibraryItem(DataModel model) {
+        libraryDataBundle.getLibraryViewDataModel().pageStack.push(pagination);
         addLibraryToParentRefList(model);
         libraryDataBundle.getLibraryViewDataModel().getSelectHelper().putLibrarySelectedModelMap(model.idString.get());
-        QueryArgs queryArgs = libraryBuildQueryArgs();
-        libraryDataBundle.getLibraryViewDataModel().parentLibraryPageTag = pagination.getCurrentPage();
-        libraryDataBundle.getLibraryViewDataModel().gotoPage(0);
-        loadData(queryArgs, false, true);
+        buildChildLibraryPagination();
+        loadData(libraryBuildQueryArgs(), false, true);
+    }
+
+    private void buildChildLibraryPagination() {
+        pagination = QueryPagination.create(row, col);
+        libraryDataBundle.getLibraryViewDataModel().setQueryPagination(pagination);
+        pagination.setCurrentPage(0);
+        pageIndicatorModel.resetGPaginator(pagination);
     }
 
     private void addLibraryToParentRefList(DataModel model) {

@@ -7,6 +7,7 @@ import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
 
 import com.onyx.android.sdk.data.BookFilter;
+import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.SortBy;
@@ -30,13 +31,13 @@ import com.onyx.jdread.library.event.SortByTimeEvent;
 import com.onyx.jdread.library.event.WifiPassBookEvent;
 
 import org.greenrobot.eventbus.EventBus;
-import org.nanohttpd.util.IFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Stack;
 
 /**
  * Created by hehai on 17-11-17.
@@ -52,14 +53,14 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableBoolean showBottomMenu = new ObservableBoolean(false);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
     private List<DataModel> librarySelected = new ArrayList<>();
-    private int queryLimit = 9;
+    private int queryLimit = 6;
     private int deletePageCount = 0;
-    private QueryPagination queryPagination = QueryPagination.create(3, 3);
+    private GPaginator queryPagination = QueryPagination.create(3, 3);
     private QueryArgs queryArgs;
     private EventBus eventBus;
     private LibrarySelectHelper selectHelper;
     public boolean buildingLibrary;
-    public int parentLibraryPageTag;
+    public Stack<GPaginator> pageStack = new Stack<>();
 
     public LibraryViewDataModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -248,8 +249,12 @@ public class LibraryViewDataModel extends Observable {
         updateDeletePage();
     }
 
-    public QueryPagination getQueryPagination() {
+    public GPaginator getQueryPagination() {
         return queryPagination;
+    }
+
+    public void setQueryPagination(GPaginator queryPagination) {
+        this.queryPagination = queryPagination;
     }
 
     public String getLibraryIdString() {

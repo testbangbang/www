@@ -93,10 +93,6 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     public List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs) {
-        if (queryArgs.offset >= count(context, queryArgs)) {
-            queryArgs.offset = (int) (count(context, queryArgs) - queryArgs.limit);
-        }
-        queryArgs.offset = queryArgs.offset < 0 ? 0 : queryArgs.offset;
         if (queryArgs.conditionGroup != null) {
             Where<Metadata> where = new Select(queryArgs.propertyList.toArray(new IProperty[0])).from(Metadata.class)
                     .where(queryArgs.conditionGroup);
@@ -198,11 +194,11 @@ public class LocalDataProvider implements DataProviderBase {
     }
 
     private Operator getNullOrEqualCondition(Property<String> property, String compare) {
-        return compare == null ? property.isNull() : property.eq(compare);
+        return StringUtils.isNullOrEmpty(compare) ? property.isNull() : property.eq(compare);
     }
 
     private Operator getNotNullOrEqualCondition(Property<String> property, String compare) {
-        return compare == null ? property.isNotNull() : property.eq(compare);
+        return StringUtils.isNullOrEmpty(compare) ? property.isNotNull() : property.eq(compare);
     }
 
     @Override
