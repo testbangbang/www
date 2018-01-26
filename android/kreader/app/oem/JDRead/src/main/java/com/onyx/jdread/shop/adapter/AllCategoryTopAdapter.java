@@ -25,7 +25,7 @@ public class AllCategoryTopAdapter extends PageAdapter<PageRecyclerView.ViewHold
 
     private EventBus eventBus;
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_top_recycle_view_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_recycle_view_col);
+    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_top_recycle_view_col);
 
     public AllCategoryTopAdapter(EventBus eventBus) {
         this.eventBus = eventBus;

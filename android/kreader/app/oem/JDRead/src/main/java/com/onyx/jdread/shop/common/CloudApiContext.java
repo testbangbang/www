@@ -70,12 +70,14 @@ public class CloudApiContext {
         public static final String SHOP_MAIN_CONFIG_URI = "channel/%s";
         public static final String CATEGORY_URI = "category";
         public static final String SEARCH_URI = "search";
+        public static final String HOT_SEARCH_URI = "search/key_word";
         public static final String BOOK_MODULE_URI = "module/%1s/%2s";
         public static final String BOOK_DETAIL_URI = "ebook/%s";
         public static final String BOOK_RANK_URI = "rank/modules";
         public static final String BOOK_COMMENT_LIST_URI = "ebook/%s/comment";
         public static final String BOOK_RECOMMEND_LIST_URI = "ebook/%s/recommend";
         public static final String BOOK_RANK_LIST_URI = "rank/%1s/%2s";
+        public static final String DOWN_LOAD_WHOLE_BOOK = "%1s/download";
     }
 
     public static class AddToSmooth {
@@ -137,6 +139,17 @@ public class CloudApiContext {
         public static final String UUID = "uuid";
         public static final String EBOOK_ID = "ebookId";
         public static final String USER_ID = "userId";
+    }
+
+    public static class BookDownLoad {
+        public static final String HAS_CERT = "has_cert";
+        public static final String TYPE = "type";
+        public static final String HARDWARE_ID = "hardware_id";
+        public static final String IS_TOB = "is_tob"; //is Enterprise Edition
+        public static final String HAS_CERT_DEFAULT_VALUE = "0";
+        public static final int TYPE_SMOOTH_READ = 1;
+        public static final int TYPE_ORDER = 2;
+        public static final boolean IS_TOB_DEFAULT_VALUE = false;
     }
 
     public static class Cert {

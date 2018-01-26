@@ -26,8 +26,8 @@ public class BookDetailResultBean {
         public int word_count;
         public float file_size;
         public float star;
-        public boolean can_buy;
-        public boolean can_read;
+        public boolean can_buy;//when can_buy is false,then alreadyBuy is true ;
+        public boolean can_read;//vip read
         public boolean can_try;
         public String try_url;
         public String price_message;

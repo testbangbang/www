@@ -47,6 +47,17 @@ public class Constants {
     public static final String RESULT_CODE_NOT_LOGIN = "3";
     public static final String RESULT_CODE_PARAMS_ERROR = "4";
     public static final String RESULT_CODE_PARAMS_LENGTH_ERROR = "5";
+    public static final String RESULT_CODE_PARAMS_LACK = "6";
+    public static final String RESULT_CODE_PARAMS_FORMAT_ERRO = "7";
+    public static final String RESULT_CODE_BOOK_NO_READ_VIP = "100";
+    public static final String RESULT_CODE_BOOK_CAN_NOT_READ = "104";
+    public static final String RESULT_CODE_BOOK_NOT_FOUND = "105";
+    public static final String RESULT_CODE_BOOK_ILLEGAL_ORDER = "106";
+    public static final String RESULT_CODE_BOOK_ILLEGAL_DEVICE = "108";
+    public static final String RESULT_CODE_BOOK_GENERATE_CERT_ERROR = "111";
+    public static final String RESULT_CODE_BOOK_GET_CONTENT_ERROR = "112";
+    public static final String RESULT_CODE_BOOK_CERIFY_ORDER_ERROR = "116";
+
     public static final int PASSWORD_MIN_LENGTH = 6;
     public static final String CODE_STATE_THREE = "3";
     public static final String CODE_STATE_FOUR = "4";

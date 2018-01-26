@@ -3,4 +3,4 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/line_width"
-    android:background="@android:color/darker_gray" />
+    android:background="@color/under_line_gray" />
