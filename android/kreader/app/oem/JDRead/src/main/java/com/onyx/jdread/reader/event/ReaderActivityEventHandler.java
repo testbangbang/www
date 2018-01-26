@@ -121,33 +121,15 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateViewSettingEvent(UpdateViewSettingEvent event) {
-        if(event.getStyle() != null) {
-            readerViewModel.getReaderDataHolder().setStyle(event.getStyle());
-        }
-        if(event.getSettings() != null) {
-            readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
-        }
-        if(event.getReaderUserDataInfo() != null) {
-            readerViewModel.getReaderDataHolder().setReaderUserDataInfo(event.getReaderUserDataInfo());
-        }
+    public void onUpdateReaderViewInfoEvent(UpdateReaderViewInfoEvent event) {
+        readerViewModel.getReaderDataHolder().setReaderViewInfo(event.getReaderViewInfo());
+        readerViewModel.getReaderDataHolder().setStyle(event.getStyle());
+        readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
+        readerViewModel.getReaderDataHolder().setReaderUserDataInfo(event.getReaderUserDataInfo());
+        readerViewModel.getReaderDataHolder().setDocumentOpenState();
         if (readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()) {
             readerSettingMenuDialog.updateBookmarkState();
         }
-    }
-
-    public static void updateViewSetting(ReaderDataHolder readerDataHolder,ImageReflowSettings settings, ReaderTextStyle style, ReaderUserDataInfo readerUserDataInfo) {
-        UpdateViewSettingEvent event = new UpdateViewSettingEvent();
-        event.setStyle(style);
-        event.setSettings(settings);
-        event.setReaderUserDataInfo(readerUserDataInfo);
-        readerDataHolder.getEventBus().post(event);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateReaderViewInfoEvent(UpdateReaderViewInfoEvent event) {
-        readerViewModel.getReaderDataHolder().setReaderViewInfo(event.getReaderViewInfo());
-        readerViewModel.getReaderDataHolder().setDocumentOpenState();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -161,6 +143,9 @@ public class ReaderActivityEventHandler {
     public static void updateReaderViewInfo(ReaderDataHolder readerDataHolder,ReaderBaseRequest request){
         UpdateReaderViewInfoEvent event = new UpdateReaderViewInfoEvent();
         event.setReaderViewInfo(request.getReaderViewInfo());
+        event.setReaderUserDataInfo(request.getReaderUserDataInfo());
+        event.setSettings(request.getSettings());
+        event.setStyle(request.getStyle());
         readerDataHolder.getEventBus().post(event);
     }
 

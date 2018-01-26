@@ -31,6 +31,7 @@ public class UpdateAnnotationRequest extends ReaderBaseRequest {
                 selection.getRectangles(), noteInfo.srcNote, noteInfo.newNote);
 
         ContentSdkDataUtils.getDataProvider().addAnnotation(annotation);
+        updateSetting(reader);
         return this;
     }
 }

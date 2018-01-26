@@ -357,7 +357,6 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private void clearWordSelection() {
-        new UpdateViewPageAction().execute(getReaderDataHolder(), null);
         getReaderDataHolder().getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
         getReaderDataHolder().getReaderSelectionInfo().clear();
         new CleanSelectionAction().execute(getReaderDataHolder(),null);
