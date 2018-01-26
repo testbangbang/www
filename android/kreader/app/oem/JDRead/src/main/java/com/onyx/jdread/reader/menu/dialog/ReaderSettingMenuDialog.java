@@ -15,6 +15,7 @@ import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -83,6 +84,12 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         initTextBar();
         initImageBar();
         initCustomizeBar();
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        DeviceUtils.adjustFullScreenStatus(this.getWindow(),true);
     }
 
     private void initView() {

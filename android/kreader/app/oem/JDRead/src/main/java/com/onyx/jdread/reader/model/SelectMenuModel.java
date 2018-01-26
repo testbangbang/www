@@ -2,16 +2,14 @@ package com.onyx.jdread.reader.model;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.graphics.RectF;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PopupSelectionMenuBinding;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.WordTranslateResultEvent;
 import com.onyx.jdread.reader.highlight.HighlightCursor;
 import com.onyx.jdread.reader.event.PopupBaidupediaClickEvent;
 import com.onyx.jdread.reader.event.PopupCopyClickEvent;
@@ -190,7 +188,8 @@ public class SelectMenuModel {
         action.execute(SettingBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                updateTranslateResult(action.getTranslateResult());
+                WordTranslateResultEvent event = new WordTranslateResultEvent(action.getTranslateResult());
+                eventBus.post(event);
             }
         });
     }

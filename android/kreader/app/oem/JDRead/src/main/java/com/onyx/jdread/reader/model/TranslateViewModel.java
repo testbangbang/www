@@ -7,9 +7,12 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.databinding.ActivityTranslateBinding;
 import com.onyx.jdread.reader.dialog.ViewCallBack;
+import com.onyx.jdread.reader.event.TextTranslateResultEvent;
 import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.setting.action.TranslateAction;
 import com.onyx.jdread.setting.model.SettingBundle;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2018/1/22.
@@ -23,6 +26,15 @@ public class TranslateViewModel {
     private ViewCallBack viewCallBack;
     private String text;
     private ObservableField<String> page = new ObservableField<>();
+    private EventBus eventBus;
+
+    public TranslateViewModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
+    }
 
     public ObservableField<String> getPage() {
         return page;
@@ -85,7 +97,8 @@ public class TranslateViewModel {
         action.execute(SettingBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                updateTranslateResult(action.getTranslateResult());
+                TextTranslateResultEvent event = new TextTranslateResultEvent(action.getTranslateResult());
+                eventBus.post(event);
             }
         });
     }

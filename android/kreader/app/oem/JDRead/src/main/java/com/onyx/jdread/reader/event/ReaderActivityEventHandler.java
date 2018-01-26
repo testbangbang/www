@@ -2,8 +2,6 @@ package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
 
-import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
@@ -11,7 +9,6 @@ import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.SelectTextCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
-import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogDict;
@@ -24,9 +21,7 @@ import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
 import com.onyx.jdread.reader.menu.event.SearchContentEvent;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
-import com.onyx.jdread.util.TimeUtils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -69,17 +64,17 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onMenuAreaEvent(MenuAreaEvent event) {
-        new ShowSettingMenuAction().execute(readerViewModel.getReaderDataHolder(),null);
+        new ShowSettingMenuAction().execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe
     public void onPrevPageEvent(PrevPageEvent event) {
-        new PrevPageAction().execute(readerViewModel.getReaderDataHolder(),null);
+        new PrevPageAction().execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe
     public void onNextPageEvent(NextPageEvent event) {
-        new NextPageAction().execute(readerViewModel.getReaderDataHolder(),null);
+        new NextPageAction().execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe
@@ -117,7 +112,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInitPageViewInfoEvent(InitPageViewInfoEvent event) {
-        new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(),null);
+        new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -140,7 +135,7 @@ public class ReaderActivityEventHandler {
         dialog.show(readerViewBack.getContext().getFragmentManager(), "");
     }
 
-    public static void updateReaderViewInfo(ReaderDataHolder readerDataHolder,ReaderBaseRequest request){
+    public static void updateReaderViewInfo(ReaderDataHolder readerDataHolder, ReaderBaseRequest request) {
         UpdateReaderViewInfoEvent event = new UpdateReaderViewInfoEvent();
         event.setReaderViewInfo(request.getReaderViewInfo());
         event.setReaderUserDataInfo(request.getReaderUserDataInfo());
@@ -150,12 +145,12 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPopupLineationClickEvent(PopupLineationClickEvent event){
-        new AddAnnotationAction().execute(readerViewModel.getReaderDataHolder(),null);
+    public void onPopupLineationClickEvent(PopupLineationClickEvent event) {
+        new AddAnnotationAction().execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPopupNoteClickEvent(PopupNoteClickEvent event){
+    public void onPopupNoteClickEvent(PopupNoteClickEvent event) {
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
             return;
@@ -165,30 +160,35 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPopupCopyClickEvent(PopupCopyClickEvent event){
-        new SelectTextCopyToClipboardAction().execute(readerViewModel.getReaderDataHolder(),null);
+    public void onPopupCopyClickEvent(PopupCopyClickEvent event) {
+        new SelectTextCopyToClipboardAction().execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPopupTranslationClickEvent(PopupTranslationClickEvent event){
+    public void onPopupTranslationClickEvent(PopupTranslationClickEvent event) {
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
             return;
         }
         String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
-        TranslateDialog translateDialog = new TranslateDialog(activity,text);
+        TranslateDialog translateDialog = new TranslateDialog(activity, text, readerViewModel.getEventBus());
         translateDialog.show();
         translateDialog.setCanceledOnTouchOutside(true);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPopupBaidupediaClickEvent(PopupBaidupediaClickEvent event){
+    public void onPopupBaidupediaClickEvent(PopupBaidupediaClickEvent event) {
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
             return;
         }
         String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
-        DialogDict dialogDict = new DialogDict(activity,text);
+        DialogDict dialogDict = new DialogDict(activity, text);
         dialogDict.show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateTranslateResultEvent(WordTranslateResultEvent event) {
+        readerViewModel.getReaderDataHolder().getSelectMenuModel().updateTranslateResult(event.getTranslateResult());
     }
 }
