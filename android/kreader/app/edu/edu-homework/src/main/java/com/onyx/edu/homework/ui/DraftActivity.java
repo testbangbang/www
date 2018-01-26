@@ -47,7 +47,6 @@ public class DraftActivity extends BaseActivity {
 
     private void initFragment() {
         DataBundle.getInstance().resetNoteViewHelper();
-        DataBundle.getInstance().getNoteViewHelper().setTextLayoutArgs(TextLayoutArgs.create(question.content, TextUtils.getTextSpacingAdd(question)));
         scribbleFragment = ScribbleFragment.newInstance(question);
         getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
         toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -72,10 +71,6 @@ public class DraftActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (!DataBundle.getInstance().isDoing()) {
-            finish();
-            return;
-        }
         DataBundle.getInstance().post(new SaveNoteEvent(true));
     }
 

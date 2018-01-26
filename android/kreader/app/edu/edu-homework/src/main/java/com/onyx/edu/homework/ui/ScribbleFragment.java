@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -148,6 +150,7 @@ public class ScribbleFragment extends BaseFragment {
             };
         }
         binding.scribbleView.getHolder().addCallback(surfaceCallback);
+        binding.scribbleView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
     }
 
     private void loadPageReview(int page, final BaseCallback callback) {
@@ -379,9 +382,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(rect, paint);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
 
     private Rect getViewportSize() {
@@ -505,7 +506,7 @@ public class ScribbleFragment extends BaseFragment {
 
     @Subscribe
     public void onSaveNoteEvent(SaveNoteEvent event) {
-        saveDocument(event.finishAfterSave, shouldResume(), true, true, null);
+        saveDocument(event.finishAfterSave, shouldResume(), true, event.showLoading, null);
     }
 
     @Subscribe

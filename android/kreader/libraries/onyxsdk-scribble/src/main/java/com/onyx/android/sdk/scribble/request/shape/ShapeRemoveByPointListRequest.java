@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -56,13 +57,10 @@ public class ShapeRemoveByPointListRequest extends BaseNoteRequest {
         if (canvas == null) {
             return;
         }
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(rect, paint);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         Bitmap bitmap = helper.getRenderBitmap();
         if (bitmap != null) {
-            canvas.drawBitmap(bitmap, 0, 0, paint);
+            canvas.drawBitmap(bitmap, 0, 0, null);
         }
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
     }

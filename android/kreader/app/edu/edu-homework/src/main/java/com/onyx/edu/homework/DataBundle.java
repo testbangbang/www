@@ -165,7 +165,7 @@ public class DataBundle {
     }
 
     public boolean canCheckAnswer() {
-        return isReview() && getHomework().isPublishedAnswer();
+        return getHomework().isPublishedAnswer();
     }
 
     public boolean canGetReview() {

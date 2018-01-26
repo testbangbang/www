@@ -18,7 +18,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.DraftActivity"/>
+        <activity
+            android:theme="@style/TranslucentTheme"
+            android:name=".ui.DraftActivity"/>
     </application>
 
 </manifest>
