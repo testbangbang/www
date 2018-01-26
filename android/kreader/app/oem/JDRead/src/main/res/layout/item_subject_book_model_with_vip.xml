@@ -38,7 +38,7 @@
                 android:gravity="top|center_horizontal"
                 android:lines="2"
                 android:text="@{bookBean.name}"
-                android:textSize="@dimen/level_four_heading_font" />
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 

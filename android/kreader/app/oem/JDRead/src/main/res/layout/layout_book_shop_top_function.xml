@@ -19,7 +19,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/normal_selected_background"
             android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onRankViewClick()}"
             android:orientation="vertical">
@@ -36,7 +35,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/ranking"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 
@@ -44,7 +44,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/normal_selected_background"
             android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onEnjoyReadViewClick()}"
             android:orientation="vertical">
@@ -61,7 +60,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/vip"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 
@@ -69,7 +69,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/normal_selected_background"
             android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onSaleViewClick()}"
             android:orientation="vertical">
@@ -86,7 +85,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/sale"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 
@@ -94,7 +94,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/normal_selected_background"
             android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onNewBookViewClick()}"
             android:orientation="vertical">
@@ -111,7 +110,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/new_book"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 
@@ -119,7 +119,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/normal_selected_background"
             android:gravity="center_horizontal"
             android:onClick="@{()->viewModel.onCategoryViewClick()}"
             android:orientation="vertical">
@@ -136,7 +135,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/category"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 

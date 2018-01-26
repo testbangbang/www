@@ -38,7 +38,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/text_no_stoke_background"
                         android:text="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_EIGHT).modelBean.show_name}"
                         android:textSize="@dimen/level_two_heading_font" />
 
@@ -46,7 +45,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:background="@drawable/text_no_stoke_background"
                         android:drawablePadding="@dimen/view_all_drawable_padding"
                         android:drawableRight="@mipmap/ic_go_view_all"
                         android:gravity="center"

@@ -125,18 +125,7 @@ public class UserLoginAction extends BaseAction {
                 rxCallback.onNext(UserLoginAction.class);
             }
         } else {
-            String errorMsg = JDReadApplication.getInstance().getString(R.string.login_fail);
-            if (Constants.RESULT_CODE_PARAMS_ERROR.equals(code)) {
-                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_params_error);
-            } else if (Constants.RESULT_CODE_NO_FUNCTION.equals(code)) {
-                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_no_function);
-            } else if (Constants.RESULT_CODE_NOT_LOGIN.equals(code)) {
-                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_not_login);
-            } else if (Constants.RESULT_CODE_PARAMS_LENGTH_ERROR.equals(code)) {
-                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_params_error);
-            } else if (Constants.RESULT_CODE_UNKNOWN_ERROR.equals(code)) {
-                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_unknown_error);
-            }
+            String errorMsg = ToastUtil.getErrorMsgByCode(code);
             dataBundle.getEventBus().post(new UserLoginResultEvent(errorMsg));
         }
     }
