@@ -25,13 +25,13 @@
             android:ellipsize="middle"
             android:gravity="center"
             android:maxLines="2"
-            android:paddingTop="@dimen/category_book_list_selected_button_padding_top"
-            android:paddingBottom="@dimen/category_book_list_selected_button_padding_top"
-            android:paddingLeft="@dimen/category_book_list_selected_button_padding_left"
-            android:paddingRight="@dimen/category_book_list_selected_button_padding_left"
+            android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+            android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+            android:paddingLeft="@dimen/category_book_list_selected_button_padding_left_and_right"
+            android:paddingRight="@dimen/category_book_list_selected_button_padding_left_and_right"
             android:text="@{categoryBean.name}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            android:textSize="@dimen/font_size_15" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 

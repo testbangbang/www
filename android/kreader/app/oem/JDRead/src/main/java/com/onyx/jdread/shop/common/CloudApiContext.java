@@ -65,6 +65,7 @@ public class CloudApiContext {
         public static final String SHOP_MAIN_CONFIG_URI = "channel/%s";
         public static final String CATEGORY_URI = "category";
         public static final String SEARCH_URI = "search";
+        public static final String HOT_SEARCH_URI = "search/key_word";
         public static final String BOOK_MODULE_URI = "module/%1s/%2s";
         public static final String BOOK_DETAIL_URI = "ebook/%s";
         public static final String BOOK_RANK_URI = "rank/modules";

@@ -10,8 +10,6 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.ReadUnlimitedResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SaltResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddBookToSmoothCardBookBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDownloadUrlResultBean;
@@ -22,7 +20,6 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
-import com.onyx.jdread.shop.cloud.entity.jdbean.ShoppingCartBookIdsBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateCartBean;
 
 import java.util.Map;
@@ -113,7 +110,7 @@ public interface ReadContentService {
                                              @QueryMap Map<String, String> baseInfoMap);
 
     @GET("search/key_word")
-    Call<SearchHotWord> getSearchHot(@Query(JDAppBaseInfo.APP_KEY) String app);
+    Call<SearchHotWord> getSearchHot(@QueryMap Map<String, String> baseInfoMap);
 
     @GET("ebook/{bookId}/comment")
     Call<BookCommentsResultBean> getBookCommentsList(@Path("bookId") long bookId,

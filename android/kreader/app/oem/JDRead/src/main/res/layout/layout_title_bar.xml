@@ -31,18 +31,18 @@
 
             <ImageView
                 android:id="@+id/title_bar_image_view_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_title_back" />
+                android:layout_width="@dimen/back_icon_width_and_height"
+                android:layout_height="@dimen/back_icon_width_and_height"
+                android:src="@mipmap/ic_read_back" />
 
             <TextView
                 android:id="@+id/title_bar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/book_detail_margin"
+                android:layout_marginLeft="@dimen/layout_title_bar_title_margin_left"
                 android:text="@{titleBarViewModel.leftText}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_two_heading_font" />
 
         </LinearLayout>
 

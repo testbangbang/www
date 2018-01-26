@@ -35,7 +35,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/ranking"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 
@@ -59,7 +60,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/vip"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 
@@ -83,7 +85,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/sale"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 
@@ -107,7 +110,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/new_book"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 
@@ -131,7 +135,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/category"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 

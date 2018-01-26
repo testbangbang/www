@@ -129,6 +129,7 @@
     <string name="title_bar_title_book_detail">图书详情</string>
     <string name="title_bar_title_book_comment">评论</string>
     <string name="title_bar_title_book_write_comment">写评论</string>
+    <string name="copyright_book_format">格式：</string>
     <string name="copyright_book_word_count">字数：</string>
     <string name="copyright_book_author">作者：</string>
     <string name="copyright_book_publish">出版方：</string>

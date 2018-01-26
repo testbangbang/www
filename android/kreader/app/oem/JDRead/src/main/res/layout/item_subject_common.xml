@@ -21,13 +21,15 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.modelBean.show_name}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textSize="@dimen/font_size_19" />
 
             <TextView
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -37,7 +39,7 @@
                 android:onClick="@{()->viewModel.onViewAllClick()}"
                 android:text="@string/view_all"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_four_heading_font" />
 
         </RelativeLayout>
 
@@ -55,13 +57,15 @@
             android:visibility="@{viewModel.showNextTitle ? View.VISIBLE : View.GONE}">
 
             <TextView
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.modelBeanNext.show_name}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textSize="@dimen/font_size_19" />
 
             <TextView
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -71,7 +75,7 @@
                 android:onClick="@{()->viewModel.onNextViewAllClick()}"
                 android:text="@string/view_all"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_four_heading_font" />
 
         </RelativeLayout>
 
