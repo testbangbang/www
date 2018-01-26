@@ -40,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/level_one_heading_font"
+                android:layout_marginTop="@dimen/item_setting_name_margin_top"
                 android:textColor="@android:color/black"
                 android:text="@{data.settingName}"/>
 

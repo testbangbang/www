@@ -7,6 +7,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.data.ChangeLayoutParameter;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.request.ChangeLayoutRequest;
 
 /**
@@ -21,12 +22,13 @@ public class ImageReflowAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         ChangeLayoutParameter parameter = new ChangeLayoutParameter(PageConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
-        new ChangeLayoutRequest(readerDataHolder.getReader(),parameter,settings).execute(new RxCallback() {
+        final ChangeLayoutRequest request = new ChangeLayoutRequest(readerDataHolder.getReader(), parameter, settings);
+        request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
             }
         });
     }

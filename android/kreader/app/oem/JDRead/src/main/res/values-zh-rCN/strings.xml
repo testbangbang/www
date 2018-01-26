@@ -26,7 +26,7 @@
     <string name="system_update">系统更新</string>
     <string name="device_config">设备设置</string>
     <string name="hour_format">时间格式</string>
-    <string name="sample_clock">已开启24小时格式</string>
+    <string name="sample_clock">已开启%d小时格式</string>
     <string name="date_time">日期时间</string>
     <string name="screen_saver">屏幕保护</string>
     <string name="password_setting">密码设置</string>
@@ -263,7 +263,7 @@
     <string name="select_interested_type">选择您感兴趣的图书类型</string>
     <string name="save">保存</string>
     <string name="export_note">导出笔记</string>
-    <string name="export_note_to">导出笔记至</string>
+    <string name="export_note_to">导出至</string>
     <string name="native_folder">本机文件夹</string>
     <string name="email">电子邮箱</string>
     <string name="impression_note">印象笔记</string>

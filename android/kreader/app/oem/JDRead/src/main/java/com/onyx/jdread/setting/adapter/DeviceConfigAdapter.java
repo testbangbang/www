@@ -30,6 +30,8 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
     private EventBus eventBus;
     private List<DeviceConfigData> data;
     private Map<String, DeviceConfigEvent> configEvents;
+    private final static int FORMAT_24 = 24;
+    private final static int FORMAT_12 = 12;
 
     public DeviceConfigAdapter(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -61,9 +63,12 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
         DeviceConfigViewHolder viewHolder = (DeviceConfigViewHolder) holder;
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
-        viewHolder.getBinding().itemDataFormatCheck.setChecked(TimeUtils.is24Hour());
+        DeviceConfigData deviceConfigData = data.get(position);
+        boolean is24Hour = TimeUtils.is24Hour();
+        deviceConfigData.setTimeFormat(is24Hour ? FORMAT_24 : FORMAT_12);
+        viewHolder.getBinding().itemDataFormatCheck.setChecked(is24Hour);
         viewHolder.getBinding().itemDataFormatCheck.setOnCheckedChangeListener(this);
-        viewHolder.bindTo(data.get(position));
+        viewHolder.bindTo(deviceConfigData);
     }
 
     public void setData(List<DeviceConfigData> deviceConfigDataList, Map<String, DeviceConfigEvent> configEvents) {
@@ -96,6 +101,7 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
         SystemBarModel systemBarModel = MainBundle.getInstance().getSystemBarModel();
         systemBarModel.setTimeFormat(isChecked);
         systemBarModel.updateTime();
+        data.get(0).setTimeFormat(isChecked ? FORMAT_24 : FORMAT_12);
     }
 
     static class DeviceConfigViewHolder extends RecyclerView.ViewHolder {

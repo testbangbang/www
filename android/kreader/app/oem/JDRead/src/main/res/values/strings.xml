@@ -26,7 +26,7 @@
     <string name="system_update">System update</string>
     <string name="device_config">Device config</string>
     <string name="hour_format">Time format</string>
-    <string name="sample_clock">>Opened 24-hour format</string>
+    <string name="sample_clock">>Opened %d-hour format</string>
     <string name="date_time">Date/time</string>
     <string name="screen_saver">Screen saver</string>
     <string name="password">Password</string>
@@ -274,7 +274,7 @@
     <string name="select_interested_type">Select the type of book you are interested in</string>
     <string name="save">Save</string>
     <string name="export_note">Export notes</string>
-    <string name="export_note_to">Export notes to</string>
+    <string name="export_note_to">Export to</string>
     <string name="native_folder">Native folder</string>
     <string name="email">Email</string>
     <string name="impression_note">Impression of notes</string>

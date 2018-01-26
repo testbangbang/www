@@ -69,6 +69,7 @@ public class SelectRequest extends ReaderBaseRequest {
             HitTestTextHelper.saveLastHighLightPosition(pagePosition,readerSelectionManager,start,end);
         }
         getSelectionInfoManager().updateSelectInfo(readerSelectionManager.getReaderSelectionInfos());
+        updateSetting(reader);
         return this;
     }
 

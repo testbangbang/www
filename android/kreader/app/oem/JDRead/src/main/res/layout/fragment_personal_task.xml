@@ -16,16 +16,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <LinearLayout
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/personal_task_recycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/personal_task_whole_padding">
-
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/personal_task_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/personal_task_recycler_height" />
-        </LinearLayout>
+            android:layout_height="@dimen/personal_task_recycler_height"
+            android:paddingLeft="@dimen/personal_task_whole_padding"
+            android:paddingRight="@dimen/personal_task_whole_padding"
+            android:paddingBottom="@dimen/personal_task_whole_padding"/>
     </LinearLayout>
 </layout>

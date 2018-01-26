@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.actions;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.request.UpdateViewPageRequest;
 
 /**
@@ -15,7 +16,7 @@ public class UpdateViewPageAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                readerDataHolder.setReaderUserDataInfo(request.getReaderUserDataInfo());
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
             }
         });
     }

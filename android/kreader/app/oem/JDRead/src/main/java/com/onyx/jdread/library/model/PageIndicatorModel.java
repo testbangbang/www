@@ -42,20 +42,15 @@ public class PageIndicatorModel extends BaseObservable {
     }
 
     public void updateCurrentPage(int total) {
-        int currentPage = gPaginator.getCurrentPage() + 1;
-        int itemsPerPage = gPaginator.itemsPerPage();
-        int totalPage = total / itemsPerPage;
-        if (totalPage * itemsPerPage < total) {
-            totalPage++;
-        }
-        if (totalPage == 0) {
-            totalPage = 1;
-        }
-        if (currentPage > totalPage) {
-            currentPage = 1;
+        if (gPaginator.pages() > 0 && gPaginator.getCurrentPage() > gPaginator.pages() - 1) {
+            gPaginator.setCurrentPage(gPaginator.pages() - 1);
+        } else if (gPaginator.getCurrentPage() < 0) {
             gPaginator.setCurrentPage(0);
         }
-        this.currentPage.set(currentPage);
+        int currentPage = gPaginator.getCurrentPage() + 1;
+        int itemsPerPage = gPaginator.itemsPerPage();
+        int totalPage = (int) Math.ceil(total * 1.0f / itemsPerPage);
+        this.currentPage.set(totalPage == 0 ? 0 : currentPage);
         this.totalPage.set(totalPage);
         updateTotal(total);
     }

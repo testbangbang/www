@@ -7,6 +7,7 @@ import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
 
 import com.onyx.android.sdk.data.BookFilter;
+import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.SortBy;
@@ -36,6 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Stack;
 
 /**
  * Created by hehai on 17-11-17.
@@ -50,12 +52,15 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableBoolean showTopMenu = new ObservableBoolean(true);
     public final ObservableBoolean showBottomMenu = new ObservableBoolean(false);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
-    private int queryLimit = 9;
-    private int deletePageCount = 0;
-    private QueryPagination queryPagination = QueryPagination.create(3, 3);
+    private List<DataModel> librarySelected = new ArrayList<>();
+    private int queryLimit = 6;
+    private int removePageCount = 0;
+    private GPaginator queryPagination = QueryPagination.create(3, 3);
     private QueryArgs queryArgs;
     private EventBus eventBus;
     private LibrarySelectHelper selectHelper;
+    public boolean buildingLibrary;
+    public Stack<GPaginator> pageStack = new Stack<>();
 
     public LibraryViewDataModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -186,6 +191,9 @@ public class LibraryViewDataModel extends Observable {
         for (DataModel model : pageData) {
             if (model.type.get() == ModelType.TYPE_LIBRARY) {
                 model.selectedCount.set(getSelectCount(model));
+                if (model.selectedCount.get().equals(model.childCount.get())) {
+                    librarySelected.add(model);
+                }
             }
         }
         items.addAll(pageData);
@@ -209,15 +217,25 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public void updateDeletePage() {
-        int prevDelete = 0;
+        int removedCount = 0;
         int currentPage = queryPagination.getCurrentPage();
         int itemsPerPage = queryPagination.itemsPerPage();
-        for (DataModel dataModel : getListSelected()) {
-            if (dataModel.id.get() > currentPage * itemsPerPage) {
-                prevDelete++;
+        for (DataModel model : librarySelected) {
+            if (model.id.get() < currentPage * itemsPerPage) {
+                removedCount++;
             }
         }
-        deletePageCount = prevDelete / itemsPerPage;
+
+        for (DataModel dataModel : getListSelected()) {
+            if (dataModel.id.get() + libraryCount.get() < currentPage * itemsPerPage) {
+                removedCount++;
+            }
+        }
+
+        if (currentPage == queryPagination.lastPage() && buildingLibrary) {
+            removedCount--;
+        }
+        removePageCount = removedCount / itemsPerPage;
     }
 
     public void removeFromSelected(DataModel itemModel) {
@@ -231,8 +249,12 @@ public class LibraryViewDataModel extends Observable {
         updateDeletePage();
     }
 
-    public QueryPagination getQueryPagination() {
+    public GPaginator getQueryPagination() {
         return queryPagination;
+    }
+
+    public void setQueryPagination(GPaginator queryPagination) {
+        this.queryPagination = queryPagination;
     }
 
     public String getLibraryIdString() {
@@ -324,6 +346,7 @@ public class LibraryViewDataModel extends Observable {
     public void clearSelectedData() {
         selectHelper.clearSelectedData();
         clearCurrentLibrarySelectedData();
+        librarySelected.clear();
     }
 
     private void clearCurrentLibrarySelectedData() {
@@ -336,14 +359,15 @@ public class LibraryViewDataModel extends Observable {
     public void quitMultiSelectionMode() {
         selectHelper.getChildLibrarySelectedMap().clear();
         clearCurrentLibrarySelectedData();
+        librarySelected.clear();
     }
 
     public void delete() {
         eventBus.post(new DeleteBookEvent());
     }
 
-    public int getDeletePageCount() {
-        return deletePageCount;
+    public int getRemovePageCount() {
+        return removePageCount;
     }
 
     public void moveTo() {

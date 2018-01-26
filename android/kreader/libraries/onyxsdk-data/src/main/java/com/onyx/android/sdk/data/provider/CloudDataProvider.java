@@ -13,7 +13,6 @@ import com.onyx.android.sdk.data.converter.QueryArgsFilter;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.data.model.Library;
-import com.onyx.android.sdk.data.model.Library_Table;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.ProductResult;
@@ -335,6 +334,11 @@ public class CloudDataProvider implements DataProviderBase {
     }
 
     @Override
+    public void deleteLibrary(String libraryUniqueId) {
+
+    }
+
+    @Override
     public void clearLibrary() {
         Delete.table(CloudLibrary.class);
     }
@@ -468,7 +472,7 @@ public class CloudDataProvider implements DataProviderBase {
     }
 
     @Override
-    public long libraryMetadataCount(Library library) {
+    public long libraryMetadataCount(String libraryUniqueId) {
         return 0;
     }
 
@@ -482,7 +486,7 @@ public class CloudDataProvider implements DataProviderBase {
         SearchHistory single = new Select().from(SearchHistory.class).where(SearchHistory_Table.content.eq(searchHistory.getContent())).querySingle();
         if (single == null) {
             searchHistory.save();
-        }else {
+        } else {
             single.update();
         }
     }
