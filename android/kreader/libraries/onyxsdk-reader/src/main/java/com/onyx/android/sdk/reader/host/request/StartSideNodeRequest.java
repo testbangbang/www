@@ -2,6 +2,7 @@ package com.onyx.android.sdk.reader.host.request;
 
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 
@@ -12,6 +13,8 @@ public class StartSideNodeRequest extends BaseReaderRequest {
 
     private int newWidth, newHeight;
 
+    public PositionSnapshot positionSnapshot;
+
     public StartSideNodeRequest(int nw, int nh) {
         newWidth = nw / 2;
         newHeight = nh;
@@ -20,8 +23,7 @@ public class StartSideNodeRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
 
-        reader.getReaderLayoutManager().saveCurrentLayout();
-        reader.getReaderLayoutManager().getPageManager().saveScale();
+        positionSnapshot = reader.getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
 
         reader.getReaderLayoutManager().setCurrentLayout(PageConstants.SINGLE_PAGE, new NavigationArgs());
         reader.getReaderHelper().updateViewportSize(newWidth, newHeight);

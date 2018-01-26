@@ -2,8 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.android.sdk.reader.host.request.ChangeViewConfigRequest;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.request.StartSideNodeRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -12,12 +11,14 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class StartSideNoteAction extends BaseAction {
 
+    public PositionSnapshot positionSnapshot;
+
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.setSideNoting(true);
-        BaseReaderRequest config = new StartSideNodeRequest(readerDataHolder.getDisplayWidth(),
+        final StartSideNodeRequest sideNodeRequest = new StartSideNodeRequest(readerDataHolder.getDisplayWidth(),
                 readerDataHolder.getDisplayHeight());
-        readerDataHolder.submitRenderRequest(config, new BaseCallback() {
+        readerDataHolder.submitRenderRequest(sideNodeRequest, new BaseCallback() {
             @Override
             public void beforeDone(BaseRequest request, Throwable e) {
                 if (e != null) {
@@ -27,6 +28,7 @@ public class StartSideNoteAction extends BaseAction {
 
             @Override
             public void done(BaseRequest request, Throwable e) {
+                positionSnapshot = sideNodeRequest.positionSnapshot;
                 BaseCallback.invoke(callback, request, e);
             }
         });

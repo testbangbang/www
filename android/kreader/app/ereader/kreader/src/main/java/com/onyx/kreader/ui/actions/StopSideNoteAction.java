@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.actions;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.request.StartSideNodeRequest;
 import com.onyx.android.sdk.reader.host.request.StopSideNodeRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -12,10 +13,16 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class StopSideNoteAction extends BaseAction {
 
+    private PositionSnapshot positionSnapshot;
+
+    public StopSideNoteAction(PositionSnapshot positionSnapshot) {
+        this.positionSnapshot = positionSnapshot;
+    }
+
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         BaseReaderRequest request = new StopSideNodeRequest(readerDataHolder.getDisplayWidth(),
-                readerDataHolder.getDisplayHeight());
+                readerDataHolder.getDisplayHeight(), positionSnapshot);
         // use non render request here as we will render the page after this request
         readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
             @Override

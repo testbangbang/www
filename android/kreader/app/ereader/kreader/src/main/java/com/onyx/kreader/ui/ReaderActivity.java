@@ -44,6 +44,7 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.Debug;
@@ -1335,17 +1336,18 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
 
-        new StartSideNoteAction().execute(getReaderDataHolder(), new BaseCallback() {
+        final StartSideNoteAction action = new StartSideNoteAction();
+        action.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                startSideNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
+                startSideNoteDrawing(getReaderDataHolder(), ReaderActivity.this, action.positionSnapshot);
             }
         });
     }
 
-    private void startSideNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
+    private void startSideNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, PositionSnapshot positionSnapshot) {
         ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(readerActivity.getExtraView(),
-                readerActivity.getStatusBar(),
+                readerActivity.getStatusBar(), positionSnapshot,
                 ShowReaderMenuAction.getScribbleActionCallback(readerDataHolder));
         showMenu.execute(readerDataHolder, null);
     }

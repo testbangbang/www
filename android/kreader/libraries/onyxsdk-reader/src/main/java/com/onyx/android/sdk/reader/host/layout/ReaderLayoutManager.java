@@ -292,6 +292,16 @@ public class ReaderLayoutManager {
         return null;
     }
 
+    public boolean restoreSnapshot(final PositionSnapshot positionSnapshot) {
+        try {
+            setActiveProvider(positionSnapshot.layoutType);
+            getCurrentLayoutProvider().restoreBySnapshot(positionSnapshot);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * internal method to change layout type and position without adding to history list.
      * @param snapshot
