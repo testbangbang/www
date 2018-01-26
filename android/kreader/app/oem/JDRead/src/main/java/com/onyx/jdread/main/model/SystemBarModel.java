@@ -10,11 +10,16 @@ import android.databinding.ObservableInt;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
+import android.util.Log;
 
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.event.SystemBarClickedEvent;
+import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.util.TimeUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -61,7 +66,6 @@ public class SystemBarModel extends Observable {
     private IntentFilter batteryIntentFilter() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         return intentFilter;
     }
 
@@ -69,6 +73,8 @@ public class SystemBarModel extends Observable {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         return intentFilter;
     }
 
@@ -131,12 +137,16 @@ public class SystemBarModel extends Observable {
         context.registerReceiver(wifiReceiver, wifiIntentFilter());
     }
 
-    public void unRegisterReceiver(Context context){
+    public void unRegisterReceiver(Context context) {
         context.unregisterReceiver(phoneBatteryReceiver);
         context.unregisterReceiver(wifiReceiver);
     }
 
-    public void toggleWifi(){
+    public void toggleWifi() {
         NetworkUtil.toggleWiFi(JDReadApplication.getInstance());
+    }
+
+    public void onClicked() {
+        EventBus.getDefault().post(new SystemBarClickedEvent());
     }
 }

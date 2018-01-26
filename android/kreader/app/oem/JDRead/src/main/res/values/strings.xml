@@ -393,4 +393,5 @@
     <string name="source_language">Source language:</string>
     <string name="simplified_chinese">Simplified chinese</string>
     <string name="reader_target_language">Target language:</string>
+    <string name="speed_refresh">Speed refresh</string>
 </resources>

@@ -431,4 +431,7 @@
     <dimen name="book_format_margin_right">20dp</dimen>
     <dimen name="library_cover_child_format_margin_top">25dp</dimen>
     <dimen name="library_cover_child_format_margin_right">5dp</dimen>
+    <dimen name="top_menu_brightness_layout_height">90dp</dimen>
+    <dimen name="top_menu_setting_layout_height">90dp</dimen>
+    <dimen name="top_menu_drawable_padding">10dp</dimen>
 </resources>
