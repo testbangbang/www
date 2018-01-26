@@ -498,7 +498,7 @@ public class NoteViewHelper {
     }
 
     public Bitmap updateRenderBitmap(final Rect viewportSize) {
-        renderBitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.RGB_565);
+        renderBitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_4444);
         return renderBitmapWrapper.getBitmap();
     }
 

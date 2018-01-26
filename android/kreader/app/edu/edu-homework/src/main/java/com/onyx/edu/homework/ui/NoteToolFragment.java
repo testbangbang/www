@@ -159,7 +159,7 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void saveDocument() {
-        getDataBundle().post(new SaveNoteEvent(false));
+        getDataBundle().post(new SaveNoteEvent(false, true));
     }
 
     private boolean onBackgroundChanged(int subMenuID) {

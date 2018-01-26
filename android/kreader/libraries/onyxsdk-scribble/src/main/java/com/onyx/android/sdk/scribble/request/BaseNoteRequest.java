@@ -188,7 +188,7 @@ public class BaseNoteRequest extends BaseRequest {
     public void renderVisiblePages(final NoteViewHelper parent) {
         synchronized (parent) {
             Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
-            bitmap.eraseColor(Color.WHITE);
+            bitmap.eraseColor(Color.TRANSPARENT);
             Canvas canvas = new Canvas(bitmap);
             Paint paint = preparePaint(parent);
 

@@ -99,6 +99,7 @@ public class QuestionFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 gotoDraft();
+                binding.draft.setVisibility(View.INVISIBLE);
             }
         });
         bindQuestionOption(binding.option, question);
@@ -118,6 +119,12 @@ public class QuestionFragment extends BaseFragment {
         binding.scribble.setVisibility(showScribble ? View.VISIBLE : View.GONE);
         binding.scribbleLine.setVisibility(showScribble ? View.VISIBLE : View.GONE);
         binding.toolLayout.setVisibility(showScribble ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initViewVisibility();
     }
 
     public NoteViewHelper getNoteViewHelper() {
