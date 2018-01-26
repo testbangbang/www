@@ -116,9 +116,10 @@ public class SelectMenuModel {
         final float screenHeight = readerDataHolder.getReaderTouchHelper().getContentHeight();
         final float screenWidth = readerDataHolder.getReaderTouchHelper().getContentWidth();
 
-        final float dictMeasuredHeight = screenHeight * 0.4f;
+        final float dictMeasuredHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_select_menu_translate_height);
         final float selectTitleHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_popup_select_menu_height);
-        final float measureWidth = screenWidth * 0.9f;
+
+        final float measureWidth = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_select_menu_width);
         final float x = (screenWidth - measureWidth) / 2;
 
         float measuredHeight;

@@ -13,14 +13,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_stroke"
+        android:background="@drawable/rectangle_stroke_corners"
         android:orientation="vertical"
         android:visibility="@{selectMenuModel.isShowSelectMenu?View.VISIBLE:View.GONE}">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp">
 
             <TextView
                 style="@style/reader_popup_selection_menu_style"
@@ -48,6 +50,11 @@
                 android:text="@string/baidupedia" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -56,8 +63,6 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:visibility="@{selectMenuModel.isShowDictionaryMenu?View.VISIBLE:View.GONE}">
-
-            <View style="@style/reader_dotted_line_style" />
 
             <com.onyx.jdread.reader.ui.view.HTMLReaderWebView
                 android:id="@+id/translate_content_view"
@@ -69,6 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="right"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:text="@{selectMenuModel.page}"
