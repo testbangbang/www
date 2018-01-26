@@ -13,6 +13,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderMenuAction;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.ui.data.Menu;
 import com.onyx.android.sdk.ui.data.MenuClickEvent;
@@ -31,6 +32,7 @@ import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
+import com.onyx.kreader.ui.handler.BaseHandler;
 import com.onyx.kreader.ui.handler.HandlerManager;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -53,7 +55,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private ShowScribbleMenuAction.ActionCallback actionCallback;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
 
-    public ShowSideScribbleMenuAction(ViewGroup parent,View readerStatusBar ,ShowScribbleMenuAction.ActionCallback actionCallback) {
+    public ShowSideScribbleMenuAction(ViewGroup parent, View readerStatusBar, ShowScribbleMenuAction.ActionCallback actionCallback) {
         this.parent = parent;
         this.actionCallback = actionCallback;
         this.readerStatusBar = readerStatusBar;
@@ -64,6 +66,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         this.readerDataHolder = readerDataHolder;
         readerDataHolder.getEventBus().register(this);
         show(readerDataHolder);
+
+        BaseHandler.HandlerInitialState state = new BaseHandler.HandlerInitialState();
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SIDE_NOTE_PROVIDER);
     }
 
