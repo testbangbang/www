@@ -4,6 +4,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.GammaCorrectionEvent;
 import com.onyx.jdread.reader.menu.event.ImageReflowEvent;
@@ -21,6 +22,15 @@ public class ReaderImageModel {
     private ObservableBoolean isShow = new ObservableBoolean(false);
     private ObservableField<ImageShowMode> currentImageMode = new ObservableField<>(ImageShowMode.defaultMode);
     private ObservableInt currentFontColorDepth = new ObservableInt(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
+    private EventBus eventBus;
+
+    public ReaderImageModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
+    }
 
     public enum ImageShowMode {
         defaultMode, comicMode
@@ -32,6 +42,14 @@ public class ReaderImageModel {
 
     public void setCurrentImageMode(ImageShowMode imageMode) {
         this.currentImageMode.set(imageMode);
+    }
+
+    private boolean updateImageMode(ImageShowMode imageShowMode) {
+        if (currentImageMode.get() == imageShowMode) {
+            return false;
+        }
+        setCurrentImageMode(imageShowMode);
+        return true;
     }
 
     public ObservableBoolean getIsShow() {
@@ -47,64 +65,91 @@ public class ReaderImageModel {
     }
 
     public void setCurrentFontColorDepth(int colorDepth) {
-        this.currentFontColorDepth.set(colorDepth);
-        setFontColorDepth(colorDepth);
+        currentFontColorDepth.set(colorDepth);
+    }
+
+    private boolean updateFontColorDepth(int colorDepth){
+        if(currentFontColorDepth.get() == colorDepth) {
+            return false;
+        }
+        setCurrentFontColorDepth(colorDepth);
+        return true;
     }
 
     public void onDefaultModeClick() {
-        setCurrentImageMode(ImageShowMode.defaultMode);
-        ResetNavigationEvent event = new ResetNavigationEvent();
-        EventBus.getDefault().post(event);
+        if (updateImageMode(ImageShowMode.defaultMode)) {
+            ResetNavigationEvent event = new ResetNavigationEvent();
+            getEventBus().post(event);
+        }
     }
 
     public void onComicModeClick() {
-        setCurrentImageMode(ImageShowMode.comicMode);
-        SwitchNavigationToComicModeEvent showModeEvent = new SwitchNavigationToComicModeEvent();
-        EventBus.getDefault().post(showModeEvent);
+        if (updateImageMode(ImageShowMode.comicMode)) {
+            SwitchNavigationToComicModeEvent showModeEvent = new SwitchNavigationToComicModeEvent();
+            getEventBus().post(showModeEvent);
+        }
     }
 
-    public void onOneFontColorDepthClick(){
+    public void onOneFontColorDepthClick() {
+        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_ONE)) {
+            setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
+        }
+    }
+
+    public void onTwoFontColorDepthClick() {
+        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_TWO)) {
+            setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_TWO);
+        }
+    }
+
+    public void onThreeFontColorDepthClick() {
+        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_THREE)) {
+            setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_THREE);
+        }
+    }
+
+    public void onFourFontColorDepthClick() {
+        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FOUR)) {
+            setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FOUR);
+        }
+    }
+
+    public void onFiveFontColorDepthClick() {
+        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FIVE)) {
+            setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FIVE);
+        }
+    }
+
+    public void onSixFontColorDepthClick() {
+        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_SIX)) {
+            setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_SIX);
+        }
+    }
+
+    private void setFontColorDepth(int textGamma) {
+        GammaCorrectionEvent event = new GammaCorrectionEvent();
+        event.textGamma = textGamma;
+        getEventBus().post(event);
+    }
+
+    public void onResetModeClick() {
+        resetMode();
+        ResetNavigationEvent event = new ResetNavigationEvent();
+        getEventBus().post(event);
+    }
+
+    public void resetMode(){
+        setCurrentImageMode(ImageShowMode.defaultMode);
         setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
     }
 
-    public void onTwoFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_TWO);
-    }
-
-    public void onThreeFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_THREE);
-    }
-
-    public void onFourFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FOUR);
-    }
-
-    public void onFiveFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FIVE);
-    }
-
-    public void onSixFontColorDepthClick(){
-        setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_SIX);
-    }
-
-    private void setFontColorDepth(int textGamma){
-        GammaCorrectionEvent event = new GammaCorrectionEvent();
-        event.textGamma = textGamma;
-        EventBus.getDefault().post(event);
-    }
-
-    public void onResetModeClick(){
-        ResetNavigationEvent event = new ResetNavigationEvent();
-        EventBus.getDefault().post(event);
-    }
-
-    public void onRearrangeClick(){
+    public void onRearrangeClick() {
         ImageReflowEvent event = new ImageReflowEvent();
-        EventBus.getDefault().post(event);
+        getEventBus().post(event);
     }
 
-    public void onTrimmingClick(){
+    public void onTrimmingClick() {
         ScaleToPageCropEvent event = new ScaleToPageCropEvent();
-        EventBus.getDefault().post(event);
+        getEventBus().post(event);
     }
 }

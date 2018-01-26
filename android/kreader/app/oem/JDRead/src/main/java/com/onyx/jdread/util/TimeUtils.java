@@ -1,5 +1,9 @@
 package com.onyx.jdread.util;
 
+import android.util.Log;
+
+import com.onyx.jdread.JDReadApplication;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,15 +19,20 @@ public class TimeUtils {
     public static final String DATA_FORMAT = "yyyy-MM-dd";
     public static final String DATA_HOUR_FORMAT = "yyyy-MM-dd_HH-mm";
     public static final String DATA_HOUR_FORMAT_CAST = "yyyyMMddHHmm";
-    public static final String DATA_TIME = "HH:mm";
-    public static final SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat(DATA_TIME);
+    public static final String DATA_TIME_24 = "HH:mm";
+    public static final String DATA_TIME_12 = "hh:mm";
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat(DATA_TIME_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_DATE = new SimpleDateFormat(DATA_FORMAT);
     public static final SimpleDateFormat DATA_HOUR_FORMAT_DATE = new SimpleDateFormat(DATA_HOUR_FORMAT);
     public static final SimpleDateFormat DATA_HOUR_FORMAT_DATE_CAST = new SimpleDateFormat(DATA_HOUR_FORMAT_CAST);
+    public static SimpleDateFormat DEFAULT_TIME_FORMAT = new SimpleDateFormat(DATA_TIME_24);
 
     private TimeUtils() {
         throw new AssertionError();
+    }
+
+    public static void setFormat(SimpleDateFormat format) {
+        TimeUtils.DEFAULT_TIME_FORMAT = format;
     }
 
     public static String getTime(long timeInMillis, SimpleDateFormat dateFormat) {
@@ -135,5 +144,10 @@ public class TimeUtils {
 
     public static long getCurrentTimeInMillis() {
         return System.currentTimeMillis();
+    }
+
+    public static boolean is24Hour() {
+        String pattern = DEFAULT_TIME_FORMAT.toPattern();
+        return DATA_TIME_24.equals(pattern);
     }
 }

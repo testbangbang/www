@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 
 /**
@@ -20,16 +21,18 @@ public class SettingLeftAndRightSpacingAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         ReaderTextStyle.PageMargin pageMargin = style.getPageMargin();
 
         ReaderTextStyle.Percentage leftMargin = pageMargin.getLeftMargin();
         leftMargin.setPercent(margin);
         ReaderTextStyle.Percentage rightMargin = pageMargin.getRightMargin();
         rightMargin.setPercent(margin);
-        new SettingTextStyleRequest(readerDataHolder.getReader(),style).execute(new RxCallback() {
+        final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(),style);
+        request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
             }
 
             @Override

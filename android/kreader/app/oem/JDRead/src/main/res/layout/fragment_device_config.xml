@@ -18,7 +18,7 @@
             android:id="@+id/device_config_recycler"
             android:layout_width="match_parent"
             android:layout_height="@dimen/device_config_recycler_height"
-            android:padding="@dimen/device_config_recycler_padding" />
-
+            android:paddingLeft="@dimen/device_config_recycler_padding"
+            android:paddingRight="@dimen/device_config_recycler_padding"/>
     </LinearLayout>
 </layout>

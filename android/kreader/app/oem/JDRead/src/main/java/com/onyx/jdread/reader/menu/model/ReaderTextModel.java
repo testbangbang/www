@@ -5,6 +5,7 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.actions.SettingFontSizeAction;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.ChangeChineseConvertTypeEvent;
@@ -30,6 +31,12 @@ public class ReaderTextModel {
     private ObservableField<ReaderTypeface> currentTypeface = new ObservableField<>(boldFaceType);
     private ObservableField<ReaderFontSize> currentFontSize = new ObservableField<>(ReaderFontSize.LevelThreeFontSize);
     private ObservableField<Language> currentLanguage = new ObservableField<>(Language.Simplified);
+    private EventBus eventBus;
+
+    public ReaderTextModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
     public enum Language{
         Simplified,Traditional
     }
@@ -54,8 +61,12 @@ public class ReaderTextModel {
         return currentTypeface;
     }
 
-    public void setCurrentTypeface(ReaderTypeface typeface) {
+    public boolean setCurrentTypeface(ReaderTypeface typeface) {
+        if(currentTypeface.get() == typeface){
+            return false;
+        }
         this.currentTypeface.set(typeface);
+        return true;
     }
 
     public ObservableField<ReaderFontSize> getCurrentFontSize() {
@@ -83,37 +94,41 @@ public class ReaderTextModel {
     }
 
     public void onBackPDFClick() {
-        EventBus.getDefault().post(new ReaderSettingMenuItemBackPdfEvent());
+        eventBus.post(new ReaderSettingMenuItemBackPdfEvent());
     }
 
     public void onCustomizeItemClick() {
-        EventBus.getDefault().post(new ReaderSettingMenuItemCustomizeEvent());
+        eventBus.post(new ReaderSettingMenuItemCustomizeEvent());
     }
 
     public void onBoldfaceTypefaceClick() {
-        setCurrentTypeface(boldFaceType);
-        setTypeface(ReaderConfig.Typeface.BOLD_FACE_TYPEFACE);
+        if(setCurrentTypeface(boldFaceType)) {
+            setTypeface(ReaderConfig.Typeface.BOLD_FACE_TYPEFACE);
+        }
     }
 
     public void onArialTypefaceClick() {
-        setCurrentTypeface(arialTypeface);
-        setTypeface(ReaderConfig.Typeface.ARIAL_TYPEFACE);
+        if(setCurrentTypeface(arialTypeface)) {
+            setTypeface(ReaderConfig.Typeface.ARIAL_TYPEFACE);
+        }
     }
 
     public void onItalicsTypefaceClick() {
-        setCurrentTypeface(italicsTypeface);
-        setTypeface(ReaderConfig.Typeface.ITALICS_TYPEFACE);
+        if(setCurrentTypeface(italicsTypeface)) {
+            setTypeface(ReaderConfig.Typeface.ITALICS_TYPEFACE);
+        }
     }
 
     public void onRoundBodyTypefaceClick() {
-        setCurrentTypeface(roundBodyTypeface);
-        setTypeface(ReaderConfig.Typeface.ROUND_BODY_TYPEFACE);
+        if(setCurrentTypeface(roundBodyTypeface)) {
+            setTypeface(ReaderConfig.Typeface.ROUND_BODY_TYPEFACE);
+        }
     }
 
     public void setTypeface(String typeface){
         ReaderSettingTypefaceEvent event = new ReaderSettingTypefaceEvent();
         event.typeFace = typeface;
-        EventBus.getDefault().post(event);
+        eventBus.post(event);
     }
 
     public void onLevelOneClick() {
@@ -149,7 +164,7 @@ public class ReaderTextModel {
     private void setFontSize(int fontSize){
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
         event.fontSize = fontSize;
-        EventBus.getDefault().post(event);
+        eventBus.post(event);
     }
 
     public void onChangeChineseClick(){
@@ -162,6 +177,6 @@ public class ReaderTextModel {
             setCurrentLanguage(Language.Simplified);
         }
 
-        EventBus.getDefault().post(event);
+        eventBus.post(event);
     }
 }

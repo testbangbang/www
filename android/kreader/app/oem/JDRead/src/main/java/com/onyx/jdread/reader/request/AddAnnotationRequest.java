@@ -30,6 +30,7 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
     public AddAnnotationRequest call() throws Exception {
         saveAnnotation();
         reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
+        updateSetting(reader);
         return this;
     }
 

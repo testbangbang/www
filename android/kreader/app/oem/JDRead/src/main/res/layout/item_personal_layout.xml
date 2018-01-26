@@ -30,6 +30,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_personal_margin_top"
                 android:text="@{data.title}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />

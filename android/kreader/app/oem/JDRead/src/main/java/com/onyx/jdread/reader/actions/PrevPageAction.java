@@ -20,13 +20,13 @@ import org.greenrobot.eventbus.EventBus;
 public class PrevPageAction extends BaseReaderAction {
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         final PreviousScreenRequest request = new PreviousScreenRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                EventBus.getDefault().post(new PageViewUpdateEvent());
-                ReaderActivityEventHandler.updateReaderViewInfo(request);
+                readerDataHolder.getEventBus().post(new PageViewUpdateEvent());
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
             }
         });
     }

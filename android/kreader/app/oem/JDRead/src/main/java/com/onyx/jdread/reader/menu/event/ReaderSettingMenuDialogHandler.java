@@ -64,14 +64,14 @@ public class ReaderSettingMenuDialogHandler {
     }
 
     public void registerListener() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+        if (!readerDataHolder.getEventBus().isRegistered(this)) {
+            readerDataHolder.getEventBus().register(this);
         }
     }
 
     public void unregisterListener() {
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+        if (readerDataHolder.getEventBus().isRegistered(this)) {
+            readerDataHolder.getEventBus().unregister(this);
         }
     }
 
@@ -103,12 +103,12 @@ public class ReaderSettingMenuDialogHandler {
     public void onReaderFunctionItemCatalogEvent(ReaderFunctionItemCatalogEvent event) {
         //catalog
         closeDialog();
-        EventBus.getDefault().post(new ShowReaderCatalogMenuEvent());
+        readerDataHolder.getEventBus().post(new ShowReaderCatalogMenuEvent());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemBackEvent(ReaderFunctionItemBackEvent event) {
-        EventBus.getDefault().post(new CloseDocumentEvent());
+        readerDataHolder.getEventBus().post(new CloseDocumentEvent());
         readerSettingViewBack.getContent().dismiss();
     }
 
@@ -155,21 +155,25 @@ public class ReaderSettingMenuDialogHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event) {
         new SettingFontSizeAction(readerDataHolder.getStyleCopy(), event.fontSize).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingTypefaceEvent(ReaderSettingTypefaceEvent event) {
         new SettingTypefaceAction(readerDataHolder.getStyleCopy(), event.typeFace).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateImageShowModeEvent(SwitchNavigationToComicModeEvent event) {
         new SwitchNavigationToComicModeAction().execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResetNavigationEvent(ResetNavigationEvent event) {
         new ResetNavigationAction().execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -177,21 +181,25 @@ public class ReaderSettingMenuDialogHandler {
         GammaInfo gammaInfo = new GammaInfo();
         gammaInfo.setTextGamma(event.textGamma);
         new GammaCorrectionAction(gammaInfo).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScaleToPageCropEvent(ScaleToPageCropEvent event) {
         new ScaleToPageCropAction(readerDataHolder.getReaderViewInfo()).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onImageReflowEvent(ImageReflowEvent event) {
         new ImageReflowAction(readerDataHolder.getSettingsCopy()).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChangeChineseConvertTypeEvent(ChangeChineseConvertTypeEvent event) {
         new ChangeChineseConvertTypeAction(event.convertType).execute(readerDataHolder,null);
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -278,8 +286,8 @@ public class ReaderSettingMenuDialogHandler {
 
             RectF pageRect = new RectF(0, 0, subNotePage.getOriginWidth(),
                     subNotePage.getOriginHeight());
-            int displayWidth = readerDataHolder.getReader().getReaderViewHelper().getPageViewWidth();
-            int displayHeight = readerDataHolder.getReader().getReaderViewHelper().getPageViewHeight();
+            int displayWidth = readerDataHolder.getReaderTouchHelper().getContentWidth();
+            int displayHeight = readerDataHolder.getReaderTouchHelper().getContentHeight();
             RectF viewportRect = new RectF(displayWidth / 2, 0, displayWidth, displayHeight);
             float scale = PageUtils.scaleToFitRect(pageRect, viewportRect);
 

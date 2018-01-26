@@ -25,7 +25,7 @@ public class GetDocumentInfoAction extends BaseReaderAction {
             public void onNext(Object o) {
                 readerDataHolder.setReaderUserDataInfo(request.getReaderUserDataInfo());
                 GetDocumentInfoResultEvent event = new GetDocumentInfoResultEvent();
-                EventBus.getDefault().post(event);
+                readerDataHolder.getEventBus().post(event);
             }
         });
     }

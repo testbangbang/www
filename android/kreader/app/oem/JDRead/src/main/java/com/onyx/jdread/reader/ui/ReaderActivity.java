@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityReaderBinding;
 import com.onyx.jdread.reader.actions.OpenDocumentAction;
@@ -49,7 +50,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     private void initSelectMenu(){
         selectMenuModel = new SelectMenuModel();
         binding.readerPopupSelectionMenu.setSelectMenuModel(selectMenuModel);
-        selectMenuModel.setBinding(binding.readerPopupSelectionMenu);
+        selectMenuModel.setBinding(binding.readerPopupSelectionMenu,readerViewModel.getEventBus());
         readerViewModel.getReaderDataHolder().setSelectMenuModel(selectMenuModel);
     }
 
@@ -114,6 +115,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     protected void onResume() {
         addSurfaceViewCallback();
         super.onResume();
+        DeviceUtils.setFullScreenOnResume(this,true);
     }
 
     @Override

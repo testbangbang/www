@@ -82,8 +82,9 @@ public class AlFormatMOBI extends AlFormatBaseHTML {
 
         firstInsertCover = -1;
         allState.state_parser = 0;
-
+        customSize = 0;
         parser(0, -1);
+        size = customSize;
     }
 
     @Override

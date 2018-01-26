@@ -90,7 +90,7 @@
                 android:paddingLeft="@dimen/personal_log_out_margin"
                 android:paddingRight="@dimen/personal_log_out_margin"
                 android:text="@string/login_immediately"
-                android:textSize="@dimen/level_one_heading_font"
+                android:textSize="@dimen/level_two_heading_font"
                 android:visibility="@{isLogin ? View.INVISIBLE : View.VISIBLE}" />
         </FrameLayout>
 
@@ -125,7 +125,7 @@
             android:paddingLeft="@dimen/personal_log_out_margin"
             android:paddingRight="@dimen/personal_log_out_margin"
             android:text="@string/log_out"
-            android:textSize="@dimen/level_one_heading_font"
+            android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{isLogin ? View.VISIBLE : View.INVISIBLE}" />
     </LinearLayout>
 </layout>

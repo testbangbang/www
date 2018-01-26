@@ -93,8 +93,9 @@ public class AlFormatDOCX extends AlAXML {
             cssStyles.disableExternal = true;
 
         styleStack.linearMode = true;
-
+        customSize = 0;
         parser(0, -1);
+        size = customSize;
     }
 
     private final HashMap<String, String> allId = new HashMap<>();

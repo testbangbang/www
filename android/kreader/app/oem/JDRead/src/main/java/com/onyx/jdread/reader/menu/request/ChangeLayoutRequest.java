@@ -22,17 +22,17 @@ public class ChangeLayoutRequest extends ReaderBaseRequest {
 
     @Override
     public ChangeLayoutRequest call() throws Exception {
-        updateSetting(reader);
+        updateDefaultSettingValue(reader);
         reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
         reader.getReaderHelper().getReaderLayoutManager().setCurrentLayout(parameter.getLayout(), parameter.getNavigationArgs());
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         return this;
     }
 
-    private void updateSetting(Reader reader) {
+    public void updateDefaultSettingValue(Reader reader) {
         if (settings != null) {
-            settings.dev_width = reader.getReaderViewHelper().getPageViewWidth();
-            settings.dev_height = reader.getReaderViewHelper().getPageViewHeight();
+            settings.dev_width = reader.getReaderViewHelper().getContentWidth();
+            settings.dev_height = reader.getReaderViewHelper().getContentHeight();
             settings.justification = 3;
             reader.getReaderHelper().getImageReflowManager().updateSettings(settings);
             reader.getReaderHelper().getImageReflowManager().notifySettingsUpdated();

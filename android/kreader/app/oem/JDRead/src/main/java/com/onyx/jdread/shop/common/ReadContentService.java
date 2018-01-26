@@ -7,8 +7,11 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadUnlimitedResultBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendUserBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SaltResultBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddBookToSmoothCardBookBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
@@ -137,14 +140,14 @@ public interface ReadContentService {
                                              @Body RequestBody body);
 
     @POST(CloudApiContext.User.READ_PREFERENCE)
-    Call<String> setReadPreference(@QueryMap Map<String, String> map,
-                                   @Body RequestBody body);
+    Call<SetReadPreferenceBean> setReadPreference(@QueryMap Map<String, String> map,
+                                                  @Body RequestBody body);
 
     @GET(CloudApiContext.User.READ_PREFERENCE)
     Call<GetReadPreferenceBean> getReadPreference(@QueryMap Map<String, String> map);
 
     @POST(CloudApiContext.User.SIGN_CHECK)
-    Call<String> verifySign(@QueryMap Map<String, String> map);
+    Call<VerifySignBean> verifySign(@QueryMap Map<String, String> map);
 
     @POST(CloudApiContext.User.SIGN)
     Call<String> signForVoucher(@QueryMap Map<String, String> map);
@@ -155,4 +158,10 @@ public interface ReadContentService {
     @GET(CloudApiContext.User.USER_GIFT)
     Call<String> getGiftInfo(@Path("sn") int sn,
                              @QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.User.RECOMMEND_USER)
+    Call<RecommendUserBean> recommendUser(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.ReadBean.RECHARGE_PACKAGE)
+    Call<String> getRechargePackage(@QueryMap Map<String, String> map);
 }

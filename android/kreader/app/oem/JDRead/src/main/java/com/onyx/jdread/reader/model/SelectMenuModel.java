@@ -2,16 +2,14 @@ package com.onyx.jdread.reader.model;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.graphics.RectF;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PopupSelectionMenuBinding;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.WordTranslateResultEvent;
 import com.onyx.jdread.reader.highlight.HighlightCursor;
 import com.onyx.jdread.reader.event.PopupBaidupediaClickEvent;
 import com.onyx.jdread.reader.event.PopupCopyClickEvent;
@@ -36,6 +34,7 @@ public class SelectMenuModel {
     private float selectY = 0;
     private PopupSelectionMenuBinding binding;
     private String inputWords = "";
+    private EventBus eventBus;
 
     public ObservableField<String> getPage() {
         return page;
@@ -61,7 +60,8 @@ public class SelectMenuModel {
         this.isShowDictionaryMenu.set(isShowDictionaryMenu);
     }
 
-    public void setBinding(PopupSelectionMenuBinding binding) {
+    public void setBinding(PopupSelectionMenuBinding binding,EventBus eventBuss) {
+        this.eventBus = eventBuss;
         this.binding = binding;
         this.selectMenuRootView = binding.getRoot();
         this.binding.translateContentView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
@@ -72,32 +72,36 @@ public class SelectMenuModel {
         });
     }
 
-    private void updatePageNumber(int totalPage,int curPage){
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    private void updatePageNumber(int totalPage, int curPage){
         setPage(curPage + "/" + totalPage);
     }
 
     public void onLineationClick() {
-        EventBus.getDefault().post(new PopupLineationClickEvent());
+        getEventBus().post(new PopupLineationClickEvent());
         setIsShowSelectMenu(false);
     }
 
     public void onNoteClick() {
-        EventBus.getDefault().post(new PopupNoteClickEvent());
+        getEventBus().post(new PopupNoteClickEvent());
         setIsShowSelectMenu(false);
     }
 
     public void onCopyClick() {
-        EventBus.getDefault().post(new PopupCopyClickEvent());
+        getEventBus().post(new PopupCopyClickEvent());
         setIsShowSelectMenu(false);
     }
 
     public void onTranslationClick() {
-        EventBus.getDefault().post(new PopupTranslationClickEvent());
+        getEventBus().post(new PopupTranslationClickEvent());
         setIsShowSelectMenu(false);
     }
 
     public void onBaidupediaClick() {
-        EventBus.getDefault().post(new PopupBaidupediaClickEvent());
+        getEventBus().post(new PopupBaidupediaClickEvent());
         setIsShowSelectMenu(false);
     }
 
@@ -109,8 +113,8 @@ public class SelectMenuModel {
             return;
         }
 
-        final float screenHeight = readerDataHolder.getReaderTouchHelper().getSurfaceView().getHeight();
-        final float screenWidth = readerDataHolder.getReaderTouchHelper().getSurfaceView().getWidth();
+        final float screenHeight = readerDataHolder.getReaderTouchHelper().getContentHeight();
+        final float screenWidth = readerDataHolder.getReaderTouchHelper().getContentWidth();
 
         final float dictMeasuredHeight = screenHeight * 0.4f;
         final float selectTitleHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_popup_select_menu_height);
@@ -184,7 +188,8 @@ public class SelectMenuModel {
         action.execute(SettingBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                updateTranslateResult(action.getTranslateResult());
+                WordTranslateResultEvent event = new WordTranslateResultEvent(action.getTranslateResult());
+                eventBus.post(event);
             }
         });
     }

@@ -47,8 +47,9 @@ public class AlFormatODT extends AlAXML {
         cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_ODT);
         //if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
             cssStyles.disableExternal = true;
-
+        customSize = 0;
         parser(0, -1);
+        size = customSize;
     }
 
     @Override

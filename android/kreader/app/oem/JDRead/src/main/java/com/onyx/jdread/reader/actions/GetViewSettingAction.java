@@ -21,17 +21,17 @@ public class GetViewSettingAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         final GetViewSettingRequest request = new GetViewSettingRequest(readerViewInfo, readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                notifySaveViewSetting(request);
+                notifySaveViewSetting(readerDataHolder,request);
             }
         });
     }
 
-    public void notifySaveViewSetting(GetViewSettingRequest request) {
-        ReaderActivityEventHandler.updateViewSetting(request.getSettings(), request.getStyle(), request.getReaderUserDataInfo());
+    public void notifySaveViewSetting(ReaderDataHolder readerDataHolder,GetViewSettingRequest request) {
+        ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
     }
 }

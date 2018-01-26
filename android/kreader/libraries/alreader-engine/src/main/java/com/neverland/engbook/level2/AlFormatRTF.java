@@ -82,8 +82,9 @@ public class AlFormatRTF extends AlFormat {
         returnLang0();
 
         allState.state_parser = STATE_RTF0_TEXT;
-
+        customSize = 0;
         parser(0, aFiles.getSize());
+        size = customSize;
     }
 
     private static final int STATE_RTF0_TEXT = 0x00;

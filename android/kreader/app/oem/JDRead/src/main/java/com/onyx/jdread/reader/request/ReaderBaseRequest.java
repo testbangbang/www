@@ -1,8 +1,11 @@
 package com.onyx.jdread.reader.request;
 
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.rx.RxRequest;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
 
 import io.reactivex.Scheduler;
@@ -15,6 +18,8 @@ public abstract class ReaderBaseRequest extends RxRequest {
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
     private ReaderSelectionInfo selectionInfoManager;
+    private ReaderTextStyle style;
+    private ImageReflowSettings settings;
     public boolean isSuccess = true;
 
     public final ReaderUserDataInfo getReaderUserDataInfo() {
@@ -41,5 +46,21 @@ public abstract class ReaderBaseRequest extends RxRequest {
     @Override
     public Scheduler subscribeScheduler() {
         return ReaderSchedulers.readerScheduler();
+    }
+
+    public ReaderTextStyle getStyle() {
+        return style;
+    }
+
+    public ImageReflowSettings getSettings() {
+        return settings;
+    }
+
+    public void updateSetting(Reader reader){
+        ReaderTextStyle srcStyle = reader.getReaderHelper().getTextStyleManager().getStyle();
+        style = ReaderTextStyle.copy(srcStyle);
+
+        ImageReflowSettings srcSettings = reader.getReaderHelper().getImageReflowManager().getSettings();
+        settings = ImageReflowSettings.copy(srcSettings);
     }
 }
