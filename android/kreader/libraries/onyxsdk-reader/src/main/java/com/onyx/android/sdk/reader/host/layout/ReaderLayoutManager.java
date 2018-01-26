@@ -290,7 +290,7 @@ public class ReaderLayoutManager {
         return null;
     }
 
-    public boolean restoreSideNoteSnapshot(final PositionSnapshot positionSnapshot) {
+    public boolean restoreBySnapshot(final PositionSnapshot positionSnapshot) {
         try {
             setActiveProvider(positionSnapshot.layoutType);
             getCurrentLayoutProvider().restoreBySnapshot(positionSnapshot);

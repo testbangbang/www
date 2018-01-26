@@ -21,7 +21,7 @@ public class StopSideNodeRequest extends BaseReaderRequest {
 
         PositionSnapshot positionSnapshot = reader.getReaderLayoutManager().getSideNotePositionSnapshot();
         positionSnapshot.pagePosition = reader.getReaderLayoutManager().getCurrentPagePosition();
-        reader.getReaderLayoutManager().restoreSideNoteSnapshot(positionSnapshot);
+        reader.getReaderLayoutManager().restoreBySnapshot(positionSnapshot);
         reader.getReaderHelper().updateViewportSize(newWidth, newHeight);
 
         drawVisiblePages(reader);
