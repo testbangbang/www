@@ -10,17 +10,18 @@ import com.onyx.android.sdk.reader.host.wrapper.Reader;
 public class StopSideNodeRequest extends BaseReaderRequest {
 
     private int newWidth, newHeight;
-    private PositionSnapshot positionSnapshot;
 
-    public StopSideNodeRequest(int nw, int nh, PositionSnapshot positionSnapshot) {
+    public StopSideNodeRequest(int nw, int nh) {
         newWidth = nw;
         newHeight = nh;
-        this.positionSnapshot = positionSnapshot;
     }
 
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
-        reader.getReaderLayoutManager().restoreSnapshot(positionSnapshot);
+
+        PositionSnapshot positionSnapshot = reader.getReaderLayoutManager().getSideNotePositionSnapshot();
+        positionSnapshot.pagePosition = reader.getReaderLayoutManager().getCurrentPagePosition();
+        reader.getReaderLayoutManager().restoreSideNoteSnapshot(positionSnapshot);
         reader.getReaderHelper().updateViewportSize(newWidth, newHeight);
 
         drawVisiblePages(reader);

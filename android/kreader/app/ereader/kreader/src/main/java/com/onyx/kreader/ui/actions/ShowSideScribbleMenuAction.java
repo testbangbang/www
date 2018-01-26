@@ -48,7 +48,6 @@ import java.util.List;
 public class ShowSideScribbleMenuAction extends BaseAction {
 
     private ViewGroup parent;
-    private PositionSnapshot positionSnapshot;
     private ReaderMenuAction parentAction;
     private MenuManager sideMenu;
     private ReaderDataHolder readerDataHolder;
@@ -56,9 +55,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private ShowScribbleMenuAction.ActionCallback actionCallback;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
 
-    public ShowSideScribbleMenuAction(ViewGroup parent, View readerStatusBar, PositionSnapshot positionSnapshot, ShowScribbleMenuAction.ActionCallback actionCallback) {
+    public ShowSideScribbleMenuAction(ViewGroup parent, View readerStatusBar, ShowScribbleMenuAction.ActionCallback actionCallback) {
         this.parent = parent;
-        this.positionSnapshot = positionSnapshot;
         this.actionCallback = actionCallback;
         this.readerStatusBar = readerStatusBar;
     }
@@ -70,8 +68,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         show(readerDataHolder);
 
         BaseHandler.HandlerInitialState state = new BaseHandler.HandlerInitialState();
-        state.positionSnapshot = positionSnapshot;
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SIDE_NOTE_PROVIDER, state);
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SIDE_NOTE_PROVIDER);
     }
 
     private void show(final ReaderDataHolder readerDataHolder) {

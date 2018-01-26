@@ -13,8 +13,6 @@ public class StartSideNodeRequest extends BaseReaderRequest {
 
     private int newWidth, newHeight;
 
-    public PositionSnapshot positionSnapshot;
-
     public StartSideNodeRequest(int nw, int nh) {
         newWidth = nw / 2;
         newHeight = nh;
@@ -23,7 +21,8 @@ public class StartSideNodeRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
 
-        positionSnapshot = reader.getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
+        PositionSnapshot positionSnapshot = reader.getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
+        reader.getReaderLayoutManager().setSideNotePositionSnapshot(positionSnapshot);
 
         reader.getReaderLayoutManager().setCurrentLayout(PageConstants.SINGLE_PAGE, new NavigationArgs());
         reader.getReaderHelper().updateViewportSize(newWidth, newHeight);

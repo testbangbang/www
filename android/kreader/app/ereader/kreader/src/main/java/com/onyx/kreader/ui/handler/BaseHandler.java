@@ -42,7 +42,6 @@ public abstract class BaseHandler {
         public RelativeLayout slideShowParentLayout;
         public int slideShowMaxPageCount;
         public int slideShowIntervalInSeconds;
-        public PositionSnapshot positionSnapshot;
     }
 
     public static  final int KEYCDOE_SCRIBE = 213;

@@ -34,7 +34,6 @@ import org.greenrobot.eventbus.Subscribe;
 public class SideNoteHandler extends BaseHandler {
     private static final String TAG = SideNoteHandler.class.getSimpleName();
 
-    private PositionSnapshot positionSnapshot;
     private MenuManager menuManager;
     private BaseCallback resumeDrawingCallBack;
 
@@ -54,7 +53,6 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     public void onActivate(final ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
-        positionSnapshot = initialState.positionSnapshot;
         final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(),
                 true, readerDataHolder.getSideNoteStartSubPageIndex());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
@@ -67,7 +65,6 @@ public class SideNoteHandler extends BaseHandler {
         readerDataHolder.getEventBus().unregister(this);
 
         StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
-        stopNoteActionChain.setSideNotePositionSnapshot(positionSnapshot);
         stopNoteActionChain.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

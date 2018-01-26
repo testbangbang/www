@@ -18,8 +18,6 @@ public class StopNoteActionChain  {
     private boolean quit;
     private boolean closeMenu;
 
-    private PositionSnapshot sideNotePositionSnapshot;
-
     public StopNoteActionChain(boolean render,
                                boolean transfer,
                                boolean saveToDatabase,
@@ -34,10 +32,6 @@ public class StopNoteActionChain  {
         this.closeMenu = closeMenu;
     }
 
-    public void setSideNotePositionSnapshot(PositionSnapshot snapshot) {
-        sideNotePositionSnapshot = snapshot;
-    }
-
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final ActionChain actionChain = new ActionChain();
         actionChain.addAction(new StopNoteAction(quit));
@@ -49,7 +43,7 @@ public class StopNoteActionChain  {
             actionChain.addAction(new CloseNoteMenuAction());
         }
         if (readerDataHolder.isSideNoting()) {
-            actionChain.addAction(new StopSideNoteAction(sideNotePositionSnapshot));
+            actionChain.addAction(new StopSideNoteAction());
         }
         actionChain.execute(readerDataHolder, callback);
     }

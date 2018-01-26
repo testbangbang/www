@@ -28,7 +28,6 @@ public class StartSideNoteAction extends BaseAction {
 
             @Override
             public void done(BaseRequest request, Throwable e) {
-                positionSnapshot = sideNodeRequest.positionSnapshot;
                 BaseCallback.invoke(callback, request, e);
             }
         });

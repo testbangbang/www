@@ -13,16 +13,13 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class StopSideNoteAction extends BaseAction {
 
-    private PositionSnapshot positionSnapshot;
-
-    public StopSideNoteAction(PositionSnapshot positionSnapshot) {
-        this.positionSnapshot = positionSnapshot;
+    public StopSideNoteAction() {
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         BaseReaderRequest request = new StopSideNodeRequest(readerDataHolder.getDisplayWidth(),
-                readerDataHolder.getDisplayHeight(), positionSnapshot);
+                readerDataHolder.getDisplayHeight());
         // use non render request here as we will render the page after this request
         readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
             @Override
