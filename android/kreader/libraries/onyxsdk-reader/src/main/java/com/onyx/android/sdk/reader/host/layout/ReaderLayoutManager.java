@@ -45,6 +45,8 @@ public class ReaderLayoutManager {
     private HistoryManager historyManager;
     private PageManager pageManager;
     private String currentProvider;
+    private String currentProviderBackup;
+    private NavigationArgs navigationArgsBackup;
     private Map<String, LayoutProvider> provider = new HashMap<String, LayoutProvider>();
     private boolean supportScale;
     private boolean supportTextFlow;
@@ -118,6 +120,15 @@ public class ReaderLayoutManager {
 
     public final String getCurrentLayoutType() {
         return currentProvider;
+    }
+
+    public void saveCurrentLayout() {
+        navigationArgsBackup = getCurrentLayoutProvider().getNavigationArgs();
+        currentProviderBackup = currentProvider;
+    }
+
+    public void restoreCurrentLayout() throws ReaderException {
+        setCurrentLayout(currentProviderBackup, navigationArgsBackup);
     }
 
     public boolean setCurrentLayout(final String layoutName, NavigationArgs navigationArgs) throws ReaderException {
