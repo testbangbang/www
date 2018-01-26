@@ -196,7 +196,7 @@ public class ReaderViewHelper {
         PointF timePoint = ReaderViewConfig.getTimePoint(contentView);
 
         Rect bounds = new Rect();
-        ;
+
         paint.getTextBounds(time, 0, time.length(), bounds);
         float x = timePoint.x;
         float y = timePoint.y - bounds.height();
@@ -216,7 +216,7 @@ public class ReaderViewHelper {
         float textWidth = paint.measureText(page);
 
         Rect bounds = new Rect();
-        ;
+
         paint.getTextBounds(page, 0, page.length(), bounds);
 
         float x = timePoint.x - textWidth;
