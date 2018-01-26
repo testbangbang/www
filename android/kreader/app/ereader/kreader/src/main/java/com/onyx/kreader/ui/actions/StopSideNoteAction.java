@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.actions;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.request.StartSideNodeRequest;
 import com.onyx.android.sdk.reader.host.request.StopSideNodeRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -11,6 +12,9 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  * Created by Joy on 2016/5/24.
  */
 public class StopSideNoteAction extends BaseAction {
+
+    public StopSideNoteAction() {
+    }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {

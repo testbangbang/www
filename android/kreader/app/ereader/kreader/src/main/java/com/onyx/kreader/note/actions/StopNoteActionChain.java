@@ -1,6 +1,7 @@
 package com.onyx.kreader.note.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.kreader.ui.actions.ActionChain;
 import com.onyx.kreader.ui.actions.StopSideNoteAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;

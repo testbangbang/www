@@ -14,6 +14,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.ReaderTabHostBroadcastReceiver;
 import com.onyx.kreader.ui.actions.NextScreenAction;
