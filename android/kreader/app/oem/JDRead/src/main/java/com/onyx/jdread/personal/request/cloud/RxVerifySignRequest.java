@@ -1,6 +1,7 @@
 package com.onyx.jdread.personal.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
@@ -28,8 +29,15 @@ public class RxVerifySignRequest extends RxBaseCloudRequest {
         Response<VerifySignBean> response = call.execute();
         if (response.isSuccessful()) {
             verifySignBean = response.body();
+            checkResult();
         }
         return this;
+    }
+
+    private void checkResult() {
+        if (verifySignBean != null && verifySignBean.getResult_code() != 0) {
+            ToastUtil.showToast(verifySignBean.getMessage());
+        }
     }
 
     private Call<VerifySignBean> getCall(ReadContentService service) {

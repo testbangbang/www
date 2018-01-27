@@ -1,6 +1,7 @@
 package com.onyx.jdread.personal.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendUserBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
@@ -28,8 +29,15 @@ public class RxRecommendUserRequest extends RxBaseCloudRequest {
         Response<RecommendUserBean> response = call.execute();
         if (response.isSuccessful()) {
             recommendUserBean = response.body();
+            checkResult();
         }
         return this;
+    }
+
+    private void checkResult() {
+        if (recommendUserBean != null && recommendUserBean.result_code != 0) {
+            ToastUtil.showToast(recommendUserBean.message);
+        }
     }
 
     private Call<RecommendUserBean> getCall(ReadContentService service) {

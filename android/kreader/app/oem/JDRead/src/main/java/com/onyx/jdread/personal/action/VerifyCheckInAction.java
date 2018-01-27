@@ -2,39 +2,36 @@ package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendItemBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendUserBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-import com.onyx.jdread.personal.request.cloud.RxRecommendUserRequest;
+import com.onyx.jdread.personal.request.cloud.RxVerifySignRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
-import java.util.List;
-
 /**
- * Created by li on 2018/1/26.
+ * Created by li on 2018/1/27.
  */
 
-public class RecommendUserAction extends BaseAction {
-    private List<RecommendItemBean> recommendItems;
+public class VerifyCheckInAction extends BaseAction {
+    private VerifySignBean.DataBean data;
 
     @Override
     public void execute(PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setPageSize("1", "20");
-        String signValue = baseInfo.getSignValue(CloudApiContext.User.RECOMMEND_USER);
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.SIGN_CHECK);
         baseInfo.setSign(signValue);
-        final RxRecommendUserRequest rq = new RxRecommendUserRequest();
+
+        final RxVerifySignRequest rq = new RxVerifySignRequest();
         rq.setBaseInfo(baseInfo);
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                RecommendUserBean recommendUserBean = rq.getRecommendUserBean();
-                if (recommendUserBean != null && recommendUserBean.data != null) {
-                    recommendItems = recommendUserBean.data.items;
+                VerifySignBean verifySignBean = rq.getVerifySignBean();
+                if (verifySignBean != null) {
+                    data = verifySignBean.getData();
                 }
                 if (rxCallback != null) {
-                    rxCallback.onNext(RecommendUserAction.class);
+                    rxCallback.onNext(VerifyCheckInAction.class);
                 }
             }
 
@@ -48,7 +45,7 @@ public class RecommendUserAction extends BaseAction {
         });
     }
 
-    public List<RecommendItemBean> getRecommendItems() {
-        return recommendItems;
+    public VerifySignBean.DataBean getData() {
+        return data;
     }
 }

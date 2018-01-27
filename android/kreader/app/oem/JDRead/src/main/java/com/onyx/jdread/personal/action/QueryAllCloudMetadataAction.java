@@ -2,6 +2,7 @@ package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.local.RxRequestAllCloudMetadataQuery;
 
@@ -25,6 +26,14 @@ public class QueryAllCloudMetadataAction extends BaseAction {
                     if (metadatas != null && metadatas.size() > 0) {
                         rxCallback.onNext(QueryAllCloudMetadataAction.class);
                     }
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                if (throwable != null) {
+                    ToastUtil.showToast(throwable.getMessage());
                 }
             }
         });

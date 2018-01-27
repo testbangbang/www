@@ -1,6 +1,7 @@
 package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxGetReadBeanRecordRequest;
@@ -34,6 +35,14 @@ public class ReadBeanRecordAction extends BaseAction {
                 }
                 if (rxCallback != null) {
                     rxCallback.onNext(ReadBeanRecordAction.class);
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                if (throwable != null) {
+                    ToastUtil.showToast(throwable.getMessage());
                 }
             }
         });

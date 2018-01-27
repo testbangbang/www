@@ -3,6 +3,7 @@ package com.onyx.jdread.personal.ui;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.onyx.jdread.personal.event.PersonalTaskEvent;
 import com.onyx.jdread.personal.event.ReadPreferenceEvent;
 import com.onyx.jdread.personal.event.UserInfoEvent;
 import com.onyx.jdread.personal.event.UserLoginEvent;
+import com.onyx.jdread.personal.event.VerifySignEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalModel;
 import com.onyx.jdread.util.Utils;
@@ -117,8 +119,13 @@ public class PersonalFragment extends BaseFragment {
     public void onUserInfoEvent(UserInfoEvent event) {
         UserInfo userInfo = event.getUserInfo();
         PersonalDataBundle.getInstance().setUserInfo(userInfo);
-        binding.setImageUrl(userInfo.yun_small_image_url);
+        binding.setImageUrl(userInfo.yun_big_image_url);
         binding.setUserName(userInfo.nickname);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onVerifySignEvent(VerifySignEvent event) {
+        binding.setIsSignToday(event.isTodaySign());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

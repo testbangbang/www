@@ -34,9 +34,6 @@ public class UpdateUtil {
     public static final String APK_PATH = "apk_path";
     public static final String VERSION_LAUNCHER = "JDR6.L.";
     public static final String VERSION_SYSTEM = "JDR6.S.";
-    public static final String DOWNLOAD_UPDATE_CODE = "download_update_code";
-    public static final int UPDATE_CODE = 1;
-    public static final int DEFAULT_CODE = 0;
 
     public static String checkLocalPackage() {
         String path = null;

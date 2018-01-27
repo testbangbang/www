@@ -3,6 +3,7 @@ package com.onyx.jdread.personal.request.cloud;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
 import com.onyx.jdread.personal.common.EncryptHelper;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -47,10 +48,8 @@ public class RxRequestUserInfo extends RxBaseCloudRequest {
     }
 
     private void checkQuestResult() {
-        if (userInfoBean != null && !StringUtils.isNullOrEmpty(userInfoBean.result_code)) {
-            switch (userInfoBean.result_code) {
-
-            }
+        if (userInfoBean != null && userInfoBean.result_code != 0) {
+            ToastUtil.showToast(userInfoBean.message);
         }
     }
 

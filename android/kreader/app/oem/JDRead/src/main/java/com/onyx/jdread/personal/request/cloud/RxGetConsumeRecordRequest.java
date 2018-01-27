@@ -1,6 +1,7 @@
 package com.onyx.jdread.personal.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
@@ -28,8 +29,15 @@ public class RxGetConsumeRecordRequest extends RxBaseCloudRequest {
         Response<ConsumeRecordBean> response = call.execute();
         if (response.isSuccessful()) {
             consumeRecordBean = response.body();
+            checkResult();
         }
         return this;
+    }
+
+    private void checkResult() {
+        if (consumeRecordBean != null && consumeRecordBean.getResult_code() != 0) {
+            ToastUtil.showToast(consumeRecordBean.getMessage());
+        }
     }
 
     private Call<ConsumeRecordBean> getCall(ReadContentService service) {

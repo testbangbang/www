@@ -4,29 +4,11 @@
 
     <data class="PersonalExperienceBinding">
 
-        <variable
-            name="imageUrl"
-            type="String" />
+        <import type="com.onyx.jdread.util.TimeUtils"/>
 
         <variable
-            name="userName"
-            type="String" />
-
-        <variable
-            name="stayTime"
-            type="String" />
-
-        <variable
-            name="totalCount"
-            type="String" />
-
-        <variable
-            name="readOver"
-            type="String" />
-
-        <variable
-            name="notes"
-            type="String" />
+            name="userInfo"
+            type="com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo"/>
     </data>
 
     <LinearLayout
@@ -52,13 +34,13 @@
                 android:layout_width="@dimen/user_image_height"
                 android:layout_height="@dimen/user_image_height"
                 android:scaleType="centerCrop"
-                bind:personalImage="@{imageUrl}" />
+                bind:personalImage="@{userInfo.yun_big_image_url}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/personal_experience_name_margin_top"
-                android:text="@{userName}"
+                android:text="@{userInfo.nickname}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
@@ -78,7 +60,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{stayTime}"
+                        android:text="@{@string/user_info_stay(String.valueOf(userInfo.user_days))}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
@@ -106,7 +88,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{totalCount}"
+                        android:text="@{@string/user_info_time(TimeUtils.getHourFormat(userInfo.read_time_length))}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
@@ -134,7 +116,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{readOver}"
+                        android:text="@{@string/user_info_book(String.valueOf(userInfo.read_finish_book_count))}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
@@ -162,7 +144,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{notes}"
+                        android:text="@{@string/user_info_article(String.valueOf(userInfo.notes_count))}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.ReadUnlimitedRequestBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxGetUnlimitedRequest;
@@ -34,6 +35,14 @@ public class GetUnlimitedAction extends BaseAction {
                 if (rxCallback != null) {
                     unlimitedBooks = rq.getUnlimitedBooks();
                     rxCallback.onNext(GetUnlimitedAction.class);
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                if (throwable != null) {
+                    ToastUtil.showToast(throwable.getMessage());
                 }
             }
         });
