@@ -115,10 +115,10 @@ public class CacheManager {
         return queryKey;
     }
 
-    public static String generateCloudThumbnailKey(String associationId, String url) {
+    public static String generateCloudThumbnailKey(String associationId, String url, String extraKey) {
         if (StringUtils.isNullOrEmpty(associationId) && StringUtils.isNullOrEmpty(url)) {
             return null;
         }
-        return associationId + url;
+        return associationId + url + extraKey;
     }
 }

@@ -44,10 +44,14 @@ public class CloudUtils {
     }
 
     static public File imageCachePath(final Context context, final String idString) {
-        if (StringUtils.isNullOrEmpty(idString)) {
+        return imageCachePath(context, idString, "cover");
+    }
+
+    static public File imageCachePath(final Context context, final String idString, final String name) {
+        if (StringUtils.isNullOrEmpty(idString) || StringUtils.isNullOrEmpty(name)) {
             return null;
         }
-        return new File(imageCacheDirectory(context, idString), "cover.png");
+        return new File(imageCacheDirectory(context, idString), name + ".png");
     }
 
     static public File dataCachePath(final Context context, final String idString, final String title, final String ext) {

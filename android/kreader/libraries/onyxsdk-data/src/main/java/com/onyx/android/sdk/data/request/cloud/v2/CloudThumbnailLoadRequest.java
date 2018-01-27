@@ -37,6 +37,9 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     private OnyxThumbnail.ThumbnailKind thumbnailKind = OnyxThumbnail.ThumbnailKind.Large;
     private CloseableReference<Bitmap> refBitmap;
 
+    private int reqWidth = ViewTarget.SIZE_ORIGINAL;
+    private int reqHeight = ViewTarget.SIZE_ORIGINAL;
+
     public CloudThumbnailLoadRequest(final String coverUrl, final String associateId) {
         this.coverUrl = coverUrl;
         this.associationId = associateId;
@@ -45,6 +48,11 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     public CloudThumbnailLoadRequest(final String coverUrl, final String associateId, OnyxThumbnail.ThumbnailKind thumbnailKind) {
         this(coverUrl, associateId);
         this.thumbnailKind = thumbnailKind;
+    }
+
+    public void setReqWidthHeight(int[] widthHeight) {
+        this.reqWidth = widthHeight[0];
+        this.reqHeight = widthHeight[1];
     }
 
     public CloseableReference<Bitmap> getRefBitmap() {
@@ -90,7 +98,7 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     }
 
     private File thumbnailFileSystemCachePathWidthId() {
-        return CloudUtils.imageCachePath(getContext(), associationId);
+        return CloudUtils.imageCachePath(getContext(), associationId, thumbnailKind.toString().toLowerCase());
     }
 
     private boolean loadFromMemoryCache(final CloudManager cloudManager) {
@@ -169,24 +177,7 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     }
 
     private Bitmap loadBitmapFromCloudImpl(String url) {
-        if (thumbnailKind == OnyxThumbnail.ThumbnailKind.Original) {
-            return loadOriginBitmapFromCloudImpl(url);
-        } else {
-            return loadLargeBitmapFromCloudImpl(url);
-        }
-    }
-
-    private Bitmap loadLargeBitmapFromCloudImpl(String url)  {
-        try {
-            return Glide.with(getContext())
-                    .load(url)
-                    .asBitmap()
-                    .fitCenter()
-                    .into(512, 512)
-                    .get();
-        } catch (Exception e) {
-            return null;
-        }
+        return loadOriginBitmapFromCloudImpl(url);
     }
 
     private Bitmap loadOriginBitmapFromCloudImpl(String url)  {
@@ -194,7 +185,7 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
             return Glide.with(getContext())
                     .load(url)
                     .asBitmap()
-                    .into(ViewTarget.SIZE_ORIGINAL, ViewTarget.SIZE_ORIGINAL)
+                    .into(reqWidth, reqHeight)
                     .get();
         } catch (Exception e) {
             return null;
@@ -232,6 +223,6 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     }
 
     private String getCacheKey() {
-        return CacheManager.generateCloudThumbnailKey(associationId, coverUrl);
+        return CacheManager.generateCloudThumbnailKey(associationId, coverUrl, thumbnailKind.toString().toLowerCase());
     }
 }
