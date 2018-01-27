@@ -6,4 +6,5 @@ package com.onyx.jdread.shop.cloud.entity;
 
 public class GetBookDetailRequestBean extends BaseRequestInfo {
     public long bookId;
+    public boolean withCookie;
 }

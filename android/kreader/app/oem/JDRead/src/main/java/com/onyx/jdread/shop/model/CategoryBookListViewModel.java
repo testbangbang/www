@@ -28,6 +28,9 @@ public class CategoryBookListViewModel extends BaseObservable {
     public final ObservableBoolean allCatIsOpen =new ObservableBoolean();
     public final ObservableBoolean isFree =new ObservableBoolean();
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryItems;
+    public final ObservableBoolean sortKeyHotSelected =new ObservableBoolean(true);
+    public final ObservableBoolean sortKeyNewestSelected =new ObservableBoolean();
+    public final ObservableBoolean sortKeyPriceSelected =new ObservableBoolean();
 
     public CategoryBookListViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -81,13 +84,22 @@ public class CategoryBookListViewModel extends BaseObservable {
 
     public void onSortKeyHotClick(){
         getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_SALES));
+        changeSortKeySelected(CloudApiContext.SearchBook.SORT_KEY_SALES);
     }
 
     public void onSortKeyNewestClick(){
         getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_TIME));
+        changeSortKeySelected(CloudApiContext.SearchBook.SORT_KEY_TIME);
     }
 
     public void onSortKeyPriceClick(){
         getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_PRICE));
+        changeSortKeySelected(CloudApiContext.SearchBook.SORT_KEY_PRICE);
+    }
+
+    private void changeSortKeySelected(int sortKey){
+        sortKeyHotSelected.set(sortKey == CloudApiContext.SearchBook.SORT_KEY_SALES);
+        sortKeyNewestSelected.set(sortKey == CloudApiContext.SearchBook.SORT_KEY_TIME);
+        sortKeyPriceSelected.set(sortKey == CloudApiContext.SearchBook.SORT_KEY_PRICE);
     }
 }

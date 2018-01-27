@@ -14,8 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/fragment_book_detail_margin_top_and_bottom"
-        android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
-        android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
         android:layout_marginTop="@dimen/fragment_book_detail_margin_top_and_bottom"
         android:orientation="vertical">
 
@@ -24,11 +22,15 @@
             layout="@layout/layout_title_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
             bind:titleBarViewModel="@{categoryViewModel.titleBarViewModel}" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
             android:layout_marginTop="@dimen/all_category_type_margin_top"
             android:orientation="horizontal">
 
@@ -50,7 +52,7 @@
                     android:paddingBottom="@dimen/all_category_title_shadow_padding_bottom"
                     android:text="@{categoryViewModel.titleOne}"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_two_heading_font" />
+                    android:textSize="@dimen/level_three_heading_font" />
 
             </LinearLayout>
 
@@ -71,7 +73,7 @@
                     android:paddingBottom="@dimen/all_category_title_shadow_padding_bottom"
                     android:text="@{categoryViewModel.titleTwo}"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_two_heading_font" />
+                    android:textSize="@dimen/level_three_heading_font" />
 
             </LinearLayout>
 
@@ -92,7 +94,7 @@
                     android:paddingBottom="@dimen/all_category_title_shadow_padding_bottom"
                     android:text="@{categoryViewModel.titleThree}"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_two_heading_font" />
+                    android:textSize="@dimen/level_three_heading_font" />
 
             </LinearLayout>
 
@@ -106,6 +108,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/recycler_view_top_categorys_height"
             android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
             android:layout_marginTop="@dimen/recycler_view_all_categorys_margin_top" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
@@ -114,6 +118,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
             android:layout_marginTop="@dimen/all_category_recycle_view_overlap_height"
             android:layout_weight="1" />
 
@@ -121,12 +127,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/all_category_recycle_view_overlap_height"
+            android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
             android:layout_marginTop="@dimen/recycle_view_indicator_margin_top"
             android:gravity="right"
-            android:paddingBottom="@dimen/book_comment_indicator_padding"
-            android:paddingTop="@dimen/book_comment_indicator_padding"
+            android:paddingRight="@dimen/all_category_indicator_padding_right"
             android:text="@{@string/book_comment_indicator_value(categoryViewModel.currentPosition,categoryViewModel.totalPage)}"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_size_15" />
 
     </LinearLayout>
 

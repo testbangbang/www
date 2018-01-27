@@ -22,7 +22,6 @@
 
         <ImageView
             android:padding="@dimen/search_view_button_background_padding"
-            android:background="@drawable/normal_selected_background"
             android:onClick="@{()->viewModel.onShoppingCartViewClick()}"
             android:layout_marginLeft="@dimen/search_view_shop_car_icon_margin_left"
             android:layout_centerVertical="true"
@@ -34,21 +33,23 @@
 
         <LinearLayout
             android:onClick="@{()->viewModel.onSearchViewClick()}"
-            android:background="@drawable/rectangle_stroke_dark"
             android:layout_toLeftOf="@id/shop_car"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <TextView
                 android:hint="@string/search_view_hint"
-                android:padding="@dimen/search_view_edit_text_padding"
+                android:paddingLeft="@dimen/search_view_edit_text_padding_left"
+                android:paddingBottom="@dimen/search_view_edit_text_padding_bottom"
+                android:gravity="bottom"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:background="@null"
+                android:background="@drawable/shop_search_book_edit_text_background"
                 android:textSize="@dimen/level_three_heading_font"
                 android:text="@={viewModel.searchContent}"
+                android:textColorHint="@color/gray"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="@dimen/search_view_edit_text_height"/>
@@ -56,8 +57,7 @@
             <ImageView
                 android:paddingLeft="@dimen/search_view_button_background_padding"
                 android:paddingRight="@dimen/search_view_button_background_padding"
-                android:background="@drawable/normal_selected_background"
-                android:layout_marginRight="@dimen/search_view_search_icon_margin_right"
+                android:layout_marginLeft="@dimen/search_view_search_icon_margin_left"
                 android:id="@+id/search"
                 android:src="@mipmap/ic_search"
                 android:layout_width="@dimen/search_view_search_icon_width_and_height"

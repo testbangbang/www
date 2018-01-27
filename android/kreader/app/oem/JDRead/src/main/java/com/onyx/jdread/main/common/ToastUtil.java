@@ -69,6 +69,52 @@ public class ToastUtil {
         showToast(JDReadApplication.getInstance(), message);
     }
 
+    public static void showToastErrorMsgForDownBook(String errorCode) {
+        showToast(JDReadApplication.getInstance(), getErrorMsgForDownBook(errorCode));
+    }
+
+    public static String getErrorMsgByCode(String errorCode){
+        String errorMsg = ResManager.getString(R.string.login_resutl_unknown_error);
+        if (Constants.RESULT_CODE_UNKNOWN_ERROR.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_unknown_error);
+        } else if (Constants.RESULT_CODE_NO_FUNCTION.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_no_function);
+        } else if (Constants.RESULT_CODE_NOT_LOGIN.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_not_login);
+        } else if (Constants.RESULT_CODE_PARAMS_ERROR.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_params_error);
+        } else if (Constants.RESULT_CODE_PARAMS_LENGTH_ERROR.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_params_error);
+        } else if (Constants.RESULT_CODE_PARAMS_LACK.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_params_error);
+        } else if (Constants.RESULT_CODE_PARAMS_FORMAT_ERRO.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.login_resutl_params_error);
+        }
+        return errorMsg;
+    }
+
+    public static String getErrorMsgForDownBook(String errorCode){
+        String errorMsg = getErrorMsgByCode(errorCode);
+        if (Constants.RESULT_CODE_BOOK_NO_READ_VIP.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.down_book_resutl_no_read_vip);
+        } else if (Constants.RESULT_CODE_BOOK_CAN_NOT_READ.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.down_book_can_not_read);
+        } else if (Constants.RESULT_CODE_BOOK_NOT_FOUND.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.down_book_book_not_found);
+        } else if (Constants.RESULT_CODE_BOOK_ILLEGAL_ORDER.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.down_book_illegal_order);
+        } else if (Constants.RESULT_CODE_BOOK_ILLEGAL_DEVICE.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.down_book_illegal_device);
+        } else if (Constants.RESULT_CODE_BOOK_GENERATE_CERT_ERROR.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.down_book_server_error);
+        } else if (Constants.RESULT_CODE_BOOK_GET_CONTENT_ERROR.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.down_book_server_error);
+        } else if (Constants.RESULT_CODE_BOOK_CERIFY_ORDER_ERROR.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.down_book_cerify_order_error);
+        }
+        return errorMsg;
+    }
+
     private static void setBackground(@NonNull View view, Drawable drawable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             view.setBackground(drawable);

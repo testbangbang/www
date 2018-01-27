@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -26,6 +25,7 @@ import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.library.action.RxFileSystemScanAction;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
+import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -211,6 +211,9 @@ public class MainActivity extends AppCompatActivity {
 
     private BaseFragment getPageView(String childViewName) {
         BaseFragment baseFragment = childViewList.get(childViewName);
+        if (SearchBookFragment.class.getSimpleName().equals(childViewName)) {
+            childViewName = SearchBookFragment.class.getName();
+        }
         if (baseFragment == null) {
             try {
                 Class clazz = Class.forName(childViewName);

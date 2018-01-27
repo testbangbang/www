@@ -132,6 +132,7 @@
     <string name="title_bar_title_book_comment">Comments</string>
     <string name="title_bar_title_book_write_comment">Write Comments</string>
     <string name="book_comment_indicator_value">%1$s/%2$s</string>
+    <string name="copyright_book_format">Format：</string>
     <string name="copyright_book_word_count">Word count：</string>
     <string name="copyright_book_author">Author：</string>
     <string name="copyright_book_publish">Publisher：</string>
@@ -150,16 +151,12 @@
     <string name="book_detail_downloading">Downloading</string>
     <string name="book_detail_try_read">Try read the book</string>
     <string name="book_detail_download_add_shelf">Trying to read file has started to download and add a bookcase</string>
-    <string name="book_detail_dialog_fluent">Smooth Reading immediately(the book supported)</string>
-    <string name="book_detail_dialog_buy">Direct purchase</string>
-    <string name="book_detail_dialog_add_cart">Add to cart, buy later</string>
     <string name="book_detail_cannot_fluent">Cannot smooth read</string>
     <string name="book_detail_no_card">No effective smooth card in your account, so we can not get through the book</string>
     <string name="book_detail_go_buy">Buy</string>
     <string name="book_detail_already_buy">Have been buying</string>
     <string name="book_detail_success_add_cart">Add to cart successfully!</string>
     <string name="book_detail_already_add_cart">The goods have been added to the shopping cart!</string>
-    <string name="book_detail_download_with_vip">Download (VIP)</string>
     <string name="confirm">confirm</string>
     <string name="menu_wifi_setting">WIFI Setting</string>
     <string name="fragment_book_bought_download_status_read">Read</string>
@@ -395,4 +392,13 @@
     <string name="simplified_chinese">Simplified chinese</string>
     <string name="reader_target_language">Target language:</string>
     <string name="speed_refresh">Speed refresh</string>
+    <string name="item_consume_record_read_bean">-%d read bean</string>
+    <string name="item_consume_record_voucher">-%d voucher</string>
+    <string name="down_book_resutl_no_read_vip">no read vip</string>
+    <string name="down_book_can_not_read">ebook is not can read</string>
+    <string name="down_book_book_not_found">the book not found</string>
+    <string name="down_book_illegal_order">illegal order</string>
+    <string name="down_book_illegal_device">illegal device</string>
+    <string name="down_book_server_error">server error</string>
+    <string name="down_book_cerify_order_error">cerify order error</string>
 </resources>

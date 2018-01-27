@@ -171,7 +171,9 @@ public class ReaderActivityEventHandler {
             return;
         }
         String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
-        TranslateDialog translateDialog = new TranslateDialog(activity, text, readerViewModel.getEventBus());
+        float x = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastX();
+        float y = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastY();
+        TranslateDialog translateDialog = new TranslateDialog(activity, text, readerViewModel.getEventBus(),x,y);
         translateDialog.show();
         translateDialog.setCanceledOnTouchOutside(true);
     }

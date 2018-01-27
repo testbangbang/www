@@ -17,10 +17,12 @@ import com.onyx.jdread.shop.request.cloud.RxRequestBookDetail;
 public class BookDetailAction extends BaseAction<ShopDataBundle> {
 
     private long bookID;
+    private boolean withCookie;
     private BookDetailResultBean bookDetailResultBean;
 
-    public BookDetailAction(long bookID) {
+    public BookDetailAction(long bookID,boolean withCookie) {
         this.bookID = bookID;
+        this.withCookie = withCookie;
     }
 
     public BookDetailResultBean getBookDetailResultBean() {
@@ -36,6 +38,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
         appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         baseRequestBean.setAppBaseInfo(appBaseInfo);
         baseRequestBean.bookId = bookID;
+        baseRequestBean.withCookie = withCookie;
         final RxRequestBookDetail rq = new RxRequestBookDetail();
         rq.setRequestBean(baseRequestBean);
         rq.execute(new RxCallback<RxRequestBookDetail>() {

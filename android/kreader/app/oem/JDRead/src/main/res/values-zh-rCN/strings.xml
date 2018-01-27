@@ -129,6 +129,7 @@
     <string name="title_bar_title_book_detail">图书详情</string>
     <string name="title_bar_title_book_comment">评论</string>
     <string name="title_bar_title_book_write_comment">写评论</string>
+    <string name="copyright_book_format">格式：</string>
     <string name="copyright_book_word_count">字数：</string>
     <string name="copyright_book_author">作者：</string>
     <string name="copyright_book_publish">出版方：</string>
@@ -146,16 +147,12 @@
     <string name="book_detail_downloading">正在下载</string>
     <string name="book_detail_try_read">试读本书</string>
     <string name="book_detail_download_add_shelf">试读文件已开始下载并加入书架</string>
-    <string name="book_detail_dialog_fluent">立即畅读(本书支持畅读)</string>
-    <string name="book_detail_dialog_buy">直接购买</string>
-    <string name="book_detail_dialog_add_cart">加入购物车，稍后购买</string>
     <string name="book_detail_cannot_fluent">无法畅读</string>
     <string name="book_detail_no_card">您的账号中没有有效的畅读卡，因此无法畅读此书</string>
     <string name="book_detail_go_buy">去购买</string>
     <string name="book_detail_already_buy">已经购买过</string>
     <string name="book_detail_success_add_cart">成功加入购物车！</string>
     <string name="book_detail_already_add_cart">该商品已经加入购物车！</string>
-    <string name="book_detail_download_with_vip">下载(畅读VIP)</string>
     <string name="confirm">确定</string>
     <string name="menu_wifi_setting">WIFI 设置</string>
     <string name="fragment_book_bought_download_status_read">阅读</string>
@@ -377,4 +374,13 @@
     <string name="simplified_chinese">简体中文</string>
     <string name="reader_target_language">目标语言:</string>
     <string name="speed_refresh">快速刷新</string>
+    <string name="item_consume_record_read_bean">-%d阅豆</string>
+    <string name="item_consume_record_voucher">-%d代金券</string>
+    <string name="down_book_resutl_no_read_vip">非畅读VIP</string>
+    <string name="down_book_can_not_read">电子书不支持阅读</string>
+    <string name="down_book_book_not_found">电子书不存在</string>
+    <string name="down_book_illegal_order">非法订单</string>
+    <string name="down_book_illegal_device">非法设备</string>
+    <string name="down_book_server_error">后台处理异常</string>
+    <string name="down_book_cerify_order_error">订单认证异常</string>
 </resources>
