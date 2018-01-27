@@ -233,4 +233,11 @@ public class JDAppBaseInfo {
             this.requestParamsMap.putAll(requestParamsMap);
         }
     }
+
+    public void setPageSize(String page, String pageSize) {
+        Map<String, String> map = new HashMap<>();
+        map.put("page", page);
+        map.put("page_size", pageSize);
+        addRequestParams(map);
+    }
 }

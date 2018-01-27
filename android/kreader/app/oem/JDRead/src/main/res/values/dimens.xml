@@ -444,6 +444,8 @@
     <dimen name="library_cover_child_format_margin_right">5dp</dimen>
     <dimen name="item_setting_name_margin_top">5dp</dimen>
     <dimen name="item_personal_margin_top">8dp</dimen>
+    <dimen name="item_experience_image_width">100dp</dimen>
+    <dimen name="item_experience_image_height">120dp</dimen>
     <dimen name="reader_select_menu_width">475dp</dimen>
     <dimen name="reader_select_menu_translate_height">320dp</dimen>
     <dimen name="shop_search_book_edit_text_view_bg_height">6dp</dimen>

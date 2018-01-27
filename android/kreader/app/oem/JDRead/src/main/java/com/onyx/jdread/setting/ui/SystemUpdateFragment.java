@@ -149,6 +149,7 @@ public class SystemUpdateFragment extends BaseFragment {
             systemUpdateData.setVersionTitle(JDReadApplication.getInstance().getResources().getString(R.string.current_version));
         }
         systemUpdateData.setVersion(settingUpdateModel.getDownloadVersion());
+        systemUpdateData.setShowProgress(false);
         binding.setModel(settingUpdateModel);
     }
 

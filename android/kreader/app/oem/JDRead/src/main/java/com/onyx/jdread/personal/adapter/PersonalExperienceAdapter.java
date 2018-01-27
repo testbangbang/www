@@ -11,13 +11,21 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemExperienceBinding;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendItemBean;
+import com.onyx.jdread.shop.ui.BookDetailFragment;
+
+import java.util.List;
 
 /**
  * Created by li on 2017/12/29.
  */
 
-public class PersonalExperienceAdapter extends PageRecyclerView.PageAdapter {
+public class PersonalExperienceAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
+    private List<RecommendItemBean> data;
+
     @Override
     public int getRowCount() {
         return ResManager.getInteger(R.integer.personal_experience_row);
@@ -30,7 +38,7 @@ public class PersonalExperienceAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getDataCount() {
-        return 6;
+        return data == null ? 0 : data.size();
     }
 
     @Override
@@ -41,7 +49,30 @@ public class PersonalExperienceAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        PersonalExperienceViewHolder viewHolder = (PersonalExperienceViewHolder) holder;
+        viewHolder.itemView.setOnClickListener(this);
+        viewHolder.itemView.setTag(position);
+        RecommendItemBean recommendItemBean = data.get(position);
+        viewHolder.bindTo(recommendItemBean);
+    }
 
+    public void setData(List<RecommendItemBean> data) {
+        this.data = data;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Object tag = v.getTag();
+        if (tag == null) {
+            return;
+        }
+        int position = (int) tag;
+        RecommendItemBean recommendItemBean = data.get(position);
+        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, recommendItemBean.ebook_id);
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClick(position);
+        }
     }
 
     static class PersonalExperienceViewHolder extends RecyclerView.ViewHolder {
@@ -56,8 +87,9 @@ public class PersonalExperienceAdapter extends PageRecyclerView.PageAdapter {
             return binding;
         }
 
-        public void bindTo() {
-
+        public void bindTo(RecommendItemBean bean) {
+            binding.setBean(bean);
+            binding.executePendingBindings();
         }
     }
 }

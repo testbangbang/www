@@ -3,6 +3,9 @@
 
     <data class="ConsumptionRecordBinding">
 
+        <variable
+            name="pageText"
+            type="String"/>
     </data>
 
     <LinearLayout
@@ -30,7 +33,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="@dimen/gift_center_page_padding"
             android:padding="@dimen/gift_center_page_padding"
-            android:text="1/4"
+            android:text="@{pageText}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
     </LinearLayout>
