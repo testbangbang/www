@@ -16,8 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/fragment_book_detail_margin_top_and_bottom"
-        android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
-        android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
         android:layout_marginTop="@dimen/fragment_book_detail_margin_top_and_bottom"
         android:orientation="vertical">
 
@@ -26,6 +24,8 @@
             layout="@layout/layout_title_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
             bind:titleBarViewModel="@{viewModel.titleBarViewModel}" />
 
         <FrameLayout
@@ -38,7 +38,9 @@
                 subjectList="@{viewModel.bookList}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+                android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -51,36 +53,55 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+                    android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+                    android:layout_marginTop="@dimen/subject_list_sort_button_container_margin_top"
                     android:orientation="horizontal"
-                    android:padding="@dimen/subject_list_sort_button_container_padding">
+                    android:paddingBottom="@dimen/subject_list_sort_button_container_padding_bottom"
+                    android:paddingLeft="@dimen/subject_list_sort_button_container_padding_left">
 
-                    <TextView
+                    <CheckedTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/normal_selected_background"
+                        android:background="@drawable/text_stroke_background"
+                        android:checked="@{viewModel.sortKeyHotSelected}"
                         android:onClick="@{()->viewModel.onSortKeyHotClick()}"
-                        android:padding="@dimen/subject_list_sort_button_padding"
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:paddingLeft="@dimen/category_book_list_selected_button_padding_left_and_right"
+                        android:paddingRight="@dimen/category_book_list_selected_button_padding_left_and_right"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:text="@string/subject_list_sort_type_hot"
                         android:textColor="@android:color/black"
-                        android:text="@string/subject_list_sort_type_hot" />
+                        android:textSize="@dimen/level_three_heading_font" />
 
-                    <TextView
+                    <CheckedTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/subject_list_sort_button_margin_left"
-                        android:background="@drawable/normal_selected_background"
+                        android:background="@drawable/text_stroke_background"
+                        android:checked="@{viewModel.sortKeyNewestSelected}"
                         android:onClick="@{()->viewModel.onSortKeyNewestClick()}"
-                        android:padding="@dimen/subject_list_sort_button_padding"
-                        android:text="@string/subject_list_sort_type_newest" />
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:paddingLeft="@dimen/category_book_list_selected_button_padding_left_and_right"
+                        android:paddingRight="@dimen/category_book_list_selected_button_padding_left_and_right"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:text="@string/subject_list_sort_type_newest"
+                        android:textSize="@dimen/level_three_heading_font" />
 
-                    <TextView
+                    <CheckedTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/subject_list_sort_button_margin_left"
-                        android:background="@drawable/normal_selected_background"
+                        android:background="@drawable/text_stroke_background"
+                        android:checked="@{viewModel.sortKeyPriceSelected}"
                         android:onClick="@{()->viewModel.onSortKeyPriceClick()}"
-                        android:padding="@dimen/subject_list_sort_button_padding"
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:paddingLeft="@dimen/category_book_list_selected_button_padding_left_and_right"
+                        android:paddingRight="@dimen/category_book_list_selected_button_padding_left_and_right"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:text="@string/subject_list_sort_type_price"
                         android:textColor="@android:color/black"
-                        android:text="@string/subject_list_sort_type_price" />
+                        android:textSize="@dimen/level_three_heading_font" />
 
                 </LinearLayout>
 
@@ -102,6 +123,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+                    android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
                     android:layout_weight="1" />
 
                 <CheckBox
@@ -123,10 +146,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginTop="@dimen/category_book_list_recycle_view_indicator_margin_top"
             android:gravity="right"
-            android:paddingBottom="@dimen/book_comment_indicator_padding"
-            android:paddingTop="@dimen/book_comment_indicator_padding"
-            android:text="@{@string/book_comment_indicator_value(viewModel.currentPosition,viewModel.totalPage)}" />
+            android:text="@{@string/book_comment_indicator_value(viewModel.currentPosition,viewModel.totalPage)}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_size_15" />
 
     </LinearLayout>
 

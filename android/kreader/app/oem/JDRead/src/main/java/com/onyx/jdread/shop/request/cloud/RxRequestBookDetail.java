@@ -32,7 +32,12 @@ public class RxRequestBookDetail extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        ReadContentService getCommonService = CloudApiContext.getServiceNoCookie(CloudApiContext.getJDBooxBaseUrl());
+        ReadContentService getCommonService;
+        if (requestBean.withCookie) {
+            getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
+        } else {
+            getCommonService = CloudApiContext.getServiceNoCookie(CloudApiContext.getJDBooxBaseUrl());
+        }
         Call<BookDetailResultBean> call = getCall(getCommonService);
         bookDetailResultBean = done(call);
     }

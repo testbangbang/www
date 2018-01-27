@@ -74,14 +74,15 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
     public RxLibraryLoadRequest call() throws Exception {
         bookList.clear();
         libraryList.clear();
+        totalCount = getDataProvider().count(getAppContext(), queryArgs) + getDataProvider().libraryCount(queryArgs.libraryUniqueId);
+        setQueryOffsetBounds();
         DataManagerHelper.loadLibraryList(getDataProvider(), libraryList, queryArgs);
         loadLibraryCover();
 
-        totalCount = getDataProvider().count(getAppContext(), queryArgs) + getDataProvider().libraryCount(queryArgs.libraryUniqueId);
         if (loadMetadata && libraryList.size() < queryArgs.limit) {
             queryArgs.offset = (int) (queryArgs.offset - getDataProvider().libraryCount(queryArgs.libraryUniqueId));
             int limit = queryArgs.limit;
-            queryArgs.limit = queryArgs.limit -libraryList.size();
+            queryArgs.limit = queryArgs.limit - libraryList.size();
             List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getAppContext(), getDataManager(),
                     queryArgs, loadFromCache);
             queryArgs.limit = limit;
@@ -99,6 +100,15 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         }
 
         return this;
+    }
+
+    private void setQueryOffsetBounds() {
+        if (queryArgs.offset >= totalCount) {
+            long remainder = totalCount % queryArgs.limit;
+            int offset = (int) (totalCount - (remainder == 0 ? queryArgs.limit : remainder));
+            queryArgs.offset = offset > 0 ? offset : 0;
+        }
+        queryArgs.offset = queryArgs.offset < 0 ? 0 : queryArgs.offset;
     }
 
     private void loadLibraryCover() {

@@ -27,7 +27,6 @@
             android:layout_height="@dimen/book_copyright_cancel_button_width_and_height"
             android:layout_gravity="right"
             android:layout_marginTop="@dimen/book_copyright_cancel_button_margin_top"
-            android:background="@drawable/normal_selected_background"
             android:onClick="@{(view)->listener.onClick(view)}"
             android:padding="@dimen/cancel_button_padding"
             android:src="@mipmap/ic_cancel" />
@@ -119,7 +118,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/normal_selected_background"
                 android:onClick="@{()->loginViewModel.onRegisterViewClick()}"
                 android:padding="@dimen/user_login_register_button_padding"
                 android:text="@string/register"
@@ -131,6 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle_stroke"
+            android:enabled="@{loginViewModel.loginButtonEnabled}"
             android:gravity="center"
             android:onClick="@{()->loginViewModel.onLoginViewClick()}"
             android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"

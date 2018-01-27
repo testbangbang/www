@@ -2,8 +2,10 @@ package com.onyx.jdread.shop.common;
 
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtBookResultBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargeStatusBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadUnlimitedResultBean;
@@ -13,8 +15,6 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddBookToSmoothCardBookBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDownloadUrlResultBean;
@@ -25,7 +25,6 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
-import com.onyx.jdread.shop.cloud.entity.jdbean.ShoppingCartBookIdsBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateCartBean;
 
 import java.util.Map;
@@ -116,7 +115,7 @@ public interface ReadContentService {
                                              @QueryMap Map<String, String> baseInfoMap);
 
     @GET("search/key_word")
-    Call<SearchHotWord> getSearchHot(@Query(JDAppBaseInfo.APP_KEY) String app);
+    Call<SearchHotWord> getSearchHot(@QueryMap Map<String, String> baseInfoMap);
 
     @GET("ebook/{bookId}/comment")
     Call<BookCommentsResultBean> getBookCommentsList(@Path("bookId") long bookId,
@@ -156,12 +155,27 @@ public interface ReadContentService {
     Call<String> readForVoucher(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.USER_GIFT)
-    Call<String> getGiftInfo(@Path("sn") int sn,
-                             @QueryMap Map<String, String> map);
+    Call<String> getGiftInfo(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.RECOMMEND_USER)
     Call<RecommendUserBean> recommendUser(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.ReadBean.RECHARGE_PACKAGE)
     Call<String> getRechargePackage(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.ReadBean.RECHARGE)
+    Call<String> getPayQRCode(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.ReadBean.RECHARGE_STATUS)
+    Call<GetRechargeStatusBean> getRechargeStatus(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.ReadBean.CONSUME_RECORD)
+    Call<ConsumeRecordBean> getConsumeRecord(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.ReadBean.READ_BEAN_RECORD)
+    Call<ConsumeRecordBean> getReadBeanRecord(@QueryMap Map<String, String> map);
+
+    @GET("{bookId}/download")
+    Call<String> getDownLoadBookInfo(@Path("bookId") long bookId,
+                                     @QueryMap Map<String, String> baseInfoMap);
 }

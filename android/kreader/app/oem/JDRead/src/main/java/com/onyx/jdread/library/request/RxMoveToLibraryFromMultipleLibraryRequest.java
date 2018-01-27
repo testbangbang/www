@@ -74,5 +74,8 @@ public class RxMoveToLibraryFromMultipleLibraryRequest extends RxBaseDBRequest {
                 }
             }
         }
+        if (StringUtils.isNotBlank(fromIdString) && providerBase.libraryMetadataCount(fromIdString) == 0) {
+            providerBase.deleteLibrary(providerBase.loadLibrary(fromIdString));
+        }
     }
 }

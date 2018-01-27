@@ -8,7 +8,10 @@ import android.net.wifi.WifiManager;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.onyx.jdread.main.event.WifiStateChangeEvent;
+
 import org.acra.ACRA;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2017/1/12.
@@ -33,6 +36,7 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
                     // TODO: 18-1-13 wifi setting
                     break;
             }
+            EventBus.getDefault().post(new WifiStateChangeEvent());
         }
         if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
             Parcelable parcelableExtra = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);

@@ -2,7 +2,6 @@ package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
-import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
@@ -15,10 +14,10 @@ import retrofit2.Call;
  */
 
 public class RxRequestSearchHotWord extends RxBaseCloudRequest {
-    private GetBookDetailRequestBean requestBean;
+    private JDAppBaseInfo requestBean;
     private SearchHotWord searchHotWord;
 
-    public void setRequestBean(GetBookDetailRequestBean requestBean) {
+    public void setRequestBean(JDAppBaseInfo requestBean) {
         this.requestBean = requestBean;
     }
 
@@ -44,6 +43,6 @@ public class RxRequestSearchHotWord extends RxBaseCloudRequest {
     }
 
     private Call<SearchHotWord> getCall(ReadContentService getCommonService) {
-        return getCommonService.getSearchHot(JDAppBaseInfo.APP_DEFAULT_VALUE);
+        return getCommonService.getSearchHot(requestBean.getRequestParamsMap());
     }
 }

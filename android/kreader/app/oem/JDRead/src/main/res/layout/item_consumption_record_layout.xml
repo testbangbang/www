@@ -3,6 +3,11 @@
 
     <data class="ItemConsumptionRecordBinding">
 
+        <import type="android.view.View" />
+
+        <variable
+            name="bean"
+            type="com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean.DataBean" />
     </data>
 
     <LinearLayout
@@ -20,7 +25,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2018-1-2 09:09:09"
+                android:text="@{bean.created}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
@@ -30,7 +35,7 @@
                 android:layout_marginTop="@dimen/item_consumption_record_date_margin_top"
                 android:ellipsize="middle"
                 android:singleLine="true"
-                android:text="book name"
+                android:text="@{bean.desc}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
         </LinearLayout>
@@ -44,15 +49,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="456"
+                android:text="@{@string/item_consume_record_voucher(bean.voucher)}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:visibility="@{bean.voucher == 0 ? View.GONE : View.VISIBLE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/item_consumption_record_date_margin_top"
-                android:text="123"
+                android:text="@{@string/item_consume_record_read_bean(bean.yuedou)}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
         </LinearLayout>

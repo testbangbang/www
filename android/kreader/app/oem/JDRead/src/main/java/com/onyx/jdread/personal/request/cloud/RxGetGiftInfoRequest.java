@@ -15,7 +15,6 @@ import retrofit2.Response;
 
 public class RxGetGiftInfoRequest extends RxBaseCloudRequest {
     private JDAppBaseInfo baseInfo;
-    private int sn;
 
     @Override
     public Object call() throws Exception {
@@ -29,14 +28,10 @@ public class RxGetGiftInfoRequest extends RxBaseCloudRequest {
     }
 
     private Call<String> getCall(ReadContentService service) {
-        return service.getGiftInfo(sn, baseInfo.getRequestParamsMap());
+        return service.getGiftInfo(baseInfo.getRequestParamsMap());
     }
 
     public void setBaseInfo(JDAppBaseInfo baseInfo) {
         this.baseInfo = baseInfo;
-    }
-
-    public void setSn(int sn) {
-        this.sn = sn;
     }
 }
