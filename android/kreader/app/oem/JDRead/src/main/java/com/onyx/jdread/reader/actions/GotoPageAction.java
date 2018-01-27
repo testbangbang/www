@@ -4,9 +4,8 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
+import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.request.GotoPageRequest;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2018/1/8.
@@ -21,12 +20,17 @@ public class GotoPageAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        final GotoPageRequest request = new GotoPageRequest(readerDataHolder.getReader(),page);
+        final GotoPageRequest request = new GotoPageRequest(readerDataHolder.getReader(), page);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
                 readerDataHolder.getEventBus().post(new PageViewUpdateEvent());
-                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ReaderErrorEvent.onErrorHandle(throwable, this.getClass().getSimpleName(), readerDataHolder.getEventBus());
             }
         });
     }

@@ -128,7 +128,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemSettingEvent(ReaderFunctionItemSettingEvent event) {
-        if (readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle() != null) {
+        if(readerDataHolder.getReaderViewInfo() != null && readerDataHolder.getReaderViewInfo().isTextPages()){
             //epub show text
             new ReaderSettingShowMenuAction(binding, ReaderSettingModel.ReaderSystemMenuGroup.textMenuGroup).execute(readerDataHolder,null);
         } else {

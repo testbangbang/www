@@ -25,10 +25,9 @@ public class GetViewSettingRequest extends ReaderBaseRequest {
 
     @Override
     public GetViewSettingRequest call() throws Exception {
-        updateSetting(reader);
-
         loadUserData();
         LayoutProviderUtils.updateReaderViewInfo(reader,getReaderViewInfo(),reader.getReaderHelper().getReaderLayoutManager());
+        updateSetting(reader);
         return this;
     }
 

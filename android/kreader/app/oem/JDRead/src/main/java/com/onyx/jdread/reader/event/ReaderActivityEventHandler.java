@@ -18,6 +18,7 @@ import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
+import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.menu.event.SearchContentEvent;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
@@ -173,7 +174,7 @@ public class ReaderActivityEventHandler {
         String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
         float x = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastX();
         float y = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastY();
-        TranslateDialog translateDialog = new TranslateDialog(activity, text, readerViewModel.getEventBus(),x,y);
+        TranslateDialog translateDialog = new TranslateDialog(activity, text, readerViewModel.getEventBus(), x, y);
         translateDialog.show();
         translateDialog.setCanceledOnTouchOutside(true);
     }
@@ -192,5 +193,11 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTranslateResultEvent(WordTranslateResultEvent event) {
         readerViewModel.getReaderDataHolder().getSelectMenuModel().updateTranslateResult(event.getTranslateResult());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReaderErrorEvent(ReaderErrorEvent event) {
+        String[] errors = ReaderErrorEvent.getThrowableStringRep(event.throwable);
+        ReaderErrorEvent.printThrowable(errors);
     }
 }

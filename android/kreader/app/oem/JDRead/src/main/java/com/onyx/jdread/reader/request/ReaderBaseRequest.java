@@ -57,10 +57,13 @@ public abstract class ReaderBaseRequest extends RxRequest {
     }
 
     public void updateSetting(Reader reader){
-        ReaderTextStyle srcStyle = reader.getReaderHelper().getTextStyleManager().getStyle();
-        style = ReaderTextStyle.copy(srcStyle);
-
-        ImageReflowSettings srcSettings = reader.getReaderHelper().getImageReflowManager().getSettings();
-        settings = ImageReflowSettings.copy(srcSettings);
+        if(getReaderViewInfo() != null && getReaderViewInfo().isTextPages()) {
+            ReaderTextStyle srcStyle = reader.getReaderHelper().getTextStyleManager().getStyle();
+            style = ReaderTextStyle.copy(srcStyle);
+        }
+        if(getReaderViewInfo() != null && getReaderViewInfo().supportScalable) {
+            ImageReflowSettings srcSettings = reader.getReaderHelper().getImageReflowManager().getSettings();
+            settings = ImageReflowSettings.copy(srcSettings);
+        }
     }
 }
