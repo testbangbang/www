@@ -35,6 +35,8 @@ public class SelectMenuModel {
     private PopupSelectionMenuBinding binding;
     private String inputWords = "";
     private EventBus eventBus;
+    private float lastX;
+    private float lastY;
 
     public ObservableField<String> getPage() {
         return page;
@@ -139,13 +141,14 @@ public class SelectMenuModel {
         final float diffBottom = endHighlightCursor.getDisplayRect().bottom;
 
         final float dividerHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_popup_selection_divider_height);
-        if ((diffTop - measuredHeight - dividerHeight) > 0) {
-            updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffTop - dividerHeight - measuredHeight);
-            return;
-        }
 
         if ((diffBottom + measuredHeight + dividerHeight) < screenHeight) {
             updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffBottom + dividerHeight);
+            return;
+        }
+
+        if ((diffTop - measuredHeight - dividerHeight) > 0) {
+            updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffTop - dividerHeight - measuredHeight);
             return;
         }
 
@@ -160,6 +163,8 @@ public class SelectMenuModel {
         selectY = y;
         selectMenuRootView.setY(y);
         selectMenuRootView.setX(x);
+        lastX = x;
+        lastY = y;
 
         selectMenuRootView.post(new Runnable() {
             @Override
@@ -197,5 +202,13 @@ public class SelectMenuModel {
 
     public void updateTranslateResult(String result){
         binding.translateContentView.loadData(result, "text/html; charset=UTF-8", null);
+    }
+
+    public float getLastX() {
+        return lastX;
+    }
+
+    public float getLastY() {
+        return lastY;
     }
 }
