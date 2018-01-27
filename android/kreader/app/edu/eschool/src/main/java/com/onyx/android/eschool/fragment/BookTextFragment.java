@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.target.ViewTarget;
 import com.facebook.common.references.CloseableReference;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
@@ -47,6 +48,7 @@ import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
+import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
@@ -106,6 +108,8 @@ public class BookTextFragment extends Fragment {
 
     private String fragmentName;
     private boolean isVisibleToUser = false;
+    private boolean isColorDevice = true;
+    private int[] imageReqWidthHeight;
 
     private DialogProgressHolder progressDialogHolder = new DialogProgressHolder();
 
@@ -132,6 +136,17 @@ public class BookTextFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initConfig();
+    }
+
+    private void initConfig() {
+        isColorDevice = DeviceConfig.sharedInstance(getContext()).isDeviceSupportColor();
+        if (isColorDevice) {
+            imageReqWidthHeight = new int[]{ViewTarget.SIZE_ORIGINAL, ViewTarget.SIZE_ORIGINAL};
+        } else {
+            imageReqWidthHeight = new int[]{getResources().getDimensionPixelSize(R.dimen.book_item_cover_image_width),
+                    getResources().getDimensionPixelSize(R.dimen.book_item_cover_image_height)};
+        }
     }
 
     @Override
@@ -331,36 +346,63 @@ public class BookTextFragment extends Fragment {
         return CollectionUtils.getSize(getEBookList());
     }
 
-    private Bitmap getBitmap(String associationId) {
+    private Bitmap getBitmap(Metadata metadata) {
         LibraryDataModel libraryDataModel = getPageDataModel();
         if (libraryDataModel == null || libraryDataModel.thumbnailMap == null) {
             return null;
         }
         Bitmap bitmap = null;
-        CloseableReference<Bitmap> refBitmap = libraryDataModel.thumbnailMap.get(associationId);
+        CloseableReference<Bitmap> refBitmap = libraryDataModel.thumbnailMap.get(getThumbnailMapKey(metadata));
         if (refBitmap != null && refBitmap.isValid()) {
             bitmap = refBitmap.get();
         }
-
         return bitmap;
+    }
+
+    private OnyxThumbnail.ThumbnailKind getThumbnailKind() {
+        if (!isColorDevice) {
+            return OnyxThumbnail.ThumbnailKind.Original;
+        }
+        return OnyxThumbnail.ThumbnailKind.Large;
+    }
+
+    private String getCoverKey() {
+        return getThumbnailKind().toString().toLowerCase();
+    }
+
+    private String getCoverUrl(final Metadata metadata) {
+        String url = metadata.getCoverUrl(getCoverKey());
+        if (StringUtils.isNullOrEmpty(url)) {
+            url = metadata.getCoverUrl();
+        }
+        return getRealUrl(url);
+    }
+
+    private String getThumbnailMapKey(Metadata metadata) {
+        return CacheManager.generateCloudThumbnailKey(metadata.getAssociationId(), getCoverUrl(metadata),
+                getCoverKey());
+    }
+
+    private int[] getReqImageWidthHeight() {
+        return imageReqWidthHeight;
     }
 
     private void loadThumbnailRequest(final int position, final Metadata metadata) {
         final CloudThumbnailLoadRequest loadRequest = new CloudThumbnailLoadRequest(
-                metadata.getCoverUrl(),
-                metadata.getAssociationId(), OnyxThumbnail.ThumbnailKind.Original);
+                getCoverUrl(metadata), metadata.getAssociationId(), getThumbnailKind());
+        loadRequest.setReqWidthHeight(getReqImageWidthHeight());
         if (isVisibleToUser && noThumbnailPosition == position) {
             loadRequest.setAbortPendingTasks(true);
         }
         getCloudStore().submitRequestToSingle(getContext().getApplicationContext(), loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if(!isContentValid(request, e)) {
+                if (!isContentValid(request, e)) {
                     return;
                 }
                 CloseableReference<Bitmap> closeableRef = loadRequest.getRefBitmap();
                 if (closeableRef != null && closeableRef.isValid()) {
-                    getPageDataModel().thumbnailMap.put(metadata.getAssociationId(), closeableRef);
+                    getPageDataModel().thumbnailMap.put(getThumbnailMapKey(metadata), closeableRef);
                     updateContentView();
                 }
             }
@@ -525,7 +567,7 @@ public class BookTextFragment extends Fragment {
     }
 
     private void updateContentView() {
-        if(isContentViewInvalid()) {
+        if (isContentViewInvalid()) {
             return;
         }
         newPage = true;
@@ -560,7 +602,7 @@ public class BookTextFragment extends Fragment {
     }
 
     private void loadThumbnailCover(ImageView imageView, Metadata eBook, int position) {
-        Bitmap bitmap = getBitmap(eBook.getAssociationId());
+        Bitmap bitmap = getBitmap(eBook);
         if (bitmap == null) {
             imageView.setImageResource(getImageResource(eBook));
             if (newPage) {
@@ -660,27 +702,20 @@ public class BookTextFragment extends Fragment {
         return true;
     }
 
-    private BaseCallback downloadCallback = new BaseCallback() {
-
-        @Override
-        public void start(BaseRequest request) {
-            updateOnlyContentView();
+    private String getDownloadUrl(Metadata metadata) {
+        if (isColorDevice) {
+            return metadata.getLocation();
         }
-
-        @Override
-        public void progress(BaseRequest request, ProgressInfo info) {
-            updateOnlyContentView();
+        String url = metadata.getBookLocation(metadata.getType());
+        if (StringUtils.isNullOrEmpty(url)) {
+            url = metadata.getLocation();
         }
-
-        @Override
-        public void done(BaseRequest request, Throwable e) {
-            updateOnlyContentView();
-        }
-    };
+        return url;
+    }
 
     private void startDownload(final Metadata eBook) {
         String filePath = getDataSaveFilePath(eBook);
-        DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
+        DownloadAction downloadAction = new DownloadAction(getRealUrl(getDownloadUrl(eBook)), filePath, eBook.getGuid());
         downloadAction.execute(getDataHolder(), null);
     }
 
