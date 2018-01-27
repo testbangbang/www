@@ -702,27 +702,20 @@ public class BookTextFragment extends Fragment {
         return true;
     }
 
-    private BaseCallback downloadCallback = new BaseCallback() {
-
-        @Override
-        public void start(BaseRequest request) {
-            updateOnlyContentView();
+    private String getDownloadUrl(Metadata metadata) {
+        if (isColorDevice) {
+            return metadata.getLocation();
         }
-
-        @Override
-        public void progress(BaseRequest request, ProgressInfo info) {
-            updateOnlyContentView();
+        String url = metadata.getBookLocation(metadata.getType());
+        if (StringUtils.isNullOrEmpty(url)) {
+            url = metadata.getLocation();
         }
-
-        @Override
-        public void done(BaseRequest request, Throwable e) {
-            updateOnlyContentView();
-        }
-    };
+        return url;
+    }
 
     private void startDownload(final Metadata eBook) {
         String filePath = getDataSaveFilePath(eBook);
-        DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
+        DownloadAction downloadAction = new DownloadAction(getRealUrl(getDownloadUrl(eBook)), filePath, eBook.getGuid());
         downloadAction.execute(getDataHolder(), null);
     }
 

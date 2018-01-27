@@ -119,6 +119,9 @@ public class Metadata extends BaseData {
     @ColumnIgnore
     private Map<String, String> bookCovers = new HashMap<>();
 
+    @ColumnIgnore
+    private Map<String, Metadata> bookLocations = new HashMap<>();
+
     public void setFetchSource(int fetchSource) {
         this.fetchSource = fetchSource;
     }
@@ -369,6 +372,24 @@ public class Metadata extends BaseData {
             return null;
         }
         return bookCovers.get(key);
+    }
+
+    @JSONField(name = "versions")
+    public Map<String, Metadata> getBookLocations() {
+        return bookLocations;
+    }
+
+    @JSONField(name = "versions")
+    public void setBookLocations(Map<String, Metadata> map) {
+        this.bookLocations = map;
+    }
+
+    @JSONField(deserialize = false, serialize = false)
+    public String getBookLocation(String key) {
+        if (CollectionUtils.isNullOrEmpty(bookLocations)) {
+            return null;
+        }
+        return bookLocations.get(key).getLocation();
     }
 
     public static Metadata createFromFile(String path) {
