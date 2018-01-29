@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendUserBean;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.common.ReadContentService;
@@ -37,7 +38,7 @@ public class RxRecommendUserRequest extends RxBaseCloudRequest {
 
     private void checkResult() {
         if (recommendUserBean != null && recommendUserBean.result_code != 0) {
-            RequestFailedEvent.sendFailedMessage(recommendUserBean.message);
+            PersonalDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(recommendUserBean.message));
         }
     }
 
