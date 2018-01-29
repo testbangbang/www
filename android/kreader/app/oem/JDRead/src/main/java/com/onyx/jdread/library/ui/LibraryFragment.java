@@ -83,6 +83,7 @@ public class LibraryFragment extends BaseFragment {
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
     private GPaginator pagination;
     private PageIndicatorModel pageIndicatorModel;
+    private SingleItemManageDialog singleItemManageDialog;
 
     @Nullable
     @Override
@@ -454,11 +455,14 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void showSingleMangeDialog(DataModel currentChosenModel) {
+        if (singleItemManageDialog != null && singleItemManageDialog.isShowing()) {
+            return;
+        }
         SingleItemManageDialog.DialogModel dialogModel = new SingleItemManageDialog.DialogModel(libraryDataBundle.getEventBus());
         dialogModel.dataModel.set(currentChosenModel);
         SingleItemManageDialog.Builder builder = new SingleItemManageDialog.Builder(JDReadApplication.getInstance(), dialogModel);
-        SingleItemManageDialog dialog = builder.create();
-        dialog.show();
+        singleItemManageDialog = builder.create();
+        singleItemManageDialog.show();
     }
 
     @Subscribe

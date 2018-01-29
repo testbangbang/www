@@ -76,7 +76,6 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/library_build_button_height"
             android:layout_gravity="center"
-            android:background="@drawable/selected_background"
             android:drawableLeft="@mipmap/ic_shelf_set"
             android:drawablePadding="@dimen/library_build_button_drawable_padding"
             android:gravity="center_vertical"
