@@ -7,6 +7,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.CloseDocumentAction;
+import com.onyx.jdread.reader.actions.DeleteAnnotationAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
@@ -234,5 +235,16 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenDocumentSuccessEvent(OpenDocumentSuccessEvent event){
         readerViewModel.getReaderDataHolder().setDocumentOpenState();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeleteAnnotationEvent(DeleteAnnotationEvent event){
+        DeleteAnnotationAction action = new DeleteAnnotationAction(event.annotation);
+        action.execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
     }
 }
