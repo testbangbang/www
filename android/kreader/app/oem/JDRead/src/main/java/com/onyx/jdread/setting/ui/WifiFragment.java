@@ -31,6 +31,7 @@ import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingTitleModel;
 import com.onyx.jdread.setting.view.AddWIFIConfigurationDialog;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -197,16 +198,14 @@ public class WifiFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         wifiAdmin.registerReceiver();
-        if (!SettingBundle.getInstance().getEventBus().isRegistered(this)) {
-            SettingBundle.getInstance().getEventBus().register(this);
-        }
+        Utils.ensureRegister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         wifiAdmin.unregisterReceiver();
-        SettingBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     private void initWifi() {

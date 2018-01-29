@@ -26,6 +26,7 @@ import com.onyx.jdread.setting.model.DeviceConfigData;
 import com.onyx.jdread.setting.model.DeviceConfigModel;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingTitleModel;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -50,15 +51,13 @@ public class DeviceConfigFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (!SettingBundle.getInstance().getEventBus().isRegistered(this)) {
-            SettingBundle.getInstance().getEventBus().register(this);
-        }
+        Utils.ensureRegister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        SettingBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     private void initData() {

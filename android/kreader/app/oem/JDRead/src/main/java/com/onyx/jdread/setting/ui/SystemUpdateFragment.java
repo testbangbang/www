@@ -82,15 +82,13 @@ public class SystemUpdateFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (!SettingBundle.getInstance().getEventBus().isRegistered(this)) {
-            SettingBundle.getInstance().getEventBus().register(this);
-        }
+        Utils.ensureRegister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        SettingBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     private void initListener() {

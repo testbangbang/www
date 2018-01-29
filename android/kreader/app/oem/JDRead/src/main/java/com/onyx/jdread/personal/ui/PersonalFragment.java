@@ -59,13 +59,13 @@ public class PersonalFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        PersonalDataBundle.getInstance().getEventBus().register(this);
+        Utils.ensureRegister(PersonalDataBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        PersonalDataBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(PersonalDataBundle.getInstance().getEventBus(), this);
     }
 
     private void initListener() {
