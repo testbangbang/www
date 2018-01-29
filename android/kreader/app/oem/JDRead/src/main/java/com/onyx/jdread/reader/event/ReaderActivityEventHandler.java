@@ -230,4 +230,9 @@ public class ReaderActivityEventHandler {
         }
         ToastUtil.showToast(readerViewModel.getReaderDataHolder().getAppContext(), messageId);
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOpenDocumentSuccessEvent(OpenDocumentSuccessEvent event){
+        readerViewModel.getReaderDataHolder().setDocumentOpenState();
+    }
 }
