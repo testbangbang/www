@@ -360,7 +360,7 @@
     <string name="vip">会员</string>
     <string name="error_content_author_unknown">作者未知</string>
     <string name="related_books">相关图书</string>
-    <string name="search_history">搜索历史</string>
+    <string name="search_history">历史搜索</string>
     <string name="search_hot_words">热门搜索</string>
     <string name="in_library">位置：书架</string>
     <string name="in_shop">位置：书店</string>

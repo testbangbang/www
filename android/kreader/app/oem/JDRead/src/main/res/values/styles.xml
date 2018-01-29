@@ -19,6 +19,7 @@
         <item name="android:windowBackground">@drawable/rectangle_stroke_round</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:backgroundDimAmount">0</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 
     <style name="DottedLineStyle">
