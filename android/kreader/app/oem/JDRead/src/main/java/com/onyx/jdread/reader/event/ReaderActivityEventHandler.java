@@ -2,9 +2,11 @@ package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
+import com.onyx.jdread.reader.actions.CloseDocumentAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
@@ -84,6 +86,22 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onCloseDocumentEvent(CloseDocumentEvent event) {
+        new CloseDocumentAction().execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                readerViewModel.getEventBus().post(new FinishEvent());
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ReaderErrorEvent.onErrorHandle(throwable,this.getClass().getSimpleName(),readerViewModel.getReaderDataHolder().getEventBus());
+            }
+        });
+
+    }
+
+    @Subscribe
+    public void onFinishEvent(FinishEvent event){
         readerViewBack.getContext().finish();
     }
 
@@ -126,7 +144,6 @@ public class ReaderActivityEventHandler {
         readerViewModel.getReaderDataHolder().setStyle(event.getStyle());
         readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
         readerViewModel.getReaderDataHolder().setReaderUserDataInfo(event.getReaderUserDataInfo());
-        readerViewModel.getReaderDataHolder().setDocumentOpenState();
         if (readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()) {
             readerSettingMenuDialog.updateBookmarkState();
         }
