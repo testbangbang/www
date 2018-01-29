@@ -2,7 +2,6 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -11,7 +10,6 @@ import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookRank;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +19,7 @@ import java.util.List;
 public class BookRankAction extends BaseAction<ShopDataBundle> {
 
     private BookModelConfigResultBean resultBean;
+    private List<BookModelConfigResultBean.DataBean.ModulesBean> rankDataList;
 
     public BookModelConfigResultBean getResultBean() {
         return resultBean;
@@ -51,6 +50,7 @@ public class BookRankAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onNext(RxRequestBookRank request) {
                 resultBean = request.getResultBean();
+                rankDataList = request.getRankDataList();
                 setResult(shopDataBundle);
                 if (rxCallback != null) {
                     rxCallback.onNext(BookRankAction.this);
@@ -76,31 +76,12 @@ public class BookRankAction extends BaseAction<ShopDataBundle> {
     }
 
     private void setResult(ShopDataBundle shopDataBundle) {
-        BookModelConfigResultBean resultBean = getResultBean();
-        if (resultBean != null) {
-            if (resultBean != null) {
-                BookModelConfigResultBean.DataBean data = resultBean.data;
-                List<SubjectViewModel> subjectViewModelList = new ArrayList<>();
-                for (int i = 0; i < data.modules.size(); i++) {
-                    BookModelConfigResultBean.DataBean.ModulesBean modulesBean = data.modules.get(i);
-                    if (filterRankList(modulesBean)) {
-                        SubjectViewModel subjectViewModel = new SubjectViewModel();
-                        subjectViewModel.setDataBean(data, i);
-                        subjectViewModel.setEventBus(shopDataBundle.getEventBus());
-                        subjectViewModelList.add(subjectViewModel);
-                        if (subjectViewModelList.size() == Constants.RANK_LIST_SIZE) {
-                            break;
-                        }
-                    }
-                }
-                shopDataBundle.getRankViewModel().setRankItems(subjectViewModelList);
+        if (rankDataList != null) {
+            List<SubjectViewModel> subjectList = shopDataBundle.getRankViewModel().getRankItems();
+            for (int i = 0; i < subjectList.size(); i++) {
+                BookModelConfigResultBean.DataBean.ModulesBean modulesBean = rankDataList.get(i);
+                subjectList.get(i).setModelBean(modulesBean);
             }
         }
-    }
-
-    private boolean filterRankList(BookModelConfigResultBean.DataBean.ModulesBean modulesBean) {
-        int id = modulesBean.id;
-        //TODO filter the special ranking list
-        return true;
     }
 }

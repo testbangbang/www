@@ -42,7 +42,7 @@
                 android:layout_marginLeft="@dimen/layout_title_bar_title_margin_left"
                 android:text="@{titleBarViewModel.leftText}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textSize="@dimen/level_one_heading_font" />
 
         </LinearLayout>
 
@@ -95,7 +95,7 @@
                 android:layout_marginRight="@dimen/book_detail_margin"
                 android:text="@{titleBarViewModel.rightText2}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/font_size_17" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -125,7 +125,7 @@
                 android:layout_marginRight="@dimen/book_detail_margin"
                 android:text="@{titleBarViewModel.rightText3}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/font_size_17" />
 
             <ImageView
                 android:layout_width="wrap_content"

@@ -238,6 +238,9 @@ public class CategoryBookListFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
+        if (categoryBean == null || currentCatName == null || currentCatName.equals(categoryBean.name)) {
+            return;
+        }
         this.catTwoId = categoryBean.id;
         this.currentCatName = categoryBean.name;
         this.currentPage = 1;

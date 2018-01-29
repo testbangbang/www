@@ -34,6 +34,7 @@
                 android:id="@+id/textView_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_subject_common_name_margin_top"
                 android:ellipsize="end"
                 android:gravity="top|center_horizontal"
                 android:lines="2"
