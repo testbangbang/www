@@ -17,6 +17,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.adapter.PopMenuAdapter;
 import com.onyx.jdread.library.model.PopMenuModel;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -59,7 +60,7 @@ public class MenuPopupWindow extends PopupWindow {
 
     private void initView() {
         setContentView(contentView);
-        setWidth((int) (screenWidth * 0.25));
+        setWidth((int) (screenWidth * Float.parseFloat(ResManager.getString(R.string.menu_pop_width))));
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setFocusable(true);
         setOutsideTouchable(true);

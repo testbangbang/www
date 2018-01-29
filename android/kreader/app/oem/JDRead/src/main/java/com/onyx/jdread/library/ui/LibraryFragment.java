@@ -2,7 +2,6 @@ package com.onyx.jdread.library.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +53,7 @@ import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.library.view.SingleItemManageDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.personal.common.LoginHelper;
@@ -366,7 +366,7 @@ public class LibraryFragment extends BaseFragment {
     public void onLibraryMenuEvent(LibraryMenuEvent event) {
         MenuPopupWindow menuPopupWindow = new MenuPopupWindow(getActivity(), getEventBus());
         menuPopupWindow.setShowItemDecoration(true);
-        menuPopupWindow.showPopupWindow(libraryBinding.imageMenu, libraryDataBundle.getLibraryViewDataModel().getMenuData());
+        menuPopupWindow.showPopupWindow(libraryBinding.imageMenu, libraryDataBundle.getLibraryViewDataModel().getMenuData(),ResManager.getInteger(R.integer.library_menu_offset_x), ResManager.getInteger(R.integer.library_menu_offset_y));
     }
 
     @Subscribe
@@ -387,10 +387,10 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onMyBookEvent(MyBookEvent event) {
-        showLogin(PersonalBookFragment.class.getName());
+        checkLogin(PersonalBookFragment.class.getName());
     }
 
-    private void showLogin(String name) {
+    private void checkLogin(String name) {
         if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
             ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
             return;
@@ -566,7 +566,6 @@ public class LibraryFragment extends BaseFragment {
         if (!file.exists()) {
             return;
         }
-        Log.e("", "processBookItemOpen: =========================" + filePath);
         DocumentInfo documentInfo = new DocumentInfo();
         documentInfo.setBookPath(filePath);
         OpenBookHelper.openBook(getContext(), documentInfo);
