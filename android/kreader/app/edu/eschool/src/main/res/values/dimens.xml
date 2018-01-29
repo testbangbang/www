@@ -62,4 +62,10 @@
     <dimen name="custom_radio_button_min_width">106dp</dimen>
     <dimen name="custom_radio_button_text_size">24sp</dimen>
     <dimen name="custom_radio_image_min_height">52dp</dimen>
+
+    <dimen name="window_title_text_size">24sp</dimen>
+    <dimen name="sub_head_text_size">23sp</dimen>
+    <dimen name="alert_dialog_message_min_height">48dp</dimen>
+    <dimen name="alert_dialog_button_layout_padding_left_right">12dp</dimen>
+    <dimen name="alert_dialog_button_layout_padding_top_bottom">4dp</dimen>
 </resources>

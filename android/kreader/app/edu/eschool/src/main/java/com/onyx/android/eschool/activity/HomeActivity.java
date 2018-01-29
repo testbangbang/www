@@ -1,7 +1,10 @@
 package com.onyx.android.eschool.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,12 +17,15 @@ import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.AuthTokenAction;
 import com.onyx.android.eschool.action.ContentImportAction;
+import com.onyx.android.eschool.action.PushMessageProcessAction;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
 import com.onyx.android.eschool.events.GroupSelectEvent;
 import com.onyx.android.eschool.model.AppConfig;
+import com.onyx.android.eschool.model.MessageInfo;
 import com.onyx.android.eschool.model.StudentAccount;
+import com.onyx.android.eschool.utils.BroadcastHelper;
 import com.onyx.android.eschool.utils.ResourceUtils;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -41,6 +47,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.OnClick;
 
@@ -51,6 +58,7 @@ public class HomeActivity extends BaseActivity {
     private static boolean checkedOnBootComplete = false;
 
     private NeoAccountBase currentAccount;
+    private BroadcastReceiver messageNotifyReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +68,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void postCreate() {
+        registerMessageReceiver(this);
         cloudContentImportFirstBoot();
     }
 
@@ -116,8 +125,8 @@ public class HomeActivity extends BaseActivity {
     }
 
     private int getLayoutIdByConfig() {
-        AppConfig config = AppConfig.sharedInstance(this);
-        int layoutId = ResourceUtils.getLayoutResIdByName(this, config.getHomeLayout());
+        AppConfig config = AppConfig.sharedInstance(getApplicationContext());
+        int layoutId = ResourceUtils.getLayoutResIdByName(getApplicationContext(), config.getHomeLayout());
         return layoutId <= 0 ? R.layout.activity_home_for_display : layoutId;
     }
 
@@ -128,7 +137,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void initViewByConfig() {
-        if (AppConfig.sharedInstance(this).isForDisplayHomeLayout()) {
+        if (AppConfig.sharedInstance(getApplicationContext()).isForDisplayHomeLayout()) {
             initDisplayItemView();
         }
     }
@@ -211,6 +220,7 @@ public class HomeActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        unregisterMessageReceiver(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -268,5 +278,31 @@ public class HomeActivity extends BaseActivity {
         account.groups = new ArrayList<>();
         account.groups.add(currentAccount.groups.get(selectGroupIndex));
         return account;
+    }
+
+    private void registerMessageReceiver(Context context) {
+        try {
+            messageNotifyReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    processPushMessageNotify();
+                }
+            };
+            context.registerReceiver(messageNotifyReceiver,
+                    new IntentFilter(BroadcastHelper.NOTIFY_MESSAGE_TRIGGER));
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void unregisterMessageReceiver(Context context) {
+        try {
+            context.unregisterReceiver(messageNotifyReceiver);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void processPushMessageNotify() {
+        PushMessageProcessAction action = new PushMessageProcessAction(SchoolApp.singleton().getPushMessageHandler());
+        action.execute(SchoolApp.getLibraryDataHolder(), null);
     }
 }

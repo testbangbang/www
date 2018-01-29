@@ -640,7 +640,18 @@ public class MetadataUtils {
     }
 
     public static Intent putIntentExtraData(Intent intent, Object data) {
-        intent.putExtra(INTENT_EXTRA_DATA_METADATA, JSONObjectParseUtils.toJson(data));
+        String content;
+        if (data instanceof String) {
+            content = data.toString();
+        } else {
+            content = JSONObjectParseUtils.toJson(data);
+        }
+        putIntentExtraData(intent, content);
+        return intent;
+    }
+
+    public static Intent putIntentExtraData(Intent intent, String content) {
+        intent.putExtra(INTENT_EXTRA_DATA_METADATA, content);
         return intent;
     }
 
