@@ -182,7 +182,7 @@ public class WordSelectionHandler extends BaseHandler {
     private void showSelectionMenu(boolean isWord) {
         getReaderDataHolder().getSelectMenuModel().setIsShowSelectMenu(true);
         getReaderDataHolder().getSelectMenuModel().setIsShowDictionaryMenu(isWord);
-        getReaderDataHolder().getSelectMenuModel().requestLayoutView(getReaderDataHolder(),isWord);
+        getReaderDataHolder().getSelectMenuModel().showSelectMenu(getReaderDataHolder(),isWord);
         enableSelectionCursor();
     }
 

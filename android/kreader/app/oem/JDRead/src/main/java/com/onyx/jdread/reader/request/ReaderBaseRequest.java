@@ -40,7 +40,7 @@ public abstract class ReaderBaseRequest extends RxRequest {
     }
 
     public ReaderSelectionInfo getSelectionInfoManager() {
-        if(selectionInfoManager == null){
+        if (selectionInfoManager == null) {
             selectionInfoManager = new ReaderSelectionInfo();
         }
         return selectionInfoManager;
@@ -59,12 +59,12 @@ public abstract class ReaderBaseRequest extends RxRequest {
         return settings;
     }
 
-    public void updateSetting(Reader reader){
-        if(getReaderViewInfo() != null && getReaderViewInfo().isTextPages()) {
+    public void updateSetting(Reader reader) {
+        if (getReaderViewInfo() != null && getReaderViewInfo().isTextPages()) {
             ReaderTextStyle srcStyle = reader.getReaderHelper().getTextStyleManager().getStyle();
             style = ReaderTextStyle.copy(srcStyle);
         }
-        if(getReaderViewInfo() != null && getReaderViewInfo().supportScalable) {
+        if (getReaderViewInfo() != null && getReaderViewInfo().supportScalable) {
             ImageReflowSettings srcSettings = reader.getReaderHelper().getImageReflowManager().getSettings();
             settings = ImageReflowSettings.copy(srcSettings);
         }
@@ -94,6 +94,10 @@ public abstract class ReaderBaseRequest extends RxRequest {
         }
         if (readerViewInfo != null) {
             getReaderUserDataInfo().loadPageImages(context, navigator, readerViewInfo.getVisiblePages());
+        }
+
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageAnnotations(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
         }
     }
 }

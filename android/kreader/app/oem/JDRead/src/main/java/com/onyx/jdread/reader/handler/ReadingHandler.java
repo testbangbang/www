@@ -45,20 +45,8 @@ public class ReadingHandler extends BaseHandler {
     }
 
     @Override
-    public boolean onActionUp(MotionEvent event) {
-        panFinished((int) event.getX(), (int) event.getY());
-        return true;
-    }
-
-    @Override
     public boolean onActionCancel(MotionEvent event) {
         return super.onActionCancel(event);
     }
 
-    public void panFinished(int offsetX, int offsetY) {
-        if (!getReaderDataHolder().getReaderViewInfo().canPan()) {
-            RegionFunctionManager.processRegionFunction(getReaderDataHolder(), offsetX, offsetY);
-            return;
-        }
-    }
 }
