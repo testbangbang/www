@@ -90,9 +90,6 @@ public abstract class ReaderBaseRequest extends RxRequest {
             getReaderUserDataInfo().loadPageBookmarks(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
         }
         if (readerViewInfo != null) {
-            getReaderUserDataInfo().loadPageBookmarks(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
-        }
-        if (readerViewInfo != null) {
             getReaderUserDataInfo().loadPageLinks(context, navigator, readerViewInfo.getVisiblePages());
         }
         if (readerViewInfo != null) {
