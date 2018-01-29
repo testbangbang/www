@@ -384,6 +384,7 @@ public class PinyinIME extends InputMethodService {
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 if (!realAction) return true;
                 sendKeyChar('\n');
+                mInputModeSwitcher.reset();
                 return true;
             }
             if (keyCode == KeyEvent.KEYCODE_SPACE) {
@@ -1203,6 +1204,7 @@ public class PinyinIME extends InputMethodService {
         if (null != mSkbContainer && mSkbContainer.isShown()) {
             mSkbContainer.dismissPopups();
         }
+        mInputModeSwitcher.reset();
         super.requestHideSelf(flags);
     }
 
