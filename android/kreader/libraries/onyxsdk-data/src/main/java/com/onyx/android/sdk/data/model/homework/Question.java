@@ -17,6 +17,7 @@ public class Question implements Serializable {
     public List<String> correctOptions;
     public int QuesType;
     public int difficulty;
+    public float score;
     public List<QuestionOption> options;
     public QuestionReview review;
 

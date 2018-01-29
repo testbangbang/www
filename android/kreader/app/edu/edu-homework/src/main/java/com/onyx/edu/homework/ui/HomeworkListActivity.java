@@ -1,6 +1,7 @@
 package com.onyx.edu.homework.ui;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
@@ -44,6 +45,7 @@ import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.CloseSubMenuEvent;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
+import com.onyx.edu.homework.event.ExitEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
 import com.onyx.edu.homework.event.ReloadQuestionViewEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
@@ -141,7 +143,18 @@ public class HomeworkListActivity extends BaseActivity {
                 showAnalysisDialog();
             }
         });
+        binding.scoreRank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoScoreActivity();
+            }
+        });
         hideMessage();
+    }
+
+    private void gotoScoreActivity() {
+        getDataBundle().post(new StopNoteEvent(false));
+        startActivity(new Intent(this, ScoreActivity.class));
     }
 
     private void showAnalysisDialog() {
@@ -497,6 +510,7 @@ public class HomeworkListActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
+        reloadQuestionFragment(currentPage);
     }
 
     @Override
@@ -507,6 +521,11 @@ public class HomeworkListActivity extends BaseActivity {
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
         updateViewState();
+    }
+
+    @Subscribe
+    public void onExitEvent(ExitEvent exitEvent) {
+        finish();
     }
 
     @Subscribe
@@ -554,6 +573,7 @@ public class HomeworkListActivity extends BaseActivity {
         binding.notAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
         binding.totalScore.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
         binding.singleScore.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        binding.scoreRank.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
     }
 
     @Override

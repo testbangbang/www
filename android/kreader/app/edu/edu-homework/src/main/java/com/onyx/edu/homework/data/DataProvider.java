@@ -25,6 +25,7 @@ public class DataProvider {
         question.difficulty = model.getDifficulty();
         question.options = model.getOptions();
         question.review = model.getReview();
+        question.score = model.getScore();
     }
 
     public static void loadHomeworkFromModel(Homework homework, HomeworkModel model) {

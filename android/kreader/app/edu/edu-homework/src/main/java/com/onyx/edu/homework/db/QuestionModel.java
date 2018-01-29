@@ -57,6 +57,9 @@ public class QuestionModel extends BaseModel {
     @Column(typeConverter = ConverterListQuestionOption.class)
     private List options;
 
+    @Column
+    private float score;
+
     public String getUniqueId() {
         return uniqueId;
     }
@@ -153,6 +156,14 @@ public class QuestionModel extends BaseModel {
         this.options = options;
     }
 
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
+    }
+
     public String generateUniqueId() {
         return uniqueId = UUID.randomUUID().toString();
     }
@@ -176,5 +187,6 @@ public class QuestionModel extends BaseModel {
         setDifficulty(question.difficulty);
         setOptions(question.options);
         setAnswer(question.correctOptions);
+        setScore(question.score);
     }
 }

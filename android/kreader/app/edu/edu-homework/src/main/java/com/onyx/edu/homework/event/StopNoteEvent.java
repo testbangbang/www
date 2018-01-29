@@ -12,5 +12,4 @@ public class StopNoteEvent {
     public StopNoteEvent(boolean finishAfterSave) {
         this.finishAfterSave = finishAfterSave;
     }
-
 }
