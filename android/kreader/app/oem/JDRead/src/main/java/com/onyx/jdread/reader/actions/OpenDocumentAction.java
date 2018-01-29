@@ -5,6 +5,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.OpenDocumentFailResultEvent;
+import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.request.LoadDocumentOptionsRequest;
 import com.onyx.jdread.reader.request.OpenDocumentRequest;
 
@@ -29,6 +30,11 @@ public class OpenDocumentAction extends BaseReaderAction {
             @Override
             public void onNext(Object o) {
                 openDocument(readerDataHolder, request);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ReaderErrorEvent.onErrorHandle(throwable,this.getClass().getSimpleName(),readerDataHolder.getEventBus());
             }
         });
     }

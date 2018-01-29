@@ -74,8 +74,9 @@ public class AlFormatDOC extends AlFormat {
         is_hidden = false;
         section_count = 0;
         allState.state_parser = 0;
-
+        customSize = 0;
         parser(0, aFiles.getSize());
+        size = customSize;
         newParagraph();
 
         convertLinkFromPosition(aDoc.isUnicode());

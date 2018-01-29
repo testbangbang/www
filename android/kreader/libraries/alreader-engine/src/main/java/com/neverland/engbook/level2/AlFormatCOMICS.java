@@ -77,9 +77,9 @@ public class AlFormatCOMICS extends AlAXML {
         cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_EMPTY);
         //if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
             cssStyles.disableExternal = true;
-
+        customSize = 0;
         parser(0, aFiles.getSize());
-
+        size = customSize;
     }
 
     private int numPage = 0;

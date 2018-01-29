@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.actions;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.request.NextPageSelectTextRequest;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
@@ -25,6 +26,11 @@ public class NextPageSelectTextAction extends BaseReaderAction {
             @Override
             public void onNext(Object o) {
                 readerDataHolder.getReaderSelectionInfo().updateSelectInfo(request.getSelectionInfoManager().getReaderSelectionInfos());
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ReaderErrorEvent.onErrorHandle(throwable,this.getClass().getSimpleName(),readerDataHolder.getEventBus());
             }
 
             @Override

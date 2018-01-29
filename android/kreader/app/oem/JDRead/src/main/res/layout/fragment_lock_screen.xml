@@ -20,7 +20,6 @@
             android:id="@+id/lock_screen_recycler"
             android:layout_width="match_parent"
             android:layout_height="@dimen/lock_screen_recycler_height"
-            android:layout_marginTop="@dimen/lock_screen_recycler_margin_top"
             android:padding="@dimen/lock_screen_recycler_padding" />
     </LinearLayout>
 </layout>

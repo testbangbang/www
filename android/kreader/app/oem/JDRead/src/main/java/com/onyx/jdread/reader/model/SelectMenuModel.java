@@ -2,16 +2,14 @@ package com.onyx.jdread.reader.model;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.graphics.RectF;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PopupSelectionMenuBinding;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.WordTranslateResultEvent;
 import com.onyx.jdread.reader.highlight.HighlightCursor;
 import com.onyx.jdread.reader.event.PopupBaidupediaClickEvent;
 import com.onyx.jdread.reader.event.PopupCopyClickEvent;
@@ -37,6 +35,8 @@ public class SelectMenuModel {
     private PopupSelectionMenuBinding binding;
     private String inputWords = "";
     private EventBus eventBus;
+    private float lastX;
+    private float lastY;
 
     public ObservableField<String> getPage() {
         return page;
@@ -118,9 +118,10 @@ public class SelectMenuModel {
         final float screenHeight = readerDataHolder.getReaderTouchHelper().getContentHeight();
         final float screenWidth = readerDataHolder.getReaderTouchHelper().getContentWidth();
 
-        final float dictMeasuredHeight = screenHeight * 0.4f;
+        final float dictMeasuredHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_select_menu_translate_height);
         final float selectTitleHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_popup_select_menu_height);
-        final float measureWidth = screenWidth * 0.9f;
+
+        final float measureWidth = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_select_menu_width);
         final float x = (screenWidth - measureWidth) / 2;
 
         float measuredHeight;
@@ -140,13 +141,14 @@ public class SelectMenuModel {
         final float diffBottom = endHighlightCursor.getDisplayRect().bottom;
 
         final float dividerHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_popup_selection_divider_height);
-        if ((diffTop - measuredHeight - dividerHeight) > 0) {
-            updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffTop - dividerHeight - measuredHeight);
-            return;
-        }
 
         if ((diffBottom + measuredHeight + dividerHeight) < screenHeight) {
             updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffBottom + dividerHeight);
+            return;
+        }
+
+        if ((diffTop - measuredHeight - dividerHeight) > 0) {
+            updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffTop - dividerHeight - measuredHeight);
             return;
         }
 
@@ -161,6 +163,8 @@ public class SelectMenuModel {
         selectY = y;
         selectMenuRootView.setY(y);
         selectMenuRootView.setX(x);
+        lastX = x;
+        lastY = y;
 
         selectMenuRootView.post(new Runnable() {
             @Override
@@ -190,12 +194,21 @@ public class SelectMenuModel {
         action.execute(SettingBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                updateTranslateResult(action.getTranslateResult());
+                WordTranslateResultEvent event = new WordTranslateResultEvent(action.getTranslateResult());
+                eventBus.post(event);
             }
         });
     }
 
     public void updateTranslateResult(String result){
         binding.translateContentView.loadData(result, "text/html; charset=UTF-8", null);
+    }
+
+    public float getLastX() {
+        return lastX;
+    }
+
+    public float getLastY() {
+        return lastY;
     }
 }

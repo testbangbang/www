@@ -24,6 +24,7 @@ public class UserLoginViewModel {
     public final ObservableField<String> account = new ObservableField<>();
     public final ObservableField<String> password = new ObservableField<>();
     public final ObservableField<Boolean> isShowPassword = new ObservableField<>();
+    public final ObservableField<Boolean> loginButtonEnabled = new ObservableField<>(true);
     private EventBus eventBus;
     private Activity context;
 
@@ -46,6 +47,18 @@ public class UserLoginViewModel {
             @Override
             public void onNext(Object o) {
                 getEventBus().post(new UserLoginEvent(account.get(),password.get()));
+            }
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                loginButtonEnabled.set(false);
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                loginButtonEnabled.set(true);
             }
         });
     }

@@ -349,11 +349,11 @@ public class QueryBuilder {
     }
 
     private static Operator getNullOrEqualCondition(Property<String> property, String compare) {
-        return compare == null ? property.isNull() : property.eq(compare);
+        return StringUtils.isNullOrEmpty(compare) ? property.isNull() : property.eq(compare);
     }
 
     private static Operator getNotNullOrEqualCondition(Property<String> property, String value) {
-        return value == null ? property.isNotNull() : property.eq(value);
+        return StringUtils.isNullOrEmpty(value) ? property.isNotNull() : property.eq(value);
     }
 
     private static Operator.In inCondition(Property property, Where in, boolean isIn) {

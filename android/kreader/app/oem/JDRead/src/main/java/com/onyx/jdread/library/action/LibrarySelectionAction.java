@@ -115,6 +115,7 @@ public class LibrarySelectionAction extends BaseAction<LibraryDataBundle> {
                     librarySelected = new DataModel(libraryDataBundle.getEventBus());
                     librarySelected.idString.set(UUID.randomUUID().toString());
                     librarySelected.title.set(model.libraryName.get());
+                    libraryDataBundle.getLibraryViewDataModel().buildingLibrary = true;
                     callback.onNext(librarySelected);
                     libraryBuildDialog.dismiss();
                 } else {

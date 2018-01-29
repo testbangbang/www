@@ -65,7 +65,9 @@ public class DeviceInformationModel extends Observable {
         }
 
         public void onClick() {
-            eventBus.post(event.get());
+            if (event.get() != null) {
+                eventBus.post(event.get());
+            }
         }
 
         public boolean isClickable() {

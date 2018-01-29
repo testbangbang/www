@@ -7,6 +7,7 @@ import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 /**
@@ -15,8 +16,6 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 public class GetViewSettingRequest extends ReaderBaseRequest {
     private Reader reader;
-    private ReaderTextStyle style;
-    private ImageReflowSettings settings;
     private ReaderViewInfo readerViewInfo;
 
     public GetViewSettingRequest(ReaderViewInfo readerViewInfo,Reader reader) {
@@ -26,22 +25,10 @@ public class GetViewSettingRequest extends ReaderBaseRequest {
 
     @Override
     public GetViewSettingRequest call() throws Exception {
-        ReaderTextStyle srcStyle = reader.getReaderHelper().getTextStyleManager().getStyle();
-        style = ReaderTextStyle.copy(srcStyle);
-
-        ImageReflowSettings srcSettings = reader.getReaderHelper().getImageReflowManager().getSettings();
-        settings = ImageReflowSettings.copy(srcSettings);
-
         loadUserData();
+        LayoutProviderUtils.updateReaderViewInfo(reader,getReaderViewInfo(),reader.getReaderHelper().getReaderLayoutManager());
+        updateSetting(reader);
         return this;
-    }
-
-    public ReaderTextStyle getStyle() {
-        return style;
-    }
-
-    public ImageReflowSettings getSettings() {
-        return settings;
     }
 
     private void loadUserData() {

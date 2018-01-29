@@ -33,4 +33,8 @@ public class DrmTools {
         String device = CommonUtil.getDeviceId(context) + "ibyxt270";
         return API01(device);
     }
+
+    public static String getHardwareId(String uuid) {
+        return API01(uuid);
+    }
 }

@@ -4,7 +4,7 @@
     <integer name="library_view_type_thumbnail_col">3</integer>
     <integer name="setting_adapter_row">3</integer>
     <integer name="setting_adapter_col">2</integer>
-    <integer name="wifi_setting_adapter_row">5</integer>
+    <integer name="wifi_setting_adapter_row">7</integer>
     <integer name="wifi_setting_adapter_col">1</integer>
     <integer name="refresh_adapter_row">4</integer>
     <integer name="refresh_adapter_col">1</integer>
@@ -16,15 +16,15 @@
     <integer name="function_bar_col">5</integer>
     <integer name="personal_adapter_row">3</integer>
     <integer name="personal_adapter_col">2</integer>
-    <integer name="library_delete_dialog_width">710</integer>
-    <integer name="library_delete_dialog_height">355</integer>
-    <integer name="move_to_library_list_dialog_width">800</integer>
-    <integer name="move_to_library_list_dialog_height">860</integer>
+    <integer name="library_delete_dialog_width">770</integer>
+    <integer name="library_delete_dialog_height">384</integer>
+    <integer name="move_to_library_list_dialog_width">895</integer>
+    <integer name="move_to_library_list_dialog_height">920</integer>
     <integer name="library_build_dialog_height">355</integer>
     <integer name="library_list_dialog_row">5</integer>
     <integer name="library_list_dialog_col">1</integer>
     <integer name="library_pop_menu_width">200</integer>
-    <integer name="single_manage_dialog_height">950</integer>
+    <integer name="single_manage_dialog_height">980</integer>
     <integer name="qr_code_width">300</integer>
     <integer name="prev_page_touch_region_left">0</integer>
     <integer name="prev_page_touch_region_top">300</integer>
@@ -79,7 +79,7 @@
     <integer name="read_preference_col">4</integer>
     <integer name="reading_tools_row">4</integer>
     <integer name="reading_tools_col">1</integer>
-    <integer name="dash_Line_length">10</integer>
+    <integer name="dash_Line_length">7</integer>
     <integer name="dash_space_length">5</integer>
     <integer name="personal_note_row">5</integer>
     <integer name="personal_note_col">1</integer>
@@ -94,6 +94,7 @@
     <integer name="shop_cart_row">4</integer>
     <integer name="shop_cart_col">1</integer>
     <integer name="all_category_top_recycle_view_row">1</integer>
+    <integer name="all_category_top_recycle_view_col">4</integer>
     <integer name="subject_list_recycle_viw_row">5</integer>
     <integer name="subject_list_recycle_viw_col">1</integer>
     <integer name="subject_list_category_recycle_viw_row">5</integer>
@@ -109,7 +110,7 @@
     <item name="top_up_dialog_width_rate" type="integer" format="float">0.8</item>
     <item name="top_up_dialog_height_rate" type="integer" format="float">0.6</item>
     <item name="export_dialog_width_rate" type="integer" format="float">0.8</item>
-    <item name="export_dialog_height_rate" type="integer" format="float">0.36</item>
+    <item name="export_dialog_height_rate" type="integer" format="float">0.3</item>
     <integer name="book_info_dialog_mark_row">4</integer>
     <integer name="book_info_dialog_catalog_row">12</integer>
     <integer name="book_info_dialog_note_row">4</integer>
@@ -124,7 +125,7 @@
     <integer name="dictionary_list_col">1</integer>
     <integer name="feedback_record_adapter_row">5</integer>
     <integer name="feedback_record_adapter_col">1</integer>
-    <integer name="gift_center_adapter_row">4</integer>
+    <integer name="gift_center_adapter_row">5</integer>
     <integer name="gift_center_adapter_col">1</integer>
     <integer name="personal_account_adapter_row">5</integer>
     <integer name="personal_account_adapter_col">1</integer>
@@ -146,4 +147,6 @@
     <integer name="cloud_book_cover_height">185</integer>
     <integer name="add_wifi_dialog_x">0</integer>
     <integer name="add_wifi_dialog_y">30</integer>
+    <integer name="library_menu_offset_y">20</integer>
+    <integer name="library_menu_offset_x">180</integer>
 </resources>

@@ -6,4 +6,5 @@
     <color name="text_gray_color">#808080</color>
     <color name="dark">#5e5e5e</color>
     <color name="gray">#AFAFAF</color>
+    <color name="under_line_gray">#3d3c3c</color>
 </resources>

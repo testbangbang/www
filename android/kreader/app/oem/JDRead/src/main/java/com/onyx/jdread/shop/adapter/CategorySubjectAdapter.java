@@ -30,10 +30,15 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
     private EventBus eventBus;
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_category_recycle_view_row);
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_category_recycle_view_col);
+    private boolean canSelected = false;
 
     public CategorySubjectAdapter(EventBus eventBus, boolean isAllCategory) {
         this.eventBus = eventBus;
         this.isAllCategory = isAllCategory;
+    }
+
+    public void setCanSelected(boolean canSelected){
+        this.canSelected = canSelected;
     }
 
     public void setRowAndCol(int row, int col) {
@@ -89,6 +94,7 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
             AllCategoryNormalViewHolder viewHolder = (AllCategoryNormalViewHolder) holder;
             viewHolder.itemView.setOnClickListener(this);
             viewHolder.itemView.setTag(position);
+            viewHolder.getBind().categoryName.setSelected(catListBean.isSelect);
             viewHolder.bindTo(catListBean);
         }
     }
@@ -107,8 +113,21 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
             return;
         }
         int position = (int) tag;
-        if (eventBus != null && getItemVMList() != null) {
-            eventBus.post(new CategoryItemClickEvent(getItemVMList().get(position)));
+        List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelTwoList = getItemVMList();
+        if (eventBus != null && levelTwoList != null) {
+            changeItemState(position, levelTwoList);
+            eventBus.post(new CategoryItemClickEvent(levelTwoList.get(position)));
+        }
+    }
+
+    private void changeItemState(int position, List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelTwoList) {
+        for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catebean :levelTwoList) {
+            catebean.isSelect = false;
+        }
+        CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = levelTwoList.get(position);
+        if (canSelected) {
+            categoryBeanLevelTwo.isSelect = true;
+            notifyItemChanged(position);
         }
     }
 

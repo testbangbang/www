@@ -25,6 +25,7 @@ public class AddBookmarkRequest extends ReaderBaseRequest {
     public AddBookmarkRequest call() throws Exception {
         ContentSdkDataUtils.getDataProvider().addBookmark(createBookmark());
         LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
+        updateSetting(reader);
         return this;
     }
 

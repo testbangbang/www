@@ -23,7 +23,7 @@
             android:layout_centerVertical="true"
             android:text="@{model.total}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font" />
+            android:textSize="@dimen/level_three_heading_font" />
 
         <TextView
             android:id="@+id/page_indicator"
@@ -36,7 +36,7 @@
             android:gravity="center_vertical"
             android:text="@{@string/page_count(model.currentPage,model.totalPage)}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font" />
+            android:textSize="@dimen/level_three_heading_font" />
 
     </RelativeLayout>
 </layout>

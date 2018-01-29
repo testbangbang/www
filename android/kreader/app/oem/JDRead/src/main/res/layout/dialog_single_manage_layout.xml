@@ -48,13 +48,23 @@
                 android:background="@drawable/rectangle_stroke"
                 android:padding="1dp"
                 android:scaleType="fitXY"
-                android:src="@{dialogModel.dataModel.coverDefault}" />
+                android:src="@{dialogModel.dataModel.coverDefault}"
+                android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/libraryCover_recycler"
+                items="@{dialogModel.dataModel.childList}"
+                android:layout_width="@dimen/model_item_cover_width"
+                android:layout_height="@dimen/model_item_cover_height"
+                android:background="@drawable/rectangle_stroke"
+                android:padding="@dimen/rectangle_stroke_width"
+                android:visibility="@{dialogModel.showLibraryMenu()?View.VISIBLE:View.GONE}" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/model_item_cover_height"
                 android:layout_marginLeft="@dimen/dialog_single_manage_info_margin_left"
-                android:gravity="center_vertical"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical"
                 android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}">
 
@@ -139,12 +149,11 @@
             android:id="@+id/book_detail"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dialog_single_manage_text_height"
-            android:background="@drawable/selected_background"
             android:gravity="center_vertical"
             android:padding="@dimen/dialog_single_manage_padding"
             android:text="@{dialogModel.isCloudBook()?@string/book_detail:@string/related_books}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font"
+            android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
 
         <View
@@ -155,12 +164,11 @@
             android:id="@+id/delete"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dialog_single_manage_text_height"
-            android:background="@drawable/selected_background"
             android:gravity="center_vertical"
             android:padding="@dimen/dialog_single_manage_padding"
             android:text="@string/delete"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font"
+            android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
 
         <View
@@ -171,12 +179,11 @@
             android:id="@+id/move_to"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dialog_single_manage_text_height"
-            android:background="@drawable/selected_background"
             android:gravity="center_vertical"
             android:padding="@dimen/dialog_single_manage_padding"
             android:text="@string/move_to"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font"
+            android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
 
         <View
@@ -187,12 +194,11 @@
             android:id="@+id/rename_library"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dialog_single_manage_text_height"
-            android:background="@drawable/selected_background"
             android:gravity="center_vertical"
             android:padding="@dimen/dialog_single_manage_padding"
             android:text="@string/rename_library"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font"
+            android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.showLibraryMenu()?View.VISIBLE:View.GONE}" />
 
         <View
@@ -203,12 +209,11 @@
             android:id="@+id/delete_library"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dialog_single_manage_text_height"
-            android:background="@drawable/selected_background"
             android:gravity="center_vertical"
             android:padding="@dimen/dialog_single_manage_padding"
             android:text="@string/delete_library"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font"
+            android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.showLibraryMenu()?View.VISIBLE:View.GONE}" />
 
         <View
@@ -219,12 +224,11 @@
             android:id="@+id/delete_library_include_book"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dialog_single_manage_text_height"
-            android:background="@drawable/selected_background"
             android:gravity="center_vertical"
             android:padding="@dimen/dialog_single_manage_padding"
             android:text="@string/delete_library_include_book"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font"
+            android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.showLibraryMenu()?View.VISIBLE:View.GONE}" />
 
     </LinearLayout>
