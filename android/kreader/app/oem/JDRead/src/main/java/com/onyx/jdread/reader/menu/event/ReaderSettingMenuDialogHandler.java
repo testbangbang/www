@@ -1,18 +1,11 @@
 package com.onyx.jdread.reader.menu.event;
 
-import android.graphics.RectF;
-
-import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.host.math.PageUtils;
-import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.reader.actions.GotoPageAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
-import com.onyx.jdread.reader.actions.ToggleBookmarkAction;
 import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -33,15 +26,12 @@ import com.onyx.jdread.reader.menu.actions.SettingTypefaceAction;
 import com.onyx.jdread.reader.menu.actions.SettingUpAndDownSpacingAction;
 import com.onyx.jdread.reader.menu.actions.SwitchNavigationToComicModeAction;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
+import com.onyx.jdread.reader.menu.common.BookmarkHandle;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingViewBack;
 import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by huxiaomao on 2018/1/4.
@@ -51,12 +41,12 @@ public class ReaderSettingMenuDialogHandler {
     private ReaderSettingViewBack readerSettingViewBack;
     private ReaderSettingMenuBinding binding;
     private ReaderDataHolder readerDataHolder;
-    private boolean sideNoting = false;
-    private int sideNotePage = 0;
+    private BookmarkHandle bookmarkHandle;
 
     public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder, ReaderSettingViewBack readerSettingViewBack) {
         this.readerDataHolder = readerDataHolder;
         this.readerSettingViewBack = readerSettingViewBack;
+        bookmarkHandle = new BookmarkHandle();
     }
 
     public void setBinding(ReaderSettingMenuBinding binding) {
@@ -229,85 +219,11 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onToggleBookmarkEvent(ToggleBookmarkEvent event) {
-        if(hasBookmark()){
-            removeBookmark();
-        }else{
-            addBookmark();
-        }
+        bookmarkHandle.toggleBookmarkEvent(readerDataHolder);
+        closeDialog();
     }
 
-    private void removeBookmark() {
-        new ToggleBookmarkAction(ToggleBookmarkAction.ToggleSwitch.Off,readerDataHolder.getReaderUserDataInfo(),getFirstVisiblePageWithBookmark()).execute(readerDataHolder,null);
-    }
-
-    private void addBookmark() {
-        new ToggleBookmarkAction(ToggleBookmarkAction.ToggleSwitch.On,readerDataHolder.getReaderUserDataInfo(),getFirstPageInfo()).execute(readerDataHolder,null);
-    }
-
-    public boolean hasBookmark() {
-        return getFirstVisiblePageWithBookmark() != null;
-    }
-
-    public PageInfo getFirstVisiblePageWithBookmark() {
-        for (PageInfo pageInfo : getVisiblePages()) {
-            if(readerDataHolder.getReaderUserDataInfo() == null){
-                continue;
-            }
-            if (readerDataHolder.getReaderUserDataInfo().hasBookmark(pageInfo)) {
-                return pageInfo;
-            }
-        }
-        return null;
-    }
-
-    public final PageInfo getFirstPageInfo() {
-        return readerDataHolder.getReaderViewInfo().getFirstVisiblePage();
-    }
-
-    public final List<PageInfo> getVisiblePages() {
-        ArrayList<PageInfo> pages = new ArrayList<>();
-
-        PageInfo firstPage = getFirstPageInfo();
-        if (firstPage == null) {
-            return pages;
-        }
-        if (!supportScalable()) {
-            firstPage.setSubPage(-1);
-        }
-
-        pages.add(firstPage);
-
-        if (sideNoting) {
-            PageInfo subNotePage = new PageInfo(firstPage.getName(),
-                    firstPage.getRange().startPosition,
-                    firstPage.getRange().endPosition,
-                    firstPage.getOriginWidth(),
-                    firstPage.getOriginHeight());
-
-            RectF pageRect = new RectF(0, 0, subNotePage.getOriginWidth(),
-                    subNotePage.getOriginHeight());
-            int displayWidth = readerDataHolder.getReaderTouchHelper().getContentWidth();
-            int displayHeight = readerDataHolder.getReaderTouchHelper().getContentHeight();
-            RectF viewportRect = new RectF(displayWidth / 2, 0, displayWidth, displayHeight);
-            float scale = PageUtils.scaleToFitRect(pageRect, viewportRect);
-
-            subNotePage.setScale(scale);
-            subNotePage.updateDisplayRect(pageRect);
-
-            PageUtils.updateVisibleRect(subNotePage, viewportRect);
-
-            subNotePage.setSubPage(getSubPageIndex());
-            pages.add(subNotePage);
-        }
-
-        return pages;
-    }
-
-    public boolean supportScalable() {
-        return readerDataHolder.getReaderViewInfo() != null && readerDataHolder.getReaderViewInfo().supportScalable;
-    }
-
-    public int getSubPageIndex() {
-        return supportScalable() ? sideNotePage + 1 : sideNotePage;
+    public boolean hasBookmark(){
+        return bookmarkHandle.hasBookmark(readerDataHolder);
     }
 }

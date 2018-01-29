@@ -391,6 +391,10 @@
     <string name="source_language">Source language:</string>
     <string name="simplified_chinese">Simplified chinese</string>
     <string name="reader_target_language">Target language:</string>
+    <string name="reader_bookmark_add_success">Bookmarks have been added</string>
+    <string name="reader_bookmark_add_fail">Bookmark adding failure</string>
+    <string name="reader_bookmark_delete_success">The bookmark has been cancelled</string>
+    <string name="reader_bookmark_delete_fail">Bookmark cancellation failure</string>
     <string name="speed_refresh">Speed refresh</string>
     <string name="item_consume_record_read_bean">-%d read bean</string>
     <string name="item_consume_record_voucher">-%d voucher</string>
