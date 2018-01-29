@@ -39,6 +39,8 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.layout.ReaderLayoutManager;
 
+import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -235,6 +237,7 @@ public class ReaderHelper {
     public void initData(Context context) {
         initImageReflowManager(context);
         initBitmapCache();
+        initWordAnalyzerInBackground(context);
     }
 
     private void initLayoutManager() {
@@ -242,7 +245,7 @@ public class ReaderHelper {
     }
 
     private void initWordAnalyzerInBackground(final Context context) {
-
+        AnalyzerAndroidWrapper.initialize(context.getApplicationContext(), true);
     }
 
     private void initImageReflowManager(Context context) {
@@ -277,7 +280,7 @@ public class ReaderHelper {
     }
 
     private void releaseWordAnalyzer() {
-
+        AnalyzerAndroidWrapper.release();
     }
 
     public ReaderPluginOptions getPluginOptions() {

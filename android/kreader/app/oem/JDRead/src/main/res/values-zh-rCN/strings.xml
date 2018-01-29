@@ -387,4 +387,5 @@
     <string name="down_book_illegal_device">非法设备</string>
     <string name="down_book_server_error">后台处理异常</string>
     <string name="down_book_cerify_order_error">订单认证异常</string>
+    <string name="reader_input_keyword">请输入关键字</string>
 </resources>

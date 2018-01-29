@@ -405,5 +405,6 @@
     <string name="down_book_illegal_device">illegal device</string>
     <string name="down_book_server_error">server error</string>
     <string name="down_book_cerify_order_error">cerify order error</string>
+    <string name="reader_input_keyword">Please enter the keyword</string>
     <string name="menu_pop_width">0.25</string>
 </resources>
