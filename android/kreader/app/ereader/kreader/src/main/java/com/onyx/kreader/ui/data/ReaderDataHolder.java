@@ -34,6 +34,7 @@ import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
+import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.actions.CloseNoteMenuAction;
@@ -76,7 +77,8 @@ public class ReaderDataHolder {
     private NoteManager noteManager;
     private DataManager dataManager;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
-    private EventBus eventBus = new EventBus();
+    private EventBus eventBus = EventBus.builder().logNoSubscriberMessages(BuildConfig.DEBUG)
+            .sendNoSubscriberEvent(BuildConfig.DEBUG).build();
     private EventReceiver eventReceiver;
 
     private boolean preRender = true;
