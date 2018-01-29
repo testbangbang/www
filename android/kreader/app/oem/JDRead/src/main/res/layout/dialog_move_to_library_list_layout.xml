@@ -67,17 +67,21 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
 
+        <View
+            style="@style/DottedLineStyle"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/library_build_button_height"
             android:layout_gravity="center"
-            android:background="@drawable/selected_background"
             android:drawableLeft="@mipmap/ic_shelf_set"
             android:drawablePadding="@dimen/library_build_button_drawable_padding"
-            android:textColor="@android:color/black"
             android:gravity="center_vertical"
             android:onClick="@{()->dialogModel.onBuildLibraryClicked()}"
             android:text="@string/build_library"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
     </LinearLayout>
 

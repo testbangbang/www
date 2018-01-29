@@ -39,4 +39,11 @@ public class PersonalDatabingUtil {
             ManageImageCache.loadUrl(url, view, R.mipmap.ic_me);
         }
     }
+
+    @BindingAdapter({"recommendImage"})
+    public static void setRecommendImage(ImageView view, String url) {
+        if (view != null) {
+            ManageImageCache.loadUrl(url, view, R.mipmap.ic_setting_jdread);
+        }
+    }
 }

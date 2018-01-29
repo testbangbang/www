@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="systemBarPopModel"
+            type="com.onyx.jdread.main.view.SystemBarPopupWindow.SystemBarPopupModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_menu_setting_layout_height"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:drawablePadding="@dimen/top_menu_drawable_padding"
+                android:drawableTop="@mipmap/ic_top_menu_wifi"
+                android:gravity="center_horizontal"
+                android:onClick="@{()->systemBarPopModel.toggleWifi()}"
+                android:text="@{systemBarPopModel.currentWifi}"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:drawablePadding="@dimen/top_menu_drawable_padding"
+                android:drawableTop="@mipmap/ic_top_menu_page_on"
+                android:gravity="center_horizontal"
+                android:onClick="@{()->systemBarPopModel.toggleA2Model()}"
+                android:text="@string/speed_refresh"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:drawablePadding="@dimen/top_menu_drawable_padding"
+                android:drawableTop="@mipmap/ic_setting"
+                android:gravity="center_horizontal"
+                android:onClick="@{()->systemBarPopModel.openSetting()}"
+                android:text="@string/setting_name"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <View
+            style="@style/DottedLineStyle"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_menu_brightness_layout_height"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->systemBarPopModel.brightnessModel.closeBrightness()}"
+                android:text="@string/closed"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <RatingBar
+                android:id="@+id/ratingbar_light_settings"
+                style="@style/LightSettingsRatingBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/ratingbar_light_settings_margin"
+                android:layout_marginRight="@dimen/ratingbar_light_settings_margin"
+                android:max="@{systemBarPopModel.brightnessModel.maxLight}"
+                android:numStars="@{systemBarPopModel.brightnessModel.numStar}"
+                android:progress="@{systemBarPopModel.brightnessModel.progress}"
+                android:progressDrawable="@drawable/light_bar_big_step"
+                android:stepSize="1.0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->systemBarPopModel.brightnessModel.maxBrightness()}"
+                android:text="@string/brightest_brightness"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/normal_black" />
+    </LinearLayout>
+</layout>

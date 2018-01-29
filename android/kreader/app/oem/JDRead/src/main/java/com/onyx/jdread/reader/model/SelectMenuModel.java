@@ -2,20 +2,23 @@ package com.onyx.jdread.reader.model;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.graphics.RectF;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PopupSelectionMenuBinding;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
-import com.onyx.jdread.reader.event.WordTranslateResultEvent;
-import com.onyx.jdread.reader.highlight.HighlightCursor;
+import com.onyx.jdread.reader.event.DeleteAnnotationEvent;
 import com.onyx.jdread.reader.event.PopupBaidupediaClickEvent;
 import com.onyx.jdread.reader.event.PopupCopyClickEvent;
 import com.onyx.jdread.reader.event.PopupLineationClickEvent;
 import com.onyx.jdread.reader.event.PopupNoteClickEvent;
 import com.onyx.jdread.reader.event.PopupTranslationClickEvent;
+import com.onyx.jdread.reader.event.WordTranslateResultEvent;
+import com.onyx.jdread.reader.highlight.HighlightCursor;
 import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.setting.action.TranslateAction;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -29,12 +32,24 @@ import org.greenrobot.eventbus.EventBus;
 public class SelectMenuModel {
     private ObservableBoolean isShowSelectMenu = new ObservableBoolean(false);
     private ObservableBoolean isShowDictionaryMenu = new ObservableBoolean(false);
+    private ObservableBoolean isEditAnnotation = new ObservableBoolean(false);
     private ObservableField<String> page = new ObservableField<>();
     private View selectMenuRootView;
     private float selectY = 0;
     private PopupSelectionMenuBinding binding;
     private String inputWords = "";
     private EventBus eventBus;
+    private float lastX;
+    private float lastY;
+    private PageAnnotation currentAnnotations;
+
+    public ObservableBoolean getIsEditAnnotation() {
+        return isEditAnnotation;
+    }
+
+    public void setIsEditAnnotation(boolean isEditAnnotation) {
+        this.isEditAnnotation.set(isEditAnnotation);
+    }
 
     public ObservableField<String> getPage() {
         return page;
@@ -105,13 +120,21 @@ public class SelectMenuModel {
         setIsShowSelectMenu(false);
     }
 
-    public void requestLayoutView(ReaderDataHolder readerDataHolder,boolean isDictionary) {
+    public void showSelectMenu(ReaderDataHolder readerDataHolder,boolean isDictionary){
         String pagePosition = readerDataHolder.getCurrentPagePosition();
         HighlightCursor beginHighlightCursor = readerDataHolder.getReaderSelectionInfo().getHighlightCursor(pagePosition, HighlightCursor.BEGIN_CURSOR_INDEX);
         HighlightCursor endHighlightCursor = readerDataHolder.getReaderSelectionInfo().getHighlightCursor(pagePosition, HighlightCursor.END_CURSOR_INDEX);
         if (beginHighlightCursor == null || endHighlightCursor == null) {
             return;
         }
+
+        setIsEditAnnotation(false);
+        requestLayoutView(readerDataHolder,beginHighlightCursor.getDisplayRect().top,
+                endHighlightCursor.getDisplayRect().bottom,isDictionary);
+    }
+
+    public void requestLayoutView(ReaderDataHolder readerDataHolder,float top,float bottom,boolean isDictionary) {
+
 
         final float screenHeight = readerDataHolder.getReaderTouchHelper().getContentHeight();
         final float screenWidth = readerDataHolder.getReaderTouchHelper().getContentWidth();
@@ -135,17 +158,18 @@ public class SelectMenuModel {
         int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
         selectMenuRootView.measure(w, h);
 
-        final float diffTop = beginHighlightCursor.getDisplayRect().top;
-        final float diffBottom = endHighlightCursor.getDisplayRect().bottom;
+        final float diffTop = top;
+        final float diffBottom = bottom;
 
         final float dividerHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.reader_popup_selection_divider_height);
-        if ((diffTop - measuredHeight - dividerHeight) > 0) {
-            updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffTop - dividerHeight - measuredHeight);
-            return;
-        }
 
         if ((diffBottom + measuredHeight + dividerHeight) < screenHeight) {
             updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffBottom + dividerHeight);
+            return;
+        }
+
+        if ((diffTop - measuredHeight - dividerHeight) > 0) {
+            updateSelectMenuViewPotion(readerDataHolder,isDictionary,x,diffTop - dividerHeight - measuredHeight);
             return;
         }
 
@@ -160,6 +184,8 @@ public class SelectMenuModel {
         selectY = y;
         selectMenuRootView.setY(y);
         selectMenuRootView.setX(x);
+        lastX = x;
+        lastY = y;
 
         selectMenuRootView.post(new Runnable() {
             @Override
@@ -197,5 +223,27 @@ public class SelectMenuModel {
 
     public void updateTranslateResult(String result){
         binding.translateContentView.loadData(result, "text/html; charset=UTF-8", null);
+    }
+
+    public float getLastX() {
+        return lastX;
+    }
+
+    public float getLastY() {
+        return lastY;
+    }
+
+    public void showEditAnnotationMenu(ReaderDataHolder readerDataHolder,PageAnnotation annotations){
+        RectF begin = annotations.getRectangles().get(0);
+        RectF end = annotations.getRectangles().get(annotations.getRectangles().size() - 1);
+        currentAnnotations = annotations;
+        setIsEditAnnotation(true);
+        requestLayoutView(readerDataHolder,begin.top,
+                end.bottom,false);
+    }
+
+    public void deleteAnnotation(){
+        setIsShowSelectMenu(false);
+        eventBus.post(new DeleteAnnotationEvent(currentAnnotations.getAnnotation()));
     }
 }

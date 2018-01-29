@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Window;
@@ -29,11 +28,15 @@ public class TranslateDialog extends Dialog implements ViewCallBack {
     private String text;
     private EventBus eventBus;
     private TranslateDialogEventHandler handler;
+    private float x;
+    private float y;
 
-    public TranslateDialog(@NonNull Activity activity, String text, EventBus eventBus) {
+    public TranslateDialog(@NonNull Activity activity, String text, EventBus eventBus, float x, float y) {
         super(activity, android.R.style.Theme_NoTitleBar);
         this.text = text;
         this.eventBus = eventBus;
+        this.x = x;
+        this.y = y;
     }
 
     @Override
@@ -77,17 +80,16 @@ public class TranslateDialog extends Dialog implements ViewCallBack {
         return this;
     }
 
-    public void setDialogParams(Dialog dialog){
+    public void setDialogParams(Dialog dialog) {
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams params = dialogWindow.getAttributes();
         dialogWindow.setGravity(Gravity.LEFT | Gravity.TOP);
-        WindowManager manager = dialogWindow.getWindowManager();
-        Display display = manager.getDefaultDisplay();
-        params.height = (int)(display.getHeight() * 0.5f);
-        params.width = (int)(display.getWidth() * 0.9f);
-        params.x = (display.getWidth() - params.width) / 2;
-        final float marginBottom = getContext().getResources().getDimension(R.dimen.reader_page_translate_window_margin_bottom);
-        params.y = (int)(display.getHeight() - params.height - marginBottom);
+        params.height = (int) getContext().getResources().getDimension(R.dimen.reader_select_menu_translate_height);
+        params.width = (int) getContext().getResources().getDimension(R.dimen.reader_select_menu_width);
+
+        params.x = (int) x;
+        params.y = (int) y;
+        dialogWindow.setBackgroundDrawableResource(R.drawable.rectangle_stroke_corners);
         dialogWindow.setAttributes(params);
     }
 }

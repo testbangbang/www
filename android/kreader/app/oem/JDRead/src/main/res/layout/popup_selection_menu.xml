@@ -26,8 +26,15 @@
 
             <TextView
                 style="@style/reader_popup_selection_menu_style"
+                android:onClick="@{()->selectMenuModel.deleteAnnotation()}"
+                android:text="@string/delete"
+                android:visibility="@{selectMenuModel.isEditAnnotation?View.VISIBLE:View.GONE}"/>
+
+            <TextView
+                style="@style/reader_popup_selection_menu_style"
                 android:onClick="@{()->selectMenuModel.onLineationClick()}"
-                android:text="@string/lineation" />
+                android:text="@string/lineation"
+                android:visibility="@{selectMenuModel.isEditAnnotation?View.GONE:View.VISIBLE}"/>
 
             <TextView
                 style="@style/reader_popup_selection_menu_style"

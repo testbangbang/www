@@ -88,6 +88,7 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
 
     public void setMultiSelectionMode(int multiSelectionMode) {
         this.multiSelectionMode = multiSelectionMode;
+        notifyDataSetChanged();
     }
 
     public boolean isMultiSelectionMode() {

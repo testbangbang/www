@@ -53,10 +53,16 @@ import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.library.view.SingleItemManageDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
+import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.personal.ui.PersonalBookFragment;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -77,6 +83,7 @@ public class LibraryFragment extends BaseFragment {
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
     private GPaginator pagination;
     private PageIndicatorModel pageIndicatorModel;
+    private SingleItemManageDialog singleItemManageDialog;
 
     @Nullable
     @Override
@@ -360,7 +367,7 @@ public class LibraryFragment extends BaseFragment {
     public void onLibraryMenuEvent(LibraryMenuEvent event) {
         MenuPopupWindow menuPopupWindow = new MenuPopupWindow(getActivity(), getEventBus());
         menuPopupWindow.setShowItemDecoration(true);
-        menuPopupWindow.showPopupWindow(libraryBinding.imageMenu, libraryDataBundle.getLibraryViewDataModel().getMenuData());
+        menuPopupWindow.showPopupWindow(libraryBinding.imageMenu, libraryDataBundle.getLibraryViewDataModel().getMenuData(), ResManager.getInteger(R.integer.library_menu_offset_x), ResManager.getInteger(R.integer.library_menu_offset_y));
     }
 
     @Subscribe
@@ -381,7 +388,21 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onMyBookEvent(MyBookEvent event) {
+        checkLogin(PersonalBookFragment.class.getName());
+    }
 
+    private void checkLogin(String name) {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            return;
+        }
+        if (!JDReadApplication.getInstance().getLogin()) {
+            LoginHelper.showUserLoginDialog(getActivity(), PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel());
+            return;
+        }
+        if (StringUtils.isNotBlank(name)) {
+            viewEventCallBack.gotoView(name);
+        }
     }
 
     @Subscribe
@@ -434,11 +455,14 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void showSingleMangeDialog(DataModel currentChosenModel) {
+        if (singleItemManageDialog != null && singleItemManageDialog.isShowing()) {
+            return;
+        }
         SingleItemManageDialog.DialogModel dialogModel = new SingleItemManageDialog.DialogModel(libraryDataBundle.getEventBus());
         dialogModel.dataModel.set(currentChosenModel);
         SingleItemManageDialog.Builder builder = new SingleItemManageDialog.Builder(JDReadApplication.getInstance(), dialogModel);
-        SingleItemManageDialog dialog = builder.create();
-        dialog.show();
+        singleItemManageDialog = builder.create();
+        singleItemManageDialog.show();
     }
 
     @Subscribe
@@ -513,7 +537,7 @@ public class LibraryFragment extends BaseFragment {
     private void processLibraryItem(DataModel model) {
         libraryDataBundle.getLibraryViewDataModel().pageStack.push(pagination);
         addLibraryToParentRefList(model);
-        libraryDataBundle.getLibraryViewDataModel().getSelectHelper().putLibrarySelectedModelMap(model.idString.get());
+        libraryDataBundle.getLibraryViewDataModel().getSelectHelper().putLibrarySelectedModelMap(model.idString.get(), Integer.valueOf(model.childCount.get()));
         buildChildLibraryPagination();
         loadData(libraryBuildQueryArgs(), false, true);
     }

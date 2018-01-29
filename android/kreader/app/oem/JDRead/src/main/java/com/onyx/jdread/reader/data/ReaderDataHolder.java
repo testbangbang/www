@@ -140,6 +140,10 @@ public class ReaderDataHolder {
         documentState = DocumentState.OPENED;
     }
 
+    public void setDocumentInitState(){
+        documentState = DocumentState.INIT;
+    }
+
     public void setDocumentOpeningState(){
         documentState = DocumentState.OPENING;
     }
@@ -188,4 +192,5 @@ public class ReaderDataHolder {
     public int getPageCount() {
         return getReaderViewInfo().getTotalPage();
     }
+
 }
