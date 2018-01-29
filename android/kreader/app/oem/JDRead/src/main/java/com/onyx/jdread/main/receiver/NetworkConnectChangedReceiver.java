@@ -8,7 +8,8 @@ import android.net.wifi.WifiManager;
 import android.os.Parcelable;
 import android.util.Log;
 
-import org.acra.ACRA;
+import com.onyx.jdread.main.event.NetworkConnectedEvent;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 
 /**
  * Created by huxiaomao on 2017/1/12.
@@ -43,6 +44,7 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
                 Log.i(TAG, "isConnected:" + isConnected);
                 if (isConnected) {
 //                    ACRA.getErrorReporter().handleSilentException(null);
+                    PersonalDataBundle.getInstance().getEventBus().post(new NetworkConnectedEvent());
                 }
             }
         }

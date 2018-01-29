@@ -3,6 +3,7 @@ package com.onyx.jdread.personal.action;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxVerifySignRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -16,7 +17,7 @@ public class VerifyCheckInAction extends BaseAction {
     private VerifySignBean.DataBean data;
 
     @Override
-    public void execute(PersonalDataBundle dataBundle, final RxCallback rxCallback) {
+    public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
         String signValue = baseInfo.getSignValue(CloudApiContext.User.SIGN_CHECK);
         baseInfo.setSign(signValue);
@@ -38,9 +39,7 @@ public class VerifyCheckInAction extends BaseAction {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                if (throwable != null) {
-                    ToastUtil.showToast(throwable.getMessage());
-                }
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), dataBundle.getEventBus());
             }
         });
     }

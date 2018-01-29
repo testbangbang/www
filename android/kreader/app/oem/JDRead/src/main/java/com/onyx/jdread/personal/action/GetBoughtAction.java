@@ -6,6 +6,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.ReadUnlimitedRequestBean;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxGetBoughtBookRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -20,7 +21,7 @@ public class GetBoughtAction extends BaseAction {
     private List<Metadata> boughtBooks;
 
     @Override
-    public void execute(PersonalDataBundle dataBundle, final RxCallback rxCallback) {
+    public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         ReadUnlimitedRequestBean requestBean = new ReadUnlimitedRequestBean();
         requestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         final JSONObject body = new JSONObject();
@@ -40,9 +41,7 @@ public class GetBoughtAction extends BaseAction {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                if (throwable != null) {
-                    ToastUtil.showToast(throwable.getMessage());
-                }
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), dataBundle.getEventBus());
             }
         });
     }

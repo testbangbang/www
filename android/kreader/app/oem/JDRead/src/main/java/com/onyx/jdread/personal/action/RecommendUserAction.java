@@ -4,6 +4,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendItemBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendUserBean;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxRecommendUserRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -19,7 +20,7 @@ public class RecommendUserAction extends BaseAction {
     private List<RecommendItemBean> recommendItems;
 
     @Override
-    public void execute(PersonalDataBundle dataBundle, final RxCallback rxCallback) {
+    public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
         baseInfo.setPageSize("1", "20");
         String signValue = baseInfo.getSignValue(CloudApiContext.User.RECOMMEND_USER);
@@ -41,9 +42,7 @@ public class RecommendUserAction extends BaseAction {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                if (throwable != null) {
-                    ToastUtil.showToast(throwable.getMessage());
-                }
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), dataBundle.getEventBus());
             }
         });
     }

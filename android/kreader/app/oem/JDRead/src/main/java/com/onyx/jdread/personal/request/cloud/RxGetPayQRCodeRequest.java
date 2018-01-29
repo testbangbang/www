@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetPayQRCodeBean;
 import com.onyx.jdread.personal.common.EncryptHelper;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.common.ReadContentService;
@@ -47,7 +48,7 @@ public class RxGetPayQRCodeRequest extends RxBaseCloudRequest {
 
     private void checkResult() {
         if (qrCodeBean != null && qrCodeBean.result_code != 0) {
-            ToastUtil.showToast(qrCodeBean.message);
+            RequestFailedEvent.sendFailedMessage(qrCodeBean.message);
         }
     }
 

@@ -22,11 +22,11 @@ import com.onyx.jdread.databinding.SystemUpdateBinding;
 import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
 import com.onyx.jdread.main.model.TitleBarModel;
+import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.setting.action.CheckApkUpdateAction;
 import com.onyx.jdread.setting.action.DownloadPackageAction;
 import com.onyx.jdread.setting.action.LocalUpdateSystemAction;
@@ -68,6 +68,7 @@ public class SystemUpdateFragment extends BaseFragment {
     private String tag;
     private SettingUpdateModel settingUpdateModel;
     private CheckApkUpdateAction apkUpdateAction;
+    private DownloadPackageAction downloadPackageAction;
 
     @Nullable
     @Override
@@ -96,10 +97,6 @@ public class SystemUpdateFragment extends BaseFragment {
         binding.upgradeImmediately.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-                    ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
-                    return;
-                }
                 if (JDReadApplication.getInstance().getString(R.string.download_update_package).equals(systemUpdateData.getUpdateDes())) {
                     downloadUpdatePackage();
                 } else if (JDReadApplication.getInstance().getString(R.string.upgrade_immediately).equals(systemUpdateData.getUpdateDes())) {
@@ -112,45 +109,34 @@ public class SystemUpdateFragment extends BaseFragment {
     }
 
     private void downloadUpdatePackage() {
-        systemUpdateData.setShowProgress(true);
-        if (StringUtils.isNotBlank(tag)) {
-            BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(tag);
-            byte status = task.getStatus();
-            if (task != null && (DownLoadHelper.isError(status) || DownLoadHelper.isPause(status))) {
-                task.reuse();
-                task.start();
-                return;
-            }
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+            return;
         }
-        DownloadPackageAction downloadPackageAction = new DownloadPackageAction(downloadUrl, downloadPath, tag);
-        downloadPackageAction.execute(new BaseCallback() {
-            @Override
-            public void start(BaseRequest request) {
-
-            }
-
-            @Override
-            public void progress(BaseRequest request, ProgressInfo info) {
-                systemUpdateData.setProgress((int) info.progress);
-            }
-
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    if (e instanceof ConnectException || e instanceof IOException) {
-                        ToastUtil.showToast(ResManager.getString(R.string.network_exception));
-                    } else {
-                        ToastUtil.showToast(e.getMessage());
-                    }
-                    return;
-                }
-                systemUpdateData.setProgress(100);
-                systemUpdateData.setShowProgress(false);
-                systemUpdateData.setShowDownloaded(true);
-                systemUpdateData.setUpdateDes(JDReadApplication.getInstance().getResources().getString(R.string.upgrade_immediately));
-            }
-        });
+        systemUpdateData.setShowProgress(true);
+        downloadPackageAction = new DownloadPackageAction(downloadUrl, downloadPath, tag);
+        downloadPackageAction.execute(callback);
     }
+
+    private BaseCallback callback = new BaseCallback() {
+        @Override
+        public void start(BaseRequest request) {
+
+        }
+
+        @Override
+        public void progress(BaseRequest request, ProgressInfo info) {
+            systemUpdateData.setProgress((int) info.progress);
+        }
+
+        @Override
+        public void done(BaseRequest request, Throwable e) {
+            systemUpdateData.setProgress(100);
+            systemUpdateData.setShowProgress(false);
+            systemUpdateData.setShowDownloaded(true);
+            systemUpdateData.setUpdateDes(JDReadApplication.getInstance().getResources().getString(R.string.upgrade_immediately));
+        }
+    };
 
     private void initData() {
         TitleBarModel titleModel = new TitleBarModel(SettingBundle.getInstance().getEventBus());
@@ -179,7 +165,7 @@ public class SystemUpdateFragment extends BaseFragment {
 
     private void checkSystemUpdate() {
         if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-            Utils.showMessage(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
             return;
         }
         final OnlineCheckSystemUpdateAction checkAction = new OnlineCheckSystemUpdateAction();
@@ -332,5 +318,12 @@ public class SystemUpdateFragment extends BaseFragment {
     @Subscribe
     public void onTitleBarRightTitleEvent(TitleBarRightTitleEvent event) {
         // TODO: 18-1-8
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetworkConnectedEvent(NetworkConnectedEvent event) {
+        if (downloadPackageAction != null) {
+            downloadPackageAction.execute(callback);
+        }
     }
 }

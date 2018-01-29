@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargePackageBean;
 import com.onyx.jdread.personal.common.EncryptHelper;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.common.ReadContentService;
@@ -47,7 +48,7 @@ public class RxRechargePackageRequest extends RxBaseCloudRequest {
 
     private void checkResult() {
         if (resultBean != null && resultBean.result_code != 0) {
-            ToastUtil.showToast(resultBean.message);
+            RequestFailedEvent.sendFailedMessage(resultBean.message);
         }
     }
 

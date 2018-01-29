@@ -197,7 +197,9 @@ public class WifiFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         wifiAdmin.registerReceiver();
-        SettingBundle.getInstance().getEventBus().register(this);
+        if (!SettingBundle.getInstance().getEventBus().isRegistered(this)) {
+            SettingBundle.getInstance().getEventBus().register(this);
+        }
     }
 
     @Override

@@ -48,7 +48,9 @@ public class RefreshFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        SettingBundle.getInstance().getEventBus().register(this);
+        if (!SettingBundle.getInstance().getEventBus().isRegistered(this)) {
+            SettingBundle.getInstance().getEventBus().register(this);
+        }
     }
 
     @Override

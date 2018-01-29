@@ -3,6 +3,7 @@ package com.onyx.jdread.personal.request.cloud;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargeStatusBean;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.common.ReadContentService;
@@ -36,7 +37,7 @@ public class RxGetRechargeStatusRequest extends RxBaseCloudRequest {
 
     private void checkResult() {
         if (rechargeStatusBean != null && rechargeStatusBean.result_code != 0) {
-            ToastUtil.showToast(rechargeStatusBean.message);
+            RequestFailedEvent.sendFailedMessage(rechargeStatusBean.message);
         }
     }
 
