@@ -217,7 +217,7 @@ public class LocalDataProvider implements DataProviderBase {
     @Override
     public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
         Operator condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentId);
-        return new Select().from(Library.class).where(condition).offset(queryArgs.offset).limit(queryArgs.limit).queryList();
+        return new Select().from(Library.class).where(condition).offset(queryArgs.offset).limit(queryArgs.limit).orderBy(OrderBy.fromProperty(SearchHistory_Table.createdAt).descending()).queryList();
     }
 
     @Override
@@ -238,7 +238,7 @@ public class LocalDataProvider implements DataProviderBase {
     @Override
     public void deleteLibrary(String libraryUniqueId) {
         Operator condition = getNullOrEqualCondition(Library_Table.idString, libraryUniqueId);
-        new Delete().from(Library.class).where(condition).querySingle();
+        new Delete().from(Library.class).where(condition).query();
     }
 
     @Override

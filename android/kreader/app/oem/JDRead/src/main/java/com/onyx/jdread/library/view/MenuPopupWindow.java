@@ -17,6 +17,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.adapter.PopMenuAdapter;
 import com.onyx.jdread.library.model.PopMenuModel;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -59,7 +60,7 @@ public class MenuPopupWindow extends PopupWindow {
 
     private void initView() {
         setContentView(contentView);
-        setWidth((int) (screenWidth * 0.2));
+        setWidth((int) (screenWidth * Float.parseFloat(ResManager.getString(R.string.menu_pop_width))));
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setFocusable(true);
         setOutsideTouchable(true);
@@ -67,7 +68,9 @@ public class MenuPopupWindow extends PopupWindow {
         update();
 
         PageRecyclerView pageRecyclerView = (PageRecyclerView) contentView.findViewById(R.id.pop_menu_recycler);
+        DashLineItemDivider dashLineItemDivider = new DashLineItemDivider();
         pageRecyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        pageRecyclerView.addItemDecoration(dashLineItemDivider);
         popMenuAdapter = new PopMenuAdapter();
         if (showItemDecoration) {
             DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
