@@ -8,24 +8,19 @@ import com.onyx.jdread.personal.request.cloud.RxGetBoughtAndUnlimitedRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by li on 2018/1/8.
+ * Created by li on 2018/1/29.
  */
 
-public class GetBoughtAction extends BaseAction {
-    private List<Metadata> boughtBooks;
+public class GetBoughtAndUnlimitedAction extends BaseAction {
+    private List<Metadata> books;
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
         baseInfo.setPageSize(null, null);
-        Map<String, String> map = new HashMap<>();
-        map.put("search_type", "1");
-        baseInfo.addRequestParams(map);
         String signValue = baseInfo.getSignValue(CloudApiContext.User.BOUGHT_UNLIMITED_BOOKS);
         baseInfo.setSign(signValue);
         final RxGetBoughtAndUnlimitedRequest rq = new RxGetBoughtAndUnlimitedRequest();
@@ -33,9 +28,9 @@ public class GetBoughtAction extends BaseAction {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                books = rq.getBooks();
                 if (rxCallback != null) {
-                    boughtBooks = rq.getBooks();
-                    rxCallback.onNext(GetBoughtAction.class);
+                    rxCallback.onNext(GetBoughtAndUnlimitedAction.class);
                 }
             }
 
@@ -47,7 +42,7 @@ public class GetBoughtAction extends BaseAction {
         });
     }
 
-    public List<Metadata> getBoughtBooks() {
-        return boughtBooks;
+    public List<Metadata> getBooks() {
+        return books;
     }
 }

@@ -40,6 +40,7 @@ public class CloudApiContext {
         public static final String READING_VOUCHER = "reading/voucher";
         public static final String USER_GIFT = "gift";
         public static final String RECOMMEND_USER = "recommend/user";
+        public static final String BOUGHT_UNLIMITED_BOOKS = "order/my_ebooks";
     }
 
     public static class ReadBean {

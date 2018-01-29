@@ -34,6 +34,7 @@ public class PersonalDataBundle {
     private PersonalBookModel personalBookModel;
     private String salt;
     private UserInfo userInfo;
+    private boolean signed;
 
     private PersonalDataBundle() {
 
@@ -170,5 +171,13 @@ public class PersonalDataBundle {
 
     public UserInfo getUserInfo() {
         return userInfo;
+    }
+
+    public void setSigned(boolean signed) {
+        this.signed = signed;
+    }
+
+    public boolean getSigned() {
+        return signed;
     }
 }

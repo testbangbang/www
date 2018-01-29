@@ -1,41 +1,34 @@
 package com.onyx.jdread.personal.action;
 
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.personal.cloud.entity.jdbean.SignForVoucherBean;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-import com.onyx.jdread.personal.request.cloud.RxGetBoughtAndUnlimitedRequest;
+import com.onyx.jdread.personal.request.cloud.RxSignForVoucherRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
- * Created by li on 2018/1/8.
+ * Created by li on 2018/1/29.
  */
 
-public class GetBoughtAction extends BaseAction {
-    private List<Metadata> boughtBooks;
+public class SignForVoucherAction extends BaseAction {
+    private SignForVoucherBean resultBean;
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setPageSize(null, null);
-        Map<String, String> map = new HashMap<>();
-        map.put("search_type", "1");
-        baseInfo.addRequestParams(map);
-        String signValue = baseInfo.getSignValue(CloudApiContext.User.BOUGHT_UNLIMITED_BOOKS);
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.SIGN);
         baseInfo.setSign(signValue);
-        final RxGetBoughtAndUnlimitedRequest rq = new RxGetBoughtAndUnlimitedRequest();
+
+        final RxSignForVoucherRequest rq = new RxSignForVoucherRequest();
         rq.setBaseInfo(baseInfo);
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                resultBean = rq.getResultBean();
                 if (rxCallback != null) {
-                    boughtBooks = rq.getBooks();
-                    rxCallback.onNext(GetBoughtAction.class);
+                    rxCallback.onNext(SignForVoucherAction.class);
                 }
             }
 
@@ -47,7 +40,7 @@ public class GetBoughtAction extends BaseAction {
         });
     }
 
-    public List<Metadata> getBoughtBooks() {
-        return boughtBooks;
+    public SignForVoucherBean getResultBean() {
+        return resultBean;
     }
 }

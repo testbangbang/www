@@ -2,9 +2,8 @@ package com.onyx.jdread.shop.common;
 
 import android.os.Build;
 
-import com.jingdong.app.reader.data.DrmTools;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.jdread.JDReadApplication;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.main.common.AppInformationUtils;
 import com.onyx.jdread.main.common.Constants;
 
@@ -235,9 +234,15 @@ public class JDAppBaseInfo {
     }
 
     public void setPageSize(String page, String pageSize) {
+        String currentPage = "1";
+        String currentPageSize = "20";
+        if (StringUtils.isNotBlank(page) || StringUtils.isNotBlank(pageSize)) {
+            currentPage = page;
+            currentPageSize = pageSize;
+        }
         Map<String, String> map = new HashMap<>();
-        map.put("page", page);
-        map.put("page_size", pageSize);
+        map.put("page", currentPage);
+        map.put("page_size", currentPageSize);
         addRequestParams(map);
     }
 }

@@ -1,17 +1,16 @@
 package com.onyx.jdread.personal.action;
 
-import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.personal.cloud.entity.ReadUnlimitedRequestBean;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-import com.onyx.jdread.personal.request.cloud.RxGetUnlimitedRequest;
+import com.onyx.jdread.personal.request.cloud.RxGetBoughtAndUnlimitedRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by li on 2018/1/8.
@@ -22,19 +21,21 @@ public class GetUnlimitedAction extends BaseAction {
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
-        ReadUnlimitedRequestBean requestBean = new ReadUnlimitedRequestBean();
-        requestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
-        JSONObject body = new JSONObject();
-        body.put(CloudApiContext.AddToSmooth.CURRENT_PAGE, 1);
-        body.put(CloudApiContext.AddToSmooth.PAGE_SIZE, 10);
-        requestBean.setBody(body.toJSONString());
-        final RxGetUnlimitedRequest rq = new RxGetUnlimitedRequest(requestBean);
+        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
+        baseInfo.setPageSize(null, null);
+        Map<String, String> map = new HashMap<>();
+        map.put("search_type", "2");
+        baseInfo.addRequestParams(map);
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.BOUGHT_UNLIMITED_BOOKS);
+        baseInfo.setSign(signValue);
+        final RxGetBoughtAndUnlimitedRequest rq = new RxGetBoughtAndUnlimitedRequest();
+        rq.setBaseInfo(baseInfo);
         rq.execute(new RxCallback() {
 
             @Override
             public void onNext(Object o) {
                 if (rxCallback != null) {
-                    unlimitedBooks = rq.getUnlimitedBooks();
+                    unlimitedBooks = rq.getBooks();
                     rxCallback.onNext(GetUnlimitedAction.class);
                 }
             }

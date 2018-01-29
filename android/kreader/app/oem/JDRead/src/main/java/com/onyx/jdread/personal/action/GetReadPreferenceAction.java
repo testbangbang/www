@@ -1,53 +1,53 @@
 package com.onyx.jdread.personal.action;
 
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-import com.onyx.jdread.personal.request.cloud.RxGetBoughtAndUnlimitedRequest;
+import com.onyx.jdread.personal.request.cloud.RxGetReadPreferenceRequest;
+import com.onyx.jdread.shop.cloud.entity.BaseShopRequestBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by li on 2018/1/8.
+ * Created by li on 2018/1/29.
  */
 
-public class GetBoughtAction extends BaseAction {
-    private List<Metadata> boughtBooks;
+public class GetReadPreferenceAction extends BaseAction {
+    private List<Integer> data;
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
+        BaseShopRequestBean bean = new BaseShopRequestBean();
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setPageSize(null, null);
-        Map<String, String> map = new HashMap<>();
-        map.put("search_type", "1");
-        baseInfo.addRequestParams(map);
-        String signValue = baseInfo.getSignValue(CloudApiContext.User.BOUGHT_UNLIMITED_BOOKS);
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.READ_PREFERENCE);
         baseInfo.setSign(signValue);
-        final RxGetBoughtAndUnlimitedRequest rq = new RxGetBoughtAndUnlimitedRequest();
-        rq.setBaseInfo(baseInfo);
+        bean.setBaseInfo(baseInfo);
+
+        final RxGetReadPreferenceRequest rq = new RxGetReadPreferenceRequest();
+        rq.setRequestBean(bean);
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                GetReadPreferenceBean resultBean = rq.getResultBean();
+                if (resultBean != null) {
+                    data = resultBean.data;
+                }
                 if (rxCallback != null) {
-                    boughtBooks = rq.getBooks();
-                    rxCallback.onNext(GetBoughtAction.class);
+                    rxCallback.onNext(GetReadPreferenceAction.class);
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
-                super.onError(throwable);
                 PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), dataBundle.getEventBus());
             }
         });
     }
 
-    public List<Metadata> getBoughtBooks() {
-        return boughtBooks;
+    public List<Integer> getData() {
+        return data;
     }
 }

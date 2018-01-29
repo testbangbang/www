@@ -21,7 +21,7 @@ public class ReadBeanRecordAction extends BaseAction {
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setPageSize("1", "20");
+        baseInfo.setPageSize(null, null);
         String signValue = baseInfo.getSignValue(CloudApiContext.ReadBean.READ_BEAN_RECORD);
         baseInfo.setSign(signValue);
 
