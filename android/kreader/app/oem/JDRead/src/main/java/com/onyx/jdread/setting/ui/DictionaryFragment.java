@@ -15,6 +15,7 @@ import com.onyx.jdread.setting.event.BackToReadingToolsEvent;
 import com.onyx.jdread.setting.model.DictionaryModel;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.request.RxDictionaryListLoadRequest;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -61,15 +62,13 @@ public class DictionaryFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (!SettingBundle.getInstance().getEventBus().isRegistered(this)) {
-            SettingBundle.getInstance().getEventBus().register(this);
-        }
+        Utils.ensureRegister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        SettingBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -28,6 +28,6 @@ public class SettingUpdateModel {
     }
 
     public String getDownloadVersion() {
-        return JDPreferenceManager.getStringValue(DOWNLOAD_VERSION, UpdateUtil.getAPPVersionName(JDReadApplication.getInstance()));
+        return UpdateUtil.getAPPVersionName(JDReadApplication.getInstance());
     }
 }

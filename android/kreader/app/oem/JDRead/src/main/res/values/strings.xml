@@ -97,6 +97,7 @@
     <string name="log_out">Log out</string>
     <string name="login_immediately">Login immediately</string>
     <string name="unsigned_in">Unsigned</string>
+    <string name="signed_in">Signed</string>
     <string name="phone_number_format_error">Phone number format is wrong</string>
     <string name="consumer_hotline">Phone: 400-XXX-XXXX</string>
     <string name="official_qq_group">Official QQ: XXXXXXXXX XXXXXXXXX</string>
@@ -405,6 +406,12 @@
     <string name="down_book_illegal_device">illegal device</string>
     <string name="down_book_server_error">server error</string>
     <string name="down_book_cerify_order_error">cerify order error</string>
+    <string name="the_read_time_for_today">The machine reads for %s minutes today</string>
+    <string name="user_info_stay">%s days</string>
+    <string name="user_info_time">%s hour</string>
+    <string name="user_info_book">%s books</string>
+    <string name="user_info_article">%s articles</string>
+    <string name="network_exception">Network exception</string>
     <string name="reader_input_keyword">Please enter the keyword</string>
     <string name="menu_pop_width">0.25</string>
 </resources>

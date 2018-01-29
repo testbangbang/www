@@ -7,8 +7,6 @@ import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.personal.cloud.entity.GetReadInfoRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
-import com.onyx.jdread.personal.request.cloud.RxGetReadOverRequest;
-import com.onyx.jdread.personal.request.cloud.RxGetReadTotalRequest;
 
 import java.util.concurrent.CountDownLatch;
 

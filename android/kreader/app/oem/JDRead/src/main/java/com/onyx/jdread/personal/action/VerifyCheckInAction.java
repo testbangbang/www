@@ -2,40 +2,37 @@ package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-import com.onyx.jdread.personal.request.cloud.RxGetReadBeanRecordRequest;
+import com.onyx.jdread.personal.request.cloud.RxVerifySignRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
-import java.util.List;
-
 /**
- * Created by li on 2018/1/26.
+ * Created by li on 2018/1/27.
  */
 
-public class ReadBeanRecordAction extends BaseAction {
-    private List<ConsumeRecordBean.DataBean> data;
+public class VerifyCheckInAction extends BaseAction {
+    private VerifySignBean.DataBean data;
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setPageSize("1", "20");
-        String signValue = baseInfo.getSignValue(CloudApiContext.ReadBean.READ_BEAN_RECORD);
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.SIGN_CHECK);
         baseInfo.setSign(signValue);
 
-        final RxGetReadBeanRecordRequest rq = new RxGetReadBeanRecordRequest();
+        final RxVerifySignRequest rq = new RxVerifySignRequest();
         rq.setBaseInfo(baseInfo);
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                ConsumeRecordBean readBeanRecord = rq.getReadBeanRecord();
-                if (readBeanRecord != null) {
-                    data = readBeanRecord.getData();
+                VerifySignBean verifySignBean = rq.getVerifySignBean();
+                if (verifySignBean != null) {
+                    data = verifySignBean.getData();
                 }
                 if (rxCallback != null) {
-                    rxCallback.onNext(ReadBeanRecordAction.class);
+                    rxCallback.onNext(VerifyCheckInAction.class);
                 }
             }
 
@@ -47,7 +44,7 @@ public class ReadBeanRecordAction extends BaseAction {
         });
     }
 
-    public List<ConsumeRecordBean.DataBean> getData() {
+    public VerifySignBean.DataBean getData() {
         return data;
     }
 }

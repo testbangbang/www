@@ -12,6 +12,7 @@ import com.onyx.jdread.databinding.FragmentManualBinding;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -42,13 +43,13 @@ public class ManualFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        SettingBundle.getInstance().getEventBus().register(this);
+        Utils.ensureRegister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        SettingBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

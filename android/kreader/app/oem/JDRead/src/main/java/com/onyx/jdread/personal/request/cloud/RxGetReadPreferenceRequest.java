@@ -1,7 +1,10 @@
 package com.onyx.jdread.personal.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.cloud.entity.BaseShopRequestBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
@@ -28,8 +31,15 @@ public class RxGetReadPreferenceRequest extends RxBaseCloudRequest {
         Response<GetReadPreferenceBean> response = call.execute();
         if (response.isSuccessful()) {
             resultBean = response.body();
+            checkResult();
         }
         return this;
+    }
+
+    private void checkResult() {
+        if (resultBean != null && resultBean.result_code != 0) {
+            PersonalDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));
+        }
     }
 
     private Call<GetReadPreferenceBean> getCall(ReadContentService service) {
