@@ -181,4 +181,8 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
     public long getLibraryCount() {
         return libraryCount;
     }
+
+    public int getMetaDataCount(){
+        return (int) (getTotalCount() - getLibraryCount());
+    }
 }

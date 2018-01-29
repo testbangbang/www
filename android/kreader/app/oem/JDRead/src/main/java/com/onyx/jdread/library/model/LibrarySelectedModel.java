@@ -5,8 +5,6 @@ import com.onyx.android.sdk.data.model.DataModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.http.PUT;
-
 /**
  * Created by hehai on 17-12-20.
  */
