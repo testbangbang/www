@@ -154,6 +154,7 @@ public class PageRecyclerView extends RecyclerView {
         if (layoutManager instanceof GridLayoutManager){
             ((GridLayoutManager) layoutManager).setSpanCount(columns);
         }
+        gotoPage(0);
     }
 
     @Override

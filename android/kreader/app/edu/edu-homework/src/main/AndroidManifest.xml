@@ -21,6 +21,7 @@
         <activity
             android:theme="@style/TranslucentTheme"
             android:name=".ui.DraftActivity"/>
+        <activity android:name=".ui.ScoreActivity"/>
     </application>
 
 </manifest>

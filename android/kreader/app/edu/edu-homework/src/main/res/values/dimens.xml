@@ -30,4 +30,6 @@
     <dimen name="divider_line_size">2dp</dimen>
     <dimen name="question_option_margin">10dp</dimen>
     <dimen name="tool_bar_height">52dp</dimen>
+    <dimen name="score_page_image_size">40dp</dimen>
+    <dimen name="score_page_list_margin">20dp</dimen>
 </resources>

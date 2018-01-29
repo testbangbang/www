@@ -72,4 +72,8 @@ public class Homework {
     public boolean needUpdateEndTime(Date time) {
         return time != null && (endTime == null || time.after(endTime));
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

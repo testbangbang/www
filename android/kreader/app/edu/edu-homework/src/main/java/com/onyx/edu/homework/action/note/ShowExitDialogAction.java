@@ -8,6 +8,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseAction;
+import com.onyx.edu.homework.event.ExitEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
 
 /**
@@ -17,10 +18,11 @@ import com.onyx.edu.homework.event.ResumeNoteEvent;
 public class ShowExitDialogAction extends BaseAction {
 
     @Override
-    public void execute(Context context, BaseCallback baseCallback) {
+    public void execute(Context context, final BaseCallback baseCallback) {
         OnyxCustomDialog.getConfirmDialog(context, context.getString(R.string.exit_tips), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                DataBundle.getInstance().post(new ExitEvent());
                 System.exit(0);
             }
         }, new DialogInterface.OnClickListener() {

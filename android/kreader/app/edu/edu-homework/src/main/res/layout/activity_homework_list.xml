@@ -88,6 +88,14 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:text="@string/score_rank"
+                android:visibility="gone"
+                android:padding="@dimen/homework_text_margin"
+                android:background="@drawable/round_bg"
+                android:id="@+id/score_rank"
+                style="@style/homework_text" />
+
+            <TextView
                 android:text="@string/analysis"
                 android:visibility="gone"
                 android:padding="@dimen/homework_text_margin"

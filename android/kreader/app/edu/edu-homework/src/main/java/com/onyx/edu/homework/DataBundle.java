@@ -95,6 +95,7 @@ public class DataBundle {
         if (intent == null) {
             return;
         }
+        getHomework().setTitle(intent.child.title);
         getHomework().setPublishedAnswer(getHomework().publishedAnswer || intent.readActive);
         getHomework().setHasReview(getHomework().hasReview || intent.checked);
 
