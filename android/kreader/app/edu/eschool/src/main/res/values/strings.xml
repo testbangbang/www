@@ -140,4 +140,6 @@
     <string name="homework_format">%s Homework</string>
     <string name="goto_look">Go to</string>
     <string name="notification">Notification</string>
+
+    <string name="close">Close</string>
 </resources>

@@ -132,4 +132,6 @@
     <string name="homework_format">%s作业</string>
     <string name="goto_look">查看</string>
     <string name="notification">通知</string>
+
+    <string name="close">关闭</string>
 </resources>

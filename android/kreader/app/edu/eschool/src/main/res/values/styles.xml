@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="@style/OnyxAppCompat">
@@ -24,8 +24,11 @@
         <item name="tabSelectedTextColor">@android:color/black</item>
     </style>
 
-    <style name="TextAppearance.AppCompat.Subhead" parent="Base.TextAppearance.AppCompat.Subhead" tools:override="true">
-        <item name="android:textSize">23sp</item>
+    <style name="SubheadStyle" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:textSize">@dimen/sub_head_text_size</item>
+        <item name="android:lines">2</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="AlertDialogTheme" parent="@style/OnyxAppCompat.AlertDialog">
@@ -37,7 +40,7 @@
     </style>
 
     <style name="WindowTitleAppearanceStyle" parent="@style/TextAppearance.AppCompat.Title">
-        <item name="android:textSize">24sp</item>
+        <item name="android:textSize">@dimen/window_title_text_size</item>
     </style>
 
 </resources>
