@@ -57,6 +57,7 @@ public class OpenDocumentAction extends BaseReaderAction {
     }
 
     private void analysisOpenDocumentSuccessResult() {
+        readerDataHolder.setDocumentOpenState();
         InitPageViewAction createPageViewAction = new InitPageViewAction();
         createPageViewAction.execute(readerDataHolder,null);
     }

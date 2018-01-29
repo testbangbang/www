@@ -412,5 +412,6 @@
     <string name="user_info_book">%s books</string>
     <string name="user_info_article">%s articles</string>
     <string name="network_exception">Network exception</string>
+    <string name="reader_input_keyword">Please enter the keyword</string>
     <string name="menu_pop_width">0.25</string>
 </resources>
