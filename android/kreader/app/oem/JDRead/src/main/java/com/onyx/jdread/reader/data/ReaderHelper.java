@@ -269,7 +269,7 @@ public class ReaderHelper {
 
     private void initBitmapCache() {
         if (bitmapCache == null) {
-            bitmapCache = new BitmapReferenceLruCache(5);
+            bitmapCache = new BitmapReferenceLruCache(3);
         }
     }
 
