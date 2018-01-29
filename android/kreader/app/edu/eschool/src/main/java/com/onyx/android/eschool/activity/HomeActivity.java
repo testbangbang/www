@@ -302,11 +302,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void processPushMessageNotify() {
-        List<MessageInfo> list = SchoolApp.singleton().getPushMessageHandler().getAndRemoveMessageInfoList();
-        if (CollectionUtils.isNullOrEmpty(list)) {
-            return;
-        }
-        PushMessageProcessAction action = new PushMessageProcessAction(list);
+        PushMessageProcessAction action = new PushMessageProcessAction(SchoolApp.singleton().getPushMessageHandler());
         action.execute(SchoolApp.getLibraryDataHolder(), null);
     }
 }
