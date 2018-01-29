@@ -46,6 +46,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
     private List<DataModel> selectedList;
     private EventBus eventBus;
     private long totalCount;
+    private long libraryCount;
 
     public RxLibraryLoadRequest(DataManager dataManager, QueryArgs queryArgs) {
         super(dataManager);
@@ -74,6 +75,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
     public RxLibraryLoadRequest call() throws Exception {
         bookList.clear();
         libraryList.clear();
+        libraryCount = getDataProvider().libraryCount(queryArgs.libraryUniqueId);
         totalCount = getDataProvider().count(getAppContext(), queryArgs) + getDataProvider().libraryCount(queryArgs.libraryUniqueId);
         setQueryOffsetBounds();
         DataManagerHelper.loadLibraryList(getDataProvider(), libraryList, queryArgs);
@@ -174,5 +176,9 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
 
     public List<DataModel> getModels() {
         return models;
+    }
+
+    public long getLibraryCount() {
+        return libraryCount;
     }
 }

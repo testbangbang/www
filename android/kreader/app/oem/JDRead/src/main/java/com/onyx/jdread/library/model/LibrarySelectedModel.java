@@ -5,6 +5,8 @@ import com.onyx.android.sdk.data.model.DataModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.http.PUT;
+
 /**
  * Created by hehai on 17-12-20.
  */
@@ -12,10 +14,12 @@ import java.util.List;
 public class LibrarySelectedModel {
     private boolean selectedAll;
     private List<DataModel> selectedList;
+    private int count;
 
-    public LibrarySelectedModel() {
+    public LibrarySelectedModel(int count) {
         this.selectedAll = false;
         this.selectedList = new ArrayList<>();
+        this.count = count;
     }
 
     public boolean isSelectedAll() {
@@ -32,5 +36,17 @@ public class LibrarySelectedModel {
 
     public void setSelectedList(List<DataModel> selectedList) {
         this.selectedList = selectedList;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public boolean haveSelected() {
+        return (selectedAll && count > selectedList.size()) || (!selectedAll && selectedList.size() != 0);
     }
 }

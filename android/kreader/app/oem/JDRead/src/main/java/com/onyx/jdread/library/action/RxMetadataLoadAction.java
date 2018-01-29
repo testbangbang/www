@@ -58,7 +58,8 @@ public class RxMetadataLoadAction extends BaseAction<LibraryDataBundle> {
                 hideLoadingDialog(dataHolder);
                 if (baseCallback != null) {
                     dataModel.count.set((int) libraryRequest.getTotalCount());
-                    dataModel.libraryCount.set(CollectionUtils.getSize(libraryRequest.getLibraryList()));
+                    dataModel.libraryCount.set((int) libraryRequest.getLibraryCount());
+                    dataModel.getLibrarySelectedModel().setCount((int) (libraryRequest.getTotalCount() - libraryRequest.getLibraryCount()));
                     dataModel.setPageData(libraryRequest.getModels());
                     baseCallback.onNext(rxLibraryLoadRequest);
                 }
