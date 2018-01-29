@@ -384,7 +384,6 @@ public class PinyinIME extends InputMethodService {
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 if (!realAction) return true;
                 sendKeyChar('\n');
-                mInputModeSwitcher.reset();
                 return true;
             }
             if (keyCode == KeyEvent.KEYCODE_SPACE) {
@@ -1196,15 +1195,23 @@ public class PinyinIME extends InputMethodService {
     }
 
     @Override
+    public void hideWindow() {
+        if (mEnvironment.needDebug()) {
+            Log.d(TAG, "hideWindow.");
+        }
+        mInputModeSwitcher.reset();
+        super.hideWindow();
+    }
+
+    @Override
     public void requestHideSelf(int flags) {
         if (mEnvironment.needDebug()) {
-            Log.d(TAG, "DimissSoftInput.");
+            Log.d(TAG, "requestHideSelf.");
         }
         dismissCandidateWindow();
         if (null != mSkbContainer && mSkbContainer.isShown()) {
             mSkbContainer.dismissPopups();
         }
-        mInputModeSwitcher.reset();
         super.requestHideSelf(flags);
     }
 
