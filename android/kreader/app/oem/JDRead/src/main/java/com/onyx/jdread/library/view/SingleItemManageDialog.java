@@ -11,8 +11,11 @@ import android.view.WindowManager;
 
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.ModelType;
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogSingleManageLayoutBinding;
+import com.onyx.jdread.library.adapter.LibraryCoverAdapter;
 import com.onyx.jdread.library.event.BookDetailEvent;
 import com.onyx.jdread.library.event.DeleteBookEvent;
 import com.onyx.jdread.library.event.LibraryDeleteEvent;
@@ -51,6 +54,9 @@ public class SingleItemManageDialog extends Dialog {
             final SingleItemManageDialog dialog = new SingleItemManageDialog(context, R.style.CustomDialogStyle);
             DialogSingleManageLayoutBinding bind = DataBindingUtil.bind(View.inflate(context, R.layout.dialog_single_manage_layout, null));
             bind.setDialogModel(model);
+            bind.libraryCoverRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            LibraryCoverAdapter adapter = new LibraryCoverAdapter();
+            bind.libraryCoverRecycler.setAdapter(adapter);
             bind.closeMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

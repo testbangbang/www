@@ -36,12 +36,15 @@ import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
+import com.onyx.jdread.main.event.SystemBarClickedEvent;
 import com.onyx.jdread.main.event.UsbDisconnectedEvent;
+import com.onyx.jdread.main.event.WifiStateChangeEvent;
 import com.onyx.jdread.main.model.FunctionBarItem;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.main.model.MainViewModel;
 import com.onyx.jdread.main.model.SystemBarModel;
+import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
@@ -49,6 +52,8 @@ import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
+import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
+import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.shop.ui.ShopFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -69,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private FunctionBarModel functionBarModel;
     private FunctionBarAdapter functionBarAdapter;
     private SystemBarModel systemBarModel;
+    private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -322,6 +328,15 @@ public class MainActivity extends AppCompatActivity {
         isShowBackTab(event.isShow());
     }
 
+    @Subscribe
+    public void onSystemBarClickedEvent(SystemBarClickedEvent event) {
+        if (systemBarPopupWindowModel == null) {
+            systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
+        }
+        SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(this, systemBarPopupWindowModel);
+        systemBarPopupWindow.show(binding.mainSystemBar.getRoot());
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
         ToastUtil.showToast(this, event.getMessage());
@@ -329,6 +344,18 @@ public class MainActivity extends AppCompatActivity {
             JDReadApplication.getInstance().setLogin(true);
             clearInput();
             LoginHelper.dismissUserLoginDialog();
+        }
+    }
+
+    @Subscribe
+    public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
+        childViewEventCallBack.gotoView(SettingFragment.class.getName());
+    }
+
+    @Subscribe
+    public void onWifiStateChangeEvent(WifiStateChangeEvent event) {
+        if (systemBarPopupWindowModel != null) {
+            systemBarPopupWindowModel.updateWifi();
         }
     }
 

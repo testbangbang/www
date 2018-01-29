@@ -392,6 +392,11 @@
     <string name="source_language">Source language:</string>
     <string name="simplified_chinese">Simplified chinese</string>
     <string name="reader_target_language">Target language:</string>
+    <string name="reader_bookmark_add_success">Bookmarks have been added</string>
+    <string name="reader_bookmark_add_fail">Bookmark adding failure</string>
+    <string name="reader_bookmark_delete_success">The bookmark has been cancelled</string>
+    <string name="reader_bookmark_delete_fail">Bookmark cancellation failure</string>
+    <string name="speed_refresh">Speed refresh</string>
     <string name="item_consume_record_read_bean">-%d read bean</string>
     <string name="item_consume_record_voucher">-%d voucher</string>
     <string name="down_book_resutl_no_read_vip">no read vip</string>
@@ -407,4 +412,5 @@
     <string name="user_info_book">%s books</string>
     <string name="user_info_article">%s articles</string>
     <string name="network_exception">Network exception</string>
+    <string name="menu_pop_width">0.25</string>
 </resources>

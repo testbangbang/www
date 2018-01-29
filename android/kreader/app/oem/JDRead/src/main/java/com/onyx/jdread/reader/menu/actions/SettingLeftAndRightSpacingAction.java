@@ -5,6 +5,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
+import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 
 /**
@@ -37,7 +38,7 @@ public class SettingLeftAndRightSpacingAction extends BaseReaderAction {
 
             @Override
             public void onError(Throwable throwable) {
-
+                ReaderErrorEvent.onErrorHandle(throwable,this.getClass().getSimpleName(),readerDataHolder.getEventBus());
             }
         });
     }

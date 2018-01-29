@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -38,6 +39,7 @@ public class HTMLReaderWebView extends WebView
 
     public static final int PAGE_TURN_TYPE_VERTICAL = 1;
     public static final int PAGE_TURN_TYPE_HORIZOTAL = 2;
+    public static final float TEXT_ZOOM_VALUE = 1.2f;
     private int pageTurnType = PAGE_TURN_TYPE_VERTICAL;
     private float lastX, lastY;
     private boolean loadCssStyle = true;
@@ -175,6 +177,9 @@ public class HTMLReaderWebView extends WebView
         setHorizontalScrollBarEnabled(false);
         getSettings().setDefaultTextEncodingName("UTF-8");
         getSettings().setBlockNetworkImage(false);
+        int textZoom = getSettings().getTextZoom();
+        int newTextZoom = (int) (textZoom * TEXT_ZOOM_VALUE);
+        getSettings().setTextZoom(newTextZoom);
 
         setOnLongClickListener(new OnLongClickListener() {
             @Override

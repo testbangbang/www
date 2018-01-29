@@ -2,12 +2,15 @@ package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
 
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.SelectTextCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
+import com.onyx.jdread.reader.actions.ToggleBookmarkAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -18,7 +21,9 @@ import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
+import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.menu.event.SearchContentEvent;
+import com.onyx.jdread.reader.menu.event.ToggleBookmarkSuccessEvent;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
@@ -171,7 +176,9 @@ public class ReaderActivityEventHandler {
             return;
         }
         String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
-        TranslateDialog translateDialog = new TranslateDialog(activity, text, readerViewModel.getEventBus());
+        float x = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastX();
+        float y = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastY();
+        TranslateDialog translateDialog = new TranslateDialog(activity, text, readerViewModel.getEventBus(), x, y);
         translateDialog.show();
         translateDialog.setCanceledOnTouchOutside(true);
     }
@@ -190,5 +197,20 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTranslateResultEvent(WordTranslateResultEvent event) {
         readerViewModel.getReaderDataHolder().getSelectMenuModel().updateTranslateResult(event.getTranslateResult());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReaderErrorEvent(ReaderErrorEvent event) {
+        String[] errors = ReaderErrorEvent.getThrowableStringRep(event.throwable);
+        ReaderErrorEvent.printThrowable(errors);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToggleBookmarkSuccessEvent(ToggleBookmarkSuccessEvent event) {
+        int messageId = R.string.reader_bookmark_add_success;
+        if (event.getToggleSwitch() == ToggleBookmarkAction.ToggleSwitch.Off) {
+            messageId = R.string.reader_bookmark_delete_success;
+        }
+        ToastUtil.showToast(readerViewModel.getReaderDataHolder().getAppContext(), messageId);
     }
 }

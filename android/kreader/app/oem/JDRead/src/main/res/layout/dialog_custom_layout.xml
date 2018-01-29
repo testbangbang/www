@@ -23,7 +23,7 @@
             android:gravity="center"
             android:text="@{dialogModel.message}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_two_heading_font" />
+            android:textSize="@dimen/level_one_heading_font" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,7 +39,8 @@
                 android:gravity="center"
                 android:onClick="@{()->dialogModel.onNegativeClick()}"
                 android:text="@{dialogModel.negativeText}"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
 
             <TextView
                 android:layout_width="0dp"
