@@ -15,6 +15,7 @@ import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserLoginResultErrorBean;
+import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 
@@ -118,8 +119,7 @@ public class UserLoginAction extends BaseAction {
     private void onSyncLoginInfo(PersonalDataBundle dataBundle, SyncLoginInfoBean syncLoginInfoBean) {
         String code = syncLoginInfoBean.getCode();
         if (Constants.RESULT_CODE_SUCCESS.equals(code)) {
-            // TODO: 2018/1/12 recent close it
-            //LoginHelper.getUserInfo(dataBundle);
+            LoginHelper.getUserInfo(dataBundle);
             dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success)));
             if (rxCallback != null) {
                 rxCallback.onNext(UserLoginAction.class);

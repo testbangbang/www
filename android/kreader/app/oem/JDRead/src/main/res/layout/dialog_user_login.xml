@@ -63,7 +63,7 @@
                 android:layout_toLeftOf="@id/user_login_account_edit_text_delete_button"
                 android:background="@null"
                 android:hint="@string/edit_text_account_hint"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:paddingBottom="@dimen/user_login_edit_text_pading_top_and_bottom"
                 android:paddingTop="@dimen/user_login_edit_text_pading_top_and_bottom"
                 android:singleLine="true"

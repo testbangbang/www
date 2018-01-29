@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,12 +13,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.text.DecimalFormat;
 
@@ -116,5 +116,17 @@ public class Utils {
         TypedValue outValue = new TypedValue();
         JDReadApplication.getInstance().getResources().getValue(res, outValue, true);
         return outValue.getFloat();
+    }
+
+    public static void ensureRegister(EventBus eventBus, Object subscriber) {
+        if (!eventBus.isRegistered(subscriber)) {
+            eventBus.register(subscriber);
+        }
+    }
+
+    public static void ensureUnregister(EventBus eventBus, Object subscriber) {
+        if (eventBus.isRegistered(subscriber)) {
+            eventBus.unregister(subscriber);
+        }
     }
 }

@@ -18,6 +18,7 @@ import com.onyx.jdread.setting.event.CopyrightNoticeEvent;
 import com.onyx.jdread.setting.event.ResetDeviceEvent;
 import com.onyx.jdread.setting.model.DeviceInformationModel;
 import com.onyx.jdread.setting.model.SettingBundle;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -56,13 +57,13 @@ public class DeviceInformationFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        SettingBundle.getInstance().getEventBus().register(this);
+        Utils.ensureRegister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        SettingBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Subscribe

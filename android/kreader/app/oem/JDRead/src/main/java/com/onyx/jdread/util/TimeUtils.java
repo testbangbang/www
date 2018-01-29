@@ -150,4 +150,8 @@ public class TimeUtils {
         String pattern = DEFAULT_TIME_FORMAT.toPattern();
         return DATA_TIME_24.equals(pattern);
     }
+
+    public static String getHourFormat(long time) {
+        return String.valueOf(time / (1000 * 3600 * 24));
+    }
 }

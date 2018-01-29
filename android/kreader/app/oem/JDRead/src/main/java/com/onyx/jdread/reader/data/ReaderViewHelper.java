@@ -89,6 +89,7 @@ public class ReaderViewHelper {
             return;
         }
         paint.setDither(true);
+        applyEpdUpdate(reader, contentView);
         Canvas canvas = contentView.getHolder().lockCanvas();
         if(canvas == null){
             return;
@@ -223,5 +224,9 @@ public class ReaderViewHelper {
         float y = timePoint.y - bounds.height();
         canvas.drawText(page, x, y, paint);
         paint.setTextSize(textSize);
+    }
+
+    private void applyEpdUpdate(final Reader reader, final SurfaceView view) {
+        reader.getReaderEpdHelper().applyWithGCInterval(view);
     }
 }

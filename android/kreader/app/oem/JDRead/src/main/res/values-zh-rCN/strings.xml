@@ -36,10 +36,10 @@
     <string name="consideration">注意事项</string>
     <string name="upgrade_immediately">立即升级</string>
     <string name="select_all">全选</string>
-    <string name="move_to">移动到</string>
+    <string name="move_to">移动至</string>
     <string name="manage_book">图书管理</string>
-    <string name="yes">是</string>
-    <string name="no">否</string>
+    <string name="yes">确定</string>
+    <string name="no">取消</string>
     <string name="delete_book_prompt">是否从本机中删除所选图书？</string>
     <string name="build_library">新建分组</string>
     <string name="build_library_hint">最多输入20个字符</string>
@@ -90,6 +90,7 @@
     <string name="log_out">退出登录</string>
     <string name="login_immediately">立即登录</string>
     <string name="unsigned_in">未签到</string>
+    <string name="signed_in">签到</string>
     <string name="manual">使用手册</string>
     <string name="feedback">问题反馈</string>
     <string name="contact_us">联系我们</string>
@@ -355,8 +356,8 @@
     <string name="baidupedia">百度百科</string>
     <string name="input_number_un_encrypt">请输入数字密码解除加密</string>
     <string name="encryption_success">加密成功</string>
-    <string name="total">总计:</string>
-    <string name="bosom">组内:</string>
+    <string name="total">总计：</string>
+    <string name="bosom">组内：</string>
     <string name="vip">会员</string>
     <string name="error_content_author_unknown">作者未知</string>
     <string name="related_books">相关图书</string>
@@ -373,6 +374,10 @@
     <string name="source_language">源语言:</string>
     <string name="simplified_chinese">简体中文</string>
     <string name="reader_target_language">目标语言:</string>
+    <string name="reader_bookmark_add_success">书签已添加</string>
+    <string name="reader_bookmark_add_fail">书签添加失败</string>
+    <string name="reader_bookmark_delete_success">书签已取消</string>
+    <string name="reader_bookmark_delete_fail">书签取消失败</string>
     <string name="speed_refresh">快速刷新</string>
     <string name="item_consume_record_read_bean">-%d阅豆</string>
     <string name="item_consume_record_voucher">-%d代金券</string>
@@ -383,4 +388,11 @@
     <string name="down_book_illegal_device">非法设备</string>
     <string name="down_book_server_error">后台处理异常</string>
     <string name="down_book_cerify_order_error">订单认证异常</string>
+    <string name="the_read_time_for_today">本机今日阅读时长%s分钟</string>
+    <string name="user_info_stay">%s天</string>
+    <string name="user_info_time">%s小时</string>
+    <string name="user_info_book">%s本</string>
+    <string name="user_info_article">%s条</string>
+    <string name="network_exception">网络异常</string>
+    <string name="reader_input_keyword">请输入关键字</string>
 </resources>

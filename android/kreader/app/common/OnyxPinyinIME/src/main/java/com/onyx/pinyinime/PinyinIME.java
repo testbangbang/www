@@ -1195,9 +1195,18 @@ public class PinyinIME extends InputMethodService {
     }
 
     @Override
+    public void hideWindow() {
+        if (mEnvironment.needDebug()) {
+            Log.d(TAG, "hideWindow.");
+        }
+        mInputModeSwitcher.reset();
+        super.hideWindow();
+    }
+
+    @Override
     public void requestHideSelf(int flags) {
         if (mEnvironment.needDebug()) {
-            Log.d(TAG, "DimissSoftInput.");
+            Log.d(TAG, "requestHideSelf.");
         }
         dismissCandidateWindow();
         if (null != mSkbContainer && mSkbContainer.isShown()) {

@@ -2,12 +2,17 @@ package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
 
+import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
+import com.onyx.jdread.reader.actions.CloseDocumentAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.SelectTextCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
+import com.onyx.jdread.reader.actions.ToggleBookmarkAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -20,6 +25,7 @@ import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.menu.event.SearchContentEvent;
+import com.onyx.jdread.reader.menu.event.ToggleBookmarkSuccessEvent;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
@@ -80,6 +86,22 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onCloseDocumentEvent(CloseDocumentEvent event) {
+        new CloseDocumentAction().execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                readerViewModel.getEventBus().post(new FinishEvent());
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ReaderErrorEvent.onErrorHandle(throwable,this.getClass().getSimpleName(),readerViewModel.getReaderDataHolder().getEventBus());
+            }
+        });
+
+    }
+
+    @Subscribe
+    public void onFinishEvent(FinishEvent event){
         readerViewBack.getContext().finish();
     }
 
@@ -122,7 +144,6 @@ public class ReaderActivityEventHandler {
         readerViewModel.getReaderDataHolder().setStyle(event.getStyle());
         readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
         readerViewModel.getReaderDataHolder().setReaderUserDataInfo(event.getReaderUserDataInfo());
-        readerViewModel.getReaderDataHolder().setDocumentOpenState();
         if (readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()) {
             readerSettingMenuDialog.updateBookmarkState();
         }
@@ -199,5 +220,19 @@ public class ReaderActivityEventHandler {
     public void onReaderErrorEvent(ReaderErrorEvent event) {
         String[] errors = ReaderErrorEvent.getThrowableStringRep(event.throwable);
         ReaderErrorEvent.printThrowable(errors);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToggleBookmarkSuccessEvent(ToggleBookmarkSuccessEvent event) {
+        int messageId = R.string.reader_bookmark_add_success;
+        if (event.getToggleSwitch() == ToggleBookmarkAction.ToggleSwitch.Off) {
+            messageId = R.string.reader_bookmark_delete_success;
+        }
+        ToastUtil.showToast(readerViewModel.getReaderDataHolder().getAppContext(), messageId);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOpenDocumentSuccessEvent(OpenDocumentSuccessEvent event){
+        readerViewModel.getReaderDataHolder().setDocumentOpenState();
     }
 }
