@@ -10,7 +10,6 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryLoadRequest;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
@@ -18,6 +17,8 @@ import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.view.LibraryBuildDialog;
 import com.onyx.jdread.library.view.MoveToLibraryListDialog;
 import com.onyx.jdread.main.action.BaseAction;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -109,7 +110,7 @@ public class LibrarySelectionAction extends BaseAction<LibraryDataBundle> {
             public void onClicked() {
                 if (StringUtils.isNotBlank(model.libraryName.get())) {
                     if (isExist(libraryDataBundle, model.libraryName.get())) {
-                        ToastUtils.showToast(libraryDataBundle.getAppContext(), R.string.group_exist);
+                        ToastUtil.showToast(libraryDataBundle.getAppContext(), String.format(ResManager.getString(R.string.group_exist), model.libraryName.get()));
                         return;
                     }
                     librarySelected = new DataModel(libraryDataBundle.getEventBus());
@@ -119,7 +120,7 @@ public class LibrarySelectionAction extends BaseAction<LibraryDataBundle> {
                     callback.onNext(librarySelected);
                     libraryBuildDialog.dismiss();
                 } else {
-                    ToastUtils.showToast(libraryDataBundle.getAppContext(), R.string.please_enter_group_name);
+                    ToastUtil.showToast(libraryDataBundle.getAppContext(), R.string.please_enter_group_name);
                 }
             }
         });

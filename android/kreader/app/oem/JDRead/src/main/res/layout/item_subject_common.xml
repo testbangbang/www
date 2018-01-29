@@ -21,18 +21,19 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:text="@{viewModel.modelBean.show_name}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_size_19" />
+                android:textSize="@dimen/font_size_19"
+                android:textStyle="bold" />
 
             <TextView
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:drawablePadding="@dimen/view_all_drawable_padding"
                 android:drawableRight="@mipmap/ic_go_view_all"
                 android:gravity="center"
@@ -54,21 +55,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/item_subject_common_next_title_margin_top"
-            android:visibility="@{viewModel.showNextTitle ? View.VISIBLE : View.GONE}">
+            android:visibility="@{viewModel.modelBean.showNextTitle ? View.VISIBLE : View.GONE}">
 
             <TextView
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.modelBeanNext.show_name}"
+                android:layout_centerVertical="true"
+                android:text="@{viewModel.modelBean.show_name_next}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_size_19" />
+                android:textSize="@dimen/font_size_19"
+                android:textStyle="bold" />
 
             <TextView
-                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:drawablePadding="@dimen/view_all_drawable_padding"
                 android:drawableRight="@mipmap/ic_go_view_all"
                 android:gravity="center"

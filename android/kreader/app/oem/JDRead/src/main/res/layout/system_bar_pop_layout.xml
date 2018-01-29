@@ -72,6 +72,7 @@
                 android:layout_height="wrap_content"
                 android:onClick="@{()->systemBarPopModel.brightnessModel.closeBrightness()}"
                 android:text="@string/closed"
+                android:textColor="@color/normal_black"
                 android:textSize="@dimen/level_one_heading_font" />
 
             <RatingBar
