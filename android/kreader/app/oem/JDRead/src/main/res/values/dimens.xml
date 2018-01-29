@@ -459,4 +459,5 @@
     <dimen name="category_book_list_recycle_view_indicator_margin_top">25dp</dimen>
     <dimen name="book_detail_cat_two_margin_left">12dp</dimen>
     <dimen name="book_detail_margin_top">30dp</dimen>
+    <dimen name="system_bar_icon_space">10dp</dimen>
 </resources>

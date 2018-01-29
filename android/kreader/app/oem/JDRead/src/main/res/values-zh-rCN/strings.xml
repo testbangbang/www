@@ -45,7 +45,7 @@
     <string name="build_library_hint">最多输入20个字符</string>
     <string name="library_move_to_fail">书库移动失败</string>
     <string name="adding">添加中...</string>
-    <string name="group_exist">分组已存在</string>
+    <string name="group_exist">分组%s已存在</string>
     <string name="please_enter_group_name">请输入分组名</string>
     <string name="please_select_book">请选择图书</string>
     <string name="sort_by_time">时间排序</string>
@@ -54,9 +54,9 @@
     <string name="wifi_pass_book">WIFI传书</string>
     <string name="book_detail">图书详情</string>
     <string name="rename_library">重命名</string>
-    <string name="delete_library">删除分组</string>
-    <string name="delete_library_include_book">删除分组及全部图书</string>
-    <string name="the_same_name">重命名不能与原组名相同</string>
+    <string name="delete_library">是否删除该分组(组内图书重新放入书架)</string>
+    <string name="delete_library_include_book">是否从本机删除该分组及组内图书</string>
+    <string name="the_same_name">重命名不能与原组名一致</string>
     <string name="system_update_alert">系统升级</string>
     <string name="will_execute_update">有1个更新已准备好，是否立即执行？</string>
     <string name="later_to_say">稍后再说</string>
