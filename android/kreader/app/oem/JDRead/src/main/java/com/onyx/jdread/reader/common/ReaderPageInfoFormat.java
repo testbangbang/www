@@ -11,7 +11,7 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
 public class ReaderPageInfoFormat {
     public static float getReadProgress(ReaderDataHolder readerDataHolder, ReaderViewInfo readerViewInfo) {
         int currentPage = readerDataHolder.getCurrentPage();
-        float total = readerViewInfo.getTotalPage();
+        float total = readerViewInfo.getTotalPage() - 1;
         float progress = (currentPage / total) * 100;
         return (float) (Math.round(progress * 100)) / 100;
     }

@@ -239,6 +239,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     public void updateBookmarkState(){
         boolean isBookmark = readerSettingMenuDialogHandler.hasBookmark();
         binding.readerSettingTitleBar.getReaderTitleBarModel().setBookMarkImageId(isBookmark);
+        readerSettingMenuDialogHandler.updatePageInfo();
     }
 
     private void initFunctionBar() {

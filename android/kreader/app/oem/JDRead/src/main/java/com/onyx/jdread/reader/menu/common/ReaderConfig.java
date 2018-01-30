@@ -44,10 +44,10 @@ public class ReaderConfig {
         public static final int DEFAULT_LINE_SPACING = 25 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
     }
 
-    public static class PageSegmentSpacing{
-        public static final int MIN_SEGMENT_SPACING = 0;
-        public static final int MAX_SEGMENT_SPACING = 30;
-        public static final int DEFAULT_SEGMENT_SPACING = 15;
+    public static class PageParagraphSpacing{
+        public static final int MIN_PARAGRAPH_SPACING = 0;
+        public static final int MAX_PARAGRAPH_SPACING = 200;
+        public static final int DEFAULT_PARAGRAPH_SPACING = 30;
     }
 
     public static class PageLeftAndRightSpacing{

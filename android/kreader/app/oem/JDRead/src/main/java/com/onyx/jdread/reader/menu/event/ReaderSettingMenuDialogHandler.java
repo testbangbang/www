@@ -10,7 +10,6 @@ import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
-import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.event.ShowReaderCatalogMenuEvent;
 import com.onyx.jdread.reader.menu.actions.ChangeChineseConvertTypeAction;
 import com.onyx.jdread.reader.menu.actions.GammaCorrectionAction;
@@ -138,11 +137,6 @@ public class ReaderSettingMenuDialogHandler {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPageViewUpdateEvent(PageViewUpdateEvent event) {
-        new UpdatePageInfoAction(binding, readerDataHolder.getReaderViewInfo()).execute(readerDataHolder,null);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event) {
         new SettingFontSizeAction(readerDataHolder.getStyleCopy(), event.fontSize).execute(readerDataHolder,null);
     }
@@ -186,7 +180,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingParagraphSpacingEvent(SettingParagraphSpacingEvent event) {
-        new SettingParagraphSpacingAction().execute(readerDataHolder,null);
+        new SettingParagraphSpacingAction(readerDataHolder.getStyleCopy(),event.spacing).execute(readerDataHolder,null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -217,5 +211,9 @@ public class ReaderSettingMenuDialogHandler {
 
     public boolean hasBookmark(){
         return bookmarkHandle.hasBookmark(readerDataHolder);
+    }
+
+    public void updatePageInfo(){
+        new UpdatePageInfoAction(binding, readerDataHolder.getReaderViewInfo()).execute(readerDataHolder,null);
     }
 }

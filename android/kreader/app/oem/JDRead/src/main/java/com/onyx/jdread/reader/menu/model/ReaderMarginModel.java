@@ -3,7 +3,6 @@ package com.onyx.jdread.reader.menu.model;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
-import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.SettingLeftAndRightSpacingEvent;
 import com.onyx.jdread.reader.menu.event.SettingLineSpacingEvent;
@@ -21,7 +20,7 @@ public class ReaderMarginModel {
     public final ObservableInt maxLineSpacing = new ObservableInt(ReaderConfig.PageLineSpacing.MAX_LINE_SPACING);
 
     public final ObservableInt segmentProgress = new ObservableInt();
-    public final ObservableInt maxSegmentSpacing = new ObservableInt(ReaderConfig.PageSegmentSpacing.MAX_SEGMENT_SPACING);
+    public final ObservableInt maxSegmentSpacing = new ObservableInt(ReaderConfig.PageParagraphSpacing.MAX_PARAGRAPH_SPACING);
 
     public final ObservableInt leftAndRightProgress = new ObservableInt();
     public final ObservableInt maxLeftAndRightSpacing = new ObservableInt(ReaderConfig.PageLeftAndRightSpacing.MAX_LEFT_AND_RIGHT_SPACING);
@@ -65,7 +64,7 @@ public class ReaderMarginModel {
 
     public void setSegmentProgress(int progress){
         SettingParagraphSpacingEvent event = new SettingParagraphSpacingEvent();
-        event.margin = progress;
+        event.spacing = progress;
         getEventBus().post(event);
     }
 

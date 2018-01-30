@@ -2,7 +2,6 @@ package com.onyx.jdread.reader.actions;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
-import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.request.GotoPageRequest;
@@ -24,7 +23,6 @@ public class GotoPageAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                readerDataHolder.getEventBus().post(new PageViewUpdateEvent());
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
             }
 
