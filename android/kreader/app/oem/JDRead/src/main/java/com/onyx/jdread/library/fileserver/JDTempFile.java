@@ -1,7 +1,5 @@
 package com.onyx.jdread.library.fileserver;
 
-import android.util.Log;
-
 import org.nanohttpd.protocols.http.NanoHTTPD;
 import org.nanohttpd.protocols.http.tempfiles.ITempFile;
 
@@ -19,7 +17,6 @@ public class JDTempFile implements ITempFile {
     private final OutputStream fstream;
 
     public JDTempFile(File tempDir, String fileName) throws IOException {
-        Log.e("", "JDTempFile: ===============================" + fileName);
         this.file = new File(tempDir, fileName);
         this.fstream = new FileOutputStream(this.file);
     }
