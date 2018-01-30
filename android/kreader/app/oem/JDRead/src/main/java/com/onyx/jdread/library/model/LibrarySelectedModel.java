@@ -12,10 +12,12 @@ import java.util.List;
 public class LibrarySelectedModel {
     private boolean selectedAll;
     private List<DataModel> selectedList;
+    private int count;
 
-    public LibrarySelectedModel() {
+    public LibrarySelectedModel(int count) {
         this.selectedAll = false;
         this.selectedList = new ArrayList<>();
+        this.count = count;
     }
 
     public boolean isSelectedAll() {
@@ -32,5 +34,17 @@ public class LibrarySelectedModel {
 
     public void setSelectedList(List<DataModel> selectedList) {
         this.selectedList = selectedList;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public boolean haveSelected() {
+        return (selectedAll && count > selectedList.size()) || (!selectedAll && selectedList.size() != 0);
     }
 }

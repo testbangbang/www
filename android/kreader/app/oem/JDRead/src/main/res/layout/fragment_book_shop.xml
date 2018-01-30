@@ -27,6 +27,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/book_shop_container"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -35,31 +36,6 @@
                 <include
                     android:id="@+id/book_shop_one"
                     layout="@layout/fragment_book_shop_one"
-                    bind:viewModel="@{viewModel}" />
-
-                <include
-                    android:id="@+id/book_shop_two"
-                    layout="@layout/fragment_book_shop_two"
-                    bind:viewModel="@{viewModel}" />
-
-                <include
-                    android:id="@+id/book_shop_three"
-                    layout="@layout/fragment_book_shop_three"
-                    bind:viewModel="@{viewModel}" />
-
-                <include
-                    android:id="@+id/book_shop_four"
-                    layout="@layout/fragment_book_shop_four"
-                    bind:viewModel="@{viewModel}" />
-
-                <include
-                    android:id="@+id/book_shop_five"
-                    layout="@layout/fragment_book_shop_five"
-                    bind:viewModel="@{viewModel}" />
-
-                <include
-                    android:id="@+id/book_shop_six"
-                    layout="@layout/fragment_book_shop_six"
                     bind:viewModel="@{viewModel}" />
 
             </LinearLayout>

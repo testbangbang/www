@@ -2,8 +2,11 @@ package com.onyx.jdread.personal.request.cloud;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetPayQRCodeBean;
 import com.onyx.jdread.personal.common.EncryptHelper;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.common.ReadContentService;
@@ -39,8 +42,15 @@ public class RxGetPayQRCodeRequest extends RxBaseCloudRequest {
             String body = response.body();
             String decryptContent = EncryptHelper.getDecryptContent(body);
             qrCodeBean = JSON.parseObject(decryptContent, GetPayQRCodeBean.class);
+            checkResult();
         }
         return this;
+    }
+
+    private void checkResult() {
+        if (qrCodeBean != null && qrCodeBean.result_code != 0) {
+            PersonalDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(qrCodeBean.message));
+        }
     }
 
     private Call<String> getCall(ReadContentService service) {

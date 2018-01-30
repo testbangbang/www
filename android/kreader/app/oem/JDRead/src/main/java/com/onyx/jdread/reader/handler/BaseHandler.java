@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.handler;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -9,9 +10,13 @@ import android.view.ScaleGestureDetector;
 import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyBinding;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.TouchBinding;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -268,7 +273,54 @@ public class BaseHandler {
     }
 
     public boolean tryHitTest(float x, float y) {
-
+        if (tryAnnotation(readerDataHolder,x, y)) {
+            return true;
+        }
+        if (tryPageLink(readerDataHolder, x, y)) {
+            return true;
+        }
         return false;
+    }
+
+    public boolean tryAnnotation(ReaderDataHolder readerDataHolder,final float x, final float y) {
+        for (PageInfo pageInfo : readerDataHolder.getReaderViewInfo().getVisiblePages()) {
+            if (!readerDataHolder.getReaderUserDataInfo().hasPageAnnotations(pageInfo)) {
+                continue;
+            }
+
+            List<PageAnnotation> annotations = readerDataHolder.getReaderUserDataInfo().getPageAnnotations(pageInfo);
+            for (PageAnnotation annotation : annotations) {
+                for (RectF rect : annotation.getRectangles()) {
+                    if (rect.contains(x, y)) {
+                        showEditAnnotationMenu(annotation);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean tryPageLink(ReaderDataHolder readerDataHolder, final float x, final float y) {
+        for (PageInfo pageInfo : readerDataHolder.getReaderViewInfo().getVisiblePages()) {
+            if (!readerDataHolder.getReaderUserDataInfo().hasPageLinks(pageInfo)) {
+                continue;
+            }
+            List<ReaderSelection> links = readerDataHolder.getReaderUserDataInfo().getPageLinks(pageInfo);
+            for (ReaderSelection link : links) {
+                for (RectF rect : link.getRectangles()) {
+                    if (rect.contains(x, y)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void showEditAnnotationMenu(PageAnnotation annotations) {
+        getReaderDataHolder().getSelectMenuModel().setIsShowSelectMenu(true);
+        getReaderDataHolder().getSelectMenuModel().setIsShowDictionaryMenu(false);
+        getReaderDataHolder().getSelectMenuModel().showEditAnnotationMenu(readerDataHolder,annotations);
     }
 }
