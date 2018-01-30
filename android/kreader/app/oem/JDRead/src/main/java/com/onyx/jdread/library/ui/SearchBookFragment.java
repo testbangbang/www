@@ -1,5 +1,6 @@
 package com.onyx.jdread.library.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
@@ -47,6 +48,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 /**
  * Created by hehai on 18-1-17.
@@ -86,6 +88,21 @@ public class SearchBookFragment extends BaseFragment {
         searchResultAdapter = new SearchResultAdapter();
         binding.searchResultRecycler.setAdapter(searchResultAdapter);
         initPageIndicator();
+        hideSearchViewLine();
+    }
+
+    private void hideSearchViewLine() {
+        if (binding.searchView != null) {
+            try {
+                Class<?> argClass = binding.searchView.getClass();
+                Field ownField = argClass.getDeclaredField("mSearchPlate");
+                ownField.setAccessible(true);
+                View mView = (View) ownField.get(binding.searchView);
+                mView.setBackgroundColor(Color.TRANSPARENT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initPageIndicator() {
@@ -213,7 +230,7 @@ public class SearchBookFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         getEventBus().unregister(this);
-        binding.searchView.setQuery("",false);
+        binding.searchView.setQuery("", false);
     }
 
     @Override

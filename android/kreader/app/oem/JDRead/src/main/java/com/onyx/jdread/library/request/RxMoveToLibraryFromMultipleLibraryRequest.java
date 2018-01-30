@@ -57,14 +57,14 @@ public class RxMoveToLibraryFromMultipleLibraryRequest extends RxBaseDBRequest {
         }
         for (Metadata metadata : list) {
             MetadataCollection collection = providerBase.loadMetadataCollection(getAppContext(),
-                    fromIdString, metadata.getIdString());
+                    fromIdString, metadata.getAssociationId());
             if (StringUtils.isNullOrEmpty(toIdString)) {
                 if (collection != null) {
-                    providerBase.deleteMetadataCollection(getAppContext(), fromIdString, metadata.getIdString());
+                    providerBase.deleteMetadataCollection(getAppContext(), fromIdString, metadata.getAssociationId());
                 }
             } else {
                 if (collection == null) {
-                    collection = MetadataCollection.create(metadata.getIdString(), toIdString);
+                    collection = MetadataCollection.create(metadata.getAssociationId(), toIdString);
                 }
                 collection.setLibraryUniqueId(toIdString);
                 if (collection.hasValidId()) {
