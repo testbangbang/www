@@ -12,9 +12,16 @@ import java.util.Map;
  */
 public class BroadcastHelper {
     public static final String ACTION_FEEDBACK = "com.onyx.action.LOG_FEEDBACK";
+    public static final String ACTION_FEEDBACK_UPLOAD = "com.onyx.action.LOG_FEEDBACK_UPLOAD";
 
     public static void sendFeedbackBroadcast(Context context, String data) {
         Intent intent = intentWith(ACTION_FEEDBACK, Constant.ARGS_TAG, data);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendFeedbackUploadBroadcast(Context context) {
+        Intent intent = new Intent(ACTION_FEEDBACK_UPLOAD);
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         context.sendBroadcast(intent);
     }
