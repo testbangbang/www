@@ -14,9 +14,6 @@ import com.onyx.jdread.main.util.RegularUtil;
 import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
 import com.onyx.jdread.util.BroadcastHelper;
 
-import org.acra.ACRA;
-import org.acra.ErrorReporter;
-
 import java.util.Observable;
 
 /**
@@ -46,9 +43,6 @@ public class FeedbackModel extends Observable {
             return;
         }
 
-//        ErrorReporter reporter = ACRA.getErrorReporter();
-//        reporter.putCustomData(phone.get(), feedback.get());
-//        reporter.handleException(null);
         submitCommitFeedback(feedback.get(), phone.get());
         titleBarModel.back();
     }
