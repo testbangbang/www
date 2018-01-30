@@ -2,13 +2,17 @@ package com.onyx.jdread.setting.model;
 
 import android.databinding.ObservableField;
 
+import com.onyx.android.sdk.data.model.LogCollection;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
+import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.main.util.RegularUtil;
 import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
+import com.onyx.jdread.util.BroadcastHelper;
 
 import org.acra.ACRA;
 import org.acra.ErrorReporter;
@@ -45,5 +49,17 @@ public class FeedbackModel extends Observable {
 //        ErrorReporter reporter = ACRA.getErrorReporter();
 //        reporter.putCustomData(phone.get(), feedback.get());
 //        reporter.handleException(null);
+        startCommitFeedback(feedback.get(), phone.get());
+        titleBarModel.back();
+    }
+
+    private void startCommitFeedback(String desc, String phone) {
+        LogCollection logCollection = new LogCollection();
+        logCollection.desc = desc;
+        logCollection.phone = phone;
+
+        BroadcastHelper.sendFeedbackBroadcast(JDReadApplication.getInstance(),
+                String.valueOf(JSONObjectParseUtils.toJson(logCollection)));
+        ToastUtils.showToast(JDReadApplication.getInstance(), R.string.feedback_success);
     }
 }

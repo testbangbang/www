@@ -14,4 +14,5 @@ public class LogCollection implements Serializable {
     public String desc;
     public String zipFile;
     public String email;
+    public String phone;
 }
