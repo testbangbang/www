@@ -6,6 +6,7 @@ public class EngBookMyType {
 	@warning - не изменять
 	*/
 	public static final int AL_WORD_LEN =	384;
+	public static final int AL_WORD_LEN_FOR_TEST_CHINA = 24;
 	
 	public static final char AL_ROOT_WRONGPATH	= '\\';
 	public static final char AL_ROOT_RIGHTPATH = '/';

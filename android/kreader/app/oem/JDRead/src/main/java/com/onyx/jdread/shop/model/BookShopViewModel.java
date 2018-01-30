@@ -16,6 +16,7 @@ import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ import java.util.List;
  */
 
 public class BookShopViewModel extends BaseObservable {
-    public BannerViewModel bannerSubjectIems;
+    public BannerViewModel bannerViewModel;
     public List<SubjectViewModel> commonSubjcet;
     public AllCategoryViewModel allCategoryViewModel;
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> titleSubjectItems;
@@ -45,13 +46,11 @@ public class BookShopViewModel extends BaseObservable {
         return eventBus;
     }
 
-    public BannerViewModel getBannerSubjectIems() {
-        return bannerSubjectIems;
-    }
-
-    public void setBannerSubjectIems(BannerViewModel bannerSubjectIems) {
-        this.bannerSubjectIems = bannerSubjectIems;
-        notifyChange();
+    public BannerViewModel getBannerViewModel() {
+        if (bannerViewModel == null) {
+            this.bannerViewModel = new BannerViewModel(getEventBus());
+        }
+        return bannerViewModel;
     }
 
     public String getSearchContent() {
@@ -75,19 +74,16 @@ public class BookShopViewModel extends BaseObservable {
         return commonSubjcet;
     }
 
-    public void setCommonSubjcet(List<SubjectViewModel> commonSubjcet) {
-        this.commonSubjcet = commonSubjcet;
-        if (commonSubjcet != null) {
-            for (int i = 0; i < commonSubjcet.size(); i++) {
-                if (i >= Constants.SHOP_MAIN_INDEX_THREE && i % 2 == 1) {
-                    SubjectViewModel subjectViewModel = commonSubjcet.get(i);
-                    SubjectViewModel nextSubjectViewModel = commonSubjcet.get(i + 1);
-                    subjectViewModel.setShowNextTitle(true);
-                    subjectViewModel.setModelBeanNext(nextSubjectViewModel.getModelBean());
-                }
-            }
+    public void setCommonSubjcet() {
+        if (commonSubjcet != null && commonSubjcet.size() >= Constants.SHOP_MAIN_INDEX_EIGHT) {
+            return;
         }
-        notifyChange();
+        commonSubjcet= new ArrayList<>();
+        for (int i = 0; i < Constants.SHOP_MAIN_INDEX_NINE; i++) {
+            SubjectViewModel subjectViewModel = new SubjectViewModel();
+            subjectViewModel.setEventBus(getEventBus());
+            commonSubjcet.add(subjectViewModel);
+        }
     }
 
     public void onRankViewClick() {

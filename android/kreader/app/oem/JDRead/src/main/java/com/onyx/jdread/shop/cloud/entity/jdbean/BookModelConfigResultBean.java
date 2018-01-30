@@ -32,6 +32,10 @@ public class BookModelConfigResultBean {
         }
 
         public static class ModulesBean {
+            public int f_type_next;
+            public int id_next;
+            public String show_name_next;
+            public boolean showNextTitle;
             public int id;
             public int module_type;
             public int rank_type;

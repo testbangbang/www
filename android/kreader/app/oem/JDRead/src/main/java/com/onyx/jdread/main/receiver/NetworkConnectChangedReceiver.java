@@ -8,6 +8,8 @@ import android.net.wifi.WifiManager;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.onyx.jdread.main.event.NetworkConnectedEvent;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.main.event.WifiStateChangeEvent;
 
 import org.acra.ACRA;
@@ -47,6 +49,7 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
                 Log.i(TAG, "isConnected:" + isConnected);
                 if (isConnected) {
 //                    ACRA.getErrorReporter().handleSilentException(null);
+                    PersonalDataBundle.getInstance().getEventBus().post(new NetworkConnectedEvent());
                 }
             }
         }

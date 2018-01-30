@@ -18,15 +18,18 @@ import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.action.BookRankAction;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
+import com.onyx.jdread.shop.event.ViewAllNextClickEvent;
 import com.onyx.jdread.shop.model.RankViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -80,6 +83,7 @@ public class BookRankFragment extends BaseFragment {
         setRecycleView();
         bookRankBinding.scrollBar.setTotal(SCROLL_TOTAL);
         bookRankBinding.setRankViewModel(getRankViewModel());
+        getRankViewModel().setRankItems();
         getRankViewModel().getTitleBarViewModel().leftText = getString(R.string.ranking);
     }
 
@@ -162,6 +166,23 @@ public class BookRankFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onViewAllNextClickEvent(ViewAllNextClickEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
+        if (modulesBean != null) {
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name_next);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id_next);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type_next);
+            if (getViewEventCallBack() != null) {
+                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
         JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
@@ -173,5 +194,13 @@ public class BookRankFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
+    }
+
+    private boolean checkWfiDisConnected() {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            return true;
+        }
+        return false;
     }
 }

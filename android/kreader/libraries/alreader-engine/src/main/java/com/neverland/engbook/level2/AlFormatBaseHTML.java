@@ -213,12 +213,13 @@ public class AlFormatBaseHTML extends AlAXML {
                 return true;
             case AlFormatTag.TAG_CODE:
                 if (tag.closed) {
-                    allState.state_code_flag = false;
+                    clearStateStyle(AlStateLevel2.PAR_PRESENT_HTML_CODE);
                     clearTextStyle(AlStyles.STYLE_CODE);
+                    allState.state_code_flag = (allState.description & (AlStateLevel2.PAR_PRESENT_HTML_CODE | AlStateLevel2.PAR_PRESENT_HTML_PRE)) != 0L;
                 } else
                 if (!tag.ended) {
-                    setParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH/* | AlStyles.SL_PRESERVE_SPACE*/);
                     setTextStyle(AlStyles.STYLE_CODE);
+                    setStateStyle(AlStateLevel2.PAR_PRESENT_HTML_CODE);
                     allState.state_code_flag = true;
                 } else {
 
@@ -227,11 +228,13 @@ public class AlFormatBaseHTML extends AlAXML {
             case AlFormatTag.TAG_PRE:
                 if (tag.closed) {
                     newParagraph();
-                    allState.state_code_flag = false;
+                    clearParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH/* | AlStyles.SL_PRESERVE_SPACE*/);
+                    clearStateStyle(AlStateLevel2.PAR_PRESENT_HTML_PRE);
+                    allState.state_code_flag = (allState.description & (AlStateLevel2.PAR_PRESENT_HTML_CODE | AlStateLevel2.PAR_PRESENT_HTML_PRE)) != 0L;
                 } else if (!tag.ended) {
                     newParagraph();
                     setParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH/* | AlStyles.SL_PRESERVE_SPACE*/);
-                    //setPropStyle(AlParProperty.SL2_EMPTY_BEFORE | AlParProperty.SL2_EMPTY_AFTER);
+                    setStateStyle(AlStateLevel2.PAR_PRESENT_HTML_PRE);
                     allState.state_code_flag = true;
                 } else {
 

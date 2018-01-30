@@ -17,18 +17,18 @@ import com.onyx.jdread.databinding.PersonalExperienceBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.model.TitleBarModel;
-import com.onyx.jdread.personal.action.GetReadOverAction;
-import com.onyx.jdread.personal.action.GetReadTotalAction;
 import com.onyx.jdread.personal.action.RecommendUserAction;
 import com.onyx.jdread.personal.adapter.PersonalExperienceAdapter;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendItemBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
 import com.onyx.jdread.util.TimeUtils;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -57,57 +57,25 @@ public class PersonalExperienceFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        PersonalDataBundle.getInstance().getEventBus().register(this);
+        Utils.ensureRegister(PersonalDataBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        PersonalDataBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(PersonalDataBundle.getInstance().getEventBus(), this);
     }
 
     private void initData() {
-        String imgUrl = LoginHelper.getImgUrl();
-        String userName = LoginHelper.getUserName();
-        if (StringUtils.isNotBlank(imgUrl) && StringUtils.isNotBlank(userName)) {
-            binding.setImageUrl(imgUrl);
-            binding.setUserName(userName);
-        }
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
         titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.personal_experience));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.experienceTitleBar.setTitleModel(titleModel);
 
-        GetReadTotalAction getReadTotalAction = new GetReadTotalAction();
-        getReadTotalAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                ReadTotalInfoBean readTotalInfo = PersonalDataBundle.getInstance().getReadTotalInfo();
-                String firstAccessTime = readTotalInfo.getFirstAccessTime();
-                String currentTime = readTotalInfo.getCurrentTime();
-                int totalCount = readTotalInfo.getTotalCount();
-                int days = 0;
-                if (StringUtils.isNotBlank(firstAccessTime) && StringUtils.isNotBlank(currentTime)) {
-                    Date firstData = TimeUtils.parseDateDefault(firstAccessTime);
-                    Date currentData = TimeUtils.parseDateDefault(currentTime);
-                    days = TimeUtils.daysBetweenDefault(firstData, currentData);
-                }
-                binding.setStayTime(days + "");
-                binding.setTotalCount(totalCount + "");
-            }
-        });
-
-        GetReadOverAction getReadOverAction = new GetReadOverAction();
-        getReadOverAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                ReadOverInfoBean readOverInfo = PersonalDataBundle.getInstance().getReadOverInfo();
-                int read_books_count = readOverInfo.getRead_books_count();
-                int notes_count = readOverInfo.getNotes_count();
-                binding.setReadOver(read_books_count + "");
-                binding.setNotes(notes_count + "");
-            }
-        });
+        UserInfo userInfo = PersonalDataBundle.getInstance().getUserInfo();
+        if (userInfo != null) {
+            binding.setUserInfo(userInfo);
+        }
 
         final RecommendUserAction recommendUserAction = new RecommendUserAction();
         recommendUserAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {

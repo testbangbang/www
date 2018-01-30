@@ -13,6 +13,7 @@ import com.onyx.jdread.library.request.RxCopyBookToLibraryRequest;
 
 import org.nanohttpd.protocols.http.IHTTPSession;
 import org.nanohttpd.protocols.http.NanoHTTPD;
+import org.nanohttpd.protocols.http.content.ContentType;
 import org.nanohttpd.protocols.http.request.Method;
 import org.nanohttpd.protocols.http.response.Response;
 
@@ -55,7 +56,10 @@ public class FileServer extends NanoHTTPD {
 
     @Override
     public Response serve(IHTTPSession session) {
-        Map<String, String> files = new HashMap<String, String>();
+        ContentType ct = new ContentType(session.getHeaders().get("content-type")).tryUTF8();
+        session.getHeaders().put("content-type", ct.getContentTypeHeader());
+
+        Map<String, String> files = new HashMap<>();
         Method method = session.getMethod();
         if (Method.PUT.equals(method) || Method.POST.equals(method)) {
             try {

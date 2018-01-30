@@ -46,11 +46,12 @@ import java.util.Stack;
 public class LibraryViewDataModel extends Observable {
     public final ObservableList<DataModel> items = new ObservableArrayList<>();
     public final ObservableField<String> title = new ObservableField<>();
-    public final ObservableField<String> selectAllBtnText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.select_all));
     public final ObservableInt count = new ObservableInt();
     public final ObservableInt libraryCount = new ObservableInt(0);
     public final ObservableBoolean showTopMenu = new ObservableBoolean(true);
     public final ObservableBoolean showBottomMenu = new ObservableBoolean(false);
+    public final ObservableBoolean haveSelected = new ObservableBoolean(false);
+    public final ObservableBoolean isSelectAll = new ObservableBoolean(false);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
     private List<DataModel> librarySelected = new ArrayList<>();
     private int queryLimit = 6;
@@ -332,7 +333,8 @@ public class LibraryViewDataModel extends Observable {
     }
 
     private void setSelectAllBtnText() {
-        selectAllBtnText.set(isSelectAll() ? JDReadApplication.getInstance().getString(R.string.cancel) : JDReadApplication.getInstance().getString(R.string.select_all));
+        isSelectAll.set(isSelectAll());
+        checkHaveSelected();
     }
 
     private boolean isSelectAll() {
@@ -398,5 +400,9 @@ public class LibraryViewDataModel extends Observable {
         list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.my_book), new MyBookEvent()));
         list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.wifi_pass_book), new WifiPassBookEvent()));
         return list;
+    }
+
+    public void checkHaveSelected() {
+        haveSelected.set(selectHelper.haveSelected());
     }
 }

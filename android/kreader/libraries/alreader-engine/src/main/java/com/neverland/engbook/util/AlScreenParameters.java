@@ -8,14 +8,14 @@ public class AlScreenParameters {
 	//public int		redLine;
 	public int		vikluchL;
 	public int		vikluchR;
-	public int		redList;
-	public int		redLineV;
+	//public int		redList;
+	public int		heightEmptyLine;
 	/*public int		redStyle1;
 	public int		redStyle2;
 	public int		redStyle3;*/
-	public int		redStyleV;
+	//public int		redStyleV;
 	public int		reservHeight0;
-	public int		redParV;
+	//public int		redParV;
 	//public int		summRedV;
 	
 	public long		fletter_mask0;

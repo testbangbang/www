@@ -21,6 +21,7 @@ import com.onyx.jdread.personal.event.ExportToImpressionEvent;
 import com.onyx.jdread.personal.event.ExportToNativeEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -46,13 +47,13 @@ public class PersonalNoteFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        PersonalDataBundle.getInstance().getEventBus().register(this);
+        Utils.ensureRegister(PersonalDataBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        PersonalDataBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(PersonalDataBundle.getInstance().getEventBus(), this);
     }
 
     private void initView() {

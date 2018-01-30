@@ -53,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:padding="@dimen/rectangle_stroke_width"
+                android:scaleType="fitXY"
                 android:src="@mipmap/ic_group_label"
                 android:visibility="@{StringUtils.isNotBlank(model.childCount)?View.VISIBLE:View.GONE}" />
 
