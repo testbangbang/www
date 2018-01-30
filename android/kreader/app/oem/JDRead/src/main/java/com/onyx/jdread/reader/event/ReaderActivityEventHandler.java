@@ -47,7 +47,7 @@ public class ReaderActivityEventHandler {
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
         this.readerViewBack = readerViewBack;
-        ReaderPageInfoModel.resetReaderMenu();
+        ReaderPageInfoModel.setHasChapterInfo(true);
     }
 
     public void registerListener() {

@@ -17,6 +17,7 @@ import com.onyx.jdread.reader.menu.actions.GetTableOfContentAction;
 import com.onyx.jdread.reader.menu.event.GotoPageEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemNextChapterEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemPreviousChapterEvent;
+import com.onyx.jdread.reader.menu.request.GetTableOfContentRequest;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,19 +35,23 @@ public class ReaderPageInfoModel {
     private ObservableInt currentPage = new ObservableInt(0);
     private ObservableBoolean isShow = new ObservableBoolean(true);
     private ReaderDataHolder readerDataHolder;
-    private static List<Integer> tocChapterNodeList;
+    private List<Integer> tocChapterNodeList;
     private static boolean hasChapterInfo = true;
 
     public ReaderPageInfoModel(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
+        resetReaderMenu();
     }
 
-    public static void resetReaderMenu() {
+    public void resetReaderMenu() {
         if (tocChapterNodeList != null) {
             tocChapterNodeList.clear();
             tocChapterNodeList = null;
         }
-        hasChapterInfo = true;
+    }
+
+    public static void setHasChapterInfo(boolean hasChapterInfo) {
+        ReaderPageInfoModel.hasChapterInfo = hasChapterInfo;
     }
 
     public EventBus getEventBus() {
@@ -109,12 +114,12 @@ public class ReaderPageInfoModel {
         this.isShow.set(isShow);
     }
 
-    public static List<Integer> getTocChapterNodeList() {
+    public List<Integer> getTocChapterNodeList() {
         return tocChapterNodeList;
     }
 
-    public static void setTocChapterNodeList(List<Integer> tocChapterNodeList) {
-        ReaderPageInfoModel.tocChapterNodeList = tocChapterNodeList;
+    public void setTocChapterNodeList(List<Integer> tocChapterNodeList) {
+        this.tocChapterNodeList = tocChapterNodeList;
     }
 
     private void prepareGotoChapter(final ReaderDataHolder readerDataHolder, final boolean back) {
@@ -123,15 +128,14 @@ public class ReaderPageInfoModel {
             new GetTableOfContentAction().execute(readerDataHolder, new RxCallback() {
                 @Override
                 public void onNext(Object request) {
-                    ReaderBaseRequest readerRequest = (ReaderBaseRequest) request;
-                    ReaderDocumentTableOfContent toc = readerRequest.getReaderUserDataInfo().getTableOfContent();
-                    boolean hasToc = toc != null && !toc.isEmpty();
+                    GetTableOfContentRequest readerRequest = (GetTableOfContentRequest) request;
+                    boolean hasToc = readerRequest.isHasToc();
                     if (!hasToc) {
                         ToastUtil.showToast(readerDataHolder.getAppContext(), R.string.no_chapters);
                         hasChapterInfo = false;
                         return;
                     }
-                    List<Integer> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
+                    List<Integer> readTocChapterNodeList = readerRequest.getReadTocChapterNodeList();
                     setTocChapterNodeList(readTocChapterNodeList);
                     gotoChapter(readerDataHolder, back, readTocChapterNodeList);
                 }
@@ -188,7 +192,6 @@ public class ReaderPageInfoModel {
                         return getChapterPositionByPage(pagePosition + 1, back, tocChapterNodeList);
                     }
                 }
-
             }
         }
 
