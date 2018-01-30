@@ -105,7 +105,11 @@ public class AllCategoryFragment extends BaseFragment {
     private void setCategoryData(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categorySubjectItems) {
         if (categorySubjectItems != null) {
             getAllCategoryViewModel().setAllCategoryItems(categorySubjectItems);
-            getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems.subList(Constants.SHOP_MAIN_INDEX_ZERO, topCol));
+            if (categorySubjectItems.size() <= topCol) {
+                getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems);
+            } else {
+                getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems.subList(Constants.SHOP_MAIN_INDEX_ZERO, topCol));
+            }
             updateContentView(getAllCategoryViewModel().getAllCategoryItems());
             recyclerView.gotoPage(0);
         }
@@ -127,7 +131,16 @@ public class AllCategoryFragment extends BaseFragment {
                 if (paginator != null) {
                     setCurrentPage(paginator.getCurrentPage());
                 }
-                getAllCategoryViewModel().setTopCategoryItems(getAllCategoryViewModel().getAllCategoryItems().subList(position, position + topCol));
+
+                List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
+                if (allCategoryItems != null) {
+                    int tag = allCategoryItems.size() - position;
+                    if (tag < topCol) {
+                        getAllCategoryViewModel().setTopCategoryItems(allCategoryItems.subList(position, position + tag));
+                    } else {
+                        getAllCategoryViewModel().setTopCategoryItems(allCategoryItems.subList(position, position + topCol));
+                    }
+                }
             }
         });
 

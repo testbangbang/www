@@ -298,7 +298,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecommendNextPageEvent(RecommendNextPageEvent event) {
-        if (recyclerViewRecommend != null){
+        if (recyclerViewRecommend != null) {
             if (paginator != null) {
                 if (paginator.isLastPage()) {
                     recyclerViewRecommend.gotoPage(0);
@@ -484,7 +484,7 @@ public class BookDetailFragment extends BaseFragment {
                 return;
             }
             if (bookDetailBean != null && DownLoadHelper.isPause(downloadTaskState)) {
-                BookDownloadUtils.download(bookDetailBean,getShopDataBundle());
+                BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
                 ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_download_go_on));
                 return;
             }
@@ -496,14 +496,14 @@ public class BookDetailFragment extends BaseFragment {
         }
 
         if (!bookDetailBean.can_buy) {
-            BookDownloadUtils.download(bookDetailBean,getShopDataBundle());
-        //TODO  addBookToSmoothCardList(bookDetailBean, true);
+            BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
+            //TODO  addBookToSmoothCardList(bookDetailBean, true);
             return;
         }
 
         if (bookDetailBean.can_buy) {
-        //TODO  showPayDialog(bookDetailBean.ebook_id);
-            BookDownloadUtils.download(bookDetailBean,getShopDataBundle());
+            //TODO  showPayDialog(bookDetailBean.ebook_id);
+            BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
             return;
         }
     }
@@ -525,7 +525,7 @@ public class BookDetailFragment extends BaseFragment {
         OpenBookHelper.openBook(super.getContext(), documentInfo);
     }
 
-    private void showPayDialog(long ebookId){
+    private void showPayDialog(long ebookId) {
         ArrayList<String> bookIds = new ArrayList<>();
         bookIds.add(String.valueOf(ebookId));
         final GetOrderUrlAction orderUrlAction = new GetOrderUrlAction(bookIds);
@@ -704,9 +704,9 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBuyBookSuccessEvent(BuyBookSuccessEvent event) {
         String msg = getString(R.string.buy_book_success) + bookDetailBean.name + getString(R.string.book_detail_tip_book_add_to_bookself);
-        ToastUtil.showToast(JDReadApplication.getInstance(),msg);
+        ToastUtil.showToast(JDReadApplication.getInstance(), msg);
         //TODO  addBookToSmoothCardList(bookDetailBean, true);
-        BookDownloadUtils.download(bookDetailBean,getShopDataBundle());
+        BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
         changeBuyBookButtonState();
     }
 
@@ -718,7 +718,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
-        if(JDReadApplication.getInstance().getString(R.string.login_success).equals(event.getMessage())) {
+        if (JDReadApplication.getInstance().getString(R.string.login_success).equals(event.getMessage())) {
             getBookDetailData();
         }
     }
@@ -770,29 +770,27 @@ public class BookDetailFragment extends BaseFragment {
         dialogBookInfoViewModel.content.set(content);
         dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce));
         infoBinding.setViewModel(dialogBookInfoViewModel);
-        if (infoDialog == null) {
-            AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
-            build.setView(infoBinding.getRoot());
-            build.setCancelable(true);
-            AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
-            WebSettings settings = pagedWebView.getSettings();
-            settings.setSupportZoom(true);
-            settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
-            pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
-                @Override
-                public void onPageChanged(int currentPage, int totalPage) {
-                    dialogBookInfoViewModel.currentPage.set(currentPage);
-                    dialogBookInfoViewModel.totalPage.set(totalPage);
-                }
-            });
-            infoBinding.setListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismissInfoDialog();
-                }
-            });
-            infoDialog = build.create();
-        }
+        AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+        build.setView(infoBinding.getRoot());
+        build.setCancelable(true);
+        AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
+        WebSettings settings = pagedWebView.getSettings();
+        settings.setSupportZoom(true);
+        settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
+        pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
+            @Override
+            public void onPageChanged(int currentPage, int totalPage) {
+                dialogBookInfoViewModel.currentPage.set(currentPage);
+                dialogBookInfoViewModel.totalPage.set(totalPage);
+            }
+        });
+        infoBinding.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismissInfoDialog();
+            }
+        });
+        infoDialog = build.create();
         if (infoDialog != null) {
             infoDialog.show();
         }

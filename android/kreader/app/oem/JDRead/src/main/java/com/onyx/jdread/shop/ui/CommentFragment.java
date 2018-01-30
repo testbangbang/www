@@ -204,29 +204,27 @@ public class CommentFragment extends BaseFragment {
         dialogBookInfoViewModel.content.set(content);
         dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_comment_detail));
         infoBinding.setViewModel(dialogBookInfoViewModel);
-        if (infoDialog == null) {
-            AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
-            build.setView(infoBinding.getRoot());
-            build.setCancelable(true);
-            AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
-            WebSettings settings = pagedWebView.getSettings();
-            settings.setSupportZoom(true);
-            settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
-            pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
-                @Override
-                public void onPageChanged(int currentPage, int totalPage) {
-                    dialogBookInfoViewModel.currentPage.set(currentPage);
-                    dialogBookInfoViewModel.totalPage.set(totalPage);
-                }
-            });
-            infoBinding.setListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismissInfoDialog();
-                }
-            });
-            infoDialog = build.create();
-        }
+        AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
+        build.setView(infoBinding.getRoot());
+        build.setCancelable(true);
+        AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
+        WebSettings settings = pagedWebView.getSettings();
+        settings.setSupportZoom(true);
+        settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
+        pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
+            @Override
+            public void onPageChanged(int currentPage, int totalPage) {
+                dialogBookInfoViewModel.currentPage.set(currentPage);
+                dialogBookInfoViewModel.totalPage.set(totalPage);
+            }
+        });
+        infoBinding.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismissInfoDialog();
+            }
+        });
+        infoDialog = build.create();
         if (infoDialog != null) {
             infoDialog.show();
         }

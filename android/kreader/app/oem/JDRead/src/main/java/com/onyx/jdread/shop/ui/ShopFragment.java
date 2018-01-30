@@ -314,7 +314,7 @@ public class ShopFragment extends BaseFragment {
     }
 
     private void getShopMainConfigData() {
-        ShopMainConfigAction configAction = new ShopMainConfigAction();
+        ShopMainConfigAction configAction = new ShopMainConfigAction(Constants.BOOK_SHOP_MAIN_CONFIG_CID);
         configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
             @Override
             public void onNext(ShopMainConfigAction configAction) {

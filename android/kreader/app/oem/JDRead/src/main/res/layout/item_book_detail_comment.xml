@@ -25,7 +25,7 @@
                 android:layout_centerVertical="true"
                 android:text="@{commentEntity.nick_name}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/font_size_15" />
 
             <RatingBar
                 android:id="@+id/book_comment_rating_bar"
@@ -43,12 +43,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/book_detail_margin"
+            android:layout_marginTop="@dimen/book_comment_contetn_margin_top"
             android:ellipsize="end"
             android:lines="2"
             android:text="@{commentEntity.contents}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            android:textSize="@dimen/font_size_17" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 

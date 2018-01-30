@@ -35,7 +35,10 @@ public class Constants {
     public static final String SP_KEY_BOOK_LIST_TYPE = "book_list_type";
     public static final String SP_KEY_SEARCH_BOOK_CAT_ID = "book_search_book_cat_id";
 
-    public static final int BOOK_SHOP_DEFAULT_CID = 11;
+    public static final int BOOK_SHOP_MAIN_CONFIG_CID = 11;
+    public static final int BOOK_SHOP_VIP_CONFIG_CID = 12;
+    public static final int BOOK_SHOP_NEW_BOOK_CONFIG_CID = 14;
+    public static final int BOOK_SHOP_SALE_BOOK_CONFIG_CID = 13;
     public static final int BOOK_COMMENT_PAGE_SIZE = 20;
     public static final int BOOK_CATEGORY_PAGE_SIZE = 20;
     public static final String BOOK_PAGE_SIZE = "20";

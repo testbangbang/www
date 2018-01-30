@@ -11,6 +11,7 @@ import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestShopMainConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,19 +23,30 @@ public class ShopMainConfigAction extends BaseAction {
     private BookModelConfigResultBean resultBean;
     private List<BookModelConfigResultBean.DataBean.AdvBean> bannerList;
     private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
+    private List<BookModelConfigResultBean.DataBean.ModulesBean> commonSubjectDataList;
+    private List<SubjectViewModel> commonSubjcet;
+    private int cid;
+
+    public ShopMainConfigAction(int cid) {
+        this.cid = cid;
+    }
 
     public BookModelConfigResultBean getResultBean() {
         return resultBean;
+    }
+
+    public List<SubjectViewModel> getCommonSubjcet() {
+        return commonSubjcet;
     }
 
     @Override
     public void execute(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         ShopMainConfigRequestBean requestBean = new ShopMainConfigRequestBean();
         JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
-        String uri = String.format(CloudApiContext.BookShopURI.SHOP_MAIN_CONFIG_URI, String.valueOf(Constants.BOOK_SHOP_DEFAULT_CID));
+        String uri = String.format(CloudApiContext.BookShopURI.SHOP_MAIN_CONFIG_URI, String.valueOf(cid));
         appBaseInfo.setSign(appBaseInfo.getSignValue(uri));
         requestBean.setAppBaseInfo(appBaseInfo);
-        requestBean.setCid(Constants.BOOK_SHOP_DEFAULT_CID);
+        requestBean.setCid(cid);
         RxRequestShopMainConfig request = new RxRequestShopMainConfig();
         request.setRequestBean(requestBean);
         request.execute(new RxCallback<RxRequestShopMainConfig>() {
@@ -55,8 +67,9 @@ public class ShopMainConfigAction extends BaseAction {
             public void onNext(RxRequestShopMainConfig request) {
                 resultBean = request.getResultBean();
                 bannerList = request.getBannerList();
-                subjectDataList = request.getSubjectDataList();
-                setResult(dataBundle);
+                subjectDataList = request.getMainSubjectDataList();
+                commonSubjectDataList = request.getCommonSubjectDataList();
+                setResult(cid, dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onNext(ShopMainConfigAction.this);
                 }
@@ -80,15 +93,32 @@ public class ShopMainConfigAction extends BaseAction {
         });
     }
 
-    private void setResult(ShopDataBundle dataBundle) {
-        if (bannerList != null) {
-            dataBundle.getShopViewModel().getBannerViewModel().setBannerList(bannerList);
-        }
-        if (subjectDataList != null) {
-            List<SubjectViewModel> commonSubjcet = dataBundle.getShopViewModel().getCommonSubjcet();
-            for (int i = 0; i < subjectDataList.size(); i++) {
-                BookModelConfigResultBean.DataBean.ModulesBean modulesBean = subjectDataList.get(i);
-                commonSubjcet.get(i).setModelBean(modulesBean);
+    private void setResult(int cid, ShopDataBundle dataBundle) {
+        if (cid == Constants.BOOK_SHOP_MAIN_CONFIG_CID) {
+            if (bannerList != null) {
+                dataBundle.getShopViewModel().getBannerViewModel().setBannerList(bannerList);
+            }
+            if (subjectDataList != null) {
+                List<SubjectViewModel> commonSubjcet = dataBundle.getShopViewModel().getCommonSubjcet();
+                for (int i = 0; i < subjectDataList.size(); i++) {
+                    BookModelConfigResultBean.DataBean.ModulesBean modulesBean = subjectDataList.get(i);
+                    commonSubjcet.get(i).setModelBean(modulesBean);
+                }
+            }
+        } else {
+            if (commonSubjectDataList != null) {
+                if (commonSubjcet != null) {
+                    commonSubjcet.clear();
+                } else {
+                    commonSubjcet = new ArrayList<>();
+                }
+                for (int i = 0; i < commonSubjectDataList.size(); i++) {
+                    BookModelConfigResultBean.DataBean.ModulesBean modulesBean = commonSubjectDataList.get(i);
+                    SubjectViewModel subjectViewModel = new SubjectViewModel();
+                    subjectViewModel.setEventBus(dataBundle.getEventBus());
+                    subjectViewModel.setModelBean(modulesBean);
+                    commonSubjcet.add(subjectViewModel);
+                }
             }
         }
     }
