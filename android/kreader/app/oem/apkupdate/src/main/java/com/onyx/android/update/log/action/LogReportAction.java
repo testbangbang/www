@@ -11,7 +11,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.update.UpdateApplication;
-import com.onyx.android.update.log.request.RxLogCollectionRequest;
+import com.onyx.android.update.log.request.RxLogFilesSaveRequest;
 import com.onyx.android.update.log.request.RxLogFeedbackRequest;
 import com.onyx.android.update.log.request.RxLogFilesLoadRequest;
 
@@ -45,11 +45,11 @@ public class LogReportAction {
     }
 
     public void execute(final Context context, final RxCallback rxCallback) {
-        final RxLogCollectionRequest logCollectionRequest = new RxLogCollectionRequest(logCollection);
-        RxLogCollectionRequest.setAppContext(context.getApplicationContext());
-        logCollectionRequest.execute(new RxCallback<RxLogCollectionRequest>() {
+        final RxLogFilesSaveRequest logCollectionRequest = new RxLogFilesSaveRequest(logCollection);
+        RxLogFilesSaveRequest.setAppContext(context.getApplicationContext());
+        logCollectionRequest.execute(new RxCallback<RxLogFilesSaveRequest>() {
             @Override
-            public void onNext(RxLogCollectionRequest request) {
+            public void onNext(RxLogFilesSaveRequest request) {
                 if (reportOnce) {
                     reportLogFile(context, logCollectionRequest.getLogFilePath(), rxCallback);
                     return;

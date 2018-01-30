@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 /**
  * Created by suicheng on 2018/1/29.
  */
-public class RxLogCollectionRequest extends RxBaseCloudRequest {
+public class RxLogFilesSaveRequest extends RxBaseCloudRequest {
 
     private String logFilePath;
     private LogCollection logCollection;
@@ -20,12 +20,12 @@ public class RxLogCollectionRequest extends RxBaseCloudRequest {
         return logFilePath;
     }
 
-    public RxLogCollectionRequest(LogCollection collection) {
+    public RxLogFilesSaveRequest(LogCollection collection) {
         this.logCollection = collection;
     }
 
     @Override
-    public RxLogCollectionRequest call() throws Exception {
+    public RxLogFilesSaveRequest call() throws Exception {
         File zipFile = LogUtils.generateFeedBackFile(getAppContext(), JSONObjectParseUtils.toJson(logCollection));
         if (zipFile == null || !zipFile.exists()) {
             throw new FileNotFoundException();
