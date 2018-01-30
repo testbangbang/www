@@ -414,4 +414,6 @@
     <string name="network_exception">Network exception</string>
     <string name="reader_input_keyword">Please enter the keyword</string>
     <string name="menu_pop_width">0.25</string>
+    <string name="the_input_has_exceeded_the_upper_limit">The input has exceeded the upper %d byte limit</string>
+    <string name="group_names_do_not_support_special_characters">Group names do not_support special characters</string>
 </resources>

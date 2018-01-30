@@ -395,4 +395,5 @@
     <string name="user_info_article">%s条</string>
     <string name="network_exception">网络异常</string>
     <string name="reader_input_keyword">请输入关键字</string>
+    <string name="the_input_has_exceeded_the_upper_limit">输入内容已超%d字节数上限</string>
 </resources>

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.util.Utils;
 
 /**
  * Created by jackdeng on 2017/12/7.
@@ -33,7 +34,15 @@ public class ToastUtil {
     private static float dy = JDReadApplication.getInstance().getResources().getInteger(R.integer.toast_view_shadow_dy);
     private static float textSize = JDReadApplication.getInstance().getResources().getDimension(R.dimen.level_three_heading_font);
 
+    public static void showOffsetToast(String message) {
+        showToast(JDReadApplication.getInstance(), message, true);
+    }
+
     public static void showToast(Context appContext, String message) {
+        showToast(appContext, message, false);
+    }
+
+    public static void showToast(Context appContext, String message, boolean isOffset) {
         if (TextUtils.isEmpty(message)) {
             return;
         }
@@ -47,6 +56,9 @@ public class ToastUtil {
             textView.setGravity(Gravity.CENTER);
             textView.setPadding(left, top, right, bottom);
             textView.setShadowLayer(radius, dx, dy, Color.TRANSPARENT);
+            if (isOffset) {
+                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, ResManager.getInteger(R.integer.toast_offset_y));
+            }
             toast.show();
         } else {
             if (message.equals(oldMsg)) {
@@ -73,7 +85,7 @@ public class ToastUtil {
         showToast(JDReadApplication.getInstance(), getErrorMsgForDownBook(errorCode));
     }
 
-    public static String getErrorMsgByCode(String errorCode){
+    public static String getErrorMsgByCode(String errorCode) {
         String errorMsg = ResManager.getString(R.string.login_resutl_unknown_error);
         if (Constants.RESULT_CODE_UNKNOWN_ERROR.equals(errorCode)) {
             errorMsg = ResManager.getString(R.string.login_resutl_unknown_error);
@@ -93,7 +105,7 @@ public class ToastUtil {
         return errorMsg;
     }
 
-    public static String getErrorMsgForDownBook(String errorCode){
+    public static String getErrorMsgForDownBook(String errorCode) {
         String errorMsg = getErrorMsgByCode(errorCode);
         if (Constants.RESULT_CODE_BOOK_NO_READ_VIP.equals(errorCode)) {
             errorMsg = ResManager.getString(R.string.down_book_resutl_no_read_vip);
