@@ -68,9 +68,9 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
                 library.setParentUniqueId(null);
                 getDataProvider().addLibrary(library);
             }
-            MetadataCollection collection = getDataProvider().loadMetadataCollection(getAppContext(), library.getIdString(), metadata.getIdString());
+            MetadataCollection collection = getDataProvider().loadMetadataCollection(getAppContext(), library.getIdString(), metadata.getAssociationId());
             if (collection == null || !collection.hasValidId()) {
-                getDataProvider().addMetadataCollection(getAppContext(), MetadataCollection.create(metadata.getIdString(), library.getIdString()));
+                getDataProvider().addMetadataCollection(getAppContext(), MetadataCollection.create(metadata.getAssociationId(), library.getIdString()));
             }
         } else {
             Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
@@ -78,7 +78,7 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
                 getDataProvider().removeMetadata(getAppContext(), metadata);
                 Library library = getDataProvider().findLibraryByName(getAppContext(), file.getParentFile().getName());
                 if (library != null && library.hasValidId()) {
-                    getDataProvider().deleteMetadataCollection(getAppContext(), library.getIdString(), metadata.getIdString());
+                    getDataProvider().deleteMetadataCollection(getAppContext(), library.getIdString(), metadata.getAssociationId());
                 }
             }
         }
