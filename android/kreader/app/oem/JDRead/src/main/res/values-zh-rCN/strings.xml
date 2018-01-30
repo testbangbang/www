@@ -326,6 +326,7 @@
     <string name="reader_content">原文:</string>
     <string name="reader_read_progress">进度:</string>
     <string name="feedback_history">反馈记录</string>
+    <string name="feedback_success">反馈成功</string>
     <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
     <string name="buy_book_success">购买成功 </string>
     <string name="buy_read_vip">购买畅读VIP</string>
@@ -396,4 +397,7 @@
     <string name="network_exception">网络异常</string>
     <string name="reader_input_keyword">请输入关键字</string>
     <string name="the_input_has_exceeded_the_upper_limit">输入内容已超%d字节数上限</string>
+    <string name="first_chapter">已是首章</string>
+    <string name="last_chapter">已是尾章</string>
+    <string name="no_chapters">本文不含章节信息</string>
 </resources>

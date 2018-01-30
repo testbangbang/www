@@ -97,6 +97,8 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
         FileBlockInfo.loadThreeBlockData(this,loadFileBlockInfo.threeBlock);
         size = customSize;
         FileBlockInfo.saveParagraphData(fileBlocks,this);
+        ttl.clear();
+        prepareCustom();
     }
 
     @Override

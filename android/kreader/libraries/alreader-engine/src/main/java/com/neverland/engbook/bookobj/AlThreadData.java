@@ -257,11 +257,10 @@ class AlThreadData {
 
 				this.clearWork0();
 			} else
-			if (this.task == TAL_THREAD_TASK.OPENBOOK) {
-				if (res == TAL_NOTIFY_RESULT.OK) {
-					if (this.book_object != null &&
-							this.book_object.format.isTextFormat &&
-							this.book_object.format.multiFiles.modePart) {
+			if (this.task == TAL_THREAD_TASK.OPENBOOK && res == TAL_NOTIFY_RESULT.OK) {
+				if (this.book_object != null &&
+						this.book_object.format.isTextFormat &&
+						this.book_object.format.multiFiles.modePart) {
 
 						this.book_object.openState.incState();
 						this.book_object.openState.incState();
@@ -271,11 +270,6 @@ class AlThreadData {
 							startThread(param, TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL, false);
 						}
 
-					} else {
-						this.clearWork0();
-						this.param_void1.clearBlocked();
-						this.clearObjOpen();
-					}
 				} else {
 					this.clearWork0();
 					synchronized (this.book_object) {
