@@ -57,7 +57,6 @@ public class AlOneCSSNumberValue {
         try {
             a.dval = Float.parseFloat(a.tmpval.toString());
         } catch (Exception e) {
-            e.printStackTrace();
             a.dval = 0;
         }
         a.ival = (int)(a.dval + 0.5);

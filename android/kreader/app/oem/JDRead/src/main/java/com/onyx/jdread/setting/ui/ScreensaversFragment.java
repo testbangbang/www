@@ -20,6 +20,7 @@ import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.event.CheckPicToScreenSaversEvent;
 import com.onyx.jdread.setting.model.ScreenSaversModel;
 import com.onyx.jdread.setting.model.SettingBundle;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -72,13 +73,13 @@ public class ScreensaversFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        SettingBundle.getInstance().getEventBus().register(this);
+        Utils.ensureRegister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        SettingBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Subscribe

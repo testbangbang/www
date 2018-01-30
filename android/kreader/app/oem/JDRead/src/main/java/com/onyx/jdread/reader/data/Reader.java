@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.data;
 import android.content.Context;
 
 import com.onyx.jdread.reader.common.DocumentInfo;
+import com.onyx.jdread.reader.epd.ReaderEpdHelper;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -16,11 +17,13 @@ public class Reader {
     private DocumentInfo documentInfo;
     private ReaderViewHelper readerViewHelper;
     private ReaderSelectionHelper readerSelectionHelper;
+    private ReaderEpdHelper readerEpdHelper;
 
     public Reader(DocumentInfo documentInfo,Context context) {
         this.documentInfo = documentInfo;
         this.readerHelper = new ReaderHelper(context);
         this.readerViewHelper = new ReaderViewHelper(context);
+        this.readerEpdHelper = new ReaderEpdHelper(context);
     }
 
     public ReaderHelper getReaderHelper() {
@@ -40,5 +43,9 @@ public class Reader {
             readerSelectionHelper = new ReaderSelectionHelper();
         }
         return readerSelectionHelper;
+    }
+
+    public ReaderEpdHelper getReaderEpdHelper() {
+        return readerEpdHelper;
     }
 }

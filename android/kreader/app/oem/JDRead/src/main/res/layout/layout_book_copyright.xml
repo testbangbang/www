@@ -67,6 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/copyright_book_format"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <TextView
@@ -75,6 +76,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@{bookDetailViewModel.bookDetailResultBean.data.format}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>
@@ -89,6 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/copyright_book_word_count"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <TextView
@@ -97,6 +100,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@{CommonUtils.formatWordCount(bookDetailViewModel.bookDetailResultBean.data.word_count)}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>
@@ -111,6 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/copyright_book_publish"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <TextView
@@ -119,6 +124,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@{bookDetailViewModel.bookDetailResultBean.data.publisher}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>
@@ -133,6 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/copyright_book_publish_time"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <TextView
@@ -141,6 +148,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@{bookDetailViewModel.bookDetailResultBean.data.publish_time}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>
@@ -155,6 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/copyright_book_isbn"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <TextView
@@ -163,6 +172,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@{bookDetailViewModel.bookDetailResultBean.data.isbn}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>
@@ -210,6 +220,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@{@string/copyright_book_size_value(bookDetailViewModel.bookDetailResultBean.data.file_size)}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>

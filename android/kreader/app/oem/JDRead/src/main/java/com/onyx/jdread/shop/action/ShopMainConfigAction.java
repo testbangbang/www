@@ -7,12 +7,10 @@ import com.onyx.jdread.shop.cloud.entity.ShopMainConfigRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
-import com.onyx.jdread.shop.model.BannerViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestShopMainConfig;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +20,8 @@ import java.util.List;
 public class ShopMainConfigAction extends BaseAction {
 
     private BookModelConfigResultBean resultBean;
+    private List<BookModelConfigResultBean.DataBean.AdvBean> bannerList;
+    private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
 
     public BookModelConfigResultBean getResultBean() {
         return resultBean;
@@ -54,6 +54,8 @@ public class ShopMainConfigAction extends BaseAction {
             @Override
             public void onNext(RxRequestShopMainConfig request) {
                 resultBean = request.getResultBean();
+                bannerList = request.getBannerList();
+                subjectDataList = request.getSubjectDataList();
                 setResult(dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onNext(ShopMainConfigAction.this);
@@ -79,21 +81,15 @@ public class ShopMainConfigAction extends BaseAction {
     }
 
     private void setResult(ShopDataBundle dataBundle) {
-        BookModelConfigResultBean resultBean = getResultBean();
-        if (resultBean != null) {
-            BannerViewModel banerViewModel = new BannerViewModel();
-            banerViewModel.setEventBus(dataBundle.getEventBus());
-            banerViewModel.setDataBean(resultBean.data);
-            dataBundle.getShopViewModel().setBannerSubjectIems(banerViewModel);
-            BookModelConfigResultBean.DataBean data = resultBean.data;
-            List<SubjectViewModel> subjectViewModelList = new ArrayList<>();
-            for (int i = Constants.SHOP_MAIN_INDEX_THREE; i < data.modules.size(); i++) {
-                SubjectViewModel subjectViewModel = new SubjectViewModel();
-                subjectViewModel.setDataBean(data, i);
-                subjectViewModel.setEventBus(dataBundle.getEventBus());
-                subjectViewModelList.add(subjectViewModel);
+        if (bannerList != null) {
+            dataBundle.getShopViewModel().getBannerViewModel().setBannerList(bannerList);
+        }
+        if (subjectDataList != null) {
+            List<SubjectViewModel> commonSubjcet = dataBundle.getShopViewModel().getCommonSubjcet();
+            for (int i = 0; i < subjectDataList.size(); i++) {
+                BookModelConfigResultBean.DataBean.ModulesBean modulesBean = subjectDataList.get(i);
+                commonSubjcet.get(i).setModelBean(modulesBean);
             }
-            dataBundle.getShopViewModel().setCommonSubjcet(subjectViewModelList);
         }
     }
 }

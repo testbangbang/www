@@ -9,17 +9,17 @@ import java.util.Map;
 
 public class LibrarySelectHelper {
     private Map<String, LibrarySelectedModel> childLibrarySelectedMap = new HashMap<>();
-    private LibrarySelectedModel librarySelectedModel = new LibrarySelectedModel();
+    private LibrarySelectedModel librarySelectedModel = new LibrarySelectedModel(0);
 
     public Map<String, LibrarySelectedModel> getChildLibrarySelectedMap() {
         return childLibrarySelectedMap;
     }
 
-    public void putLibrarySelectedModelMap(String libraryId) {
+    public void putLibrarySelectedModelMap(String libraryId, int childCount) {
         if (childLibrarySelectedMap.containsKey(libraryId)) {
             return;
         }
-        LibrarySelectedModel selectedModel = new LibrarySelectedModel();
+        LibrarySelectedModel selectedModel = new LibrarySelectedModel(childCount);
         childLibrarySelectedMap.put(libraryId, selectedModel);
     }
 
@@ -42,5 +42,20 @@ public class LibrarySelectHelper {
         }
         librarySelectedModel.setSelectedAll(false);
         librarySelectedModel.getSelectedList().clear();
+    }
+
+    public boolean haveSelected() {
+        boolean haveSelected = false;
+        if (librarySelectedModel.haveSelected()) {
+            haveSelected = true;
+        }
+
+        for (LibrarySelectedModel selectedModel : childLibrarySelectedMap.values()) {
+            if (selectedModel.haveSelected()) {
+                haveSelected = true;
+            }
+        }
+
+        return haveSelected;
     }
 }

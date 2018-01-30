@@ -61,6 +61,7 @@ public class AlFormatDOCX extends AlAXML {
         allState.image_start = -1;
         allState.image_stop = -1;
         allState.image_name = null;
+        cssStyles = new AlCSSHtml();
     }
 
     @Override

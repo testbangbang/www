@@ -44,6 +44,7 @@ import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -73,15 +74,13 @@ public class PersonalBookFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (!PersonalDataBundle.getInstance().getEventBus().isRegistered(this)) {
-            PersonalDataBundle.getInstance().getEventBus().register(this);
-        }
+        Utils.ensureRegister(PersonalDataBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        PersonalDataBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(PersonalDataBundle.getInstance().getEventBus(), this);
     }
 
     private void initView() {

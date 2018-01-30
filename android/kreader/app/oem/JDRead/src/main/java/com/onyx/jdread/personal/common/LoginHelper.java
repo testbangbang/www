@@ -12,9 +12,12 @@ import com.onyx.jdread.databinding.DialogUserLoginBinding;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.personal.action.UserInfoAction;
+import com.onyx.jdread.personal.action.VerifyCheckInAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
 import com.onyx.jdread.personal.event.UserInfoEvent;
+import com.onyx.jdread.personal.event.VerifySignEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 
@@ -33,8 +36,9 @@ public class LoginHelper {
                 UserInfoBean userInfoBean = userInfoAction.getUserInfoData();
                 UserInfo data = userInfoBean.data;
                 if (data != null) {
-                    setUserInfo(data.yun_mid_image_url,data.nickname);
+                    setUserInfo(data.yun_big_image_url, data.nickname);
                     dataBundle.getEventBus().post(new UserInfoEvent(data));
+                    verifySign(dataBundle);
                 }
             }
 
@@ -46,13 +50,22 @@ public class LoginHelper {
         });
     }
 
+    public static void verifySign(final PersonalDataBundle dataBundle) {
+        final VerifyCheckInAction action = new VerifyCheckInAction();
+        action.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                VerifySignBean.DataBean data = action.getData();
+                if (data != null) {
+                    dataBundle.getEventBus().post(new VerifySignEvent(data.isTodaySign()));
+                }
+            }
+        });
+    }
+
     private static void setUserInfo(String imgUrl, String userName) {
         JDPreferenceManager.setStringValue(Constants.SP_KEY_USER_IMAGE_URL, imgUrl);
         JDPreferenceManager.setStringValue(Constants.SP_KEY_USER_NAME, userName);
-    }
-
-    public static String getNickName() {
-        return JDPreferenceManager.getStringValue(Constants.SP_KEY_USER_NICK_NAME, "");
     }
 
     public static String getImgUrl() {

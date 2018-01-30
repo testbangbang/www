@@ -66,13 +66,13 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
     @Override
     public void onStart() {
         super.onStart();
-        SettingBundle.getInstance().getEventBus().register(this);
+        Utils.ensureRegister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        SettingBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Subscribe

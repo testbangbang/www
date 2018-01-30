@@ -46,6 +46,8 @@ import com.onyx.jdread.main.model.MainViewModel;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
@@ -367,5 +369,16 @@ public class MainActivity extends AppCompatActivity {
 
     public PersonalViewModel getPersonalViewModel() {
         return PersonalDataBundle.getInstance().getPersonalViewModel();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPersonalErrorEvent(PersonalErrorEvent event) {
+        String[] errors = PersonalErrorEvent.getThrowableStringRep(event.throwable);
+        PersonalErrorEvent.printThrowable(errors);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRequestFailedEvent(RequestFailedEvent event) {
+        ToastUtil.showToast(event.getMessage());
     }
 }
