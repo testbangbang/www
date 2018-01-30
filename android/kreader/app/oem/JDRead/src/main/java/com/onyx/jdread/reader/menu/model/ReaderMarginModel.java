@@ -64,7 +64,7 @@ public class ReaderMarginModel {
 
     public void setSegmentProgress(int progress){
         SettingParagraphSpacingEvent event = new SettingParagraphSpacingEvent();
-        event.margin = progress;
+        event.spacing = progress;
         getEventBus().post(event);
     }
 

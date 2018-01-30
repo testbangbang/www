@@ -251,6 +251,11 @@ public class ReaderTextStyle {
     private Percentage lineSpacing = DEFAULT_LINE_SPACING;
     private PageMargin pageMargin = DEFAULT_PAGE_MARGIN;
     private Percentage paragraphSpacing = DEFAULT_PARAGRAPH_SPACING;
+    public static final int ZERO_INDEX = 0;
+    public static final int ONE_INDEX = 1;
+    public static final int TWO_INDEX = 2;
+
+
 
     public static float limitFontSize(float newSize) {
         final float minSize = MIN_FONT_SIZE.getValue();
@@ -282,11 +287,11 @@ public class ReaderTextStyle {
 
     public static Percentage getLineSpacingByIndex(int index) {
         switch (index) {
-            case 0:
+            case ZERO_INDEX:
                 return SMALL_LINE_SPACING;
-            case 1:
+            case ONE_INDEX:
                 return NORMAL_LINE_SPACING;
-            case 2:
+            case TWO_INDEX:
                 return LARGE_LINE_SPACING;
             default:
                 return NORMAL_LINE_SPACING;
@@ -295,11 +300,11 @@ public class ReaderTextStyle {
 
     public static Percentage getParagraphSpacingByIndex(int index) {
         switch (index) {
-            case 0:
+            case ZERO_INDEX:
                 return SMALL_PARAGRAPH_SPACING;
-            case 1:
+            case ONE_INDEX:
                 return NORMAL_PARAGRAPH_SPACING;
-            case 2:
+            case TWO_INDEX:
                 return LARGE_PARAGRAPH_SPACING;
             default:
                 return NORMAL_PARAGRAPH_SPACING;
@@ -308,11 +313,11 @@ public class ReaderTextStyle {
 
     public static PageMargin getPageMarginByIndex(int index) {
         switch (index) {
-            case 0:
+            case ZERO_INDEX:
                 return SMALL_PAGE_MARGIN;
-            case 1:
+            case ONE_INDEX:
                 return NORMAL_PAGE_MARGIN;
-            case 2:
+            case TWO_INDEX:
                 return LARGE_PAGE_MARGIN;
             default:
                 return NORMAL_PAGE_MARGIN;
