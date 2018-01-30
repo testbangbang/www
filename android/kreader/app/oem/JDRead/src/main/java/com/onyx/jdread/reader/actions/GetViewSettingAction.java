@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.actions;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.OpenDocumentSuccessEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.menu.request.GetViewSettingRequest;
@@ -35,6 +36,8 @@ public class GetViewSettingAction extends BaseReaderAction {
     }
 
     public void notifySaveViewSetting(ReaderDataHolder readerDataHolder, GetViewSettingRequest request) {
+        OpenDocumentSuccessEvent event = new OpenDocumentSuccessEvent();
+        readerDataHolder.getEventBus().post(event);
         ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
     }
 }

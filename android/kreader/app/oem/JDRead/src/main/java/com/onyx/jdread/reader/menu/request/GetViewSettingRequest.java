@@ -25,37 +25,8 @@ public class GetViewSettingRequest extends ReaderBaseRequest {
 
     @Override
     public GetViewSettingRequest call() throws Exception {
-        loadUserData();
         LayoutProviderUtils.updateReaderViewInfo(reader,getReaderViewInfo(),reader.getReaderHelper().getReaderLayoutManager());
         updateSetting(reader);
         return this;
-    }
-
-    private void loadUserData() {
-        getReaderUserDataInfo().setDocumentPath(reader.getDocumentInfo().getBookPath());
-        getReaderUserDataInfo().setDocumentCategory(reader.getReaderHelper().getDocumentOptions().getDocumentCategory());
-        getReaderUserDataInfo().setDocumentCodePage(reader.getReaderHelper().getDocumentOptions().getCodePage());
-        getReaderUserDataInfo().setChineseConvertType(reader.getReaderHelper().getDocumentOptions().getChineseConvertType());
-        getReaderUserDataInfo().setDocumentMetadata(reader.getReaderHelper().getDocumentMetadata());
-
-
-        boolean isSupportScale = reader.getReaderHelper().getRendererFeatures().supportScale();
-        String displayName = reader.getReaderHelper().getPlugin().displayName();
-        String md5 = reader.getReaderHelper().getDocumentMd5();
-        ReaderNavigator navigator = reader.getReaderHelper().getNavigator();
-
-        Context context = reader.getReaderHelper().getContext();
-        if (readerViewInfo != null) {
-            getReaderUserDataInfo().loadPageBookmarks(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
-        }
-        if (readerViewInfo != null) {
-            getReaderUserDataInfo().loadPageBookmarks(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
-        }
-        if (readerViewInfo != null) {
-            getReaderUserDataInfo().loadPageLinks(context, navigator, readerViewInfo.getVisiblePages());
-        }
-        if (readerViewInfo != null) {
-            getReaderUserDataInfo().loadPageImages(context, navigator, readerViewInfo.getVisiblePages());
-        }
     }
 }

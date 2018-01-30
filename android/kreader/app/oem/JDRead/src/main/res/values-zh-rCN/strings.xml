@@ -45,7 +45,7 @@
     <string name="build_library_hint">最多输入20个字符</string>
     <string name="library_move_to_fail">书库移动失败</string>
     <string name="adding">添加中...</string>
-    <string name="group_exist">分组已存在</string>
+    <string name="group_exist">分组%s已存在</string>
     <string name="please_enter_group_name">请输入分组名</string>
     <string name="please_select_book">请选择图书</string>
     <string name="sort_by_time">时间排序</string>
@@ -54,9 +54,9 @@
     <string name="wifi_pass_book">WIFI传书</string>
     <string name="book_detail">图书详情</string>
     <string name="rename_library">重命名</string>
-    <string name="delete_library">删除分组</string>
-    <string name="delete_library_include_book">删除分组及全部图书</string>
-    <string name="the_same_name">重命名不能与原组名相同</string>
+    <string name="delete_library">是否删除该分组(组内图书重新放入书架)</string>
+    <string name="delete_library_include_book">是否从本机删除该分组及组内图书</string>
+    <string name="the_same_name">重命名不能与原组名一致</string>
     <string name="system_update_alert">系统升级</string>
     <string name="will_execute_update">有1个更新已准备好，是否立即执行？</string>
     <string name="later_to_say">稍后再说</string>
@@ -115,7 +115,7 @@
     <string name="back_to_top">返回顶部</string>
     <string name="view_all_books">查看全库图书</string>
     <string name="search_view_hint">请输入搜索内容</string>
-    <string name="book_detail_yuedou_price">%1$s阅豆</string>
+    <string name="book_detail_yuedou_price">%1$s 阅豆</string>
     <string name="book_detail_button_now_read">立即阅读</string>
     <string name="book_detail_button_buy_whole_book">全本购买</string>
     <string name="cart">购物车</string>
@@ -327,6 +327,7 @@
     <string name="reader_content">原文:</string>
     <string name="reader_read_progress">进度:</string>
     <string name="feedback_history">反馈记录</string>
+    <string name="feedback_success">反馈成功</string>
     <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
     <string name="buy_book_success">购买成功 </string>
     <string name="buy_read_vip">购买畅读VIP</string>
@@ -362,7 +363,7 @@
     <string name="vip">会员</string>
     <string name="error_content_author_unknown">作者未知</string>
     <string name="related_books">相关图书</string>
-    <string name="search_history">搜索历史</string>
+    <string name="search_history">历史搜索</string>
     <string name="search_hot_words">热门搜索</string>
     <string name="in_library">位置：书架</string>
     <string name="in_shop">位置：书店</string>
@@ -402,4 +403,7 @@
     <string name="way_to_pay">使用 微信 或 京东金融 扫码完成支付</string>
     <string name="top_up_success">充值成功</string>
     <string name="continue_top_up">继续充值</string>
+    <string name="first_chapter">已是首章</string>
+    <string name="last_chapter">已是尾章</string>
+    <string name="no_chapters">本文不含章节信息</string>
 </resources>

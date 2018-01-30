@@ -46,7 +46,7 @@
     <string name="build_library_hint">Enter up to 20 characters</string>
     <string name="library_move_to_fail">move to fail</string>
     <string name="adding">adding...</string>
-    <string name="group_exist">group exist</string>
+    <string name="group_exist">group %s exist</string>
     <string name="please_enter_group_name">please enter group name</string>
     <string name="please_select_book">please select book</string>
     <string name="sort_by_time">Sort by time</string>
@@ -340,6 +340,7 @@
     <string name="reader_content">Content:</string>
     <string name="reader_read_progress">Progress:</string>
     <string name="feedback_history">Feedback history</string>
+    <string name="feedback_success">Feedback success</string>
     <string name="device_reset_prompt">The device will immediately go to reset, continue?</string>
     <string name="email_address_key">email_address_key</string>
     <string name="bind_to_email">bind to email</string>
@@ -421,4 +422,7 @@
     <string name="way_to_pay">Use WeChat or jingdong financial scanning code to complete the payment</string>
     <string name="top_up_success">Top-up success</string>
     <string name="continue_top_up">Continue</string>
+    <string name="first_chapter">Is the first chapter</string>
+    <string name="last_chapter">Is the last chapter</string>
+    <string name="no_chapters">This article does not contain section information</string>
 </resources>

@@ -6,6 +6,7 @@ import com.onyx.jdread.main.common.Constants;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,19 +37,16 @@ public class RankViewModel extends BaseObservable {
         return titleBarViewModel;
     }
 
-    public void setRankItems(List<SubjectViewModel> rankItems) {
-        this.rankItems = rankItems;
-        if (rankItems != null) {
-            for (int i = 0; i < rankItems.size(); i++) {
-                if (i == Constants.SHOP_MAIN_INDEX_ONE || i == Constants.SHOP_MAIN_INDEX_THREE) {
-                    SubjectViewModel subjectViewModel = rankItems.get(i);
-                    SubjectViewModel nextSubjectViewModel = rankItems.get(i + 1);
-                    subjectViewModel.setShowNextTitle(true);
-                    subjectViewModel.setModelBeanNext(nextSubjectViewModel.getModelBean());
-                }
-            }
+    public void setRankItems() {
+        if (rankItems != null && rankItems.size() >= Constants.SHOP_MAIN_INDEX_SIX) {
+            return;
         }
-        notifyChange();
+        rankItems = new ArrayList<>();
+        for (int i = 0; i < Constants.SHOP_MAIN_INDEX_SIX; i++) {
+            SubjectViewModel subjectViewModel = new SubjectViewModel();
+            subjectViewModel.setEventBus(getEventBus());
+            rankItems.add(subjectViewModel);
+        }
     }
 
     public void setTitleBarViewModel(TitleBarViewModel titleBarViewModel) {

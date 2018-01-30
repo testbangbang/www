@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.handler;
 import android.view.MotionEvent;
 
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.data.RegionFunctionManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +22,8 @@ public class HandlerManger {
 
     public Map<Integer, BaseHandler> handlers = null;
 
-    public boolean isTtsModel(){
-        if(activeProviderType == TTS_PROVIDER){
+    public boolean isTtsModel() {
+        if (activeProviderType == TTS_PROVIDER) {
             return true;
         }
         return false;
@@ -72,7 +73,26 @@ public class HandlerManger {
     }
 
     public boolean onSingleTapUp(MotionEvent event) {
-        return getActiveProvider().onSingleTapUp(event);
+        if (readerDataHolder.getSelectMenuModel().getIsShowSelectMenu().get()) {
+            readerDataHolder.getSelectMenuModel().setIsShowSelectMenu(false);
+            return true;
+        }
+        if (getActiveProvider().onSingleTapUp(event)) {
+            return true;
+        }
+        return processSingleTapUp(event);
+    }
+
+    private boolean processSingleTapUp(MotionEvent event) {
+        panFinished((int) event.getX(), (int) event.getY());
+        return true;
+    }
+
+    public void panFinished(int offsetX, int offsetY) {
+        if (!readerDataHolder.getReaderViewInfo().canPan()) {
+            RegionFunctionManager.processRegionFunction(readerDataHolder, offsetX, offsetY);
+            return;
+        }
     }
 
     public boolean onSingleTapConfirmed(MotionEvent event) {
@@ -99,7 +119,7 @@ public class HandlerManger {
         getActiveProvider().setTouchStartEvent(event);
     }
 
-    public void onStop(){
+    public void onStop() {
         getActiveProvider().onStop();
         updateActionProviderType(READING_PROVIDER);
     }

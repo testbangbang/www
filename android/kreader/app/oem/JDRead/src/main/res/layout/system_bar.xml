@@ -61,24 +61,23 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/system_bar_icon_space"
                     android:onClick="@{()->systemBarModel.toggleWifi()}"
                     android:src="@{systemBarModel.wifiImageRes}" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/system_bar_icon_space"
                     android:gravity="center"
                     android:text="@{systemBarModel.battery}"
                     android:textColor="@android:color/black"
-                    android:visibility="gone"
-                    android:textSize="18sp" />
+                    android:textSize="@dimen/level_two_heading_font" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/system_bar_icon_space"
                     android:src="@{systemBarModel.batteryImageRes}" />
             </LinearLayout>
         </LinearLayout>

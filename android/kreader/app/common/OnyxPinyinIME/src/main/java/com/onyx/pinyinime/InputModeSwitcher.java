@@ -435,6 +435,12 @@ public class InputModeSwitcher {
         return 0;
     }
 
+    public void reset() {
+        mInputMode = MODE_SKB_CHINESE;
+        mPreviousInputMode = MODE_SKB_CHINESE;
+        mRecentLauageInputMode = MODE_SKB_CHINESE;
+    }
+
     // Return the icon to update.
     public int switchLanguageWithHkb() {
         int newInputMode = MODE_HKB_CHINESE;

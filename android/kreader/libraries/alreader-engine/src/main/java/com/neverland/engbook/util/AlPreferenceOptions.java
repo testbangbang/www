@@ -26,7 +26,7 @@ public class AlPreferenceOptions {
 	
 	public int			maxNotesItemsOnPageRequest;
 	public int			maxNotesItemsOnPageUsed;
-	public boolean		vjustifyRequest;
+	public boolean		vjustifyRequest = false;
 	public boolean		vjustifyUsed;
 	public TAL_SCREEN_PAGES_COUNT			calcPagesModeRequest;
 	public TAL_SCREEN_PAGES_COUNT			calcPagesModeUsed;

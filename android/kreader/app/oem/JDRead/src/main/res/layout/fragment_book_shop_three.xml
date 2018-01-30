@@ -23,23 +23,15 @@
         <include
             android:id="@+id/suject_item_one"
             layout="@layout/item_subject_common"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
             bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_TWO)}" />
 
-        <LinearLayout
+        <include
+            android:id="@+id/suject_item_two"
+            layout="@layout/item_subject_common"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5"
-            android:gravity="center_vertical">
-
-            <include
-                android:id="@+id/suject_item_two"
-                layout="@layout/item_subject_common"
-                bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_THREE)}" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_subject_bottom_item_margin_top"
+            bind:viewModel="@{viewModel.commonSubjcet.get(Constants.SHOP_MAIN_INDEX_THREE)}" />
 
     </LinearLayout>
 
