@@ -206,6 +206,9 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     private void submitAnswer() {
         if (fillHomeworkAdapter != null) {
             List<QuestionViewBean> questionList = fillHomeworkAdapter.getQuestionList();
+            if (questionList == null || questionList.size() <= 0) {
+                return;
+            }
             String[] answerArray = new String[questionList.size()];
             for (QuestionViewBean bean : questionList) {
                 PracticeAnswerBean answerBean = new PracticeAnswerBean();
