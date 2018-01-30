@@ -35,7 +35,7 @@ public class ReaderPageInfoModel {
     private ObservableBoolean isShow = new ObservableBoolean(true);
     private ReaderDataHolder readerDataHolder;
     private static List<Integer> tocChapterNodeList;
-    private static boolean isChapter = true;
+    private static boolean hasChapterInfo = true;
 
     public ReaderPageInfoModel(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
@@ -46,7 +46,7 @@ public class ReaderPageInfoModel {
             tocChapterNodeList.clear();
             tocChapterNodeList = null;
         }
-        isChapter = true;
+        hasChapterInfo = true;
     }
 
     public EventBus getEventBus() {
@@ -86,7 +86,7 @@ public class ReaderPageInfoModel {
     }
 
     public void nextChapter() {
-        if(isChapter) {
+        if(hasChapterInfo) {
             prepareGotoChapter(readerDataHolder, false);
         }else {
             getEventBus().post(new ReaderSettingMenuItemNextChapterEvent());
@@ -94,7 +94,7 @@ public class ReaderPageInfoModel {
     }
 
     public void previousChapter() {
-        if(isChapter) {
+        if(hasChapterInfo) {
             prepareGotoChapter(readerDataHolder, true);
         }else {
             getEventBus().post(new ReaderSettingMenuItemPreviousChapterEvent());
@@ -128,7 +128,7 @@ public class ReaderPageInfoModel {
                     boolean hasToc = toc != null && !toc.isEmpty();
                     if (!hasToc) {
                         ToastUtil.showToast(readerDataHolder.getAppContext(), R.string.no_chapters);
-                        isChapter = false;
+                        hasChapterInfo = false;
                         return;
                     }
                     List<Integer> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
