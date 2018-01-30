@@ -49,11 +49,11 @@ public class FeedbackModel extends Observable {
 //        ErrorReporter reporter = ACRA.getErrorReporter();
 //        reporter.putCustomData(phone.get(), feedback.get());
 //        reporter.handleException(null);
-        startCommitFeedback(feedback.get(), phone.get());
+        submitCommitFeedback(feedback.get(), phone.get());
         titleBarModel.back();
     }
 
-    private void startCommitFeedback(String desc, String phone) {
+    private void submitCommitFeedback(String desc, String phone) {
         LogCollection logCollection = new LogCollection();
         logCollection.desc = desc;
         logCollection.phone = phone;
