@@ -49,6 +49,7 @@ public class ReaderLayoutManager {
     private boolean supportScale;
     private boolean supportTextFlow;
     private boolean savePosition = true;
+    private PositionSnapshot sideNotePositionSnapshot;
 
     public ReaderLayoutManager(final ReaderHelper helper,
                                final ReaderDocument document,
@@ -188,6 +189,14 @@ public class ReaderLayoutManager {
         return savePosition;
     }
 
+    public PositionSnapshot getSideNotePositionSnapshot() {
+        return sideNotePositionSnapshot;
+    }
+
+    public void setSideNotePositionSnapshot(PositionSnapshot sideNotePositionSnapshot) {
+        this.sideNotePositionSnapshot = sideNotePositionSnapshot;
+    }
+
     public float getActualScale() throws ReaderException {
         return getCurrentLayoutProvider().getActualScale();
     }
@@ -279,6 +288,16 @@ public class ReaderLayoutManager {
         } catch (Exception e) {
         }
         return null;
+    }
+
+    public boolean restoreBySnapshot(final PositionSnapshot positionSnapshot) {
+        try {
+            setActiveProvider(positionSnapshot.layoutType);
+            getCurrentLayoutProvider().restoreBySnapshot(positionSnapshot);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     /**

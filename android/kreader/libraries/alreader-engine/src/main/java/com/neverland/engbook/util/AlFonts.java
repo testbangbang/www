@@ -33,6 +33,9 @@ public class AlFonts {
 	private final static String EM_SPECIAL_STRCHAR = "M";
 	private final static char EM_SPECIAL_CHAR = 'M';
 
+	private final static char EM_SPECIAL_CHAR_CHINA = 0x3000;
+	private final static String EM_SPECIAL_STRCHAR_CHINA = "" + EM_SPECIAL_CHAR_CHINA;
+
 	private final static float FONT_STEP_MULTIPLE = 0.7f;
 
 	private AssetManager assetManager;
@@ -40,12 +43,14 @@ public class AlFonts {
 	private float multiplexer = 1;
 	private AlCalc calc = null;
 	private AlPaintFont fparam;
+	private boolean isChinaLocal = false;
 	public void init(AlEngineOptions opt, AlCalc c, AlPaintFont	fontparam) {
 		calc = c;
 		fparam = fontparam;
         assetManager = opt.appInstance.getResources().getAssets();
 		loadAllFonts(opt.font_catalog, opt.font_catalogs_addon, opt.font_resource);
 		multiplexer = opt.multiplexer;
+		isChinaLocal = opt.chinezeFormatting;
 	}
 
 	public boolean isLoaded(String fontName) {
@@ -142,7 +147,7 @@ public class AlFonts {
 
 			calc.fontPaint.getFontMetricsInt(font_metrics);
 			
-			if (fparam.style == AlStyles.SL_SIZE_NORMAL/*0*/) {
+			if (fparam.style == AlStyles.SL_SIZE_NORMAL) {
 				if (calc.mainWidth[SPACE_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH) 
 					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) (calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR) / 4); // 4 is chosen by practice
 				fparam.space_width_current = calc.mainWidth[SPACE_SPECIAL_CHAR];
@@ -151,13 +156,18 @@ public class AlFonts {
 					calc.mainWidth[HYPH_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
 				fparam.hyph_width_current = calc.mainWidth[HYPH_SPECIAL_CHAR];
 
-				if (calc.mainWidth[EM_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
-					calc.mainWidth[EM_SPECIAL_CHAR] = (char) text_size;//(char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
-				fparam.em_width_current = calc.mainWidth[EM_SPECIAL_CHAR];
+				fparam.em_width_current = (char) text_size;
+				if (isChinaLocal) {
+					if (calc.mainWidth[EM_SPECIAL_CHAR_CHINA] == AlCalc.UNKNOWNWIDTH)
+						calc.mainWidth[EM_SPECIAL_CHAR_CHINA] = (char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR_CHINA);
+					fparam.em_width_current = calc.mainWidth[EM_SPECIAL_CHAR_CHINA];
+				}
 			} else {
 				fparam.space_width_current = (int) (calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR) / 4);
 				fparam.hyph_width_current = (int) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
-				fparam.em_width_current = text_size;//(int) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
+				fparam.em_width_current = text_size;
+				if (isChinaLocal)
+					fparam.em_width_current = (char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR_CHINA);
 			}
 			
 			fparam.space_width_standart = fparam.space_width_current;
