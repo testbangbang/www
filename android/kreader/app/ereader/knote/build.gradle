@@ -58,9 +58,11 @@ android {
 }
 
 dependencies {
-    compile project(':libraries:onyxsdk-base')
-    compile project(':libraries:onyxsdk-scribble')
-    compile project(':libraries:onyxsdk-ui')
+    compile 'com.onyx.android.sdk:onyxsdk-base:+'
+    compile 'com.onyx.android.sdk:onyxsdk-notedata:+'
+    compile 'com.onyx.android.sdk:onyxsdk-scribble:+'
+    compile 'com.onyx.android.sdk:onyxsdk-ui:+'
+
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile "junit:junit:$rootProject.junitVersion"

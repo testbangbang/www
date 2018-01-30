@@ -80,16 +80,17 @@ apt {
 
 dependencies {
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
-    compile project(':libraries:onyxsdk-reader')
-    compile project(':libraries:onyxsdk-base')
-    compile project(':libraries:onyxsdk-statistics')
-    compile project(':libraries:onyxsdk-ui')
-    compile project(':libraries:cropimage')
-    compile (project(':libraries:onyxsdk-scribble')) {
-        ['com.github.Raizlabs.DBFlow', 'com.alibaba'].each {
-            exclude group: it
-        }
-    }
+
+    compile 'com.onyx.android.sdk:alreader-engine:+'
+    compile 'com.onyx.android.sdk:chinese-analyzer:+'
+    compile 'com.onyx.android.sdk:cropimage:+'
+    compile 'com.onyx.android.sdk:onyxsdk-base:+'
+    compile 'com.onyx.android.sdk:onyxsdk-data:+'
+    compile 'com.onyx.android.sdk:onyxsdk-notedata:+'
+    compile 'com.onyx.android.sdk:onyxsdk-reader:+'
+    compile 'com.onyx.android.sdk:onyxsdk-scribble:+'
+    compile 'com.onyx.android.sdk:onyxsdk-statistics:+'
+    compile 'com.onyx.android.sdk:onyxsdk-ui:+'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
@@ -98,6 +99,10 @@ dependencies {
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     compile "net.lingala.zip4j:zip4j:$rootProject.zip4jVersion"
     compile "com.android.support:multidex:$multidexVersion"
+
+    apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
+    compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
 
     compile "com.jakewharton:disklrucache:$rootProject.disklrucacheVersion"
     compile "org.apache.lucene:lucene-core:$rootProject.lucenecoreVersion"
