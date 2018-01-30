@@ -257,9 +257,10 @@
     <string name="current_points">当前积分：%1$d</string>
     <string name="receive_gift_package_tips">是否使用当前登录账号领取%1$s？</string>
     <string name="sign_in_vouchers">签到(+5代金券)</string>
-    <string name="read_thirty">阅读30分钟</string>
-    <string name="add_ten_vouchers">+10代金券</string>
+    <string name="read_thirty">阅读30分钟(+10代金券)</string>
+    <string name="add_ten_vouchers">+%d代金券 领取成功</string>
     <string name="have_receive">已领取</string>
+    <string name="allow_get">可领取</string>
     <string name="cannot_get">无法领取</string>
     <string name="select_interested_type">选择您感兴趣的图书类型</string>
     <string name="save">保存</string>
@@ -395,4 +396,10 @@
     <string name="user_info_article">%s条</string>
     <string name="network_exception">网络异常</string>
     <string name="reader_input_keyword">请输入关键字</string>
+    <string name="notes_size">%d条笔记</string>
+    <string name="top_up_money">¥%s元</string>
+    <string name="give_vouchers">赠%d代金券</string>
+    <string name="way_to_pay">使用 微信 或 京东金融 扫码完成支付</string>
+    <string name="top_up_success">充值成功</string>
+    <string name="continue_top_up">继续充值</string>
 </resources>

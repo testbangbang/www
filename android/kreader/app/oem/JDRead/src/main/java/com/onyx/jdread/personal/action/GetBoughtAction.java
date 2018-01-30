@@ -22,7 +22,7 @@ public class GetBoughtAction extends BaseAction {
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setPageSize(null, null);
+        baseInfo.setDefaultPage();
         Map<String, String> map = new HashMap<>();
         map.put("search_type", "1");
         baseInfo.addRequestParams(map);

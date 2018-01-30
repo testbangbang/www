@@ -269,7 +269,7 @@
     <dimen name="personal_read_preference_save_width">300dp</dimen>
     <dimen name="personal_read_preference_save_margin">20dp</dimen>
     <dimen name="personal_read_preference_save_padding">8dp</dimen>
-    <dimen name="item_personal_note_margin_left">20dp</dimen>
+    <dimen name="item_personal_note_margin_left">10dp</dimen>
     <dimen name="item_personal_note_margin_top">10dp</dimen>
     <dimen name="item_personal_task_receive_width">100dp</dimen>
     <dimen name="item_personal_task_receive_padding">10dp</dimen>
@@ -459,4 +459,7 @@
     <dimen name="category_book_list_recycle_view_indicator_margin_top">25dp</dimen>
     <dimen name="book_detail_cat_two_margin_left">12dp</dimen>
     <dimen name="book_detail_margin_top">30dp</dimen>
+    <dimen name="personal_notes_image_padding">10dp</dimen>
+    <dimen name="top_up_qr_code_height">100dp</dimen>
+    <dimen name="top_up_qr_code_margin_bottom">30dp</dimen>
 </resources>

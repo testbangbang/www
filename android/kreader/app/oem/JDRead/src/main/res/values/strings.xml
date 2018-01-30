@@ -268,9 +268,10 @@
     <string name="current_points">Current integral:%1$d</string>
     <string name="receive_gift_package_tips">Are you using current account to receive %1$s?</string>
     <string name="sign_in_vouchers">Sign in (+ 5 vouchers)</string>
-    <string name="read_thirty">Read for 30 minutes</string>
-    <string name="add_ten_vouchers">+10 vouchers</string>
+    <string name="read_thirty">Read for 30 minutes(+10 vouchers)</string>
+    <string name="add_ten_vouchers">+%d vouchers receive success</string>
     <string name="have_receive">Have received</string>
+    <string name="allow_get">Allow to get</string>
     <string name="cannot_get">Cannot get</string>
     <string name="select_interested_type">Select the type of book you are interested in</string>
     <string name="save">Save</string>
@@ -414,4 +415,10 @@
     <string name="network_exception">Network exception</string>
     <string name="reader_input_keyword">Please enter the keyword</string>
     <string name="menu_pop_width">0.25</string>
+    <string name="notes_size">%d notes</string>
+    <string name="top_up_money">¥%s yuan</string>
+    <string name="give_vouchers">Give %d vouchers</string>
+    <string name="way_to_pay">Use WeChat or jingdong financial scanning code to complete the payment</string>
+    <string name="top_up_success">Top-up success</string>
+    <string name="continue_top_up">Continue</string>
 </resources>

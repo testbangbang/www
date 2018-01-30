@@ -20,7 +20,7 @@ public class GetBoughtAndUnlimitedAction extends BaseAction {
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setPageSize(null, null);
+        baseInfo.setDefaultPage();
         String signValue = baseInfo.getSignValue(CloudApiContext.User.BOUGHT_UNLIMITED_BOOKS);
         baseInfo.setSign(signValue);
         final RxGetBoughtAndUnlimitedRequest rq = new RxGetBoughtAndUnlimitedRequest();

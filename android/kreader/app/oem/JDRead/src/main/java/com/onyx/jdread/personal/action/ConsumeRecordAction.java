@@ -20,7 +20,7 @@ public class ConsumeRecordAction extends BaseAction {
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setPageSize(null, null);
+        baseInfo.setDefaultPage();
         String signValue = baseInfo.getSignValue(CloudApiContext.ReadBean.CONSUME_RECORD);
         baseInfo.setSign(signValue);
 

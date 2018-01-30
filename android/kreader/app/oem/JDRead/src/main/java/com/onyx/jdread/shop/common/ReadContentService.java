@@ -6,6 +6,9 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargeStatusBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GiftBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalNoteBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ReadForVoucherBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendUserBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SaltResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
@@ -131,10 +134,10 @@ public interface ReadContentService {
     Call<SignForVoucherBean> signForVoucher(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.READING_VOUCHER)
-    Call<String> readForVoucher(@QueryMap Map<String, String> map);
+    Call<ReadForVoucherBean> readForVoucher(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.USER_GIFT)
-    Call<String> getGiftInfo(@QueryMap Map<String, String> map);
+    Call<GiftBean> getGiftInfo(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.RECOMMEND_USER)
     Call<RecommendUserBean> recommendUser(@QueryMap Map<String, String> map);
@@ -160,4 +163,7 @@ public interface ReadContentService {
 
     @GET(CloudApiContext.User.BOUGHT_UNLIMITED_BOOKS)
     Call<BoughtAndUnlimitedBean> getBoughtAndUnlimitedBooks(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.User.PERSONAL_NOTES)
+    Call<PersonalNoteBean> getPersonalNotes(@QueryMap Map<String, String> map);
 }

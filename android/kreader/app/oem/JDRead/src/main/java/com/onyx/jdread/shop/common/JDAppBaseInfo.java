@@ -245,4 +245,11 @@ public class JDAppBaseInfo {
         map.put("page_size", currentPageSize);
         addRequestParams(map);
     }
+
+    public void setDefaultPage() {
+        Map<String, String> map = new HashMap<>();
+        map.put("page", "1");
+        map.put("page_size", "20");
+        addRequestParams(map);
+    }
 }

@@ -5,11 +5,13 @@
 
         <import type="com.onyx.android.sdk.utils.StringUtils" />
 
+        <import type="com.onyx.jdread.util.Utils"/>
+
         <import type="android.view.View" />
 
         <variable
             name="bean"
-            type="com.onyx.jdread.personal.cloud.entity.jdbean.TopUpValueBean" />
+            type="com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargePackageBean.DataBean" />
     </data>
 
     <LinearLayout
@@ -29,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{bean.value}"
+                android:text="@{@string/top_up_money(Utils.keepPoints(bean.recharge_money))}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
 
@@ -37,10 +39,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/item_top_up_margin_top"
-                android:text="@{bean.valueGift}"
+                android:text="@{@string/give_vouchers(bean.voucher_amount)}"
                 android:textSize="@dimen/level_three_heading_font"
                 android:textColor="@android:color/black"
-                android:visibility="@{StringUtils.isNullOrEmpty(bean.valueGift) ? View.GONE : View.VISIBLE}" />
+                android:visibility="@{bean.voucher_amount == 0 ? View.GONE : View.VISIBLE}" />
         </LinearLayout>
     </LinearLayout>
 </layout>

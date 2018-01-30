@@ -1,11 +1,12 @@
 package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.personal.cloud.entity.jdbean.TopUpValueBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargePackageBean;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-import com.onyx.jdread.personal.request.cloud.RxGetTopUpValueRequest;
+import com.onyx.jdread.personal.request.cloud.RxRechargePackageRequest;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
 import java.util.List;
 
@@ -16,16 +17,24 @@ import java.util.List;
 public class GetTopUpValueAction extends BaseAction {
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
-        final RxGetTopUpValueRequest rq = new RxGetTopUpValueRequest();
+        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
+        baseInfo.removeApp();
+        String signValue = baseInfo.getSignValue(CloudApiContext.ReadBean.RECHARGE_PACKAGE);
+        baseInfo.setSign(signValue);
+
+        final RxRechargePackageRequest rq = new RxRechargePackageRequest();
+        rq.setSaltValue("1513304880000");
+        rq.setBaseInfo(baseInfo);
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                List<TopUpValueBean> topUpValueBeans = rq.getTopUpValueBeans();
-                if (topUpValueBeans != null && topUpValueBeans.size() > 0) {
-                    dataBundle.setTopValueBeans(topUpValueBeans);
-                    if (rxCallback != null) {
-                        rxCallback.onNext(GetTopUpValueAction.class);
-                    }
+                GetRechargePackageBean resultBean = rq.getResultBean();
+                if (resultBean != null) {
+                    List<GetRechargePackageBean.DataBean> data = resultBean.data;
+                    dataBundle.setTopValueBeans(data);
+                }
+                if (rxCallback != null) {
+                    rxCallback.onNext(GetTopUpValueAction.class);
                 }
             }
 

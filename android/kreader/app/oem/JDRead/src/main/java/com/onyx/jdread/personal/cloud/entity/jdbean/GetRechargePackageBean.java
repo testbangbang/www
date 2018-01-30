@@ -13,7 +13,7 @@ public class GetRechargePackageBean {
 
     public static class DataBean {
         public int package_id;
-        public int recharge_money;
+        public double recharge_money;
         public int voucher_amount;
     }
 }
