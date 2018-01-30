@@ -24,8 +24,8 @@ public class NextPageAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                readerDataHolder.getEventBus().post(new PageViewUpdateEvent());
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
+                readerDataHolder.getEventBus().post(new PageViewUpdateEvent());
             }
 
             @Override
