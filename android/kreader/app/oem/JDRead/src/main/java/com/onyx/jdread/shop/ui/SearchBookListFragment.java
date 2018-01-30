@@ -18,6 +18,7 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
@@ -30,6 +31,7 @@ import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.TitleBarViewModel;
 import com.onyx.jdread.shop.model.ViewAllViewModel;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -168,6 +170,9 @@ public class SearchBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
@@ -190,5 +195,13 @@ public class SearchBookListFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
+    }
+
+    private boolean checkWfiDisConnected() {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            return true;
+        }
+        return false;
     }
 }

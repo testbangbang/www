@@ -725,6 +725,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMenuWifiSettingEvent(MenuWifiSettingEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(WifiFragment.class.getName());
         }
@@ -732,6 +735,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookSearchKeyWordEvent(BookSearchKeyWordEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             JDPreferenceManager.setStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
             JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, event.keyWord);
@@ -741,6 +747,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookSearchPathEvent(BookSearchPathEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, "");
             JDPreferenceManager.setStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, event.catId);

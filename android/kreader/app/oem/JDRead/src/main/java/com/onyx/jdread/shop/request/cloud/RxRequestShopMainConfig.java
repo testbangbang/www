@@ -102,6 +102,15 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                 bookList.add(bookBean);
             }
             modulesBean.bookList = bookList;
+            if (index % 2 == 1) {
+                if (dataBean.modules.size() - 1 >= (index + 1)) {
+                    BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
+                    modulesBean.show_name_next = modulesBeanNext.show_name;
+                    modulesBean.f_type_next = modulesBeanNext.f_type;
+                    modulesBean.id_next = modulesBeanNext.id;
+                    modulesBean.showNextTitle = true;
+                }
+            }
             commonSubjectDataList.add(modulesBean);
         }
     }
@@ -135,11 +144,13 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
             }
             modulesBean.bookList = bookList;
             if (index >= Constants.SHOP_MAIN_INDEX_SIX && index <= Constants.SHOP_MAIN_INDEX_TEN && index % 2 == 0) {
-                BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
-                modulesBean.show_name_next = modulesBeanNext.show_name;
-                modulesBean.f_type_next = modulesBeanNext.f_type;
-                modulesBean.id_next = modulesBeanNext.id;
-                modulesBean.showNextTitle = true;
+                if (dataBean.modules.size() - 1 >= (index + 1)) {
+                    BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
+                    modulesBean.show_name_next = modulesBeanNext.show_name;
+                    modulesBean.f_type_next = modulesBeanNext.f_type;
+                    modulesBean.id_next = modulesBeanNext.id;
+                    modulesBean.showNextTitle = true;
+                }
             }
             mainSubjectDataList.add(modulesBean);
         }

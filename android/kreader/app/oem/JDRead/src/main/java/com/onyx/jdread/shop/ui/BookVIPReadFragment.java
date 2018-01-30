@@ -26,6 +26,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
+import com.onyx.jdread.shop.event.VipButtonClickEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.VipReadViewModel;
@@ -44,6 +45,7 @@ import java.util.List;
  */
 
 public class BookVIPReadFragment extends BaseFragment {
+    private static final int HEAD_ITEM_COUNT = 1;
     private FragmentBookVipReadBinding bookVipReadBinding;
     private int space = JDReadApplication.getInstance().getResources().getInteger(R.integer.vip_read_recycle_view_space);
     private DividerItemDecoration itemDecoration;
@@ -100,7 +102,7 @@ public class BookVIPReadFragment extends BaseFragment {
     }
 
     private void initPageIndicator(int size) {
-        paginator.resize(adapter.getRowCount(), adapter.getColumnCount(), size + Constants.PAGE_STEP);
+        paginator.resize(adapter.getRowCount(), adapter.getColumnCount(), size + HEAD_ITEM_COUNT);
         int pages = paginator.pages();
         bookVipReadBinding.scrollBar.setTotal(pages);
     }
@@ -204,9 +206,22 @@ public class BookVIPReadFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onVipButtonClickEvent(VipButtonClickEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BuyReadVIPFragment.class.getName());
         }
     }
 

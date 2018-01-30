@@ -18,6 +18,7 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
@@ -32,6 +33,7 @@ import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.model.AllCategoryViewModel;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -241,6 +243,9 @@ public class AllCategoryFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
         if (categoryBean != null) {
             categoryBean.isSelect = true;
@@ -280,5 +285,13 @@ public class AllCategoryFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
+    }
+
+    private boolean checkWfiDisConnected() {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            return true;
+        }
+        return false;
     }
 }
