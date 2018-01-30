@@ -8,17 +8,21 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderBookInfoBinding;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.reader.actions.GetDocumentInfoAction;
+import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.catalog.adapter.BookmarkAdapter;
 import com.onyx.jdread.reader.catalog.adapter.NoteAdapter;
 import com.onyx.jdread.reader.catalog.event.ReaderBookInfoDialogHandler;
@@ -128,7 +132,12 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
                     return;
                 }
                 if (PagePositionUtils.isValidPosition(entry.getPosition())) {
-
+                    new GotoPositionAction(entry.getPosition()).execute(readerBookInfoDialogHandler.getReaderDataHolder(), new RxCallback() {
+                        @Override
+                        public void onNext(Object o) {
+                            ReaderBookInfoDialog.this.dismiss();
+                        }
+                    });
                 }
             }
 

@@ -29,6 +29,9 @@ public class GotoPositionAction extends BaseReaderAction {
             @Override
             public void onNext(Object o) {
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
+                if(baseCallback != null){
+                    baseCallback.onNext(o);
+                }
             }
 
             @Override
