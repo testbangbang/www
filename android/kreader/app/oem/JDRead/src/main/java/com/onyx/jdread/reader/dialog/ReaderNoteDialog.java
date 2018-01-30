@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityNoteBinding;
 import com.onyx.jdread.reader.actions.CreateNoteAction;
@@ -74,5 +75,11 @@ public class ReaderNoteDialog extends Dialog implements ReaderNoteViewBack {
     @Override
     public Dialog getContent() {
         return this;
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        DeviceUtils.adjustFullScreenStatus(this.getWindow(),true);
     }
 }

@@ -407,4 +407,7 @@
     <string name="down_book_cerify_order_error">cerify order error</string>
     <string name="reader_input_keyword">Please enter the keyword</string>
     <string name="menu_pop_width">0.25</string>
+    <string name="first_chapter">Is the first chapter</string>
+    <string name="last_chapter">Is the last chapter</string>
+    <string name="no_chapters">This article does not contain section information</string>
 </resources>
