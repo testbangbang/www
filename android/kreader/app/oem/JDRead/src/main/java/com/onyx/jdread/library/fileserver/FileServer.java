@@ -3,13 +3,13 @@ package com.onyx.jdread.library.fileserver;
 import android.content.Context;
 import android.util.Log;
 
-import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.model.LibraryDataBundle;
-import com.onyx.jdread.library.request.RxCopyBookToLibraryRequest;
+import com.onyx.jdread.library.request.RxFileAddToMetadataRequest;
+import com.onyx.jdread.main.common.ToastUtil;
 
 import org.nanohttpd.protocols.http.IHTTPSession;
 import org.nanohttpd.protocols.http.NanoHTTPD;
@@ -52,13 +52,13 @@ public class FileServer extends NanoHTTPD {
     public FileServer(Context context) throws IOException {
         super(SERVER_PORT);
         mContext = context;
+        setTempFileManagerFactory(new JDTempFileManagerFactory());
     }
 
     @Override
     public Response serve(IHTTPSession session) {
         ContentType ct = new ContentType(session.getHeaders().get("content-type")).tryUTF8();
         session.getHeaders().put("content-type", ct.getContentTypeHeader());
-
         Map<String, String> files = new HashMap<>();
         Method method = session.getMethod();
         if (Method.PUT.equals(method) || Method.POST.equals(method)) {
@@ -86,13 +86,12 @@ public class FileServer extends NanoHTTPD {
         } else if (Method.POST.equals(method) && "/upload".equalsIgnoreCase(uri)) {
             File file = new File(files.get("file"));
             msg = "success";
-            File targetFile = new File(Device.currentDevice.getExternalStorageDirectory() + "/Books/" + parameters.get("file"));
             final String fileName = parameters.get("file");
-            RxCopyBookToLibraryRequest request = new RxCopyBookToLibraryRequest(LibraryDataBundle.getInstance().getDataManager(), file, targetFile);
-            request.execute(new RxCallback<RxCopyBookToLibraryRequest>() {
+            RxFileAddToMetadataRequest request = new RxFileAddToMetadataRequest(LibraryDataBundle.getInstance().getDataManager(), file);
+            request.execute(new RxCallback<RxFileAddToMetadataRequest>() {
                 @Override
-                public void onNext(RxCopyBookToLibraryRequest request1) {
-                    ToastUtils.showToast(JDReadApplication.getInstance(), String.format(JDReadApplication.getInstance().getString(R.string.pass_succeed), fileName));
+                public void onNext(RxFileAddToMetadataRequest request1) {
+                    ToastUtil.showToast(JDReadApplication.getInstance(), String.format(JDReadApplication.getInstance().getString(R.string.pass_succeed), fileName));
                 }
             });
         }
