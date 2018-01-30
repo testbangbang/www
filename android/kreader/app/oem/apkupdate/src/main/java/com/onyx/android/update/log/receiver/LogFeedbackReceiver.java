@@ -12,12 +12,16 @@ import com.onyx.android.update.service.MainService;
  */
 public class LogFeedbackReceiver extends BroadcastReceiver {
 
-    public static final String ACTION = "com.onyx.action.LOG_FEEDBACK";
+    public static final String ACTION_FEEDBACK = "com.onyx.action.LOG_FEEDBACK";
+    public static final String ACTION_FEEDBACK_UPLOAD = "com.onyx.action.LOG_FEEDBACK_UPLOAD";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (ACTION.equals(intent.getAction())) {
-            startServiceForLogFeedBack(context, intent);
+        switch (intent.getAction()) {
+            case ACTION_FEEDBACK:
+            case ACTION_FEEDBACK_UPLOAD:
+                startServiceForLogFeedBack(context, intent);
+                break;
         }
     }
 
