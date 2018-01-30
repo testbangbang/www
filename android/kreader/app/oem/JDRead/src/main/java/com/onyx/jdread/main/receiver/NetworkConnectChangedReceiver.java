@@ -12,7 +12,6 @@ import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.main.event.WifiStateChangeEvent;
 
-import org.acra.ACRA;
 import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -48,7 +47,6 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
                 boolean isConnected = state == NetworkInfo.State.CONNECTED;
                 Log.i(TAG, "isConnected:" + isConnected);
                 if (isConnected) {
-//                    ACRA.getErrorReporter().handleSilentException(null);
                     PersonalDataBundle.getInstance().getEventBus().post(new NetworkConnectedEvent());
                 }
             }

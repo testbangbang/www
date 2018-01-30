@@ -339,6 +339,7 @@
     <string name="reader_content">Content:</string>
     <string name="reader_read_progress">Progress:</string>
     <string name="feedback_history">Feedback history</string>
+    <string name="feedback_success">Feedback success</string>
     <string name="device_reset_prompt">The device will immediately go to reset, continue?</string>
     <string name="email_address_key">email_address_key</string>
     <string name="bind_to_email">bind to email</string>
