@@ -7,6 +7,8 @@ import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.InitPageViewInfoEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
+import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
+import com.onyx.jdread.reader.menu.event.ToggleBookmarkSuccessEvent;
 import com.onyx.jdread.reader.request.AddBookmarkRequest;
 import com.onyx.jdread.reader.request.DeleteBookmarkRequest;
 
@@ -36,8 +38,13 @@ public class ToggleBookmarkAction extends  BaseReaderAction{
             request.execute(new RxCallback() {
                 @Override
                 public void onNext(Object o) {
-                    readerDataHolder.getEventBus().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
                     ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
+                    notifyResult(readerDataHolder.getEventBus());
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    ReaderErrorEvent.onErrorHandle(throwable,this.getClass().getSimpleName(),readerDataHolder.getEventBus());
                 }
             });
         } else if (toggleSwitch == ToggleSwitch.Off) {
@@ -46,10 +53,20 @@ public class ToggleBookmarkAction extends  BaseReaderAction{
             request.execute(new RxCallback() {
                 @Override
                 public void onNext(Object o) {
-                    readerDataHolder.getEventBus().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
                     ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
+                    notifyResult(readerDataHolder.getEventBus());
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    ReaderErrorEvent.onErrorHandle(throwable,this.getClass().getSimpleName(),readerDataHolder.getEventBus());
                 }
             });
         }
+    }
+
+    private void notifyResult(EventBus eventBus){
+        ToggleBookmarkSuccessEvent event = new ToggleBookmarkSuccessEvent(toggleSwitch);
+        eventBus.post(event);
     }
 }

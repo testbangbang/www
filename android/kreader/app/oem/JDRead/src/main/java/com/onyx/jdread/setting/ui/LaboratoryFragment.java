@@ -11,6 +11,7 @@ import com.onyx.jdread.setting.model.LaboratoryModel;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLaboratoryBinding;
 import com.onyx.jdread.setting.model.SettingBundle;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -40,13 +41,13 @@ public class LaboratoryFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        SettingBundle.getInstance().getEventBus().register(this);
+        Utils.ensureRegister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        SettingBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -22,6 +22,6 @@ public abstract class RxBaseDBRequest extends RxBaseDataRequest {
 
     @Override
     public Scheduler subscribeScheduler() {
-        return Schedulers.io();
+        return DBSchedulers.dbScheduler();
     }
 }

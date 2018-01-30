@@ -12,6 +12,9 @@ public class UserInfo {
     public int user_days;
     public int notes_count;
     public String gendar;
+    public int yuedou;
+    public int voucher;
+    public int vip_remain_days;
     public String yun_big_image_url;
     public String yun_mid_image_url;
     public String yun_small_image_url;

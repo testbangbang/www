@@ -17,6 +17,10 @@
         <variable
             name="isLogin"
             type="boolean" />
+
+        <variable
+            name="isSignToday"
+            type="boolean"/>
     </data>
 
     <LinearLayout
@@ -59,7 +63,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/personal_read_time_margin_top"
-                        android:text="readed time in current machine"
+                        android:text="@string/the_read_time_for_today"
                         android:textColor="@color/text_gray_color"
                         android:textSize="@dimen/level_two_heading_font" />
                 </LinearLayout>
@@ -76,7 +80,7 @@
                     android:paddingLeft="@dimen/personal_sign_in_padding_left"
                     android:paddingRight="@dimen/personal_sign_in_padding_right"
                     android:paddingTop="@dimen/personal_sign_in_padding_top"
-                    android:text="@string/unsigned_in"
+                    android:text="@{isSignToday ? @string/signed_in : @string/unsigned_in}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
             </RelativeLayout>

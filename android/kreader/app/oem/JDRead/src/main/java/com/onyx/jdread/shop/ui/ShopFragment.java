@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -42,6 +43,7 @@ import com.onyx.jdread.shop.event.SearchViewClickEvent;
 import com.onyx.jdread.shop.event.ShopBakcTopClick;
 import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
+import com.onyx.jdread.shop.event.ViewAllNextClickEvent;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
@@ -50,6 +52,8 @@ import com.onyx.jdread.util.Utils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.HashMap;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -75,6 +79,8 @@ public class ShopFragment extends BaseFragment {
     private FragmentBookShopSixBinding shopSixBinding;
     private int bannerSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_recycle_view_space);
     private DividerItemDecoration itemDecoration;
+    private HashMap<String, View> shopViewsMap = new HashMap<>();
+    private int currentPosition = SCROLL_ONE;
 
     @Nullable
     @Override
@@ -100,19 +106,12 @@ public class ShopFragment extends BaseFragment {
     private void initView() {
         bookShopBinding.scrollBar.setTotal(SCROLL_TOTAL);
         shopOneBinding = bookShopBinding.bookShopOne;
-        shopTwoBinding = bookShopBinding.bookShopTwo;
-        shopThreeBinding = bookShopBinding.bookShopThree;
-        shopFourBinding = bookShopBinding.bookShopFour;
-        shopFiveBinding = bookShopBinding.bookShopFive;
-        shopSixBinding = bookShopBinding.bookShopSix;
         bookShopBinding.setViewModel(getBookShopViewModel());
+        getBookShopViewModel().setCommonSubjcet();
         initDividerItemDecoration();
-        setRecyclerViewBanner();
-        setRecyclerViewCoverSubjectOne();
-        setRecyclerViewCoverSubjectTwoBackUp();
-        setRecyclerViewCoverSubjectTwo();
-        setRecyclerViewCoverSubjectCommon();
-        setRecyclerViewTitleSubject();
+        setRecyclerViewSubjectCommon(SCROLL_ONE);
+        currentPosition = SCROLL_ONE;
+        shopViewsMap.put(getKey(SCROLL_ONE), shopOneBinding.getRoot());
     }
 
     private void initDividerItemDecoration() {
@@ -152,132 +151,166 @@ public class ShopFragment extends BaseFragment {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             float y_axis = e1.getY() - e2.getY();
-            if (isCurrentViewVisible(shopOneBinding.getRoot()) && y_axis > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_shop_two, SCROLL_TWO);
-            } else if (isCurrentViewVisible(shopTwoBinding.getRoot()) && y_axis > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_shop_three, SCROLL_THREE);
-            }  else if (isCurrentViewVisible(shopThreeBinding.getRoot()) && y_axis > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_shop_four, SCROLL_FOUR);
-            }  else if (isCurrentViewVisible(shopFourBinding.getRoot()) && y_axis > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_shop_five, SCROLL_FIVE);
-            }  else if (isCurrentViewVisible(shopFiveBinding.getRoot()) && y_axis > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_shop_six, SCROLL_SIX);
-            } else if (isCurrentViewVisible(shopSixBinding.getRoot()) && -(y_axis) > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_shop_five, SCROLL_FIVE);
-            } else if (isCurrentViewVisible(shopFiveBinding.getRoot()) && -(y_axis) > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_shop_four, SCROLL_FOUR);
-            } else if (isCurrentViewVisible(shopFourBinding.getRoot()) && -(y_axis) > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_shop_three, SCROLL_THREE);
-            } else if (isCurrentViewVisible(shopThreeBinding.getRoot()) && -(y_axis) > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_shop_two, SCROLL_TWO);
-            } else if (isCurrentViewVisible(shopTwoBinding.getRoot()) && -(y_axis) > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_shop_one, SCROLL_ONE);
+            if (currentPosition == SCROLL_ONE && canChangePage(y_axis)) {
+                setCurrent(SCROLL_TWO);
+            } else if (currentPosition == SCROLL_TWO && canChangePage(y_axis)) {
+                setCurrent(SCROLL_THREE);
+            } else if (currentPosition == SCROLL_THREE && canChangePage(y_axis)) {
+                setCurrent(SCROLL_FOUR);
+            } else if (currentPosition == SCROLL_FOUR && canChangePage(y_axis)) {
+                setCurrent(SCROLL_FIVE);
+            } else if (currentPosition == SCROLL_FIVE && canChangePage(y_axis)) {
+                setCurrent(SCROLL_SIX);
+            } else if (currentPosition == SCROLL_SIX && canChangePage(-(y_axis))) {
+                setCurrent(SCROLL_FIVE);
+            } else if (currentPosition == SCROLL_FIVE && canChangePage(-(y_axis))) {
+                setCurrent(SCROLL_FOUR);
+            } else if (currentPosition == SCROLL_FOUR && canChangePage(-(y_axis))) {
+                setCurrent(SCROLL_THREE);
+            } else if (currentPosition == SCROLL_THREE && canChangePage(-(y_axis))) {
+                setCurrent(SCROLL_TWO);
+            } else if (currentPosition == SCROLL_TWO && canChangePage(-(y_axis))) {
+                setCurrent(SCROLL_ONE);
             }
             return false;
         }
     };
 
-    private boolean isCurrentViewVisible(View view) {
-        int visibility = view.getVisibility();
-        if (visibility == View.VISIBLE) {
-            return true;
-        }
-        return false;
+    private boolean canChangePage(float y_axis) {
+        return y_axis > FLING_MIN_DISTANCE;
     }
 
-    private void setCurrent(int id, int position) {
-        visible(id);
+    private void setCurrent(int position) {
+        if (!shopViewsMap.containsKey(getKey(position))) {
+            switch (position) {
+                case SCROLL_TWO:
+                    shopTwoBinding = FragmentBookShopTwoBinding.inflate(LayoutInflater.from(getActivity()), null);
+                    bookShopBinding.bookShopContainer.removeAllViews();
+                    bookShopBinding.bookShopContainer.addView(shopTwoBinding.getRoot());
+                    shopViewsMap.put(getKey(position), shopTwoBinding.getRoot());
+                    setRecyclerViewSubjectCommon(position);
+                    shopTwoBinding.setViewModel(getBookShopViewModel());
+                    break;
+                case SCROLL_THREE:
+                    shopThreeBinding = FragmentBookShopThreeBinding.inflate(LayoutInflater.from(getActivity()), null);
+                    bookShopBinding.bookShopContainer.removeAllViews();
+                    bookShopBinding.bookShopContainer.addView(shopThreeBinding.getRoot());
+                    shopViewsMap.put(getKey(position), shopThreeBinding.getRoot());
+                    setRecyclerViewSubjectCommon(position);
+                    shopThreeBinding.setViewModel(getBookShopViewModel());
+                    break;
+                case SCROLL_FOUR:
+                    shopFourBinding = FragmentBookShopFourBinding.inflate(LayoutInflater.from(getActivity()), null);
+                    bookShopBinding.bookShopContainer.removeAllViews();
+                    bookShopBinding.bookShopContainer.addView(shopFourBinding.getRoot());
+                    shopViewsMap.put(getKey(position), shopFourBinding.getRoot());
+                    setRecyclerViewSubjectCommon(position);
+                    shopFourBinding.setViewModel(getBookShopViewModel());
+                    break;
+                case SCROLL_FIVE:
+                    shopFiveBinding = FragmentBookShopFiveBinding.inflate(LayoutInflater.from(getActivity()), null);
+                    bookShopBinding.bookShopContainer.removeAllViews();
+                    bookShopBinding.bookShopContainer.addView(shopFiveBinding.getRoot());
+                    shopViewsMap.put(getKey(position), shopFiveBinding.getRoot());
+                    setRecyclerViewSubjectCommon(position);
+                    shopFiveBinding.setViewModel(getBookShopViewModel());
+                    break;
+                case SCROLL_SIX:
+                    shopSixBinding = FragmentBookShopSixBinding.inflate(LayoutInflater.from(getActivity()), null);
+                    bookShopBinding.bookShopContainer.removeAllViews();
+                    bookShopBinding.bookShopContainer.addView(shopSixBinding.getRoot());
+                    shopViewsMap.put(getKey(position), shopSixBinding.getRoot());
+                    setRecyclerViewSubjectCommon(position);
+                    shopSixBinding.setViewModel(getBookShopViewModel());
+                    break;
+            }
+        } else {
+            LinearLayout parent = (LinearLayout) shopViewsMap.get(getKey(position)).getParent();
+            if (parent != null) {
+                parent.removeAllViews();
+            }
+            bookShopBinding.bookShopContainer.removeAllViews();
+            bookShopBinding.bookShopContainer.addView(shopViewsMap.get(getKey(position)));
+        }
+        currentPosition = position;
         bookShopBinding.scrollBar.setFocusPosition(position);
     }
 
-    private void visible(int id) {
-        shopOneBinding.getRoot().setVisibility(id == R.id.book_shop_one ? View.VISIBLE : View.GONE);
-        shopTwoBinding.getRoot().setVisibility(id == R.id.book_shop_two ? View.VISIBLE : View.GONE);
-        shopThreeBinding.getRoot().setVisibility(id == R.id.book_shop_three ? View.VISIBLE : View.GONE);
-        shopFourBinding.getRoot().setVisibility(id == R.id.book_shop_four ? View.VISIBLE : View.GONE);
-        shopFiveBinding.getRoot().setVisibility(id == R.id.book_shop_five ? View.VISIBLE : View.GONE);
-        shopSixBinding.getRoot().setVisibility(id == R.id.book_shop_six ? View.VISIBLE : View.GONE);
+    private String getKey(int position) {
+        return String.valueOf(position) + ShopFragment.class.getSimpleName();
     }
 
-    private void setRecyclerViewBanner() {
-        BannerSubjectAdapter adapter = new BannerSubjectAdapter(getEventBus());
-        PageRecyclerView recyclerView = shopOneBinding.recyclerViewBanner;
-        recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void setRecyclerViewCoverSubjectOne() {
-        SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewOne = shopOneBinding.sujectItemOne.recyclerViewSuject;
-        recyclerViewOne.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewOne.addItemDecoration(itemDecoration);
-        recyclerViewOne.setAdapter(recyclerViewOneAdapter);
-    }
-
-    private void setRecyclerViewCoverSubjectTwoBackUp() {
-        SubjectAdapter recyclerViewTwoAdapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewTwo = shopOneBinding.sujectItemTwo.recyclerViewSuject;
-        recyclerViewTwo.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewTwo.addItemDecoration(itemDecoration);
-        recyclerViewTwo.setAdapter(recyclerViewTwoAdapter);
-    }
-
-    private void setRecyclerViewCoverSubjectTwo() {
-        SubjectAdapter adapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerView = shopTwoBinding.sujectItemOne.recyclerViewSuject;
-        recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void setRecyclerViewTitleSubject() {
-        CategorySubjectAdapter adapter = new CategorySubjectAdapter(getEventBus(),false);
-        PageRecyclerView recyclerView = shopTwoBinding.recyclerViewTitleSubject;
-        recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void setRecyclerViewCoverSubjectCommon() {
-        SubjectAdapter adapterFourBackup = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewFourBackup = shopTwoBinding.sujectItemTwo.recyclerViewSuject;
-        recyclerViewFourBackup.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewFourBackup.setAdapter(adapterFourBackup);
-        SubjectAdapter adapterOne = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewOne = shopThreeBinding.sujectItemOne.recyclerViewSuject;
-        recyclerViewOne.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewOne.addItemDecoration(itemDecoration);
-        recyclerViewOne.setAdapter(adapterOne);
-        SubjectAdapter adapterTwo = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewTwo = shopThreeBinding.sujectItemTwo.recyclerViewSuject;
-        recyclerViewTwo.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewTwo.addItemDecoration(itemDecoration);
-        recyclerViewTwo.setAdapter(adapterTwo);
-        SubjectAdapter adapterThree = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewThree = shopFourBinding.sujectItemOne.recyclerViewSuject;
-        recyclerViewThree.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewThree.addItemDecoration(itemDecoration);
-        recyclerViewThree.setAdapter(adapterThree);
-        SubjectAdapter adapterFour = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewFour = shopFourBinding.sujectItemTwo.recyclerViewSuject;
-        recyclerViewFour.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewFour.addItemDecoration(itemDecoration);
-        recyclerViewFour.setAdapter(adapterFour);
-        SubjectAdapter adapterFive = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewFive = shopFiveBinding.sujectItemOne.recyclerViewSuject;
-        recyclerViewFive.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewFive.addItemDecoration(itemDecoration);
-        recyclerViewFive.setAdapter(adapterFive);
-        SubjectAdapter adapterSix = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewSix = shopFiveBinding.sujectItemTwo.recyclerViewSuject;
-        recyclerViewSix.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewSix.addItemDecoration(itemDecoration);
-        recyclerViewSix.setAdapter(adapterSix);
-        SubjectAdapter adapterLast = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewLast = shopSixBinding.recyclerViewCoverSubjectLast;
-        recyclerViewLast.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewLast.addItemDecoration(itemDecoration);
-        recyclerViewLast.setAdapter(adapterLast);
+    private void setRecyclerViewSubjectCommon(int postion) {
+        if (postion == SCROLL_ONE) {
+            SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerViewOne = shopOneBinding.sujectItemOne.recyclerViewSuject;
+            recyclerViewOne.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewOne.addItemDecoration(itemDecoration);
+            recyclerViewOne.setAdapter(recyclerViewOneAdapter);
+            BannerSubjectAdapter adapter = new BannerSubjectAdapter(getEventBus());
+            PageRecyclerView recyclerView = shopOneBinding.recyclerViewBanner;
+            recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerView.addItemDecoration(itemDecoration);
+            recyclerView.setAdapter(adapter);
+            SubjectAdapter recyclerViewTwoAdapter = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerViewTwo = shopOneBinding.sujectItemTwo.recyclerViewSuject;
+            recyclerViewTwo.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewTwo.addItemDecoration(itemDecoration);
+            recyclerViewTwo.setAdapter(recyclerViewTwoAdapter);
+        } else if (postion == SCROLL_TWO) {
+            SubjectAdapter adapter = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerView = shopTwoBinding.sujectItemOne.recyclerViewSuject;
+            recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerView.addItemDecoration(itemDecoration);
+            recyclerView.setAdapter(adapter);
+            SubjectAdapter adapterFourBackup = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerViewFourBackup = shopTwoBinding.sujectItemTwo.recyclerViewSuject;
+            recyclerViewFourBackup.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewFourBackup.setAdapter(adapterFourBackup);
+            CategorySubjectAdapter adapterCate = new CategorySubjectAdapter(getEventBus(), false);
+            PageRecyclerView recyclerViewCate = shopTwoBinding.recyclerViewTitleSubject;
+            recyclerViewCate.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewCate.setAdapter(adapterCate);
+        } else if (postion == SCROLL_THREE) {
+            SubjectAdapter adapterOne = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerViewOne = shopThreeBinding.sujectItemOne.recyclerViewSuject;
+            recyclerViewOne.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewOne.addItemDecoration(itemDecoration);
+            recyclerViewOne.setAdapter(adapterOne);
+            SubjectAdapter adapterTwo = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerViewTwo = shopThreeBinding.sujectItemTwo.recyclerViewSuject;
+            recyclerViewTwo.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewTwo.addItemDecoration(itemDecoration);
+            recyclerViewTwo.setAdapter(adapterTwo);
+        } else if (postion == SCROLL_FOUR) {
+            SubjectAdapter adapterThree = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerViewThree = shopFourBinding.sujectItemOne.recyclerViewSuject;
+            recyclerViewThree.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewThree.addItemDecoration(itemDecoration);
+            recyclerViewThree.setAdapter(adapterThree);
+            SubjectAdapter adapterFour = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerViewFour = shopFourBinding.sujectItemTwo.recyclerViewSuject;
+            recyclerViewFour.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewFour.addItemDecoration(itemDecoration);
+            recyclerViewFour.setAdapter(adapterFour);
+        } else if (postion == SCROLL_FIVE) {
+            SubjectAdapter adapterFive = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerViewFive = shopFiveBinding.sujectItemOne.recyclerViewSuject;
+            recyclerViewFive.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewFive.addItemDecoration(itemDecoration);
+            recyclerViewFive.setAdapter(adapterFive);
+            SubjectAdapter adapterSix = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerViewSix = shopFiveBinding.sujectItemTwo.recyclerViewSuject;
+            recyclerViewSix.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewSix.addItemDecoration(itemDecoration);
+            recyclerViewSix.setAdapter(adapterSix);
+        } else if (postion == SCROLL_SIX) {
+            SubjectAdapter adapterLast = new SubjectAdapter(getEventBus());
+            PageRecyclerView recyclerViewLast = shopSixBinding.sujectItemOne.recyclerViewSuject;
+            recyclerViewLast.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            recyclerViewLast.addItemDecoration(itemDecoration);
+            recyclerViewLast.setAdapter(adapterLast);
+        }
     }
 
     private void getShopMainConfigData() {
@@ -312,7 +345,7 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShopBakcTopClick(ShopBakcTopClick event) {
-        setCurrent(R.id.book_shop_one, SCROLL_ONE);
+        setCurrent(SCROLL_ONE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -410,6 +443,23 @@ public class ShopFragment extends BaseFragment {
             JDPreferenceManager.setIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
             JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
             JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
+            if (getViewEventCallBack() != null) {
+                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onViewAllNextClickEvent(ViewAllNextClickEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
+        if (modulesBean != null) {
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name_next);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id_next);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type_next);
             if (getViewEventCallBack() != null) {
                 getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
             }

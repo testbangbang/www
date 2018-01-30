@@ -3,11 +3,10 @@ package com.onyx.jdread.reader.actions;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.OpenDocumentSuccessEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
-import com.onyx.jdread.reader.event.UpdateViewSettingEvent;
+import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.menu.request.GetViewSettingRequest;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2018/1/6.
@@ -26,12 +25,19 @@ public class GetViewSettingAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                notifySaveViewSetting(readerDataHolder,request);
+                notifySaveViewSetting(readerDataHolder, request);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ReaderErrorEvent.onErrorHandle(throwable, this.getClass().getSimpleName(), readerDataHolder.getEventBus());
             }
         });
     }
 
-    public void notifySaveViewSetting(ReaderDataHolder readerDataHolder,GetViewSettingRequest request) {
-        ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
+    public void notifySaveViewSetting(ReaderDataHolder readerDataHolder, GetViewSettingRequest request) {
+        OpenDocumentSuccessEvent event = new OpenDocumentSuccessEvent();
+        readerDataHolder.getEventBus().post(event);
+        ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
     }
 }

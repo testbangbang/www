@@ -90,6 +90,7 @@
     <string name="log_out">退出登录</string>
     <string name="login_immediately">立即登录</string>
     <string name="unsigned_in">未签到</string>
+    <string name="signed_in">签到</string>
     <string name="manual">使用手册</string>
     <string name="feedback">问题反馈</string>
     <string name="contact_us">联系我们</string>
@@ -114,7 +115,7 @@
     <string name="back_to_top">返回顶部</string>
     <string name="view_all_books">查看全库图书</string>
     <string name="search_view_hint">请输入搜索内容</string>
-    <string name="book_detail_yuedou_price">%1$s阅豆</string>
+    <string name="book_detail_yuedou_price">%1$s 阅豆</string>
     <string name="book_detail_button_now_read">立即阅读</string>
     <string name="book_detail_button_buy_whole_book">全本购买</string>
     <string name="cart">购物车</string>
@@ -373,6 +374,10 @@
     <string name="source_language">源语言:</string>
     <string name="simplified_chinese">简体中文</string>
     <string name="reader_target_language">目标语言:</string>
+    <string name="reader_bookmark_add_success">书签已添加</string>
+    <string name="reader_bookmark_add_fail">书签添加失败</string>
+    <string name="reader_bookmark_delete_success">书签已取消</string>
+    <string name="reader_bookmark_delete_fail">书签取消失败</string>
     <string name="speed_refresh">快速刷新</string>
     <string name="item_consume_record_read_bean">-%d阅豆</string>
     <string name="item_consume_record_voucher">-%d代金券</string>
@@ -383,4 +388,11 @@
     <string name="down_book_illegal_device">非法设备</string>
     <string name="down_book_server_error">后台处理异常</string>
     <string name="down_book_cerify_order_error">订单认证异常</string>
+    <string name="the_read_time_for_today">本机今日阅读时长%s分钟</string>
+    <string name="user_info_stay">%s天</string>
+    <string name="user_info_time">%s小时</string>
+    <string name="user_info_book">%s本</string>
+    <string name="user_info_article">%s条</string>
+    <string name="network_exception">网络异常</string>
+    <string name="reader_input_keyword">请输入关键字</string>
 </resources>

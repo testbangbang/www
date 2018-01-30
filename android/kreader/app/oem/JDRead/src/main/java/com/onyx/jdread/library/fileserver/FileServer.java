@@ -59,7 +59,7 @@ public class FileServer extends NanoHTTPD {
     public Response serve(IHTTPSession session) {
         ContentType ct = new ContentType(session.getHeaders().get("content-type")).tryUTF8();
         session.getHeaders().put("content-type", ct.getContentTypeHeader());
-        Map<String, String> files = new HashMap<String, String>();
+        Map<String, String> files = new HashMap<>();
         Method method = session.getMethod();
         if (Method.PUT.equals(method) || Method.POST.equals(method)) {
             try {

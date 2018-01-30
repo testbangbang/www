@@ -9,6 +9,7 @@ import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
+import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.request.PreviousScreenRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -27,6 +28,11 @@ public class PrevPageAction extends BaseReaderAction {
             public void onNext(Object o) {
                 readerDataHolder.getEventBus().post(new PageViewUpdateEvent());
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ReaderErrorEvent.onErrorHandle(throwable,this.getClass().getSimpleName(),readerDataHolder.getEventBus());
             }
         });
     }

@@ -8,6 +8,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
+import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.request.NextScreenRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,6 +26,11 @@ public class NextPageAction extends BaseReaderAction {
             public void onNext(Object o) {
                 readerDataHolder.getEventBus().post(new PageViewUpdateEvent());
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ReaderErrorEvent.onErrorHandle(throwable,this.getClass().getSimpleName(),readerDataHolder.getEventBus());
             }
         });
     }
