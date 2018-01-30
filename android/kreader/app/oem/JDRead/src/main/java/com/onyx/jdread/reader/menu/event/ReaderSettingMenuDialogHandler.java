@@ -186,7 +186,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingParagraphSpacingEvent(SettingParagraphSpacingEvent event) {
-        new SettingParagraphSpacingAction().execute(readerDataHolder,null);
+        new SettingParagraphSpacingAction(readerDataHolder.getStyleCopy(),event.margin).execute(readerDataHolder,null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

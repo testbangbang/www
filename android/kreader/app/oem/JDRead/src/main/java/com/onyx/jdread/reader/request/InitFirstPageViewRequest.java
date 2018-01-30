@@ -85,13 +85,14 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         String fontFace = getFontFace();
         ReaderTextStyle.SPUnit spUnit = ReaderTextStyle.SPUnit.create(getFontSize());
         ReaderTextStyle.Percentage lineSpacing = ReaderTextStyle.Percentage.create(getLineSpacing());
+        ReaderTextStyle.Percentage paragraphSpacing = ReaderTextStyle.Percentage.create(getParagraphSpacing());
         ReaderTextStyle.CharacterIndent characterIndent = ReaderTextStyle.CharacterIndent.create((int) baseOptions.getParagraphIndent());
         ReaderTextStyle.Percentage leftMargin = ReaderTextStyle.Percentage.create(getLeftMarin());
         ReaderTextStyle.Percentage rightMarin = ReaderTextStyle.Percentage.create(getRightMarin());
         ReaderTextStyle.Percentage topMargin = ReaderTextStyle.Percentage.create(getTopMarin());
         ReaderTextStyle.Percentage BottomMarin = ReaderTextStyle.Percentage.create(getBottomMarin());
 
-        ReaderTextStyle style = ReaderTextStyle.create(fontFace, spUnit, lineSpacing, leftMargin, topMargin, rightMarin, BottomMarin);
+        ReaderTextStyle style = ReaderTextStyle.create(fontFace, spUnit, lineSpacing, leftMargin, topMargin, rightMarin, BottomMarin,paragraphSpacing);
         reader.getReaderHelper().getReaderLayoutManager().setStyle(style);
     }
 
@@ -133,6 +134,14 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
             lineSpacing = ReaderConfig.PageLineSpacing.DEFAULT_LINE_SPACING;
         }
         return lineSpacing;
+    }
+
+    private int getParagraphSpacing(){
+        int paragraphSpacing = reader.getReaderHelper().getDocumentOptions().getParagraphSpacing();
+        if(paragraphSpacing <= 0){
+            paragraphSpacing = ReaderConfig.PageParagraphSpacing.DEFAULT_PARAGRAPH_SPACING;
+        }
+        return paragraphSpacing;
     }
 
     private float getFontSize(){

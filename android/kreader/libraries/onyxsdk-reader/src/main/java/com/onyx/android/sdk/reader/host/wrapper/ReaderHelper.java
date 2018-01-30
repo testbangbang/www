@@ -498,6 +498,7 @@ public class ReaderHelper {
         getDocumentOptions().setFontSize(style.getFontSize().getValue());
         getDocumentOptions().setFontFace(style.getFontFace());
         getDocumentOptions().setLineSpacing(style.getLineSpacing().getPercent());
+        getDocumentOptions().setParagraphSpacing(style.getParagraphSpacing().getPercent());
         getDocumentOptions().setLeftMargin(style.getPageMargin().getLeftMargin().getPercent());
         getDocumentOptions().setTopMargin(style.getPageMargin().getTopMargin().getPercent());
         getDocumentOptions().setRightMargin(style.getPageMargin().getRightMargin().getPercent());
