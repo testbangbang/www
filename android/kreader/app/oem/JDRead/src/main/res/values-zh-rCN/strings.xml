@@ -326,6 +326,7 @@
     <string name="reader_content">原文:</string>
     <string name="reader_read_progress">进度:</string>
     <string name="feedback_history">反馈记录</string>
+    <string name="feedback_success">反馈成功</string>
     <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
     <string name="buy_book_success">购买成功 </string>
     <string name="buy_read_vip">购买畅读VIP</string>
@@ -361,7 +362,7 @@
     <string name="vip">会员</string>
     <string name="error_content_author_unknown">作者未知</string>
     <string name="related_books">相关图书</string>
-    <string name="search_history">搜索历史</string>
+    <string name="search_history">历史搜索</string>
     <string name="search_hot_words">热门搜索</string>
     <string name="in_library">位置：书架</string>
     <string name="in_shop">位置：书店</string>
@@ -395,4 +396,7 @@
     <string name="user_info_article">%s条</string>
     <string name="network_exception">网络异常</string>
     <string name="reader_input_keyword">请输入关键字</string>
+    <string name="first_chapter">已是首章</string>
+    <string name="last_chapter">已是尾章</string>
+    <string name="no_chapters">本文不含章节信息</string>
 </resources>

@@ -1,7 +1,5 @@
 package com.neverland.engbook.level2;
 
-import android.util.Log;
-
 import com.neverland.engbook.allstyles.AlCSSHtml;
 import com.neverland.engbook.allstyles.AlOneCSS;
 import com.neverland.engbook.bookobj.FileBlockInfo;
@@ -99,6 +97,8 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
         FileBlockInfo.loadThreeBlockData(this,loadFileBlockInfo.threeBlock);
         size = customSize;
         FileBlockInfo.saveParagraphData(fileBlocks,this);
+        ttl.clear();
+        prepareCustom();
     }
 
     @Override
@@ -132,7 +132,7 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
         aFiles.applicationDirectory = bookOptions.applicationDirectory;
         size = 0;
 
-        autoCodePage = false;
+        autoCodePage = true;
         setCP(TAL_CODE_PAGES.CP65001);
 
         allState.state_parser = STATE_XML_SKIP;
@@ -1007,6 +1007,11 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
                 } else {
 
                 }
+                return true;
+
+            case AlFormatTag.TAG_HTML:
+                if (tag.closed)
+                    setCP(TAL_CODE_PAGES.CP65001);
                 return true;
         }
 

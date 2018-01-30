@@ -25,6 +25,11 @@ public class AlPublicProfileOptions {
 	 * размер шрифта. В случае отправки некорректного значения - функция setNewProfile заполнит поле правильным вариантом
 	 */
 	public int					font_size = 18;
+	/*
+	 * now not used
+	 */
+	public int					font_monospace_size = 18;
+	public int					font_title_size = 18;
 	/**
 	 * имя шрифта для основного текста
 	 */
@@ -85,6 +90,12 @@ public class AlPublicProfileOptions {
 	 * межстрочное расстояние. В случае отправки некорректного значения - функция setNewProfile заполнит поле правильным вариантом
 	 */
 	public int					interline = 0;
+	/*
+	 * now not used
+	 */
+	public int					interline_monospace = 0;
+	public int					interline_title = 0;
+	public int					interline_notes = 0;
 	/**
 	 * режим свитка. Работает только в случае, если AlEngineOptions.useScreenPages == TAL_SCREEN_PAGES_COUNT.SIZE
 	 */
@@ -103,15 +114,18 @@ public class AlPublicProfileOptions {
      */
     public boolean		        notesOnPage = false;
 
-	/**
-	 * значение 3 отступов для стилей
-	 * 0..99 - в пикселях
-	 * 100..199 - количество пробелов стандартного шрифта - 100
-	 * 200..255 - значение - 200 в процентах от ширины страницы
-	 */
-	public int		       		margin1Style = 210;
-	public int		        	margin2Style = 225;
-	public int		        	margin3Style = 240;
+	/*
+	support [0..15] Em
+	*/
+	public int					textIndentDefaultEm = 2;
+	public boolean				textIndentOverrideFromCSS = false;
+
+	/*
+	support [0..200] % from Em
+	*/
+	public int					paragraphSpacing = 30;
+	public boolean				noUseVerticalMarginsFromCSS = false;
+	public boolean				verticalAlign = true;
 
 	/**
 	 * метод задает значение левого отсупа на странице

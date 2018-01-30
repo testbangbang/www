@@ -339,6 +339,7 @@
     <string name="reader_content">Content:</string>
     <string name="reader_read_progress">Progress:</string>
     <string name="feedback_history">Feedback history</string>
+    <string name="feedback_success">Feedback success</string>
     <string name="device_reset_prompt">The device will immediately go to reset, continue?</string>
     <string name="email_address_key">email_address_key</string>
     <string name="bind_to_email">bind to email</string>
@@ -414,4 +415,7 @@
     <string name="network_exception">Network exception</string>
     <string name="reader_input_keyword">Please enter the keyword</string>
     <string name="menu_pop_width">0.25</string>
+    <string name="first_chapter">Is the first chapter</string>
+    <string name="last_chapter">Is the last chapter</string>
+    <string name="no_chapters">This article does not contain section information</string>
 </resources>

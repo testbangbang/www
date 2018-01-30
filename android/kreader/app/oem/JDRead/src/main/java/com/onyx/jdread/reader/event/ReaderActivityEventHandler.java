@@ -27,6 +27,7 @@ import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.menu.event.SearchContentEvent;
 import com.onyx.jdread.reader.menu.event.ToggleBookmarkSuccessEvent;
+import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
@@ -46,6 +47,7 @@ public class ReaderActivityEventHandler {
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
         this.readerViewBack = readerViewBack;
+        ReaderPageInfoModel.setHasChapterInfo(true);
     }
 
     public void registerListener() {
