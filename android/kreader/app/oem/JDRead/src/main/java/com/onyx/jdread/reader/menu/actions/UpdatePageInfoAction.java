@@ -29,8 +29,8 @@ public class UpdatePageInfoAction extends BaseReaderAction {
         float progress = ReaderPageInfoFormat.getReadProgress(readerDataHolder,readerViewInfo);
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setReadProgress(progress + "%");
 
-        int currentPage = PagePositionUtils.getPageNumber(readerViewInfo.getFirstVisiblePage().getName());
-        int total = readerDataHolder.getReader().getReaderHelper().getNavigator().getTotalPage();
+        int currentPage = readerDataHolder.getCurrentPage();
+        int total = readerDataHolder.getReader().getReaderHelper().getNavigator().getTotalPage() - 1;
 
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setPageTotal(total);
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(currentPage);

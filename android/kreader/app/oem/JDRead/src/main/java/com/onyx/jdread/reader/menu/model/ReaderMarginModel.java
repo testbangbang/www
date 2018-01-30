@@ -3,7 +3,6 @@ package com.onyx.jdread.reader.menu.model;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
-import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.SettingLeftAndRightSpacingEvent;
 import com.onyx.jdread.reader.menu.event.SettingLineSpacingEvent;
