@@ -396,4 +396,7 @@
     <string name="user_info_article">%s条</string>
     <string name="network_exception">网络异常</string>
     <string name="reader_input_keyword">请输入关键字</string>
+    <string name="first_chapter">已是首章</string>
+    <string name="last_chapter">已是尾章</string>
+    <string name="no_chapters">本文不含章节信息</string>
 </resources>

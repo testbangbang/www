@@ -205,12 +205,12 @@ public abstract class AlFormat {
     }
 
     void addtestLink(String s) {
-        AlOneLink a = AlOneLink.add(s, size, allState.isNoteSection ? 1 : 0);
+        AlOneLink a = AlOneLink.add(s, customSize, allState.isNoteSection ? 1 : 0);
         lnk.add(a);
     }
 
     void addtestLink(String s, int tp) {
-        lnk.add(AlOneLink.add(s, size, tp));
+        lnk.add(AlOneLink.add(s, customSize, tp));
     }
 
     void addtestLink(String s, int pos, int tp) {

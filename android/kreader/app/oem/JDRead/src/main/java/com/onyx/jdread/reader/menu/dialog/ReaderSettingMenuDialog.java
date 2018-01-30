@@ -103,7 +103,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initReaderPageInfoBar(){
-        binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel(readerDataHolder.getEventBus()));
+        binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel(readerDataHolder));
         new UpdatePageInfoAction(binding,readerDataHolder.getReaderViewInfo()).execute(readerDataHolder,null);
         initReaderPageInfoEvent();
     }
