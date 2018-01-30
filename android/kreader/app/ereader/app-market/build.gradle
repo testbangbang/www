@@ -54,8 +54,9 @@ dependencies {
     }
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile project(':libraries:onyxsdk-ui')
-    compile project(':libraries:onyxsdk-data')
+    compile 'com.onyx.android.sdk:onyxsdk-data:+'
+    compile 'com.onyx.android.sdk:onyxsdk-ui:+'
+
     compile "com.android.support:multidex:$multidexVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
     compile "com.squareup.picasso:picasso:$rootProject.picassoVersion"

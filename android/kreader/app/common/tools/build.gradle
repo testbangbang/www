@@ -53,10 +53,10 @@ dependencies {
 
     testCompile "junit:junit:$rootProject.junitVersion"
 
-    compile project(':libraries:onyxsdk-base')
-    compile project(':libraries:onyxsdk-ui')
-    compile project(':libraries:onyxsdk-qrcodescanner')
-    compile project(':libraries:onyxsdk-data')
+    compile 'com.onyx.android.sdk:onyxsdk-base:+'
+    compile 'com.onyx.android.sdk:onyxsdk-data:+'
+    compile 'com.onyx.android.sdk:onyxsdk-qrcodescanner:+'
+    compile 'com.onyx.android.sdk:onyxsdk-ui:+'
 
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
     compile "com.android.support:support-v4:$rootProject.phone_supportLibraryVersion"
