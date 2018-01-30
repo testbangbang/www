@@ -1,0 +1,58 @@
+package com.onyx.jdread.manager;
+
+import android.content.Context;
+
+import com.onyx.android.sdk.data.model.LogCollection;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.jdread.util.BroadcastHelper;
+
+/**
+ * Created by suicheng on 2018/1/30.
+ */
+public class CrashExceptionHandler implements Thread.UncaughtExceptionHandler {
+
+    private static CrashExceptionHandler INSTANCE;
+
+    private Context appContext;
+    private Thread.UncaughtExceptionHandler defaultHandler;
+
+    private CrashExceptionHandler(Context appContext) {
+        this.appContext = appContext;
+        setDefaultUncaughtExceptionHandler();
+    }
+
+    public static CrashExceptionHandler getInstance(Context appContext) {
+        if (INSTANCE == null) {
+            synchronized (CrashExceptionHandler.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new CrashExceptionHandler(appContext);
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
+    private void setDefaultUncaughtExceptionHandler() {
+        defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(this);
+    }
+
+    @Override
+    public void uncaughtException(Thread thread, Throwable e) {
+        handleException(e);
+        defaultHandler.uncaughtException(thread, e);
+    }
+
+    private void handleException(Throwable e) {
+        if (e == null) {
+            return;
+        }
+        submitFeedback(e);
+    }
+
+    private void submitFeedback(Throwable e) {
+        LogCollection logCollection = new LogCollection();
+        logCollection.desc = e.toString();
+        BroadcastHelper.sendFeedbackBroadcast(appContext, JSONObjectParseUtils.toJson(logCollection));
+    }
+}

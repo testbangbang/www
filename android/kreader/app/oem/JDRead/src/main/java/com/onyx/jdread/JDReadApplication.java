@@ -21,6 +21,7 @@ import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.SupportType;
+import com.onyx.jdread.manager.CrashExceptionHandler;
 import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
@@ -74,6 +75,7 @@ public class JDReadApplication extends MultiDexApplication {
         ResManager.init(instance);
         initEventListener();
         initDownloadManager();
+        initCrashExceptionHandler();
     }
 
     private void initDownloadManager() {
@@ -118,6 +120,10 @@ public class JDReadApplication extends MultiDexApplication {
 
     private void initFrescoLoader() {
         Fresco.initialize(getInstance().getApplicationContext());
+    }
+
+    private void initCrashExceptionHandler() {
+        CrashExceptionHandler.getInstance(getApplicationContext());
     }
 
     public void setLogin(boolean isUserLogin) {
