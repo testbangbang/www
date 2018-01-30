@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.LogCollection;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.update.log.action.LogReportAction;
+import com.onyx.android.update.log.action.LogUploadAction;
 import com.onyx.android.update.log.receiver.LogFeedbackReceiver;
 
 /**
@@ -25,8 +26,10 @@ public class MainService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
-        if (LogFeedbackReceiver.ACTION.equals(action)) {
+        if (LogFeedbackReceiver.ACTION_FEEDBACK.equals(action)) {
             processFeedback(intent);
+        } else if (LogFeedbackReceiver.ACTION_FEEDBACK_UPLOAD.equals(action)) {
+            processFeedbackTriggerUpload(intent);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -34,6 +37,11 @@ public class MainService extends Service {
     private void processFeedback(Intent intent) {
         String content = intent.getStringExtra(Constant.ARGS_TAG);
         LogReportAction action = new LogReportAction(JSONObjectParseUtils.parseObject(content, LogCollection.class));
+        action.execute(getApplicationContext(), null);
+    }
+
+    private void processFeedbackTriggerUpload(Intent intent) {
+        LogUploadAction action = new LogUploadAction(null);
         action.execute(getApplicationContext(), null);
     }
 }
