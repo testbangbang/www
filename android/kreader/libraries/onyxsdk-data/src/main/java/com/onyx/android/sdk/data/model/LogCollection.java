@@ -13,4 +13,5 @@ public class LogCollection implements Serializable {
     public Firmware firmware;
     public String desc;
     public String zipFile;
+    public String email;
 }
