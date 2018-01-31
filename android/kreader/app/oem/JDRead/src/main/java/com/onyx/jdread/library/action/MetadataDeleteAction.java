@@ -35,7 +35,6 @@ public class MetadataDeleteAction extends BaseAction<LibraryDataBundle> {
             public void onNext(Object o) {
                 chosenItemsMap = getSelectedMetadataAction.getChosenItemsMap();
                 if (CollectionUtils.isNullOrEmpty(chosenItemsMap)) {
-                    ToastUtils.showToast(libraryDataBundle.getAppContext(), R.string.please_select_book);
                     return;
                 }
                 showDeleteDialog(libraryDataBundle, chosenItemsMap, baseCallback);

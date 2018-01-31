@@ -1,5 +1,7 @@
 package com.onyx.jdread.util;
 
+import com.onyx.android.sdk.utils.StringUtils;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +19,9 @@ public class InputUtils {
     }
 
     public static int getByteCount(String s) {
+        if (StringUtils.isNullOrEmpty(s)){
+            return 0;
+        }
         int length = 0;
         for (int i = 0; i < s.length(); i++) {
             int ascii = Character.codePointAt(s, i);
