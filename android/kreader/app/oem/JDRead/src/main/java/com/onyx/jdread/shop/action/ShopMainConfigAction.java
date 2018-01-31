@@ -105,11 +105,7 @@ public class ShopMainConfigAction extends BaseAction {
             }
         } else {
             if (subjectDataList != null) {
-                if (commonSubjcet != null) {
-                    commonSubjcet.clear();
-                } else {
-                    commonSubjcet = new ArrayList<>();
-                }
+                initDataContainer();
                 for (int i = 0; i < subjectDataList.size(); i++) {
                     BookModelConfigResultBean.DataBean.ModulesBean modulesBean = subjectDataList.get(i);
                     SubjectViewModel subjectViewModel = new SubjectViewModel();
@@ -118,6 +114,14 @@ public class ShopMainConfigAction extends BaseAction {
                     commonSubjcet.add(subjectViewModel);
                 }
             }
+        }
+    }
+
+    private void initDataContainer() {
+        if (commonSubjcet == null) {
+            commonSubjcet = new ArrayList<>();
+        } else {
+            commonSubjcet.clear();
         }
     }
 }
