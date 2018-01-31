@@ -25,6 +25,8 @@ import com.onyx.jdread.reader.actions.GetDocumentInfoAction;
 import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.catalog.adapter.BookmarkAdapter;
 import com.onyx.jdread.reader.catalog.adapter.NoteAdapter;
+import com.onyx.jdread.reader.catalog.event.AnnotationItemClickEvent;
+import com.onyx.jdread.reader.catalog.event.BookmarkItemClickEvent;
 import com.onyx.jdread.reader.catalog.event.ReaderBookInfoDialogHandler;
 import com.onyx.jdread.reader.catalog.event.ReaderBookInfoTitleBackEvent;
 import com.onyx.jdread.reader.catalog.model.ReaderBookInfoModel;
@@ -49,6 +51,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     private Map<Integer, PageRecyclerView> viewList = new HashMap<>();
     private ReaderBookInfoDialogHandler readerBookInfoDialogHandler;
     private int mode;
+    private EventBus eventBus;
 
     public ReaderBookInfoDialog(@NonNull Context context, ReaderDataHolder readerDataHolder, int mode) {
         super(context, android.R.style.Theme_NoTitleBar_Fullscreen);
@@ -69,6 +72,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     private void initEventHandler(ReaderDataHolder readerDataHolder) {
         readerBookInfoDialogHandler = new ReaderBookInfoDialogHandler(readerDataHolder);
         readerBookInfoDialogHandler.setReaderBookInfoViewBack(this);
+        eventBus = readerDataHolder.getEventBus();
     }
 
     private void registerListener() {
@@ -178,6 +182,13 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         BookmarkAdapter adapter = new BookmarkAdapter();
         binding.bookInfoBookmarkContent.setAdapter(adapter);
         binding.getReaderBookInfoModel().setBookmarks(readerDocumentTableOfContent, bookmarkList);
+        adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String position = (String) v.getTag();
+                eventBus.post(new BookmarkItemClickEvent(position));
+            }
+        });
     }
 
     private void initAnnotationsView(ReaderUserDataInfo readerUserDataInfo) {
@@ -186,6 +197,13 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         binding.bookInfoNoteContent.setAdapter(adapter);
         binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotations());
         binding.bookInfoNoteContent.setOnPagingListener(this);
+        adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String position = (String) v.getTag();
+                eventBus.post(new AnnotationItemClickEvent(position));
+            }
+        });
     }
 
     public String getCurrentPagePosition() {

@@ -23,6 +23,11 @@ import java.util.List;
 
 public class NoteAdapter extends PageAdapter<PageRecyclerView.ViewHolder, NoteModel, NoteModel> {
     private static final int row = JDReadApplication.getInstance().getApplicationContext().getResources().getInteger(R.integer.book_info_dialog_note_row);
+    private View.OnClickListener onClickListener;
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
 
     @Override
     public int getRowCount() {
@@ -56,13 +61,17 @@ public class NoteAdapter extends PageAdapter<PageRecyclerView.ViewHolder, NoteMo
         final NoteModel dataModel = getItemVMList().get(position);
         BookmarkModelHolder viewHolder = (BookmarkModelHolder) holder;
         viewHolder.bindTo(dataModel);
+        viewHolder.rootView.setTag(dataModel.getPosition());
+        viewHolder.rootView.setOnClickListener(onClickListener);
     }
 
     static class BookmarkModelHolder extends PageRecyclerView.ViewHolder {
         private final NotesListItemViewBinding binding;
+        private View rootView;
 
         public BookmarkModelHolder(View view) {
             super(view);
+            rootView = view;
             binding = DataBindingUtil.bind(view);
         }
 

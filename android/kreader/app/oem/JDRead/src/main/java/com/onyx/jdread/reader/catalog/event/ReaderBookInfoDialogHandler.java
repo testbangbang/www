@@ -1,6 +1,10 @@
 package com.onyx.jdread.reader.catalog.event;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.databinding.ReaderBookInfoBinding;
+import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoViewBack;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
@@ -72,5 +76,25 @@ public class ReaderBookInfoDialogHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGetDocumentInfoResultEvent(GetDocumentInfoResultEvent event){
         readerBookInfoViewBack.updateView();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookmarkItemClickEvent(BookmarkItemClickEvent event){
+        new GotoPositionAction(event.getPosition()).execute(readerDataHolder, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                readerBookInfoViewBack.getContent().dismiss();
+            }
+        });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnnotationItemClickEvent(AnnotationItemClickEvent event){
+        new GotoPositionAction(event.getPosition()).execute(readerDataHolder, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                readerBookInfoViewBack.getContent().dismiss();
+            }
+        });
     }
 }

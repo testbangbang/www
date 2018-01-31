@@ -12,6 +12,15 @@ public class NoteModel extends BaseObservable {
     private ObservableField<String> data = new ObservableField<>();
     private ObservableField<String> note = new ObservableField<>();
     private ObservableField<String> content = new ObservableField<>();
+    private String position;
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
     public ObservableField<String> getChapter() {
         return chapter;
