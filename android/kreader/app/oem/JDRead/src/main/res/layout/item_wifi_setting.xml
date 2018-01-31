@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="@{accessPoint.getScanResult().SSID}"
-                android:textSize="@dimen/level_three_heading_font"
+                android:textSize="@dimen/level_two_heading_font"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
 
@@ -42,7 +42,7 @@
                 android:layout_marginTop="@dimen/wifi_view_item_margin_top"
                 android:maxLines="1"
                 android:text="@{accessPoint.getSecurityString()}"
-                android:textColor="@android:color/black"
+                android:textColor="@color/text_gray_color"
                 android:textSize="@dimen/level_three_heading_font" />
         </LinearLayout>
 

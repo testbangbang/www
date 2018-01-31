@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentPasswordSettingsBinding;
@@ -34,6 +35,21 @@ public class PasswordSettingFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         initBinding(inflater, container);
         return passwordSettingBinding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        showInputKeyboard();
+    }
+
+    private void showInputKeyboard() {
+        View focusView = passwordSettingBinding.passwordEncryptEdit;
+        if (passwordSettingBinding.getPswSettingModel().encrypted.get()) {
+            focusView = passwordSettingBinding.passwordUnEncryptEdit;
+        }
+        focusView.requestFocus();
+        InputMethodUtils.showForcedInputKeyboard(getContext(), focusView);
     }
 
     private void initBinding(LayoutInflater inflater, @Nullable ViewGroup container) {
