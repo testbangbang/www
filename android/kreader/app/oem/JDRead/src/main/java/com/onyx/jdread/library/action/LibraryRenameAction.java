@@ -60,15 +60,15 @@ public class LibraryRenameAction extends BaseAction<LibraryDataBundle> {
         model.setPositiveClickLister(new LibraryBuildDialog.DialogModel.OnClickListener() {
             @Override
             public void onClicked() {
-                if (InputUtils.getByteCount(model.libraryName.get()) > ResManager.getInteger(R.integer.group_name_max_length)) {
-                    ToastUtil.showOffsetToast(String.format(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.group_name_max_length)));
-                    return;
-                }
-                if (InputUtils.haveSpecialCharacters(model.libraryName.get())) {
-                    ToastUtil.showOffsetToast(ResManager.getString(R.string.group_names_do_not_support_special_characters));
-                    return;
-                }
                 if (StringUtils.isNotBlank(model.libraryName.get())) {
+                    if (InputUtils.getByteCount(model.libraryName.get()) > ResManager.getInteger(R.integer.group_name_max_length)) {
+                        ToastUtil.showOffsetToast(String.format(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.group_name_max_length)));
+                        return;
+                    }
+                    if (InputUtils.haveSpecialCharacters(model.libraryName.get())) {
+                        ToastUtil.showOffsetToast(ResManager.getString(R.string.group_names_do_not_support_special_characters));
+                        return;
+                    }
                     if (model.libraryName.get().equals(dataModel.title.get())) {
                         ToastUtil.showOffsetToast(ResManager.getString(R.string.the_same_name));
                         return;

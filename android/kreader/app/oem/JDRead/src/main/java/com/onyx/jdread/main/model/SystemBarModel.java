@@ -10,13 +10,11 @@ import android.databinding.ObservableInt;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
-import android.util.Log;
 
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
-import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.util.TimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -102,7 +100,7 @@ public class SystemBarModel extends Observable {
     }
 
     public void setTimeFormat(boolean is24Hour) {
-        TimeUtils.setFormat(new SimpleDateFormat(is24Hour ? TimeUtils.DATA_TIME_24 : TimeUtils.DATA_TIME_12));
+        TimeUtils.setFormat(new SimpleDateFormat(is24Hour ? TimeUtils.DATA_TIME_24 : TimeUtils.DATA_TIME_12_WITH_AMPM));
     }
 
     private BroadcastReceiver phoneBatteryReceiver = new BroadcastReceiver() {

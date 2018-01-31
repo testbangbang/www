@@ -21,6 +21,7 @@ public class TimeUtils {
     public static final String DATA_HOUR_FORMAT_CAST = "yyyyMMddHHmm";
     public static final String DATA_TIME_24 = "HH:mm";
     public static final String DATA_TIME_12 = "hh:mm";
+    public static final String DATA_TIME_12_WITH_AMPM = "hh:mm aa";
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat(DATA_TIME_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_DATE = new SimpleDateFormat(DATA_FORMAT);
     public static final SimpleDateFormat DATA_HOUR_FORMAT_DATE = new SimpleDateFormat(DATA_HOUR_FORMAT);

@@ -40,6 +40,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/layout_title_bar_title_margin_left"
+                android:ellipsize="middle"
+                android:maxLines="1"
+                android:maxWidth="@dimen/title_bar_title_max_width"
                 android:text="@{titleBarViewModel.leftText}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
@@ -63,6 +66,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/book_detail_margin"
+                android:ellipsize="middle"
+                android:maxLines="1"
+                android:maxWidth="@dimen/title_bar_title_max_width"
                 android:text="@{titleBarViewModel.rightText}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
@@ -84,8 +90,8 @@
             android:onClick="@{()->titleBarViewModel.onRightTitle2Click()}"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/book_detail_margin"
-            android:paddingTop="@dimen/book_detail_margin"
             android:paddingLeft="@dimen/book_detail_margin"
+            android:paddingTop="@dimen/book_detail_margin"
             android:visibility="@{titleBarViewModel.showRightText2 ? View.VISIBLE : View.GONE}">
 
             <TextView
@@ -93,6 +99,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/book_detail_margin"
+                android:ellipsize="middle"
+                android:maxLines="1"
+                android:maxWidth="@dimen/title_bar_title_max_width"
                 android:text="@{titleBarViewModel.rightText2}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_size_17" />
@@ -114,8 +123,8 @@
             android:onClick="@{()->titleBarViewModel.onRightTitle3Click()}"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/book_detail_margin"
-            android:paddingTop="@dimen/book_detail_margin"
             android:paddingLeft="@dimen/book_detail_margin"
+            android:paddingTop="@dimen/book_detail_margin"
             android:visibility="@{titleBarViewModel.showRightText3 ? View.VISIBLE : View.GONE}">
 
             <TextView
@@ -123,6 +132,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/book_detail_margin"
+                android:ellipsize="middle"
+                android:maxLines="1"
+                android:maxWidth="@dimen/title_bar_title_max_width"
                 android:text="@{titleBarViewModel.rightText3}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_size_17" />

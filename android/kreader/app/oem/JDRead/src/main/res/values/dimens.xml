@@ -4,6 +4,7 @@
     <dimen name="model_item_cover_height">203dp</dimen>
     <dimen name="page_indicator_layout_margin">20dp</dimen>
     <dimen name="rectangle_stroke_width">1dp</dimen>
+    <dimen name="rectangle_corner_common_radius">2dp</dimen>
     <dimen name="function_bar_text_size">18sp</dimen>
     <dimen name="level_large_heading_font">26sp</dimen>
     <dimen name="level_one_heading_font">20sp</dimen>
@@ -83,7 +84,8 @@
     <dimen name="manual_qr_code_margin">35dp</dimen>
     <dimen name="manual_qr_code_margin_top">95dp</dimen>
     <dimen name="feedback_commit_text_width">300dp</dimen>
-    <dimen name="feedback_content_height">300dp</dimen>
+    <dimen name="feedback_content_height">200dp</dimen>
+    <dimen name="feedback_content_min_height">150dp</dimen>
     <dimen name="button_padding">10dp</dimen>
     <dimen name="title_bar_drawable_padding">10dp</dimen>
     <dimen name="reader_title_bar_drawable_padding">25dp</dimen>
@@ -425,9 +427,9 @@
     <dimen name="reader_note_padding_bottom">10dp</dimen>
     <dimen name="vip_user_info_container_padding">20dp</dimen>
     <dimen name="renew_vip_button_padding_left_and_right">20dp</dimen>
-    <dimen name="recycle_view_height_with_vip">150dp</dimen>
-    <dimen name="book_cover_width_with_vip">90dp</dimen>
-    <dimen name="book_cover_height_width_vip">95dp</dimen>
+    <dimen name="recycle_view_height_with_vip">153dp</dimen>
+    <dimen name="book_cover_width_with_vip">85dp</dimen>
+    <dimen name="book_cover_height_width_vip">110dp</dimen>
     <dimen name="control_panel_floating_tittle_text_size">40sp</dimen>
     <dimen name="reader_dict_title_padding_left">10dp</dimen>
     <dimen name="reader_dict_title_padding_right">10dp</dimen>
@@ -469,4 +471,6 @@
     <dimen name="common_subject_bottom_item_margin_top">60dp</dimen>
     <dimen name="top_up_continue_width">300dp</dimen>
     <dimen name="top_up_continue_padding">10dp</dimen>
+    <dimen name="book_comment_contetn_margin_top">8dp</dimen>
+    <dimen name="title_bar_title_max_width">180dp</dimen>
 </resources>

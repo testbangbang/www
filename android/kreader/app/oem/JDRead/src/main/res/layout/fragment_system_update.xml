@@ -91,12 +91,12 @@
                     android:id="@+id/upgrade_immediately"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rectangle_stroke"
+                    android:background="@drawable/rectangle_stroke_common_corners_selector"
                     android:gravity="center"
                     android:padding="@dimen/system_update_upgrade_immediately_padding"
                     android:text="@{model.systemUpdateData.updateDes}"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_one_heading_font"
+                    android:textSize="@dimen/level_two_heading_font"
                     android:visibility="@{model.systemUpdateData.showProgress ? View.GONE : View.VISIBLE}" />
 
                 <LinearLayout

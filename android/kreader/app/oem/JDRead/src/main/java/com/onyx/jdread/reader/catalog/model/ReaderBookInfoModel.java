@@ -76,6 +76,7 @@ public class ReaderBookInfoModel {
             noteModel.setChapter("第一章:xxx");
             noteModel.setNote(annotation.getNote());
             noteModel.setContent(annotation.getQuote());
+            noteModel.setPosition(annotation.getPosition());
             Date date = new Date(annotation.getCreatedAt().getTime());
             noteModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
             this.notes.add(noteModel);

@@ -3,8 +3,6 @@ package com.onyx.jdread.main.common;
 import android.content.Context;
 import android.content.res.TypedArray;
 
-import com.onyx.jdread.JDReadApplication;
-
 /**
  * Created by li on 2018/1/18.
  */
@@ -34,5 +32,9 @@ public class ResManager {
 
     public static int getDimens(int resId) {
         return context.getResources().getDimensionPixelSize(resId);
+    }
+
+    public static int getColor(int res){
+        return context.getResources().getColor(res);
     }
 }

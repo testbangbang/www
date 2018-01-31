@@ -5,8 +5,8 @@ import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
@@ -102,11 +102,11 @@ public class ShopDataBindingUtil {
 
     @BindingAdapter({"htmlContent"})
     public static void setHtmlContent(HtmlTextView htmlTextView, String content) {
-        String title = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce) + ":";
+        String title = ResManager.getString(R.string.book_detail_text_view_content_introduce) + ":";
         if (!StringUtils.isNullOrEmpty(content)){
             htmlTextView.setHtml(title + content);
         } else {
-            String emptyCOntent = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_empty_introduce);
+            String emptyCOntent = ResManager.getString(R.string.book_detail_empty_introduce);
             htmlTextView.setHtml(title + emptyCOntent);
         }
     }
@@ -116,7 +116,7 @@ public class ShopDataBindingUtil {
         if (!StringUtils.isNullOrEmpty(content)){
             htmlTextView.setHtml(content);
         } else {
-            String emptyCOntent = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_empty_introduce);
+            String emptyCOntent = ResManager.getString(R.string.book_detail_empty_introduce);
             htmlTextView.setHtml(emptyCOntent);
         }
     }
@@ -124,7 +124,7 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"bookInfoWebView"})
     public static void setBookInfoDialog(AutoPagedWebView webView, String content) {
         if (StringUtils.isNullOrEmpty(content)){
-            content = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_empty_introduce);
+            content = ResManager.getString(R.string.book_detail_empty_introduce);
         }
         webView.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
     }

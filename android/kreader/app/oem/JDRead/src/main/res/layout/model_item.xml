@@ -111,10 +111,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/book_name_margin_top"
             android:ellipsize="end"
+            android:lineSpacingExtra="5dp"
             android:lines="2"
             android:maxLines="2"
+            android:onClick="@{()->model.itemClicked()}"
+            android:onLongClick="@{()->model.itemLongClick()}"
             android:text="@{model.title}"
-            android:lineSpacingExtra="5dp"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
 
