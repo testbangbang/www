@@ -36,6 +36,7 @@
             android:maxLines="1"
             android:textColor="@android:color/black"
             android:text="@={dialogModel.libraryName}"
+            android:imeOptions="actionDone"
             android:textSize="@dimen/level_two_heading_font" />
 
         <LinearLayout

@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 
 /**
  * Created by hehai on 18-1-4.
@@ -29,7 +30,7 @@ public class DashLineItemDivider extends RecyclerView.ItemDecoration {
             final int top = child.getBottom() + params.bottomMargin;
             Paint paint = new Paint();
             paint.setStyle(Paint.Style.STROKE);
-            paint.setColor(Color.RED);
+            paint.setColor(ResManager.getColor(R.color.normal_black));
             Path path = new Path();
             path.moveTo(left, top);
             path.lineTo(right, top);
