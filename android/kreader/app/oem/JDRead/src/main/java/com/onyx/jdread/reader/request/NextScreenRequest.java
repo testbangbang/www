@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.request;
 
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.layout.PageOverlayMarker;
 
 /**
  * Created by huxiaomao on 2017/12/27.
@@ -18,7 +19,14 @@ public class NextScreenRequest extends ReaderBaseRequest {
         reader.getReaderHelper().nextScreen();
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(reader);
-        reader.getReaderHelper().nextScreen();
+        preloadNextScreen(reader);
         return this;
+    }
+
+    private void preloadNextScreen(Reader reader) throws Exception{
+        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
+        PageOverlayMarker.saveCurrentPageAndViewport(reader);
+        reader.getReaderHelper().nextScreen();
+        PageOverlayMarker.markLastViewportOverlayPointWhenNecessary(reader, getReaderViewInfo());
     }
 }
