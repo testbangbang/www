@@ -149,4 +149,7 @@
     <integer name="add_wifi_dialog_y">30</integer>
     <integer name="library_menu_offset_y">20</integer>
     <integer name="library_menu_offset_x">180</integer>
+    <integer name="search_word_key_max_length">100</integer>
+    <integer name="group_name_max_length">20</integer>
+    <integer name="toast_offset_y">-300</integer>
 </resources>

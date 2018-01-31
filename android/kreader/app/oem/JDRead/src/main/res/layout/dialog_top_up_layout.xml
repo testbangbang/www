@@ -5,12 +5,13 @@
 
         <variable
             name="userInfo"
-            type="com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo"/>
+            type="com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -42,7 +43,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/line_width"
-                android:background="@color/divider_color"/>
+                android:background="@color/divider_color" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -65,16 +66,17 @@
                 android:id="@+id/dialog_top_up_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/top_up_tips_margin_top"
+                android:layout_marginBottom="@dimen/top_up_tips_recycler_margin"
                 android:layout_marginLeft="@dimen/top_up_tips_recycler_margin"
                 android:layout_marginRight="@dimen/top_up_tips_recycler_margin"
-                android:layout_marginBottom="@dimen/top_up_tips_recycler_margin"/>
+                android:layout_marginTop="@dimen/top_up_tips_margin_top" />
         </LinearLayout>
 
         <include
             android:id="@+id/dialog_top_up_qr_code_layout"
-            android:layout_height="match_parent"
+            layout="@layout/dialog_top_up_qrcode_layout"
             android:layout_width="match_parent"
-            android:visibility="gone"/>
+            android:layout_height="match_parent"
+            android:visibility="gone" />
     </FrameLayout>
 </layout>

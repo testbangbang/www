@@ -422,6 +422,8 @@
     <string name="way_to_pay">Use WeChat or jingdong financial scanning code to complete the payment</string>
     <string name="top_up_success">Top-up success</string>
     <string name="continue_top_up">Continue</string>
+    <string name="the_input_has_exceeded_the_upper_limit">The input has exceeded the upper %d byte limit</string>
+    <string name="group_names_do_not_support_special_characters">Group names do not_support special characters</string>
     <string name="first_chapter">Is the first chapter</string>
     <string name="last_chapter">Is the last chapter</string>
     <string name="no_chapters">This article does not contain section information</string>

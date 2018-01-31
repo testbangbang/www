@@ -139,7 +139,8 @@ public class RestoreRequest extends BaseReaderRequest {
                 ReaderTextStyle.Percentage.create(baseOptions.getLeftMargin()),
                 ReaderTextStyle.Percentage.create(baseOptions.getTopMargin()),
                 ReaderTextStyle.Percentage.create(baseOptions.getRightMargin()),
-                ReaderTextStyle.Percentage.create(baseOptions.getBottomMargin()));
+                ReaderTextStyle.Percentage.create(baseOptions.getBottomMargin()),
+                ReaderTextStyle.Percentage.create(baseOptions.getParagraphSpacing()));
         reader.getReaderLayoutManager().setStyle(style);
     }
 

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,11 +36,14 @@ import com.onyx.jdread.library.model.SearchBookModel;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.shop.action.SearchHotWordAction;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
+import com.onyx.jdread.util.InputUtils;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -155,6 +157,11 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void queryTextChange(String newText) {
+        if (StringUtils.isNotBlank(newText) && InputUtils.getByteCount(newText) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
+            ToastUtil.showToast(String.format(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.search_word_key_max_length)));
+            return;
+        }
+        newText = InputUtils.filterSpecialCharacters(newText);
         searchBookModel.isInputting.set(StringUtils.isNotBlank(newText));
         searchBookModel.searchKey.set(newText);
         checkView();
@@ -168,6 +175,11 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void queryTextSubmit(String query) {
+        if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
+            ToastUtil.showToast(String.format(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.search_word_key_max_length)));
+            return;
+        }
+        query = InputUtils.filterSpecialCharacters(query);
         Utils.hideSoftWindow(getActivity());
         searchBookModel.isInputting.set(false);
         searchBookModel.searchKey.set(query);

@@ -403,6 +403,7 @@
     <string name="way_to_pay">使用 微信 或 京东金融 扫码完成支付</string>
     <string name="top_up_success">充值成功</string>
     <string name="continue_top_up">继续充值</string>
+    <string name="the_input_has_exceeded_the_upper_limit">输入内容已超%d字节数上限</string>
     <string name="first_chapter">已是首章</string>
     <string name="last_chapter">已是尾章</string>
     <string name="no_chapters">本文不含章节信息</string>
