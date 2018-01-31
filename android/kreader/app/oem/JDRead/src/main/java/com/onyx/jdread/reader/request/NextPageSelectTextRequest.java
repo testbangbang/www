@@ -70,6 +70,7 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
         }
         getSelectionInfoManager().updateSelectInfo(readerSelectionManager.getReaderSelectionInfos());
         updateSetting(reader);
+        reader.getReaderHelper().getReaderLayoutManager().nextScreen();
         return this;
     }
 
