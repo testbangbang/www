@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ReaderTitleBarModel extends BaseObservable {
-    private ObservableBoolean isBuy = new ObservableBoolean(true);
+    private ObservableBoolean isBuy = new ObservableBoolean(false);
     private ObservableBoolean isSearchContext = new ObservableBoolean(true);
     private ObservableInt bookMarkImageId = new ObservableInt(R.mipmap.ic_read_bm_normal);
     private ObservableBoolean isShow = new ObservableBoolean(true);

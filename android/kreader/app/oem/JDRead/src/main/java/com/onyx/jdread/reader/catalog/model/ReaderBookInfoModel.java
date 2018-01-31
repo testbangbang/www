@@ -73,7 +73,7 @@ public class ReaderBookInfoModel {
     public void setNotes(List<Annotation> annotationList){
         for(Annotation annotation: annotationList){
             NoteModel noteModel = new NoteModel();
-            noteModel.setChapter("第一章:xxx");
+            noteModel.setChapter(annotation.getChapterName());
             noteModel.setNote(annotation.getNote());
             noteModel.setContent(annotation.getQuote());
             noteModel.setPosition(annotation.getPosition());

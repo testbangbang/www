@@ -23,7 +23,7 @@ public class ReaderPageInfoFormat {
     }
 
     public static String getChapterName(ReaderDataHolder readerDataHolder) {
-        String bookName = readerDataHolder.getReader().getDocumentInfo().getBookName();
+        String bookName = readerDataHolder.getReaderViewInfo().getChapterName();
         return bookName;
     }
 }
