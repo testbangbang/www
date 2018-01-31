@@ -11,6 +11,8 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.BookmarkListItemViewBinding;
+import com.onyx.jdread.library.event.SearchBookKeyEvent;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.PageAdapter;
 import com.onyx.jdread.reader.catalog.model.BookmarkModel;
 
@@ -22,6 +24,11 @@ import java.util.List;
 
 public class BookmarkAdapter extends PageAdapter<PageRecyclerView.ViewHolder, BookmarkModel, BookmarkModel> {
     private static final int row = JDReadApplication.getInstance().getApplicationContext().getResources().getInteger(R.integer.book_info_dialog_mark_row);
+    private View.OnClickListener onClickListener;
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
 
     @Override
     public int getRowCount() {
@@ -55,13 +62,17 @@ public class BookmarkAdapter extends PageAdapter<PageRecyclerView.ViewHolder, Bo
         final BookmarkModel dataModel = getItemVMList().get(position);
         BookmarkModelHolder viewHolder = (BookmarkModelHolder) holder;
         viewHolder.bindTo(dataModel);
+        viewHolder.rootView.setTag(dataModel.getPosition());
+        viewHolder.rootView.setOnClickListener(onClickListener);
     }
 
     static class BookmarkModelHolder extends PageRecyclerView.ViewHolder {
         private final BookmarkListItemViewBinding binding;
+        private View rootView;
 
         public BookmarkModelHolder(View view) {
             super(view);
+            rootView = view;
             binding = DataBindingUtil.bind(view);
         }
 

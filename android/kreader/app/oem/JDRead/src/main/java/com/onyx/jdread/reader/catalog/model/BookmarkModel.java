@@ -24,6 +24,15 @@ public class BookmarkModel extends BaseObservable {
     private ObservableField<String> data = new ObservableField<>();
     private ObservableField<String> content = new ObservableField<>();
     private ObservableField<String> readProgress = new ObservableField<>();
+    private String position;
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
     public ObservableField<String> getChapter() {
         return chapter;
@@ -73,6 +82,7 @@ public class BookmarkModel extends BaseObservable {
         }
         bookmarkModel.setContent(JDReadApplication.getInstance().getApplicationContext().getString(R.string.reader_content) + content);
         bookmarkModel.setReadProgress(JDReadApplication.getInstance().getApplicationContext().getString(R.string.reader_read_progress) + "28%");
+        bookmarkModel.setPosition(bookmark.getPosition());
         return bookmarkModel;
     }
 
