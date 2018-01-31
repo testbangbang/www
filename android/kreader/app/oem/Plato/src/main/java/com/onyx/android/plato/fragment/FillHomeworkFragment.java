@@ -303,8 +303,8 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         void onViewInflate();
     }
 
-    public void setOnFragmentViewInflateListener(OnFragmentViewInflateListener l) {
-        inflaterListener = l;
+    public void setOnFragmentViewInflateListener(OnFragmentViewInflateListener listener) {
+        inflaterListener = listener;
     }
 
     public boolean isInflater() {
