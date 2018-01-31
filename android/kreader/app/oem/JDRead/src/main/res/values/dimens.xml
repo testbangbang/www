@@ -424,9 +424,9 @@
     <dimen name="reader_note_padding_bottom">10dp</dimen>
     <dimen name="vip_user_info_container_padding">20dp</dimen>
     <dimen name="renew_vip_button_padding_left_and_right">20dp</dimen>
-    <dimen name="recycle_view_height_with_vip">150dp</dimen>
-    <dimen name="book_cover_width_with_vip">90dp</dimen>
-    <dimen name="book_cover_height_width_vip">95dp</dimen>
+    <dimen name="recycle_view_height_with_vip">153dp</dimen>
+    <dimen name="book_cover_width_with_vip">85dp</dimen>
+    <dimen name="book_cover_height_width_vip">110dp</dimen>
     <dimen name="control_panel_floating_tittle_text_size">40sp</dimen>
     <dimen name="reader_dict_title_padding_left">10dp</dimen>
     <dimen name="reader_dict_title_padding_right">10dp</dimen>
@@ -466,4 +466,6 @@
     <dimen name="system_bar_icon_space">10dp</dimen>
     <dimen name="item_subject_common_name_margin_top">2dp</dimen>
     <dimen name="common_subject_bottom_item_margin_top">60dp</dimen>
+    <dimen name="book_comment_contetn_margin_top">8dp</dimen>
+    <dimen name="title_bar_title_max_width">180dp</dimen>
 </resources>

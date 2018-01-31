@@ -4,6 +4,10 @@ package com.onyx.jdread.main.common;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
+import com.onyx.jdread.util.Utils;
+
 /**
  * Created by huxiaomao on 2017/12/7.
  */
@@ -60,5 +64,13 @@ public class BaseFragment extends Fragment {
 
     public Bundle getBundle() {
         return bundle;
+    }
+
+    public boolean checkWfiDisConnected() {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+            return true;
+        }
+        return false;
     }
 }

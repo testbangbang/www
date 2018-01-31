@@ -41,6 +41,7 @@ import com.onyx.jdread.shop.ui.BookNewBooksFragment;
 import com.onyx.jdread.shop.ui.BookRankFragment;
 import com.onyx.jdread.shop.ui.BookSaleFragment;
 import com.onyx.jdread.shop.ui.BookVIPReadFragment;
+import com.onyx.jdread.shop.ui.BuyReadVIPFragment;
 import com.onyx.jdread.shop.ui.CategoryBookListFragment;
 import com.onyx.jdread.shop.ui.CommentFragment;
 import com.onyx.jdread.shop.ui.SearchBookListFragment;
@@ -81,6 +82,7 @@ public class ViewConfig {
         childViewInfo.put(BookNewBooksFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(SearchBookListFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(SearchBookFragment.class.getSimpleName(),FunctionModule.SHOP);
+        childViewInfo.put(BuyReadVIPFragment.class.getName(),FunctionModule.SHOP);
         //setting
         childViewInfo.put(SettingFragment.class.getName(), FunctionModule.SETTING);
         childViewInfo.put(DeviceConfigFragment.class.getName(),FunctionModule.SETTING);

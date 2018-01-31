@@ -80,12 +80,14 @@ public class RxRequestBookRank extends RxBaseCloudRequest {
                 bookList.add(bookBean);
             }
             modulesBean.bookList = bookList;
-            if (index == Constants.SHOP_MAIN_INDEX_ONE || index == Constants.SHOP_MAIN_INDEX_THREE) {
-                BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
-                modulesBean.show_name_next = modulesBeanNext.show_name;
-                modulesBean.f_type_next = modulesBeanNext.f_type;
-                modulesBean.id_next = modulesBeanNext.id;
-                modulesBean.showNextTitle = true;
+            if ((index == Constants.SHOP_MAIN_INDEX_ONE || index == Constants.SHOP_MAIN_INDEX_THREE)) {
+                if (dataBean.modules.size() - 1 >= (index + 1)) {
+                    BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
+                    modulesBean.show_name_next = modulesBeanNext.show_name;
+                    modulesBean.f_type_next = modulesBeanNext.f_type;
+                    modulesBean.id_next = modulesBeanNext.id;
+                    modulesBean.showNextTitle = true;
+                }
             }
             rankDataList.add(modulesBean);
         }

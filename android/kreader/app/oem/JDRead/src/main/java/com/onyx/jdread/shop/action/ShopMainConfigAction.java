@@ -11,6 +11,7 @@ import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestShopMainConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,19 +23,29 @@ public class ShopMainConfigAction extends BaseAction {
     private BookModelConfigResultBean resultBean;
     private List<BookModelConfigResultBean.DataBean.AdvBean> bannerList;
     private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
+    private List<SubjectViewModel> commonSubjcet;
+    private int cid;
+
+    public ShopMainConfigAction(int cid) {
+        this.cid = cid;
+    }
 
     public BookModelConfigResultBean getResultBean() {
         return resultBean;
+    }
+
+    public List<SubjectViewModel> getCommonSubjcet() {
+        return commonSubjcet;
     }
 
     @Override
     public void execute(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         ShopMainConfigRequestBean requestBean = new ShopMainConfigRequestBean();
         JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
-        String uri = String.format(CloudApiContext.BookShopURI.SHOP_MAIN_CONFIG_URI, String.valueOf(Constants.BOOK_SHOP_DEFAULT_CID));
+        String uri = String.format(CloudApiContext.BookShopURI.SHOP_MAIN_CONFIG_URI, String.valueOf(cid));
         appBaseInfo.setSign(appBaseInfo.getSignValue(uri));
         requestBean.setAppBaseInfo(appBaseInfo);
-        requestBean.setCid(Constants.BOOK_SHOP_DEFAULT_CID);
+        requestBean.setCid(cid);
         RxRequestShopMainConfig request = new RxRequestShopMainConfig();
         request.setRequestBean(requestBean);
         request.execute(new RxCallback<RxRequestShopMainConfig>() {
@@ -56,7 +67,7 @@ public class ShopMainConfigAction extends BaseAction {
                 resultBean = request.getResultBean();
                 bannerList = request.getBannerList();
                 subjectDataList = request.getSubjectDataList();
-                setResult(dataBundle);
+                setResult(cid, dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onNext(ShopMainConfigAction.this);
                 }
@@ -80,16 +91,37 @@ public class ShopMainConfigAction extends BaseAction {
         });
     }
 
-    private void setResult(ShopDataBundle dataBundle) {
-        if (bannerList != null) {
-            dataBundle.getShopViewModel().getBannerViewModel().setBannerList(bannerList);
-        }
-        if (subjectDataList != null) {
-            List<SubjectViewModel> commonSubjcet = dataBundle.getShopViewModel().getCommonSubjcet();
-            for (int i = 0; i < subjectDataList.size(); i++) {
-                BookModelConfigResultBean.DataBean.ModulesBean modulesBean = subjectDataList.get(i);
-                commonSubjcet.get(i).setModelBean(modulesBean);
+    private void setResult(int cid, ShopDataBundle dataBundle) {
+        if (cid == Constants.BOOK_SHOP_MAIN_CONFIG_CID) {
+            if (bannerList != null) {
+                dataBundle.getShopViewModel().getBannerViewModel().setBannerList(bannerList);
             }
+            if (subjectDataList != null) {
+                List<SubjectViewModel> commonSubjcet = dataBundle.getShopViewModel().getCommonSubjcet();
+                for (int i = 0; i < subjectDataList.size(); i++) {
+                    BookModelConfigResultBean.DataBean.ModulesBean modulesBean = subjectDataList.get(i);
+                    commonSubjcet.get(i).setModelBean(modulesBean);
+                }
+            }
+        } else {
+            if (subjectDataList != null) {
+                initDataContainer();
+                for (int i = 0; i < subjectDataList.size(); i++) {
+                    BookModelConfigResultBean.DataBean.ModulesBean modulesBean = subjectDataList.get(i);
+                    SubjectViewModel subjectViewModel = new SubjectViewModel();
+                    subjectViewModel.setEventBus(dataBundle.getEventBus());
+                    subjectViewModel.setModelBean(modulesBean);
+                    commonSubjcet.add(subjectViewModel);
+                }
+            }
+        }
+    }
+
+    private void initDataContainer() {
+        if (commonSubjcet == null) {
+            commonSubjcet = new ArrayList<>();
+        } else {
+            commonSubjcet.clear();
         }
     }
 }
