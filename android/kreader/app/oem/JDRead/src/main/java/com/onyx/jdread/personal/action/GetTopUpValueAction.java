@@ -23,7 +23,7 @@ public class GetTopUpValueAction extends BaseAction {
         baseInfo.setSign(signValue);
 
         final RxRechargePackageRequest rq = new RxRechargePackageRequest();
-        rq.setSaltValue("1513304880000");
+        rq.setSaltValue(PersonalDataBundle.getInstance().getSalt());
         rq.setBaseInfo(baseInfo);
         rq.execute(new RxCallback() {
             @Override
