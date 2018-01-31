@@ -35,6 +35,9 @@ public class Annotation extends BaseData {
     @Column
     int pageNumber = -1;
 
+    @Column
+    String chapterName;
+
     @Column(typeConverter = DBFlowTypeConverters.RectangleListConverter.class)
     private List rectangles = new ArrayList();
 
@@ -102,5 +105,12 @@ public class Annotation extends BaseData {
         return rectangles;
     }
 
+    public String getChapterName() {
+        return chapterName;
+    }
+
+    public void setChapterName(String chapterName) {
+        this.chapterName = chapterName;
+    }
 }
 

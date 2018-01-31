@@ -37,6 +37,15 @@ public class ReaderViewInfo {
     public boolean layoutChanged = false;
     public boolean autoCropForEachBlock = false;
     public int totalPage;
+    public String chapterName;
+
+    public String getChapterName() {
+        return chapterName;
+    }
+
+    public void setChapterName(String chapterName) {
+        this.chapterName = chapterName;
+    }
 
     public int getTotalPage() {
         return totalPage;
