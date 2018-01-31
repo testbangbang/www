@@ -227,6 +227,7 @@ public class LocalDataProvider implements DataProviderBase {
 
     @Override
     public void updateLibrary(Library library) {
+        library.beforeSave();
         library.update();
     }
 

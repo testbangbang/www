@@ -54,7 +54,6 @@ public class RxMoveToLibraryFromMultipleLibraryRequest extends RxBaseDBRequest {
                 library.setDescription(toLibrary.desc.get());
                 providerBase.addLibrary(library);
             }else {
-                library.beforeSave();
                 providerBase.updateLibrary(library);
             }
         }
