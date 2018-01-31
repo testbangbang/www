@@ -18,7 +18,7 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SystemBarPopLayoutBinding;
-import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
+import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.setting.model.BrightnessModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -94,7 +94,7 @@ public class SystemBarPopupWindow extends PopupWindow {
         }
 
         public void openSetting() {
-            EventBus.getDefault().post(new BackToSettingFragmentEvent());
+            EventBus.getDefault().post(new SystemBarBackToSettingEvent());
         }
     }
 }

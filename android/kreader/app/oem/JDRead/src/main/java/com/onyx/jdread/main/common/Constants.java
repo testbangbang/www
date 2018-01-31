@@ -99,4 +99,6 @@ public class Constants {
     public static final int BOOK_LIST_TYPE_BOOK_RANK = 2;
     public static final String PARSE_JSON_TYPE = "application/json";
     public static final int WEB_VIEW_TEXT_ZOOM = 100;
+    public static final String CURRENT_DAY = "current_day";
+    public static final String RECEIVED_VOUCHER = "received_voucher";
 }

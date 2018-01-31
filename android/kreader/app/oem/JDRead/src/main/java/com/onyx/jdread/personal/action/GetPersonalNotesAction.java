@@ -1,42 +1,42 @@
 package com.onyx.jdread.personal.action;
 
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalNoteBean;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-import com.onyx.jdread.personal.request.cloud.RxGetBoughtAndUnlimitedRequest;
+import com.onyx.jdread.personal.request.cloud.RxGetPersonalNotesRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by li on 2018/1/8.
+ * Created by li on 2018/1/30.
  */
 
-public class GetUnlimitedAction extends BaseAction {
-    private List<Metadata> unlimitedBooks;
+public class GetPersonalNotesAction extends BaseAction {
+    private List<NoteBean> notes;
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
         baseInfo.setDefaultPage();
-        Map<String, String> map = new HashMap<>();
-        map.put("search_type", "2");
-        baseInfo.addRequestParams(map);
-        String signValue = baseInfo.getSignValue(CloudApiContext.User.BOUGHT_UNLIMITED_BOOKS);
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.PERSONAL_NOTES);
         baseInfo.setSign(signValue);
-        final RxGetBoughtAndUnlimitedRequest rq = new RxGetBoughtAndUnlimitedRequest();
+
+        final RxGetPersonalNotesRequest rq = new RxGetPersonalNotesRequest();
         rq.setBaseInfo(baseInfo);
         rq.execute(new RxCallback() {
-
             @Override
             public void onNext(Object o) {
+                PersonalNoteBean personalNoteBean = rq.getPersonalNoteBean();
+                if (personalNoteBean != null && personalNoteBean.data != null) {
+                    PersonalNoteBean.DataBean data = personalNoteBean.data;
+                    notes = data.items;
+                }
                 if (rxCallback != null) {
-                    unlimitedBooks = rq.getBooks();
-                    rxCallback.onNext(GetUnlimitedAction.class);
+                    rxCallback.onNext(GetPersonalNotesAction.class);
                 }
             }
 
@@ -48,7 +48,7 @@ public class GetUnlimitedAction extends BaseAction {
         });
     }
 
-    public List<Metadata> getUnlimitedBooks() {
-        return unlimitedBooks;
+    public List<NoteBean> getNotes() {
+        return notes;
     }
 }

@@ -4,8 +4,10 @@
     <data class="ItemPersonalTaskBinding">
 
         <variable
-            name="dec"
-            type="String" />
+            name="bean"
+            type="com.onyx.jdread.personal.model.PersonalTaskData" />
+
+        <import type="com.onyx.jdread.util.Utils"/>
     </data>
 
     <LinearLayout
@@ -18,18 +20,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@{dec}"
+            android:text="@{bean.taskName}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
         <TextView
+            android:id="@+id/task_receive"
             android:layout_width="@dimen/item_personal_task_receive_width"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_login_bg"
-            android:enabled="false"
+            android:background="@drawable/text_selector"
+            android:enabled="@{Utils.isEquals(bean.taskStatus)}"
             android:gravity="center"
             android:padding="@dimen/item_personal_task_receive_padding"
-            android:text="@{@string/have_receive}"
+            android:text="@{bean.taskStatus}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
     </LinearLayout>

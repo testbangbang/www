@@ -36,6 +36,7 @@ import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
+import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
 import com.onyx.jdread.main.event.UsbDisconnectedEvent;
 import com.onyx.jdread.main.event.WifiStateChangeEvent;
@@ -348,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
+    public void onSystemBarBackToSettingEvent(SystemBarBackToSettingEvent event) {
         childViewEventCallBack.gotoView(SettingFragment.class.getName());
     }
 

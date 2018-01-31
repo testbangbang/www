@@ -15,6 +15,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReadPreferenceBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.model.TitleBarModel;
+import com.onyx.jdread.personal.action.SetReadPreferenceAction;
 import com.onyx.jdread.personal.adapter.ReadPreferenceAdapter;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
@@ -38,6 +39,7 @@ import java.util.Map;
 public class ReadPreferenceFragment extends BaseFragment {
     private ReadPreferenceBinding binding;
     private ReadPreferenceAdapter readPreferenceAdapter;
+    private final static int SUB_CATGORY = 1;
     private Map<Integer, List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo>> datas = new HashMap<>();
 
     @Nullable
@@ -76,20 +78,28 @@ public class ReadPreferenceFragment extends BaseFragment {
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.readPreferenceTitle.setTitleModel(titleModel);
 
-        final BookCategoryAction action = new BookCategoryAction(false);
-        action.execute(ShopDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                if (datas != null && datas.size() > 0) {
-                    datas.clear();
-                }
-                List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> cateTwo = action.getCateTwo();
-                datas.put(cateTwo.get(0).cateLevel, cateTwo);
-                if (readPreferenceAdapter != null) {
-                    readPreferenceAdapter.setData(cateTwo);
-                }
+        if (datas != null && datas.size() > 0) {
+            datas.clear();
+        }
+        List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryBean = ShopDataBundle.getInstance().getCategoryBean();
+        if (categoryBean != null && categoryBean.size() > 0) {
+            datas.put(categoryBean.get(0).cateLevel, categoryBean);
+            if (readPreferenceAdapter != null) {
+                readPreferenceAdapter.setData(categoryBean);
             }
-        });
+        } else {
+            final BookCategoryAction action = new BookCategoryAction(false);
+            action.execute(ShopDataBundle.getInstance(), new RxCallback() {
+                @Override
+                public void onNext(Object o) {
+                    List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> cateTwo = ShopDataBundle.getInstance().getCategoryBean();
+                    datas.put(cateTwo.get(0).cateLevel, cateTwo);
+                    if (readPreferenceAdapter != null) {
+                        readPreferenceAdapter.setData(cateTwo);
+                    }
+                }
+            });
+        }
     }
 
     private void initListener() {
@@ -110,9 +120,13 @@ public class ReadPreferenceFragment extends BaseFragment {
         binding.readPreferenceSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (datas.size() == 1) {
-                    // TODO: 2018/1/3 save type
-                    readPreferenceAdapter.setData(datas.get(1));
+                if (datas.size() == SUB_CATGORY) {
+                    List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> selectedBean = readPreferenceAdapter.getSelectedBean();
+                    if (selectedBean!= null && selectedBean.size() > 0) {
+                        SetReadPreferenceAction action = new SetReadPreferenceAction(selectedBean);
+                        action.execute(PersonalDataBundle.getInstance(), null);
+                    }
+                    readPreferenceAdapter.setData(datas.get(SUB_CATGORY));
                 }
             }
         });

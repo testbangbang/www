@@ -4,15 +4,9 @@
 
     <data class="ItemPersonalNoteBinding">
 
-        <import type="android.view.View"/>
-
         <variable
-            name="url"
-            type="String" />
-
-        <variable
-            name="check"
-            type="boolean"/>
+            name="bean"
+            type="com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean"/>
     </data>
 
     <LinearLayout
@@ -23,10 +17,11 @@
 
         <ImageView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="2"
+            android:padding="@dimen/personal_notes_image_padding"
             android:scaleType="centerCrop"
-            bind:personalImage="@{url}" />
+            bind:personalImage="@{bean.ebook.large_image_url}" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -41,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="middle"
                 android:singleLine="true"
-                android:text="sdgjowgjaoisjgoias"
+                android:text="@{bean.ebook.name}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
@@ -51,14 +46,15 @@
                 android:layout_marginTop="@dimen/item_personal_note_margin_top"
                 android:ellipsize="middle"
                 android:singleLine="true"
-                android:text="jsadgowreghadhgv"
+                android:text="@{@string/notes_size(bean.note_count)}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
         </LinearLayout>
 
         <CheckBox
+            android:id="@+id/item_note_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="@{check}"/>
+            android:checked="@{bean.checked}"/>
     </LinearLayout>
 </layout>

@@ -12,13 +12,16 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemPersonalTaskBinding;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.model.PersonalTaskData;
+
+import java.util.List;
 
 /**
  * Created by li on 2018/1/3.
  */
 
-public class PersonalTaskAdapter extends PageRecyclerView.PageAdapter {
-    private String[] data;
+public class PersonalTaskAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
+    private List<PersonalTaskData> data;
 
     @Override
     public int getRowCount() {
@@ -32,7 +35,7 @@ public class PersonalTaskAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getDataCount() {
-        return data == null ? 0 : data.length;
+        return data == null ? 0 : data.size();
     }
 
     @Override
@@ -44,12 +47,27 @@ public class PersonalTaskAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PersonalTaskViewHolder viewHolder = (PersonalTaskViewHolder) holder;
-        viewHolder.bindTo(data[position]);
+        ItemPersonalTaskBinding bind = viewHolder.getBind();
+        bind.taskReceive.setOnClickListener(this);
+        bind.taskReceive.setTag(position);
+        viewHolder.bindTo(data.get(position));
     }
 
-    public void setData(String[] data) {
+    public void setData(List<PersonalTaskData> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Object tag = v.getTag();
+        if (tag == null) {
+            return;
+        }
+        int position = (int) tag;
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClick(position);
+        }
     }
 
     static class PersonalTaskViewHolder extends RecyclerView.ViewHolder {
@@ -64,8 +82,8 @@ public class PersonalTaskAdapter extends PageRecyclerView.PageAdapter {
             return bind;
         }
 
-        public void bindTo(String dec) {
-            bind.setDec(dec);
+        public void bindTo(PersonalTaskData bean) {
+            bind.setBean(bean);
             bind.executePendingBindings();
         }
     }

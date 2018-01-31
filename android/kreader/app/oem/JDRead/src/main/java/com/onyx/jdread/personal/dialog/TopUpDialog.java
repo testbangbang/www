@@ -18,7 +18,8 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogTopUpBinding;
 import com.onyx.jdread.personal.action.GetTopUpValueAction;
 import com.onyx.jdread.personal.adapter.TopUpAdapter;
-import com.onyx.jdread.personal.cloud.entity.jdbean.TopUpValueBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargePackageBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.util.Utils;
@@ -37,6 +38,7 @@ public class TopUpDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getDialog().setCanceledOnTouchOutside(false);
         binding = (DialogTopUpBinding) DataBindingUtil.inflate(inflater, R.layout.dialog_top_up_layout, container, false);
         initView();
         initData();
@@ -60,7 +62,7 @@ public class TopUpDialog extends DialogFragment {
         binding.dialogTopUpRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         DividerItemDecoration decoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         binding.dialogTopUpRecycler.addItemDecoration(decoration);
-        topUpAdapter = new TopUpAdapter(PersonalDataBundle.getInstance().getEventBus());
+        topUpAdapter = new TopUpAdapter();
         binding.dialogTopUpRecycler.setAdapter(topUpAdapter);
     }
 
@@ -69,10 +71,15 @@ public class TopUpDialog extends DialogFragment {
         action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                List<TopUpValueBean> topValueBeans = PersonalDataBundle.getInstance().getTopValueBeans();
+                List<GetRechargePackageBean.DataBean> topValueBeans = PersonalDataBundle.getInstance().getTopValueBeans();
                 topUpAdapter.setData(topValueBeans);
             }
         });
+
+        UserInfo userInfo = PersonalDataBundle.getInstance().getUserInfo();
+        if (userInfo != null) {
+            binding.setUserInfo(userInfo);
+        }
     }
 
     private void initListener() {
@@ -80,7 +87,9 @@ public class TopUpDialog extends DialogFragment {
             topUpAdapter.setOnItemClickListener(new PageRecyclerView.PageAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
-                    dismiss();
+                    List<GetRechargePackageBean.DataBean> topValueBeans = PersonalDataBundle.getInstance().getTopValueBeans();
+                    GetRechargePackageBean.DataBean dataBean = topValueBeans.get(position);
+                    // TODO: 2018/1/30
                 }
             });
         }

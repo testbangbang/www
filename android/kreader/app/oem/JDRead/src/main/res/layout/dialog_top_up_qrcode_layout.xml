@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="TopUpQRCodeBinding">
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/top_up_tips_margin_left"
+            android:layout_marginTop="@dimen/top_up_tips_margin_top"
+            android:text="@string/top_up_tips"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/top_up_qr_code_height"
+                android:layout_height="@dimen/top_up_qr_code_height"
+                android:scaleType="centerCrop" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/top_up_qr_code_margin_bottom"
+            android:text="@string/way_to_pay"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font" />
+    </LinearLayout>
+</layout>

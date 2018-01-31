@@ -1,18 +1,16 @@
 package com.onyx.jdread.personal.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemDialogTopUpBinding;
 import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.personal.cloud.entity.jdbean.TopUpValueBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargePackageBean;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,12 +21,7 @@ import java.util.List;
  */
 
 public class TopUpAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
-    private EventBus eventBus;
-    private List<TopUpValueBean> data;
-
-    public TopUpAdapter(EventBus eventBus) {
-        this.eventBus = eventBus;
-    }
+    private List<GetRechargePackageBean.DataBean> data;
 
     @Override
     public int getRowCount() {
@@ -59,7 +52,7 @@ public class TopUpAdapter extends PageRecyclerView.PageAdapter implements View.O
         viewHolder.bindTo(data.get(position));
     }
 
-    public void setData(List<TopUpValueBean> data) {
+    public void setData(List<GetRechargePackageBean.DataBean> data) {
         this.data = data;
         notifyDataSetChanged();
     }
@@ -71,8 +64,6 @@ public class TopUpAdapter extends PageRecyclerView.PageAdapter implements View.O
             return;
         }
         int position = (int) tag;
-        TopUpValueBean bean = data.get(position);
-        eventBus.post(bean.getEvent());
         if (onItemClickListener != null) {
             onItemClickListener.onItemClick(position);
         }
@@ -90,7 +81,7 @@ public class TopUpAdapter extends PageRecyclerView.PageAdapter implements View.O
             return bind;
         }
 
-        public void bindTo(TopUpValueBean bean) {
+        public void bindTo(GetRechargePackageBean.DataBean bean) {
             bind.setBean(bean);
             bind.executePendingBindings();
         }

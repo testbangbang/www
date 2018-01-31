@@ -12,6 +12,9 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemPersonalNoteBinding;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean;
+
+import java.util.List;
 
 /**
  * Created by li on 2018/1/3.
@@ -19,6 +22,7 @@ import com.onyx.jdread.main.common.ResManager;
 
 public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     private boolean show;
+    private List<NoteBean> data;
 
     @Override
     public int getRowCount() {
@@ -32,7 +36,7 @@ public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public int getDataCount() {
-        return 5;
+        return data == null ? 0 : data.size();
     }
 
     @Override
@@ -44,13 +48,12 @@ public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter implements
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PersonalNoteViewHolder viewHolder = (PersonalNoteViewHolder) holder;
+        ItemPersonalNoteBinding binding = viewHolder.getBinding();
+        binding.itemNoteCheck.setOnClickListener(this);
+        binding.itemNoteCheck.setTag(position);
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
-    }
-
-    public void showBox(boolean show) {
-        this.show = show;
-        notifyDataSetChanged();
+        viewHolder.bindTo(data.get(position));
     }
 
     @Override
@@ -59,7 +62,19 @@ public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter implements
         if (tag == null) {
             return;
         }
-        // TODO: 2018/1/11
+        int position = (int) tag;
+        NoteBean noteBean = data.get(position);
+        noteBean.checked = !noteBean.checked;
+        notifyItemChanged(position);
+    }
+
+    public void setData(List<NoteBean> data) {
+        this.data = data;
+        notifyDataSetChanged();
+    }
+
+    public List<NoteBean> getData() {
+        return data;
     }
 
     static class PersonalNoteViewHolder extends RecyclerView.ViewHolder {
@@ -74,8 +89,9 @@ public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter implements
             return binding;
         }
 
-        public void bindTo() {
-
+        public void bindTo(NoteBean bean) {
+            binding.setBean(bean);
+            binding.executePendingBindings();
         }
     }
 }
