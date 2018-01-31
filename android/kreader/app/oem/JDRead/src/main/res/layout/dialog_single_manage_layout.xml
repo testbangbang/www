@@ -82,7 +82,7 @@
                     android:layout_marginTop="@dimen/dialog_single_info_text_margin_top"
                     android:lines="1"
                     android:text="@{@string/author_format(dialogModel.dataModel.author)}"
-                    android:textColor="@android:color/black"
+                    android:textColor="@{dialogModel.isCloudBook()?@android:color/black:@color/gray}"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
@@ -151,8 +151,8 @@
             android:layout_height="@dimen/dialog_single_manage_text_height"
             android:gravity="center_vertical"
             android:padding="@dimen/dialog_single_manage_padding"
-            android:text="@{dialogModel.isCloudBook()?@string/book_detail:@string/related_books}"
-            android:textColor="@android:color/black"
+            android:text="@string/book_detail"
+            android:textColor="@{dialogModel.isCloudBook()?@android:color/black:@color/gray}"
             android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
 

@@ -22,7 +22,7 @@ public class RecommendUserAction extends BaseAction {
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setPageSize("1", "20");
+        baseInfo.setDefaultPage();
         String signValue = baseInfo.getSignValue(CloudApiContext.User.RECOMMEND_USER);
         baseInfo.setSign(signValue);
         final RxRecommendUserRequest rq = new RxRecommendUserRequest();

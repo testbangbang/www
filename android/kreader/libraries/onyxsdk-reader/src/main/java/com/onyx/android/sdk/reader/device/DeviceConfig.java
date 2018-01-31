@@ -65,6 +65,7 @@ public class DeviceConfig {
     private int frontLight = 0;
     private int defaultFontSizeIndex = 3;
     private int defaultLineSpacingIndex = 1;
+    private int defaultParagraphSpacingIndex = 1;
     private int defaultPageMarginIndex = 1;
     private boolean exitAfterFinish = false;
     private String umengKey;
@@ -567,6 +568,14 @@ public class DeviceConfig {
         this.defaultLineSpacingIndex = defaultLineSpacingIndex;
     }
 
+    public int getDefaultParagraphSpacingIndex() {
+        return defaultParagraphSpacingIndex;
+    }
+
+    public void setDefaultParagraphSpacingIndex(int defaultParagraphSpacingIndex) {
+        this.defaultParagraphSpacingIndex = defaultParagraphSpacingIndex;
+    }
+
     public Float[] getDefaultFontSizes() {
         return defaultFontSizes;
     }
@@ -635,6 +644,7 @@ public class DeviceConfig {
         adjustFontFace(context, baseOptions);
         adjustFontSize(context, baseOptions);
         adjustLineSpacing(context, baseOptions);
+        adjustParagraphSpacing(context, baseOptions);
         adjustLeftMargin(context, baseOptions);
         adjustTopMargin(context, baseOptions);
         adjustRightMargin(context, baseOptions);
@@ -667,6 +677,16 @@ public class DeviceConfig {
             lineSpacing = 0;//SingletonSharedPreference.getLastLineSpacing(lineSpacing);
         }
         baseOptions.setLineSpacing(lineSpacing);
+    }
+
+    private static void adjustParagraphSpacing(final Context context, final BaseOptions baseOptions) {
+        int paragraphSpacing = baseOptions.getParagraphSpacing();
+        if (paragraphSpacing == BaseOptions.INVALID_INT_VALUE) {
+            int index = DeviceConfig.sharedInstance(context).getDefaultParagraphSpacingIndex();
+            paragraphSpacing = ReaderTextStyle.getParagraphSpacingByIndex(index).getPercent();
+            paragraphSpacing = 0;//SingletonSharedPreference.getLastLineSpacing(lineSpacing);
+        }
+        baseOptions.setParagraphSpacing(paragraphSpacing);
     }
 
     private static void adjustLeftMargin(final Context context, final BaseOptions baseOptions) {

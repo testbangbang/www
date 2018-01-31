@@ -38,6 +38,7 @@ public class BaseOptions {
     transient static public final String DEFAULT_FONT_SIZE = "default_font_size";
     transient static public final String FONT_FACE_TAG = "font_face";
     transient static public final String LINE_SPACING_TAG = "line_spacing";
+    transient static public final String PARAGRAPH_SPACING_TAG = "paragraph_spacing";
     transient static public final String PARAGRAPH_INDENT_TAG = "para_indent";
     transient static public final String LAYOUT_TYPE_TAG = "layout_type";
     transient static public final String LOCATION_TAG = "location";
@@ -393,6 +394,13 @@ public class BaseOptions {
         return backend.getInt(LINE_SPACING_TAG);
     }
 
+    public int getParagraphSpacing() {
+        if (!backend.hasKey(PARAGRAPH_SPACING_TAG)) {
+            return INVALID_INT_VALUE;
+        }
+        return backend.getInt(PARAGRAPH_SPACING_TAG);
+    }
+
     public float getParagraphIndent() {
         if (!backend.hasKey(PARAGRAPH_INDENT_TAG)) {
             return ReaderTextStyle.DEFAULT_CHARACTER_INDENT.getIndent();
@@ -406,6 +414,10 @@ public class BaseOptions {
 
     public void setLineSpacing(int lineSpacing) {
         backend.putInt(LINE_SPACING_TAG, lineSpacing);
+    }
+
+    public void setParagraphSpacing(int paragraphSpacing) {
+        backend.putInt(PARAGRAPH_SPACING_TAG, paragraphSpacing);
     }
 
     public void setParagraphIndent(final float indent) {

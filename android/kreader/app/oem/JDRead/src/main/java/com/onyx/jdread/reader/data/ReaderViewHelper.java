@@ -209,7 +209,7 @@ public class ReaderViewHelper {
     public void drawPageNumber(Canvas canvas, Reader reader, ReaderViewInfo readerViewInfo) {
         float textSize = paint.getTextSize();
         paint.setTextSize(ReaderViewConfig.getPageNumberFontSize());
-        int currentPage = PagePositionUtils.getPageNumber(readerViewInfo.getFirstVisiblePage().getName());
+        int currentPage = PagePositionUtils.getPageNumber(readerViewInfo.getFirstVisiblePage().getName()) + 1;
         int totalPage = readerViewInfo.getTotalPage();
         String page = currentPage + "/" + totalPage;
         PointF timePoint = ReaderViewConfig.getPageNumberPoint(contentView);
