@@ -37,13 +37,14 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:drawablePadding="@dimen/top_menu_drawable_padding"
-                android:drawableTop="@mipmap/ic_top_menu_page_on"
+                android:drawableTop="@{systemBarPopModel.speedRefresh?@drawable/ic_top_menu_page_on:@drawable/ic_top_menu_page_off}"
                 android:gravity="center_horizontal"
                 android:onClick="@{()->systemBarPopModel.toggleA2Model()}"
                 android:text="@string/speed_refresh"
                 android:textColor="@android:color/black" />
 
             <TextView
+                android:id="@+id/setting_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -51,7 +52,6 @@
                 android:drawablePadding="@dimen/top_menu_drawable_padding"
                 android:drawableTop="@mipmap/ic_setting"
                 android:gravity="center_horizontal"
-                android:onClick="@{()->systemBarPopModel.openSetting()}"
                 android:text="@string/setting_name"
                 android:textColor="@android:color/black" />
         </LinearLayout>

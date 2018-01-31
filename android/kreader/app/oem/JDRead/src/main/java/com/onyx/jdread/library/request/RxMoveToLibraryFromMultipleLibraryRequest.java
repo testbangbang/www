@@ -53,6 +53,9 @@ public class RxMoveToLibraryFromMultipleLibraryRequest extends RxBaseDBRequest {
                 library.setName(toLibrary.title.get());
                 library.setDescription(toLibrary.desc.get());
                 providerBase.addLibrary(library);
+            }else {
+                library.beforeSave();
+                providerBase.updateLibrary(library);
             }
         }
         for (Metadata metadata : list) {
@@ -74,6 +77,7 @@ public class RxMoveToLibraryFromMultipleLibraryRequest extends RxBaseDBRequest {
                 }
             }
         }
+
         if (StringUtils.isNotBlank(fromIdString) && providerBase.libraryMetadataCount(fromIdString) == 0) {
             providerBase.deleteLibrary(providerBase.loadLibrary(fromIdString));
         }

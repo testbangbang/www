@@ -1,18 +1,17 @@
 package com.onyx.jdread.setting.model;
 
 import android.databinding.BaseObservable;
-import android.databinding.ObservableBoolean;
-import android.databinding.ObservableInt;
 
 import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Observable;
 
 /**
  * Created by hehai on 18-1-5.
@@ -25,7 +24,7 @@ public class BrightnessModel extends BaseObservable {
     private int numStar;
     private boolean isShow;
 
-    private final List<Integer> mLightSteps;
+    private final List<Integer> mLightSteps = new ArrayList<>();
 
     public int getProgress() {
         return progress;
@@ -66,22 +65,35 @@ public class BrightnessModel extends BaseObservable {
     public BrightnessModel() {
         titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.brightness_control));
         titleBarModel.backEvent.set(new BackToSettingFragmentEvent());
-        mLightSteps = FrontLightController.getFrontLightValueList(JDReadApplication.getInstance());
-        setMaxLight(mLightSteps.size() - 1);
-        setNumStar(mLightSteps.size() - 1);
-        setProgress(getIndex(FrontLightController.getBrightness(JDReadApplication.getInstance())));
+        initLightSteps();
+        setMaxLight(mLightSteps.size());
+        setNumStar(mLightSteps.size());
+        updateLight();
+    }
+
+    public void updateLight() {
+        int index = getIndex(FrontLightController.getBrightness(JDReadApplication.getInstance()));
+        setProgress(index == -1 ? 0 : index + 1);
+    }
+
+    private void initLightSteps() {
+        mLightSteps.clear();
+        int[] intArray = ResManager.getIntArray(R.array.light_step_array);
+        for (int i = 0; i < intArray.length; i++) {
+            mLightSteps.add(intArray[i]);
+        }
     }
 
     private int getIndex(int val) {
-        int index = Collections.binarySearch(mLightSteps, val);
-        if (index == -1) {
-            index = 0;
-        }
-        return index;
+        return Collections.binarySearch(mLightSteps, val);
     }
 
     public void setBrightness(int progress) {
-        FrontLightController.setBrightness(JDReadApplication.getInstance(), mLightSteps.get(progress));
+        if (progress > 0) {
+            FrontLightController.setBrightness(JDReadApplication.getInstance(), mLightSteps.get(progress - 1));
+        } else {
+            closeBrightness();
+        }
     }
 
     public void closeBrightness() {
@@ -90,7 +102,6 @@ public class BrightnessModel extends BaseObservable {
     }
 
     public void maxBrightness() {
-        setProgress(getIndex(mLightSteps.get(mLightSteps.size() - 1)));
-        FrontLightController.setBrightness(JDReadApplication.getInstance(), mLightSteps.get(mLightSteps.size() - 1));
+        setProgress(maxLight);
     }
 }
