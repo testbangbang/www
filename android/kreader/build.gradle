@@ -22,6 +22,17 @@ allprojects {
         maven { url "https://jitpack.io" }
         maven { url  "http://dl.bintray.com/dasar/maven" }
         maven { url "http://mvn.leancloud.cn/nexus/content/repositories/releases" }
+        maven {
+            url "https://dl.bintray.com/onyx-intl/partner"
+            credentials {
+                // set your user and api key at ~/.gradle/gradle.properties
+                // in the form of:
+                // bintrayUser=YOUR_USER_NAME
+                // bintrayApiKey=YOUR_API_KEY
+                username = "$bintrayUser"
+                password = "$bintrayApiKey"
+            }
+        }
         repositories {
             flatDir {
                 dirs 'libs' //this way we can find the .aar file in libs folder
