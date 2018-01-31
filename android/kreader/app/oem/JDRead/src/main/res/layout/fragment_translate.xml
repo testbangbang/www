@@ -69,7 +69,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{@string/target_language(model.targetLanguage)}" />
+                    android:text="@{@string/target_language(model.targetLanguage)}"
+                    android:textColor="@android:color/black"/>
 
             </LinearLayout>
 
@@ -98,12 +99,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/translate_button_margin_top"
-                android:background="@drawable/rectangle_stroke"
+                android:background="@drawable/rectangle_stroke_common_corners_selector"
                 android:clickable="true"
                 android:gravity="center"
                 android:onClick="@{()->model.translate()}"
                 android:padding="@dimen/user_login_edit_text_delete_button_margin"
-                android:text="@string/translation"
+                android:text="@string/click_to_translate"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 

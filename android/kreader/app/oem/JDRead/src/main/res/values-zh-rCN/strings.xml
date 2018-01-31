@@ -410,4 +410,5 @@
     <string name="no_chapters">本文不含章节信息</string>
     <string name="delete_library_prompt">是否删除该分组(组内图书重新放入书架)</string>
     <string name="delete_library_include_book_prompt">是否从本机删除该分组及组内图书</string>
+    <string name="click_to_translate">点击翻译</string>
 </resources>
