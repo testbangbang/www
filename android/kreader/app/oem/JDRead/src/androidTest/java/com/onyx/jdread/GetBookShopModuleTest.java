@@ -100,10 +100,10 @@ public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         ShopMainConfigRequestBean requestBean = new ShopMainConfigRequestBean();
         JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
-        String uri = String.format(CloudApiContext.BookShopURI.SHOP_MAIN_CONFIG_URI, String.valueOf(Constants.BOOK_SHOP_Main_config_CID));
+        String uri = String.format(CloudApiContext.BookShopURI.SHOP_MAIN_CONFIG_URI, String.valueOf(Constants.BOOK_SHOP_MAIN_CONFIG_CID));
         appBaseInfo.setSign(appBaseInfo.getSignValue(uri));
         requestBean.setAppBaseInfo(appBaseInfo);
-        requestBean.setCid(Constants.BOOK_SHOP_Main_config_CID);
+        requestBean.setCid(Constants.BOOK_SHOP_MAIN_CONFIG_CID);
         final RxRequestShopMainConfig rq = new RxRequestShopMainConfig();
         rq.setRequestBean(requestBean);
         rq.execute(new RxCallback<RxRequestShopMainConfig>() {

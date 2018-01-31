@@ -23,7 +23,6 @@ public class ShopMainConfigAction extends BaseAction {
     private BookModelConfigResultBean resultBean;
     private List<BookModelConfigResultBean.DataBean.AdvBean> bannerList;
     private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
-    private List<BookModelConfigResultBean.DataBean.ModulesBean> commonSubjectDataList;
     private List<SubjectViewModel> commonSubjcet;
     private int cid;
 
@@ -67,8 +66,7 @@ public class ShopMainConfigAction extends BaseAction {
             public void onNext(RxRequestShopMainConfig request) {
                 resultBean = request.getResultBean();
                 bannerList = request.getBannerList();
-                subjectDataList = request.getMainSubjectDataList();
-                commonSubjectDataList = request.getCommonSubjectDataList();
+                subjectDataList = request.getSubjectDataList();
                 setResult(cid, dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onNext(ShopMainConfigAction.this);
@@ -106,14 +104,14 @@ public class ShopMainConfigAction extends BaseAction {
                 }
             }
         } else {
-            if (commonSubjectDataList != null) {
+            if (subjectDataList != null) {
                 if (commonSubjcet != null) {
                     commonSubjcet.clear();
                 } else {
                     commonSubjcet = new ArrayList<>();
                 }
-                for (int i = 0; i < commonSubjectDataList.size(); i++) {
-                    BookModelConfigResultBean.DataBean.ModulesBean modulesBean = commonSubjectDataList.get(i);
+                for (int i = 0; i < subjectDataList.size(); i++) {
+                    BookModelConfigResultBean.DataBean.ModulesBean modulesBean = subjectDataList.get(i);
                     SubjectViewModel subjectViewModel = new SubjectViewModel();
                     subjectViewModel.setEventBus(dataBundle.getEventBus());
                     subjectViewModel.setModelBean(modulesBean);

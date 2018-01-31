@@ -25,7 +25,6 @@ import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
-import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
@@ -47,7 +46,6 @@ import com.onyx.jdread.shop.event.ViewAllNextClickEvent;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
-import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -474,13 +472,5 @@ public class ShopFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
-    }
-
-    private boolean checkWfiDisConnected() {
-        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
-            return true;
-        }
-        return false;
     }
 }

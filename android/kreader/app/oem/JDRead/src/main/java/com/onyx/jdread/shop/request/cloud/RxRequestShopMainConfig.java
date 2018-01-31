@@ -23,19 +23,14 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
     private ShopMainConfigRequestBean requestBean;
     private BookModelConfigResultBean resultBean;
     private List<BookModelConfigResultBean.DataBean.AdvBean> bannerList;
-    private List<BookModelConfigResultBean.DataBean.ModulesBean> mainSubjectDataList;
-    private List<BookModelConfigResultBean.DataBean.ModulesBean> commonSubjectDataList;
+    private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
 
     public List<BookModelConfigResultBean.DataBean.AdvBean> getBannerList() {
         return bannerList;
     }
 
-    public List<BookModelConfigResultBean.DataBean.ModulesBean> getMainSubjectDataList() {
-        return mainSubjectDataList;
-    }
-
-    public List<BookModelConfigResultBean.DataBean.ModulesBean> getCommonSubjectDataList() {
-        return commonSubjectDataList;
+    public List<BookModelConfigResultBean.DataBean.ModulesBean> getSubjectDataList() {
+        return subjectDataList;
     }
 
     public BookModelConfigResultBean getResultBean() {
@@ -69,30 +64,29 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
         BookModelConfigResultBean resultBean = getResultBean();
         if (resultBean != null) {
             BookModelConfigResultBean.DataBean data = resultBean.data;
+            initDataContainer();
             if (requestBean.getCid() == Constants.BOOK_SHOP_MAIN_CONFIG_CID) {
                 parseAdvBeanList(data);
-                if (mainSubjectDataList == null) {
-                    mainSubjectDataList = new ArrayList<>();
-                } else {
-                    mainSubjectDataList.clear();
-                }
                 for (int i = Constants.SHOP_MAIN_INDEX_THREE; i < data.modules.size(); i++) {
                     parseMainSubjectDataList(data, i);
                 }
             } else {
-                if (commonSubjectDataList == null) {
-                    commonSubjectDataList = new ArrayList<>();
-                } else {
-                    commonSubjectDataList.clear();
-                }
                 for (int i = 0; i < data.modules.size(); i++) {
-                    parsCommonSubjectDataList(data,i);
+                    parseCommonSubjectDataList(data,i);
                 }
             }
         }
     }
 
-    private void parsCommonSubjectDataList(BookModelConfigResultBean.DataBean dataBean, int index) {
+    private void initDataContainer() {
+        if (subjectDataList == null) {
+            subjectDataList = new ArrayList<>();
+        } else {
+            subjectDataList.clear();
+        }
+    }
+
+    private void parseCommonSubjectDataList(BookModelConfigResultBean.DataBean dataBean, int index) {
         if (dataBean.ebook != null && dataBean.modules != null) {
             ArrayList<ResultBookBean> bookList = new ArrayList<>();
             BookModelConfigResultBean.DataBean.ModulesBean modulesBean = dataBean.modules.get(index);
@@ -111,7 +105,7 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                     modulesBean.showNextTitle = true;
                 }
             }
-            commonSubjectDataList.add(modulesBean);
+            subjectDataList.add(modulesBean);
         }
     }
 
@@ -152,7 +146,7 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                     modulesBean.showNextTitle = true;
                 }
             }
-            mainSubjectDataList.add(modulesBean);
+            subjectDataList.add(modulesBean);
         }
     }
 

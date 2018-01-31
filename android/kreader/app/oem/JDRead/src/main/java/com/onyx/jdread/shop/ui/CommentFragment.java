@@ -21,6 +21,7 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
@@ -202,7 +203,7 @@ public class CommentFragment extends BaseFragment {
         DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         final DialogBookInfoViewModel dialogBookInfoViewModel = getBookDetailViewModel().getDialogBookInfoViewModel();
         dialogBookInfoViewModel.content.set(content);
-        dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_comment_detail));
+        dialogBookInfoViewModel.title.set(ResManager.getString(R.string.book_comment_detail));
         infoBinding.setViewModel(dialogBookInfoViewModel);
         AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
         build.setView(infoBinding.getRoot());

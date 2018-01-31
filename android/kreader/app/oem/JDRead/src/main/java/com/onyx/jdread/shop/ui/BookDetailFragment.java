@@ -85,7 +85,6 @@ import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.AutoPagedWebView;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
-import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -342,14 +341,6 @@ public class BookDetailFragment extends BaseFragment {
                 smoothDownload();
             }
         }
-    }
-
-    private boolean checkWfiDisConnected() {
-        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
-            return true;
-        }
-        return false;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -777,7 +768,7 @@ public class BookDetailFragment extends BaseFragment {
         DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         final DialogBookInfoViewModel dialogBookInfoViewModel = getBookDetailViewModel().getDialogBookInfoViewModel();
         dialogBookInfoViewModel.content.set(content);
-        dialogBookInfoViewModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.book_detail_text_view_content_introduce));
+        dialogBookInfoViewModel.title.set(ResManager.getString(R.string.book_detail_text_view_content_introduce));
         infoBinding.setViewModel(dialogBookInfoViewModel);
         AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
         build.setView(infoBinding.getRoot());

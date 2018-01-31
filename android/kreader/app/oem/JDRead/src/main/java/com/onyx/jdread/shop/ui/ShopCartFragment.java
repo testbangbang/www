@@ -18,6 +18,7 @@ import com.onyx.jdread.databinding.ShopCartBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.adapter.ShopCartAdapter;
@@ -162,7 +163,7 @@ public class ShopCartFragment extends BaseFragment {
                 }
             }
             if (ids.size() == 0) {
-                ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.no_selected));
+                ToastUtil.showToast(ResManager.getString(R.string.no_selected));
                 return;
             }
             final GetOrderUrlAction orderUrlAction = new GetOrderUrlAction(ids);
@@ -198,7 +199,7 @@ public class ShopCartFragment extends BaseFragment {
                 }
             }
             if (sb.length() == 0) {
-                ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.no_selected));
+                ToastUtil.showToast(ResManager.getString(R.string.no_selected));
                 return;
             }
             String s = sb.deleteCharAt(sb.length() - 1).toString();
