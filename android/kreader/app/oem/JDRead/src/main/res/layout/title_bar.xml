@@ -18,7 +18,10 @@
         android:background="@android:color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/setting_title_bar_padding">
+        android:paddingTop="@dimen/setting_title_bar_padding"
+        android:paddingBottom="@dimen/setting_title_bar_padding"
+        android:paddingLeft="@dimen/setting_title_bar_padding_left"
+        android:paddingRight="@dimen/setting_title_bar_padding_left">
 
         <TextView
             style="@style/global_activities_back_btn_category_tittle"

@@ -31,4 +31,8 @@ public class ResManager {
     public static TypedArray getTypedArray(int resId) {
         return context.getResources().obtainTypedArray(resId);
     }
+
+    public static int getDimens(int resId) {
+        return context.getResources().getDimensionPixelSize(resId);
+    }
 }

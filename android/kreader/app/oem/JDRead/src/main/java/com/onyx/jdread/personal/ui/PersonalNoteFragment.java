@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalNoteBinding;
@@ -38,6 +40,7 @@ import java.util.List;
 public class PersonalNoteFragment extends BaseFragment {
     private PersonalNoteBinding binding;
     private PersonalNoteAdapter personalNoteAdapter;
+    private GPaginator paginator;
 
     @Nullable
     @Override
@@ -67,6 +70,7 @@ public class PersonalNoteFragment extends BaseFragment {
         binding.personalNoteRecycler.addItemDecoration(decoration);
         personalNoteAdapter = new PersonalNoteAdapter();
         binding.personalNoteRecycler.setAdapter(personalNoteAdapter);
+        paginator = binding.personalNoteRecycler.getPaginator();
     }
 
     private void initData() {
@@ -82,6 +86,9 @@ public class PersonalNoteFragment extends BaseFragment {
                 List<NoteBean> notes = action.getNotes();
                 if (notes != null) {
                     personalNoteAdapter.setData(notes);
+                    binding.setTotal(String.valueOf(notes.size()));
+                    paginator.resize(personalNoteAdapter.getRowCount(), personalNoteAdapter.getColumnCount(), notes.size());
+                    binding.setPageText(paginator.getProgressText());
                 }
             }
         });
@@ -105,6 +112,13 @@ public class PersonalNoteFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 showExportDialog();
+            }
+        });
+
+        binding.personalNoteRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPageChange(int position, int itemCount, int pageSize) {
+                binding.setPageText(paginator.getProgressText());
             }
         });
     }

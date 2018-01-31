@@ -37,6 +37,7 @@ public class LoginHelper {
                 UserInfo data = userInfoBean.data;
                 if (data != null) {
                     setUserInfo(data.yun_big_image_url, data.nickname);
+                    dataBundle.setUserInfo(data);
                     dataBundle.getEventBus().post(new UserInfoEvent(data));
                     verifySign(dataBundle);
                 }
@@ -80,27 +81,24 @@ public class LoginHelper {
         final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(activity), null, false);
         userLoginBinding.setLoginViewModel(userLoginViewModel);
         userLoginViewModel.setContext(activity);
+        userLoginViewModel.isShowPassword.set(false);
         EncryptHelper.getSaltValue(PersonalDataBundle.getInstance(), null);
-        if (userLoginDialog == null) {
-            final AlertDialog.Builder userLoginDialogBuild = new AlertDialog.Builder(activity);
-            userLoginDialogBuild.setView(userLoginBinding.getRoot());
-            userLoginDialogBuild.setCancelable(true);
-            userLoginDialog = userLoginDialogBuild.create();
-            boolean showPassword = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_SHOW_PASSWORD, false);
-            userLoginViewModel.isShowPassword.set(showPassword);
-            userLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    userLoginViewModel.cleanInput();
-                }
-            });
-            userLoginBinding.setListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismissUserLoginDialog();
-                }
-            });
-        }
+        final AlertDialog.Builder userLoginDialogBuild = new AlertDialog.Builder(activity);
+        userLoginDialogBuild.setView(userLoginBinding.getRoot());
+        userLoginDialogBuild.setCancelable(true);
+        userLoginDialog = userLoginDialogBuild.create();
+        userLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                userLoginViewModel.cleanInput();
+            }
+        });
+        userLoginBinding.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismissUserLoginDialog();
+            }
+        });
         if (userLoginDialog != null) {
             userLoginDialog.show();
         }

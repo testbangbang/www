@@ -94,8 +94,10 @@ public class PersonalFragment extends BaseFragment {
 
     private void initData() {
         binding.setIsLogin(JDReadApplication.getInstance().getLogin());
-        if (binding.getIsLogin()) {
+        if (JDReadApplication.getInstance().getLogin()) {
             LoginHelper.getUserInfo(PersonalDataBundle.getInstance());
+            LoginHelper.verifySign(PersonalDataBundle.getInstance());
+            setUserInfo(LoginHelper.getImgUrl(), LoginHelper.getUserName());
         }
         PersonalModel personalModel = PersonalDataBundle.getInstance().getPersonalModel();
         if (personalAdapter != null) {
@@ -110,17 +112,20 @@ public class PersonalFragment extends BaseFragment {
         binding.personalRecycler.setAdapter(personalAdapter);
     }
 
+    private void setUserInfo(String imageUrl, String nickName) {
+        binding.setImageUrl(imageUrl);
+        binding.setUserName(nickName);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginEvent(UserLoginEvent event) {
-        binding.setIsLogin(true);
+        binding.setIsLogin(JDReadApplication.getInstance().getLogin());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserInfoEvent(UserInfoEvent event) {
         UserInfo userInfo = event.getUserInfo();
-        PersonalDataBundle.getInstance().setUserInfo(userInfo);
-        binding.setImageUrl(userInfo.yun_big_image_url);
-        binding.setUserName(userInfo.nickname);
+        setUserInfo(userInfo.yun_big_image_url, userInfo.nickname);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
