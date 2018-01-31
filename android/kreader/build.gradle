@@ -94,5 +94,9 @@ ext {
     //ui
     flexboxVersion='0.3.0'
 
+    //onyx
+    onyxSdkBaseVersion='1.4.0'
+    onyxSdkNoteVersion='1.0.0'
+    onyxSdkNoteDataVersion='1.0.0'
 }
 
