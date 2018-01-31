@@ -64,9 +64,9 @@ public class ReaderBookInfoModel {
         return notes;
     }
 
-    public void setBookmarks(ReaderDocumentTableOfContent readerDocumentTableOfContent,List<Bookmark> bookmarks){
+    public void setBookmarks(ReaderDocumentTableOfContent readerDocumentTableOfContent,List<Bookmark> bookmarks,int totalPage){
         for(Bookmark bookmark : bookmarks) {
-            this.bookmarks.add(BookmarkModel.convertObject(readerDocumentTableOfContent,bookmark));
+            this.bookmarks.add(BookmarkModel.convertObject(readerDocumentTableOfContent,bookmark,totalPage));
         }
     }
 
