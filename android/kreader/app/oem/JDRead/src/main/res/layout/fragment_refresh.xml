@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/refresh_setting_explain_height"
                 android:text="@string/refresh_tips"
-                android:textColor="@android:color/black"
+                android:textColor="@color/text_gray_color"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <View style="@style/NoPaddingDottedLineType" />
@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/refresh_mode"
                     android:text="@string/refresh_mode_tips"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/text_gray_color"
                     android:layout_marginLeft="@dimen/refresh_mode_explain_margin_left"
                     android:padding="@dimen/refresh_mode_drawable_padding"
                     android:textSize="@dimen/level_three_heading_font" />
