@@ -1,12 +1,14 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +67,25 @@ public class RxRequestCategoryList extends RxBaseCloudRequest {
                     categoryBeanLevelOne.sub_category.addAll(adjustLevelTwoList);
                 }
             }
+            getCateTwo(categoryListResultBean.data);
         }
     }
 
     private Call<CategoryListResultBean> getCall(ReadContentService getCommonService) {
         return getCommonService.getCategoryList(requestBean.getAppBaseInfo().getRequestParamsMap());
+    }
+
+    public void getCateTwo(List<CategoryListResultBean.CategoryBeanLevelOne> data){
+        List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> cateTwoList = new ArrayList<>();
+        for (CategoryListResultBean.CategoryBeanLevelOne cateOne : data){
+            CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = new CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo();
+            categoryBeanLevelTwo.cateLevel = Constants.CATEGORY_LEVEL_ONE;
+            categoryBeanLevelTwo.id = cateOne.id;
+            categoryBeanLevelTwo.image_url = cateOne.image_url;
+            categoryBeanLevelTwo.name = cateOne.name;
+            categoryBeanLevelTwo.sub_category = cateOne.sub_category;
+            cateTwoList.add(categoryBeanLevelTwo);
+        }
+        ShopDataBundle.getInstance().setCategoryBean(cateTwoList);
     }
 }

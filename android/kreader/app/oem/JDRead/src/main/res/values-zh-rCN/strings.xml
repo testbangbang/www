@@ -257,9 +257,10 @@
     <string name="current_points">当前积分：%1$d</string>
     <string name="receive_gift_package_tips">是否使用当前登录账号领取%1$s？</string>
     <string name="sign_in_vouchers">签到(+5代金券)</string>
-    <string name="read_thirty">阅读30分钟</string>
-    <string name="add_ten_vouchers">+10代金券</string>
+    <string name="read_thirty">阅读30分钟(+10代金券)</string>
+    <string name="add_ten_vouchers">+%d代金券 领取成功</string>
     <string name="have_receive">已领取</string>
+    <string name="allow_get">可领取</string>
     <string name="cannot_get">无法领取</string>
     <string name="select_interested_type">选择您感兴趣的图书类型</string>
     <string name="save">保存</string>
@@ -275,7 +276,7 @@
     <string name="password_format_error">密码格式错误,请输入%1$d-%2$d位数字</string>
     <string name="wrong_password">密码有误</string>
     <string name="reading_tools">阅读工具</string>
-    <string name="dictionary">辞典</string>
+    <string name="dictionary">词典</string>
     <string name="translation">翻译</string>
     <string name="associated_with_the_impression_notes">关联印象笔记</string>
     <string name="associated_with_the_email">关联电子邮箱</string>
@@ -396,6 +397,12 @@
     <string name="user_info_article">%s条</string>
     <string name="network_exception">网络异常</string>
     <string name="reader_input_keyword">请输入关键字</string>
+    <string name="notes_size">%d条笔记</string>
+    <string name="top_up_money">¥%s元</string>
+    <string name="give_vouchers">赠%d代金券</string>
+    <string name="way_to_pay">使用 微信 或 京东金融 扫码完成支付</string>
+    <string name="top_up_success">充值成功</string>
+    <string name="continue_top_up">继续充值</string>
     <string name="the_input_has_exceeded_the_upper_limit">输入内容已超%d字节数上限</string>
     <string name="group_names_do_not_support_special_characters">分组名不支持特殊字符</string>
     <string name="first_chapter">已是首章</string>
@@ -403,4 +410,5 @@
     <string name="no_chapters">本文不含章节信息</string>
     <string name="delete_library_prompt">是否删除该分组(组内图书重新放入书架)</string>
     <string name="delete_library_include_book_prompt">是否从本机删除该分组及组内图书</string>
+    <string name="click_to_translate">点击翻译</string>
 </resources>

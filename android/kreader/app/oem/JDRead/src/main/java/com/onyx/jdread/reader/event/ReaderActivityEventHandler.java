@@ -20,6 +20,7 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogDict;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
+import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
@@ -129,11 +130,6 @@ public class ReaderActivityEventHandler {
         ReaderBookInfoDialog readerBookInfoDialog = new ReaderBookInfoDialog(activity, readerViewModel.getReaderDataHolder(),
                 ReaderBookInfoDialogConfig.CATALOG_MODE);
         readerBookInfoDialog.show();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPageViewUpdateEvent(PageViewUpdateEvent event) {
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

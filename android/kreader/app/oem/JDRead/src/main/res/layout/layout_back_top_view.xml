@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.onyx.jdread.shop.model.BookShopViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/book_shop_contain_recycler_margin_top"
+            android:drawablePadding="@dimen/view_all_drawable_padding"
+            android:drawableRight="@mipmap/ic_go_view_all"
+            android:gravity="center"
+            android:onClick="@{()->viewModel.onViewAllBookViewClick()}"
+            android:text="@string/view_all_books"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <TextView
+            android:id="@+id/back_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/shop_back_top_button_margin_top"
+            android:background="@drawable/selected_button_background"
+            android:gravity="center"
+            android:onClick="@{()->viewModel.onBackTopViewClick()}"
+            android:padding="@dimen/shop_back_top_button_padding"
+            android:text="@string/back_to_top"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font" />
+
+    </LinearLayout>
+
+</layout>

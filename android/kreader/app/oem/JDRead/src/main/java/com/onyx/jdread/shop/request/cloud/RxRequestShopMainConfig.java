@@ -64,15 +64,48 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
         BookModelConfigResultBean resultBean = getResultBean();
         if (resultBean != null) {
             BookModelConfigResultBean.DataBean data = resultBean.data;
-            parseAdvBeanList(data);
-            if (subjectDataList == null) {
-                subjectDataList = new ArrayList<>();
+            initDataContainer();
+            if (requestBean.getCid() == Constants.BOOK_SHOP_MAIN_CONFIG_CID) {
+                parseAdvBeanList(data);
+                for (int i = Constants.SHOP_MAIN_INDEX_THREE; i < data.modules.size(); i++) {
+                    parseMainSubjectDataList(data, i);
+                }
             } else {
-                subjectDataList.clear();
+                for (int i = 0; i < data.modules.size(); i++) {
+                    parseCommonSubjectDataList(data,i);
+                }
             }
-            for (int i = Constants.SHOP_MAIN_INDEX_THREE; i < data.modules.size(); i++) {
-                parseSubjectDataList(data, i);
+        }
+    }
+
+    private void initDataContainer() {
+        if (subjectDataList == null) {
+            subjectDataList = new ArrayList<>();
+        } else {
+            subjectDataList.clear();
+        }
+    }
+
+    private void parseCommonSubjectDataList(BookModelConfigResultBean.DataBean dataBean, int index) {
+        if (dataBean.ebook != null && dataBean.modules != null) {
+            ArrayList<ResultBookBean> bookList = new ArrayList<>();
+            BookModelConfigResultBean.DataBean.ModulesBean modulesBean = dataBean.modules.get(index);
+            List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
+            for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
+                ResultBookBean bookBean = dataBean.ebook.get(itemsBean.id);
+                bookList.add(bookBean);
             }
+            modulesBean.bookList = bookList;
+            if (index % 2 == 1) {
+                if (dataBean.modules.size() - 1 >= (index + 1)) {
+                    BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
+                    modulesBean.show_name_next = modulesBeanNext.show_name;
+                    modulesBean.f_type_next = modulesBeanNext.f_type;
+                    modulesBean.id_next = modulesBeanNext.id;
+                    modulesBean.showNextTitle = true;
+                }
+            }
+            subjectDataList.add(modulesBean);
         }
     }
 
@@ -94,7 +127,7 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
         }
     }
 
-    public void parseSubjectDataList(BookModelConfigResultBean.DataBean dataBean, int index) {
+    public void parseMainSubjectDataList(BookModelConfigResultBean.DataBean dataBean, int index) {
         if (dataBean.ebook != null && dataBean.modules != null) {
             ArrayList<ResultBookBean> bookList = new ArrayList<>();
             BookModelConfigResultBean.DataBean.ModulesBean modulesBean = dataBean.modules.get(index);
@@ -105,11 +138,13 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
             }
             modulesBean.bookList = bookList;
             if (index >= Constants.SHOP_MAIN_INDEX_SIX && index <= Constants.SHOP_MAIN_INDEX_TEN && index % 2 == 0) {
-                BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
-                modulesBean.show_name_next = modulesBeanNext.show_name;
-                modulesBean.f_type_next = modulesBeanNext.f_type;
-                modulesBean.id_next = modulesBeanNext.id;
-                modulesBean.showNextTitle = true;
+                if (dataBean.modules.size() - 1 >= (index + 1)) {
+                    BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
+                    modulesBean.show_name_next = modulesBeanNext.show_name;
+                    modulesBean.f_type_next = modulesBeanNext.f_type;
+                    modulesBean.id_next = modulesBeanNext.id;
+                    modulesBean.showNextTitle = true;
+                }
             }
             subjectDataList.add(modulesBean);
         }

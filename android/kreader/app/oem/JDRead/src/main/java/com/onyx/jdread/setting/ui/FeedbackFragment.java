@@ -34,6 +34,17 @@ public class FeedbackFragment extends BaseFragment {
         return feedbackBinding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        showInputKeyboard();
+    }
+
+    private void showInputKeyboard() {
+        feedbackBinding.feedbackDescEdit.requestFocus();
+        InputMethodUtils.showForcedInputKeyboard(getContext(), feedbackBinding.feedbackDescEdit);
+    }
+
     private void loadData() {
         FeedbackModel feedbackModel = new FeedbackModel();
         feedbackBinding.feedbackTitle.setTitleModel(feedbackModel.titleBarModel);

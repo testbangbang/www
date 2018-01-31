@@ -6,12 +6,9 @@ import android.graphics.Rect;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
-import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.request.NextScreenRequest;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2017/12/25.
@@ -24,7 +21,6 @@ public class NextPageAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                readerDataHolder.getEventBus().post(new PageViewUpdateEvent());
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
             }
 

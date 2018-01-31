@@ -1,13 +1,17 @@
 package com.onyx.jdread.personal.model;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargePackageBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.TopUpValueBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
+import com.onyx.jdread.util.TimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,7 +29,7 @@ public class PersonalDataBundle {
     private PersonalModel personalModel;
     private TitleBarModel titleModel;
     private PersonalAccountModel personalAccountModel;
-    private List<TopUpValueBean> topValueBeans;
+    private List<GetRechargePackageBean.DataBean> topValueBeans;
     private GetOrderUrlResultBean orderUrlResultBean;
     private ReadTotalInfoBean readTotalInfo;
     private ReadOverInfoBean readOverInfo;
@@ -34,6 +38,7 @@ public class PersonalDataBundle {
     private PersonalBookModel personalBookModel;
     private String salt;
     private UserInfo userInfo;
+    private boolean signed;
 
     private PersonalDataBundle() {
 
@@ -101,11 +106,11 @@ public class PersonalDataBundle {
         return personalAccountModel;
     }
 
-    public void setTopValueBeans(List<TopUpValueBean> topValueBeans) {
+    public void setTopValueBeans(List<GetRechargePackageBean.DataBean> topValueBeans) {
         this.topValueBeans = topValueBeans;
     }
 
-    public List<TopUpValueBean> getTopValueBeans() {
+    public List<GetRechargePackageBean.DataBean> getTopValueBeans() {
         return topValueBeans;
     }
 
@@ -145,7 +150,19 @@ public class PersonalDataBundle {
         if (personalTaskModel == null) {
             personalTaskModel = new PersonalTaskModel();
         }
+        personalTaskModel.loadData();
+        String currentTime = TimeUtils.getCurrentDataInString();
+        String saveTime = getCurrentDay();
+        setSigned(StringUtils.isNullOrEmpty(saveTime) || !currentTime.equals(saveTime));
         return personalTaskModel;
+    }
+
+    public void setCurrentDay(String day) {
+        JDPreferenceManager.setStringValue(Constants.CURRENT_DAY, day);
+    }
+
+    public String getCurrentDay() {
+        return JDPreferenceManager.getStringValue(Constants.CURRENT_DAY, "");
     }
 
     public PersonalBookModel getPersonalBookModel() {
@@ -170,5 +187,21 @@ public class PersonalDataBundle {
 
     public UserInfo getUserInfo() {
         return userInfo;
+    }
+
+    public void setSigned(boolean signed) {
+        this.signed = signed;
+    }
+
+    public boolean getSigned() {
+        return signed;
+    }
+
+    public void setReceiveReadVoucherTime(String receiveReadVoucherTime) {
+        JDPreferenceManager.setStringValue(Constants.RECEIVED_VOUCHER, receiveReadVoucherTime);
+    }
+
+    public String getReceiveReadVoucherTime() {
+        return JDPreferenceManager.getStringValue(Constants.RECEIVED_VOUCHER, "");
     }
 }

@@ -3,6 +3,9 @@
 
     <data class="PersonalAccountBinding">
 
+        <variable
+            name="userInfo"
+            type="com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo"/>
     </data>
 
     <LinearLayout
@@ -40,7 +43,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="120"
+                        android:text="@{String.valueOf(userInfo.yuedou)}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
@@ -70,7 +73,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="120"
+                        android:text="@{String.valueOf(userInfo.voucher)}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
@@ -100,7 +103,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="120"
+                        android:text="@{String.valueOf(userInfo.vip_remain_days)}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 

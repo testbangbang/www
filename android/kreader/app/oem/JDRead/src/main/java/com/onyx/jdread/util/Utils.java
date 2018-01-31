@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 
 import org.greenrobot.eventbus.EventBus;
@@ -128,5 +129,12 @@ public class Utils {
         if (eventBus.isRegistered(subscriber)) {
             eventBus.unregister(subscriber);
         }
+    }
+
+    public static boolean isEquals(String str) {
+        if (StringUtils.isNullOrEmpty(str)) {
+            return false;
+        }
+        return ResManager.getString(R.string.allow_get).equals(str);
     }
 }
