@@ -363,10 +363,20 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUnfinishedEvent(UnfinishedEvent event) {
+    public void onUnfinishedEvent(final UnfinishedEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_FILL_HOMEWORK);
-        FillHomeworkFragment fillHomeworkFragment = (FillHomeworkFragment) getPageView(ChildViewID.FRAGMENT_FILL_HOMEWORK);
-        fillHomeworkFragment.setTaskId(event.getId(), event.getPracticeId(), event.getType(), event.getTitle());
+        final FillHomeworkFragment fillHomeworkFragment = (FillHomeworkFragment)currentFragment;
+        fillHomeworkFragment.setOnFragmentViewInflateListener(new FillHomeworkFragment.OnFragmentViewInflateListener() {
+            @Override
+            public void onViewInflate() {
+                fillHomeworkFragment.setTaskId(event.getId(), event.getPracticeId(), event.getType(), event.getTitle());
+            }
+        });
+
+        if(fillHomeworkFragment.isInflater()) {
+            fillHomeworkFragment.setTaskId(event.getId(), event.getPracticeId(), event.getType(), event.getTitle());
+        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

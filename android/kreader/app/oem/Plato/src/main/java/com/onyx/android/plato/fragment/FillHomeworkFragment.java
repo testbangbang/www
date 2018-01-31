@@ -61,6 +61,8 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     private int DEFAULT = 1;
     private FillHomeworkPresenter fillHomeworkPresenter;
     private int id;
+    public OnFragmentViewInflateListener inflaterListener;
+    private boolean isInflater = false;
 
     @Override
     protected void loadData() {
@@ -93,6 +95,10 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     @Override
     protected void initListener() {
+        if (inflaterListener != null) {
+            inflaterListener.onViewInflate();
+            isInflater = true;
+        }
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarTitle.setOnClickListener(this);
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarRecord.setOnClickListener(this);
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarSubmit.setOnClickListener(this);
@@ -291,5 +297,17 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         if (fillHomeworkAdapter != null) {
             fillHomeworkAdapter.clearData();
         }
+    }
+
+    public interface OnFragmentViewInflateListener {
+        void onViewInflate();
+    }
+
+    public void setOnFragmentViewInflateListener(OnFragmentViewInflateListener l) {
+        inflaterListener = l;
+    }
+
+    public boolean isInflater() {
+        return isInflater;
     }
 }
