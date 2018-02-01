@@ -60,7 +60,11 @@ public class ViewConfig {
     private static Map<String, FunctionModule> childViewInfo = new HashMap<>();
 
     public enum FunctionModule {
-        BACK,LIBRARY, SHOP, SETTING, PERSONAL
+        BACK, LIBRARY, SHOP, SETTING, PERSONAL;
+
+        public static boolean isBackModule(FunctionModule module) {
+            return module.equals(BACK);
+        }
     }
 
     static {
