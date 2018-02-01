@@ -158,7 +158,7 @@ public class SearchBookFragment extends BaseFragment {
 
     private void queryTextChange(String newText) {
         if (StringUtils.isNotBlank(newText) && InputUtils.getByteCount(newText) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
-            ToastUtil.showToast(String.format(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.search_word_key_max_length)));
+            ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
             return;
         }
         newText = InputUtils.filterSpecialCharacters(newText);
@@ -176,7 +176,7 @@ public class SearchBookFragment extends BaseFragment {
 
     private void queryTextSubmit(String query) {
         if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
-            ToastUtil.showToast(String.format(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.search_word_key_max_length)));
+            ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
             return;
         }
         query = InputUtils.filterSpecialCharacters(query);

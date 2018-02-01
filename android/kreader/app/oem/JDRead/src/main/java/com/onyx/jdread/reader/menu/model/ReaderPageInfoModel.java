@@ -5,6 +5,7 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.utils.ChapterInfo;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -35,7 +36,7 @@ public class ReaderPageInfoModel {
     private ObservableInt currentPage = new ObservableInt(0);
     private ObservableBoolean isShow = new ObservableBoolean(true);
     private ReaderDataHolder readerDataHolder;
-    private List<Integer> tocChapterNodeList;
+    private List<ChapterInfo> tocChapterNodeList;
     private static boolean hasChapterInfo = true;
 
     public ReaderPageInfoModel(ReaderDataHolder readerDataHolder) {
@@ -91,17 +92,17 @@ public class ReaderPageInfoModel {
     }
 
     public void nextChapter() {
-        if(hasChapterInfo) {
+        if (hasChapterInfo) {
             prepareGotoChapter(readerDataHolder, false);
-        }else {
+        } else {
             getEventBus().post(new ReaderSettingMenuItemNextChapterEvent());
         }
     }
 
     public void previousChapter() {
-        if(hasChapterInfo) {
+        if (hasChapterInfo) {
             prepareGotoChapter(readerDataHolder, true);
-        }else {
+        } else {
             getEventBus().post(new ReaderSettingMenuItemPreviousChapterEvent());
         }
     }
@@ -114,28 +115,32 @@ public class ReaderPageInfoModel {
         this.isShow.set(isShow);
     }
 
-    public List<Integer> getTocChapterNodeList() {
+    public List<ChapterInfo> getTocChapterNodeList() {
         return tocChapterNodeList;
     }
 
-    public void setTocChapterNodeList(List<Integer> tocChapterNodeList) {
+    public void setTocChapterNodeList(List<ChapterInfo> tocChapterNodeList) {
         this.tocChapterNodeList = tocChapterNodeList;
     }
 
     private void prepareGotoChapter(final ReaderDataHolder readerDataHolder, final boolean back) {
-        List<Integer> tocChapterNodeList = getTocChapterNodeList();
-        if (tocChapterNodeList == null) {
+        List<ChapterInfo> tocChapterNodeList = getTocChapterNodeList();
+        if (tocChapterNodeList == null || tocChapterNodeList.size() <= 0) {
             new GetTableOfContentAction().execute(readerDataHolder, new RxCallback() {
                 @Override
                 public void onNext(Object request) {
                     GetTableOfContentRequest readerRequest = (GetTableOfContentRequest) request;
                     boolean hasToc = readerRequest.isHasToc();
                     if (!hasToc) {
-                        ToastUtil.showToast(readerDataHolder.getAppContext(), R.string.no_chapters);
+                        if (back) {
+                            getEventBus().post(new ReaderSettingMenuItemPreviousChapterEvent());
+                        } else {
+                            getEventBus().post(new ReaderSettingMenuItemNextChapterEvent());
+                        }
                         hasChapterInfo = false;
                         return;
                     }
-                    List<Integer> readTocChapterNodeList = readerRequest.getReadTocChapterNodeList();
+                    List<ChapterInfo> readTocChapterNodeList = readerRequest.getReadTocChapterNodeList();
                     setTocChapterNodeList(readTocChapterNodeList);
                     gotoChapter(readerDataHolder, back, readTocChapterNodeList);
                 }
@@ -145,17 +150,19 @@ public class ReaderPageInfoModel {
         }
     }
 
-    private void gotoChapter(final ReaderDataHolder readerDataHolder, final boolean back, final List<Integer> tocChapterNodeList) {
+    private void gotoChapter(final ReaderDataHolder readerDataHolder, final boolean back, final List<ChapterInfo> tocChapterNodeList) {
         if (tocChapterNodeList.size() <= 0) {
             return;
         }
         int currentPagePosition = PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition());
-        if (back && currentPagePosition <= tocChapterNodeList.get(0)) {
+        ChapterInfo chapterInfo = tocChapterNodeList.get(0);
+        if (back && currentPagePosition <= chapterInfo.getPosition()) {
             ToastUtil.showToast(readerDataHolder.getAppContext(), R.string.first_chapter);
             return;
         }
 
-        if (!back && currentPagePosition >= tocChapterNodeList.get(tocChapterNodeList.size() - 1)) {
+        chapterInfo = tocChapterNodeList.get(tocChapterNodeList.size() - 1);
+        if (!back && currentPagePosition >= chapterInfo.getPosition()) {
             ToastUtil.showToast(readerDataHolder.getAppContext(), R.string.last_chapter);
             return;
         }
@@ -169,23 +176,26 @@ public class ReaderPageInfoModel {
         gotoPosition(readerDataHolder, chapterPosition, true);
     }
 
-    private int getChapterPositionByPage(int pagePosition, boolean back, List<Integer> tocChapterNodeList) {
+    public static int getChapterPositionByPage(int pagePosition, boolean back, List<ChapterInfo> tocChapterNodeList) {
         int size = tocChapterNodeList.size();
         for (int i = 0; i < size; i++) {
-            if (pagePosition < tocChapterNodeList.get(i)) {
+            ChapterInfo chapterInfo = tocChapterNodeList.get(i);
+            if (pagePosition < chapterInfo.getPosition()) {
                 if (back) {
                     int index = i - 1;
                     if (index < 0) {
                         return 0;
                     }
-                    int position = tocChapterNodeList.get(Math.max(0, index));
+                    chapterInfo = tocChapterNodeList.get(Math.max(0, index));
+                    int position = chapterInfo.getPosition();
                     if (position < pagePosition) {
                         return position;
                     } else {
                         return getChapterPositionByPage(pagePosition - 1, back, tocChapterNodeList);
                     }
                 } else {
-                    int position = tocChapterNodeList.get(i);
+                    chapterInfo = tocChapterNodeList.get(i);
+                    int position = chapterInfo.getPosition();
                     if (position > pagePosition) {
                         return position;
                     } else {

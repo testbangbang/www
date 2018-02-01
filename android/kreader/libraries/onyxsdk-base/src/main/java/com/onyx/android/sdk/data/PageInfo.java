@@ -30,6 +30,15 @@ public class PageInfo {
     private RectF visibleRect = new RectF(); // page visible rect in viewport(screen) coordinates
     private float actualScale = 1.0f;
     private int specialScale = PageConstants.SCALE_INVALID;
+    private String chapterName;
+
+    public String getChapterName() {
+        return chapterName;
+    }
+
+    public void setChapterName(String chapterName) {
+        this.chapterName = chapterName;
+    }
 
     public PageInfo(final String name, final float nw, final float nh) {
         this(name, name, name, nw, nh);
@@ -69,6 +78,7 @@ public class PageInfo {
         actualScale = pageInfo.actualScale;
         specialScale = pageInfo.specialScale;
         isTextPage = pageInfo.isTextPage;
+        chapterName = pageInfo.chapterName;
     }
 
     public final float getOriginWidth() {

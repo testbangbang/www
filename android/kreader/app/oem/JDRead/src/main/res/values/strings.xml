@@ -87,7 +87,7 @@
     <string name="common_problem">Common problem</string>
     <string name="commit">commit</string>
     <string name="feedback_content_hint">Please enter 5-200 word feedback content</string>
-    <string name="feedback_format_error">Feedback format is wrong</string>
+    <string name="feedback_format_error">Feedback content format is wrong</string>
     <string name="personal_task">Personal task</string>
     <string name="personal_account">Personal account</string>
     <string name="personal_notes">Personal notes</string>
@@ -427,4 +427,6 @@
     <string name="first_chapter">Is the first chapter</string>
     <string name="last_chapter">Is the last chapter</string>
     <string name="no_chapters">This article does not contain section information</string>
+    <string name="click_to_translate">Click to translate</string>
+    <string name="network_or_server_error">Network or server error, wait for a while to try again</string>
 </resources>

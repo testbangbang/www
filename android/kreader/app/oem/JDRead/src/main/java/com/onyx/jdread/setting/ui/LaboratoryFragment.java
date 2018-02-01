@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.jdread.main.event.ShowBackTabEvent;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.LaboratoryModel;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -53,5 +54,10 @@ public class LaboratoryFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
         viewEventCallBack.viewBack();
+    }
+
+    @Subscribe
+    public void onShowBackTabEvent(ShowBackTabEvent event) {
+        laboratoryBinding.getLaboratoryModel().setShowBack(event.isShow());
     }
 }

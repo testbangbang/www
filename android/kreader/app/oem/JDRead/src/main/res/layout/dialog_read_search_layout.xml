@@ -53,6 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="@{()->model.clearInput()}"
+                    android:visibility="@{model.isShowDelete?View.VISIBLE:View.GONE}"
                     android:src="@mipmap/ic_shelf_close" />
             </LinearLayout>
 

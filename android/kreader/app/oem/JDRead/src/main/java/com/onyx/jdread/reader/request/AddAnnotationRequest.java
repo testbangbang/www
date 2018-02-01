@@ -39,14 +39,14 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
             ReaderSelection selection = readerSelectionInfo.getCurrentSelection();
             Annotation annotation = createAnnotation(reader,readerSelectionInfo.pageInfo,
                     selection.getStartPosition(), selection.getEndPosition(),
-                    selection.getRectangles(), selection.getText(), "");
+                    selection.getRectangles(), selection.getText(), "",readerSelectionInfo.pageInfo.getChapterName());
 
             ContentSdkDataUtils.getDataProvider().addAnnotation(annotation);
         }
     }
 
     public static Annotation createAnnotation(Reader reader,PageInfo pageInfo, String locationBegin, String locationEnd,
-                                        List<RectF> rects, String quote, String note) {
+                                        List<RectF> rects, String quote, String note,String chapterName) {
         Annotation annotation = new Annotation();
         annotation.setIdString(reader.getReaderHelper().getDocumentMd5());
         annotation.setApplication(reader.getReaderHelper().getPlugin().displayName());
@@ -57,6 +57,7 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
         annotation.setQuote(quote);
         annotation.setNote(note);
         annotation.setRectangles(rects);
+        annotation.setChapterName(chapterName);
         return annotation;
     }
 }

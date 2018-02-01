@@ -36,7 +36,6 @@ public class LibraryMoveToAction extends BaseAction<LibraryDataBundle> {
             public void onNext(Object o) {
                 chosenItemsMap = getSelectedAction.getChosenItemsMap();
                 if (CollectionUtils.isNullOrEmpty(chosenItemsMap)) {
-                    ToastUtils.showToast(libraryDataBundle.getAppContext(), R.string.please_select_book);
                     return;
                 }
                 selectTargetLibrary(libraryDataBundle, chosenItemsMap, baseCallback);

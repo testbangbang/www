@@ -12,8 +12,8 @@ import java.util.List;
 
 public class TocUtils {
 
-    public static List<Integer> buildChapterNodeList(final ReaderDocumentTableOfContent toc) {
-        List<Integer> tocChapterNodeList = new ArrayList<>();
+    public static List<ChapterInfo> buildChapterNodeList(final ReaderDocumentTableOfContent toc) {
+        List<ChapterInfo> tocChapterNodeList = new ArrayList<>();
         ReaderDocumentTableOfContentEntry rootEntry = toc.getRootEntry();
         if (rootEntry.getChildren() != null) {
             buildChapterNode(rootEntry.getChildren(), tocChapterNodeList);
@@ -21,7 +21,7 @@ public class TocUtils {
         return tocChapterNodeList;
     }
 
-    public static void buildChapterNode(final List<ReaderDocumentTableOfContentEntry> entries, final List<Integer> tocChapterNodeList) {
+    public static void buildChapterNode(final List<ReaderDocumentTableOfContentEntry> entries, final List<ChapterInfo> tocChapterNodeList) {
         for (ReaderDocumentTableOfContentEntry entry : entries) {
             if (entry.getChildren() != null) {
                 buildChapterNode(entry.getChildren(), tocChapterNodeList);
@@ -29,7 +29,8 @@ public class TocUtils {
                 try {
                     int position = PagePositionUtils.getPosition(entry.getPosition());
                     if (!tocChapterNodeList.contains(position)) {
-                        tocChapterNodeList.add(position);
+                        ChapterInfo chapterInfo = new ChapterInfo(entry.getTitle(),position);
+                        tocChapterNodeList.add(chapterInfo);
                     }
                 }catch (Exception e) {
                     break;
