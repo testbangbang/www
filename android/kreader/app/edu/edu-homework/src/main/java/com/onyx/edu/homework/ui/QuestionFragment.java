@@ -2,7 +2,9 @@ package com.onyx.edu.homework.ui;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,10 +27,12 @@ import com.onyx.android.sdk.data.model.homework.QuestionOption;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.android.sdk.utils.Base64ImageParser;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.DoAnswerAction;
+import com.onyx.edu.homework.action.note.HomeworkPagesRenderActionChain;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.data.SaveDocumentOption;
@@ -88,6 +92,7 @@ public class QuestionFragment extends BaseFragment {
         initView(question);
         initFragment();
         updateViewState();
+        loadDraftView();
     }
 
     private void initView(final Question question) {
@@ -229,6 +234,7 @@ public class QuestionFragment extends BaseFragment {
 
     public void reloadQuestion(Question question) {
         this.question = question;
+        removeDraftView();
         removeFragment();
         init(question);
     }
@@ -256,5 +262,42 @@ public class QuestionFragment extends BaseFragment {
                 option.render,
                 option.showLoading,
                 callback);
+    }
+
+    private void removeDraftView() {
+        binding.imageView.setImageResource(android.R.color.transparent);
+        binding.imageView.setVisibility(View.GONE);
+    }
+
+    private void loadDraftView() {
+        if (!question.isChoiceQuestion()) {
+            return;
+        }
+        binding.imageView.setVisibility(View.VISIBLE);
+        binding.imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                renderDraftBitmap();
+            }
+        });
+
+    }
+
+    private void renderDraftBitmap() {
+        Rect size =  new Rect(0, 0, binding.imageView.getWidth(), binding.imageView.getHeight());
+        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(),
+                null,
+                size,
+                1);
+        pageAction.execute(getNoteViewHelper(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                List<Bitmap> bitmaps = pageAction.getPageMap().get(question.getUniqueId());
+                if (CollectionUtils.isNullOrEmpty(bitmaps)) {
+                    return;
+                }
+                binding.imageView.setImageBitmap(bitmaps.get(0));
+            }
+        });
     }
 }
