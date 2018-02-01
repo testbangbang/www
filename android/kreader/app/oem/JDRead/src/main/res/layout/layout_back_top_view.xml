@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.onyx.jdread.shop.model.BookShopViewModel" />
+            type="com.onyx.jdread.shop.model.MainConfigEndViewModel" />
 
     </data>
 
@@ -20,7 +20,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/book_shop_contain_recycler_margin_top"
             android:drawablePadding="@dimen/view_all_drawable_padding"
             android:drawableRight="@mipmap/ic_go_view_all"
             android:gravity="center"

@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.utils;
 
 import android.databinding.BindingAdapter;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -13,9 +14,11 @@ import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
+import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.adapter.SubjectWithVipAdapter;
+import com.onyx.jdread.shop.adapter.TitleSubjectAdapter;
 import com.onyx.jdread.shop.adapter.VipReadAdapter;
 import com.onyx.jdread.shop.common.ManageImageCache;
 import com.onyx.jdread.shop.view.AutoPagedWebView;
@@ -150,6 +153,22 @@ public class ShopDataBindingUtil {
         VipReadAdapter adapter = (VipReadAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"titleSubjectItems"})
+    public static void setTitleItems(PageRecyclerView recyclerView, List items) {
+        TitleSubjectAdapter adapter = (TitleSubjectAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"shopConfigSubjects"})
+    public static void setConfigSubjects(RecyclerView recyclerView, List items) {
+        ShopMainConfigAdapter adapter = (ShopMainConfigAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items);
         }
     }
 }

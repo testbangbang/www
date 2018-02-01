@@ -43,8 +43,7 @@ public class RankViewModel extends BaseObservable {
         }
         rankItems = new ArrayList<>();
         for (int i = 0; i < Constants.SHOP_MAIN_INDEX_SIX; i++) {
-            SubjectViewModel subjectViewModel = new SubjectViewModel();
-            subjectViewModel.setEventBus(getEventBus());
+            SubjectViewModel subjectViewModel = new SubjectViewModel(getEventBus());
             rankItems.add(subjectViewModel);
         }
     }

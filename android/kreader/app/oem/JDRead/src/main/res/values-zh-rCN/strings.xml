@@ -388,7 +388,7 @@
     <string name="down_book_book_not_found">电子书不存在</string>
     <string name="down_book_illegal_order">非法订单</string>
     <string name="down_book_illegal_device">非法设备</string>
-    <string name="down_book_server_error">后台处理异常</string>
+    <string name="down_book_server_error">后台异常</string>
     <string name="down_book_cerify_order_error">订单认证异常</string>
     <string name="the_read_time_for_today">本机今日阅读时长%s分钟</string>
     <string name="user_info_stay">%s天</string>

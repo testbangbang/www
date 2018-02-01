@@ -104,4 +104,8 @@ public class Constants {
     public static final int WEB_VIEW_TEXT_ZOOM = 100;
     public static final String CURRENT_DAY = "current_day";
     public static final String RECEIVED_VOUCHER = "received_voucher";
+    public static final String MAIN_CONFIG_TYPE_EBOOK = "ebook";
+    public static final String MAIN_CONFIG_TYPE_ADV = "adv";
+    public static final int MODULE_TYPE_ADV_FIX_TWO = 3;
+    public static final int MODULE_TYPE_RECOMMEND = 6;
 }
