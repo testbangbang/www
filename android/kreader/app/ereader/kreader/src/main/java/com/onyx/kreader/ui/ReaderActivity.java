@@ -1336,20 +1336,10 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
 
-        final StartSideNoteAction action = new StartSideNoteAction();
-        action.execute(getReaderDataHolder(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                startSideNoteDrawing(getReaderDataHolder(), ReaderActivity.this);
-            }
-        });
-    }
-
-    private void startSideNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
-        ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(readerActivity.getExtraView(),
-                readerActivity.getStatusBar(),
-                ShowReaderMenuAction.getScribbleActionCallback(readerDataHolder));
-        showMenu.execute(readerDataHolder, null);
+        BaseHandler.HandlerInitialState state = new BaseHandler.HandlerInitialState();
+        state.activityExtraView = extraView;
+        state.activityStatusBar = statusBar;
+        getHandlerManager().setActiveProvider(HandlerManager.SIDE_NOTE_PROVIDER, state);
     }
 
 }

@@ -20,6 +20,9 @@ import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.ChangeScaleWithDeltaAction;
 import com.onyx.kreader.ui.actions.ShowDialogGoToPageAction;
+import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.actions.ShowSideScribbleMenuAction;
+import com.onyx.kreader.ui.actions.StartSideNoteAction;
 import com.onyx.kreader.ui.actions.ToggleSideNoteMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
@@ -37,6 +40,8 @@ public class SideNoteHandler extends BaseHandler {
     private MenuManager menuManager;
     private BaseCallback resumeDrawingCallBack;
 
+    private HandlerInitialState initialState;
+
     public SideNoteHandler(HandlerManager p) {
         super(p);
         menuManager = new MenuManager();
@@ -53,12 +58,17 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     public void onActivate(final ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
-        final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(),
-                true, readerDataHolder.getSideNoteStartSubPageIndex());
-        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
-        readerDataHolder.getEventBus().post(new HideTabWidgetEvent());
-
         readerDataHolder.getEventBus().register(this);
+
+        this.initialState = initialState;
+
+        final StartSideNoteAction action = new StartSideNoteAction();
+        action.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                startSideNoteDrawing(readerDataHolder);
+            }
+        });
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
@@ -76,6 +86,21 @@ public class SideNoteHandler extends BaseHandler {
                 if (menuManager.getMainMenu() != null && menuManager.getMainMenu().isShowing()) {
                     toggleSideNoteMenu(readerDataHolder);
                 }
+            }
+        });
+    }
+
+    private void startSideNoteDrawing(final ReaderDataHolder readerDataHolder) {
+        ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(initialState.activityExtraView,
+                initialState.activityStatusBar,
+                ShowReaderMenuAction.getScribbleActionCallback(readerDataHolder));
+        showMenu.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest baseRequest, Throwable throwable) {
+                final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(),
+                        true, readerDataHolder.getSideNoteStartSubPageIndex());
+                readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
+                readerDataHolder.getEventBus().post(new HideTabWidgetEvent());
             }
         });
     }

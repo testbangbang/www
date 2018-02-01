@@ -6,6 +6,8 @@ import android.graphics.RectF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -42,6 +44,8 @@ public abstract class BaseHandler {
         public RelativeLayout slideShowParentLayout;
         public int slideShowMaxPageCount;
         public int slideShowIntervalInSeconds;
+        public ViewGroup activityExtraView;
+        public View activityStatusBar;
     }
 
     public static  final int KEYCDOE_SCRIBE = 213;
