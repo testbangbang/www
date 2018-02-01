@@ -103,5 +103,6 @@ public class BrightnessModel extends BaseObservable {
 
     public void maxBrightness() {
         setProgress(maxLight);
+        setBrightness(maxLight);
     }
 }
