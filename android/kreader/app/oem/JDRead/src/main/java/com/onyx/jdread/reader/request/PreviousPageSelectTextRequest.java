@@ -8,9 +8,8 @@ import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.highlight.HitTestTextHelper;
-import com.onyx.jdread.reader.highlight.SelectionInfo;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
-import com.onyx.jdread.reader.layout.PageOverlayMarker;
+import com.onyx.jdread.reader.highlight.SelectionInfo;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
 /**
@@ -78,9 +77,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
 
     private void preloadPreviousScreen(Reader reader) throws Exception{
         reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
-        PageOverlayMarker.saveCurrentPageAndViewport(reader);
         reader.getReaderHelper().getReaderLayoutManager().prevScreen();
-        PageOverlayMarker.markLastViewportOverlayPointWhenNecessary(reader, getReaderViewInfo());
     }
 
     private void cleanCurrentPageInfo() {
