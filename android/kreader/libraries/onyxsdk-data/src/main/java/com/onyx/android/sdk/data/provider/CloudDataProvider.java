@@ -477,7 +477,7 @@ public class CloudDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<SearchHistory> loadSearchHistory() {
+    public List<SearchHistory> loadSearchHistory(int limit) {
         return new Select().from(SearchHistory.class).orderBy(OrderBy.fromProperty(SearchHistory_Table.createdAt).ascending()).queryList();
     }
 

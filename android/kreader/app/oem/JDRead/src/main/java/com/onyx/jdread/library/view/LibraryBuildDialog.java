@@ -50,7 +50,7 @@ public class LibraryBuildDialog extends Dialog {
     public static class DialogModel extends Observable {
         public final ObservableField<String> title = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.build_library));
         public final ObservableField<String> libraryName = new ObservableField<>();
-        public final ObservableField<String> positiveText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.ok));
+        public final ObservableField<String> positiveText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.confirm));
         public final ObservableField<String> negativeText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.cancel));
 
         public interface OnClickListener {

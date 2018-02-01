@@ -2,6 +2,7 @@ package com.onyx.jdread.main.view;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.graphics.Color;
@@ -14,11 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RatingBar;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.api.device.epd.UpdateScheme;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SystemBarPopLayoutBinding;
-import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
+import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.setting.model.BrightnessModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -41,6 +45,13 @@ public class SystemBarPopupWindow extends PopupWindow {
         setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
         setFocusable(true);
         setOutsideTouchable(true);
+        bind.settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new SystemBarBackToSettingEvent());
+                dismiss();
+            }
+        });
         setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         setContentView(bind.getRoot());
         initEvent(systemBarPopupModel);
@@ -50,7 +61,7 @@ public class SystemBarPopupWindow extends PopupWindow {
         bind.ratingbarLightSettings.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                if (systemBarPopupModel != null) {
+                if (fromUser) {
                     systemBarPopupModel.brightnessModel.setBrightness(ratingBar.getProgress());
                 }
             }
@@ -66,10 +77,12 @@ public class SystemBarPopupWindow extends PopupWindow {
     public static class SystemBarPopupModel extends Observable {
         public final BrightnessModel brightnessModel = new BrightnessModel();
         public final ObservableField<String> currentWifi = new ObservableField<>();
-        public final ObservableInt wifiRes = new ObservableInt();
+        public final ObservableBoolean wifiIsOn = new ObservableBoolean();
+        public final ObservableBoolean speedRefresh = new ObservableBoolean();
 
         public SystemBarPopupModel() {
             updateWifi();
+            speedRefresh.set(!EpdController.inSystemFastMode());
         }
 
         public void updateWifi() {
@@ -77,24 +90,25 @@ public class SystemBarPopupWindow extends PopupWindow {
                 WifiManager wifiManager = (WifiManager) JDReadApplication.getInstance().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 currentWifi.set(wifiInfo.getSSID());
-                wifiRes.set(R.drawable.ic_top_menu_wifi);
             } else {
                 currentWifi.set("WLAN");
-                wifiRes.set(R.drawable.ic_wifi_90px);
             }
+            wifiIsOn.set(NetworkUtil.isWifiEnabled(JDReadApplication.getInstance()));
         }
 
         public void toggleWifi() {
-            wifiRes.set(NetworkUtil.isWifiEnabled(JDReadApplication.getInstance()) ? R.drawable.ic_wifi_90px : R.drawable.ic_top_menu_wifi);
+            wifiIsOn.set(!NetworkUtil.isWifiEnabled(JDReadApplication.getInstance()));
             NetworkUtil.toggleWiFi(JDReadApplication.getInstance());
         }
 
         public void toggleA2Model() {
-
-        }
-
-        public void openSetting() {
-            EventBus.getDefault().post(new BackToSettingFragmentEvent());
+            boolean useFastMode = !EpdController.inSystemFastMode();
+            speedRefresh.set(useFastMode);
+            if (useFastMode) {
+                EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+            } else {
+                EpdController.clearSystemUpdateModeAndScheme();
+            }
         }
     }
 }

@@ -36,7 +36,9 @@ import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
+import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
+import com.onyx.jdread.main.event.TabLongClickedEvent;
 import com.onyx.jdread.main.event.UsbDisconnectedEvent;
 import com.onyx.jdread.main.event.WifiStateChangeEvent;
 import com.onyx.jdread.main.model.FunctionBarItem;
@@ -324,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onUsbDisconnectedEvent(ShowBackTabEvent event) {
+    public void onShowBackTabEvent(ShowBackTabEvent event) {
         isShowBackTab(event.isShow());
     }
 
@@ -332,6 +334,8 @@ public class MainActivity extends AppCompatActivity {
     public void onSystemBarClickedEvent(SystemBarClickedEvent event) {
         if (systemBarPopupWindowModel == null) {
             systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
+        }else {
+            systemBarPopupWindowModel.brightnessModel.updateLight();
         }
         SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(this, systemBarPopupWindowModel);
         systemBarPopupWindow.show(binding.mainSystemBar.getRoot());
@@ -348,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
+    public void onSystemBarBackToSettingEvent(SystemBarBackToSettingEvent event) {
         childViewEventCallBack.gotoView(SettingFragment.class.getName());
     }
 
@@ -380,5 +384,12 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRequestFailedEvent(RequestFailedEvent event) {
         ToastUtil.showToast(event.getMessage());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTabLongClickedEvent(TabLongClickedEvent event) {
+        if (ViewConfig.FunctionModule.isBackModule(event.functionItem.getFunctionModule())) {
+            EventBus.getDefault().post(new ShowBackTabEvent(false));
+        }
     }
 }

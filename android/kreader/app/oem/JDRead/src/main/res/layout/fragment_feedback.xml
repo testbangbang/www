@@ -27,16 +27,20 @@
             android:orientation="vertical">
 
             <EditText
+                android:id="@+id/feedback_desc_edit"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/feedback_content_height"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/fragment_content_padding"
                 android:layout_marginRight="@dimen/fragment_content_padding"
                 android:background="@null"
+                android:maxHeight="@dimen/feedback_content_height"
+                android:minHeight="@dimen/feedback_content_min_height"
                 android:gravity="left|top"
                 android:hint="@string/feedback_content_hint"
                 android:inputType="textMultiLine"
                 android:maxLength="@integer/feedback_content_max_length"
-                android:text="@={feedbackModel.feedback}" />
+                android:text="@={feedbackModel.feedback}"
+                android:textSize="@dimen/level_two_heading_font"/>
 
             <View style="@style/DottedLineStyle" />
 
@@ -48,10 +52,11 @@
                 android:background="@null"
                 android:hint="@string/input_number_for_contact"
                 android:inputType="phone"
-                android:padding="@dimen/fragment_content_padding"
+                android:paddingBottom="@dimen/fragment_content_padding"
+                android:paddingTop="@dimen/fragment_content_padding"
                 android:singleLine="true"
                 android:text="@={feedbackModel.phone}"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_two_heading_font" />
 
             <View style="@style/DottedLineStyle" />
 
@@ -59,7 +64,7 @@
                 android:layout_width="@dimen/feedback_commit_text_width"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fragment_content_padding"
-                android:background="@drawable/rectangle_stroke_selector"
+                android:background="@drawable/rectangle_stroke_common_corners_selector"
                 android:clickable="true"
                 android:gravity="center"
                 android:onClick="@{()->feedbackModel.commitFeedback()}"

@@ -3,65 +3,80 @@
 
     <data class="DialogTopUpBinding">
 
+        <variable
+            name="userInfo"
+            type="com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/top_up_dialog_title_height"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="@dimen/top_up_padding">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_up_dialog_title_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/top_up_padding">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/top_up"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_one_heading_font" />
+
+                <ImageView
+                    android:id="@+id/dialog_top_up_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_close" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_width"
+                android:background="@color/divider_color" />
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/top_up"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
-
-            <ImageView
-                android:id="@+id/dialog_top_up_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_close" />
+                android:layout_marginLeft="@dimen/top_up_tips_margin_left"
+                android:layout_marginTop="@dimen/top_up_tips_margin_top"
+                android:text="@string/top_up_tips"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/top_up_tips_margin_left"
+                android:text="@{@string/current_balance(userInfo.yuedou, userInfo.voucher)}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/dialog_top_up_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/top_up_tips_recycler_margin"
+                android:layout_marginLeft="@dimen/top_up_tips_recycler_margin"
+                android:layout_marginRight="@dimen/top_up_tips_recycler_margin"
+                android:layout_marginTop="@dimen/top_up_tips_margin_top" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line_width"
-            android:background="@color/divider_color"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/top_up_tips_margin_left"
-            android:layout_marginTop="@dimen/top_up_tips_margin_top"
-            android:text="@string/top_up_tips"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/top_up_tips_margin_left"
-            android:text="gbajgoasidjgdj"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
-
-        <com.onyx.android.sdk.ui.view.PageRecyclerView
-            android:id="@+id/dialog_top_up_recycler"
+        <include
+            android:id="@+id/dialog_top_up_qr_code_layout"
+            layout="@layout/dialog_top_up_qrcode_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/top_up_tips_margin_top"
-            android:layout_marginLeft="@dimen/top_up_tips_recycler_margin"
-            android:layout_marginRight="@dimen/top_up_tips_recycler_margin"
-            android:layout_marginBottom="@dimen/top_up_tips_recycler_margin"/>
-    </LinearLayout>
+            android:visibility="gone" />
+    </FrameLayout>
 </layout>

@@ -67,8 +67,10 @@ public class SingleItemManageDialog extends Dialog {
             bind.bookDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
-                    model.getEventBus().post(new BookDetailEvent(model.dataModel.get()));
+                    if (model.isCloudBook()) {
+                        dialog.dismiss();
+                        model.getEventBus().post(new BookDetailEvent(model.dataModel.get()));
+                    }
                 }
             });
             bind.delete.setOnClickListener(new View.OnClickListener() {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
@@ -18,10 +19,13 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.VipReadAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
+import com.onyx.jdread.shop.event.VipButtonClickEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.VipReadViewModel;
@@ -39,6 +43,7 @@ import java.util.List;
  */
 
 public class BookVIPReadFragment extends BaseFragment {
+    private static final int HEAD_ITEM_COUNT = 1;
     private FragmentBookVipReadBinding bookVipReadBinding;
     private int space = JDReadApplication.getInstance().getResources().getInteger(R.integer.vip_read_recycle_view_space);
     private DividerItemDecoration itemDecoration;
@@ -63,7 +68,7 @@ public class BookVIPReadFragment extends BaseFragment {
     }
 
     private void initData() {
-        List<SubjectViewModel> rankItems = getShopDataBundle().getRankViewModel().getRankItems();
+        getBookConfigData();
         VipUserInfoViewModel vipUserInfoViewModel = new VipUserInfoViewModel(getEventBus());
         String imgUrl = LoginHelper.getImgUrl();
         String userName = LoginHelper.getUserName();
@@ -73,14 +78,29 @@ public class BookVIPReadFragment extends BaseFragment {
         if (adapter != null) {
             adapter.setInfoViewModel(vipUserInfoViewModel);
         }
-        getVipReadViewModel().setSubjectModels(rankItems);
-        if (rankItems != null) {
-            initPageIndicator(rankItems.size());
-        }
+    }
+
+    private void getBookConfigData() {
+        ShopMainConfigAction configAction = new ShopMainConfigAction(Constants.BOOK_SHOP_VIP_CONFIG_CID);
+        configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
+            @Override
+            public void onNext(ShopMainConfigAction configAction) {
+                List<SubjectViewModel> commonSubjcet = configAction.getCommonSubjcet();
+                if (commonSubjcet != null) {
+                    getVipReadViewModel().setSubjectModels(commonSubjcet);
+                    initPageIndicator(commonSubjcet.size());
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+        });
     }
 
     private void initPageIndicator(int size) {
-        paginator.resize(adapter.getRowCount(), adapter.getColumnCount(), size + Constants.PAGE_STEP);
+        paginator.resize(adapter.getRowCount(), adapter.getColumnCount(), size + HEAD_ITEM_COUNT);
         int pages = paginator.pages();
         bookVipReadBinding.scrollBar.setTotal(pages);
     }
@@ -159,16 +179,39 @@ public class BookVIPReadFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
-        if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
+        if (modulesBean != null) {
+            JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
+            if (getViewEventCallBack() != null) {
+                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+            }
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
         JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onVipButtonClickEvent(VipButtonClickEvent event) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BuyReadVIPFragment.class.getName());
         }
     }
 

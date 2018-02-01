@@ -51,6 +51,6 @@ public class LibraryDeleteAction extends BaseAction<LibraryDataBundle> {
 
     @NonNull
     private String getDeleteMessage(LibraryDataBundle libraryDataBundle) {
-        return deleteBooks ? libraryDataBundle.getAppContext().getString(R.string.delete_library_include_book) : libraryDataBundle.getAppContext().getString(R.string.delete_library);
+        return deleteBooks ? libraryDataBundle.getAppContext().getString(R.string.delete_library_include_book_prompt) : libraryDataBundle.getAppContext().getString(R.string.delete_library_prompt);
     }
 }

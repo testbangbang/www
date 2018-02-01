@@ -1,7 +1,6 @@
 package com.onyx.jdread.shop.ui;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -15,7 +14,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.BuyReadVipBinding;
 import com.onyx.jdread.main.common.BaseFragment;
-import com.onyx.jdread.main.common.ClientUtils;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
@@ -51,7 +50,7 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleBarModel = ShopDataBundle.getInstance().getTitleBarModel();
-        titleBarModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.buy_read_vip));
+        titleBarModel.title.set(ResManager.getString(R.string.buy_read_vip));
         titleBarModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.buyVipTitle.setTitleModel(titleBarModel);
 

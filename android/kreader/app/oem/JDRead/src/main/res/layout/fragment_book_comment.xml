@@ -40,11 +40,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginTop="@dimen/category_book_list_recycle_view_indicator_margin_top"
             android:gravity="right"
-            android:paddingBottom="@dimen/book_comment_indicator_padding"
-            android:paddingTop="@dimen/book_comment_indicator_padding"
             android:text="@{@string/book_comment_indicator_value(bookDetailViewModel.currentPage,bookDetailViewModel.totalPage)}"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_size_17" />
 
     </LinearLayout>
 

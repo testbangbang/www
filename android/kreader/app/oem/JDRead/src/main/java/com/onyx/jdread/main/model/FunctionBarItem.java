@@ -8,6 +8,7 @@ import android.databinding.ObservableInt;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.main.event.ChangeChildViewEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
+import com.onyx.jdread.main.event.TabLongClickedEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -42,6 +43,11 @@ public class FunctionBarItem extends BaseObservable {
         EventBus.getDefault().post(event);
     }
 
+    public boolean tabLongClicked() {
+        EventBus.getDefault().post(new TabLongClickedEvent(this));
+        return true;
+    }
+
     private void changeSelectedTab() {
         EventBus.getDefault().post(this);
     }
@@ -56,5 +62,13 @@ public class FunctionBarItem extends BaseObservable {
 
     public void setSelected(boolean isSelected){
         this.isSelected.set(isSelected);
+    }
+
+    public boolean getSelected() {
+        return isSelected.get();
+    }
+
+    public ViewConfig.FunctionModule getFunctionModule() {
+        return functionModule.get();
     }
 }

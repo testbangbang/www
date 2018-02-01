@@ -14,6 +14,7 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     private List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> data;
+    private List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> list = new ArrayList<>();
 
     @Override
     public int getRowCount() {
@@ -79,6 +81,19 @@ public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implemen
         if (onItemClickListener != null) {
             onItemClickListener.onItemClick(position);
         }
+    }
+
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getSelectedBean() {
+        if (list.size() > 0) {
+            list.clear();
+        }
+        for (int i = 0; i < data.size(); i++) {
+            CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = data.get(i);
+            if (catListBean.isSelect) {
+                list.add(catListBean);
+            }
+        }
+        return list;
     }
 
     static class ReadPreferenceViewHolder extends RecyclerView.ViewHolder {

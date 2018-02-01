@@ -19,7 +19,7 @@ import java.util.List;
  * Created by hehai on 17-12-11.
  */
 
-public class FunctionBarAdapter extends PageAdapter<FunctionBarAdapter.ViewHolder, FunctionBarItem, FunctionBarItem> {
+public class FunctionBarAdapter extends PageAdapter<FunctionBarAdapter.ViewHolder, FunctionBarItem, FunctionBarItem> implements View.OnLongClickListener {
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.function_bar_row);
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.function_bar_col);
 
@@ -51,6 +51,8 @@ public class FunctionBarAdapter extends PageAdapter<FunctionBarAdapter.ViewHolde
 
     @Override
     public void onPageBindViewHolder(FunctionBarAdapter.ViewHolder holder, int position) {
+        holder.itemView.setOnLongClickListener(this);
+        holder.itemView.setTag(position);
         holder.bindTo(getItemVMList().get(position));
     }
 
@@ -59,6 +61,15 @@ public class FunctionBarAdapter extends PageAdapter<FunctionBarAdapter.ViewHolde
         super.setRawData(rawData, context);
         setItemVMList(rawData);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (v.getTag() == null) {
+            return false;
+        }
+        FunctionBarItem item = getItemVMList().get((Integer) v.getTag());
+        return item.tabLongClicked();
     }
 
     static class ViewHolder extends PageRecyclerView.ViewHolder {

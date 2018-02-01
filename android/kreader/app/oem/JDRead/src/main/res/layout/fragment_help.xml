@@ -27,7 +27,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/fragment_help_item_height"
-                android:gravity="center_vertical"
                 android:onClick="@{()->helpModel.gotoManual()}"
                 android:paddingLeft="@dimen/fragment_content_padding"
                 android:paddingRight="@dimen/fragment_content_padding">
@@ -35,6 +34,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:text="@string/manual"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
@@ -42,6 +42,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:src="@mipmap/ic_read_next" />
             </RelativeLayout>
@@ -51,7 +52,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/fragment_help_item_height"
-                android:gravity="center_vertical"
                 android:onClick="@{()->helpModel.gotoFeedBack()}"
                 android:paddingLeft="@dimen/fragment_content_padding"
                 android:paddingRight="@dimen/fragment_content_padding">
@@ -59,6 +59,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:text="@string/feedback"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
@@ -66,6 +67,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:src="@mipmap/ic_read_next" />
             </RelativeLayout>
@@ -75,7 +77,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/fragment_help_item_height"
-                android:gravity="center_vertical"
                 android:onClick="@{()->helpModel.gotoContactUs()}"
                 android:paddingLeft="@dimen/fragment_content_padding"
                 android:paddingRight="@dimen/fragment_content_padding">
@@ -83,6 +84,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:text="@string/contact_us"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
@@ -90,6 +92,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
                     android:src="@mipmap/ic_read_next" />
             </RelativeLayout>

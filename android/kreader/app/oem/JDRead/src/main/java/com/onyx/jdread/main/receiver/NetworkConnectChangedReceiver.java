@@ -11,8 +11,8 @@ import android.util.Log;
 import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.main.event.WifiStateChangeEvent;
+import com.onyx.jdread.util.BroadcastHelper;
 
-import org.acra.ACRA;
 import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -48,10 +48,14 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
                 boolean isConnected = state == NetworkInfo.State.CONNECTED;
                 Log.i(TAG, "isConnected:" + isConnected);
                 if (isConnected) {
-//                    ACRA.getErrorReporter().handleSilentException(null);
                     PersonalDataBundle.getInstance().getEventBus().post(new NetworkConnectedEvent());
+                    triggerFeedbackUpload(context);
                 }
             }
         }
+    }
+
+    private void triggerFeedbackUpload(Context context) {
+        BroadcastHelper.sendFeedbackUploadBroadcast(context);
     }
 }

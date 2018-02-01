@@ -4,6 +4,7 @@
     <dimen name="model_item_cover_height">203dp</dimen>
     <dimen name="page_indicator_layout_margin">20dp</dimen>
     <dimen name="rectangle_stroke_width">1dp</dimen>
+    <dimen name="rectangle_corner_common_radius">2dp</dimen>
     <dimen name="function_bar_text_size">18sp</dimen>
     <dimen name="level_large_heading_font">26sp</dimen>
     <dimen name="level_one_heading_font">20sp</dimen>
@@ -74,7 +75,7 @@
     <dimen name="personal_recycler_margin_top">20dp</dimen>
     <dimen name="personal_recycler_height">340dp</dimen>
     <dimen name="personal_log_out_margin">20dp</dimen>
-    <dimen name="wifi_pass_book_content_margin_top">100dp</dimen>
+    <dimen name="wifi_pass_book_content_margin_top">50dp</dimen>
     <dimen name="wifi_pass_book_qr_code_width">200dp</dimen>
     <dimen name="switch_show_quick_button_text_margin">20dp</dimen>
     <dimen name="fragment_content_padding">20dp</dimen>
@@ -82,7 +83,8 @@
     <dimen name="manual_qr_code_margin">35dp</dimen>
     <dimen name="manual_qr_code_margin_top">95dp</dimen>
     <dimen name="feedback_commit_text_width">300dp</dimen>
-    <dimen name="feedback_content_height">300dp</dimen>
+    <dimen name="feedback_content_height">200dp</dimen>
+    <dimen name="feedback_content_min_height">150dp</dimen>
     <dimen name="button_padding">10dp</dimen>
     <dimen name="title_bar_drawable_padding">10dp</dimen>
     <dimen name="reader_title_bar_drawable_padding">25dp</dimen>
@@ -270,7 +272,7 @@
     <dimen name="personal_read_preference_save_width">300dp</dimen>
     <dimen name="personal_read_preference_save_margin">20dp</dimen>
     <dimen name="personal_read_preference_save_padding">8dp</dimen>
-    <dimen name="item_personal_note_margin_left">20dp</dimen>
+    <dimen name="item_personal_note_margin_left">10dp</dimen>
     <dimen name="item_personal_note_margin_top">10dp</dimen>
     <dimen name="item_personal_task_receive_width">100dp</dimen>
     <dimen name="item_personal_task_receive_padding">10dp</dimen>
@@ -424,9 +426,9 @@
     <dimen name="reader_note_padding_bottom">10dp</dimen>
     <dimen name="vip_user_info_container_padding">20dp</dimen>
     <dimen name="renew_vip_button_padding_left_and_right">20dp</dimen>
-    <dimen name="recycle_view_height_with_vip">150dp</dimen>
-    <dimen name="book_cover_width_with_vip">90dp</dimen>
-    <dimen name="book_cover_height_width_vip">95dp</dimen>
+    <dimen name="recycle_view_height_with_vip">153dp</dimen>
+    <dimen name="book_cover_width_with_vip">85dp</dimen>
+    <dimen name="book_cover_height_width_vip">110dp</dimen>
     <dimen name="control_panel_floating_tittle_text_size">40sp</dimen>
     <dimen name="reader_dict_title_padding_left">10dp</dimen>
     <dimen name="reader_dict_title_padding_right">10dp</dimen>
@@ -460,6 +462,9 @@
     <dimen name="category_book_list_recycle_view_indicator_margin_top">25dp</dimen>
     <dimen name="book_detail_cat_two_margin_left">12dp</dimen>
     <dimen name="book_detail_margin_top">30dp</dimen>
+    <dimen name="personal_notes_image_padding">10dp</dimen>
+    <dimen name="top_up_qr_code_height">100dp</dimen>
+    <dimen name="top_up_qr_code_margin_bottom">30dp</dimen>
     <dimen name="system_bar_icon_space">10dp</dimen>
     <dimen name="item_subject_common_name_margin_top">2dp</dimen>
     <dimen name="common_subject_bottom_item_margin_top">60dp</dimen>
@@ -469,4 +474,14 @@
     <dimen name="search_button_margin">5dp</dimen>
     <dimen name="dialog_search_list_item_text_size">18sp</dimen>
     <dimen name="dialog_search_list_item_page_text_size">20sp</dimen>
+    <dimen name="book_comment_contetn_margin_top">8dp</dimen>
+    <dimen name="title_bar_title_max_width">180dp</dimen>
+    <dimen name="search_history_recycler_height">120dp</dimen>
+    <dimen name="search_history_item_padding_left">23dp</dimen>
+    <dimen name="wifi_pass_book_address_width">320dp</dimen>
+    <dimen name="wifi_pass_book_address_height">42dp</dimen>
+    <dimen name="wifi_pass_book_address_margin_top">55dp</dimen>
+    <dimen name="qr_image_padding">5dp</dimen>
+    <dimen name="wifi_pass_book_prompt_margin_top">80dp</dimen>
+    <dimen name="wifi_pass_book_prompt_line_space">10dp</dimen>
 </resources>

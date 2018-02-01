@@ -4,8 +4,11 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 /**
  * Created by jackdeng on 2017/12/8.
@@ -27,6 +30,7 @@ public class ShopDataBundle {
     private BookSaleViewModel bookSaleViewModel;
     private NewBookViewModel newBookViewModel;
     private VipReadViewModel vipReadViewModel;
+    private List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryBean;
 
     private ShopDataBundle() {
 
@@ -177,5 +181,13 @@ public class ShopDataBundle {
             buyReadVipModel.loadData();
         }
         return buyReadVipModel;
+    }
+
+    public void setCategoryBean(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryBean) {
+        this.categoryBean = categoryBean;
+    }
+
+    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getCategoryBean() {
+        return categoryBean;
     }
 }

@@ -1,10 +1,11 @@
 package com.onyx.jdread.library.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.onyx.jdread.library.action.LoadSearchHistoryAction;
 import com.onyx.jdread.library.action.SearchBookAction;
 import com.onyx.jdread.library.adapter.HotSearchAdapter;
 import com.onyx.jdread.library.adapter.SearchHintAdapter;
+import com.onyx.jdread.library.adapter.SearchHistoryAdapter;
 import com.onyx.jdread.library.adapter.SearchResultAdapter;
 import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
 import com.onyx.jdread.library.event.ClearSearchHistoryEvent;
@@ -36,17 +38,21 @@ import com.onyx.jdread.library.model.SearchBookModel;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.shop.action.SearchHotWordAction;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
+import com.onyx.jdread.util.InputUtils;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 /**
  * Created by hehai on 18-1-17.
@@ -61,6 +67,7 @@ public class SearchBookFragment extends BaseFragment {
     private SearchResultAdapter searchResultAdapter;
     private PageIndicatorModel pageIndicatorModel;
     private GPaginator pagination;
+    private SearchHistoryAdapter searchHistoryAdapter;
 
     @Nullable
     @Override
@@ -85,7 +92,26 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchResultRecycler.addItemDecoration(new DashLineItemDivider());
         searchResultAdapter = new SearchResultAdapter();
         binding.searchResultRecycler.setAdapter(searchResultAdapter);
+
+        binding.searchHistoryRecycler.setLayoutManager(new DisableScrollGridManager(getContext().getApplicationContext()));
+        searchHistoryAdapter = new SearchHistoryAdapter();
+        binding.searchHistoryRecycler.setAdapter(searchHistoryAdapter);
         initPageIndicator();
+        hideSearchViewLine();
+    }
+
+    private void hideSearchViewLine() {
+        if (binding.searchView != null) {
+            try {
+                Class<?> argClass = binding.searchView.getClass();
+                Field ownField = argClass.getDeclaredField("mSearchPlate");
+                ownField.setAccessible(true);
+                View mView = (View) ownField.get(binding.searchView);
+                mView.setBackgroundColor(Color.TRANSPARENT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initPageIndicator() {
@@ -138,6 +164,11 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void queryTextChange(String newText) {
+        if (StringUtils.isNotBlank(newText) && InputUtils.getByteCount(newText) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
+            ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
+            return;
+        }
+        newText = InputUtils.filterSpecialCharacters(newText);
         searchBookModel.isInputting.set(StringUtils.isNotBlank(newText));
         searchBookModel.searchKey.set(newText);
         checkView();
@@ -151,6 +182,11 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void queryTextSubmit(String query) {
+        if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
+            ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
+            return;
+        }
+        query = InputUtils.filterSpecialCharacters(query);
         Utils.hideSoftWindow(getActivity());
         searchBookModel.isInputting.set(false);
         searchBookModel.searchKey.set(query);
@@ -190,11 +226,11 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void loadSearchHistory() {
-        LoadSearchHistoryAction historyAction = new LoadSearchHistoryAction();
+        LoadSearchHistoryAction historyAction = new LoadSearchHistoryAction(ResManager.getInteger(R.integer.history_limit));
         historyAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                searchHistoryAdapter.setSearchHistories(LibraryDataBundle.getInstance().getSearchBookModel().searchHistory);
             }
         });
     }
@@ -213,7 +249,7 @@ public class SearchBookFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         getEventBus().unregister(this);
-        binding.searchView.setQuery("",false);
+        binding.searchView.setQuery("", false);
     }
 
     @Override

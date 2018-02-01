@@ -9,6 +9,8 @@
 
         <import type="com.onyx.jdread.util.SizeConverter" />
 
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
         <variable
             name="dialogModel"
             type="com.onyx.jdread.library.view.SingleItemManageDialog.DialogModel" />
@@ -33,7 +35,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
+            android:background="@color/gray_line_color" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,14 +53,38 @@
                 android:src="@{dialogModel.dataModel.coverDefault}"
                 android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
 
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/libraryCover_recycler"
-                items="@{dialogModel.dataModel.childList}"
+            <RelativeLayout
                 android:layout_width="@dimen/model_item_cover_width"
                 android:layout_height="@dimen/model_item_cover_height"
-                android:background="@drawable/rectangle_stroke"
-                android:padding="@dimen/rectangle_stroke_width"
-                android:visibility="@{dialogModel.showLibraryMenu()?View.VISIBLE:View.GONE}" />
+                android:visibility="@{dialogModel.showLibraryMenu()?View.VISIBLE:View.GONE}">
+
+                <com.onyx.android.sdk.ui.view.PageRecyclerView
+                    android:id="@+id/libraryCover_recycler"
+                    items="@{dialogModel.dataModel.childList}"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rectangle_stroke"
+                    android:padding="@dimen/rectangle_stroke_width" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:padding="@dimen/rectangle_stroke_width"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/ic_group_label"
+                    android:visibility="@{StringUtils.isNotBlank(dialogModel.dataModel.childCount)?View.VISIBLE:View.GONE}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:padding="@dimen/model_item_child_count_padding"
+                    android:text="@{dialogModel.dataModel.childCount}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -82,7 +108,7 @@
                     android:layout_marginTop="@dimen/dialog_single_info_text_margin_top"
                     android:lines="1"
                     android:text="@{@string/author_format(dialogModel.dataModel.author)}"
-                    android:textColor="@android:color/black"
+                    android:textColor="@{dialogModel.isCloudBook()?@android:color/black:@color/gray}"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
@@ -151,23 +177,8 @@
             android:layout_height="@dimen/dialog_single_manage_text_height"
             android:gravity="center_vertical"
             android:padding="@dimen/dialog_single_manage_padding"
-            android:text="@{dialogModel.isCloudBook()?@string/book_detail:@string/related_books}"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_two_heading_font"
-            android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
-
-        <View
-            style="@style/DottedLineStyle"
-            android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
-
-        <TextView
-            android:id="@+id/delete"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dialog_single_manage_text_height"
-            android:gravity="center_vertical"
-            android:padding="@dimen/dialog_single_manage_padding"
-            android:text="@string/delete"
-            android:textColor="@android:color/black"
+            android:text="@string/book_detail"
+            android:textColor="@{dialogModel.isCloudBook()?@android:color/black:@color/gray}"
             android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
 
@@ -182,6 +193,21 @@
             android:gravity="center_vertical"
             android:padding="@dimen/dialog_single_manage_padding"
             android:text="@string/move_to"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font"
+            android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
+
+        <View
+            style="@style/DottedLineStyle"
+            android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
+
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_single_manage_text_height"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dialog_single_manage_padding"
+            android:text="@string/delete_book"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />

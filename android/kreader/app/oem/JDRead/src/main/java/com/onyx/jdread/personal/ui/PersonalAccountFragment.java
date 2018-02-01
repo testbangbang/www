@@ -19,6 +19,7 @@ import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.adapter.PersonalAccountAdapter;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.dialog.TopUpDialog;
 import com.onyx.jdread.personal.event.ConsumptionRecordEvent;
 import com.onyx.jdread.personal.event.FiftyYuanEvent;
@@ -80,6 +81,11 @@ public class PersonalAccountFragment extends BaseFragment {
         PersonalAccountModel personalAccountModel = PersonalDataBundle.getInstance().getPersonalAccountModel();
         if (personalAccountAdapter != null) {
             personalAccountAdapter.setData(personalAccountModel.getAccountTitles(), personalAccountModel.getAccountEvents());
+        }
+
+        UserInfo userInfo = PersonalDataBundle.getInstance().getUserInfo();
+        if (userInfo != null) {
+            binding.setUserInfo(userInfo);
         }
     }
 

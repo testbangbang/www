@@ -1,17 +1,18 @@
 package com.onyx.jdread.shop.common;
 
 import com.onyx.jdread.main.common.AppBaseInfo;
-import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtBookResultBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtAndUnlimitedBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargeStatusBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.ReadUnlimitedResultBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GiftBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalNoteBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ReadForVoucherBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendUserBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SaltResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.SignForVoucherBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddBookToSmoothCardBookBean;
@@ -58,11 +59,6 @@ public interface ReadContentService {
                                                        @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
                                                        @Query(AppBaseInfo.BODY_KEY) String body);
 
-    @POST("client.action")
-    Call<BoughtBookResultBean> getBoughtBook(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                             @Query(AppBaseInfo.BODY_KEY) String body,
-                                             @QueryMap Map<String, String> map);
-
     @GET("search")
     Call<BookModelBooksResultBean> getSearchBooks(@QueryMap Map<String, String> baseInfoMap);
 
@@ -73,20 +69,6 @@ public interface ReadContentService {
     Call<GetOrderUrlResultBean> getOrderUrl(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
                                             @Query(AppBaseInfo.BODY_KEY) String body,
                                             @QueryMap Map<String, String> map);
-
-    @GET("mark_books/stat")
-    Call<ReadOverInfoBean> getReadOverBook(@Query(AppBaseInfo.JD_USER_NAME) String userName,
-                                           @QueryMap Map<String, String> map);
-
-    @POST("client.action")
-    Call<ReadTotalInfoBean> getReadTotalBook(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                             @Query(AppBaseInfo.JD_USER_NAME) String userName,
-                                             @QueryMap Map<String, String> map);
-
-    @POST("client.action")
-    Call<ReadUnlimitedResultBean> getUnlimited(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                               @Query(AppBaseInfo.BODY_KEY) String body,
-                                               @QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.SYNC_INFO)
     Call<SyncLoginInfoBean> getSyncLoginInfo(@QueryMap Map<String, String> map);
@@ -149,13 +131,13 @@ public interface ReadContentService {
     Call<VerifySignBean> verifySign(@QueryMap Map<String, String> map);
 
     @POST(CloudApiContext.User.SIGN)
-    Call<String> signForVoucher(@QueryMap Map<String, String> map);
+    Call<SignForVoucherBean> signForVoucher(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.READING_VOUCHER)
-    Call<String> readForVoucher(@QueryMap Map<String, String> map);
+    Call<ReadForVoucherBean> readForVoucher(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.USER_GIFT)
-    Call<String> getGiftInfo(@QueryMap Map<String, String> map);
+    Call<GiftBean> getGiftInfo(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.RECOMMEND_USER)
     Call<RecommendUserBean> recommendUser(@QueryMap Map<String, String> map);
@@ -178,4 +160,10 @@ public interface ReadContentService {
     @GET("{bookId}/download")
     Call<String> getDownLoadBookInfo(@Path("bookId") long bookId,
                                      @QueryMap Map<String, String> baseInfoMap);
+
+    @GET(CloudApiContext.User.BOUGHT_UNLIMITED_BOOKS)
+    Call<BoughtAndUnlimitedBean> getBoughtAndUnlimitedBooks(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.User.PERSONAL_NOTES)
+    Call<PersonalNoteBean> getPersonalNotes(@QueryMap Map<String, String> map);
 }

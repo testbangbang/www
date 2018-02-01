@@ -372,8 +372,8 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onSortByTimeEvent(SortByTimeEvent event) {
-        libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.CreationTime, SortOrder.Desc);
-        refreshData();
+        libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.LastOpenTime, SortOrder.Desc);
+        loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(0),false,false);
     }
 
     private void refreshData() {
@@ -383,7 +383,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onSortByNameEvent(SortByNameEvent event) {
         libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.Name, SortOrder.Asc);
-        refreshData();
+        loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(0),false,false);
     }
 
     @Subscribe
@@ -492,11 +492,6 @@ public class LibraryFragment extends BaseFragment {
             if (getViewEventCallBack() != null) {
                 getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
             }
-        } else {
-            Bundle bundle = new Bundle();
-            bundle.putString(getString(R.string.search_name_key), event.getDataModel().title.get());
-            setBundle(bundle);
-            viewEventCallBack.gotoView(SearchBookFragment.class.getName());
         }
     }
 

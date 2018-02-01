@@ -18,6 +18,7 @@ import com.onyx.jdread.library.view.LibraryBuildDialog;
 import com.onyx.jdread.main.action.BaseAction;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.util.InputUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,18 +61,26 @@ public class LibraryRenameAction extends BaseAction<LibraryDataBundle> {
             @Override
             public void onClicked() {
                 if (StringUtils.isNotBlank(model.libraryName.get())) {
+                    if (InputUtils.getByteCount(model.libraryName.get()) > ResManager.getInteger(R.integer.group_name_max_length)) {
+                        ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
+                        return;
+                    }
+                    if (InputUtils.haveSpecialCharacters(model.libraryName.get())) {
+                        ToastUtil.showOffsetToast(ResManager.getString(R.string.group_names_do_not_support_special_characters));
+                        return;
+                    }
                     if (model.libraryName.get().equals(dataModel.title.get())) {
-                        ToastUtil.showToast(libraryDataBundle.getAppContext(), R.string.the_same_name);
+                        ToastUtil.showOffsetToast(ResManager.getString(R.string.the_same_name));
                         return;
                     }
                     if (isExist(libraryDataBundle, model.libraryName.get())) {
-                        ToastUtil.showToast(libraryDataBundle.getAppContext(), String.format(ResManager.getString(R.string.group_exist), model.libraryName.get()));
+                        ToastUtil.showOffsetToast(String.format(ResManager.getString(R.string.group_exist), model.libraryName.get()));
                         return;
                     }
                     renameLibrary(libraryDataBundle, model.libraryName.get(), baseCallback);
                     libraryBuildDialog.dismiss();
                 } else {
-                    ToastUtil.showToast(libraryDataBundle.getAppContext(), R.string.please_enter_group_name);
+                    ToastUtil.showOffsetToast(ResManager.getString(R.string.please_enter_group_name));
                 }
             }
         });

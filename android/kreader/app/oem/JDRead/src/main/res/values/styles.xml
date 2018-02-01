@@ -270,7 +270,7 @@
         <item name="android:padding">@dimen/edit_text_padding</item>
         <item name="android:textSize">@dimen/level_three_heading_font</item>
         <item name="android:textColor">@android:color/black</item>
-        <item name="android:background">?android:editTextBackground</item>
+        <item name="android:background">@drawable/edittext_background</item>
     </style>
 
     <style name="ReaderTitleBarBuyStyle">

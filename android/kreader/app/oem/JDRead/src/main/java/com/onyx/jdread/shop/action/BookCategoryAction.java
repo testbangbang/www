@@ -90,20 +90,6 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
         return levelOneData == null ? new ArrayList<CategoryListResultBean.CategoryBeanLevelOne>() : levelOneData;
     }
 
-    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getCateTwo(){
-        List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> cateTwoList = new ArrayList<>();
-        for (CategoryListResultBean.CategoryBeanLevelOne cateOne : getCategoryBeanLevelOneList()){
-            CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = new CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo();
-            categoryBeanLevelTwo.cateLevel = Constants.CATEGORY_LEVEL_ONE;
-            categoryBeanLevelTwo.id = cateOne.id;
-            categoryBeanLevelTwo.image_url = cateOne.image_url;
-            categoryBeanLevelTwo.name = cateOne.name;
-            categoryBeanLevelTwo.sub_category = cateOne.sub_category;
-            cateTwoList.add(categoryBeanLevelTwo);
-        }
-        return cateTwoList;
-    }
-
     public List<String> getTitleList() {
         List<String> titleList = new ArrayList<>();
         for (CategoryListResultBean.CategoryBeanLevelOne categoryOne : getCategoryBeanLevelOneList()) {
