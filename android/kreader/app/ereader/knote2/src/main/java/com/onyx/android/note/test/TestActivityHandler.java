@@ -2,6 +2,7 @@ package com.onyx.android.note.test;
 
 import android.support.annotation.NonNull;
 
+import com.onyx.android.note.NoteUIBundle;
 import com.onyx.android.note.common.base.BaseViewHandler;
 import com.onyx.android.note.event.TestEvent;
 
@@ -20,7 +21,7 @@ public class TestActivityHandler extends BaseViewHandler {
 
     @Subscribe
     public void onTestEvent(TestEvent event) {
-        new TestAction(TestDataBundle.getInstance().getTestViewModel()).execute(null);
+        new TestAction(NoteUIBundle.getInstance().getTestViewModel()).execute(null);
     }
 
 }

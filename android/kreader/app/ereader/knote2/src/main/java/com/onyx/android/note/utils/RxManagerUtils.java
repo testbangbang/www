@@ -1,5 +1,6 @@
 package com.onyx.android.note.utils;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.rx.RxManager;
 import com.onyx.android.sdk.rx.RxRequest;
 
@@ -27,5 +28,9 @@ public class RxManagerUtils {
 
     public static <T extends RxRequest> Observable<T> enqueue(T request) {
         return getDefaultRxManager().enqueue(request);
+    }
+
+    public static <T extends RxRequest> void enqueue(T request, final RxCallback<T> callback) {
+        getDefaultRxManager().enqueue(request, callback);
     }
 }

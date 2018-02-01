@@ -22,7 +22,7 @@ public class TestAction extends RxAction<TestRequest> {
 
     @Override
     public void execute(final RxCallback<TestRequest> rxCallback) {
-        RxManagerUtils.enqueue(new TestRequest()).subscribe(new RxCallback<TestRequest>() {
+        RxManagerUtils.enqueue(new TestRequest(), new RxCallback<TestRequest>() {
             @Override
             public void onNext(@NonNull TestRequest testRequest) {
                 viewModel.setText("TestAction Success");
