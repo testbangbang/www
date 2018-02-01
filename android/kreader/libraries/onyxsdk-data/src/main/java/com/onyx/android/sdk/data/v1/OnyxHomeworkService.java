@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.v1;
 import com.onyx.android.sdk.data.model.homework.Homework;
 import com.onyx.android.sdk.data.model.homework.HomeworkReviewResult;
 import com.onyx.android.sdk.data.model.homework.HomeworkSubmitBody;
+import com.onyx.android.sdk.data.model.homework.StaticRankResult;
 
 import java.util.Map;
 
@@ -34,4 +35,7 @@ public interface OnyxHomeworkService {
 
     @GET("homeworks/myAnwserOnly" )
     Call<HomeworkReviewResult> getAnwsers(@Query("id") String id);
+
+    @GET("homeworks/{id}/staticRank")
+    Call<StaticRankResult> staticRank(@Path("id") String id);
 }

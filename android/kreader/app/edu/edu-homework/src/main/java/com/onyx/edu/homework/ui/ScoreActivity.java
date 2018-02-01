@@ -8,17 +8,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.data.model.homework.StaticRankResult;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
+import com.onyx.edu.homework.action.CheckWifiAction;
+import com.onyx.edu.homework.action.StaticRankAction;
 import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.ScoreItemType;
 import com.onyx.edu.homework.databinding.ActivityScoreBinding;
 import com.onyx.edu.homework.event.ExitEvent;
+import com.onyx.edu.homework.request.StaticRankRequest;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -41,6 +49,7 @@ public class ScoreActivity extends BaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_score);
         getDataBundle().register(this);
         initView();
+        checkWifiConnection();
     }
 
     private void initView() {
@@ -158,6 +167,35 @@ public class ScoreActivity extends BaseActivity {
 
     private void updatePageIndex() {
         binding.page.setText(String.format(Locale.getDefault(), "%d/%d", binding.list.getPaginator().getCurrentPage() + 1, binding.list.getPaginator().pages()));
+    }
+
+    private void checkWifiConnection() {
+        if (NetworkUtil.isWiFiConnected(this)) {
+            getStaticRank();
+            return;
+        }
+        final CheckWifiAction checkWifiAction = new CheckWifiAction();
+        checkWifiAction.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (checkWifiAction.isConnected()) {
+                    getStaticRank();
+                }
+            }
+        });
+    }
+
+    private void getStaticRank() {
+        new StaticRankAction(getDataBundle().getPublicHomeworkId()).execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                StaticRankRequest rankRequest = (StaticRankRequest) request;
+                if (rankRequest.isSuccess()) {
+                    StaticRankResult result = rankRequest.getStaticRank();
+                    binding.rank.setText(getString(R.string.rank_str, result.position + 1, result.total));
+                }
+            }
+        });
     }
 
     @Override
