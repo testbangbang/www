@@ -32,7 +32,7 @@ import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.event.ViewAllNextClickEvent;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.view.ShopMainConfigRecycleView;
+import com.onyx.jdread.shop.view.CustomRecycleView;
 import com.onyx.jdread.shop.view.SpaceItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,10 +45,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class ShopFragment extends BaseFragment {
 
-    private static final int SCROLL_TOTAL = 1;
     private FragmentBookShopBinding bookShopBinding;
     private int space = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_recycle_view_space);
-    private ShopMainConfigRecycleView recyclerView;
+    private CustomRecycleView recyclerView;
 
     @Nullable
     @Override
@@ -71,12 +70,17 @@ public class ShopFragment extends BaseFragment {
     }
 
     private void initView() {
-        bookShopBinding.scrollBar.setTotal(SCROLL_TOTAL);
         bookShopBinding.setViewModel(getBookShopViewModel());
         ShopMainConfigAdapter mainConfigdapter = new ShopMainConfigAdapter();
         recyclerView = bookShopBinding.shopMainConfigRecycleView;
         recyclerView.addItemDecoration(new SpaceItemDecoration(space));
         recyclerView.setAdapter(mainConfigdapter);
+        recyclerView.setOnPagingListener(new CustomRecycleView.OnPagingListener() {
+            @Override
+            public void onPageChange(int curIndex) {
+                bookShopBinding.scrollBar.setFocusPosition(curIndex);
+            }
+        });
     }
 
     @Override
@@ -104,7 +108,7 @@ public class ShopFragment extends BaseFragment {
         configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
-
+                bookShopBinding.scrollBar.setTotal(getBookShopViewModel().getTotalPages());
             }
 
             @Override

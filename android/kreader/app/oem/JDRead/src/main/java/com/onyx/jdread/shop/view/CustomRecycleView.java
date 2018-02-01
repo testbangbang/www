@@ -18,24 +18,25 @@ import java.util.List;
  * Created by jackdeng on 2018/2/1.
  */
 
-public class ShopMainConfigRecycleView extends RecyclerView {
+public class CustomRecycleView extends RecyclerView {
 
-    private static final String TAG = ShopMainConfigRecycleView.class.getSimpleName();
+    private static final String TAG = CustomRecycleView.class.getSimpleName();
     private float lastX;
     private float lastY;
     private int curPageIndex;
+    private OnPagingListener onPagingListener;
 
-    public ShopMainConfigRecycleView(Context context) {
+    public CustomRecycleView(Context context) {
         super(context);
         init();
     }
 
-    public ShopMainConfigRecycleView(Context context, AttributeSet attrs) {
+    public CustomRecycleView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public ShopMainConfigRecycleView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomRecycleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -45,6 +46,14 @@ public class ShopMainConfigRecycleView extends RecyclerView {
         setClipToPadding(true);
         setClipChildren(true);
         setLayoutManager(new DisableScrollLinearManager(getContext(), LinearLayoutManager.VERTICAL, false));
+    }
+
+    public void setOnPagingListener(OnPagingListener listener) {
+        this.onPagingListener = listener;
+    }
+
+    public interface OnPagingListener {
+        void onPageChange(int curIndex);
     }
 
     private int detectDirection(MotionEvent currentEvent) {
@@ -108,6 +117,9 @@ public class ShopMainConfigRecycleView extends RecyclerView {
                 curPageIndex--;
             }
             managerScrollToPosition(preIndex);
+            if (onPagingListener != null){
+                onPagingListener.onPageChange(curPageIndex);
+            }
         }
     }
 
@@ -135,6 +147,20 @@ public class ShopMainConfigRecycleView extends RecyclerView {
 
             curPageIndex = nextPageIndex;
             managerScrollToPosition(lastVisibleItemPosition);
+            if (onPagingListener != null){
+                onPagingListener.onPageChange(curPageIndex);
+            }
+        }
+    }
+
+    @Override
+    public void scrollToPosition(int position) {
+        super.scrollToPosition(position);
+        if (onPagingListener != null){
+            if (position == 0) {
+                curPageIndex = 0;
+                onPagingListener.onPageChange(curPageIndex);
+            }
         }
     }
 

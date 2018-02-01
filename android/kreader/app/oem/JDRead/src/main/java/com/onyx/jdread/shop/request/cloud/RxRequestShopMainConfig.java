@@ -11,6 +11,7 @@ import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.BannerViewModel;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.model.SubjectType;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.TitleSubjectViewModel;
 
@@ -29,10 +30,7 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
     private BookModelConfigResultBean resultBean;
     private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
     private List<BaseSubjectViewModel> mainConfigSubjectList;
-
-    public List<BaseSubjectViewModel> getMainConfigSubjectList() {
-        return mainConfigSubjectList;
-    }
+    private List<BaseSubjectViewModel> mainConfigFinalSubjectList = new ArrayList<>();
 
     public List<BookModelConfigResultBean.DataBean.ModulesBean> getSubjectDataList() {
         return subjectDataList;
@@ -79,18 +77,19 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
     private void parseMainConfigDataList(BookModelConfigResultBean.DataBean dataBean) {
         if (dataBean.modules != null && dataBean.ebook != null) {
             initMainConfigSubjectContainer();
+            ShopDataBundle shopDataBundle = ShopDataBundle.getInstance();
             List<BookModelConfigResultBean.DataBean.ModulesBean> subjectTitleList = new ArrayList<>();
             for (BookModelConfigResultBean.DataBean.ModulesBean modulesBean : dataBean.modules) {
                 if (modulesBean.module_type == Constants.MODULE_TYPE_ADV_FIX_TWO) {// banner subject
                     List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
-                    BannerViewModel viewModel = new BannerViewModel(ShopDataBundle.getInstance().getEventBus());
+                    BannerViewModel viewModel = new BannerViewModel(shopDataBundle.getEventBus());
                     viewModel.setBannerList(getbannerSubItems(dataBean, items));
                     mainConfigSubjectList.add(viewModel);
                 } else if (modulesBean.module_type == Constants.MODULE_TYPE_RECOMMEND) {
                     if (modulesBean.show_type == 1) {// cover subject
                         List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
                         modulesBean.bookList = getCommonSubjectSubItems(dataBean, items);
-                        SubjectViewModel viewModel = new SubjectViewModel(ShopDataBundle.getInstance().getEventBus());
+                        SubjectViewModel viewModel = new SubjectViewModel(shopDataBundle.getEventBus());
                         viewModel.setModelBean(modulesBean);
                         mainConfigSubjectList.add(viewModel);
                     } else {// title subject
@@ -98,9 +97,52 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                     }
                 }
             }
-            TitleSubjectViewModel viewModel = new TitleSubjectViewModel(ShopDataBundle.getInstance().getEventBus());
+            TitleSubjectViewModel viewModel = new TitleSubjectViewModel(shopDataBundle.getEventBus());
             viewModel.setTilteList(subjectTitleList);
             mainConfigSubjectList.add(viewModel);
+            if (mainConfigFinalSubjectList != null) {
+                mainConfigFinalSubjectList.clear();
+                mainConfigFinalSubjectList.add(shopDataBundle.getShopViewModel().getTopFunctionViewModel());
+                mainConfigFinalSubjectList.addAll(mainConfigSubjectList);
+                mainConfigFinalSubjectList.add(shopDataBundle.getShopViewModel().getMainConfigEndViewModel());
+                shopDataBundle.getShopViewModel().setMainConfigSubjcet(mainConfigFinalSubjectList);
+                calculateTotalPages(shopDataBundle, mainConfigFinalSubjectList);
+            }
+        }
+    }
+
+    private void calculateTotalPages(ShopDataBundle dataBundle, List<BaseSubjectViewModel> mainConfigFinalSubjectList) {
+        if (mainConfigFinalSubjectList != null) {
+            List<BaseSubjectViewModel> tempList = new ArrayList<>();
+            tempList.addAll(mainConfigFinalSubjectList);
+            int totalPage = 1;
+            int itemHeight = 0;
+            for (int i = 0; i < tempList.size(); i++) {
+                int subjectType = tempList.get(i).getSubjectType();
+                switch (subjectType) {
+                    case SubjectType.TYPE_TOP_FUNCTION:
+                        itemHeight = itemHeight + Constants.SHOP_VIEW_TOP_FUNCTION_HEIGHT;
+                        break;
+                    case SubjectType.TYPE_BANNER:
+                        itemHeight = itemHeight + Constants.SHOP_VIEW_BANNER_HEIGHT;
+                        break;
+                    case SubjectType.TYPE_TITLE:
+                        itemHeight = itemHeight + Constants.SHOP_VIEW_TITLE_HEIGHT;
+                        break;
+                    case SubjectType.TYPE_COVER:
+                        itemHeight = itemHeight + Constants.SHOP_VIEW_SUBJECT_HEIGHT;
+                        break;
+                    case SubjectType.TYPE_END:
+                        itemHeight = itemHeight + Constants.SHOP_VIEW_END_VIEW_HEIGHT;
+                        break;
+                }
+                if (itemHeight > Constants.SHOP_VIEW_RECYCLE_HEIGHT) {
+                    tempList.add(i, tempList.get(i));
+                    itemHeight = 0;
+                    totalPage++;
+                }
+            }
+            dataBundle.getShopViewModel().setTotalPages(Math.max(totalPage, 1));
         }
     }
 

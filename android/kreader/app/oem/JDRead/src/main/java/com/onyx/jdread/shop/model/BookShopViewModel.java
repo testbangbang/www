@@ -23,6 +23,15 @@ public class BookShopViewModel extends BaseSubjectViewModel {
     public EventBus eventBus;
     public List<BaseSubjectViewModel> mainConfigSubjcet;
     private MainConfigEndViewModel endViewModel;
+    private int totalPages = 1;
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
 
     public List<BaseSubjectViewModel> getMainConfigSubjcet() {
         return mainConfigSubjcet;

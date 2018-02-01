@@ -28,7 +28,7 @@
             android:layout_marginTop="@dimen/book_shop_padding_top"
             android:orientation="horizontal">
 
-            <com.onyx.jdread.shop.view.ShopMainConfigRecycleView
+            <com.onyx.jdread.shop.view.CustomRecycleView
                 android:id="@+id/shop_main_config_recycle_view"
                 shopConfigSubjects="@{viewModel.mainConfigSubjcet}"
                 android:layout_width="0dp"

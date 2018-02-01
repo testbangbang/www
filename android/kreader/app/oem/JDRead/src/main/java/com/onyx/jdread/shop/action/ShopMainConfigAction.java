@@ -7,7 +7,6 @@ import com.onyx.jdread.shop.cloud.entity.ShopMainConfigRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
-import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestShopMainConfig;
@@ -25,8 +24,6 @@ public class ShopMainConfigAction extends BaseAction {
     private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
     private List<SubjectViewModel> commonSubjcet;
     private int cid;
-    private List<BaseSubjectViewModel> mainConfigFinalSubjectList = new ArrayList<>();
-    private List<BaseSubjectViewModel> mainConfigSubjectList;
 
     public ShopMainConfigAction(int cid) {
         this.cid = cid;
@@ -68,7 +65,6 @@ public class ShopMainConfigAction extends BaseAction {
             public void onNext(RxRequestShopMainConfig request) {
                 resultBean = request.getResultBean();
                 subjectDataList = request.getSubjectDataList();
-                mainConfigSubjectList = request.getMainConfigSubjectList();
                 setResult(cid, dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onNext(ShopMainConfigAction.this);
@@ -94,15 +90,7 @@ public class ShopMainConfigAction extends BaseAction {
     }
 
     private void setResult(int cid, ShopDataBundle dataBundle) {
-        if (cid == Constants.BOOK_SHOP_MAIN_CONFIG_CID) {
-            if (mainConfigSubjectList != null) {
-                mainConfigFinalSubjectList.clear();
-                mainConfigFinalSubjectList.add(dataBundle.getShopViewModel().getTopFunctionViewModel());
-                mainConfigFinalSubjectList.addAll(mainConfigSubjectList);
-                mainConfigFinalSubjectList.add(dataBundle.getShopViewModel().getMainConfigEndViewModel());
-                dataBundle.getShopViewModel().setMainConfigSubjcet(mainConfigFinalSubjectList);
-            }
-        } else {
+        if (cid != Constants.BOOK_SHOP_MAIN_CONFIG_CID) {
             if (subjectDataList != null) {
                 initDataContainer();
                 for (int i = 0; i < subjectDataList.size(); i++) {
