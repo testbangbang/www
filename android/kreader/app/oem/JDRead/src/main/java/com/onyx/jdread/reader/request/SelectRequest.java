@@ -27,15 +27,17 @@ public class SelectRequest extends ReaderBaseRequest {
     private ReaderHitTestOptions hitTestOptions;
     private Reader reader;
     private ReaderSelectionHelper readerSelectionManager;
+    private PageInfo pageInfo;
 
     public SelectRequest(Reader reader, final String pagePosition, final PointF startPoint, final PointF endPoint, final PointF touchPoint,
-                         final ReaderHitTestOptions hitTestOptions) {
+                         final ReaderHitTestOptions hitTestOptions,PageInfo pageInfo) {
         start.set(startPoint.x, startPoint.y);
         end.set(endPoint.x, endPoint.y);
         this.touchPoint.set(touchPoint.x, touchPoint.y);
         this.pagePosition = pagePosition;
         this.hitTestOptions = hitTestOptions;
         this.reader = reader;
+        this.pageInfo = pageInfo;
     }
 
     public PointF getstart() {
@@ -53,7 +55,6 @@ public class SelectRequest extends ReaderBaseRequest {
         }
         readerSelectionManager = reader.getReaderSelectionHelper();
         ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
-        PageInfo pageInfo = reader.getReaderHelper().getReaderLayoutManager().getPageManager().getPageInfo(pagePosition);
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, end);
         selection = hitTestManager.selectOnScreen(argsStart, argsEnd, hitTestOptions);
