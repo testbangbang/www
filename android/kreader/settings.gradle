@@ -1,6 +1,4 @@
 include ':app:common:monitor',
-        ':app:common:tools',
-        ':app:ereader:app-market',
-        ':app:ereader:knote',
+        ':app:ereader:knote2',
         ':app:ereader:kreader',
         ':app:ereader:note'
