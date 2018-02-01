@@ -10,6 +10,7 @@ import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.highlight.HitTestTextHelper;
 import com.onyx.jdread.reader.highlight.SelectionInfo;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
+import com.onyx.jdread.reader.layout.PageOverlayMarker;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
 /**
@@ -70,7 +71,15 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
         }
         getSelectionInfoManager().updateSelectInfo(readerSelectionManager.getReaderSelectionInfos());
         updateSetting(reader);
+        preloadNextScreen(reader);
         return this;
+    }
+
+    private void preloadNextScreen(Reader reader) throws Exception{
+        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
+        PageOverlayMarker.saveCurrentPageAndViewport(reader);
+        reader.getReaderHelper().nextScreen();
+        PageOverlayMarker.markLastViewportOverlayPointWhenNecessary(reader, getReaderViewInfo());
     }
 
     private void updateReaderSelectInfo(String pagePosition,PageInfo pageInfo) {

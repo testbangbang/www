@@ -17,13 +17,13 @@ public class CreateNoteAction extends BaseReaderAction {
     public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         String pagePosition = readerDataHolder.getCurrentPagePosition();
         SelectionInfo readerSelectionInfo = readerDataHolder.getReaderSelectionInfo().getReaderSelectionInfo(pagePosition);
-        getNoteInfo(readerSelectionInfo, pagePosition, readerDataHolder.getBookName());
+        getNoteInfo(readerSelectionInfo, pagePosition, readerDataHolder.getBookName(),readerDataHolder.getReaderViewInfo().chapterName);
         if (baseCallback != null) {
             baseCallback.onNext(null);
         }
     }
 
-    private NoteInfo getNoteInfo(SelectionInfo readerSelectionInfo, String pagePosition, String bookName) {
+    private NoteInfo getNoteInfo(SelectionInfo readerSelectionInfo, String pagePosition, String bookName,String chapterName) {
         noteInfo = new NoteInfo();
         noteInfo.isCreate = true;
         noteInfo.isSrcNoteModify = false;
@@ -31,7 +31,7 @@ public class CreateNoteAction extends BaseReaderAction {
         noteInfo.pagePosition = pagePosition;
         noteInfo.newNote = "";
         noteInfo.srcNote = readerSelectionInfo.getCurrentSelection().getText();
-        noteInfo.chapterName = readerSelectionInfo.pageInfo.getName();
+        noteInfo.chapterName = chapterName;
         noteInfo.bookName = bookName;
         return noteInfo;
     }

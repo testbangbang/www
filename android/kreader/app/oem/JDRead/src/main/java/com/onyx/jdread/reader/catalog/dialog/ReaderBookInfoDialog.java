@@ -114,16 +114,17 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
 
     @Override
     public void updateView() {
-        initTabData(readerBookInfoDialogHandler.getReaderDataHolder().getReaderUserDataInfo());
+        initTabData(readerBookInfoDialogHandler.getReaderDataHolder().getReaderUserDataInfo(),
+                readerBookInfoDialogHandler.getReaderDataHolder().getReaderViewInfo());
     }
 
-    private void initTabData(ReaderUserDataInfo readerUserDataInfo) {
-        initCatalogView(readerUserDataInfo);
-        initBookmarkView(readerUserDataInfo);
-        initAnnotationsView(readerUserDataInfo);
+    private void initTabData(ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo) {
+        initCatalogView(readerUserDataInfo,readerViewInfo);
+        initBookmarkView(readerUserDataInfo,readerViewInfo);
+        initAnnotationsView(readerUserDataInfo,readerViewInfo);
     }
 
-    private void initCatalogView(final ReaderUserDataInfo readerUserDataInfo) {
+    private void initCatalogView(final ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo) {
         readerDocumentTableOfContent = readerUserDataInfo.getTableOfContent();
         final int row = getContext().getResources().getInteger(R.integer.book_info_dialog_catalog_row);
         ArrayList<TreeRecyclerView.TreeNode> rootNodes = ReaderBookInfoDialogConfig.buildTreeNodesFromToc(readerDocumentTableOfContent);
@@ -176,12 +177,12 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         return new ArrayList<>(map.values());
     }
 
-    private void initBookmarkView(final ReaderUserDataInfo readerUserDataInfo) {
+    private void initBookmarkView(final ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo) {
         List<Bookmark> bookmarkList = deleteDuplicateBookmark(readerUserDataInfo.getBookmarks());
         binding.bookInfoBookmarkContent.setDefaultPageKeyBinding();
         BookmarkAdapter adapter = new BookmarkAdapter();
         binding.bookInfoBookmarkContent.setAdapter(adapter);
-        binding.getReaderBookInfoModel().setBookmarks(readerDocumentTableOfContent, bookmarkList);
+        binding.getReaderBookInfoModel().setBookmarks(readerDocumentTableOfContent, bookmarkList,readerViewInfo.getTotalPage());
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,7 +192,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         });
     }
 
-    private void initAnnotationsView(ReaderUserDataInfo readerUserDataInfo) {
+    private void initAnnotationsView(ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo) {
         binding.bookInfoNoteContent.setDefaultPageKeyBinding();
         NoteAdapter adapter = new NoteAdapter();
         binding.bookInfoNoteContent.setAdapter(adapter);

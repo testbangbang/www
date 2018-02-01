@@ -1,11 +1,13 @@
 package com.onyx.jdread.reader.layout;
 
 import android.graphics.RectF;
+import android.util.Log;
 
 
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
 import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
@@ -16,7 +18,9 @@ import com.onyx.android.sdk.reader.host.math.PageManager;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.navigation.NavigationList;
+import com.onyx.android.sdk.reader.utils.ChapterInfo;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.jdread.reader.data.Reader;
@@ -34,6 +38,7 @@ public class LayoutProviderUtils {
     /**
      * draw all visible pages. For each page:render the visible part of page. in screen coordinates system.
      * Before draw, make sure all visible pages have been calculated correctly.
+     *
      * @param reader
      * @param layoutManager
      * @param drawContext
@@ -123,8 +128,12 @@ public class LayoutProviderUtils {
         if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
             updateVisiblePagesForFlowDocument(reader, readerViewInfo, layoutManager);
         }
+        String pagePosition = layoutManager.getCurrentLayoutProvider().getCurrentPagePosition();
+        setChapterName(reader,readerViewInfo,pagePosition);
+
         final List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
         for (PageInfo pageInfo : visiblePages) {
+            pageInfo.setChapterName(readerViewInfo.chapterName);
             readerViewInfo.copyPageInfo(pageInfo);
         }
         readerViewInfo.isFixedDocument = layoutManager.getReaderRendererFeatures().supportScale();
@@ -157,6 +166,46 @@ public class LayoutProviderUtils {
         readerViewInfo.setTotalPage(reader.getReaderHelper().getNavigator().getTotalPage());
     }
 
+    private static void setChapterName(final Reader reader, final ReaderViewInfo readerViewInfo,String pagePosition) {
+        ReaderDocumentTableOfContent toc = new ReaderDocumentTableOfContent();
+        reader.getReaderHelper().getDocument().readTableOfContent(toc);
+        boolean hasToc = toc != null && !toc.isEmpty();
+        if (!hasToc) {
+            return;
+        }
+
+        List<ChapterInfo> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
+        int position = PagePositionUtils.getPosition(pagePosition);
+        ChapterInfo chapterInfo = getChapterInfoByPage(position,readTocChapterNodeList);
+        if(chapterInfo != null){
+            readerViewInfo.setChapterName(chapterInfo.getTitle());
+        }else {
+            readerViewInfo.setChapterName(reader.getDocumentInfo().getBookName());
+        }
+    }
+
+    public static ChapterInfo getChapterInfoByPage(int pagePosition, List<ChapterInfo> tocChapterNodeList) {
+        if(tocChapterNodeList == null){
+            return null;
+        }
+        int size = tocChapterNodeList.size();
+        ChapterInfo chapterInfo = null;
+        for (int i = 0; i < size; i++) {
+            chapterInfo = tocChapterNodeList.get(i);
+            if (pagePosition < chapterInfo.getPosition()) {
+                chapterInfo = tocChapterNodeList.get(i);
+                int position = chapterInfo.getPosition();
+                if (position > pagePosition) {
+                    return chapterInfo;
+                } else {
+                    return getChapterInfoByPage(pagePosition + 1, tocChapterNodeList);
+                }
+            }
+        }
+
+        return chapterInfo;
+    }
+
     static private void updateVisiblePagesForFlowDocument(final Reader reader,
                                                           final ReaderViewInfo readerViewInfo,
                                                           final ReaderLayoutManager layoutManager) {
@@ -185,6 +234,7 @@ public class LayoutProviderUtils {
 
     /**
      * draw page with scale to page on specified bitmap.
+     *
      * @param pageInfo
      * @param bitmap
      * @param readerRenderer
@@ -209,7 +259,7 @@ public class LayoutProviderUtils {
         );
 
         List<PageInfo> pageInfos = internalPageManager.collectVisiblePages();
-        if (pageInfos.size() > 0){
+        if (pageInfos.size() > 0) {
             return pageInfos.get(0);
         }
         return null;
@@ -255,7 +305,7 @@ public class LayoutProviderUtils {
     static public void addAllPage(final ReaderLayoutManager layoutManager) {
         int total = layoutManager.getNavigator().getTotalPage();
         LayoutProviderUtils.clear(layoutManager);
-        for(int i = 0; i < total; ++i) {
+        for (int i = 0; i < total; ++i) {
             final String position = layoutManager.getNavigator().getPositionByPageNumber(i);
             LayoutProviderUtils.addPage(layoutManager, position);
         }

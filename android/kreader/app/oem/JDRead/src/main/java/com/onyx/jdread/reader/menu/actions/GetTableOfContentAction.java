@@ -18,9 +18,9 @@ public class GetTableOfContentAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
                 if (baseCallback != null) {
                     baseCallback.onNext(request);
-                    ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
                 }
             }
 
