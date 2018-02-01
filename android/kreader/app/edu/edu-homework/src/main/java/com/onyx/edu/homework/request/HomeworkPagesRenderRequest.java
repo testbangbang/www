@@ -67,7 +67,7 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
             file.getParentFile().mkdirs();
             file.createNewFile();
         }
-        FileUtils.saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.JPEG, 100);
+        FileUtils.saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.WEBP, 100);
         return file.getAbsolutePath();
     }
 
