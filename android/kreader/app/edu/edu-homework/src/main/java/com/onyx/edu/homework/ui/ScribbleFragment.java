@@ -82,10 +82,18 @@ public class ScribbleFragment extends BaseFragment {
     private TouchPoint erasePoint = null;
     private SurfaceHolder.Callback surfaceCallback;
     private Question question;
+    private boolean transBackground = false;
 
     public static ScribbleFragment newInstance(Question question) {
         ScribbleFragment fragment = new ScribbleFragment();
         fragment.setQuestion(question);
+        return fragment;
+    }
+
+    public static ScribbleFragment newInstance(Question question, boolean transBackground) {
+        ScribbleFragment fragment = new ScribbleFragment();
+        fragment.setQuestion(question);
+        fragment.setTransBackground(transBackground);
         return fragment;
     }
 
@@ -203,6 +211,10 @@ public class ScribbleFragment extends BaseFragment {
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    public void setTransBackground(boolean transBackground) {
+        this.transBackground = transBackground;
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -382,7 +394,14 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        if (transBackground) {
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            return;
+        }
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(rect, paint);
+
     }
 
     private Rect getViewportSize() {

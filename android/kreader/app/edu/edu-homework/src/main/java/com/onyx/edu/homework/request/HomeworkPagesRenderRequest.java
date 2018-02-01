@@ -3,17 +3,14 @@ package com.onyx.edu.homework.request;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.edu.homework.data.Constant;
-import com.onyx.edu.homework.utils.BitmapUtils;
 
 import java.io.File;
 import java.util.List;
@@ -67,7 +64,7 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
             file.getParentFile().mkdirs();
             file.createNewFile();
         }
-        FileUtils.saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.WEBP, 100);
+        FileUtils.saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.PNG, 100);
         return file.getAbsolutePath();
     }
 

@@ -70,12 +70,20 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
             return;
         }
         final String docId = documentIds.get(0);
-        Question question = getQuestion(docId);
-        if (question == null || !question.doneAnswer || question.isChoiceQuestion()) {
-            documentIds.remove(docId);
-            documentRenderCount = 0;
-            renderPageBitmap(noteViewHelper, baseCallback);
-            return;
+        TextLayoutArgs textLayoutArgs = null;
+
+        if (questions != null) {
+            Question question = getQuestion(docId);
+            if (question == null || !question.doneAnswer || question.isChoiceQuestion()) {
+                documentIds.remove(docId);
+                documentRenderCount = 0;
+                renderPageBitmap(noteViewHelper, baseCallback);
+                return;
+            }
+
+            if (!question.isChoiceQuestion()) {
+                textLayoutArgs = TextLayoutArgs.create(question.content, TextUtils.getTextSpacingAdd(question));
+            }
         }
 
         List<String> pageUniqueIds = pageUniqueMap.get(docId);
@@ -85,10 +93,7 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         PageInfo pageInfo = new PageInfo(pageUniqueId, size.width(), size.height());
         pageInfo.updateDisplayRect(new RectF(0, 0, size.width(), size.height()));
         pageInfoList.add(pageInfo);
-        TextLayoutArgs textLayoutArgs = null;
-        if (!question.isChoiceQuestion()) {
-            textLayoutArgs = TextLayoutArgs.create(question.content, TextUtils.getTextSpacingAdd(question));
-        }
+
         final HomeworkPagesRenderRequest renderRequest = new HomeworkPagesRenderRequest(docId,
                 pageInfoList,
                 size,
