@@ -411,4 +411,5 @@
     <string name="delete_library_prompt">是否删除该分组(组内图书重新放入书架)</string>
     <string name="delete_library_include_book_prompt">是否从本机删除该分组及组内图书</string>
     <string name="click_to_translate">点击翻译</string>
+    <string name="network_or_server_error">网络或者服务器出错，稍等会再试</string>
 </resources>
