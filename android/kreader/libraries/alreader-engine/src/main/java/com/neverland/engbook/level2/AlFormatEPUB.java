@@ -87,6 +87,7 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
 
     private String	coverMETAIID = null;
     public FileBlockInfo loadFileBlockInfo;
+    public boolean loadComplete = false;
 
     public AlFormatEPUB() {
         cssStyles = new AlCSSHtml();
@@ -97,8 +98,17 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
         FileBlockInfo.loadThreeBlockData(this,loadFileBlockInfo.threeBlock);
         size = customSize;
         FileBlockInfo.saveParagraphData(fileBlocks,this);
+        setLoadComplete(true);
         ttl.clear();
         prepareCustom();
+    }
+
+    public boolean isLoadComplete() {
+        return loadComplete;
+    }
+
+    public void setLoadComplete(boolean loadComplete) {
+        this.loadComplete = loadComplete;
     }
 
     @Override
@@ -177,6 +187,7 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
     }
 
     private void blockLoading(int readPosition){
+        setLoadComplete(false);
         customSize = 0;
         parser(0, -1);
         List<FileBlockInfo> fileBlockInfos = FileBlockInfo.loadParagraphData(this);
@@ -253,8 +264,9 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
                         break;
                     }
                 }
-
-                addContent(AlOneContent.add(a.name, pos, a.section));
+                if(isLoadComplete()) {
+                    addContent(AlOneContent.add(a.name, pos, a.section));
+                }
             }
         }
 

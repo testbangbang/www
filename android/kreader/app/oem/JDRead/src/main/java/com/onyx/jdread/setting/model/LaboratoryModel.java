@@ -25,11 +25,14 @@ public class LaboratoryModel extends Observable {
     public LaboratoryModel() {
         titleBarModel.title.set(ResManager.getString(R.string.laboratory));
         titleBarModel.backEvent.set(new BackToSettingFragmentEvent());
-        boolean show = JDPreferenceManager.getBooleanValue(R.string.show_back_tab_key, false);
-        showBack.set(show);
+        setShowBack(JDPreferenceManager.getBooleanValue(R.string.show_back_tab_key, false));
     }
 
     public void toggleBackTab() {
         EventBus.getDefault().post(new ShowBackTabEvent(showBack.get()));
+    }
+
+    public void setShowBack(boolean show) {
+        showBack.set(show);
     }
 }

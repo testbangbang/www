@@ -19,9 +19,12 @@ public class OnlineCheckSystemUpdateAction extends BaseAction {
             public void onNext(Object o) {
                 bundle.setFirmwareValid(rq.isResultFirmwareValid());
                 bundle.setResultFirmware(rq.getResultFirmware());
-                if (callback != null) {
-                    callback.onNext(OnlineCheckSystemUpdateAction.class);
-                }
+                RxCallback.invokeNext(callback, OnlineCheckSystemUpdateAction.this);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                RxCallback.invokeError(callback, e);
             }
         });
     }

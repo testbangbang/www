@@ -25,9 +25,12 @@ public class CheckApkUpdateAction extends BaseAction {
             public void onNext(Object o) {
                 ApplicationUpdate applicationUpdate = rq.getApplicationUpdate();
                 bundle.setApplicationUpdate(applicationUpdate);
-                if (callback != null) {
-                    callback.onNext(CheckApkUpdateAction.class);
-                }
+                RxCallback.invokeNext(callback, CheckApkUpdateAction.this);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                RxCallback.invokeError(callback, throwable);
             }
         });
     }

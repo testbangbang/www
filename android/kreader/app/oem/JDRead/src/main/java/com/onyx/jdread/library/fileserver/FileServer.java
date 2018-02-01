@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.model.LibraryDataBundle;
@@ -91,7 +90,7 @@ public class FileServer extends NanoHTTPD {
             request.execute(new RxCallback<RxFileAddToMetadataRequest>() {
                 @Override
                 public void onNext(RxFileAddToMetadataRequest request1) {
-                    ToastUtil.showToast(JDReadApplication.getInstance(), String.format(JDReadApplication.getInstance().getString(R.string.pass_succeed), fileName));
+                    ToastUtil.showOffsetToast(String.format(JDReadApplication.getInstance().getString(R.string.pass_succeed), fileName));
                 }
             });
         }

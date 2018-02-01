@@ -11,6 +11,7 @@ import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.reader.common.ReaderPageInfoFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -66,7 +67,7 @@ public class BookmarkModel extends BaseObservable {
         this.readProgress.set(readProgress);
     }
 
-    public static BookmarkModel convertObject(ReaderDocumentTableOfContent readerDocumentTableOfContent,Bookmark bookmark){
+    public static BookmarkModel convertObject(ReaderDocumentTableOfContent readerDocumentTableOfContent,Bookmark bookmark,int totalPage){
         BookmarkModel bookmarkModel = new BookmarkModel();
         String title = "";
         if (readerDocumentTableOfContent != null && hasChildren(readerDocumentTableOfContent.getRootEntry())) {
@@ -81,7 +82,9 @@ public class BookmarkModel extends BaseObservable {
             content = JDReadApplication.getInstance().getString(R.string.security_none);
         }
         bookmarkModel.setContent(JDReadApplication.getInstance().getApplicationContext().getString(R.string.reader_content) + content);
-        bookmarkModel.setReadProgress(JDReadApplication.getInstance().getApplicationContext().getString(R.string.reader_read_progress) + "28%");
+
+        float progress = ReaderPageInfoFormat.calculateReadingProgress(bookmark.getPageNumber(),totalPage);
+        bookmarkModel.setReadProgress(JDReadApplication.getInstance().getApplicationContext().getString(R.string.reader_read_progress) + progress + "%");
         bookmarkModel.setPosition(bookmark.getPosition());
         return bookmarkModel;
     }

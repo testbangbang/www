@@ -152,4 +152,8 @@
     <integer name="search_word_key_max_length">100</integer>
     <integer name="group_name_max_length">20</integer>
     <integer name="toast_offset_y">-250</integer>
+    <integer name="flow_layout_item_width">305</integer>
+    <integer name="history_limit">8</integer>
+    <integer name="search_history_recycler_row">2</integer>
+    <integer name="search_history_recycler_col">4</integer>
 </resources>

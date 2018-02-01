@@ -10,9 +10,15 @@ import com.onyx.jdread.main.action.BaseAction;
  */
 
 public class LoadSearchHistoryAction extends BaseAction<LibraryDataBundle> {
+    private int limit;
+
+    public LoadSearchHistoryAction(int limit) {
+        this.limit = limit;
+    }
+
     @Override
     public void execute(final LibraryDataBundle dataBundle, final RxCallback rxCallback) {
-        RxLoadSearchHistoryRequest historyRequest = new RxLoadSearchHistoryRequest(dataBundle.getDataManager());
+        RxLoadSearchHistoryRequest historyRequest = new RxLoadSearchHistoryRequest(dataBundle.getDataManager(), limit);
         historyRequest.execute(new RxCallback<RxLoadSearchHistoryRequest>() {
             @Override
             public void onNext(RxLoadSearchHistoryRequest request) {

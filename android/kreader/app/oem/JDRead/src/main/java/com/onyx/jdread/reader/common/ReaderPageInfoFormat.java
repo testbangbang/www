@@ -16,8 +16,14 @@ public class ReaderPageInfoFormat {
         return (float) (Math.round(progress * 100)) / 100;
     }
 
+    public static float calculateReadingProgress(int currentPage,int totalPage){
+        float total = totalPage - 1;
+        float progress = (currentPage / total) * 100;
+        return (float) (Math.round(progress * 100)) / 100;
+    }
+
     public static String getChapterName(ReaderDataHolder readerDataHolder) {
-        String bookName = readerDataHolder.getReader().getDocumentInfo().getBookName();
+        String bookName = readerDataHolder.getReaderViewInfo().getChapterName();
         return bookName;
     }
 }
