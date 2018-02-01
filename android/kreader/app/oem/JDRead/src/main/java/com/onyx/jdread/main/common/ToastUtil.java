@@ -81,6 +81,10 @@ public class ToastUtil {
         showToast(JDReadApplication.getInstance(), message);
     }
 
+    public static void showToast(int resId) {
+        showToast(JDReadApplication.getInstance(), JDReadApplication.getInstance().getString(resId));
+    }
+
     public static void showToastErrorMsgForDownBook(String errorCode) {
         showToast(JDReadApplication.getInstance(), getErrorMsgForDownBook(errorCode));
     }

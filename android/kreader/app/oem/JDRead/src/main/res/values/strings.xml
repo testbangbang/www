@@ -428,4 +428,5 @@
     <string name="last_chapter">Is the last chapter</string>
     <string name="no_chapters">This article does not contain section information</string>
     <string name="click_to_translate">Click to translate</string>
+    <string name="network_or_server_error">Network or server error, wait for a while to try again</string>
 </resources>
