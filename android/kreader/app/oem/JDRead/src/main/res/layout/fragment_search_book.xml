@@ -41,11 +41,11 @@
                 android:src="@mipmap/ic_read_back" />
 
             <android.support.v7.widget.SearchView
-                android:background="@drawable/shop_search_book_edit_text_background"
                 android:id="@+id/search_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/shop_search_book_edit_text_background"
                 android:shadowColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font"
                 app:iconifiedByDefault="false"
@@ -89,7 +89,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/fragment_search_line_margin">
+                android:layout_marginTop="@dimen/fragment_search_line_margin"
+                android:visibility="@{searchModel.searchHistory.size()==0?View.GONE:View.VISIBLE}">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -108,14 +109,10 @@
                     android:src="@mipmap/ic_shelf_delete_book" />
             </RelativeLayout>
 
-            <com.onyx.jdread.library.view.FlowLayout
-                android:id="@+id/flow_layout"
-                child="@{searchModel.searchHistory}"
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/search_history_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/fragment_search_line_margin"
-                app:height_space="@dimen/fragment_search_line_margin"
-                app:width_space="@dimen/fragment_search_width_space" />
+                android:layout_height="@dimen/search_history_recycler_height" />
 
         </LinearLayout>
 

@@ -62,7 +62,7 @@ public class LibraryRenameAction extends BaseAction<LibraryDataBundle> {
             public void onClicked() {
                 if (StringUtils.isNotBlank(model.libraryName.get())) {
                     if (InputUtils.getByteCount(model.libraryName.get()) > ResManager.getInteger(R.integer.group_name_max_length)) {
-                        ToastUtil.showOffsetToast(String.format(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.group_name_max_length)));
+                        ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
                         return;
                     }
                     if (InputUtils.haveSpecialCharacters(model.libraryName.get())) {
@@ -80,7 +80,7 @@ public class LibraryRenameAction extends BaseAction<LibraryDataBundle> {
                     renameLibrary(libraryDataBundle, model.libraryName.get(), baseCallback);
                     libraryBuildDialog.dismiss();
                 } else {
-                    ToastUtil.showToast(libraryDataBundle.getAppContext(), R.string.please_enter_group_name);
+                    ToastUtil.showOffsetToast(ResManager.getString(R.string.please_enter_group_name));
                 }
             }
         });

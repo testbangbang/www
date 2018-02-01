@@ -63,11 +63,17 @@ public class ToastUtil {
         } else {
             if (message.equals(oldMsg)) {
                 if (!toast.getView().isShown()) {
+                    if (isOffset) {
+                        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, ResManager.getInteger(R.integer.toast_offset_y));
+                    }
                     toast.show();
                 }
             } else {
                 oldMsg = message;
                 toast.setText(message);
+                if (isOffset) {
+                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, ResManager.getInteger(R.integer.toast_offset_y));
+                }
                 toast.show();
             }
         }

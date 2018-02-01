@@ -32,7 +32,6 @@
             android:layout_height="@dimen/dialog_build_edit_height"
             android:layout_gravity="center_horizontal"
             android:hint="@string/build_library_hint"
-            android:maxLength="@integer/library_name_length"
             android:maxLines="1"
             android:textColor="@android:color/black"
             android:text="@={dialogModel.libraryName}"

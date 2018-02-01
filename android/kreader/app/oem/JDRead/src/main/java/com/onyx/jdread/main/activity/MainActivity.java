@@ -334,6 +334,8 @@ public class MainActivity extends AppCompatActivity {
     public void onSystemBarClickedEvent(SystemBarClickedEvent event) {
         if (systemBarPopupWindowModel == null) {
             systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
+        }else {
+            systemBarPopupWindowModel.brightnessModel.updateLight();
         }
         SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(this, systemBarPopupWindowModel);
         systemBarPopupWindow.show(binding.mainSystemBar.getRoot());
