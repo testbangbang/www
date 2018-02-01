@@ -28,6 +28,7 @@ public class SystemUpdateDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getDialog().setCanceledOnTouchOutside(false);
         binding = (SystemUpdateAlertBinding) DataBindingUtil.inflate(inflater, R.layout.dialog_system_update_alert, container, false);
         init();
         return binding.getRoot();

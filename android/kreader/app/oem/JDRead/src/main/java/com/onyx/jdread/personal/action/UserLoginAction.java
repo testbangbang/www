@@ -140,15 +140,18 @@ public class UserLoginAction extends BaseAction {
     }
 
     private void autoSign() {
-        final SignForVoucherAction signForVoucherAction = new SignForVoucherAction();
-        signForVoucherAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                SignForVoucherBean resultBean = signForVoucherAction.getResultBean();
-                if (resultBean.result_code == 0) {
-                    PersonalDataBundle.getInstance().setCurrentDay(TimeUtils.getCurrentDataInString());
+        String saveTime = PersonalDataBundle.getInstance().getCurrentDay();
+        if (StringUtils.isNullOrEmpty(saveTime) || !TimeUtils.getCurrentDataInString().equals(saveTime)) {
+            final SignForVoucherAction signForVoucherAction = new SignForVoucherAction();
+            signForVoucherAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+                @Override
+                public void onNext(Object o) {
+                    SignForVoucherBean resultBean = signForVoucherAction.getResultBean();
+                    if (resultBean.result_code == 0) {
+                        PersonalDataBundle.getInstance().setCurrentDay(TimeUtils.getCurrentDataInString());
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }

@@ -8,10 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -24,9 +22,10 @@ import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.main.event.NetworkConnectedEvent;
+import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
 import com.onyx.jdread.main.model.TitleBarModel;
-import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.setting.action.CheckApkUpdateAction;
 import com.onyx.jdread.setting.action.DownloadPackageAction;
 import com.onyx.jdread.setting.action.LocalUpdateSystemAction;
@@ -41,7 +40,6 @@ import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingUpdateModel;
 import com.onyx.jdread.setting.model.SystemUpdateData;
 import com.onyx.jdread.setting.utils.UpdateUtil;
-import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
 
@@ -49,8 +47,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.ConnectException;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +85,7 @@ public class SystemUpdateFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
+        downloadPackageAction = null;
     }
 
     private void initListener() {
@@ -133,6 +130,7 @@ public class SystemUpdateFragment extends BaseFragment {
             systemUpdateData.setShowProgress(false);
             systemUpdateData.setShowDownloaded(true);
             systemUpdateData.setUpdateDes(JDReadApplication.getInstance().getResources().getString(R.string.upgrade_immediately));
+            settingUpdateModel.setDownloaded(true);
         }
     };
 
@@ -145,6 +143,12 @@ public class SystemUpdateFragment extends BaseFragment {
 
         settingUpdateModel = SettingBundle.getInstance().getSettingUpdateModel();
         systemUpdateData = settingUpdateModel.getSystemUpdateData();
+        if (!isApkExist() && !isUpdateZipExist() && settingUpdateModel.isDownloaded()) {
+            settingUpdateModel.setDownloaded(false);
+        } else if (StringUtils.isNotBlank(systemUpdateData.getNoticeMessage())) {
+            binding.setModel(settingUpdateModel);
+            return;
+        }
         List<DeviceConfigData> deviceConfigDataList = SettingBundle.getInstance().getDeviceConfigModel().getDeviceConfigDataList();
         if (StringUtils.isNotBlank(deviceConfigDataList.get(deviceConfigDataList.size() - 1).getUpdateRecord())) {
             checkSystemUpdate();
@@ -186,7 +190,8 @@ public class SystemUpdateFragment extends BaseFragment {
                     Log.i(TAG, "checkSystemUpdate: " + fingerprint);
                     String[] split = fingerprint.split("/");
                     String versionTime = getVersionTime(split);
-                    systemUpdateData.setVersion(settingUpdateModel.getDownloadVersion());
+                    Log.i(TAG, "system current version: " + settingUpdateModel.getDownloadVersion());
+                    systemUpdateData.setVersion(UpdateUtil.VERSION_LAUNCHER + versionTime);
                     systemUpdateData.setNoticeMessage(changeLog);
                     checkAction.hideLoadingDialog(SettingBundle.getInstance());
                 } else {
@@ -238,7 +243,8 @@ public class SystemUpdateFragment extends BaseFragment {
                     systemUpdateData.setVersionTitle(JDReadApplication.getInstance().getResources().getString(R.string.updatable_version));
                     Log.i(TAG, "checkApkUpdate: " + applicationUpdate.versionName);
                     String versionTime = applicationUpdate.versionName.substring(applicationUpdate.versionName.lastIndexOf("-") + 1, applicationUpdate.versionName.length());
-                    systemUpdateData.setVersion(settingUpdateModel.getDownloadVersion());
+                    Log.i(TAG, "apk current version: " + settingUpdateModel.getDownloadVersion());
+                    systemUpdateData.setVersion(UpdateUtil.VERSION_LAUNCHER + versionTime);
                     systemUpdateData.setNoticeMessage(message);
                     apkUpdateAction.hideLoadingDialog(SettingBundle.getInstance());
                 } else {
@@ -322,6 +328,13 @@ public class SystemUpdateFragment extends BaseFragment {
     public void onNetworkConnectedEvent(NetworkConnectedEvent event) {
         if (downloadPackageAction != null) {
             downloadPackageAction.execute(callback);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
+        if (!systemUpdateData.getShowDownloaded()) {
+            systemUpdateData.setNoticeMessage("");
         }
     }
 }

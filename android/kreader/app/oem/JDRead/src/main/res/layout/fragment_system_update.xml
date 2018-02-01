@@ -5,6 +5,10 @@
 
         <import type="android.view.View" />
 
+        <import type="com.onyx.jdread.util.Utils"/>
+
+        <import type="com.onyx.android.sdk.utils.StringUtils"/>
+
         <variable
             name="model"
             type="com.onyx.jdread.setting.model.SettingUpdateModel" />
@@ -67,7 +71,8 @@
                 android:layout_marginTop="@dimen/system_update_consideration_margin_top"
                 android:text="@string/consideration"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textSize="@dimen/level_two_heading_font"
+                android:visibility="@{StringUtils.isNullOrEmpty(model.systemUpdateData.noticeMessage) ? View.GONE : View.VISIBLE}"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -108,7 +113,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{@string/downloading(model.systemUpdateData.progress)}"
+                        android:text="@{Utils.addPercent(@string/downloading(model.systemUpdateData.progress))}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
