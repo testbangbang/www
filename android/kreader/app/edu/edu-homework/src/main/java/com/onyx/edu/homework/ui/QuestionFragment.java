@@ -191,7 +191,7 @@ public class QuestionFragment extends BaseFragment {
     }
 
     private boolean radioButtonIsEnabled() {
-        return getDataBundle().isDoing() && !getDataBundle().isExpired();
+        return getDataBundle().isDoing() && !getDataBundle().isExpired() && !getDataBundle().canCheckAnswer();
     }
     
     public void initFragment() {
