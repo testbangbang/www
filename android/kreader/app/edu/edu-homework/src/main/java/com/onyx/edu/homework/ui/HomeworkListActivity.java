@@ -35,6 +35,7 @@ import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.action.ShowAnalysisAction;
 import com.onyx.edu.homework.action.ShowExpiredDialogAction;
+import com.onyx.edu.homework.action.ShowSubmitDialogAction;
 import com.onyx.edu.homework.action.UpdateHomeworkModelAction;
 import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
@@ -128,7 +129,7 @@ public class HomeworkListActivity extends BaseActivity {
         binding.submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSubmitDialog();
+                submit();
             }
         });
         binding.toolbar.backLayout.setOnClickListener(new View.OnClickListener() {
@@ -209,21 +210,18 @@ public class HomeworkListActivity extends BaseActivity {
         });
     }
 
-    private void showSubmitDialog() {
+    private void submit() {
         if (getQuestionFragment() == null) {
+            return;
+        }
+        if (recordFragment != null) {
+            new ShowSubmitDialogAction(questions).execute(this, null);
             return;
         }
         getQuestionFragment().saveQuestion(SaveDocumentOption.onStopSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
-                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        reloadQuestionFragment(currentPage);
-                    }
-                });
-                dialog.show();
+                new ShowSubmitDialogAction(questions).execute(HomeworkListActivity.this, null);
             }
         });
     }
