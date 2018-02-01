@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
-import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
@@ -118,7 +116,7 @@ public interface DataProviderBase {
 
     long libraryMetadataCount(String libraryUniqueId);
 
-    List<SearchHistory> loadSearchHistory();
+    List<SearchHistory> loadSearchHistory(int limit);
 
     void saveSearchHistory(final Context context, SearchHistory searchHistory);
 
