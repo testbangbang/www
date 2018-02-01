@@ -61,6 +61,7 @@
     <string name="state">状态</string>
     <string name="score_value">分值</string>
     <string name="scored">得分</string>
+    <string name="rank_str" formatted="false">排名：%d/%d</string>
     <string-array name="question_option">
         <item>A</item>
         <item>B</item>
