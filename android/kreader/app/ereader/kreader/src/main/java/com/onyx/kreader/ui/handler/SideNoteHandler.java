@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -62,6 +63,9 @@ public class SideNoteHandler extends BaseHandler {
 
         this.initialState = initialState;
 
+        readerDataHolder.setSideNoting(true);
+        initialState.surfaceViewNote.setVisibility(View.VISIBLE);
+
         final StartSideNoteAction action = new StartSideNoteAction();
         action.execute(readerDataHolder, new BaseCallback() {
             @Override
@@ -73,6 +77,9 @@ public class SideNoteHandler extends BaseHandler {
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getEventBus().unregister(this);
+
+        readerDataHolder.setSideNoting(false);
+        initialState.surfaceViewNote.setVisibility(View.GONE);
 
         StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
         stopNoteActionChain.execute(readerDataHolder, new BaseCallback() {
@@ -91,7 +98,8 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     private void startSideNoteDrawing(final ReaderDataHolder readerDataHolder) {
-        ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(initialState.activityExtraView,
+        ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(initialState.surfaceViewNote,
+                initialState.activityExtraView,
                 initialState.activityStatusBar,
                 ShowReaderMenuAction.getScribbleActionCallback(readerDataHolder));
         showMenu.execute(readerDataHolder, new BaseCallback() {
@@ -195,7 +203,7 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder, final String action, final String args) {
-        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false);
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisibleNotePages(), true, true, false, false);
         flushNoteAction.execute(getParent().getReaderDataHolder(), null);
     }
 
@@ -221,7 +229,7 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     private void toggleSideNoteMenu(final ReaderDataHolder readerDataHolder) {
-        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
+        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisibleNotePages());
         flushNoteAction.execute(getParent().getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -235,7 +243,7 @@ public class SideNoteHandler extends BaseHandler {
     @Subscribe
     public void onMenuClickEvent(MenuClickEvent event) {
         ReaderMenuAction menuAction = ReaderMenuAction.valueOf(event.getMenuId());
-        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
+        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisibleNotePages());
         BaseCallback menuActionCallback = null;
         switch (menuAction) {
             case ZOOM_IN:

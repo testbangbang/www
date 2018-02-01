@@ -69,13 +69,25 @@ public class ReaderPainter {
         drawCropRectIndicator(context, canvas, paint, readerDataHolder, viewInfo);
         drawViewportOverlayIndicator(canvas, paint, readerDataHolder, viewInfo);
         drawBookmark(context, canvas, readerDataHolder, userDataInfo, viewInfo);
-        drawShapeContents(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, noteManager, visiblePages);
+        drawSideNoteIndicator(context, canvas, paint, readerDataHolder, noteManager);
+        drawShapeContents(context, canvas, paint, userDataInfo, viewInfo, noteManager, visiblePages);
         drawSearchResults(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, annotationHighlightStyle);
         drawHighlightResult(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, selectionManager, annotationHighlightStyle);
         drawAnnotations(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, annotationHighlightStyle);
         drawPageLinks(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
+    }
+
+    public void drawSideNotePage(Context context,
+                                 Canvas canvas,
+                                 final ReaderUserDataInfo userDataInfo,
+                                 final ReaderViewInfo viewInfo,
+                                 NoteManager noteManager,
+                                 List<PageInfo> visiblePages) {
+        Paint paint = new Paint();
+        canvas.drawColor(Color.WHITE);
+        drawShapeContents(context, canvas, paint, userDataInfo, viewInfo, noteManager, visiblePages);
     }
 
     private void drawBackground(Canvas canvas, Paint paint) {
@@ -194,7 +206,6 @@ public class ReaderPainter {
     private void drawShapeContents(Context context,
                                    Canvas canvas,
                                    Paint paint,
-                                   ReaderDataHolder readerDataHolder,
                                    final ReaderUserDataInfo userDataInfo,
                                    final ReaderViewInfo viewInfo,
                                    final NoteManager noteManager,
@@ -202,7 +213,6 @@ public class ReaderPainter {
         drawShapes(context, canvas, paint, userDataInfo, noteManager);
         drawStashShapes(context, canvas, paint, noteManager, viewInfo, visiblePages);
         drawShapeEraser(context, canvas, paint, noteManager);
-        drawSideNoteIndicator(context, canvas, paint, readerDataHolder, noteManager);
     }
 
     private void drawBookmark(Context context, Canvas canvas, ReaderDataHolder readerDataHolder, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {

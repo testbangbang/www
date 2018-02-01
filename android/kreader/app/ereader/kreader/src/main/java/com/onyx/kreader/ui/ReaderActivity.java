@@ -44,7 +44,6 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
-import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.Debug;
@@ -75,10 +74,8 @@ import com.onyx.kreader.ui.actions.SaveDocumentOptionsAction;
 import com.onyx.kreader.ui.actions.ShowDialogGoToPageAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.kreader.ui.actions.ShowSideScribbleMenuAction;
 import com.onyx.kreader.ui.actions.ShowTabHostMenuDialogAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
-import com.onyx.kreader.ui.actions.StartSideNoteAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
@@ -144,6 +141,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
     private SurfaceView surfaceView;
+    private SurfaceView surfaceViewNote;
     private RelativeLayout mainView;
     private RelativeLayout extraView;
     private ImageView buttonShowTabWidget;
@@ -203,7 +201,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                 getReaderDataHolder().isNoteWritingProvider()) {
             stopRawEventProcessor();
 
-            final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
+            final List<PageInfo> list = getReaderDataHolder().getVisibleNotePages();
             FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, false);
             flushNoteAction.setPauseNote(true);
             flushNoteAction.execute(getReaderDataHolder(), null);
@@ -393,7 +391,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     private void initSurfaceView() {
         mainView = (RelativeLayout) findViewById(R.id.main_view);
         extraView = (RelativeLayout) findViewById(R.id.extra_view);
-        surfaceView = (SurfaceView) this.findViewById(R.id.surfaceView);
+        surfaceView = (SurfaceView) this.findViewById(R.id.surfaceView_doc);
         surfaceHolderCallback = new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -467,8 +465,34 @@ public class ReaderActivity extends OnyxBaseActivity {
                 handleActivityIntent();
             }
         });
-    }
 
+        surfaceViewNote = (SurfaceView)findViewById(R.id.surfaceView_note);
+        surfaceViewNote.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                clearCanvas(holder);
+                getReaderDataHolder().setSideNoteSize(width, height);
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
+
+        surfaceViewNote.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                getReaderDataHolder().getNoteManager().getTouchHelper().onTouchEvent(event);
+                return true;
+            }
+        });
+    }
 
     private void initReaderDataHolder() {
         dataHolder = new ReaderDataHolder(this);
@@ -590,6 +614,15 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onShapeRendered(final ShapeRenderFinishEvent event) {
+        if (getReaderDataHolder().isSideNoting()) {
+            drawSideNotePage();
+            return;
+        }
+
+        onDocShapesRendered(event);
+    }
+
+    public void onDocShapesRendered(final ShapeRenderFinishEvent event) {
         final ReaderNoteDataInfo noteDataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
         if (noteDataInfo == null || (!noteDataInfo.isContentRendered() && !noteDataInfo.hasSideNote())) {
             return;
@@ -608,6 +641,17 @@ public class ReaderActivity extends OnyxBaseActivity {
         ReaderDeviceManager.resetUpdateMode(getSurfaceView());
     }
 
+    public void drawSideNotePage() {
+        Canvas canvas = surfaceViewNote.getHolder().lockCanvas();
+        getReaderDataHolder().getReaderPainter().drawSideNotePage(this,
+                canvas,
+                getReaderDataHolder().getReaderUserDataInfo(),
+                getReaderDataHolder().getReaderViewInfo(),
+                getReaderDataHolder().getNoteManager(),
+                getReaderDataHolder().getVisibleSideNotePages());
+        surfaceViewNote.getHolder().unlockCanvasAndPost(canvas);
+    }
+
     private boolean verifyReader() {
         return getReaderDataHolder().isDocumentOpened();
     }
@@ -623,7 +667,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         if (event.isUiOpen()) {
-            FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getReaderDataHolder().getVisiblePages());
+            FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getReaderDataHolder().getVisibleNotePages());
             flushNoteAction.execute(getReaderDataHolder(), null);
         } else {
             new ResumeDrawingAction(getReaderDataHolder().getVisiblePages()).execute(getReaderDataHolder(), null);
@@ -767,7 +811,11 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onShapeDrawing(final ShapeDrawingEvent event) {
         getReaderDataHolder().getNoteManager().ensureContentRendered();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        if (getReaderDataHolder().isSideNoting()) {
+            drawSideNotePage();
+        } else {
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        }
     }
 
     @Subscribe
@@ -910,7 +958,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void flushReaderNote(boolean renderShapes, boolean transferBitmap, boolean saveToDatabase, boolean show, final BaseCallback callback) {
-        final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
+        final List<PageInfo> list = getReaderDataHolder().getVisibleNotePages();
         FlushNoteAction flushNoteAction = new FlushNoteAction(list, renderShapes, transferBitmap, saveToDatabase, show);
         flushNoteAction.execute(getReaderDataHolder(), new BaseCallback() {
             @Override
@@ -975,8 +1023,13 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onScribbleMenuSizeChanged(final ScribbleMenuChangedEvent event) {
+        SurfaceView sv = surfaceView;
+        if (getReaderDataHolder().isSideNoting()) {
+            sv = surfaceViewNote;
+        }
+
         final Rect rect = new Rect();
-        surfaceView.getLocalVisibleRect(rect);
+        sv.getLocalVisibleRect(rect);
         int bottomOfTopToolBar = event.getBottomOfTopToolBar();
         int topOfBottomToolBar = event.getTopOfBottomToolBar();
 
@@ -988,7 +1041,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        UpdateHostViewAction action = UpdateHostViewAction.updateVisibleRegion(surfaceView, rect, getExcludeRect(event.getExcludeRects()), rotation);
+        UpdateHostViewAction action = UpdateHostViewAction.updateVisibleRegion(sv, rect, getExcludeRect(event.getExcludeRects()), rotation);
         action.execute(getReaderDataHolder(), null);
     }
 
@@ -1075,12 +1128,14 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
 
+        SurfaceView sv = getReaderDataHolder().isSideNoting() ? surfaceViewNote : surfaceView;
+
         final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
                 getReaderDataHolder().getReader().getViewportBitmap().getBitmap(),
-                getReaderDataHolder().getVisiblePages(),
+                getReaderDataHolder().getVisibleNotePages(),
                 event.getTouchPointList(),
                 getReaderDataHolder().getNoteManager().detachShapeStash(),
-                surfaceView);
+                sv);
         action.execute(getReaderDataHolder(), null);
     }
 
@@ -1155,9 +1210,33 @@ public class ReaderActivity extends OnyxBaseActivity {
                 if (e != null || request.isAbort() ) {
                     return;
                 }
-                onShapeRendered(ShapeRenderFinishEvent.shapeReadyEventWithUniqueId(renderRequest.getAssociatedUniqueId()));
+                onDocShapesRendered(ShapeRenderFinishEvent.shapeReadyEventWithUniqueId(renderRequest.getAssociatedUniqueId()));
+
+                if (getReaderDataHolder().isSideNoting()) {
+                    renderSideNoteShapes();
+                }
             }
         });
+    }
+
+    private void renderSideNoteShapes() {
+        final ReaderNoteRenderRequest sideNoteRenderRequest = new ReaderNoteRenderRequest(
+                getReaderDataHolder().getReader().getDocumentMd5(),
+                getReaderDataHolder().getVisibleSideNotePages(),
+                getReaderDataHolder().getSideNoteRect(),
+                false);
+        getReaderDataHolder().getNoteManager().submitWithUniqueId(ReaderActivity.this,
+                getReaderDataHolder().getLastRequestSequence(),
+                sideNoteRenderRequest,
+                new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest baseRequest, Throwable throwable) {
+                        if (throwable != null || baseRequest.isAbort()) {
+                            return;
+                        }
+                        drawSideNotePage();
+                    }
+                });
     }
 
     public SurfaceHolder getHolder() {
@@ -1339,6 +1418,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         BaseHandler.HandlerInitialState state = new BaseHandler.HandlerInitialState();
         state.activityExtraView = extraView;
         state.activityStatusBar = statusBar;
+        state.surfaceViewNote = surfaceViewNote;
         getHandlerManager().setActiveProvider(HandlerManager.SIDE_NOTE_PROVIDER, state);
     }
 

@@ -581,7 +581,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void prevSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new PreviousSideNotePageAction());
         actionChain.execute(readerDataHolder, new BaseCallback() {
@@ -594,7 +594,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void nextSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new NextSideNotePageAction());
         actionChain.execute(readerDataHolder, new BaseCallback() {
@@ -893,8 +893,8 @@ public class ShowReaderMenuAction extends BaseAction {
                         action == ReaderMenuAction.SCRIBBLE_WIDTH ||
                         action == ReaderMenuAction.SCRIBBLE_ERASER) {
                     final FlushNoteAction flushNoteAction = expand ?
-                            FlushNoteAction.pauseAfterFlush(readerDataHolder.getVisiblePages(), false):
-                            new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false, false);
+                            FlushNoteAction.pauseAfterFlush(readerDataHolder.getVisibleNotePages(), false):
+                            new FlushNoteAction(readerDataHolder.getVisibleNotePages(), true, true, false, false, false);
                     flushNoteAction.execute(readerDataHolder, null);
                 }
             }
@@ -913,7 +913,7 @@ public class ShowReaderMenuAction extends BaseAction {
         if (!isGroupAction(action)) {
             return false;
         }
-        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false);
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisibleNotePages(), true, true, false, false);
         flushNoteAction.execute(readerDataHolder, null);
         return true;
     }
@@ -1035,7 +1035,7 @@ public class ShowReaderMenuAction extends BaseAction {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+                final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
                 new FlushNoteAction(pages, true, true, false, false).execute(readerDataHolder, null);
             }
         });
@@ -1046,7 +1046,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new ChangeStrokeWidthAction(width, true));
         actionChain.execute(readerDataHolder, null);
@@ -1054,7 +1054,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void useShape(final ReaderDataHolder readerDataHolder, int type) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new ChangeNoteShapeAction(type));
         actionChain.execute(readerDataHolder, null);
@@ -1062,7 +1062,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void useColor(final ReaderDataHolder readerDataHolder, int color) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new ChangeNoteColorAction(color));
         actionChain.execute(readerDataHolder, null);
@@ -1070,7 +1070,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void undo(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new UndoAction());
         actionChain.execute(readerDataHolder, null);
@@ -1078,14 +1078,14 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void redo(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new RedoAction());
         actionChain.execute(readerDataHolder, null);
     }
 
     private static void save(final ReaderDataHolder readerDataHolder) {
-        FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, true, true);
+        FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisibleNotePages(), true, true, true, true);
         flushNoteAction.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -1096,7 +1096,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void nextScreen(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new NextScreenAction());
         actionChain.execute(readerDataHolder, new BaseCallback() {
@@ -1121,13 +1121,13 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void resumeDrawing(final ReaderDataHolder readerDataHolder) {
-        final ResumeDrawingAction action = new ResumeDrawingAction(readerDataHolder.getVisiblePages());
+        final ResumeDrawingAction action = new ResumeDrawingAction(readerDataHolder.getVisibleNotePages());
         action.execute(readerDataHolder, null);
     }
 
     private static void eraseWholePage(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new ClearPageAction(pages));
         actionChain.addAction(new ResumeDrawingAction(pages));
         actionChain.execute(readerDataHolder, null);
@@ -1135,7 +1135,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void eraseSideNotePage(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new ClearSideNotePageAction(pages));
         actionChain.addAction(new ResumeDrawingAction(pages));
         actionChain.execute(readerDataHolder, null);
@@ -1143,7 +1143,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void startErasing(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new ChangeNoteShapeAction(ShapeFactory.SHAPE_ERASER));
         actionChain.execute(readerDataHolder, null);
@@ -1151,7 +1151,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void toggleMenu(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
         final FlushNoteAction flushNoteAction = new FlushNoteAction(pages, true, true, false, false);
         final ResumeDrawingAction action = new ResumeDrawingAction(pages);
         actionChain.addAction(flushNoteAction);

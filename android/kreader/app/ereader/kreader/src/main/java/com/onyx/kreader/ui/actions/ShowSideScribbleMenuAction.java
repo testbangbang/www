@@ -2,8 +2,10 @@ package com.onyx.kreader.ui.actions;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -21,6 +23,7 @@ import com.onyx.android.sdk.ui.data.MenuItem;
 import com.onyx.android.sdk.ui.data.MenuManager;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.utils.DeviceInfoUtil;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.kreader.BR;
 import com.onyx.kreader.R;
@@ -34,6 +37,7 @@ import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.handler.BaseHandler;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import com.onyx.kreader.ui.utils.ViewUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -47,6 +51,7 @@ import java.util.List;
 
 public class ShowSideScribbleMenuAction extends BaseAction {
 
+    private SurfaceView surfaceView;
     private ViewGroup parent;
     private ReaderMenuAction parentAction;
     private MenuManager sideMenu;
@@ -55,7 +60,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private ShowScribbleMenuAction.ActionCallback actionCallback;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
 
-    public ShowSideScribbleMenuAction(ViewGroup parent, View readerStatusBar, ShowScribbleMenuAction.ActionCallback actionCallback) {
+    public ShowSideScribbleMenuAction(SurfaceView surfaceView, ViewGroup parent, View readerStatusBar, ShowScribbleMenuAction.ActionCallback actionCallback) {
+        this.surfaceView = surfaceView;
         this.parent = parent;
         this.actionCallback = actionCallback;
         this.readerStatusBar = readerStatusBar;
@@ -343,7 +349,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 customLineWidth.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+                        final List<PageInfo> pages = readerDataHolder.getVisibleNotePages();
                         new FlushNoteAction(pages, true, true, false, false).execute(readerDataHolder, null);
                     }
                 });
@@ -357,12 +363,13 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         }
         View menuView = menu.getRootView();
         if (menu.isShowing()) {
-            excludeRectFs.add(new RectF(menuView.getLeft(), menuView.getTop(), menuView.getRight(), menuView.getBottom()));
+            Rect rect = ViewUtils.getRelativeRect(surfaceView, menuView);
+            excludeRectFs.add(RectUtils.toRectF(rect));
         }
     }
 
     private void toggleSideNotePos(final ReaderDataHolder readerDataHolder) {
-        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true,
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisibleNotePages(), true,
                 false, true, false, false);
         flushNoteAction.setPauseNote(true);
         flushNoteAction.execute(readerDataHolder, new BaseCallback() {
@@ -373,7 +380,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         show(readerDataHolder);
-                        new ResumeDrawingAction(readerDataHolder.getVisiblePages()).execute(readerDataHolder, null);
+                        new ResumeDrawingAction(readerDataHolder.getVisibleNotePages()).execute(readerDataHolder, null);
                     }
                 });
             }

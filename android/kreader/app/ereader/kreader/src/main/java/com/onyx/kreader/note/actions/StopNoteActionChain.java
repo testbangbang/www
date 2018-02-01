@@ -36,7 +36,7 @@ public class StopNoteActionChain  {
         final ActionChain actionChain = new ActionChain();
         actionChain.addAction(new StopNoteAction(quit));
 
-        FlushNoteAction action = new FlushNoteAction(readerDataHolder.getVisiblePages(), render, transfer, save, show);
+        FlushNoteAction action = new FlushNoteAction(readerDataHolder.getVisibleNotePages(), render, transfer, save, show);
         action.setPauseNote(true);
         actionChain.addAction(action);
         if (closeMenu) {

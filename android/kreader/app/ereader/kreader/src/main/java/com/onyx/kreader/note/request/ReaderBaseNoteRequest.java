@@ -219,9 +219,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     public boolean renderVisiblePages(final NoteManager parent,
                                       ReaderBitmapReferenceImpl docBitmap,
                                       HashMap<String, RectF> dirtyRects) {
-        if (parent.getRenderBitmap() != null && !parent.isRenderBitmapDirty()) {
-            return true;
-        }
+//        if (parent.getRenderBitmap() != null && !parent.isRenderBitmapDirty()) {
+//            return true;
+//        }
 
         boolean rendered = false;
         ReaderBitmapImpl bitmap = new ReaderBitmapImpl(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
