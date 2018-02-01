@@ -211,7 +211,6 @@
     <style name="ReaderPageInfoChapterStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/imagebtn_bg</item>
         <item name="android:clickable">true</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
@@ -351,5 +350,10 @@
         <item name="android:layout_height">2dp</item>
         <item name="android:background">@drawable/bg_dotted_line</item>
         <item name="android:layerType">software</item>
+    </style>
+
+    <style name="search_button">
+        <item name="android:padding">5dp</item>
+        <item name="android:layout_margin">@dimen/search_button_margin</item>
     </style>
 </resources>

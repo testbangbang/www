@@ -18,6 +18,8 @@ public abstract class ReaderSelection implements Cloneable{
         VIDEO,
     }
 
+    public String chapterName;
+
     @Override
     public abstract ReaderSelection clone();
 

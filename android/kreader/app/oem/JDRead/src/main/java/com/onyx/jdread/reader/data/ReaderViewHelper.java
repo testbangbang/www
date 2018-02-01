@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -98,6 +100,7 @@ public class ReaderViewHelper {
             drawPageContent(canvas, bitmap);
             drawPageAnnotations(canvas, reader, readerUserDataInfo, readerViewInfo);
             drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
+            drawSearchResults(canvas,reader,readerUserDataInfo,readerViewInfo);
             drawTime(canvas, reader, readerViewInfo);
             drawPageNumber(canvas, reader, readerViewInfo);
         } finally {
@@ -138,16 +141,20 @@ public class ReaderViewHelper {
             String pagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
             ReaderSelection readerSelection = readerSelectionManager.getCurrentSelection(pagePosition);
             if (readerViewInfo != null && readerSelection != null) {
-                drawReaderSelection(context, canvas, paint, readerViewInfo, readerSelection);
+                drawReaderSelection(context, canvas, paint, readerViewInfo, readerSelection,false);
                 drawSelectionCursor(canvas, paint, readerSelectionManager, pagePosition);
             }
         }
     }
 
-    private void drawReaderSelection(Context context, Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection) {
+    private void drawReaderSelection(Context context, Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection,boolean annotationHighlightStyle) {
         PageInfo pageInfo = viewInfo.getPageInfo(selection.getPagePosition());
         if (pageInfo != null) {
-            drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
+            if(annotationHighlightStyle){
+                drawFillHighlightRectangles(canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
+            }else {
+                drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
+            }
         }
     }
 
@@ -162,6 +169,17 @@ public class ReaderViewHelper {
         Paint paint = new Paint();
 
         drawUnderLineHighlightRectangles(canvas, paint, rectangles);
+    }
+
+    private void drawFillHighlightRectangles(Canvas canvas, List<RectF> rectangles){
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColorFilter(new ColorMatrixColorFilter(getColorMatrix()));
+        int size = rectangles.size();
+        for (int i = 0; i < size; ++i) {
+            canvas.drawRect(rectangles.get(i), paint);
+        }
     }
 
     private void drawUnderLineHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
@@ -187,6 +205,17 @@ public class ReaderViewHelper {
                     drawHighlightRectangles(reader.getReaderHelper().getContext(), canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
                 }
             }
+        }
+    }
+
+
+    private void drawSearchResults(Canvas canvas, Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo){
+        List<ReaderSelection> searchResults = readerUserDataInfo.getSearchResults();
+        if (searchResults == null || searchResults.size() <= 0) {
+            return;
+        }
+        for (ReaderSelection sel : searchResults) {
+            drawReaderSelection(reader.getReaderHelper().getContext(),canvas, paint, readerViewInfo, sel,false);
         }
     }
 
@@ -228,5 +257,14 @@ public class ReaderViewHelper {
 
     private void applyEpdUpdate(final Reader reader, final SurfaceView view) {
         reader.getReaderEpdHelper().applyWithGCInterval(view);
+    }
+
+    private ColorMatrix getColorMatrix() {
+        return new ColorMatrix(new float[] {
+                -1,  0,  0,  0, 255,
+                0, -1,  0,  0, 255,
+                0,  0, -1,  0, 255,
+                0,  0,  0,  1,   0
+        });
     }
 }
