@@ -43,4 +43,13 @@ public class FunctionBarModel extends Observable {
         }
         return null;
     }
+
+    public FunctionBarItem getSelectedFunctionItem() {
+        for (FunctionBarItem itemModel : itemModels) {
+            if (itemModel.getSelected()) {
+                return itemModel;
+            }
+        }
+        return null;
+    }
 }

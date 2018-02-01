@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.menu.model;
 
 import android.databinding.BaseObservable;
+import android.databinding.ObservableBoolean;
 
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.event.CloseSearchDialogEvent;
@@ -16,6 +17,15 @@ public class ReaderSearchModel extends BaseObservable {
     private String searchContent;
     private int searchSize;
     private EventBus eventBus;
+    private ObservableBoolean isShowDelete = new ObservableBoolean(false);
+
+    public ObservableBoolean getIsShowDelete() {
+        return isShowDelete;
+    }
+
+    public void setIsShowDelete(boolean isShowDelete) {
+        this.isShowDelete.set(isShowDelete);
+    }
 
     public ReaderSearchModel(EventBus eventBus) {
         this.eventBus = eventBus;

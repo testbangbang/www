@@ -18,6 +18,12 @@ public class NextScreenRequest extends ReaderBaseRequest {
         reader.getReaderHelper().nextScreen();
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(reader);
+        preloadNextScreen(reader);
         return this;
+    }
+
+    private void preloadNextScreen(Reader reader) throws Exception{
+        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
+        reader.getReaderHelper().nextScreen();
     }
 }

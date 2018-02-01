@@ -64,16 +64,16 @@ public class ReaderBookInfoModel {
         return notes;
     }
 
-    public void setBookmarks(ReaderDocumentTableOfContent readerDocumentTableOfContent,List<Bookmark> bookmarks){
+    public void setBookmarks(ReaderDocumentTableOfContent readerDocumentTableOfContent,List<Bookmark> bookmarks,int totalPage){
         for(Bookmark bookmark : bookmarks) {
-            this.bookmarks.add(BookmarkModel.convertObject(readerDocumentTableOfContent,bookmark));
+            this.bookmarks.add(BookmarkModel.convertObject(readerDocumentTableOfContent,bookmark,totalPage));
         }
     }
 
     public void setNotes(List<Annotation> annotationList){
         for(Annotation annotation: annotationList){
             NoteModel noteModel = new NoteModel();
-            noteModel.setChapter("第一章:xxx");
+            noteModel.setChapter(annotation.getChapterName());
             noteModel.setNote(annotation.getNote());
             noteModel.setContent(annotation.getQuote());
             noteModel.setPosition(annotation.getPosition());

@@ -28,7 +28,7 @@ public class UpdateAnnotationRequest extends ReaderBaseRequest {
         ReaderSelection selection = readerSelectionInfo.getCurrentSelection();
         Annotation annotation = AddAnnotationRequest.createAnnotation(reader, readerSelectionInfo.pageInfo,
                 selection.getStartPosition(), selection.getEndPosition(),
-                selection.getRectangles(), noteInfo.srcNote, noteInfo.newNote);
+                selection.getRectangles(), noteInfo.srcNote, noteInfo.newNote,noteInfo.chapterName);
 
         ContentSdkDataUtils.getDataProvider().addAnnotation(annotation);
         updateSetting(reader);

@@ -38,6 +38,7 @@ import com.onyx.jdread.main.event.PushChildViewToStackEvent;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
 import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
+import com.onyx.jdread.main.event.TabLongClickedEvent;
 import com.onyx.jdread.main.event.UsbDisconnectedEvent;
 import com.onyx.jdread.main.event.WifiStateChangeEvent;
 import com.onyx.jdread.main.model.FunctionBarItem;
@@ -325,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onUsbDisconnectedEvent(ShowBackTabEvent event) {
+    public void onShowBackTabEvent(ShowBackTabEvent event) {
         isShowBackTab(event.isShow());
     }
 
@@ -383,5 +384,12 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRequestFailedEvent(RequestFailedEvent event) {
         ToastUtil.showToast(event.getMessage());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTabLongClickedEvent(TabLongClickedEvent event) {
+        if (ViewConfig.FunctionModule.isBackModule(event.functionItem.getFunctionModule())) {
+            EventBus.getDefault().post(new ShowBackTabEvent(false));
+        }
     }
 }

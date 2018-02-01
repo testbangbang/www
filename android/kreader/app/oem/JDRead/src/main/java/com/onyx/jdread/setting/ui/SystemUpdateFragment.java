@@ -91,6 +91,12 @@ public class SystemUpdateFragment extends BaseFragment {
         Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        hideAllDialog();
+    }
+
     private void initListener() {
         binding.upgradeImmediately.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +199,12 @@ public class SystemUpdateFragment extends BaseFragment {
                     checkApkUpdate();
                 }
             }
+
+            @Override
+            public void onError(Throwable throwable) {
+                checkAction.hideLoadingDialog(SettingBundle.getInstance());
+                ToastUtil.showToast(R.string.network_or_server_error);
+            }
         });
     }
 
@@ -245,6 +257,12 @@ public class SystemUpdateFragment extends BaseFragment {
                     apkUpdateAction.showLoadingDialog(SettingBundle.getInstance(), R.string.already_latest_version);
                     DelayEvent delayEvent = new DelayEvent(2000);
                 }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                apkUpdateAction.hideLoadingDialog(SettingBundle.getInstance());
+                ToastUtil.showToast(R.string.network_or_server_error);
             }
         });
     }
@@ -300,9 +318,7 @@ public class SystemUpdateFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
-        if (checkUpdateLoadingDialog != null) {
-            checkUpdateLoadingDialog.dismiss();
-        }
+        hideAllDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -310,6 +326,7 @@ public class SystemUpdateFragment extends BaseFragment {
         if (!systemUpdateData.getShowDownloaded()) {
             systemUpdateData.setNoticeMessage("");
         }
+
         viewEventCallBack.viewBack();
     }
 
@@ -322,6 +339,16 @@ public class SystemUpdateFragment extends BaseFragment {
     public void onNetworkConnectedEvent(NetworkConnectedEvent event) {
         if (downloadPackageAction != null) {
             downloadPackageAction.execute(callback);
+        }
+    }
+
+    private void hideAllDialog() {
+        hideCheckUpdateLoadingDialog();
+    }
+
+    private void hideCheckUpdateLoadingDialog() {
+        if (checkUpdateLoadingDialog != null) {
+            checkUpdateLoadingDialog.dismiss();
         }
     }
 }
