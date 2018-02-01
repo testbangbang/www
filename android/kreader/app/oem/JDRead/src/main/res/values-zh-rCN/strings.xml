@@ -98,7 +98,7 @@
     <string name="common_problem">常见问题</string>
     <string name="commit">提交</string>
     <string name="feedback_content_hint">请输入5-200字反馈内容</string>
-    <string name="feedback_format_error">反馈格式有误</string>
+    <string name="feedback_format_error">反馈内容格式有误</string>
     <string name="phone_number_format_error">手机号格式有误</string>
     <string name="consumer_hotline">客服电话: 400-XXX-XXXX</string>
     <string name="official_qq_group">官方QQ群: XXXXXXXXX XXXXXXXXX</string>

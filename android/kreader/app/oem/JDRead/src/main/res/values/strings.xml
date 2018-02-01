@@ -87,7 +87,7 @@
     <string name="common_problem">Common problem</string>
     <string name="commit">commit</string>
     <string name="feedback_content_hint">Please enter 5-200 word feedback content</string>
-    <string name="feedback_format_error">Feedback format is wrong</string>
+    <string name="feedback_format_error">Feedback content format is wrong</string>
     <string name="personal_task">Personal task</string>
     <string name="personal_account">Personal account</string>
     <string name="personal_notes">Personal notes</string>
