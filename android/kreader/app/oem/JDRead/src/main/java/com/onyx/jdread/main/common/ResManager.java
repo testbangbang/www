@@ -30,7 +30,15 @@ public class ResManager {
         return context.getResources().obtainTypedArray(resId);
     }
 
+    public static int getDimens(int resId) {
+        return context.getResources().getDimensionPixelSize(resId);
+    }
+
     public static int getColor(int res){
         return context.getResources().getColor(res);
+    }
+
+    public static int[] getIntArray(int resId) {
+        return context.getResources().getIntArray(resId);
     }
 }

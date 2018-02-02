@@ -3,6 +3,7 @@ package com.onyx.jdread.library.ui;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.onyx.jdread.library.action.LoadSearchHistoryAction;
 import com.onyx.jdread.library.action.SearchBookAction;
 import com.onyx.jdread.library.adapter.HotSearchAdapter;
 import com.onyx.jdread.library.adapter.SearchHintAdapter;
+import com.onyx.jdread.library.adapter.SearchHistoryAdapter;
 import com.onyx.jdread.library.adapter.SearchResultAdapter;
 import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
 import com.onyx.jdread.library.event.ClearSearchHistoryEvent;
@@ -65,6 +67,7 @@ public class SearchBookFragment extends BaseFragment {
     private SearchResultAdapter searchResultAdapter;
     private PageIndicatorModel pageIndicatorModel;
     private GPaginator pagination;
+    private SearchHistoryAdapter searchHistoryAdapter;
 
     @Nullable
     @Override
@@ -89,6 +92,10 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchResultRecycler.addItemDecoration(new DashLineItemDivider());
         searchResultAdapter = new SearchResultAdapter();
         binding.searchResultRecycler.setAdapter(searchResultAdapter);
+
+        binding.searchHistoryRecycler.setLayoutManager(new DisableScrollGridManager(getContext().getApplicationContext()));
+        searchHistoryAdapter = new SearchHistoryAdapter();
+        binding.searchHistoryRecycler.setAdapter(searchHistoryAdapter);
         initPageIndicator();
         hideSearchViewLine();
     }
@@ -219,11 +226,11 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void loadSearchHistory() {
-        LoadSearchHistoryAction historyAction = new LoadSearchHistoryAction();
+        LoadSearchHistoryAction historyAction = new LoadSearchHistoryAction(ResManager.getInteger(R.integer.history_limit));
         historyAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                searchHistoryAdapter.setSearchHistories(LibraryDataBundle.getInstance().getSearchBookModel().searchHistory);
             }
         });
     }

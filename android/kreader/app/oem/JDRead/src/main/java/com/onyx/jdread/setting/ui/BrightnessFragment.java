@@ -43,7 +43,9 @@ public class BrightnessFragment extends BaseFragment {
         brightnessBinding.ratingbarLightSettings.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                brightnessModel.setBrightness(ratingBar.getProgress());
+                if (fromUser) {
+                    brightnessModel.setBrightness(ratingBar.getProgress());
+                }
             }
         });
     }

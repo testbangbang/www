@@ -476,7 +476,7 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
-    public List<SearchHistory> loadSearchHistory() {
+    public List<SearchHistory> loadSearchHistory(int limit) {
         return null;
     }
 

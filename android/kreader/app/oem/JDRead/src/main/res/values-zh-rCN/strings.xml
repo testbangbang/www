@@ -55,7 +55,7 @@
     <string name="book_detail">图书详情</string>
     <string name="rename_library">重命名</string>
     <string name="delete_library">删除分组</string>
-    <string name="delete_library_include_book">删除该分组组内图书</string>
+    <string name="delete_library_include_book">删除分组及全部图书</string>
     <string name="the_same_name">重命名不能与原组名一致</string>
     <string name="system_update_alert">系统升级</string>
     <string name="will_execute_update">有1个更新已准备好，是否立即执行？</string>
@@ -403,13 +403,22 @@
     <string name="way_to_pay">使用 微信 或 京东金融 扫码完成支付</string>
     <string name="top_up_success">充值成功</string>
     <string name="continue_top_up">继续充值</string>
-    <string name="the_input_has_exceeded_the_upper_limit">输入内容已超%d字节数上限</string>
+    <string name="the_input_has_exceeded_the_upper_limit">输入内容已超上限</string>
     <string name="group_names_do_not_support_special_characters">分组名不支持特殊字符</string>
     <string name="first_chapter">已是首章</string>
     <string name="last_chapter">已是尾章</string>
     <string name="no_chapters">本文不含章节信息</string>
+    <string name="enter_hint">请输入关键词</string>
+    <string name="total_page" formatted="false">全部搜索结果（%d）</string>
+    <string name="close_history">关闭历史记录</string>
+    <string name="delete_history">删除历史记录</string>
+    <string name="searching" formatted="false">正在搜索 %d/%d</string>
+    <string name="no_more_search_results">没有更多的搜索结果</string>
+    <string name="page" formatted="false">页码 %d</string>
+    <string name="search_end">完成搜索</string>
     <string name="delete_library_prompt">是否删除该分组(组内图书重新放入书架)</string>
     <string name="delete_library_include_book_prompt">是否从本机删除该分组及组内图书</string>
     <string name="click_to_translate">点击翻译</string>
+    <string name="delete_book">删除本书</string>
     <string name="network_or_server_error">网络或者服务器出错，稍等会再试</string>
 </resources>
