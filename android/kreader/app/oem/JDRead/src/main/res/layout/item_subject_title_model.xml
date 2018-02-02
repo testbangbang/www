@@ -2,11 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-    <data class="CategorySubjectModelItemBinding">
+    <data class="TilteSubjectItemBinding">
 
         <variable
-            name="categoryBean"
-            type="com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo" />
+            name="modulesBean"
+            type="com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean.DataBean.ModulesBean" />
 
     </data>
 
@@ -26,7 +26,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:textColor="@android:color/black"
-            android:text="@{categoryBean.name}"
+            android:text="@{modulesBean.show_name}"
             android:textSize="@dimen/level_two_heading_font" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>

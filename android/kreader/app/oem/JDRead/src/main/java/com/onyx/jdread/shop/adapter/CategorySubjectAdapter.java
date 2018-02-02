@@ -7,10 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.AllCategoryNormalItemBinding;
-import com.onyx.jdread.databinding.CategorySubjectModelItemBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.CategoryItemClickEvent;
 
@@ -24,20 +22,16 @@ import java.util.List;
 
 public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> {
 
-    private static final int TYPE_MAINMODEL = 1;
-    private static final int TYPE_ALL_CAT_NORMAL = 2;
-    private boolean isAllCategory;
     private EventBus eventBus;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_category_recycle_view_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_category_recycle_view_col);
+    private int row;
+    private int col;
     private boolean canSelected = false;
 
-    public CategorySubjectAdapter(EventBus eventBus, boolean isAllCategory) {
+    public CategorySubjectAdapter(EventBus eventBus) {
         this.eventBus = eventBus;
-        this.isAllCategory = isAllCategory;
     }
 
-    public void setCanSelected(boolean canSelected){
+    public void setCanSelected(boolean canSelected) {
         this.canSelected = canSelected;
     }
 
@@ -62,41 +56,18 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (isAllCategory) {
-            return TYPE_ALL_CAT_NORMAL;
-        } else {
-            return TYPE_MAINMODEL;
-        }
-    }
-
-    @Override
     public PageRecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case TYPE_MAINMODEL:
-                return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_subject_model, null));
-            case TYPE_ALL_CAT_NORMAL:
-                return new AllCategoryNormalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_all_category_normal, null));
-            default:
-                return new AllCategoryNormalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_all_category_normal, null));
-        }
+        return new AllCategoryNormalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_all_category_normal, null));
     }
 
     @Override
     public void onPageBindViewHolder(PageRecyclerView.ViewHolder holder, int position) {
         final CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = getItemVMList().get(position);
-        if (holder instanceof ModelViewHolder) {
-            ModelViewHolder viewHolder = (ModelViewHolder) holder;
-            viewHolder.itemView.setOnClickListener(this);
-            viewHolder.itemView.setTag(position);
-            viewHolder.bindTo(catListBean);
-        }  else if (holder instanceof AllCategoryNormalViewHolder) {
-            AllCategoryNormalViewHolder viewHolder = (AllCategoryNormalViewHolder) holder;
-            viewHolder.itemView.setOnClickListener(this);
-            viewHolder.itemView.setTag(position);
-            viewHolder.getBind().categoryName.setSelected(catListBean.isSelect);
-            viewHolder.bindTo(catListBean);
-        }
+        AllCategoryNormalViewHolder viewHolder = (AllCategoryNormalViewHolder) holder;
+        viewHolder.itemView.setOnClickListener(this);
+        viewHolder.itemView.setTag(position);
+        viewHolder.getBind().categoryName.setSelected(catListBean.isSelect);
+        viewHolder.bindTo(catListBean);
     }
 
     @Override
@@ -121,32 +92,13 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
     }
 
     private void changeItemState(int position, List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelTwoList) {
-        for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catebean :levelTwoList) {
+        for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catebean : levelTwoList) {
             catebean.isSelect = false;
         }
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = levelTwoList.get(position);
         if (canSelected) {
             categoryBeanLevelTwo.isSelect = true;
             notifyItemChanged(position);
-        }
-    }
-
-    static class ModelViewHolder extends PageRecyclerView.ViewHolder {
-
-        private final CategorySubjectModelItemBinding bind;
-
-        public ModelViewHolder(View view) {
-            super(view);
-            bind = DataBindingUtil.bind(view);
-        }
-
-        public CategorySubjectModelItemBinding getBind() {
-            return bind;
-        }
-
-        public void bindTo(CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean) {
-            bind.setCategoryBean(catListBean);
-            bind.executePendingBindings();
         }
     }
 

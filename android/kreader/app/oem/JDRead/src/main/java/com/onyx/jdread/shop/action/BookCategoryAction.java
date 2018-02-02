@@ -2,12 +2,10 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
-import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestCategoryList;
 
@@ -20,17 +18,14 @@ import java.util.List;
 
 public class BookCategoryAction extends BaseAction<ShopDataBundle> {
 
-    private boolean isMainCategory;
-    private BookShopViewModel shopViewModel;
     private List<CategoryListResultBean.CategoryBeanLevelOne> levelOneData;
 
-    public BookCategoryAction(boolean isMainCategory) {
-        this.isMainCategory = isMainCategory;
+    public BookCategoryAction() {
+
     }
 
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
-        shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestInfo baseRequestBean = new BaseRequestInfo();
         JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
         appBaseInfo.setSign(appBaseInfo.getSignValue(CloudApiContext.BookShopURI.CATEGORY_URI));
@@ -57,12 +52,6 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
                 if (categoryListResultBean != null) {
                     levelOneData = categoryListResultBean.data;
                 }
-                if (levelOneData != null) {
-                    if (isMainCategory) {
-                        shopViewModel.setCategorySubjectItems(levelOneData.get(0).sub_category);
-                    }
-                }
-
                 if (rxCallback != null) {
                     rxCallback.onNext(BookCategoryAction.this);
                 }
