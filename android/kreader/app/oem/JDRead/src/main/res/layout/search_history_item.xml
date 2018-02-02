@@ -17,5 +17,5 @@
         android:text="@{history}"
         android:gravity="center_vertical"
         android:textColor="@color/normal_black"
-        android:textSize="@dimen/level_two_heading_font" />
+        android:textSize="@dimen/level_three_heading_font" />
 </layout>
