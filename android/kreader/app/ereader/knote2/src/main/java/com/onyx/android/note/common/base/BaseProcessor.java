@@ -9,11 +9,11 @@ import org.greenrobot.eventbus.EventBus;
  * Created by lxm on 2018/1/31.
  */
 
-public abstract class BaseViewHandler {
+public abstract class BaseProcessor {
 
     private EventBus eventBus;
 
-    public BaseViewHandler(@NonNull EventBus eventBus) {
+    public BaseProcessor(@NonNull EventBus eventBus) {
         this.eventBus = eventBus;
     }
 
