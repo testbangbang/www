@@ -14,6 +14,7 @@ import android.os.BatteryManager;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
 import com.onyx.jdread.util.TimeUtils;
 
@@ -96,7 +97,20 @@ public class SystemBarModel extends Observable {
 
     public void updateTime() {
         String time = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DEFAULT_TIME_FORMAT);
+        time = handleTime(time);
         this.time.set(time);
+    }
+
+    private String handleTime(String time) {
+        if (time.contains(ResManager.getString(R.string.morning))) {
+            int index = time.indexOf(" ");
+            time = time.substring(0, index + 1) + ResManager.getString(R.string.AM);
+        }
+        if (time.contains(ResManager.getString(R.string.afternoon))) {
+            int index = time.indexOf(" ");
+            time = time.substring(0, index + 1) + ResManager.getString(R.string.PM);
+        }
+        return time;
     }
 
     public void setTimeFormat(boolean is24Hour) {

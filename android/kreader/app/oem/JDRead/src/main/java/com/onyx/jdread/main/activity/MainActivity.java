@@ -1,6 +1,7 @@
 package com.onyx.jdread.main.activity;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
@@ -47,6 +48,7 @@ import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.main.model.MainViewModel;
 import com.onyx.jdread.main.model.SystemBarModel;
+import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private FunctionBarAdapter functionBarAdapter;
     private SystemBarModel systemBarModel;
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
+    private ScreenStateReceive screenStateReceive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initLibrary() {
         EventBus.getDefault().register(this);
+        registerScreenReceive();
     }
 
     private void initData() {
@@ -164,7 +168,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         systemBarModel.unRegisterReceiver(JDReadApplication.getInstance());
+        unregisterReceiver(screenStateReceive);
         super.onDestroy();
+    }
+
+    private void registerScreenReceive() {
+        screenStateReceive = new ScreenStateReceive();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ScreenStateReceive.SCREEN_ON);
+        intentFilter.addAction(ScreenStateReceive.SCREEN_OFF);
+        registerReceiver(screenStateReceive, intentFilter);
     }
 
     public void switchCurrentFragment(String childViewName) {
