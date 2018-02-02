@@ -800,19 +800,6 @@ public class ReaderDataHolder {
         return posX;
     }
 
-    public int getDocPageLeft() {
-        return 0;
-    }
-
-    public int getDocPageRight() {
-            return getDisplayWidth();
-    }
-
-    public boolean isInDocPageRegion(int x, int y) {
-        return getDocPageLeft() <= x && x <= getDocPageRight() &&
-                0 <= y && y <= getDisplayHeight();
-    }
-
     public int getSideNoteStartSubPageIndex() {
         return supportScalable() ? 1 : 0;
     }

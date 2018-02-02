@@ -192,35 +192,23 @@ public class SideNoteHandler extends BaseHandler {
 
     @Override
     public boolean onTouchEvent(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (e.getPointerCount() > 1) {
-            return true;
-        }
-        if (inDocRegion(e)) {
-            return true;
-        }
-
-        return readerDataHolder.getNoteManager().getTouchHelper().onTouchEvent(e);
+        return true;
     }
 
     public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (inDocRegion(e1) && inDocRegion(e2)) {
-            return super.onScroll(readerDataHolder, e1, e2, distanceX, distanceY);
-        }
-        return true;
+        return super.onScroll(readerDataHolder, e1, e2, distanceX, distanceY);
     }
 
     @Override
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (inDocRegion(e)) {
-            int left = readerDataHolder.getDocPageLeft();
-            int width = readerDataHolder.getDisplayWidth();
-            if (left <= e.getX() && e.getX() < left + width / 3) {
-                prevScreen(readerDataHolder);
-            } else if (e.getX() > left + ((width * 2) / 3) && e.getX() < left + width) {
-                nextScreen(readerDataHolder);
-            } else {
-                toggleSideNoteMenu(readerDataHolder);
-            }
+        int left = 0;
+        int width = readerDataHolder.getDisplayWidth();
+        if (left <= e.getX() && e.getX() < left + width / 3) {
+            prevScreen(readerDataHolder);
+        } else if (e.getX() > left + ((width * 2) / 3) && e.getX() < left + width) {
+            nextScreen(readerDataHolder);
+        } else {
+            toggleSideNoteMenu(readerDataHolder);
         }
         return true;
     }
@@ -239,10 +227,7 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
-        if (inDocRegion(startX, startY) && inDocRegion(endX, endY)) {
-            return super.onActionUp(readerDataHolder, startX, startY, endX, endY);
-        }
-        return true;
+        return super.onActionUp(readerDataHolder, startX, startY, endX, endY);
     }
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
@@ -264,14 +249,6 @@ public class SideNoteHandler extends BaseHandler {
     public void close(final ReaderDataHolder readerDataHolder) {
         StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
         stopNoteActionChain.execute(readerDataHolder, null);
-    }
-
-    private boolean inDocRegion(MotionEvent e) {
-        return inDocRegion(e.getX(), e.getY());
-    }
-
-    private boolean inDocRegion(float x, float y) {
-        return getParent().getReaderDataHolder().isInDocPageRegion((int)x, (int)y);
     }
 
     private void toggleSideNoteMenu(final ReaderDataHolder readerDataHolder) {
