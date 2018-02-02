@@ -18,7 +18,6 @@ public class SupportType {
             docExtension.add("epub");
             docExtension.add("txt");
             docExtension.add("mobi");
-            docExtension.add("ebk");
             docExtension.add("png");
             docExtension.add("jpeg");
             docExtension.add("jpg");

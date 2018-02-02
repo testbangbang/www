@@ -11,8 +11,12 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SearchHintItemBinding;
+import com.onyx.jdread.library.event.SearchBookKeyEvent;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.PageAdapter;
 import com.onyx.jdread.main.common.ResManager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -43,8 +47,14 @@ public class SearchHintAdapter extends PageAdapter<SearchHintAdapter.ViewHolder,
 
     @Override
     public void onPageBindViewHolder(SearchHintAdapter.ViewHolder holder, int position) {
-        DataModel dataModel = getItemVMList().get(position);
+        final DataModel dataModel = getItemVMList().get(position);
         holder.bind.setDataModel(dataModel);
+        holder.rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LibraryDataBundle.getInstance().getEventBus().post(new SearchBookKeyEvent(dataModel.title.get()));
+            }
+        });
     }
 
     @Override
@@ -57,9 +67,11 @@ public class SearchHintAdapter extends PageAdapter<SearchHintAdapter.ViewHolder,
     static class ViewHolder extends PageRecyclerView.ViewHolder {
 
         private final SearchHintItemBinding bind;
+        private View rootView;
 
         public ViewHolder(View view) {
             super(view);
+            rootView = view;
             bind = DataBindingUtil.bind(view);
         }
 

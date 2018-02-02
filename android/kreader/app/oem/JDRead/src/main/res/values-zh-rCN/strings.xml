@@ -42,7 +42,7 @@
     <string name="no">取消</string>
     <string name="delete_book_prompt">是否从本机中删除所选图书？</string>
     <string name="build_library">新建分组</string>
-    <string name="build_library_hint">最多输入20个字符</string>
+    <string name="build_library_hint">最多可输入20个字符</string>
     <string name="library_move_to_fail">书库移动失败</string>
     <string name="adding">添加中...</string>
     <string name="group_exist">分组%s已存在</string>
@@ -380,7 +380,7 @@
     <string name="reader_bookmark_add_fail">书签添加失败</string>
     <string name="reader_bookmark_delete_success">书签已取消</string>
     <string name="reader_bookmark_delete_fail">书签取消失败</string>
-    <string name="speed_refresh">快速刷新</string>
+    <string name="speed_refresh">极速翻页</string>
     <string name="item_consume_record_read_bean">-%d阅豆</string>
     <string name="item_consume_record_voucher">-%d代金券</string>
     <string name="down_book_resutl_no_read_vip">非畅读VIP</string>
