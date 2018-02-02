@@ -7,6 +7,7 @@ import com.onyx.jdread.shop.cloud.entity.ShopMainConfigRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
+import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestShopMainConfig;
@@ -22,7 +23,7 @@ public class ShopMainConfigAction extends BaseAction {
 
     private BookModelConfigResultBean resultBean;
     private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
-    private List<SubjectViewModel> commonSubjcet;
+    private List<BaseSubjectViewModel> commonSubjcet;
     private int cid;
 
     public ShopMainConfigAction(int cid) {
@@ -33,7 +34,7 @@ public class ShopMainConfigAction extends BaseAction {
         return resultBean;
     }
 
-    public List<SubjectViewModel> getCommonSubjcet() {
+    public List<BaseSubjectViewModel> getCommonSubjcet() {
         return commonSubjcet;
     }
 

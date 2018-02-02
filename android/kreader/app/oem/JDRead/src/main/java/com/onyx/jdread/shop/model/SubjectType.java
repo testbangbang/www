@@ -10,4 +10,5 @@ public class SubjectType {
     public static final int TYPE_COVER = 3;
     public static final int TYPE_TOP_FUNCTION = 4;
     public static final int TYPE_END = 5;
+    public static final int TYPE_VIP_USER = 6;
 }

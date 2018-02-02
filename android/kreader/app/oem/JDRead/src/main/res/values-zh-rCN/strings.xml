@@ -383,10 +383,10 @@
     <string name="speed_refresh">快速刷新</string>
     <string name="item_consume_record_read_bean">-%d阅豆</string>
     <string name="item_consume_record_voucher">-%d代金券</string>
-    <string name="down_book_resutl_no_read_vip">非畅读VIP</string>
-    <string name="down_book_can_not_read">电子书不支持阅读</string>
+    <string name="down_book_resutl_no_read_vip">没有vip会员权限</string>
+    <string name="down_book_can_not_read">改电子书不支持会员畅读</string>
     <string name="down_book_book_not_found">电子书不存在</string>
-    <string name="down_book_illegal_order">非法订单</string>
+    <string name="down_book_illegal_order">无效订单</string>
     <string name="down_book_illegal_device">非法设备</string>
     <string name="down_book_server_error">后台异常</string>
     <string name="down_book_cerify_order_error">订单认证异常</string>

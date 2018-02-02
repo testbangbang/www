@@ -11,6 +11,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.BannerSubjectBinding;
+import com.onyx.jdread.databinding.ItemVipReadUserInfoBinding;
 import com.onyx.jdread.databinding.LayoutBackTopViewBinding;
 import com.onyx.jdread.databinding.LayoutBookShopTopFunctionBinding;
 import com.onyx.jdread.databinding.SubjectCommonBinding;
@@ -23,31 +24,13 @@ import com.onyx.jdread.shop.model.SubjectType;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.TitleSubjectViewModel;
 import com.onyx.jdread.shop.model.TopFunctionViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.onyx.jdread.shop.model.VipUserInfoViewModel;
 
 /**
  * Created by jackdeng on 2018/1/31.
  */
 
-public class ShopMainConfigAdapter extends RecyclerView.Adapter {
-
-    public List<BaseSubjectViewModel> datas = new ArrayList<>();
-
-    public ShopMainConfigAdapter() {
-
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return datas.get(position).getSubjectType();
-    }
-
-    @Override
-    public int getItemCount() {
-        return datas.size();
-    }
+public class ShopMainConfigAdapter extends SubjectCommonAdapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -62,6 +45,8 @@ public class ShopMainConfigAdapter extends RecyclerView.Adapter {
                 return new TopFunctionSubjectViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_book_shop_top_function, parent, false));
             case SubjectType.TYPE_END:
                 return new EndSubjectViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_back_top_view, parent, false));
+            case SubjectType.TYPE_VIP_USER:
+                return new VipUserInfoHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_vip_read_user_info, parent, false));
             default:
                 return new CommonSubjectViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subject_common, parent, false));
         }
@@ -69,7 +54,7 @@ public class ShopMainConfigAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final BaseSubjectViewModel viewModel = datas.get(position);
+        final BaseSubjectViewModel viewModel = getDatas().get(position);
         if (holder instanceof TitleSubjectViewHolder) {
             TitleSubjectViewHolder viewHolder = (TitleSubjectViewHolder) holder;
             viewHolder.bindTo((TitleSubjectViewModel) viewModel);
@@ -85,12 +70,10 @@ public class ShopMainConfigAdapter extends RecyclerView.Adapter {
         } else if (holder instanceof EndSubjectViewHolder) {
             EndSubjectViewHolder viewHolder = (EndSubjectViewHolder) holder;
             viewHolder.bindTo((MainConfigEndViewModel) viewModel);
+        } else if (holder instanceof VipUserInfoHolder) {
+            VipUserInfoHolder viewHolder = (VipUserInfoHolder) holder;
+            viewHolder.bindTo((VipUserInfoViewModel) viewModel);
         }
-    }
-
-    public void setRawData(List<BaseSubjectViewModel> rawData) {
-        this.datas = rawData;
-        notifyDataSetChanged();
     }
 
     static class TitleSubjectViewHolder extends PageRecyclerView.ViewHolder {
@@ -195,6 +178,25 @@ public class ShopMainConfigAdapter extends RecyclerView.Adapter {
         }
 
         public void bindTo(MainConfigEndViewModel viewModel) {
+            bind.setViewModel(viewModel);
+            bind.executePendingBindings();
+        }
+    }
+
+    static class VipUserInfoHolder extends PageRecyclerView.ViewHolder {
+
+        private final ItemVipReadUserInfoBinding bind;
+
+        public VipUserInfoHolder(View view) {
+            super(view);
+            bind = DataBindingUtil.bind(view);
+        }
+
+        public ItemVipReadUserInfoBinding getBind() {
+            return bind;
+        }
+
+        public void bindTo(VipUserInfoViewModel viewModel) {
             bind.setViewModel(viewModel);
             bind.executePendingBindings();
         }

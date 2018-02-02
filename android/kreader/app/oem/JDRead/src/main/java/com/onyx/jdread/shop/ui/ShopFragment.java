@@ -2,18 +2,19 @@ package com.onyx.jdread.shop.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookShopBinding;
 import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
@@ -46,7 +47,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public class ShopFragment extends BaseFragment {
 
     private FragmentBookShopBinding bookShopBinding;
-    private int space = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_recycle_view_space);
+    private int space = ResManager.getInteger(R.integer.custom_recycle_view_space);
     private CustomRecycleView recyclerView;
 
     @Nullable

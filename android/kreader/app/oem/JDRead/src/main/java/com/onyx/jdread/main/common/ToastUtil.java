@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.util.Utils;
 
 /**
  * Created by jackdeng on 2017/12/7.
@@ -126,7 +125,7 @@ public class ToastUtil {
         } else if (Constants.RESULT_CODE_BOOK_GET_CONTENT_ERROR.equals(errorCode)) {
             errorMsg = ResManager.getString(R.string.down_book_server_error);
         } else if (Constants.RESULT_CODE_BOOK_CERIFY_ORDER_ERROR.equals(errorCode)) {
-            errorMsg = ResManager.getString(R.string.down_book_cerify_order_error);
+            errorMsg = ResManager.getString(R.string.down_book_server_error);
         }
         return errorMsg;
     }

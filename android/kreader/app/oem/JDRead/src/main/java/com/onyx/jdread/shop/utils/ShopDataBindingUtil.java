@@ -63,14 +63,6 @@ public class ShopDataBindingUtil {
         }
     }
 
-    @BindingAdapter({"categorySubjectItems"})
-    public static void setCategoryItems(PageRecyclerView recyclerView, List items) {
-        CategorySubjectAdapter adapter = (CategorySubjectAdapter) recyclerView.getAdapter();
-        if (adapter != null && items != null) {
-            adapter.setRawData(items, recyclerView.getContext());
-        }
-    }
-
     @BindingAdapter({"categoryItems"})
     public static void setAllCategoryItems(PageRecyclerView recyclerView, List items) {
         CategorySubjectAdapter adapter = (CategorySubjectAdapter) recyclerView.getAdapter();
@@ -144,7 +136,7 @@ public class ShopDataBindingUtil {
     public static void setSubjectModels(PageRecyclerView recyclerView, List items) {
         BookRankAdapter adapter = (BookRankAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
-            adapter.setRawData(items, recyclerView.getContext());
+            adapter.setDatas(items);
         }
     }
 
@@ -168,7 +160,7 @@ public class ShopDataBindingUtil {
     public static void setConfigSubjects(RecyclerView recyclerView, List items) {
         ShopMainConfigAdapter adapter = (ShopMainConfigAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
-            adapter.setRawData(items);
+            adapter.setDatas(items);
         }
     }
 }

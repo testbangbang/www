@@ -24,8 +24,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/book_shop_padding_bottom"
-            android:layout_marginTop="@dimen/book_shop_padding_top"
+            android:layout_marginBottom="@dimen/book_shop_main_config_recycle_view_margin_bottom"
+            android:layout_marginTop="@dimen/book_shop_main_config_recycle_view_margin_top"
             android:orientation="horizontal">
 
             <com.onyx.jdread.shop.view.CustomRecycleView

@@ -1,7 +1,9 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.ShopMainConfigRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
@@ -106,15 +108,16 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                 mainConfigFinalSubjectList.addAll(mainConfigSubjectList);
                 mainConfigFinalSubjectList.add(shopDataBundle.getShopViewModel().getMainConfigEndViewModel());
                 shopDataBundle.getShopViewModel().setMainConfigSubjcet(mainConfigFinalSubjectList);
-                calculateTotalPages(shopDataBundle, mainConfigFinalSubjectList);
+                calculateMainConfigTotalPages(shopDataBundle, mainConfigFinalSubjectList);
             }
         }
     }
 
-    private void calculateTotalPages(ShopDataBundle dataBundle, List<BaseSubjectViewModel> mainConfigFinalSubjectList) {
+    private void calculateMainConfigTotalPages(ShopDataBundle dataBundle, List<BaseSubjectViewModel> mainConfigFinalSubjectList) {
         if (mainConfigFinalSubjectList != null) {
             List<BaseSubjectViewModel> tempList = new ArrayList<>();
             tempList.addAll(mainConfigFinalSubjectList);
+            int itemSpace = ResManager.getInteger(R.integer.custom_recycle_view_space);
             int totalPage = 1;
             int itemHeight = 0;
             for (int i = 0; i < tempList.size(); i++) {
@@ -136,6 +139,7 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                         itemHeight = itemHeight + Constants.SHOP_VIEW_END_VIEW_HEIGHT;
                         break;
                 }
+                itemHeight = itemHeight + itemSpace;
                 if (itemHeight > Constants.SHOP_VIEW_RECYCLE_HEIGHT) {
                     tempList.add(i, tempList.get(i));
                     itemHeight = 0;

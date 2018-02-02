@@ -110,6 +110,7 @@ public class Constants {
     public static final int MODULE_TYPE_RECOMMEND = 6;
 
     public static final int SHOP_VIEW_RECYCLE_HEIGHT = 1055;
+    public static final int COMMOM_SUBJECT_RECYCLE_HEIGHT = 1088;
     public static final int SHOP_VIEW_TOP_FUNCTION_HEIGHT = 106;
     public static final int SHOP_VIEW_BANNER_HEIGHT = 169;
     public static final int SHOP_VIEW_TITLE_HEIGHT = 169;

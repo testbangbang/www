@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import com.onyx.android.sdk.ui.utils.PageTurningDetector;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
-import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
+import com.onyx.jdread.shop.adapter.SubjectCommonAdapter;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 
 import java.util.List;
@@ -99,12 +99,12 @@ public class CustomRecycleView extends RecyclerView {
     }
 
     public void prevPage() {
-        ShopMainConfigAdapter adapter = getAdapter();
+        SubjectCommonAdapter adapter = getAdapter();
         if (adapter != null) {
             if (curPageIndex <= 0) {
                 return;
             }
-            List<BaseSubjectViewModel> datas = adapter.datas;
+            List<BaseSubjectViewModel> datas = adapter.getDatas();
             int preIndex = 0;
             for (int i = 0; i < datas.size(); i++) {
                 int pageIndex = datas.get(i).getPageIndex();
@@ -124,10 +124,10 @@ public class CustomRecycleView extends RecyclerView {
     }
 
     public void nextPage() {
-        ShopMainConfigAdapter adapter = getAdapter();
+        SubjectCommonAdapter adapter = getAdapter();
         if (adapter != null) {
             int lastCompletelyPosition = getDisableLayoutManager().findLastCompletelyVisibleItemPosition();
-            List<BaseSubjectViewModel> datas = adapter.datas;
+            List<BaseSubjectViewModel> datas = adapter.getDatas();
             if (lastCompletelyPosition == datas.size() - 1) {
                 return;
             }
@@ -177,7 +177,7 @@ public class CustomRecycleView extends RecyclerView {
     }
 
     @Override
-    public ShopMainConfigAdapter getAdapter() {
-        return (ShopMainConfigAdapter) super.getAdapter();
+    public SubjectCommonAdapter getAdapter() {
+        return (SubjectCommonAdapter) super.getAdapter();
     }
 }

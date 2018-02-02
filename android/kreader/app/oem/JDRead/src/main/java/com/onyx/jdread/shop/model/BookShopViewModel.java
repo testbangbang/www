@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.model;
 
-import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.MainConfigDataChangeEvent;
 import com.onyx.jdread.shop.event.SearchViewClickEvent;
@@ -16,9 +15,7 @@ import java.util.List;
 public class BookShopViewModel extends BaseSubjectViewModel {
     public BannerViewModel bannerViewModel;
     public TopFunctionViewModel topFunctionViewModel;
-    public List<SubjectViewModel> commonSubjcet;
     public AllCategoryViewModel allCategoryViewModel;
-    public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> titleSubjectItems;
     public String searchContent;
     public EventBus eventBus;
     public List<BaseSubjectViewModel> mainConfigSubjcet;
