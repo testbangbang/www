@@ -51,7 +51,6 @@
                 android:shadowColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font"
                 app:iconifiedByDefault="false"
-                app:closeIcon="@drawable/ic_dialog_close"
                 app:queryHint="@string/search_view_hint"
                 app:searchIcon="@null" />
 
@@ -74,8 +73,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/search_hot_words"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textColor="@color/text_gray_color"
+                android:textSize="@dimen/level_three_heading_font" />
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/hot_search_recycler"
@@ -100,8 +99,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/search_history"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_two_heading_font" />
+                    android:textColor="@color/text_gray_color"
+                    android:textSize="@dimen/level_three_heading_font" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -109,7 +108,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:onClick="@{()->searchModel.clearHistory()}"
-                    android:src="@mipmap/ic_shelf_delete_book" />
+                    android:src="@mipmap/ic_shelf_search_delet" />
             </RelativeLayout>
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView

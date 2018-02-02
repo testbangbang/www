@@ -421,4 +421,5 @@
     <string name="click_to_translate">点击翻译</string>
     <string name="delete_book">删除本书</string>
     <string name="network_or_server_error">网络或者服务器出错，稍等会再试</string>
+    <string name="power_off_prompt">您确定关闭阅读器吗?</string>
 </resources>
