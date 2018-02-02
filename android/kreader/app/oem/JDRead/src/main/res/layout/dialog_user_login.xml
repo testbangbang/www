@@ -64,12 +64,10 @@
                 android:background="@null"
                 android:hint="@string/edit_text_account_hint"
                 android:inputType="textVisiblePassword"
-                android:paddingBottom="@dimen/user_login_edit_text_pading_top_and_bottom"
-                android:paddingTop="@dimen/user_login_edit_text_pading_top_and_bottom"
+                android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
                 android:singleLine="true"
                 android:text="@={loginViewModel.account}"
-                android:textSize="@dimen/level_three_heading_font" />
-
+                android:textSize="@dimen/level_three_heading_font"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -99,8 +97,7 @@
                 android:background="@null"
                 android:hint="@string/password_edit_hint"
                 android:inputType="textPassword"
-                android:paddingBottom="@dimen/user_login_edit_text_pading_top_and_bottom"
-                android:paddingTop="@dimen/user_login_edit_text_pading_top_and_bottom"
+                android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
                 android:singleLine="true"
                 android:text="@={loginViewModel.password}"
                 android:textSize="@dimen/level_three_heading_font"

@@ -20,7 +20,6 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class UserLoginViewModel {
-
     public final ObservableField<String> account = new ObservableField<>();
     public final ObservableField<String> password = new ObservableField<>();
     public final ObservableField<Boolean> isShowPassword = new ObservableField<>();
@@ -42,7 +41,7 @@ public class UserLoginViewModel {
 
     public void onLoginViewClick() {
         Utils.hideSoftWindow(context);
-        UserLoginAction userLoginAction = new UserLoginAction(JDReadApplication.getInstance(),account.get(),password.get());
+        UserLoginAction userLoginAction = new UserLoginAction(JDReadApplication.getInstance(), account.get(), password.get(), false);
         userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -73,9 +72,7 @@ public class UserLoginViewModel {
     }
 
     public void onChangePasswordVisibleViewClick() {
-        boolean showPassword = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_SHOW_PASSWORD, false);
-        isShowPassword.set(!showPassword);
-        JDPreferenceManager.setBooleanValue(Constants.SP_KEY_SHOW_PASSWORD,!showPassword);
+        isShowPassword.set(!isShowPassword.get());
     }
 
     public void onRegisterViewClick() {

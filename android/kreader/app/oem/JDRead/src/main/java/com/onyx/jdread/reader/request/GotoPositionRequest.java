@@ -12,8 +12,15 @@ public class GotoPositionRequest extends ReaderBaseRequest {
     private Reader reader;
     private String persistentPosition;
     private int page;
+    private boolean isDrawPage = true;
 
-    public GotoPositionRequest(Reader reader,int page) {
+    public GotoPositionRequest(Reader reader, int page, boolean isDrawPage) {
+        this.reader = reader;
+        this.page = page;
+        this.isDrawPage = isDrawPage;
+    }
+
+    public GotoPositionRequest(Reader reader, int page) {
         this.reader = reader;
         this.page = page;
     }
@@ -21,6 +28,12 @@ public class GotoPositionRequest extends ReaderBaseRequest {
     public GotoPositionRequest(Reader reader, String persistentPosition) {
         this.reader = reader;
         this.persistentPosition = persistentPosition;
+    }
+
+    public GotoPositionRequest(Reader reader, String persistentPosition, boolean isDrawPage) {
+        this.reader = reader;
+        this.persistentPosition = persistentPosition;
+        this.isDrawPage = isDrawPage;
     }
 
     @Override
@@ -35,7 +48,9 @@ public class GotoPositionRequest extends ReaderBaseRequest {
         if (!reader.getReaderHelper().getReaderLayoutManager().gotoPosition(documentPosition)) {
             throw ReaderException.outOfRange();
         }
-        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
+        if (isDrawPage) {
+            reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
+        }
         updateSetting(reader);
         return this;
     }

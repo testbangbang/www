@@ -20,9 +20,8 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogDict;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
-import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
-import com.onyx.jdread.reader.menu.dialog.ReadSearchDialog;
+import com.onyx.jdread.reader.menu.dialog.DialogSearch;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
@@ -98,14 +97,14 @@ public class ReaderActivityEventHandler {
 
             @Override
             public void onError(Throwable throwable) {
-                ReaderErrorEvent.onErrorHandle(throwable,this.getClass().getSimpleName(),readerViewModel.getReaderDataHolder().getEventBus());
+                ReaderErrorEvent.onErrorHandle(throwable, this.getClass().getSimpleName(), readerViewModel.getReaderDataHolder().getEventBus());
             }
         });
 
     }
 
     @Subscribe
-    public void onFinishEvent(FinishEvent event){
+    public void onFinishEvent(FinishEvent event) {
         readerViewBack.getContext().finish();
     }
 
@@ -151,9 +150,8 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSearchContentEvent(SearchContentEvent event) {
         readerViewModel.getEventBus().post(new CloseReaderSettingMenuEvent());
-        ReadSearchDialog dialog = new ReadSearchDialog();
-        dialog.setReaderDataHolder(readerViewModel.getEventBus());
-        dialog.show(readerViewBack.getContext().getFragmentManager(), "");
+        DialogSearch dialog = new DialogSearch(readerViewBack.getContext(), readerViewModel.getReaderDataHolder());
+        dialog.show();
     }
 
     public static void updateReaderViewInfo(ReaderDataHolder readerDataHolder, ReaderBaseRequest request) {
@@ -231,12 +229,12 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onOpenDocumentSuccessEvent(OpenDocumentSuccessEvent event){
+    public void onOpenDocumentSuccessEvent(OpenDocumentSuccessEvent event) {
         readerViewModel.getReaderDataHolder().setDocumentOpenState();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDeleteAnnotationEvent(DeleteAnnotationEvent event){
+    public void onDeleteAnnotationEvent(DeleteAnnotationEvent event) {
         DeleteAnnotationAction action = new DeleteAnnotationAction(event.annotation);
         action.execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
             @Override

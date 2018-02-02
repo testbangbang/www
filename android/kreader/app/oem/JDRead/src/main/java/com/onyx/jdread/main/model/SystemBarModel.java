@@ -57,7 +57,7 @@ public class SystemBarModel extends Observable {
                     R.drawable.ic_battery_charge_90,
                     R.drawable.ic_battery_charge_100}
     };
-
+    public ObservableBoolean systemBarClickEnable = new ObservableBoolean(true);
     private static final int WIFI_LEVEL_COUNT = WIFI_SIGNAL_STRENGTH.length;
     private int level;
 

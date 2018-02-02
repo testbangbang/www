@@ -12,6 +12,7 @@ import com.onyx.jdread.setting.utils.UpdateUtil;
 public class SettingUpdateModel {
     private SystemUpdateData systemUpdateData = new SystemUpdateData();
     private static final String DOWNLOAD_VERSION = "download_version";
+    private boolean isDownloaded;
 
     public SystemUpdateData getSystemUpdateData() {
         return systemUpdateData;
@@ -29,5 +30,13 @@ public class SettingUpdateModel {
 
     public String getDownloadVersion() {
         return UpdateUtil.getAPPVersionName(JDReadApplication.getInstance());
+    }
+
+    public boolean isDownloaded() {
+        return isDownloaded;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        isDownloaded = downloaded;
     }
 }

@@ -20,6 +20,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalBookBinding;
 import com.onyx.jdread.library.model.PopMenuModel;
+import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -113,6 +114,13 @@ public class PersonalBookFragment extends BaseFragment {
                             JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_book_filter_y));
                 }
 
+            }
+        });
+
+        binding.personalBookSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewEventCallBack.gotoView(SearchBookFragment.class.getName());
             }
         });
 

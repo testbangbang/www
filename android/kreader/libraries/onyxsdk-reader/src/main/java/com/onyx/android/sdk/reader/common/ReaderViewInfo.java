@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.utils.ChapterInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,15 @@ public class ReaderViewInfo {
     public boolean autoCropForEachBlock = false;
     public int totalPage;
     public String chapterName;
+    private List<ChapterInfo> readTocChapterNodeList;
+
+    public List<ChapterInfo> getReadTocChapterNodeList() {
+        return readTocChapterNodeList;
+    }
+
+    public void setReadTocChapterNodeList(List<ChapterInfo> readTocChapterNodeList) {
+        this.readTocChapterNodeList = readTocChapterNodeList;
+    }
 
     public String getChapterName() {
         return chapterName;

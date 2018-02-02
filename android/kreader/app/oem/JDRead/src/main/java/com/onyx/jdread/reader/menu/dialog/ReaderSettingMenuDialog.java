@@ -130,6 +130,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initSystemBar() {
+        MainBundle.getInstance().getSystemBarModel().setIsShow(true);
         binding.readerSettingSystemBar.setSystemBarModel(MainBundle.getInstance().getSystemBarModel());
     }
 

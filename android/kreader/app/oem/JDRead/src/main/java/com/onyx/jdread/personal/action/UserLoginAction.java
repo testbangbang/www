@@ -11,13 +11,15 @@ import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
-import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.manager.ManagerActivityUtils;
+import com.onyx.jdread.personal.cloud.entity.jdbean.SignForVoucherBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserLoginResultErrorBean;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.util.TimeUtils;
 
 import jd.wjlogin_sdk.common.WJLoginHelper;
 import jd.wjlogin_sdk.common.listener.OnLoginCallback;
@@ -31,21 +33,27 @@ import jd.wjlogin_sdk.util.MD5;
  */
 
 public class UserLoginAction extends BaseAction {
+    private boolean isAuto;
     private Context context;
     private String account;
     private String password;
     private RxCallback rxCallback;
 
-    public UserLoginAction(Context context, String account, String password) {
+    public UserLoginAction(Context context, String account, String password, boolean isAuto) {
         this.context = context;
         this.account = account;
         this.password = password;
+        this.isAuto = isAuto;
     }
 
     @Override
     public void execute(PersonalDataBundle dataBundle, RxCallback rxCallback) {
         this.rxCallback = rxCallback;
-        checkLoginInfo(dataBundle);
+        if (isAuto) {
+            userLogin(dataBundle, account, password);
+        } else {
+            checkLoginInfo(dataBundle);
+        }
     }
 
     private void checkLoginInfo(PersonalDataBundle dataBundle) {
@@ -120,6 +128,7 @@ public class UserLoginAction extends BaseAction {
         String code = syncLoginInfoBean.getCode();
         if (Constants.RESULT_CODE_SUCCESS.equals(code)) {
             LoginHelper.getUserInfo(dataBundle);
+            autoSign();
             dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success)));
             if (rxCallback != null) {
                 rxCallback.onNext(UserLoginAction.class);
@@ -127,6 +136,22 @@ public class UserLoginAction extends BaseAction {
         } else {
             String errorMsg = ToastUtil.getErrorMsgByCode(code);
             dataBundle.getEventBus().post(new UserLoginResultEvent(errorMsg));
+        }
+    }
+
+    private void autoSign() {
+        String saveTime = PersonalDataBundle.getInstance().getCurrentDay();
+        if (StringUtils.isNullOrEmpty(saveTime) || !TimeUtils.getCurrentDataInString().equals(saveTime)) {
+            final SignForVoucherAction signForVoucherAction = new SignForVoucherAction();
+            signForVoucherAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+                @Override
+                public void onNext(Object o) {
+                    SignForVoucherBean resultBean = signForVoucherAction.getResultBean();
+                    if (resultBean.result_code == 0) {
+                        PersonalDataBundle.getInstance().setCurrentDay(TimeUtils.getCurrentDataInString());
+                    }
+                }
+            });
         }
     }
 }

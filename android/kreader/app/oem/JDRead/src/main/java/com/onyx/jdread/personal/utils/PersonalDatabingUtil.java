@@ -6,6 +6,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.common.ManageImageCache;
 
@@ -27,6 +28,10 @@ public class PersonalDatabingUtil {
         if (editText != null) {
             if (showPassword) {
                 editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                String s = editText.getText().toString();
+                if (StringUtils.isNotBlank(s)) {
+                    editText.setSelection(s.length());
+                }
             } else {
                 editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
             }

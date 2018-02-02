@@ -129,7 +129,7 @@ public class LayoutProviderUtils {
             updateVisiblePagesForFlowDocument(reader, readerViewInfo, layoutManager);
         }
         String pagePosition = layoutManager.getCurrentLayoutProvider().getCurrentPagePosition();
-        setChapterName(reader,readerViewInfo,pagePosition);
+        setChapterName(reader, readerViewInfo, pagePosition);
 
         final List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
         for (PageInfo pageInfo : visiblePages) {
@@ -166,7 +166,7 @@ public class LayoutProviderUtils {
         readerViewInfo.setTotalPage(reader.getReaderHelper().getNavigator().getTotalPage());
     }
 
-    private static void setChapterName(final Reader reader, final ReaderViewInfo readerViewInfo,String pagePosition) {
+    private static void setChapterName(final Reader reader, final ReaderViewInfo readerViewInfo, String pagePosition) {
         ReaderDocumentTableOfContent toc = new ReaderDocumentTableOfContent();
         reader.getReaderHelper().getDocument().readTableOfContent(toc);
         boolean hasToc = toc != null && !toc.isEmpty();
@@ -176,16 +176,17 @@ public class LayoutProviderUtils {
 
         List<ChapterInfo> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
         int position = PagePositionUtils.getPosition(pagePosition);
-        ChapterInfo chapterInfo = getChapterInfoByPage(position,readTocChapterNodeList);
-        if(chapterInfo != null){
+        ChapterInfo chapterInfo = getChapterInfoByPage(position, readTocChapterNodeList);
+        if (chapterInfo != null) {
             readerViewInfo.setChapterName(chapterInfo.getTitle());
-        }else {
+        } else {
             readerViewInfo.setChapterName(reader.getDocumentInfo().getBookName());
         }
+        readerViewInfo.setReadTocChapterNodeList(readTocChapterNodeList);
     }
 
     public static ChapterInfo getChapterInfoByPage(int pagePosition, List<ChapterInfo> tocChapterNodeList) {
-        if(tocChapterNodeList == null){
+        if (tocChapterNodeList == null) {
             return null;
         }
         int size = tocChapterNodeList.size();
