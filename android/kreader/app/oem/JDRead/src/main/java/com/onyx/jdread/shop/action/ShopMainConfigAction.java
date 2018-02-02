@@ -1,18 +1,23 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
+import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.cloud.entity.ShopMainConfigRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.model.SubjectViewModel;
+import com.onyx.jdread.shop.model.VipUserInfoViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestShopMainConfig;
+import com.onyx.jdread.shop.utils.ViewHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +27,6 @@ import java.util.List;
 public class ShopMainConfigAction extends BaseAction {
 
     private BookModelConfigResultBean resultBean;
-    private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
     private List<BaseSubjectViewModel> commonSubjcet;
     private int cid;
 
@@ -65,8 +69,8 @@ public class ShopMainConfigAction extends BaseAction {
             @Override
             public void onNext(RxRequestShopMainConfig request) {
                 resultBean = request.getResultBean();
-                subjectDataList = request.getSubjectDataList();
-                setResult(cid, dataBundle);
+                commonSubjcet = request.getSubjectDataList();
+                setResult(dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onNext(ShopMainConfigAction.this);
                 }
@@ -90,25 +94,53 @@ public class ShopMainConfigAction extends BaseAction {
         });
     }
 
-    private void setResult(int cid, ShopDataBundle dataBundle) {
-        if (cid != Constants.BOOK_SHOP_MAIN_CONFIG_CID) {
-            if (subjectDataList != null) {
-                initDataContainer();
-                for (int i = 0; i < subjectDataList.size(); i++) {
-                    BookModelConfigResultBean.DataBean.ModulesBean modulesBean = subjectDataList.get(i);
-                    SubjectViewModel subjectViewModel = new SubjectViewModel(dataBundle.getEventBus());
-                    subjectViewModel.setModelBean(modulesBean);
-                    commonSubjcet.add(subjectViewModel);
-                }
+    private void setResult(ShopDataBundle dataBundle) {
+        if (commonSubjcet != null) {
+            if (cid == Constants.BOOK_SHOP_NEW_BOOK_CONFIG_CID) {
+                dataBundle.getNewBookViewModel().setSubjectModels(commonSubjcet);
+                int totalPages = ViewHelper.calculateTotalPages(commonSubjcet, Constants.COMMOM_SUBJECT_RECYCLE_HEIGHT);
+                dataBundle.getNewBookViewModel().setTotalPages(totalPages);
+            } else if (cid == Constants.BOOK_SHOP_SALE_BOOK_CONFIG_CID) {
+                dataBundle.getBookSaleViewModel().setSubjectModels(commonSubjcet);
+                int totalPages = ViewHelper.calculateTotalPages(commonSubjcet, Constants.COMMOM_SUBJECT_RECYCLE_HEIGHT);
+                dataBundle.getBookSaleViewModel().setTotalPages(totalPages);
+            } else if (cid == Constants.BOOK_SHOP_VIP_CONFIG_CID) {
+                VipUserInfoViewModel vipUserInfoViewModel = new VipUserInfoViewModel(dataBundle.getEventBus());
+                setVipUserInfo(vipUserInfoViewModel);
+                commonSubjcet.add(0, vipUserInfoViewModel);
+                dataBundle.getVipReadViewModel().setSubjectModels(commonSubjcet);
+                int totalPages = ViewHelper.calculateTotalPages(commonSubjcet, Constants.COMMOM_SUBJECT_RECYCLE_HEIGHT);
+                dataBundle.getVipReadViewModel().setTotalPages(totalPages);
             }
         }
     }
 
-    private void initDataContainer() {
-        if (commonSubjcet == null) {
-            commonSubjcet = new ArrayList<>();
-        } else {
-            commonSubjcet.clear();
+    private void setVipUserInfo(VipUserInfoViewModel vipUserInfoViewModel) {
+        UserInfo userInfo = PersonalDataBundle.getInstance().getUserInfo();
+        boolean login = JDReadApplication.getInstance().getLogin();
+        String imgUrl = "";
+        String userName = "";
+        String buttonContent = "";
+        String vipStatus = "";
+        if (login) { //login
+            imgUrl = LoginHelper.getImgUrl();
+            userName = LoginHelper.getUserName();
+            if (userInfo != null) {
+                if(userInfo.vip_remain_days > 0) { //vip
+                    vipStatus = String.format(ResManager.getString(R.string.vip_read_days), userInfo.vip_remain_days);
+                    buttonContent = ResManager.getString(R.string.renew_vip_read);
+                } else { //not vip
+                    vipStatus = ResManager.getString(R.string.not_open_vip_read);
+                    buttonContent = ResManager.getString(R.string.open_vip_read);
+                }
+            }
+        } else { // un login
+            userName = ResManager.getString(R.string.not_login);
+            buttonContent = ResManager.getString(R.string.login_immediately);
         }
+        vipUserInfoViewModel.name.set(userName);
+        vipUserInfoViewModel.vipStatus.set(vipStatus);
+        vipUserInfoViewModel.imageUrl.set(imgUrl);
+        vipUserInfoViewModel.buttonContent.set(buttonContent);
     }
 }

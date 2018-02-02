@@ -1,17 +1,15 @@
 package com.onyx.jdread.shop.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemBuyReadVipBinding;
-import com.onyx.jdread.shop.model.BuyReadVipData;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
 
 import java.util.List;
 
@@ -19,8 +17,8 @@ import java.util.List;
  * Created by li on 2018/1/13.
  */
 
-public class BuyReadVipAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
-    private List<BuyReadVipData> data;
+public class BuyReadVipAdapter extends PageAdapter implements View.OnClickListener {
+    private List<GetVipGoodsListResultBean.DataBean> data;
 
     @Override
     public int getRowCount() {
@@ -52,7 +50,7 @@ public class BuyReadVipAdapter extends PageRecyclerView.PageAdapter implements V
         viewHolder.bindTo(data.get(position));
     }
 
-    public void setData(List<BuyReadVipData> data) {
+    public void setData(List<GetVipGoodsListResultBean.DataBean> data) {
         this.data = data;
         notifyDataSetChanged();
     }
@@ -74,14 +72,14 @@ public class BuyReadVipAdapter extends PageRecyclerView.PageAdapter implements V
 
         public BuyReadVipViewHolder(View itemView) {
             super(itemView);
-            bind = (ItemBuyReadVipBinding) DataBindingUtil.bind(itemView);
+            bind =  DataBindingUtil.bind(itemView);
         }
 
         public ItemBuyReadVipBinding getBind() {
             return bind;
         }
 
-        public void bindTo(BuyReadVipData data) {
+        public void bindTo(GetVipGoodsListResultBean.DataBean data) {
             bind.setData(data);
             bind.executePendingBindings();
         }

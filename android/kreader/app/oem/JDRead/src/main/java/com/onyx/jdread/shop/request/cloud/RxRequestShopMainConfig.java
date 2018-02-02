@@ -1,9 +1,7 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.ShopMainConfigRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
@@ -13,9 +11,9 @@ import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.BannerViewModel;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.model.SubjectType;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.TitleSubjectViewModel;
+import com.onyx.jdread.shop.utils.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +28,11 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
 
     private ShopMainConfigRequestBean requestBean;
     private BookModelConfigResultBean resultBean;
-    private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
+    private List<BaseSubjectViewModel> subjectDataList;
     private List<BaseSubjectViewModel> mainConfigSubjectList;
     private List<BaseSubjectViewModel> mainConfigFinalSubjectList = new ArrayList<>();
 
-    public List<BookModelConfigResultBean.DataBean.ModulesBean> getSubjectDataList() {
+    public List<BaseSubjectViewModel> getSubjectDataList() {
         return subjectDataList;
     }
 
@@ -108,45 +106,9 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                 mainConfigFinalSubjectList.addAll(mainConfigSubjectList);
                 mainConfigFinalSubjectList.add(shopDataBundle.getShopViewModel().getMainConfigEndViewModel());
                 shopDataBundle.getShopViewModel().setMainConfigSubjcet(mainConfigFinalSubjectList);
-                calculateMainConfigTotalPages(shopDataBundle, mainConfigFinalSubjectList);
+                int totalPage = ViewHelper.calculateTotalPages(mainConfigFinalSubjectList, Constants.SHOP_VIEW_RECYCLE_HEIGHT);
+                shopDataBundle.getShopViewModel().setTotalPages(Math.max(totalPage, 1));
             }
-        }
-    }
-
-    private void calculateMainConfigTotalPages(ShopDataBundle dataBundle, List<BaseSubjectViewModel> mainConfigFinalSubjectList) {
-        if (mainConfigFinalSubjectList != null) {
-            List<BaseSubjectViewModel> tempList = new ArrayList<>();
-            tempList.addAll(mainConfigFinalSubjectList);
-            int itemSpace = ResManager.getInteger(R.integer.custom_recycle_view_space);
-            int totalPage = 1;
-            int itemHeight = 0;
-            for (int i = 0; i < tempList.size(); i++) {
-                int subjectType = tempList.get(i).getSubjectType();
-                switch (subjectType) {
-                    case SubjectType.TYPE_TOP_FUNCTION:
-                        itemHeight = itemHeight + Constants.SHOP_VIEW_TOP_FUNCTION_HEIGHT;
-                        break;
-                    case SubjectType.TYPE_BANNER:
-                        itemHeight = itemHeight + Constants.SHOP_VIEW_BANNER_HEIGHT;
-                        break;
-                    case SubjectType.TYPE_TITLE:
-                        itemHeight = itemHeight + Constants.SHOP_VIEW_TITLE_HEIGHT;
-                        break;
-                    case SubjectType.TYPE_COVER:
-                        itemHeight = itemHeight + Constants.SHOP_VIEW_SUBJECT_HEIGHT;
-                        break;
-                    case SubjectType.TYPE_END:
-                        itemHeight = itemHeight + Constants.SHOP_VIEW_END_VIEW_HEIGHT;
-                        break;
-                }
-                itemHeight = itemHeight + itemSpace;
-                if (itemHeight > Constants.SHOP_VIEW_RECYCLE_HEIGHT) {
-                    tempList.add(i, tempList.get(i));
-                    itemHeight = 0;
-                    totalPage++;
-                }
-            }
-            dataBundle.getShopViewModel().setTotalPages(Math.max(totalPage, 1));
         }
     }
 
@@ -199,16 +161,9 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                 bookList.add(bookBean);
             }
             modulesBean.bookList = bookList;
-            if (index % 2 == 1) {
-                if (dataBean.modules.size() - 1 >= (index + 1)) {
-                    BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
-                    modulesBean.show_name_next = modulesBeanNext.show_name;
-                    modulesBean.f_type_next = modulesBeanNext.f_type;
-                    modulesBean.id_next = modulesBeanNext.id;
-                    modulesBean.showNextTitle = true;
-                }
-            }
-            subjectDataList.add(modulesBean);
+            SubjectViewModel viewModel = new SubjectViewModel(ShopDataBundle.getInstance().getEventBus());
+            viewModel.setModelBean(modulesBean);
+            subjectDataList.add(viewModel);
         }
     }
 

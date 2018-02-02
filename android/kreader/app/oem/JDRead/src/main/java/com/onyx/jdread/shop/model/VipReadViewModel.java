@@ -15,6 +15,15 @@ public class VipReadViewModel extends BaseObservable {
     private EventBus eventBus;
     private List<BaseSubjectViewModel> subjectModels;
     private TitleBarViewModel titleBarViewModel;
+    private int totalPages = 1;
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
 
     public VipReadViewModel(EventBus eventBus) {
         this.eventBus = eventBus;

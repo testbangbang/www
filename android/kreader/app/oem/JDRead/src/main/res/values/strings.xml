@@ -385,7 +385,6 @@
     <string name="vip">VIP</string>
     <string name="content_empty">null</string>
     <string name="error_content_author_unknown">unknown author</string>
-    <string name="renew_vip">renew vip</string>
     <string name="reader_copy_success">Copy success</string>
     <string name="reader_edit">Edit</string>
     <string name="reader_save">Save</string>
@@ -438,4 +437,10 @@
     <string name="click_to_translate">Click to translate</string>
     <string name="delete_book">Delete book</string>
     <string name="network_or_server_error">Network or server error, wait for a while to try again</string>
+    <string name="not_login">not login</string>
+    <string name="open_vip_read">Open Vip</string>
+    <string name="renew_vip_read">Renew Vip</string>
+    <string name="vip_read_days">The remaining days of the Vip：%s</string>
+    <string name="vip_read_notice">Vip Notice</string>
+    <string name="not_open_vip_read">Do not open Vip</string>
 </resources>

@@ -1,34 +1,53 @@
 package com.onyx.jdread.shop.model;
 
-import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.ResManager;
+import android.databinding.BaseObservable;
 
-import java.util.ArrayList;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 /**
- * Created by li on 2018/1/13.
+ * Created by jackdeng on 2018/2/2.
  */
 
-public class BuyReadVipModel {
-    private List<BuyReadVipData> list = new ArrayList<>();
+public class BuyReadVipModel extends BaseObservable {
 
-    public void loadData() {
-        String[] days = ResManager.getStringArray(R.array.VIP_for_days);
-        String[] money = ResManager.getStringArray(R.array.VIP_for_paid);
-        if (list != null && list.size() > 0) {
-            list.clear();
-        }
+    private EventBus eventBus;
+    private List<GetVipGoodsListResultBean> goodsList;
+    private TitleBarViewModel titleBarViewModel;
+    private VipUserInfoViewModel vipUserInfoViewModel;
 
-        for (int i = 0; i < days.length; i++) {
-            BuyReadVipData buyReadVipData = new BuyReadVipData();
-            buyReadVipData.setDays(days[i]);
-            buyReadVipData.setMoney(money[i]);
-            list.add(buyReadVipData);
-        }
+    public BuyReadVipModel(EventBus eventBus) {
+        this.eventBus = eventBus;
+        titleBarViewModel = new TitleBarViewModel();
+        titleBarViewModel.setEventBus(eventBus);
     }
 
-    public List<BuyReadVipData> getBuyReadVipData() {
-        return list;
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public List<GetVipGoodsListResultBean> getGoodsList() {
+        return goodsList;
+    }
+
+    public void setGoodsList(List<GetVipGoodsListResultBean> goodsList) {
+        this.goodsList = goodsList;
+        notifyChange();
+    }
+
+    public TitleBarViewModel getTitleBarViewModel() {
+        return titleBarViewModel;
+    }
+
+    public VipUserInfoViewModel getVipUserInfoViewModel() {
+        return vipUserInfoViewModel;
+    }
+
+    public void setVipUserInfoViewModel(VipUserInfoViewModel vipUserInfoViewModel) {
+        this.vipUserInfoViewModel = vipUserInfoViewModel;
+        notifyChange();
     }
 }

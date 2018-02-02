@@ -38,7 +38,6 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 
 public class BookRankFragment extends BaseFragment {
-    private static final int SCROLL_TOTAL = 3;
     private FragmentBookRankBinding bookRankBinding;
     private int space = ResManager.getInteger(R.integer.custom_recycle_view_space);
     private CustomRecycleView recyclerView;
@@ -64,7 +63,7 @@ public class BookRankFragment extends BaseFragment {
         rankAction.execute(getShopDataBundle(), new RxCallback<BookRankAction>() {
             @Override
             public void onNext(BookRankAction rankAction) {
-
+                bookRankBinding.scrollBar.setTotal(getRankViewModel().getTotalPages());
             }
 
             @Override
@@ -76,9 +75,7 @@ public class BookRankFragment extends BaseFragment {
 
     private void initView() {
         setRecycleView();
-        bookRankBinding.scrollBar.setTotal(SCROLL_TOTAL);
         bookRankBinding.setRankViewModel(getRankViewModel());
-        getRankViewModel().setRankItems();
         getRankViewModel().getTitleBarViewModel().leftText = getString(R.string.ranking);
     }
 

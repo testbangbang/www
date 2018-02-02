@@ -6,8 +6,8 @@ import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
+import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookRank;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 public class BookRankAction extends BaseAction<ShopDataBundle> {
 
     private BookModelConfigResultBean resultBean;
-    private List<BookModelConfigResultBean.DataBean.ModulesBean> rankDataList;
+    private List<BaseSubjectViewModel> rankDataList;
 
     public BookModelConfigResultBean getResultBean() {
         return resultBean;
@@ -77,11 +77,7 @@ public class BookRankAction extends BaseAction<ShopDataBundle> {
 
     private void setResult(ShopDataBundle shopDataBundle) {
         if (rankDataList != null) {
-            List<SubjectViewModel> subjectList = shopDataBundle.getRankViewModel().getRankItems();
-            for (int i = 0; i < subjectList.size(); i++) {
-                BookModelConfigResultBean.DataBean.ModulesBean modulesBean = rankDataList.get(i);
-                subjectList.get(i).setModelBean(modulesBean);
-            }
+            shopDataBundle.getRankViewModel().setRankItems(rankDataList);
         }
     }
 }

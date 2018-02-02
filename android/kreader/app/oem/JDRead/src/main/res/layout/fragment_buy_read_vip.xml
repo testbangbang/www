@@ -1,99 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data class="BuyReadVipBinding">
+
+        <variable
+            name="viewModel"
+            type="com.onyx.jdread.shop.model.BuyReadVipModel" />
 
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+        android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+        android:layout_marginTop="@dimen/fragment_book_detail_margin_top_and_bottom"
         android:orientation="vertical">
 
         <include
-            android:id="@+id/buy_vip_title"
-            layout="@layout/title_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/layout_title_bar"
+            layout="@layout/layout_title_bar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/fragment_buy_read_vip_margin"
-            android:layout_marginLeft="@dimen/fragment_buy_read_vip_margin"
-            android:layout_marginRight="@dimen/fragment_buy_read_vip_margin_right"
-            android:layout_marginTop="@dimen/fragment_buy_read_vip_margin"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            bind:titleBarViewModel="@{viewModel.titleBarViewModel}" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/vip_user_info_item_height"
+            android:paddingTop="@dimen/vip_user_info_container_padding">
 
             <ImageView
+                android:id="@+id/image_portraits"
                 android:layout_width="@dimen/user_image_height"
                 android:layout_height="@dimen/user_image_height"
-                android:src="@mipmap/ic_me" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="dgaga"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/fragment_buy_read_vip_dec_margin_top"
-                    android:text="@string/not_open_vip"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
-            </LinearLayout>
+                android:layout_centerVertical="true"
+                bind:personalImage="@{viewModel.vipUserInfoViewModel.imageUrl}" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/vip_user_info_name_margin_left"
+                android:layout_toRightOf="@id/image_portraits"
+                android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/book_detail_margin"
+                    android:text="@{viewModel.vipUserInfoViewModel.name}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/font_size_15" />
 
                 <TextView
-                    android:id="@+id/buy_read_vip_notice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/fragment_buy_read_vip_dec_margin_top"
-                    android:background="@drawable/bottom_line"
-                    android:text="@string/read_vip_instructions"
+                    android:text="@{viewModel.vipUserInfoViewModel.vipStatus}"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
+                    android:textSize="@dimen/font_size_15" />
+
             </LinearLayout>
-        </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bottom_line"
+                android:text="@string/read_vip_instructions"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <View
+                style="@style/book_detail_dot_line_Style"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="@dimen/vip_user_info_container_padding" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/fragment_buy_read_vip_recycler_padding">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line_width"
-                android:background="@color/divider_color" />
+            android:orientation="vertical">
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/buy_vip_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/fragment_buy_read_vip_recycler_height" />
+                android:layout_height="match_parent" />
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line_width"
-                android:background="@color/divider_color" />
+                style="@style/book_detail_dot_line_Style"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="@dimen/vip_user_info_container_padding" />
+
         </LinearLayout>
+
     </LinearLayout>
+
 </layout>

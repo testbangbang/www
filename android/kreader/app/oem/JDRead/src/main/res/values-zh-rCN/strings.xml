@@ -367,7 +367,6 @@
     <string name="search_hot_words">热门搜索</string>
     <string name="in_library">位置：书架</string>
     <string name="in_shop">位置：书店</string>
-    <string name="renew_vip">续费会员</string>
     <string name="reader_copy_success">已复制</string>
     <string name="reader_edit">编辑</string>
     <string name="reader_save">完成</string>
@@ -421,4 +420,10 @@
     <string name="click_to_translate">点击翻译</string>
     <string name="delete_book">删除本书</string>
     <string name="network_or_server_error">网络或者服务器出错，稍等会再试</string>
+    <string name="not_login">未登录</string>
+    <string name="open_vip_read">开通会员</string>
+    <string name="renew_vip_read">续费会员</string>
+    <string name="vip_read_days">会员有效天数：%s</string>
+    <string name="vip_read_notice">会员须知</string>
+    <string name="not_open_vip_read">未开通会员</string>
 </resources>

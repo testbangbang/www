@@ -177,8 +177,7 @@ public class ShopDataBundle {
 
     public BuyReadVipModel getBuyReadVipModel() {
         if (buyReadVipModel == null) {
-            buyReadVipModel = new BuyReadVipModel();
-            buyReadVipModel.loadData();
+            buyReadVipModel = new BuyReadVipModel(getEventBus());
         }
         return buyReadVipModel;
     }
