@@ -7,6 +7,7 @@ import com.onyx.jdread.databinding.ReaderBookInfoBinding;
 import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoViewBack;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.PopupNoteClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -90,11 +91,6 @@ public class ReaderBookInfoDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAnnotationItemClickEvent(AnnotationItemClickEvent event){
-        new GotoPositionAction(event.getPosition()).execute(readerDataHolder, new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                readerBookInfoViewBack.getContent().dismiss();
-            }
-        });
+
     }
 }

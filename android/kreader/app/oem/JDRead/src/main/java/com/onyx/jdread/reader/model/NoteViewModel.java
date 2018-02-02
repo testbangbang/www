@@ -160,6 +160,7 @@ public class NoteViewModel {
         noteInfo.srcNote = srcNote.get();
         noteInfo.newNote = newNote.get();
         noteInfo.createDate = createNoteDate.get();
+        noteInfo.chapterName = chapterName.get();
         return noteInfo;
     }
 }

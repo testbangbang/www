@@ -61,7 +61,7 @@ public class NoteAdapter extends PageAdapter<PageRecyclerView.ViewHolder, NoteMo
         final NoteModel dataModel = getItemVMList().get(position);
         BookmarkModelHolder viewHolder = (BookmarkModelHolder) holder;
         viewHolder.bindTo(dataModel);
-        viewHolder.rootView.setTag(dataModel.getPosition());
+        viewHolder.rootView.setTag(position);
         viewHolder.rootView.setOnClickListener(onClickListener);
     }
 

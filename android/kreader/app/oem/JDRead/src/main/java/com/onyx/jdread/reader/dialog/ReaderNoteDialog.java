@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 
+import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
@@ -27,10 +28,12 @@ public class ReaderNoteDialog extends Dialog implements ReaderNoteViewBack {
     private ActivityNoteBinding binding;
     private NoteViewModel noteViewModel;
     private NoteActivityEventHandler noteActivityEventHandler;
+    private Annotation annotation;
 
-    public ReaderNoteDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity) {
+    public ReaderNoteDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity,Annotation annotation) {
         super(activity, android.R.style.Theme_NoTitleBar);
         this.readerDataHolder = readerDataHolder;
+        this.annotation = annotation;
     }
 
     @Override
@@ -53,7 +56,7 @@ public class ReaderNoteDialog extends Dialog implements ReaderNoteViewBack {
     }
 
     private void initData() {
-        final CreateNoteAction createNoteAction = new CreateNoteAction();
+        final CreateNoteAction createNoteAction = new CreateNoteAction(annotation);
         createNoteAction.execute(readerDataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {
