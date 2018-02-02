@@ -439,4 +439,6 @@
     <string name="delete_book">Delete book</string>
     <string name="network_or_server_error">Network or server error, wait for a while to try again</string>
     <string name="power_off_prompt">Power off?</string>
+    <string name="speed_refresh_is_opened">Speed refresh is opened</string>
+    <string name="speed_refresh_is_closed">Speed refresh is closed</string>
 </resources>
