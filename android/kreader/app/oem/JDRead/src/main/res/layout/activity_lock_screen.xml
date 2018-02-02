@@ -27,6 +27,7 @@
             style="@style/PasswordEditTextStyle"
             android:layout_marginTop="@dimen/lock_screen_password_margin_top"
             android:text="@={screenLockModel.passwordEdit}"
+            android:inputType="number"
             android:hint="@string/input_number_un_encrypt"/>
 
         <TextView

@@ -488,4 +488,8 @@
     <dimen name="wifi_pass_book_prompt_line_space">10dp</dimen>
     <dimen name="vip_user_info_name_margin_left">20dp</dimen>
     <dimen name="vip_user_info_item_height">114dp</dimen>
+    <dimen name="circle_width">30dp</dimen>
+    <dimen name="circle_height">30dp</dimen>
+    <dimen name="dialog_system_update_padding">20dp</dimen>
+    <dimen name="dialog_system_update_progress_padding">10dp</dimen>
 </resources>

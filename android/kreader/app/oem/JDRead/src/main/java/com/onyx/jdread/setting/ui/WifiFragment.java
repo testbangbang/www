@@ -96,13 +96,10 @@ public class WifiFragment extends BaseFragment {
         binding.wifiTitleBar.settingTitleAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                wifiAdmin.setWifiEnabled(true);
                 addWifi();
             }
         });
-    }
-
-    private void setAddWifiButtonVisibility() {
-        binding.wifiTitleBar.settingTitleAdd.setVisibility(wifiAdmin.isWifiEnabled() ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void addWifi() {
@@ -234,7 +231,6 @@ public class WifiFragment extends BaseFragment {
                 wifiSettingAdapter.notifyDataSetChanged();
             }
         });
-        setAddWifiButtonVisibility();
     }
 
     private void updateAccessPointDetailedState(NetworkInfo.DetailedState state) {
@@ -266,7 +262,6 @@ public class WifiFragment extends BaseFragment {
             wifiSettingAdapter.getScanResult().clear();
             wifiSettingAdapter.notifyDataSetChanged();
         }
-        setAddWifiButtonVisibility();
     }
 
     private void initData() {
