@@ -13,10 +13,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="5dp"
         android:background="@android:color/white"
         android:onClick="@{()->systemBarModel.onClicked()}"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
         android:visibility="@{systemBarModel.isShow?View.VISIBLE:View.GONE}">
 
         <LinearLayout
@@ -63,7 +63,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/system_bar_icon_space"
                     android:onClick="@{()->systemBarModel.toggleWifi()}"
-                    android:src="@{systemBarModel.wifiImageRes}" />
+                    android:src="@{systemBarModel.wifiImageRes}"
+                    android:visibility="@{systemBarModel.wifiImageRes == 0?View.GONE:View.VISIBLE}" />
 
                 <TextView
                     android:layout_width="wrap_content"

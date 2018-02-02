@@ -86,7 +86,7 @@ public class SystemBarPopupWindow extends PopupWindow {
         }
 
         public void updateWifi() {
-            if (NetworkUtil.isWifiEnabled(JDReadApplication.getInstance())) {
+            if (NetworkUtil.isWifiEnabled(JDReadApplication.getInstance()) && NetworkUtil.isWiFiConnected(JDReadApplication.getInstance())) {
                 WifiManager wifiManager = (WifiManager) JDReadApplication.getInstance().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 currentWifi.set(wifiInfo.getSSID());

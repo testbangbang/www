@@ -12,6 +12,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SearchHintItemBinding;
 import com.onyx.jdread.main.common.PageAdapter;
+import com.onyx.jdread.main.common.ResManager;
 
 import java.util.List;
 
@@ -22,12 +23,12 @@ import java.util.List;
 public class SearchHintAdapter extends PageAdapter<SearchHintAdapter.ViewHolder, DataModel, DataModel> {
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.search_hint_recycler_row);
+        return ResManager.getInteger(R.integer.search_hint_recycler_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.search_hint_recycler_col);
+        return ResManager.getInteger(R.integer.search_hint_recycler_col);
     }
 
     @Override
