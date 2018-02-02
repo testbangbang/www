@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.LibraryCoverItemBinding;
 import com.onyx.jdread.main.common.PageAdapter;

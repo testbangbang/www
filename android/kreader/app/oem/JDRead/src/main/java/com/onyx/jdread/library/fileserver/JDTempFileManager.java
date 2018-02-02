@@ -40,6 +40,7 @@ public class JDTempFileManager extends DefaultTempFileManager {
             this.tempFiles.add(tempFile);
         }else {
             tempFile = new DefaultTempFile(new File(System.getProperty("java.io.tmpdir")));
+            this.tempFiles.add(tempFile);
         }
         return tempFile;
     }

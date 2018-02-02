@@ -105,6 +105,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodSetInfoShowConfig;
 
     private static Method sMethodGetRemovableSDCardDirectory;
+    private static Method sMethodShutdown;
 
     /**
      * View.postInvalidate(int updateMode)
@@ -845,6 +846,7 @@ public class IMX6Device extends BaseDevice {
 
             sMethodGetRemovableSDCardDirectory = ReflectUtil.getMethodSafely(Environment.class,"getRemovableSDCardDirectory");
             Log.d(TAG, "init device EINK_ONYX_GC_MASK.");
+            sMethodShutdown = ReflectUtil.getMethodSafely(deviceControllerClass,"shutdown");
             return sInstance;
         }
         return sInstance;
@@ -1204,4 +1206,8 @@ public class IMX6Device extends BaseDevice {
         return value.booleanValue();
     }
 
+    @Override
+    public void shutdown() {
+        ReflectUtil.invokeMethodSafely(sMethodShutdown, null);
+    }
 }

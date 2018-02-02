@@ -1,17 +1,19 @@
 package com.onyx.jdread.reader.catalog.event;
 
+import com.onyx.android.sdk.data.model.Annotation;
+
 /**
  * Created by huxiaomao on 2018/1/31.
  */
 
 public class AnnotationItemClickEvent {
-    private String position;
+    private Annotation annotation;
 
-    public AnnotationItemClickEvent(String position) {
-        this.position = position;
+    public AnnotationItemClickEvent(Annotation annotation) {
+        this.annotation = annotation;
     }
 
-    public String getPosition() {
-        return position;
+    public Annotation getAnnotation() {
+        return annotation;
     }
 }

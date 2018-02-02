@@ -38,7 +38,6 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
                     // TODO: 18-1-13 wifi setting
                     break;
             }
-            EventBus.getDefault().post(new WifiStateChangeEvent());
         }
         if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
             Parcelable parcelableExtra = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
@@ -52,6 +51,10 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
                     triggerFeedbackUpload(context);
                 }
             }
+        }
+
+        if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+            EventBus.getDefault().post(new WifiStateChangeEvent());
         }
     }
 
