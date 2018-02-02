@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.onyx.android.sdk.device.Device;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogPowerOffBinding;
-import com.onyx.jdread.main.util.DevicePowerUtil;
 
 /**
  * Created by hehai on 18-2-2.
@@ -44,7 +44,7 @@ public class PowerOffDialog extends Dialog {
             bind.confirmPowerOff.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DevicePowerUtil.shutDownDevice(context);
+                    Device.currentDevice.shutdown();
                 }
             });
             dialog.setContentView(bind.getRoot());

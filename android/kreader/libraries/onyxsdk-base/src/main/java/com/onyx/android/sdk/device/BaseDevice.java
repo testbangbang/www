@@ -500,4 +500,6 @@ public class BaseDevice {
     public boolean shouldVerifyUpdateModel() {
         return true;
     }
+
+    public void shutdown(){}
 }
