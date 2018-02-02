@@ -46,6 +46,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class NoteManager {
 
+    static {
+        NoteDrawingArgs.setDefaultShape(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
+    }
+
     private static final String TAG = NoteManager.class.getSimpleName();
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private TouchHelper touchHelper;
