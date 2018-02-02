@@ -346,13 +346,6 @@ public class SystemUpdateFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetworkConnectedEvent(NetworkConnectedEvent event) {
-        if (downloadPackageAction != null && downloadPackageAction.getTask(tag) != null) {
-            downloadPackageAction.execute(callback);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
         if (!systemUpdateData.getShowDownloaded()) {
             systemUpdateData.setNoticeMessage("");
@@ -366,6 +359,12 @@ public class SystemUpdateFragment extends BaseFragment {
     private void hideCheckUpdateLoadingDialog() {
         if (checkUpdateLoadingDialog != null) {
             checkUpdateLoadingDialog.dismiss();
+        }
+    }
+
+    public void keepDownload() {
+        if (downloadPackageAction != null && downloadPackageAction.getTask(tag) != null) {
+            downloadPackageAction.execute(callback);
         }
     }
 }

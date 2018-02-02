@@ -56,6 +56,7 @@ import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.setting.ui.SettingFragment;
+import com.onyx.jdread.setting.ui.SystemUpdateFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -356,6 +357,10 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetworkConnectedEvent(NetworkConnectedEvent event) {
         JDReadApplication.getInstance().automaticLogin();
+        SystemUpdateFragment fragment = (SystemUpdateFragment) childViewList.get(SystemUpdateFragment.class.getName());
+        if (fragment != null) {
+            fragment.keepDownload();
+        }
     }
 
     @Subscribe
