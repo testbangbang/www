@@ -137,4 +137,8 @@ public class Utils {
         }
         return ResManager.getString(R.string.allow_get).equals(str);
     }
+
+    public static String addPercent(String str) {
+        return str + "%";
+    }
 }

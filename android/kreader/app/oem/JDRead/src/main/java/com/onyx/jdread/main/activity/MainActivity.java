@@ -33,6 +33,7 @@ import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.main.event.ChangeChildViewEvent;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
+import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
@@ -343,12 +344,18 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
-        ToastUtil.showToast(this, event.getMessage());
         if (getResources().getString(R.string.login_success).equals(event.getMessage())) {
             JDReadApplication.getInstance().setLogin(true);
             clearInput();
             LoginHelper.dismissUserLoginDialog();
+        } else {
+            ToastUtil.showToast(this, event.getMessage());
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetworkConnectedEvent(NetworkConnectedEvent event) {
+        JDReadApplication.getInstance().automaticLogin();
     }
 
     @Subscribe
