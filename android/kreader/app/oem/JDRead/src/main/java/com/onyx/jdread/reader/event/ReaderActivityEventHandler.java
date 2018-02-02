@@ -174,7 +174,7 @@ public class ReaderActivityEventHandler {
         if (activity == null) {
             return;
         }
-        readerNoteDialog = new ReaderNoteDialog(readerViewModel.getReaderDataHolder(), activity);
+        readerNoteDialog = new ReaderNoteDialog(readerViewModel.getReaderDataHolder(), activity,event.getAnnotation());
         readerNoteDialog.show();
     }
 
