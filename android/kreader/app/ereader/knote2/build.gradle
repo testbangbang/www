@@ -35,6 +35,9 @@ android {
     dataBinding {
         enabled = true
     }
+    dexOptions {
+        preDexLibraries = false
+    }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
@@ -74,4 +77,5 @@ dependencies {
 
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile "com.android.support:multidex:$multidexVersion"
+    compile "me.yokeyword:fragmentation:$fragmentationVersion"
 }

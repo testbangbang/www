@@ -1,7 +1,5 @@
 package com.onyx.android.note;
 
-import com.onyx.android.note.test.TestViewModel;
-
 import org.greenrobot.eventbus.EventBus;
 
 /**

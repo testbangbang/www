@@ -104,6 +104,7 @@ ext {
 
     //ui
     flexboxVersion='0.3.0'
+    fragmentationVersion='1.2.5'
 
     //onyx
     onyxSdkBaseVersion='1.4.0'
