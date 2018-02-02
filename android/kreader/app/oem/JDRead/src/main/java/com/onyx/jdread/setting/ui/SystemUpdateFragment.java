@@ -32,6 +32,7 @@ import com.onyx.jdread.setting.action.LocalUpdateSystemAction;
 import com.onyx.jdread.setting.action.OnlineCheckSystemUpdateAction;
 import com.onyx.jdread.setting.dialog.CheckUpdateLoadingDialog;
 import com.onyx.jdread.setting.dialog.SystemUpdateDialog;
+import com.onyx.jdread.setting.dialog.SystemUpdateTipDialog;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.event.DelayEvent;
 import com.onyx.jdread.setting.event.ExecuteUpdateEvent;
@@ -85,7 +86,6 @@ public class SystemUpdateFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
-        downloadPackageAction = null;
     }
 
     @Override
@@ -296,10 +296,14 @@ public class SystemUpdateFragment extends BaseFragment {
             return;
         }
         LocalUpdateSystemAction action = new LocalUpdateSystemAction();
+        final SystemUpdateTipDialog dialog = new SystemUpdateTipDialog();
+        dialog.show(getActivity().getFragmentManager(), "");
         action.execute(SettingBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
             }
         });
     }
@@ -342,19 +346,11 @@ public class SystemUpdateFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetworkConnectedEvent(NetworkConnectedEvent event) {
-        if (downloadPackageAction != null) {
-            downloadPackageAction.execute(callback);
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
         if (!systemUpdateData.getShowDownloaded()) {
             systemUpdateData.setNoticeMessage("");
         }
     }
-
 
     private void hideAllDialog() {
         hideCheckUpdateLoadingDialog();
@@ -363,6 +359,12 @@ public class SystemUpdateFragment extends BaseFragment {
     private void hideCheckUpdateLoadingDialog() {
         if (checkUpdateLoadingDialog != null) {
             checkUpdateLoadingDialog.dismiss();
+        }
+    }
+
+    public void keepDownload() {
+        if (downloadPackageAction != null && downloadPackageAction.getTask(tag) != null) {
+            downloadPackageAction.execute(callback);
         }
     }
 }
