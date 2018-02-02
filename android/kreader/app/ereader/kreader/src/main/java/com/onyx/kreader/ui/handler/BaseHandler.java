@@ -47,6 +47,8 @@ public abstract class BaseHandler {
         public int slideShowIntervalInSeconds;
         public ViewGroup activityExtraView;
         public View activityStatusBar;
+        public View viewDivider;
+        public SurfaceView surfaceViewDoc;
         public SurfaceView surfaceViewNote;
     }
 

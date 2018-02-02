@@ -33,6 +33,7 @@ import com.onyx.kreader.note.request.PauseDrawingRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
+import com.onyx.kreader.ui.events.ExchangeSideNoteAreaEvent;
 import com.onyx.kreader.ui.events.RequestFinishEvent;
 import com.onyx.kreader.ui.events.ScribbleMenuChangedEvent;
 import com.onyx.kreader.ui.handler.BaseHandler;
@@ -142,7 +143,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_ADD_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_DELETE_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_MINIMIZE.ordinal());
-//        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
+        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_CLOSE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal());
@@ -159,7 +160,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private List<Integer> getMainMenuActions() {
         List<Integer> menuActions = new ArrayList<>();
         menuActions.add(ReaderMenuAction.SCRIBBLE_MAXIMIZE.ordinal());
-//        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
+        menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_EXCHANGE_POS.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_CLOSE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal());
@@ -376,6 +377,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 readerDataHolder.toggleSideNoteArea();
+                readerDataHolder.getEventBus().post(new ExchangeSideNoteAreaEvent());
                 readerDataHolder.redrawPage(new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

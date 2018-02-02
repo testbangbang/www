@@ -101,7 +101,7 @@ public class ReaderPainter {
             return;
         }
         paint.setDither(true);
-        canvas.drawBitmap(bitmap, readerDataHolder.getDocPageLeft(), 0, paint);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
     }
 
     private void drawPageInfo(final Canvas canvas, final Paint paint, final ReaderViewInfo viewInfo) {

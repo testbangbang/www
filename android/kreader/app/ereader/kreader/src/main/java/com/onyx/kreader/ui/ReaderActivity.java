@@ -140,6 +140,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
+    private View dividerView;
     private SurfaceView surfaceView;
     private SurfaceView surfaceViewNote;
     private RelativeLayout mainView;
@@ -389,6 +390,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void initSurfaceView() {
+        dividerView = findViewById(R.id.view_divider);
         mainView = (RelativeLayout) findViewById(R.id.main_view);
         extraView = (RelativeLayout) findViewById(R.id.extra_view);
         surfaceView = (SurfaceView) this.findViewById(R.id.surfaceView_doc);
@@ -1175,8 +1177,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void drawPage(final Bitmap pageBitmap) {
-        Canvas canvas = holder.lockCanvas(new Rect(surfaceView.getLeft(), surfaceView.getTop(),
-                surfaceView.getRight(), surfaceView.getBottom()));
+        Canvas canvas = holder.lockCanvas();
         if (canvas == null) {
             return;
         }
@@ -1418,6 +1419,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         BaseHandler.HandlerInitialState state = new BaseHandler.HandlerInitialState();
         state.activityExtraView = extraView;
         state.activityStatusBar = statusBar;
+        state.viewDivider = dividerView;
+        state.surfaceViewDoc = surfaceView;
         state.surfaceViewNote = surfaceViewNote;
         getHandlerManager().setActiveProvider(HandlerManager.SIDE_NOTE_PROVIDER, state);
     }

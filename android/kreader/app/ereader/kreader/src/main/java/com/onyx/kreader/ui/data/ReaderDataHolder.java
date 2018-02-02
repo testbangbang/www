@@ -789,38 +789,23 @@ public class ReaderDataHolder {
     }
 
     public int getDocPageDialogPosX(){
-        int posX = (getDisplayWidth() / 4);
+        int posX = (getDisplayWidth() / 2);
         posX = sideNoteArea == SideNoteArea.LEFT ? posX : -posX;
         return posX;
     }
 
     public int getSideNoteDialogPosX() {
-        int posX = (getDisplayWidth() / 4);
+        int posX = (getDisplayWidth() / 2);
         posX = sideNoteArea == SideNoteArea.LEFT ? -posX : posX;
         return posX;
     }
 
     public int getDocPageLeft() {
-        if (!sideNoting) {
-            return 0;
-        }
-        return sideNoteArea == SideNoteArea.RIGHT ? 0 : getDisplayWidth() / 2;
+        return 0;
     }
 
     public int getDocPageRight() {
-        if (!sideNoting) {
             return getDisplayWidth();
-        }
-
-        return sideNoteArea == SideNoteArea.RIGHT ? getDisplayWidth() / 2 : getDisplayWidth();
-    }
-
-    public int getSideNotePageLeft() {
-        return sideNoteArea == SideNoteArea.LEFT ? 0 : getDisplayWidth() / 2;
-    }
-
-    public int getSideNotePageRight() {
-        return sideNoteArea == SideNoteArea.LEFT ? getDisplayWidth() / 2 : getDisplayWidth();
     }
 
     public boolean isInDocPageRegion(int x, int y) {
