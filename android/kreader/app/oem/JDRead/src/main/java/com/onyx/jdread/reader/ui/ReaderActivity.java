@@ -12,6 +12,7 @@ import android.view.SurfaceHolder;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityReaderBinding;
+import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.OpenDocumentAction;
 import com.onyx.jdread.reader.actions.ParserOpenDocumentInfoAction;
 import com.onyx.jdread.reader.common.ReaderViewBack;
@@ -108,6 +109,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     @Override
     protected void onDestroy() {
         readerActivityEventHandler.unregisterListener();
+        MainBundle.getInstance().getSystemBarModel().setIsShow(true);
         super.onDestroy();
     }
 

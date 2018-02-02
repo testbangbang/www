@@ -427,6 +427,14 @@
     <string name="first_chapter">Is the first chapter</string>
     <string name="last_chapter">Is the last chapter</string>
     <string name="no_chapters">This article does not contain section information</string>
+    <string name="enter_hint">Please enter your search word</string>
+    <string name="total_page" formatted="false">Total（%d）</string>
+    <string name="close_history">Close History</string>
+    <string name="delete_history">Delete History</string>
+    <string name="searching" formatted="false">Searching %d/%d</string>
+    <string name="no_more_search_results">No more search results</string>
+    <string name="page" formatted="false">page %d</string>
+    <string name="search_end">Have finished searching</string>
     <string name="click_to_translate">Click to translate</string>
     <string name="delete_book">Delete book</string>
     <string name="network_or_server_error">Network or server error, wait for a while to try again</string>

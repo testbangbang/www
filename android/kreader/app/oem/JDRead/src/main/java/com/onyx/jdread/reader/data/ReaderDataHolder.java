@@ -193,4 +193,15 @@ public class ReaderDataHolder {
         return getReaderViewInfo().getTotalPage();
     }
 
+    public boolean supportSearchByPage() {
+        return isFixedPageDocument() && supportScalable();
+    }
+
+    public boolean isFixedPageDocument() {
+        return getReaderViewInfo() != null && getReaderViewInfo().isFixedDocument;
+    }
+
+    public boolean supportScalable() {
+        return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
+    }
 }

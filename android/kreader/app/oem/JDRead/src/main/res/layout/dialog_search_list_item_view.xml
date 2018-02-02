@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/imagebtn_bg"
+    android:paddingBottom="1dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <TextView
+        android:id="@+id/search_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@+id/search_page"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="@dimen/level_three_heading_font" />
+
+    <TextView
+        android:id="@+id/search_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_title"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@+id/search_page"
+        android:ellipsize="end"
+        android:gravity="bottom"
+        android:maxLines="1"
+        android:textColor="@color/normal_black"
+        android:textSize="@dimen/dialog_search_list_item_text_size" />
+
+    <TextView
+        android:id="@+id/search_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/split_line"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:textColor="@color/normal_black"
+        android:textSize="@dimen/dialog_search_list_item_page_text_size" />
+
+    <View
+        android:id="@+id/split_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/dash_line"
+        android:layerType="software" />
+
+</RelativeLayout>
