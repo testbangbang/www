@@ -17,6 +17,8 @@ public class NoteDrawingArgs {
         PEN_USER_ERASING,           // in user erasing state
     }
 
+    private static int defaultShape = ShapeFactory.SHAPE_BRUSH_SCRIBBLE;
+
     public volatile float strokeWidth = NoteModel.getDefaultStrokeWidth();
     public volatile int strokeColor = defaultColor();
     public volatile int style;
@@ -44,7 +46,11 @@ public class NoteDrawingArgs {
     }
 
     public static int defaultShape() {
-        return ShapeFactory.SHAPE_BRUSH_SCRIBBLE;
+        return defaultShape;
+    }
+
+    public static void setDefaultShape(int shape) {
+        defaultShape = shape;
     }
 
     public static int defaultColor() {
