@@ -104,4 +104,16 @@ public class Constants {
     public static final int WEB_VIEW_TEXT_ZOOM = 100;
     public static final String CURRENT_DAY = "current_day";
     public static final String RECEIVED_VOUCHER = "received_voucher";
+    public static final String MAIN_CONFIG_TYPE_EBOOK = "ebook";
+    public static final String MAIN_CONFIG_TYPE_ADV = "adv";
+    public static final int MODULE_TYPE_ADV_FIX_TWO = 3;
+    public static final int MODULE_TYPE_RECOMMEND = 6;
+
+    public static final int SHOP_VIEW_RECYCLE_HEIGHT = 1055;
+    public static final int COMMOM_SUBJECT_RECYCLE_HEIGHT = 1088;
+    public static final int SHOP_VIEW_TOP_FUNCTION_HEIGHT = 106;
+    public static final int SHOP_VIEW_BANNER_HEIGHT = 169;
+    public static final int SHOP_VIEW_TITLE_HEIGHT = 169;
+    public static final int SHOP_VIEW_SUBJECT_HEIGHT = 424;
+    public static final int SHOP_VIEW_END_VIEW_HEIGHT = 366;
 }

@@ -13,7 +13,7 @@ import java.util.List;
 public class BookSaleViewModel extends BaseObservable {
 
     private EventBus eventBus;
-    private List<SubjectViewModel> subjectModels;
+    private List<BaseSubjectViewModel> subjectModels;
     private TitleBarViewModel titleBarViewModel;
 
     public BookSaleViewModel(EventBus eventBus) {
@@ -26,11 +26,11 @@ public class BookSaleViewModel extends BaseObservable {
         return eventBus;
     }
 
-    public List<SubjectViewModel> getSubjectModels() {
+    public List<BaseSubjectViewModel> getSubjectModels() {
         return subjectModels;
     }
 
-    public void setSubjectModels(List<SubjectViewModel> subjectModels) {
+    public void setSubjectModels(List<BaseSubjectViewModel> subjectModels) {
         this.subjectModels = subjectModels;
         notifyChange();
     }

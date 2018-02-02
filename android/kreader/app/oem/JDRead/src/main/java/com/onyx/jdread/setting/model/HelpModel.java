@@ -2,6 +2,7 @@ package com.onyx.jdread.setting.model;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.event.ContactUsEvent;
@@ -18,7 +19,7 @@ public class HelpModel extends Observable {
     public final TitleBarModel titleBarModel = new TitleBarModel(SettingBundle.getInstance().getEventBus());
 
     public HelpModel() {
-        titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.help_and_feedback));
+        titleBarModel.title.set(ResManager.getString(R.string.help_and_feedback));
         titleBarModel.backEvent.set(new BackToSettingFragmentEvent());
     }
 

@@ -42,7 +42,7 @@
     <string name="no">取消</string>
     <string name="delete_book_prompt">是否从本机中删除所选图书？</string>
     <string name="build_library">新建分组</string>
-    <string name="build_library_hint">最多输入20个字符</string>
+    <string name="build_library_hint">最多可输入20个字符</string>
     <string name="library_move_to_fail">书库移动失败</string>
     <string name="adding">添加中...</string>
     <string name="group_exist">分组%s已存在</string>
@@ -380,15 +380,15 @@
     <string name="reader_bookmark_add_fail">书签添加失败</string>
     <string name="reader_bookmark_delete_success">书签已取消</string>
     <string name="reader_bookmark_delete_fail">书签取消失败</string>
-    <string name="speed_refresh">快速刷新</string>
+    <string name="speed_refresh">极速翻页</string>
     <string name="item_consume_record_read_bean">-%d阅豆</string>
     <string name="item_consume_record_voucher">-%d代金券</string>
-    <string name="down_book_resutl_no_read_vip">非畅读VIP</string>
-    <string name="down_book_can_not_read">电子书不支持阅读</string>
+    <string name="down_book_resutl_no_read_vip">没有vip会员权限</string>
+    <string name="down_book_can_not_read">改电子书不支持会员畅读</string>
     <string name="down_book_book_not_found">电子书不存在</string>
-    <string name="down_book_illegal_order">非法订单</string>
+    <string name="down_book_illegal_order">无效订单</string>
     <string name="down_book_illegal_device">非法设备</string>
-    <string name="down_book_server_error">后台处理异常</string>
+    <string name="down_book_server_error">后台异常</string>
     <string name="down_book_cerify_order_error">订单认证异常</string>
     <string name="the_read_time_for_today">本机今日阅读时长%s分钟</string>
     <string name="user_info_stay">%s天</string>
@@ -424,4 +424,7 @@
     <string name="morning">上午</string>
     <string name="afternoon">下午</string>
     <string name="updating">正在进行系统更新，请稍后...</string>
+    <string name="power_off_prompt">您确定关闭阅读器吗?</string>
+    <string name="speed_refresh_is_opened">极速翻页已开启</string>
+    <string name="speed_refresh_is_closed">极速翻页已关闭</string>
 </resources>

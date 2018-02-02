@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
@@ -18,6 +19,7 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderBookInfoBinding;
 import com.onyx.jdread.main.model.TitleBarModel;
@@ -32,6 +34,7 @@ import com.onyx.jdread.reader.catalog.event.ReaderBookInfoTitleBackEvent;
 import com.onyx.jdread.reader.catalog.model.ReaderBookInfoModel;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.PopupNoteClickEvent;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 
 import org.greenrobot.eventbus.EventBus;
@@ -177,6 +180,12 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         return new ArrayList<>(map.values());
     }
 
+    @Override
+    public void show() {
+        super.show();
+        DeviceUtils.adjustFullScreenStatus(this.getWindow(),true);
+    }
+
     private void initBookmarkView(final ReaderUserDataInfo readerUserDataInfo,final ReaderViewInfo readerViewInfo) {
         List<Bookmark> bookmarkList = deleteDuplicateBookmark(readerUserDataInfo.getBookmarks());
         binding.bookInfoBookmarkContent.setDefaultPageKeyBinding();
@@ -201,10 +210,26 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String position = (String) v.getTag();
-                eventBus.post(new AnnotationItemClickEvent(position));
+                Integer position = (Integer) v.getTag();
+                showAnnotationContent(position);
             }
         });
+    }
+
+    private void showAnnotationContent(int position){
+        List<Annotation> annotations = readerBookInfoDialogHandler.getReaderDataHolder().getReaderUserDataInfo().getAnnotations();
+        if(annotations == null || annotations.size() <= 0){
+            return;
+        }
+        if(position < 0 || position >= annotations.size()){
+            return;
+        }
+
+        Annotation annotation = annotations.get(position);
+
+        PopupNoteClickEvent popupNoteClickEvent = new PopupNoteClickEvent();
+        popupNoteClickEvent.setAnnotation(annotation);
+        eventBus.post(popupNoteClickEvent);
     }
 
     public String getCurrentPagePosition() {

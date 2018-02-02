@@ -155,7 +155,7 @@ public class ReaderUserDataInfo {
         final List<Annotation> annotations = ContentSdkDataUtils.getDataProvider().loadAnnotations(
                 displayName,
                 md5,
-                OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
+                OrderBy.fromProperty(Annotation_Table.createdAt).descending());
         if (annotations != null && annotations.size() > 0) {
             for (Annotation annotation : annotations) {
                 if (annotationMap.get(annotation.getPosition()) == null) {

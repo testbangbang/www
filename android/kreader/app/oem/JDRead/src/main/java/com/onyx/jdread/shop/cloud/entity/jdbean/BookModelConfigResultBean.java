@@ -28,10 +28,9 @@ public class BookModelConfigResultBean {
             public Object relate_link;
             public String spread;
             public String upload_domain_name;
-            public String pic_address_all;
         }
 
-        public static class ModulesBean {
+        public static class ModulesBean extends BaseObservable{
             public int f_type_next;
             public int id_next;
             public String show_name_next;

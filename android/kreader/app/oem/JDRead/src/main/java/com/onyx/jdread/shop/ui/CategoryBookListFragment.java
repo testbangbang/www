@@ -149,7 +149,7 @@ public class CategoryBookListFragment extends BaseFragment {
             }
         });
         categoryBookListBinding.setViewModel(getCategoryBookListViewModel());
-        CategorySubjectAdapter categorySubjectAdapter = new CategorySubjectAdapter(getEventBus(), true);
+        CategorySubjectAdapter categorySubjectAdapter = new CategorySubjectAdapter(getEventBus());
         categorySubjectAdapter.setRowAndCol(catRow, catCol);
         categorySubjectAdapter.setCanSelected(true);
         PageRecyclerView recyclerViewCategoryList = categoryBookListBinding.recyclerViewCategoryList;

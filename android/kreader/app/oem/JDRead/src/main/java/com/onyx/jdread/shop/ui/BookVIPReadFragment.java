@@ -6,10 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookVipReadBinding;
@@ -18,19 +16,21 @@ import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
-import com.onyx.jdread.shop.adapter.VipReadAdapter;
+import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.event.VipButtonClickEvent;
+import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.VipReadViewModel;
 import com.onyx.jdread.shop.model.VipUserInfoViewModel;
-import com.onyx.jdread.shop.view.DividerItemDecoration;
+import com.onyx.jdread.shop.view.CustomRecycleView;
+import com.onyx.jdread.shop.view.SpaceItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,11 +45,8 @@ import java.util.List;
 public class BookVIPReadFragment extends BaseFragment {
     private static final int HEAD_ITEM_COUNT = 1;
     private FragmentBookVipReadBinding bookVipReadBinding;
-    private int space = JDReadApplication.getInstance().getResources().getInteger(R.integer.vip_read_recycle_view_space);
-    private DividerItemDecoration itemDecoration;
-    private PageRecyclerView recyclerView;
-    private GPaginator paginator;
-    private VipReadAdapter adapter;
+    private int space = ResManager.getInteger(R.integer.custom_recycle_view_space);
+    private CustomRecycleView recyclerView;
 
     @Nullable
     @Override
@@ -75,9 +72,6 @@ public class BookVIPReadFragment extends BaseFragment {
         vipUserInfoViewModel.name.set(userName);
         vipUserInfoViewModel.vipStatus.set("");
         vipUserInfoViewModel.imageUrl.set(imgUrl);
-        if (adapter != null) {
-            adapter.setInfoViewModel(vipUserInfoViewModel);
-        }
     }
 
     private void getBookConfigData() {
@@ -85,10 +79,9 @@ public class BookVIPReadFragment extends BaseFragment {
         configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
-                List<SubjectViewModel> commonSubjcet = configAction.getCommonSubjcet();
+                List<BaseSubjectViewModel> commonSubjcet = configAction.getCommonSubjcet();
                 if (commonSubjcet != null) {
                     getVipReadViewModel().setSubjectModels(commonSubjcet);
-                    initPageIndicator(commonSubjcet.size());
                 }
             }
 
@@ -99,39 +92,24 @@ public class BookVIPReadFragment extends BaseFragment {
         });
     }
 
-    private void initPageIndicator(int size) {
-        paginator.resize(adapter.getRowCount(), adapter.getColumnCount(), size + HEAD_ITEM_COUNT);
-        int pages = paginator.pages();
-        bookVipReadBinding.scrollBar.setTotal(pages);
-    }
-
     private void initView() {
-        initDividerItemDecoration();
         setRecycleView();
         bookVipReadBinding.setViewModel(getVipReadViewModel());
         getVipReadViewModel().getTitleBarViewModel().leftText = getString(R.string.vip);
     }
 
     private void setRecycleView() {
-        adapter = new VipReadAdapter();
-        recyclerView = bookVipReadBinding.recyclerViewVipRead;
+        ShopMainConfigAdapter adapter = new ShopMainConfigAdapter();
+        recyclerView = bookVipReadBinding.vipSubjectRecycleView;
         recyclerView.setLayoutManager(new DisableScrollLinearManager(JDReadApplication.getInstance()));
-        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.addItemDecoration(new SpaceItemDecoration(space));
         recyclerView.setAdapter(adapter);
-        paginator = recyclerView.getPaginator();
-        recyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+        recyclerView.setOnPagingListener(new CustomRecycleView.OnPagingListener() {
             @Override
-            public void onPageChange(int position, int itemCount, int pageSize) {
-                int currentPage = paginator.getCurrentPage();
-                bookVipReadBinding.scrollBar.setFocusPosition(currentPage);
+            public void onPageChange(int position) {
+                bookVipReadBinding.scrollBar.setFocusPosition(position);
             }
         });
-    }
-
-    private void initDividerItemDecoration() {
-        itemDecoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
-        itemDecoration.setDrawLine(false);
-        itemDecoration.setSpace(space);
     }
 
     @Override

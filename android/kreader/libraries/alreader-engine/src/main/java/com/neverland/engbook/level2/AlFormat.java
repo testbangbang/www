@@ -515,7 +515,7 @@ public abstract class AlFormat {
                 styleStack.clearFlagInAllParentsProp(AlParProperty.SL2_BREAK_BEFORE | AlParProperty.SL2_EMPTY_BEFORE | AlParProperty.SL2_MARGT_MASK);
                 styleStack.clearFlagInAllParentsParagraph(AlStyles.SL_FIRSTP);
             } else {
-                size -= parText.length;
+                customSize -= parText.length;
                 if (!parText.haveLetter && ((styleStack.buffer[styleStack.position].prop & AlParProperty.SL2_JUSTIFY_POEM) == 0L))
                 newEmptyTextParagraph();
             }

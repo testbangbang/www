@@ -68,6 +68,12 @@
         </receiver>
 
         <receiver android:name=".main.receiver.ScreenStateReceive"/>
+
+        <receiver android:name=".main.receiver.PowerOffActionReceiver">
+            <intent-filter>
+                <action android:name="com.onyx.action.SHOW_POWER_OFF_DIALOG_ACTION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

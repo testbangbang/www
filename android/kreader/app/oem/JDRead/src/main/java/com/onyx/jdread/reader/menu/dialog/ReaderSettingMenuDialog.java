@@ -130,6 +130,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initSystemBar() {
+        MainBundle.getInstance().getSystemBarModel().setIsShow(true);
         binding.readerSettingSystemBar.setSystemBarModel(MainBundle.getInstance().getSystemBarModel());
     }
 
@@ -226,7 +227,9 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         binding.readerSettingBrightnessBar.ratingbarLightSettings.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                brightnessModel.setBrightness(ratingBar.getProgress());
+                if(fromUser) {
+                    brightnessModel.setBrightness(ratingBar.getProgress());
+                }
             }
         });
     }

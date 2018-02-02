@@ -32,22 +32,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/page_title"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:background="@drawable/imagebtn_bg"
-                android:drawableLeft="@mipmap/ic_read_back"
-                android:drawablePadding="@dimen/title_bar_drawable_padding"
+                android:layout_marginLeft="@dimen/fragment_content_padding"
                 android:gravity="center_vertical"
                 android:onClick="@{()->libraryModel.onBackClick()}"
-                android:paddingLeft="@dimen/library_manage_layout_padding"
-                android:text="@{libraryModel.title}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font"
-                android:visibility="@{StringUtils.isNullOrEmpty(libraryModel.title)?View.INVISIBLE:View.VISIBLE}" />
+                android:orientation="horizontal"
+                android:visibility="@{StringUtils.isNullOrEmpty(libraryModel.title)?View.INVISIBLE:View.VISIBLE}">
 
+                <ImageView
+                    android:layout_width="@dimen/back_icon_width_and_height"
+                    android:layout_height="@dimen/back_icon_width_and_height"
+                    android:src="@mipmap/ic_read_back" />
+
+                <TextView
+                    android:id="@+id/page_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/title_bar_drawable_padding"
+                    android:text="@{libraryModel.title}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_one_heading_font" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -114,7 +122,7 @@
                 android:onClick="@{()->libraryModel.selectAll()}"
                 android:text="@{libraryModel.isSelectAll?@string/cancel:@string/select_all}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/font_size_15" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -126,8 +134,8 @@
                 android:drawableTop="@{libraryModel.haveSelected?@drawable/ic_shelf_move:@drawable/ic_shelf_move_gray}"
                 android:onClick="@{()->libraryModel.moveTo()}"
                 android:text="@string/move_to"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textColor="@{libraryModel.haveSelected?@android:color/black:@color/text_gray_color}"
+                android:textSize="@dimen/font_size_15" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -137,8 +145,8 @@
                 android:drawableTop="@{libraryModel.haveSelected?@drawable/ic_shelf_delete_book:@drawable/ic_shelf_delet_book_gray}"
                 android:onClick="@{()->libraryModel.delete()}"
                 android:text="@string/delete"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textColor="@{libraryModel.haveSelected?@android:color/black:@color/text_gray_color}"
+                android:textSize="@dimen/font_size_15" />
         </LinearLayout>
     </LinearLayout>
 </layout>
