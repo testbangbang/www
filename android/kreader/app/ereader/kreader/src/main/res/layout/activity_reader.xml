@@ -21,11 +21,30 @@
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"/>
 
-        <SurfaceView
-            android:id="@+id/surfaceView"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/status_bar"/>
+            android:orientation="horizontal"
+            android:layout_above="@id/status_bar">
+
+            <SurfaceView
+                android:id="@+id/surfaceView_doc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <View
+                android:id="@+id/view_divider"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_centerHorizontal="true" />
+
+            <SurfaceView
+                android:id="@+id/surfaceView_note"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
 
         <ImageView android:id="@+id/button_show_tab_widget"
                    android:layout_width="wrap_content"

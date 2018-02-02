@@ -88,6 +88,8 @@ public class ReaderDataHolder {
 
     private int displayWidth;
     private int displayHeight;
+    private int sideNoteWidth;
+    private int sideNoteHeight;
     private int optionsSkippedTimes = 0;
     private int lastRequestSequence;
 
@@ -174,49 +176,39 @@ public class ReaderDataHolder {
     }
 
     public final List<PageInfo> getVisiblePages() {
+        return getReaderViewInfo().getVisiblePages();
+    }
+
+    public final List<PageInfo> getVisibleSideNotePages() {
         ArrayList<PageInfo> pages = new ArrayList<>();
+
+        if (!sideNoting) {
+            return pages;
+        }
 
         PageInfo firstPage = getFirstPageInfo();
         if (firstPage == null) {
             return pages;
         }
-        if (!supportScalable()) {
-            firstPage.setSubPage(-1);
-        }
 
-        pages.add(firstPage);
+        PageInfo subNotePage = new PageInfo(firstPage.getName(),
+                firstPage.getRange().startPosition,
+                firstPage.getRange().endPosition,
+                sideNoteWidth, sideNoteHeight);
 
-        if (sideNoting) {
-            if (sideNoteArea == SideNoteArea.LEFT) {
-                float width = firstPage.getDisplayRect().width();
-                firstPage.getDisplayRect().left = getDocPageLeft();
-                firstPage.getDisplayRect().right = firstPage.getDisplayRect().left + width;
+        RectF pageRect = new RectF(0, 0, sideNoteWidth, sideNoteHeight);
+        RectF viewportRect = new RectF(0, 0, sideNoteWidth, displayHeight);
+        subNotePage.updateDisplayRect(pageRect);
+        PageUtils.updateVisibleRect(subNotePage, viewportRect);
 
-                RectF viewportRect = new RectF(getDocPageLeft(), 0, getDocPageRight(), displayHeight);
-                PageUtils.updateVisibleRect(firstPage, viewportRect);
-            }
+        subNotePage.setSubPage(getSubPageIndex());
 
-            PageInfo subNotePage = new PageInfo(firstPage.getName(),
-                    firstPage.getRange().startPosition,
-                    firstPage.getRange().endPosition,
-                    firstPage.getOriginWidth(),
-                    firstPage.getOriginHeight());
-
-            RectF pageRect = new RectF(0, 0, subNotePage.getOriginWidth(),
-                    subNotePage.getOriginHeight());
-            RectF viewportRect = new RectF(getSideNotePageLeft(), 0, getSideNotePageRight(), displayHeight);
-            float scale = PageUtils.scaleToFitRect(pageRect, viewportRect);
-
-            subNotePage.setScale(scale);
-            subNotePage.updateDisplayRect(pageRect);
-
-            PageUtils.updateVisibleRect(subNotePage, viewportRect);
-
-            subNotePage.setSubPage(getSubPageIndex());
-            pages.add(subNotePage);
-        }
-
+        pages.add(subNotePage);
         return pages;
+    }
+
+    public final List<PageInfo> getVisibleNotePages() {
+        return sideNoting ? getVisibleSideNotePages() : getVisiblePages();
     }
 
     public final ReaderUserDataInfo getReaderUserDataInfo() {
@@ -293,6 +285,23 @@ public class ReaderDataHolder {
     public void setDisplaySize(int width, int height) {
         displayWidth = width;
         displayHeight = height;
+    }
+
+    public int getSideNoteWidth() {
+        return sideNoteWidth;
+    }
+
+    public int getSideNoteHeight() {
+        return sideNoteHeight;
+    }
+
+    public Rect getSideNoteRect() {
+        return new Rect(0, 0, sideNoteWidth, sideNoteHeight);
+    }
+
+    public void setSideNoteSize(int width, int height) {
+        sideNoteWidth = width;
+        sideNoteHeight = height;
     }
 
     public int getDocumentViewportWidth() {
@@ -780,43 +789,15 @@ public class ReaderDataHolder {
     }
 
     public int getDocPageDialogPosX(){
-        int posX = (getDisplayWidth() / 4);
+        int posX = (getDisplayWidth() / 2);
         posX = sideNoteArea == SideNoteArea.LEFT ? posX : -posX;
         return posX;
     }
 
     public int getSideNoteDialogPosX() {
-        int posX = (getDisplayWidth() / 4);
+        int posX = (getDisplayWidth() / 2);
         posX = sideNoteArea == SideNoteArea.LEFT ? -posX : posX;
         return posX;
-    }
-
-    public int getDocPageLeft() {
-        if (!sideNoting) {
-            return 0;
-        }
-        return sideNoteArea == SideNoteArea.RIGHT ? 0 : getDisplayWidth() / 2;
-    }
-
-    public int getDocPageRight() {
-        if (!sideNoting) {
-            return getDisplayWidth();
-        }
-
-        return sideNoteArea == SideNoteArea.RIGHT ? getDisplayWidth() / 2 : getDisplayWidth();
-    }
-
-    public int getSideNotePageLeft() {
-        return sideNoteArea == SideNoteArea.LEFT ? 0 : getDisplayWidth() / 2;
-    }
-
-    public int getSideNotePageRight() {
-        return sideNoteArea == SideNoteArea.LEFT ? getDisplayWidth() / 2 : getDisplayWidth();
-    }
-
-    public boolean isInDocPageRegion(int x, int y) {
-        return getDocPageLeft() <= x && x <= getDocPageRight() &&
-                0 <= y && y <= getDisplayHeight();
     }
 
     public int getSideNoteStartSubPageIndex() {

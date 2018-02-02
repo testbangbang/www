@@ -53,7 +53,7 @@ public class ToggleSideNoteMenuAction extends BaseAction {
 
     private void initMenu(ReaderDataHolder readerDataHolder) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                (readerDataHolder.getDisplayWidth() / 2) - 1, ViewGroup.LayoutParams.WRAP_CONTENT);
+                (readerDataHolder.getDisplayWidth()) - 1, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         params.addRule(readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT
                 ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);

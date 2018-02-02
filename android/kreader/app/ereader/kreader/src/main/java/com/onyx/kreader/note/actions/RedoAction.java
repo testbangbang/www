@@ -15,9 +15,7 @@ public class RedoAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        PageInfo page = !readerDataHolder.isSideNoting() ?
-                readerDataHolder.getVisiblePages().get(0) :
-                readerDataHolder.getVisiblePages().get(1);
+        PageInfo page = readerDataHolder.getVisibleNotePages().get(0);
         final RedoRequest request = new RedoRequest(page);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, new BaseCallback() {
             @Override

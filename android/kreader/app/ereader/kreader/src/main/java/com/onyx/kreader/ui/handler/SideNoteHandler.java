@@ -4,6 +4,9 @@ import android.content.pm.ActivityInfo;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.SurfaceView;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -20,9 +23,13 @@ import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.ChangeScaleWithDeltaAction;
 import com.onyx.kreader.ui.actions.ShowDialogGoToPageAction;
+import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.actions.ShowSideScribbleMenuAction;
+import com.onyx.kreader.ui.actions.StartSideNoteAction;
 import com.onyx.kreader.ui.actions.ToggleSideNoteMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
+import com.onyx.kreader.ui.events.ExchangeSideNoteAreaEvent;
 import com.onyx.kreader.ui.events.HideTabWidgetEvent;
 import com.onyx.kreader.ui.events.ShowTabWidgetEvent;
 
@@ -36,6 +43,8 @@ public class SideNoteHandler extends BaseHandler {
 
     private MenuManager menuManager;
     private BaseCallback resumeDrawingCallBack;
+
+    private HandlerInitialState initialState;
 
     public SideNoteHandler(HandlerManager p) {
         super(p);
@@ -53,16 +62,27 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     public void onActivate(final ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
-        final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(),
-                true, readerDataHolder.getSideNoteStartSubPageIndex());
-        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
-        readerDataHolder.getEventBus().post(new HideTabWidgetEvent());
-
         readerDataHolder.getEventBus().register(this);
+
+        this.initialState = initialState;
+
+        readerDataHolder.setSideNoting(true);
+        showSideNoteSurfaceView(readerDataHolder);
+
+        final StartSideNoteAction action = new StartSideNoteAction();
+        action.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                startSideNoteDrawing(readerDataHolder);
+            }
+        });
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
         readerDataHolder.getEventBus().unregister(this);
+
+        readerDataHolder.setSideNoting(false);
+        hideSideNoteSurfaceView();
 
         StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
         stopNoteActionChain.execute(readerDataHolder, new BaseCallback() {
@@ -76,6 +96,65 @@ public class SideNoteHandler extends BaseHandler {
                 if (menuManager.getMainMenu() != null && menuManager.getMainMenu().isShowing()) {
                     toggleSideNoteMenu(readerDataHolder);
                 }
+            }
+        });
+    }
+
+    private void showSideNoteSurfaceView(final ReaderDataHolder readerDataHolder) {
+        SurfaceView svLeft = initialState.surfaceViewDoc;
+        SurfaceView svRight = initialState.surfaceViewNote;
+        if (readerDataHolder.getSideNoteArea() == ReaderDataHolder.SideNoteArea.LEFT) {
+            svLeft = initialState.surfaceViewNote;
+            svRight = initialState.surfaceViewDoc;
+        }
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)svLeft.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        params.addRule(RelativeLayout.LEFT_OF, initialState.viewDivider.getId());
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+        params.addRule(RelativeLayout.RIGHT_OF, 0);
+        svLeft.setLayoutParams(params);
+
+        params = (RelativeLayout.LayoutParams)svRight.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params.addRule(RelativeLayout.RIGHT_OF, initialState.viewDivider.getId());
+        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+        params.addRule(RelativeLayout.LEFT_OF, 0);
+        svRight.setLayoutParams(params);
+
+        initialState.surfaceViewNote.setVisibility(View.VISIBLE);
+    }
+
+    private void hideSideNoteSurfaceView() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)initialState.surfaceViewDoc.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+        params.addRule(RelativeLayout.LEFT_OF, 0);
+        params.addRule(RelativeLayout.RIGHT_OF, 0);
+        initialState.surfaceViewDoc.setLayoutParams(params);
+
+        params = (RelativeLayout.LayoutParams)initialState.surfaceViewNote.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+        params.addRule(RelativeLayout.LEFT_OF, 0);
+        params.addRule(RelativeLayout.RIGHT_OF, 0);
+        initialState.surfaceViewNote.setLayoutParams(params);
+
+        initialState.surfaceViewNote.setVisibility(View.GONE);
+    }
+
+    private void startSideNoteDrawing(final ReaderDataHolder readerDataHolder) {
+        ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(initialState.surfaceViewNote,
+                initialState.activityExtraView,
+                initialState.activityStatusBar,
+                ShowReaderMenuAction.getScribbleActionCallback(readerDataHolder));
+        showMenu.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest baseRequest, Throwable throwable) {
+                final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(),
+                        true, readerDataHolder.getSideNoteStartSubPageIndex());
+                readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
+                readerDataHolder.getEventBus().post(new HideTabWidgetEvent());
             }
         });
     }
@@ -113,35 +192,23 @@ public class SideNoteHandler extends BaseHandler {
 
     @Override
     public boolean onTouchEvent(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (e.getPointerCount() > 1) {
-            return true;
-        }
-        if (inDocRegion(e)) {
-            return true;
-        }
-
-        return readerDataHolder.getNoteManager().getTouchHelper().onTouchEvent(e);
+        return true;
     }
 
     public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (inDocRegion(e1) && inDocRegion(e2)) {
-            return super.onScroll(readerDataHolder, e1, e2, distanceX, distanceY);
-        }
-        return true;
+        return super.onScroll(readerDataHolder, e1, e2, distanceX, distanceY);
     }
 
     @Override
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
-        if (inDocRegion(e)) {
-            int left = readerDataHolder.getDocPageLeft();
-            int width = readerDataHolder.getDisplayWidth() / 2;
-            if (left <= e.getX() && e.getX() < left + width / 3) {
-                prevScreen(readerDataHolder);
-            } else if (e.getX() > left + ((width * 2) / 3) && e.getX() < left + width) {
-                nextScreen(readerDataHolder);
-            } else {
-                toggleSideNoteMenu(readerDataHolder);
-            }
+        int left = 0;
+        int width = readerDataHolder.getDisplayWidth();
+        if (left <= e.getX() && e.getX() < left + width / 3) {
+            prevScreen(readerDataHolder);
+        } else if (e.getX() > left + ((width * 2) / 3) && e.getX() < left + width) {
+            nextScreen(readerDataHolder);
+        } else {
+            toggleSideNoteMenu(readerDataHolder);
         }
         return true;
     }
@@ -160,17 +227,14 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
-        if (inDocRegion(startX, startY) && inDocRegion(endX, endY)) {
-            return super.onActionUp(readerDataHolder, startX, startY, endX, endY);
-        }
-        return true;
+        return super.onActionUp(readerDataHolder, startX, startY, endX, endY);
     }
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
     }
 
     public void beforeProcessKeyDown(final ReaderDataHolder readerDataHolder, final String action, final String args) {
-        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false);
+        final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisibleNotePages(), true, true, false, false);
         flushNoteAction.execute(getParent().getReaderDataHolder(), null);
     }
 
@@ -187,16 +251,8 @@ public class SideNoteHandler extends BaseHandler {
         stopNoteActionChain.execute(readerDataHolder, null);
     }
 
-    private boolean inDocRegion(MotionEvent e) {
-        return inDocRegion(e.getX(), e.getY());
-    }
-
-    private boolean inDocRegion(float x, float y) {
-        return getParent().getReaderDataHolder().isInDocPageRegion((int)x, (int)y);
-    }
-
     private void toggleSideNoteMenu(final ReaderDataHolder readerDataHolder) {
-        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
+        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisibleNotePages());
         flushNoteAction.execute(getParent().getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -208,9 +264,14 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     @Subscribe
+    public void onExchangeSideNoteArea(ExchangeSideNoteAreaEvent event) {
+        showSideNoteSurfaceView(getParent().getReaderDataHolder());
+    }
+
+    @Subscribe
     public void onMenuClickEvent(MenuClickEvent event) {
         ReaderMenuAction menuAction = ReaderMenuAction.valueOf(event.getMenuId());
-        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
+        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisibleNotePages());
         BaseCallback menuActionCallback = null;
         switch (menuAction) {
             case ZOOM_IN:

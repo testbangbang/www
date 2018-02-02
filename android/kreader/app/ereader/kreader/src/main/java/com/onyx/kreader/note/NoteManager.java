@@ -230,6 +230,10 @@ public class NoteManager {
         viewBitmapWrapper.copyFrom(bitmap);
     }
 
+    public void recycleViewBitmap() {
+        viewBitmapWrapper.recycleBitmap();
+    }
+
     public Bitmap getViewBitmap() {
         if (viewBitmapWrapper == null) {
             return null;

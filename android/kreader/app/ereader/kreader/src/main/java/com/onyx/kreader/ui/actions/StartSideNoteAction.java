@@ -11,20 +11,11 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 public class StartSideNoteAction extends BaseAction {
 
-    public PositionSnapshot positionSnapshot;
-
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        readerDataHolder.setSideNoting(true);
         final StartSideNodeRequest sideNodeRequest = new StartSideNodeRequest(readerDataHolder.getDisplayWidth(),
                 readerDataHolder.getDisplayHeight());
         readerDataHolder.submitRenderRequest(sideNodeRequest, new BaseCallback() {
-            @Override
-            public void beforeDone(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    readerDataHolder.setSideNoting(false);
-                }
-            }
 
             @Override
             public void done(BaseRequest request, Throwable e) {

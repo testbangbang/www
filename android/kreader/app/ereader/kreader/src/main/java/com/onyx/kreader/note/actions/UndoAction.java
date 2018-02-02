@@ -14,9 +14,7 @@ import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 public class UndoAction extends BaseAction {
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        PageInfo page = !readerDataHolder.isSideNoting() ?
-                readerDataHolder.getVisiblePages().get(0) :
-                readerDataHolder.getVisiblePages().get(1);
+        PageInfo page = readerDataHolder.getVisibleNotePages().get(0);
         final UndoRequest request = new UndoRequest(page);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, new BaseCallback() {
             @Override
