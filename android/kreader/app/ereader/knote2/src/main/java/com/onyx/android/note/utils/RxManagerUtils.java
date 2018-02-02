@@ -26,10 +26,6 @@ public class RxManagerUtils {
         return defaultRxManager;
     }
 
-    public static <T extends RxRequest> Observable<T> enqueue(T request) {
-        return getDefaultRxManager().enqueue(request);
-    }
-
     public static <T extends RxRequest> void enqueue(T request, final RxCallback<T> callback) {
         getDefaultRxManager().enqueue(request, callback);
     }
