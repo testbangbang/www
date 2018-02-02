@@ -14,18 +14,17 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ModelItemBinding;
 import com.onyx.jdread.main.common.PageAdapter;
+import com.onyx.jdread.main.common.ResManager;
 
 import java.util.List;
-
-import static android.media.CamcorderProfile.get;
 
 /**
  * Created by hehai on 17-11-13.
  */
 
 public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataModel, DataModel> {
-    private int viewTypeThumbnailRow = JDReadApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_row);
-    private int viewTypeThumbnailCol = JDReadApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
+    private int viewTypeThumbnailRow = ResManager.getInteger(R.integer.library_view_type_thumbnail_row);
+    private int viewTypeThumbnailCol = ResManager.getInteger(R.integer.library_view_type_thumbnail_col);
     private int multiSelectionMode = SelectionMode.NORMAL_MODE;
     private int row = viewTypeThumbnailRow;
     private int col = viewTypeThumbnailCol;

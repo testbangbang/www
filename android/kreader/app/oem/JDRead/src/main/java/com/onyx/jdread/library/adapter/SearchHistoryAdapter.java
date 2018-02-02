@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SearchHistoryItemBinding;
 import com.onyx.jdread.library.event.SearchBookKeyEvent;
 import com.onyx.jdread.library.model.LibraryDataBundle;
+import com.onyx.jdread.main.common.ResManager;
 
 import java.util.List;
 
@@ -29,12 +29,12 @@ public class SearchHistoryAdapter extends PageRecyclerView.PageAdapter<SearchHis
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.search_history_recycler_row);
+        return ResManager.getInteger(R.integer.search_history_recycler_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.search_history_recycler_col);
+        return ResManager.getInteger(R.integer.search_history_recycler_col);
     }
 
     @Override

@@ -35,13 +35,15 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/back_icon_width_and_height"
+                android:layout_height="@dimen/back_icon_width_and_height"
                 android:onClick="@{()->searchModel.back()}"
                 android:src="@mipmap/ic_read_back" />
 
             <android.support.v7.widget.SearchView
                 android:id="@+id/search_view"
+                android:layout_marginLeft="@dimen/fragment_content_padding"
+                android:layout_marginRight="@dimen/fragment_content_padding"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -49,6 +51,7 @@
                 android:shadowColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font"
                 app:iconifiedByDefault="false"
+                app:closeIcon="@drawable/ic_dialog_close"
                 app:queryHint="@string/search_view_hint"
                 app:searchIcon="@null" />
 
