@@ -468,6 +468,12 @@
     <dimen name="system_bar_icon_space">10dp</dimen>
     <dimen name="item_subject_common_name_margin_top">2dp</dimen>
     <dimen name="common_subject_bottom_item_margin_top">60dp</dimen>
+    <dimen name="dialog_search_edit_padding">15dp</dimen>
+    <dimen name="ellipse_view_padding">6dp</dimen>
+    <dimen name="tts_layout_bg_radius">30dp</dimen>
+    <dimen name="search_button_margin">5dp</dimen>
+    <dimen name="dialog_search_list_item_text_size">18sp</dimen>
+    <dimen name="dialog_search_list_item_page_text_size">20sp</dimen>
     <dimen name="book_comment_contetn_margin_top">8dp</dimen>
     <dimen name="title_bar_title_max_width">180dp</dimen>
     <dimen name="search_history_recycler_height">120dp</dimen>
