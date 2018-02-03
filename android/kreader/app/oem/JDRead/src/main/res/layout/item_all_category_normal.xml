@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/text_stroke_background"
-            android:ellipsize="middle"
+            android:ellipsize="end"
             android:gravity="center"
             android:maxLines="2"
             android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"

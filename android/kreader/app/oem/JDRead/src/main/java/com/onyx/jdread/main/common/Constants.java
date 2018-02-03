@@ -109,11 +109,12 @@ public class Constants {
     public static final int MODULE_TYPE_ADV_FIX_TWO = 3;
     public static final int MODULE_TYPE_RECOMMEND = 6;
 
-    public static final int SHOP_VIEW_RECYCLE_HEIGHT = 1055;
-    public static final int COMMOM_SUBJECT_RECYCLE_HEIGHT = 1088;
+    public static final int SHOP_VIEW_RECYCLE_HEIGHT = 1099;
+    public static final int COMMOM_SUBJECT_RECYCLE_HEIGHT = 1107;
     public static final int SHOP_VIEW_TOP_FUNCTION_HEIGHT = 106;
     public static final int SHOP_VIEW_BANNER_HEIGHT = 169;
     public static final int SHOP_VIEW_TITLE_HEIGHT = 169;
     public static final int SHOP_VIEW_SUBJECT_HEIGHT = 424;
     public static final int SHOP_VIEW_END_VIEW_HEIGHT = 366;
+    public static final int SHOP_VIEW_VIP_INFO_VIEW_HEIGHT = 214;
 }

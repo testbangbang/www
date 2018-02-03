@@ -11,8 +11,8 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookSaleBinding;
-import com.onyx.jdread.library.event.HideAllDialogEvent;
-import com.onyx.jdread.library.event.LoadingDialogEvent;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
@@ -23,7 +23,6 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
-import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.BookSaleViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.CustomRecycleView;
@@ -33,14 +32,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.List;
-
 /**
  * Created by jackdeng on 2018/1/16.
  */
 
 public class BookSaleFragment extends BaseFragment {
-    private int SCROLL_TOTAL = 1;
     private FragmentBookSaleBinding bookSaleBinding;
     private int space = ResManager.getInteger(R.integer.custom_recycle_view_space);
     private CustomRecycleView recyclerView;
@@ -70,10 +66,8 @@ public class BookSaleFragment extends BaseFragment {
         configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
-                List<BaseSubjectViewModel> commonSubjcet = configAction.getCommonSubjcet();
-                if (commonSubjcet != null) {
-                    getBookSaleViewModel().setSubjectModels(commonSubjcet);
-                }
+                bookSaleBinding.scrollBar.setTotal(getBookSaleViewModel().getTotalPages());
+                scrollToTop();
             }
 
             @Override
@@ -83,9 +77,14 @@ public class BookSaleFragment extends BaseFragment {
         });
     }
 
+    private void scrollToTop() {
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
+    }
+
     private void initView() {
         setRecycleView();
-        bookSaleBinding.scrollBar.setTotal(SCROLL_TOTAL);
         bookSaleBinding.setViewModel(getBookSaleViewModel());
         getBookSaleViewModel().getTitleBarViewModel().leftText = getString(R.string.sale);
     }

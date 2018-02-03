@@ -11,13 +11,12 @@ import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookVipReadBinding;
-import com.onyx.jdread.library.event.HideAllDialogEvent;
-import com.onyx.jdread.library.event.LoadingDialogEvent;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
@@ -25,10 +24,8 @@ import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.event.VipButtonClickEvent;
-import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.VipReadViewModel;
-import com.onyx.jdread.shop.model.VipUserInfoViewModel;
 import com.onyx.jdread.shop.view.CustomRecycleView;
 import com.onyx.jdread.shop.view.SpaceItemDecoration;
 
@@ -36,14 +33,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.List;
-
 /**
  * Created by jackdeng on 2018/1/16.
  */
 
 public class BookVIPReadFragment extends BaseFragment {
-    private static final int HEAD_ITEM_COUNT = 1;
     private FragmentBookVipReadBinding bookVipReadBinding;
     private int space = ResManager.getInteger(R.integer.custom_recycle_view_space);
     private CustomRecycleView recyclerView;
@@ -66,12 +60,6 @@ public class BookVIPReadFragment extends BaseFragment {
 
     private void initData() {
         getBookConfigData();
-        VipUserInfoViewModel vipUserInfoViewModel = new VipUserInfoViewModel(getEventBus());
-        String imgUrl = LoginHelper.getImgUrl();
-        String userName = LoginHelper.getUserName();
-        vipUserInfoViewModel.name.set(userName);
-        vipUserInfoViewModel.vipStatus.set("");
-        vipUserInfoViewModel.imageUrl.set(imgUrl);
     }
 
     private void getBookConfigData() {
@@ -79,10 +67,8 @@ public class BookVIPReadFragment extends BaseFragment {
         configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
-                List<BaseSubjectViewModel> commonSubjcet = configAction.getCommonSubjcet();
-                if (commonSubjcet != null) {
-                    getVipReadViewModel().setSubjectModels(commonSubjcet);
-                }
+                bookVipReadBinding.scrollBar.setTotal(getVipReadViewModel().getTotalPages());
+                scrollToTop();
             }
 
             @Override
@@ -90,6 +76,12 @@ public class BookVIPReadFragment extends BaseFragment {
                 super.onError(throwable);
             }
         });
+    }
+
+    private void scrollToTop() {
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
     }
 
     private void initView() {

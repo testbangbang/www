@@ -244,7 +244,7 @@ public class CategoryBookListFragment extends BaseFragment {
             return;
         }
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
-        if (categoryBean == null || currentCatName == null || currentCatName.equals(categoryBean.name)) {
+        if (categoryBean == null || currentCatName == null) {
             return;
         }
         this.catTwoId = categoryBean.id;

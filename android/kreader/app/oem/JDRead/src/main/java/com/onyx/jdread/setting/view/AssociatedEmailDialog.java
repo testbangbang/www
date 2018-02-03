@@ -67,12 +67,10 @@ public class AssociatedEmailDialog extends Dialog {
         public final ObservableField<String> title = new ObservableField<>();
         public final ObservableField<String> emailAddress = new ObservableField<>();
         public final ObservableBoolean bound = new ObservableBoolean();
-        private Activity context;
 
         private boolean checkedEdit() {
-            Utils.hideSoftWindow(context);
             if (StringUtils.isNullOrEmpty(emailAddress.get()) || !RegularUtil.isEmail(emailAddress.get())) {
-                ToastUtil.showToast(JDReadApplication.getInstance(), JDReadApplication.getInstance().getString(R.string.email_address_wrong));
+                ToastUtil.showOffsetToast(ResManager.getString(R.string.email_address_wrong), ResManager.getInteger(R.integer.toast_offset_y));
                 return false;
             }
             return true;
@@ -91,10 +89,6 @@ public class AssociatedEmailDialog extends Dialog {
             bound.set(false);
             JDPreferenceManager.setStringValue(R.string.email_address_key, null);
             title.set(JDReadApplication.getInstance().getString(R.string.bind_to_email));
-        }
-
-        public void setContext(Activity context) {
-            this.context = context;
         }
     }
 

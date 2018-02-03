@@ -2,11 +2,8 @@ package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
 
-import com.onyx.jdread.main.common.Constants;
-
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,8 +13,17 @@ import java.util.List;
 public class RankViewModel extends BaseObservable {
 
     private EventBus eventBus;
-    private List<SubjectViewModel> rankItems;
+    private List<BaseSubjectViewModel> rankItems;
     private TitleBarViewModel titleBarViewModel;
+    private int totalPages = 1;
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
 
     public RankViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -29,7 +35,7 @@ public class RankViewModel extends BaseObservable {
         return eventBus;
     }
 
-    public List<SubjectViewModel> getRankItems() {
+    public List<BaseSubjectViewModel> getRankItems() {
         return rankItems;
     }
 
@@ -37,11 +43,9 @@ public class RankViewModel extends BaseObservable {
         return titleBarViewModel;
     }
 
-    public void setRankItems() {
-        if (rankItems != null && rankItems.size() >= Constants.SHOP_MAIN_INDEX_SIX) {
-            return;
-        }
-        rankItems = new ArrayList<>();
+    public void setRankItems(List<BaseSubjectViewModel> rankItems) {
+        this.rankItems = rankItems;
+        notifyChange();
     }
 
     public void setTitleBarViewModel(TitleBarViewModel titleBarViewModel) {

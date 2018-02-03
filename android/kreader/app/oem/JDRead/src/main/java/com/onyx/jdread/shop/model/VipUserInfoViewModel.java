@@ -14,6 +14,7 @@ public class VipUserInfoViewModel extends BaseSubjectViewModel{
     public final ObservableField<String> name = new ObservableField<>();
     public final ObservableField<String> imageUrl = new ObservableField<>();
     public final ObservableField<String> vipStatus = new ObservableField<>();
+    public final ObservableField<String> buttonContent = new ObservableField<>();
     public EventBus eventBus;
 
     public VipUserInfoViewModel(EventBus eventBus) {
