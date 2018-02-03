@@ -64,6 +64,7 @@ public class BookRankFragment extends BaseFragment {
             @Override
             public void onNext(BookRankAction rankAction) {
                 bookRankBinding.scrollBar.setTotal(getRankViewModel().getTotalPages());
+                scrollToTop();
             }
 
             @Override
@@ -71,6 +72,12 @@ public class BookRankFragment extends BaseFragment {
                 super.onError(throwable);
             }
         });
+    }
+
+    private void scrollToTop() {
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
     }
 
     private void initView() {

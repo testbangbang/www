@@ -67,7 +67,8 @@ public class BookVIPReadFragment extends BaseFragment {
         configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
-
+                bookVipReadBinding.scrollBar.setTotal(getVipReadViewModel().getTotalPages());
+                scrollToTop();
             }
 
             @Override
@@ -75,6 +76,12 @@ public class BookVIPReadFragment extends BaseFragment {
                 super.onError(throwable);
             }
         });
+    }
+
+    private void scrollToTop() {
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
     }
 
     private void initView() {

@@ -67,6 +67,7 @@ public class BookNewBooksFragment extends BaseFragment {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
                 bookNewBooksBinding.scrollBar.setTotal(getNewBookViewModel().getTotalPages());
+                scrollToTop();
             }
 
             @Override
@@ -74,6 +75,12 @@ public class BookNewBooksFragment extends BaseFragment {
                 super.onError(throwable);
             }
         });
+    }
+
+    private void scrollToTop() {
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
     }
 
     private void initView() {
