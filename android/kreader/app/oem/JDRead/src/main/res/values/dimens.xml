@@ -492,4 +492,5 @@
     <dimen name="circle_height">30dp</dimen>
     <dimen name="dialog_system_update_padding">20dp</dimen>
     <dimen name="dialog_system_update_progress_padding">10dp</dimen>
+    <dimen name="clear_search_history_padding">5dp</dimen>
 </resources>

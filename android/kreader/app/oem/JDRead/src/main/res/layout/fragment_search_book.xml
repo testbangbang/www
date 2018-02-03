@@ -107,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:padding="@dimen/clear_search_history_padding"
                     android:onClick="@{()->searchModel.clearHistory()}"
                     android:src="@mipmap/ic_shelf_search_delet" />
             </RelativeLayout>
