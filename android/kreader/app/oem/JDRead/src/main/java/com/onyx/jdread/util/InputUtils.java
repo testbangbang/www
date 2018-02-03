@@ -56,7 +56,7 @@ public class InputUtils {
     }
 
     public static String filterSpecialCharacters(String string) {
-        String regEx = "[a-zA-Z0-9\\u4e00-\\u9fa5]";
+        String regEx = "[-_.a-zA-Z0-9\\u4e00-\\u9fa5]";
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(string);
         StringBuilder sb = new StringBuilder();
