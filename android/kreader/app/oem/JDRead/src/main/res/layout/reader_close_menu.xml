@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="closeDialogModel"
+            type="com.onyx.jdread.reader.menu.model.CloseDialogModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/reader_setting_system_bar"
+            layout="@layout/system_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            style="@style/ReaderTitleBarBuyStyle"
+            android:layout_marginRight="@dimen/reader_title_back_margin_right"
+            android:drawableLeft="@mipmap/ic_read_back"
+            android:drawablePadding="@dimen/reader_title_bar_drawable_padding"
+            android:gravity="center_vertical"
+            android:onClick="@{()->closeDialogModel.backClick()}"
+            android:padding="@dimen/reader_title_back_padding" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:onClick="@{()->closeDialogModel.dismissZoneClick()}" />
+    </LinearLayout>
+</layout>

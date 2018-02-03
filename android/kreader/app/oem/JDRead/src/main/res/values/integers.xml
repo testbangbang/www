@@ -160,4 +160,7 @@
     <integer name="search_history_recycler_col">4</integer>
     <integer name="associated_email_dialog_offset_y">40</integer>
     <integer name="associated_email_dialog_offset_x">0</integer>
+    <integer name="pass_book_toast_offset_y">-50</integer>
+    <integer name="dialog_jd_loading_width">320</integer>
+    <integer name="dialog_jd_loading_height">100</integer>
 </resources>

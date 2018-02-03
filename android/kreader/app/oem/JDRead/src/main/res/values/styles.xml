@@ -81,7 +81,7 @@
         <item name="android:paddingBottom">@dimen/reader_text_setting_font_padding_bottom</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:textSize">@dimen/level_three_heading_font</item>
     </style>
 
     <style name="ReaderTextSettingFontSizeStyle">
@@ -106,7 +106,7 @@
         <item name="android:gravity">center</item>
         <item name="android:clickable">true</item>
         <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:textSize">@dimen/level_three_heading_font</item>
     </style>
 
     <style name="ReaderTextSettingLayoutStyle">
@@ -278,7 +278,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
-        <item name="android:background">@drawable/imagebtn_bg</item>
         <item name="android:clickable">true</item>
     </style>
 

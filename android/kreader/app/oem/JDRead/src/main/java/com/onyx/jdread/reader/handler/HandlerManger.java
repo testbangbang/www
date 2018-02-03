@@ -4,6 +4,7 @@ import android.view.MotionEvent;
 
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.data.RegionFunctionManager;
+import com.onyx.jdread.reader.event.ShowCloseDocumentDialogEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -122,5 +123,9 @@ public class HandlerManger {
     public void onStop() {
         getActiveProvider().onStop();
         updateActionProviderType(READING_PROVIDER);
+    }
+
+    public void showCloseDocumentDialog(){
+        readerDataHolder.getEventBus().post(new ShowCloseDocumentDialogEvent());
     }
 }

@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.catalog.model;
 
 import android.databinding.ObservableArrayList;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
@@ -8,6 +9,7 @@ import android.databinding.ObservableList;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.jdread.reader.catalog.event.TabBookmarkClickEvent;
 import com.onyx.jdread.reader.catalog.event.TabCatalogClickEvent;
@@ -30,10 +32,29 @@ public class ReaderBookInfoModel {
     private ObservableInt currentTab = new ObservableInt(ReaderBookInfoDialogConfig.CATALOG_MODE);
     public final ObservableList<BookmarkModel> bookmarks = new ObservableArrayList<>();
     public final ObservableList<NoteModel> notes = new ObservableArrayList<>();
+    public ObservableBoolean isEmpty = new ObservableBoolean(false);
+    public ArrayList<TreeRecyclerView.TreeNode> rootNodes;
     private EventBus eventBus;
 
     public ReaderBookInfoModel(EventBus eventBus) {
         this.eventBus = eventBus;
+    }
+
+    public void setRootNodes(ArrayList<TreeRecyclerView.TreeNode> rootNodes) {
+        this.rootNodes = rootNodes;
+        if (rootNodes.size() > 0) {
+            setIsEmpty(false);
+        } else {
+            setIsEmpty(true);
+        }
+    }
+
+    public ObservableBoolean getIsEmpty() {
+        return isEmpty;
+    }
+
+    public void setIsEmpty(boolean isEmpty) {
+        this.isEmpty.set(isEmpty);
     }
 
     public EventBus getEventBus() {
@@ -64,14 +85,14 @@ public class ReaderBookInfoModel {
         return notes;
     }
 
-    public void setBookmarks(ReaderDocumentTableOfContent readerDocumentTableOfContent,List<Bookmark> bookmarks,int totalPage){
-        for(Bookmark bookmark : bookmarks) {
-            this.bookmarks.add(BookmarkModel.convertObject(readerDocumentTableOfContent,bookmark,totalPage));
+    public void setBookmarks(ReaderDocumentTableOfContent readerDocumentTableOfContent, List<Bookmark> bookmarks, int totalPage) {
+        for (Bookmark bookmark : bookmarks) {
+            this.bookmarks.add(BookmarkModel.convertObject(readerDocumentTableOfContent, bookmark, totalPage));
         }
     }
 
-    public void setNotes(List<Annotation> annotationList){
-        for(Annotation annotation: annotationList){
+    public void setNotes(List<Annotation> annotationList) {
+        for (Annotation annotation : annotationList) {
             NoteModel noteModel = new NoteModel();
             noteModel.setChapter(annotation.getChapterName());
             noteModel.setNote(annotation.getNote());
@@ -83,18 +104,33 @@ public class ReaderBookInfoModel {
         }
     }
 
-    public void onTabCatalogClick(){
+    public void onTabCatalogClick() {
         setCurrentTab(ReaderBookInfoDialogConfig.CATALOG_MODE);
         getEventBus().post(new TabCatalogClickEvent());
+        if (rootNodes.size() > 0) {
+            setIsEmpty(false);
+        } else {
+            setIsEmpty(true);
+        }
     }
 
-    public void onTabBookmarkClick(){
+    public void onTabBookmarkClick() {
         setCurrentTab(ReaderBookInfoDialogConfig.BOOKMARK_MODE);
         getEventBus().post(new TabBookmarkClickEvent());
+        if (bookmarks.size() > 0) {
+            setIsEmpty(false);
+        } else {
+            setIsEmpty(true);
+        }
     }
 
-    public void onTabNoteClick(){
+    public void onTabNoteClick() {
         setCurrentTab(ReaderBookInfoDialogConfig.NOTE_MODE);
         getEventBus().post(new TabNoteClickEvent());
+        if (notes.size() > 0) {
+            setIsEmpty(false);
+        } else {
+            setIsEmpty(true);
+        }
     }
 }

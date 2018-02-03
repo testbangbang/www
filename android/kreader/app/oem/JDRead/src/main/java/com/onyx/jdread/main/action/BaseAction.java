@@ -18,6 +18,10 @@ public abstract class BaseAction<T extends MainBundle> {
         dataBundle.getEventBus().post(new LoadingDialogEvent(messageResId));
     }
 
+    public void showLoadingDialog(T dataBundle, String message) {
+        dataBundle.getEventBus().post(new LoadingDialogEvent(message));
+    }
+
     public void hideLoadingDialog(T dataBundle) {
         dataBundle.getEventBus().post(new HideAllDialogEvent());
     }
