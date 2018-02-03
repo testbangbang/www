@@ -12,4 +12,5 @@ public interface DialogSearchViewCallBack {
     void preSearchResult();
     void searchBack();
     void searchData();
+    void deleteInputWord();
 }

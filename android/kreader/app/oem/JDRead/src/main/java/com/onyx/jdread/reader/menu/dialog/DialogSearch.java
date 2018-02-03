@@ -8,8 +8,10 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -166,6 +168,27 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
             public void onKeyPreIme(int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     dialogSearchModel.setSearchHistory(false);
+                }
+            }
+        });
+        binding.editViewSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                if(StringUtils.isNotBlank(text)){
+                    dialogSearchModel.setDeleteInputWord(true);
+                }else{
+                    dialogSearchModel.setDeleteInputWord(false);
                 }
             }
         });
@@ -556,5 +579,10 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     public void searchData() {
         hideSoftInputWindow();
         loadSearchData();
+    }
+
+    @Override
+    public void deleteInputWord() {
+        binding.editViewSearch.setText("");
     }
 }

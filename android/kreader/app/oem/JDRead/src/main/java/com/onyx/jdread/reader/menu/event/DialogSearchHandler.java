@@ -95,4 +95,9 @@ public class DialogSearchHandler {
     public void onSearchImageClickEvent(SearchImageClickEvent event){
         viewCallBack.searchData();
     }
+
+    @Subscribe
+    public void onDeleteInputWordEvent(DeleteInputWordEvent event){
+        viewCallBack.deleteInputWord();
+    }
 }
