@@ -16,6 +16,7 @@ import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.actions.ToggleBookmarkAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.common.ReaderViewBack;
+import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogDict;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
@@ -232,7 +233,7 @@ public class ReaderActivityEventHandler {
         if (event.getToggleSwitch() == ToggleBookmarkAction.ToggleSwitch.Off) {
             messageId = R.string.reader_bookmark_delete_success;
         }
-        ToastUtil.showToast(readerViewModel.getReaderDataHolder().getAppContext(), messageId);
+        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),readerViewModel.getReaderDataHolder().getAppContext().getResources().getString(messageId));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

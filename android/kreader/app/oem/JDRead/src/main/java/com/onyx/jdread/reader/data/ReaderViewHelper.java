@@ -221,6 +221,8 @@ public class ReaderViewHelper {
 
     public void drawTime(Canvas canvas, Reader reader, ReaderViewInfo readerViewInfo) {
         float textSize = paint.getTextSize();
+        int textColor = paint.getColor();
+        paint.setColor(0xff808080);
         paint.setTextSize(ReaderViewConfig.getTimeFontSize());
         String time = TimeUtils.getCurrentTime();
         PointF timePoint = ReaderViewConfig.getTimePoint(contentView);
@@ -233,10 +235,13 @@ public class ReaderViewHelper {
 
         canvas.drawText(time, x, y, paint);
         paint.setTextSize(textSize);
+        paint.setColor(textColor);
     }
 
     public void drawPageNumber(Canvas canvas, Reader reader, ReaderViewInfo readerViewInfo) {
         float textSize = paint.getTextSize();
+        int textColor = paint.getColor();
+        paint.setColor(0xff808080);
         paint.setTextSize(ReaderViewConfig.getPageNumberFontSize());
         int currentPage = PagePositionUtils.getPageNumber(readerViewInfo.getFirstVisiblePage().getName()) + 1;
         int totalPage = readerViewInfo.getTotalPage();
@@ -253,6 +258,7 @@ public class ReaderViewHelper {
         float y = timePoint.y - bounds.height();
         canvas.drawText(page, x, y, paint);
         paint.setTextSize(textSize);
+        paint.setColor(textColor);
     }
 
     private void applyEpdUpdate(final Reader reader, final SurfaceView view) {

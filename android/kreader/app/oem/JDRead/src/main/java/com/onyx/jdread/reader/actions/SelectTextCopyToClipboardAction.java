@@ -6,6 +6,7 @@ import android.content.Context;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 /**
@@ -19,6 +20,6 @@ public class SelectTextCopyToClipboardAction extends BaseReaderAction {
 
         ClipboardManager clipboardManager = (ClipboardManager) readerDataHolder.getAppContext().getSystemService(Context.CLIPBOARD_SERVICE);
         clipboardManager.setText(text);
-        ToastUtil.showToast(readerDataHolder.getAppContext().getString(R.string.reader_copy_success));
+        ToastMessage.showMessageCenter(readerDataHolder.getAppContext(),readerDataHolder.getAppContext().getString(R.string.reader_copy_success));
     }
 }
