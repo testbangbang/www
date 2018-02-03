@@ -11,4 +11,5 @@ public interface DialogSearchViewCallBack {
     void nextSearchResult();
     void preSearchResult();
     void searchBack();
+    void searchData();
 }

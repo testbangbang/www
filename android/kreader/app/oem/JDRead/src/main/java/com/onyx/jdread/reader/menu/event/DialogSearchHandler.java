@@ -93,5 +93,6 @@ public class DialogSearchHandler {
 
     @Subscribe
     public void onSearchImageClickEvent(SearchImageClickEvent event){
+        viewCallBack.searchData();
     }
 }

@@ -12,6 +12,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogSearchBinding;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogSearchViewCallBack;
@@ -155,6 +157,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
                     hideSoftInputWindow();
                     loadSearchData();
                 }
+                Log.i("hxm","editViewSearch----->" + v.getText().toString());
                 return true;
             }
         });
@@ -253,6 +256,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         stopSearch();
         searchText = binding.editViewSearch.getText().toString();
         if (StringUtils.isNullOrEmpty(searchText)) {
+            ToastUtil.showToast(R.string.search_view_hint);
             return;
         }
 
@@ -547,5 +551,11 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     public void searchBack() {
         hideFloatToolBar();
         binding.searchRecyclerView.gotoPageByIndex(currentSearchIndex);
+    }
+
+    @Override
+    public void searchData() {
+        hideSoftInputWindow();
+        loadSearchData();
     }
 }
