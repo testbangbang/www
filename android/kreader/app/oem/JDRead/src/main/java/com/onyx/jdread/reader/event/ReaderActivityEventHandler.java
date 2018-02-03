@@ -31,6 +31,7 @@ import com.onyx.jdread.reader.menu.event.ToggleBookmarkSuccessEvent;
 import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -203,6 +204,10 @@ public class ReaderActivityEventHandler {
     public void onPopupBaidupediaClickEvent(PopupBaidupediaClickEvent event) {
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
+            return;
+        }
+        if(!Utils.isNetworkConnected(activity)){
+            ToastUtil.showToast(R.string.reader_check_network);
             return;
         }
         String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();

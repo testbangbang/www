@@ -175,4 +175,8 @@ public class DialogSearchModel {
     public void deleteInputWordClick() {
         eventBus.post(new DeleteInputWordEvent());
     }
+
+    public void dismissZoneClick(){
+        eventBus.post(new DialogSearchBackClickEvent());
+    }
 }

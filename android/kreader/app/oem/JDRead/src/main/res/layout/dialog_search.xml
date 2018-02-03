@@ -257,7 +257,15 @@
                 android:layout_height="match_parent"
                 android:visibility="@{dialogSearchModel.floatToolBar?View.VISIBLE:View.GONE}">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/search_bottom"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{()->dialogSearchModel.dismissZoneClick()}" />
+
                 <LinearLayout
+                    android:id="@+id/search_bottom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"

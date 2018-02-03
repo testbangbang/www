@@ -420,6 +420,7 @@
     <string name="click_to_translate">点击翻译</string>
     <string name="delete_book">删除本书</string>
     <string name="network_or_server_error">网络或者服务器出错，稍等会再试</string>
+    <string name="reader_check_network">请检查您的网络</string>
     <string name="morning">上午</string>
     <string name="afternoon">下午</string>
     <string name="updating">正在进行系统更新，请稍后...</string>

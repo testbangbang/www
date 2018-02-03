@@ -437,6 +437,7 @@
     <string name="click_to_translate">Click to translate</string>
     <string name="delete_book">Delete book</string>
     <string name="network_or_server_error">Network or server error, wait for a while to try again</string>
+    <string name="reader_check_network">Please check your network</string>
     <string name="AM">AM</string>
     <string name="PM">PM</string>
     <string name="updating">The system is being updated, please...</string>
