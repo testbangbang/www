@@ -27,7 +27,8 @@
             android:layout_marginTop="@dimen/function_bar_item_image_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@{functionBarItem.drawableTop}" />
+            android:src="@{functionBarItem.drawableTop}"
+            android:visibility="@{functionBarItem.backControl ? View.VISIBLE : View.GONE}"/>
 
         <TextView
             android:layout_marginTop="@dimen/function_bar_item_name_margin"
@@ -35,6 +36,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/font_size_15"
             android:textColor="@android:color/black"
-            android:text="@{functionBarItem.itemName}" />
+            android:text="@{functionBarItem.itemName}"
+            android:visibility="@{functionBarItem.backControl ? View.VISIBLE : View.INVISIBLE}"/>
     </LinearLayout>
 </layout>

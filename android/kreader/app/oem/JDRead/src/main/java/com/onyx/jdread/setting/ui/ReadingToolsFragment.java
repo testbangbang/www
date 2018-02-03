@@ -83,6 +83,7 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
     @Subscribe
     public void onAssociatedEmailToolsEvent(AssociatedEmailToolsEvent event) {
         AssociatedEmailDialog.DialogModel model = new AssociatedEmailDialog.DialogModel();
+        model.setContext(getActivity());
         String email = JDPreferenceManager.getStringValue(R.string.email_address_key, null);
         boolean bound = StringUtils.isNotBlank(email);
         model.title.set(bound ? getString(R.string.unbind_to_email) : getString(R.string.bind_to_email));
@@ -114,6 +115,8 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
 
     @Override
     public void onLoginFinished(boolean successful) {
-        ToastUtil.showToast("login success");
+        if (successful) {
+            ToastUtil.showToast(ResManager.getString(R.string.login_success));
+        }
     }
 }

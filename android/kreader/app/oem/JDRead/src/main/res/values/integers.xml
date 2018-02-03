@@ -158,4 +158,6 @@
     <integer name="history_limit">8</integer>
     <integer name="search_history_recycler_row">2</integer>
     <integer name="search_history_recycler_col">4</integer>
+    <integer name="associated_email_dialog_offset_y">40</integer>
+    <integer name="associated_email_dialog_offset_x">0</integer>
 </resources>

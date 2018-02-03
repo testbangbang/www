@@ -38,6 +38,7 @@
                 android:layout_height="@dimen/translation_edit_height"
                 android:background="@null"
                 android:gravity="top"
+                android:hint="@string/input_translate_content"
                 android:padding="@dimen/translate_content_padding"
                 android:text="@={model.inputWords}" />
 

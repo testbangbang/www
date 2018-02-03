@@ -427,4 +427,5 @@
     <string name="power_off_prompt">您确定关闭阅读器吗?</string>
     <string name="speed_refresh_is_opened">极速翻页已开启</string>
     <string name="speed_refresh_is_closed">极速翻页已关闭</string>
+    <string name="input_translate_content">请输入需要翻译的内容</string>
 </resources>
