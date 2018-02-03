@@ -131,7 +131,7 @@ public class BookVIPReadFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
         if (isAdded()) {
-            showLoadingDialog(event.getMessage());
+            showLoadingDialog(getString(event.getResId()));
         }
     }
 
