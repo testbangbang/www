@@ -35,6 +35,7 @@ import com.onyx.jdread.personal.event.TwoHundredYuanEvent;
 import com.onyx.jdread.personal.model.PersonalAccountModel;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
+import com.onyx.jdread.shop.ui.BookVIPReadFragment;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -115,7 +116,7 @@ public class PersonalAccountFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadVipEvent(ReadVipEvent event) {
-
+        viewEventCallBack.gotoView(BookVIPReadFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
