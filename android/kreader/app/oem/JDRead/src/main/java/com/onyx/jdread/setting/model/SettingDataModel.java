@@ -7,6 +7,7 @@ import android.os.Build;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.event.FeedbackEvent;
 import com.onyx.jdread.setting.event.IntensityEvent;
 import com.onyx.jdread.setting.event.LaboratoryEvent;
@@ -14,6 +15,7 @@ import com.onyx.jdread.setting.event.RefreshEvent;
 import com.onyx.jdread.setting.event.ScreenEvent;
 import com.onyx.jdread.setting.event.ToDeviceConfigEvent;
 import com.onyx.jdread.setting.event.WireLessEvent;
+import com.onyx.jdread.setting.utils.UpdateUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,8 +61,8 @@ public class SettingDataModel extends BaseObservable {
 
     private void loadDeviceInfo() {
         deviceModel.set(Build.MODEL);
-        deviceVersion.set(String.format(JDReadApplication.getInstance().getString(R.string.device_setting_version_number),Build.DISPLAY));
-        deviceSerial.set(String.format(JDReadApplication.getInstance().getString(R.string.device_setting_serial_number),Build.SERIAL));
+        deviceVersion.set(String.format(ResManager.getString(R.string.device_setting_version_number), UpdateUtil.getAPPVersionName(JDReadApplication.getInstance())));
+        deviceSerial.set(String.format(ResManager.getString(R.string.device_setting_serial_number), Build.SERIAL));
     }
 
     private void loadSettingItem() {

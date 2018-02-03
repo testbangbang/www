@@ -1,6 +1,7 @@
 package com.onyx.jdread.main.activity;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
@@ -10,8 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -47,6 +46,7 @@ import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.main.model.MainViewModel;
 import com.onyx.jdread.main.model.SystemBarModel;
+import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
@@ -55,9 +55,8 @@ import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
-import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.ui.SettingFragment;
-import com.onyx.jdread.shop.ui.ShopFragment;
+import com.onyx.jdread.setting.ui.SystemUpdateFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -78,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private FunctionBarAdapter functionBarAdapter;
     private SystemBarModel systemBarModel;
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
+    private ScreenStateReceive screenStateReceive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initLibrary() {
         EventBus.getDefault().register(this);
+        registerScreenReceive();
     }
 
     private void initData() {
@@ -164,7 +165,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         systemBarModel.unRegisterReceiver(JDReadApplication.getInstance());
+        unregisterReceiver(screenStateReceive);
         super.onDestroy();
+    }
+
+    private void registerScreenReceive() {
+        screenStateReceive = new ScreenStateReceive();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ScreenStateReceive.SCREEN_ON);
+        intentFilter.addAction(ScreenStateReceive.SCREEN_OFF);
+        registerReceiver(screenStateReceive, intentFilter);
     }
 
     public void switchCurrentFragment(String childViewName) {
@@ -275,15 +285,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (currentFragment instanceof ShopFragment) {
-            GestureDetector gestureDetector = ((ShopFragment) currentFragment).getGestureDetector();
-            gestureDetector.onTouchEvent(ev);
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
         switchCurrentFragment(event.childClassName);
@@ -356,6 +357,10 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetworkConnectedEvent(NetworkConnectedEvent event) {
         JDReadApplication.getInstance().automaticLogin();
+        SystemUpdateFragment fragment = (SystemUpdateFragment) childViewList.get(SystemUpdateFragment.class.getName());
+        if (fragment != null) {
+            fragment.keepDownload();
+        }
     }
 
     @Subscribe

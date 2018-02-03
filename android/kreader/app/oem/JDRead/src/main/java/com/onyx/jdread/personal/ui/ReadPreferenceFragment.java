@@ -88,7 +88,7 @@ public class ReadPreferenceFragment extends BaseFragment {
                 readPreferenceAdapter.setData(categoryBean);
             }
         } else {
-            final BookCategoryAction action = new BookCategoryAction(false);
+            final BookCategoryAction action = new BookCategoryAction();
             action.execute(ShopDataBundle.getInstance(), new RxCallback() {
                 @Override
                 public void onNext(Object o) {

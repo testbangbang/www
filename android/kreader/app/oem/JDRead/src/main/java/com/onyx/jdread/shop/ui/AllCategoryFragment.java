@@ -77,11 +77,12 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     private void initData() {
+        currentType = TYPE_INDEX_ZERO;
         getCategoryData();
     }
 
     private void getCategoryData() {
-        bookCategoryAction = new BookCategoryAction(false);
+        bookCategoryAction = new BookCategoryAction();
         bookCategoryAction.execute(getShopDataBundle(), new RxCallback<BookCategoryAction>() {
             @Override
             public void onNext(BookCategoryAction bookCategoryAction) {
@@ -116,7 +117,7 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     private void initView() {
-        CategorySubjectAdapter adapter = new CategorySubjectAdapter(getEventBus(), true);
+        CategorySubjectAdapter adapter = new CategorySubjectAdapter(getEventBus());
         DashLineItemDivider itemDecoration = new DashLineItemDivider();
         adapter.setRowAndCol(row, col);
         recyclerView = allCategoryBinding.recyclerViewAllCategorys;

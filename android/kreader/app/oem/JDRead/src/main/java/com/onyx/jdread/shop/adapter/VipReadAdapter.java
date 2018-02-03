@@ -12,6 +12,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemVipReadUserInfoBinding;
 import com.onyx.jdread.databinding.SubjectWithVipBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.VipUserInfoViewModel;
 
@@ -28,8 +29,8 @@ public class VipReadAdapter extends PageAdapter<PageRecyclerView.ViewHolder, Sub
     private static final int VIP_READ_ITEM_TYPE_USER_INFO = 1;
     private static final int VIP_READ_ITEM_TYPE_NORMAL = 2;
     private VipUserInfoViewModel infoViewModel;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.vip_read_recycle_view_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.vip_read_recycle_view_col);
+    private int row = ResManager.getInteger(R.integer.vip_read_recycle_view_row);
+    private int col = ResManager.getInteger(R.integer.vip_read_recycle_view_col);
 
     public void setRowAndCol(int row, int col) {
         this.row = row;

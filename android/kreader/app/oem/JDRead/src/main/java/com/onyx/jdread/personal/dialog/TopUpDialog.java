@@ -76,7 +76,9 @@ public class TopUpDialog extends DialogFragment {
     public void onStop() {
         super.onStop();
         Utils.ensureUnregister(PersonalDataBundle.getInstance().getEventBus(), this);
-        getRechargePollEvent.setPollTime(0);
+        if (getRechargePollEvent != null) {
+            getRechargePollEvent.setPollTime(0);
+        }
     }
 
     private void initView() {

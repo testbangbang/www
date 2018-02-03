@@ -63,7 +63,7 @@ public class JDReadApplication extends MultiDexApplication {
         automaticLogin();
     }
 
-    private void lockScreen() {
+    public void lockScreen() {
         String passWord = PreferenceManager.getStringValue(instance, R.string.password_key, "");
         if (StringUtils.isNotBlank(passWord)) {
             ManagerActivityUtils.lockScreen(instance);

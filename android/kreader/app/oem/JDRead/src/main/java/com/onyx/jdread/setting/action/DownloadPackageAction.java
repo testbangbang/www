@@ -79,6 +79,7 @@ public class DownloadPackageAction {
                 if (callback != null) {
                     callback.done(request, e);
                 }
+                removeDownloadTask();
             }
         });
         getDownLoaderManager().addTask(tag, task);
@@ -90,7 +91,7 @@ public class DownloadPackageAction {
         return task != null && DownLoadHelper.isDownloading(task.getStatus());
     }
 
-    private BaseDownloadTask getTask(Object tag) {
+    public BaseDownloadTask getTask(Object tag) {
         return getDownLoaderManager().getTask(tag);
     }
 
@@ -101,5 +102,10 @@ public class DownloadPackageAction {
 
     private OnyxDownloadManager getDownLoaderManager() {
         return OnyxDownloadManager.getInstance();
+    }
+
+    private void removeDownloadTask() {
+        OnyxDownloadManager downLoaderManager = getDownLoaderManager();
+        downLoaderManager.removeTask(tag);
     }
 }

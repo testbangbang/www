@@ -54,7 +54,9 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/item_device_config_arrow"
             android:text="@{model.updateRecord}"
+            android:background="@drawable/circle_shape"
             android:textColor="@android:color/black"
+            android:gravity="center"
             android:textSize="@dimen/level_three_heading_font"
             android:visibility="@{StringUtils.isNullOrEmpty(model.updateRecord) ? View.GONE : View.VISIBLE}" />
 

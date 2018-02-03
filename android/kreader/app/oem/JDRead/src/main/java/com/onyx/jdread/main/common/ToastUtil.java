@@ -131,7 +131,7 @@ public class ToastUtil {
         } else if (Constants.RESULT_CODE_BOOK_GET_CONTENT_ERROR.equals(errorCode)) {
             errorMsg = ResManager.getString(R.string.down_book_server_error);
         } else if (Constants.RESULT_CODE_BOOK_CERIFY_ORDER_ERROR.equals(errorCode)) {
-            errorMsg = ResManager.getString(R.string.down_book_cerify_order_error);
+            errorMsg = ResManager.getString(R.string.down_book_server_error);
         }
         return errorMsg;
     }
