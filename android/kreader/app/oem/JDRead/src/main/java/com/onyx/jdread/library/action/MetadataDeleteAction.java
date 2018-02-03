@@ -63,8 +63,22 @@ public class MetadataDeleteAction extends BaseAction<LibraryDataBundle> {
         });
     }
 
-    private void deleteMetadata(LibraryDataBundle libraryDataBundle, Map<String, List<Metadata>> chosenItemsMap, RxCallback baseCallback) {
+    private void deleteMetadata(final LibraryDataBundle libraryDataBundle, Map<String, List<Metadata>> chosenItemsMap, final RxCallback baseCallback) {
         RxDeleteMetadataFromMultipleLibraryRequest request = new RxDeleteMetadataFromMultipleLibraryRequest(libraryDataBundle.getDataManager(), chosenItemsMap);
-        request.execute(baseCallback);
+        request.execute(new RxCallback<RxDeleteMetadataFromMultipleLibraryRequest>() {
+            @Override
+            public void onNext(RxDeleteMetadataFromMultipleLibraryRequest o) {
+                if (baseCallback != null) {
+                    baseCallback.onNext(o);
+                }
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog(libraryDataBundle);
+            }
+        });
+        showLoadingDialog(libraryDataBundle, R.string.loading);
     }
 }

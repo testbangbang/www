@@ -66,6 +66,7 @@
                     android:hint="@string/enter_hint"
                     android:imeOptions="actionDone"
                     android:inputType="text"
+                    android:maxLength="50"
                     android:textSize="20sp" />
 
                 <ImageView
@@ -86,9 +87,10 @@
                 android:id="@+id/search_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="15dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
                 android:clickable="true"
                 android:onClick="@{()->dialogSearchModel.searchImageClick()}"

@@ -127,7 +127,7 @@ public class BookRankFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
         if (isAdded()) {
-            showLoadingDialog(getString(event.getResId()));
+            showLoadingDialog(event.getMessage());
         }
     }
 

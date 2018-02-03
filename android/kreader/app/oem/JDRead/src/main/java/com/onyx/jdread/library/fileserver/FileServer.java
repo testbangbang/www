@@ -8,6 +8,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.request.RxFileAddToMetadataRequest;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 
 import org.nanohttpd.protocols.http.IHTTPSession;
@@ -90,7 +91,7 @@ public class FileServer extends NanoHTTPD {
             request.execute(new RxCallback<RxFileAddToMetadataRequest>() {
                 @Override
                 public void onNext(RxFileAddToMetadataRequest request1) {
-                    ToastUtil.showOffsetToast(String.format(JDReadApplication.getInstance().getString(R.string.pass_succeed), fileName));
+                    ToastUtil.showOffsetToast(String.format(JDReadApplication.getInstance().getString(R.string.pass_succeed), fileName), ResManager.getInteger(R.integer.pass_book_toast_offset_y));
                 }
             });
         }

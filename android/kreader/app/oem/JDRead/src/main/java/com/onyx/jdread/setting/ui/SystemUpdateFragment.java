@@ -319,10 +319,10 @@ public class SystemUpdateFragment extends BaseFragment {
             checkUpdateLoadingDialog = new CheckUpdateLoadingDialog();
         }
         if (!checkUpdateLoadingDialog.isVisible()) {
-            checkUpdateLoadingDialog.setTips(JDReadApplication.getInstance().getResources().getString(event.getResId()));
+            checkUpdateLoadingDialog.setTips(event.getMessage());
             checkUpdateLoadingDialog.show(getActivity().getFragmentManager(), "");
         } else {
-            checkUpdateLoadingDialog.setTips(JDReadApplication.getInstance().getResources().getString(event.getResId()));
+            checkUpdateLoadingDialog.setTips(event.getMessage());
         }
     }
 

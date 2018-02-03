@@ -74,7 +74,10 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
 
     private void initPosition() throws Exception {
         String bookPath = reader.getDocumentInfo().getBookPath();
-        String position = PreferenceManager.getStringValue(reader.getReaderHelper().getContext(), bookPath, "0");
+        String position = PreferenceManager.getStringValue(reader.getReaderHelper().getContext(), bookPath, null);
+        if(StringUtils.isNullOrEmpty(position)){
+            position = reader.getReaderHelper().getNavigator().getInitPosition();
+        }
         reader.getReaderHelper().gotoPosition(position);
         restoreScale(reader, position);
     }
