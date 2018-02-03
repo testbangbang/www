@@ -86,6 +86,7 @@
     <string name="personal_notes">我的笔记</string>
     <string name="personal_books">我的图书</string>
     <string name="read_preference">阅读偏好</string>
+    <string name="my_read_preference">我的阅读偏好</string>
     <string name="gift_center">礼品中心</string>
     <string name="log_out">退出登录</string>
     <string name="login_immediately">立即登录</string>
@@ -266,7 +267,7 @@
     <string name="save">保存</string>
     <string name="export_note">导出笔记</string>
     <string name="export_note_to">导出至</string>
-    <string name="native_folder">本机文件夹</string>
+    <string name="native_folder">本地文件夹</string>
     <string name="email">电子邮箱</string>
     <string name="impression_note">印象笔记</string>
     <string name="phone_number_edit_hint">手机号用于密码找回,请确保真实有效</string>

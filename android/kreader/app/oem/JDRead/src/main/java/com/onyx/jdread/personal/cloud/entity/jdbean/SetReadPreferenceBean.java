@@ -17,11 +17,11 @@ public class SetReadPreferenceBean {
         this.data = data;
     }
 
-    public int getResult_code() {
+    public int getResultCode() {
         return result_code;
     }
 
-    public void setResult_code(int result_code) {
+    public void setResultCode(int result_code) {
         this.result_code = result_code;
     }
 

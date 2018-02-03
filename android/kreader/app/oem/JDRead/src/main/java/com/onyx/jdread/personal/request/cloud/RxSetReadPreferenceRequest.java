@@ -38,7 +38,7 @@ public class RxSetReadPreferenceRequest extends RxBaseCloudRequest {
     }
 
     private void checkResult() {
-        if (resultBean != null && resultBean.getResult_code() != 0) {
+        if (resultBean != null && resultBean.getResultCode() != 0) {
             PersonalDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.getMessage()));
         }
     }

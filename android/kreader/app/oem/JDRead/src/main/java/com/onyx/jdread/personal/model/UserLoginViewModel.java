@@ -9,6 +9,7 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.event.ForgetPasswordEvent;
+import com.onyx.jdread.personal.event.HideSoftWindowEvent;
 import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.event.UserRegisterJDAccountEvent;
 import com.onyx.jdread.util.Utils;
@@ -25,7 +26,6 @@ public class UserLoginViewModel {
     public final ObservableField<Boolean> isShowPassword = new ObservableField<>();
     public final ObservableField<Boolean> loginButtonEnabled = new ObservableField<>(true);
     private EventBus eventBus;
-    private Activity context;
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -40,7 +40,7 @@ public class UserLoginViewModel {
     }
 
     public void onLoginViewClick() {
-        Utils.hideSoftWindow(context);
+        getEventBus().post(new HideSoftWindowEvent());
         UserLoginAction userLoginAction = new UserLoginAction(JDReadApplication.getInstance(), account.get(), password.get(), false);
         userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
@@ -81,9 +81,5 @@ public class UserLoginViewModel {
 
     public void onForgetPasswordClick() {
         getEventBus().post(new ForgetPasswordEvent());
-    }
-
-    public void setContext(Activity context) {
-        this.context = context;
     }
 }

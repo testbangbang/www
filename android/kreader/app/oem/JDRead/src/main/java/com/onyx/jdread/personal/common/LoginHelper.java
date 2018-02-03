@@ -6,8 +6,10 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.DialogUserLoginBinding;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
@@ -16,6 +18,7 @@ import com.onyx.jdread.personal.action.VerifyCheckInAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
+import com.onyx.jdread.personal.dialog.LoginDialog;
 import com.onyx.jdread.personal.event.UserInfoEvent;
 import com.onyx.jdread.personal.event.VerifySignEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
@@ -26,7 +29,8 @@ import com.onyx.jdread.personal.model.UserLoginViewModel;
  */
 
 public class LoginHelper {
-    private static AlertDialog userLoginDialog;
+
+    private static LoginDialog loginDialog;
 
     public static void getUserInfo(final PersonalDataBundle dataBundle) {
         UserInfoAction userInfoAction = new UserInfoAction();
@@ -77,17 +81,14 @@ public class LoginHelper {
         return JDPreferenceManager.getStringValue(Constants.SP_KEY_USER_NAME, "");
     }
 
-    public static void showUserLoginDialog(final Activity activity, final UserLoginViewModel userLoginViewModel) {
-        final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(activity), null, false);
+    public static void showUserLoginDialog(final UserLoginViewModel userLoginViewModel) {
+        final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(JDReadApplication.getInstance()), null, false);
         userLoginBinding.setLoginViewModel(userLoginViewModel);
-        userLoginViewModel.setContext(activity);
         userLoginViewModel.isShowPassword.set(false);
         EncryptHelper.getSaltValue(PersonalDataBundle.getInstance(), null);
-        final AlertDialog.Builder userLoginDialogBuild = new AlertDialog.Builder(activity);
-        userLoginDialogBuild.setView(userLoginBinding.getRoot());
-        userLoginDialogBuild.setCancelable(true);
-        userLoginDialog = userLoginDialogBuild.create();
-        userLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        loginDialog = new LoginDialog(JDReadApplication.getInstance());
+        loginDialog.setView(userLoginBinding.getRoot());
+        loginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 userLoginViewModel.cleanInput();
@@ -99,14 +100,14 @@ public class LoginHelper {
                 dismissUserLoginDialog();
             }
         });
-        if (userLoginDialog != null) {
-            userLoginDialog.show();
+        if (loginDialog != null) {
+            loginDialog.show();
         }
     }
 
     public static void dismissUserLoginDialog() {
-        if (userLoginDialog != null && userLoginDialog.isShowing()) {
-            userLoginDialog.dismiss();
+        if (loginDialog != null && loginDialog.isShowing()) {
+            loginDialog.dismiss();
         }
     }
 }

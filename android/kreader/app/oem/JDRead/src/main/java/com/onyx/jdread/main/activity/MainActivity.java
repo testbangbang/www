@@ -49,6 +49,7 @@ import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.event.HideSoftWindowEvent;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
@@ -57,6 +58,7 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -403,5 +405,10 @@ public class MainActivity extends AppCompatActivity {
         if (ViewConfig.FunctionModule.isBackModule(event.functionItem.getFunctionModule())) {
             EventBus.getDefault().post(new ShowBackTabEvent(false));
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHideSoftWindowEvent(HideSoftWindowEvent event) {
+        Utils.hideSoftWindow(this);
     }
 }

@@ -32,6 +32,7 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getDialog().setCanceledOnTouchOutside(false);
         binding = (DialogExportBinding) DataBindingUtil.inflate(inflater, R.layout.dialog_export_layout, container, false);
         init();
         return binding.getRoot();
