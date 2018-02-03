@@ -62,7 +62,6 @@ public class LibraryMoveToAction extends BaseAction<LibraryDataBundle> {
         request.execute(new RxCallback<RxMoveToLibraryFromMultipleLibraryRequest>() {
             @Override
             public void onNext(RxMoveToLibraryFromMultipleLibraryRequest rxLibraryMoveToRequest) {
-                hideLoadingDialog(libraryDataBundle);
                 if (baseCallback != null) {
                     baseCallback.onNext(rxLibraryMoveToRequest);
                 }
@@ -71,10 +70,15 @@ public class LibraryMoveToAction extends BaseAction<LibraryDataBundle> {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                hideLoadingDialog(libraryDataBundle);
                 if (throwable != null) {
                     ToastUtils.showToast(libraryDataBundle.getAppContext(), R.string.library_move_to_fail);
                 }
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog(libraryDataBundle);
             }
         });
     }

@@ -13,23 +13,21 @@
     </data>
 
     <RelativeLayout
-        android:paddingLeft="@dimen/book_shop_padding_left"
-        android:paddingRight="@dimen/book_shop_padding_right"
+        android:paddingLeft="@dimen/fragment_book_detail_margin_right_and_left"
+        android:paddingRight="@dimen/fragment_book_detail_margin_right_and_left"
         android:layout_marginTop="@dimen/book_shop_search_view_padding_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:showIn="@layout/fragment_book_shop_one">
+        android:layout_height="wrap_content">
 
         <ImageView
-            android:padding="@dimen/search_view_button_background_padding"
             android:onClick="@{()->viewModel.onShoppingCartViewClick()}"
             android:layout_marginLeft="@dimen/search_view_shop_car_icon_margin_left"
             android:layout_centerVertical="true"
             android:id="@+id/shop_car"
             android:src="@mipmap/ic_cart"
             android:layout_alignParentRight="true"
-            android:layout_width="@dimen/search_view_shop_car_icon_width_and_height"
-            android:layout_height="@dimen/search_view_shop_car_icon_width_and_height"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:onClick="@{()->viewModel.onSearchViewClick()}"
@@ -52,16 +50,14 @@
                 android:textColorHint="@color/gray"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="@dimen/search_view_edit_text_height"/>
+                android:layout_height="wrap_content"/>
 
             <ImageView
-                android:paddingLeft="@dimen/search_view_button_background_padding"
-                android:paddingRight="@dimen/search_view_button_background_padding"
                 android:layout_marginLeft="@dimen/search_view_search_icon_margin_left"
                 android:id="@+id/search"
                 android:src="@mipmap/ic_search"
-                android:layout_width="@dimen/search_view_search_icon_width_and_height"
-                android:layout_height="@dimen/search_view_search_icon_width_and_height"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 

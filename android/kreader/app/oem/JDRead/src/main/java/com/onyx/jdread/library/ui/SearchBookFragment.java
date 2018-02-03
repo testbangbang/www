@@ -3,7 +3,6 @@ package com.onyx.jdread.library.ui;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -164,8 +163,11 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void queryTextChange(String newText) {
+        searchBookModel.searchHint.clear();
+        searchHintAdapter.notifyDataSetChanged();
         if (StringUtils.isNotBlank(newText) && InputUtils.getByteCount(newText) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
             ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
+            binding.searchView.setQuery(InputUtils.getEffectiveString(newText, ResManager.getInteger(R.integer.search_word_key_max_length)), false);
             return;
         }
         newText = InputUtils.filterSpecialCharacters(newText);

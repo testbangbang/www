@@ -22,6 +22,8 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SystemBarPopLayoutBinding;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.setting.model.BrightnessModel;
 
@@ -86,7 +88,7 @@ public class SystemBarPopupWindow extends PopupWindow {
         }
 
         public void updateWifi() {
-            if (NetworkUtil.isWifiEnabled(JDReadApplication.getInstance())) {
+            if (NetworkUtil.isWifiEnabled(JDReadApplication.getInstance()) && NetworkUtil.isWiFiConnected(JDReadApplication.getInstance())) {
                 WifiManager wifiManager = (WifiManager) JDReadApplication.getInstance().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 currentWifi.set(wifiInfo.getSSID());
@@ -103,6 +105,7 @@ public class SystemBarPopupWindow extends PopupWindow {
 
         public void toggleA2Model() {
             boolean useFastMode = !EpdController.inSystemFastMode();
+            ToastUtil.showToast(useFastMode? ResManager.getString(R.string.speed_refresh_is_opened):ResManager.getString(R.string.speed_refresh_is_closed));
             speedRefresh.set(useFastMode);
             if (useFastMode) {
                 EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);

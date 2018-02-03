@@ -15,6 +15,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.RECOVERY" />
+    <uses-permission android:name="android.permission.ACCESS_CACHE_FILESYSTEM" />
+    <uses-permission android:name="android.permission.REBOOT" />
 
     <application
         android:name=".JDReadApplication"
@@ -42,7 +45,8 @@
 
         <activity
             android:name=".main.activity.LockScreenActivity"
-            android:theme="@style/ActivityFullscreen" />
+            android:theme="@style/ActivityFullscreen"
+            android:launchMode="singleInstance"/>
 
         <activity android:name ="com.evernote.client.android.EvernoteOAuthActivity"/>
         <activity android:name ="com.evernote.client.android.login.EvernoteLoginActivity"/>
@@ -60,6 +64,14 @@
                 <action android:name="android.net.wifi.STATE_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".main.receiver.ScreenStateReceive"/>
+
+        <receiver android:name=".main.receiver.PowerOffActionReceiver">
+            <intent-filter>
+                <action android:name="com.onyx.action.SHOW_POWER_OFF_DIALOG_ACTION"/>
             </intent-filter>
         </receiver>
     </application>

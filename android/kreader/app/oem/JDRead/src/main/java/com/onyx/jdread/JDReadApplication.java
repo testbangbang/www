@@ -20,12 +20,15 @@ import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.SupportType;
+import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.manager.CrashExceptionHandler;
 import com.onyx.jdread.manager.ManagerActivityUtils;
-import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
+import com.onyx.jdread.personal.action.AutoLoginAction;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
+import com.onyx.jdread.util.Utils;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
@@ -57,9 +60,10 @@ public class JDReadApplication extends MultiDexApplication {
         super.onCreate();
         initConfig();
         lockScreen();
+        automaticLogin();
     }
 
-    private void lockScreen() {
+    public void lockScreen() {
         String passWord = PreferenceManager.getStringValue(instance, R.string.password_key, "");
         if (StringUtils.isNotBlank(passWord)) {
             ManagerActivityUtils.lockScreen(instance);
@@ -169,5 +173,13 @@ public class JDReadApplication extends MultiDexApplication {
 
     public EvernoteSession getEvernoteSession() {
         return evernoteSession;
+    }
+
+    public void automaticLogin() {
+        if (!Utils.isNetworkConnected(this)) {
+            return;
+        }
+        AutoLoginAction autoLoginAction = new AutoLoginAction();
+        autoLoginAction.execute(PersonalDataBundle.getInstance(), null);
     }
 }

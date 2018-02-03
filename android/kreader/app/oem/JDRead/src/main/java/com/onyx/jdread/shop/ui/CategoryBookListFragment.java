@@ -149,7 +149,7 @@ public class CategoryBookListFragment extends BaseFragment {
             }
         });
         categoryBookListBinding.setViewModel(getCategoryBookListViewModel());
-        CategorySubjectAdapter categorySubjectAdapter = new CategorySubjectAdapter(getEventBus(), true);
+        CategorySubjectAdapter categorySubjectAdapter = new CategorySubjectAdapter(getEventBus());
         categorySubjectAdapter.setRowAndCol(catRow, catCol);
         categorySubjectAdapter.setCanSelected(true);
         PageRecyclerView recyclerViewCategoryList = categoryBookListBinding.recyclerViewCategoryList;
@@ -244,7 +244,7 @@ public class CategoryBookListFragment extends BaseFragment {
             return;
         }
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
-        if (categoryBean == null || currentCatName == null || currentCatName.equals(categoryBean.name)) {
+        if (categoryBean == null || currentCatName == null) {
             return;
         }
         this.catTwoId = categoryBean.id;

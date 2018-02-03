@@ -3,6 +3,13 @@
 
     <data class="PersonalNoteBinding">
 
+        <variable
+            name="total"
+            type="String"/>
+
+        <variable
+            name="pageText"
+            type="String"/>
     </data>
 
     <LinearLayout
@@ -77,14 +84,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/book_total"
+                    android:text="@{@string/book_total(total)}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1/4"
+                    android:text="@{pageText}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
             </LinearLayout>

@@ -84,6 +84,7 @@ public class CloudApiContext {
         public static final String BOOK_RECOMMEND_LIST_URI = "ebook/%s/recommend";
         public static final String BOOK_RANK_LIST_URI = "rank/%1s/%2s";
         public static final String DOWN_LOAD_WHOLE_BOOK = "%1s/download";
+        public static final String GET_VIP_GOOD_LIST = "vip";
     }
 
     public static class AddToSmooth {

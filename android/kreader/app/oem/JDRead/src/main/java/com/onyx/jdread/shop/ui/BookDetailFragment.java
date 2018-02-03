@@ -42,7 +42,6 @@ import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.setting.ui.WifiFragment;
-import com.onyx.jdread.shop.action.AddBookToSmoothCardAction;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.BookDetailAction;
 import com.onyx.jdread.shop.action.BookRecommendListAction;
@@ -363,6 +362,10 @@ public class BookDetailFragment extends BaseFragment {
         }
         if (!hasAddToCart) {
             if (bookDetailBean != null) {
+                if (!bookDetailBean.can_buy) {
+                    ToastUtil.showToast(getString(R.string.book_detail_add_cart_tip_the_book_not_can_buy));
+                    return;
+                }
                 addToCart(bookDetailBean.ebook_id);
             }
         } else {
@@ -488,7 +491,6 @@ public class BookDetailFragment extends BaseFragment {
 
         if (!bookDetailBean.can_buy) {
             BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
-            //TODO  addBookToSmoothCardList(bookDetailBean, true);
             return;
         }
 
@@ -497,16 +499,6 @@ public class BookDetailFragment extends BaseFragment {
             BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
             return;
         }
-    }
-
-    private void addBookToSmoothCardList(BookDetailResultBean.DetailBean bookDetailBean, boolean shouldDownLoad) {
-        AddBookToSmoothCardAction addBookToSmoothCardAction = new AddBookToSmoothCardAction(bookDetailBean, shouldDownLoad);
-        addBookToSmoothCardAction.execute(getShopDataBundle(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-
-            }
-        });
     }
 
     private void openBook(String name, String localPath) {
@@ -696,7 +688,6 @@ public class BookDetailFragment extends BaseFragment {
     public void onBuyBookSuccessEvent(BuyBookSuccessEvent event) {
         String msg = getString(R.string.buy_book_success) + bookDetailBean.name + getString(R.string.book_detail_tip_book_add_to_bookself);
         ToastUtil.showToast(JDReadApplication.getInstance(), msg);
-        //TODO  addBookToSmoothCardList(bookDetailBean, true);
         BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
         changeBuyBookButtonState();
     }

@@ -5,7 +5,10 @@
 
         <variable
             name="data"
-            type="com.onyx.jdread.shop.model.BuyReadVipData"/>
+            type="com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean.DataBean" />
+
+        <import type="com.onyx.jdread.shop.utils.ViewHelper" />
+
     </data>
 
     <LinearLayout
@@ -18,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@{data.days}"
+            android:text="@{data.service_desc}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_one_heading_font" />
 
@@ -29,8 +32,9 @@
             android:background="@drawable/rectangle_stroke_corners"
             android:gravity="center"
             android:padding="@dimen/item_points_for_points_padding"
-            android:text="@{data.money}"
+            android:text="@{@string/format_rmb(ViewHelper.formatRMB(data.promotion_price))}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            android:textSize="@dimen/level_one_heading_font" />
     </LinearLayout>
+
 </layout>

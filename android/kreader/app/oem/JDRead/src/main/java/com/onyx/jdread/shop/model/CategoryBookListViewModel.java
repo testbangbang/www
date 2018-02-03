@@ -4,6 +4,8 @@ import android.databinding.BaseObservable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -85,16 +87,19 @@ public class CategoryBookListViewModel extends BaseObservable {
     public void onSortKeyHotClick(){
         getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_SALES));
         changeSortKeySelected(CloudApiContext.SearchBook.SORT_KEY_SALES);
+        titleBarViewModel.rightText3 = ResManager.getString(R.string.subject_list_sort_type_hot);
     }
 
     public void onSortKeyNewestClick(){
         getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_TIME));
         changeSortKeySelected(CloudApiContext.SearchBook.SORT_KEY_TIME);
+        titleBarViewModel.rightText3 = ResManager.getString(R.string.subject_list_sort_type_newest);
     }
 
     public void onSortKeyPriceClick(){
         getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_PRICE));
         changeSortKeySelected(CloudApiContext.SearchBook.SORT_KEY_PRICE);
+        titleBarViewModel.rightText3 = ResManager.getString(R.string.subject_list_sort_type_price);
     }
 
     private void changeSortKeySelected(int sortKey){

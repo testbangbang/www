@@ -8,10 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -24,15 +22,17 @@ import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.main.event.NetworkConnectedEvent;
+import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
 import com.onyx.jdread.main.model.TitleBarModel;
-import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.setting.action.CheckApkUpdateAction;
 import com.onyx.jdread.setting.action.DownloadPackageAction;
 import com.onyx.jdread.setting.action.LocalUpdateSystemAction;
 import com.onyx.jdread.setting.action.OnlineCheckSystemUpdateAction;
 import com.onyx.jdread.setting.dialog.CheckUpdateLoadingDialog;
 import com.onyx.jdread.setting.dialog.SystemUpdateDialog;
+import com.onyx.jdread.setting.dialog.SystemUpdateTipDialog;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.event.DelayEvent;
 import com.onyx.jdread.setting.event.ExecuteUpdateEvent;
@@ -41,7 +41,6 @@ import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingUpdateModel;
 import com.onyx.jdread.setting.model.SystemUpdateData;
 import com.onyx.jdread.setting.utils.UpdateUtil;
-import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
 
@@ -49,8 +48,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.ConnectException;
 import java.util.List;
 import java.util.Map;
 
@@ -139,6 +136,7 @@ public class SystemUpdateFragment extends BaseFragment {
             systemUpdateData.setShowProgress(false);
             systemUpdateData.setShowDownloaded(true);
             systemUpdateData.setUpdateDes(JDReadApplication.getInstance().getResources().getString(R.string.upgrade_immediately));
+            settingUpdateModel.setDownloaded(true);
         }
     };
 
@@ -151,6 +149,12 @@ public class SystemUpdateFragment extends BaseFragment {
 
         settingUpdateModel = SettingBundle.getInstance().getSettingUpdateModel();
         systemUpdateData = settingUpdateModel.getSystemUpdateData();
+        if (!isApkExist() && !isUpdateZipExist() && settingUpdateModel.isDownloaded()) {
+            settingUpdateModel.setDownloaded(false);
+        } else if (StringUtils.isNotBlank(systemUpdateData.getNoticeMessage())) {
+            binding.setModel(settingUpdateModel);
+            return;
+        }
         List<DeviceConfigData> deviceConfigDataList = SettingBundle.getInstance().getDeviceConfigModel().getDeviceConfigDataList();
         if (StringUtils.isNotBlank(deviceConfigDataList.get(deviceConfigDataList.size() - 1).getUpdateRecord())) {
             checkSystemUpdate();
@@ -192,7 +196,8 @@ public class SystemUpdateFragment extends BaseFragment {
                     Log.i(TAG, "checkSystemUpdate: " + fingerprint);
                     String[] split = fingerprint.split("/");
                     String versionTime = getVersionTime(split);
-                    systemUpdateData.setVersion(settingUpdateModel.getDownloadVersion());
+                    Log.i(TAG, "system current version: " + settingUpdateModel.getDownloadVersion());
+                    systemUpdateData.setVersion(UpdateUtil.VERSION_LAUNCHER + versionTime);
                     systemUpdateData.setNoticeMessage(changeLog);
                     checkAction.hideLoadingDialog(SettingBundle.getInstance());
                 } else {
@@ -250,7 +255,8 @@ public class SystemUpdateFragment extends BaseFragment {
                     systemUpdateData.setVersionTitle(JDReadApplication.getInstance().getResources().getString(R.string.updatable_version));
                     Log.i(TAG, "checkApkUpdate: " + applicationUpdate.versionName);
                     String versionTime = applicationUpdate.versionName.substring(applicationUpdate.versionName.lastIndexOf("-") + 1, applicationUpdate.versionName.length());
-                    systemUpdateData.setVersion(settingUpdateModel.getDownloadVersion());
+                    Log.i(TAG, "apk current version: " + settingUpdateModel.getDownloadVersion());
+                    systemUpdateData.setVersion(UpdateUtil.VERSION_LAUNCHER + versionTime);
                     systemUpdateData.setNoticeMessage(message);
                     apkUpdateAction.hideLoadingDialog(SettingBundle.getInstance());
                 } else {
@@ -290,10 +296,14 @@ public class SystemUpdateFragment extends BaseFragment {
             return;
         }
         LocalUpdateSystemAction action = new LocalUpdateSystemAction();
+        final SystemUpdateTipDialog dialog = new SystemUpdateTipDialog();
+        dialog.show(getActivity().getFragmentManager(), "");
         action.execute(SettingBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
             }
         });
     }
@@ -309,10 +319,10 @@ public class SystemUpdateFragment extends BaseFragment {
             checkUpdateLoadingDialog = new CheckUpdateLoadingDialog();
         }
         if (!checkUpdateLoadingDialog.isVisible()) {
-            checkUpdateLoadingDialog.setTips(JDReadApplication.getInstance().getResources().getString(event.getResId()));
+            checkUpdateLoadingDialog.setTips(event.getMessage());
             checkUpdateLoadingDialog.show(getActivity().getFragmentManager(), "");
         } else {
-            checkUpdateLoadingDialog.setTips(JDReadApplication.getInstance().getResources().getString(event.getResId()));
+            checkUpdateLoadingDialog.setTips(event.getMessage());
         }
     }
 
@@ -336,9 +346,9 @@ public class SystemUpdateFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetworkConnectedEvent(NetworkConnectedEvent event) {
-        if (downloadPackageAction != null) {
-            downloadPackageAction.execute(callback);
+    public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
+        if (!systemUpdateData.getShowDownloaded()) {
+            systemUpdateData.setNoticeMessage("");
         }
     }
 
@@ -349,6 +359,12 @@ public class SystemUpdateFragment extends BaseFragment {
     private void hideCheckUpdateLoadingDialog() {
         if (checkUpdateLoadingDialog != null) {
             checkUpdateLoadingDialog.dismiss();
+        }
+    }
+
+    public void keepDownload() {
+        if (downloadPackageAction != null && downloadPackageAction.getTask(tag) != null) {
+            downloadPackageAction.execute(callback);
         }
     }
 }

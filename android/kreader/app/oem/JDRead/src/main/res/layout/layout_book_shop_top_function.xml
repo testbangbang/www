@@ -6,14 +6,13 @@
 
         <variable
             name="viewModel"
-            type="com.onyx.jdread.shop.model.BookShopViewModel" />
+            type="com.onyx.jdread.shop.model.TopFunctionViewModel" />
 
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:showIn="@layout/fragment_book_shop_one">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="0dp"

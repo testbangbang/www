@@ -24,6 +24,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CartDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateCartBean;
@@ -111,6 +112,9 @@ public interface ReadContentService {
     Call<RecommendListResultBean> getBookRankList(@Path("module_type") int moduleType,
                                                   @Path("type") String type,
                                                   @QueryMap Map<String, String> baseInfoMap);
+
+    @GET(CloudApiContext.BookShopURI.GET_VIP_GOOD_LIST)
+    Call<GetVipGoodsListResultBean> getVipGoodList(@QueryMap Map<String, String> baseInfoMap);
 
     @POST(CloudApiContext.GotoOrder.CART)
     Call<UpdateCartBean> updateCart(@QueryMap Map<String, String> map,

@@ -6,6 +6,7 @@
         <import type="android.view.View" />
 
         <import type="com.onyx.android.sdk.utils.StringUtils" />
+        <import type="com.onyx.jdread.util.Utils"/>
 
         <variable
             name="titleModel"
@@ -17,8 +18,11 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:gravity="center_vertical"
-        android:padding="@dimen/fragment_content_padding"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/setting_title_bar_padding"
+        android:paddingBottom="@dimen/setting_title_bar_padding"
+        android:paddingLeft="@dimen/setting_title_bar_padding_left"
+        android:paddingRight="@dimen/setting_title_bar_padding_left">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -51,6 +55,7 @@
             android:text="@{titleModel.rightTitle}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font"
+            android:background="@{Utils.isEquals(titleModel.rightTitle, @string/view_history_version) ? @drawable/bottom_line : null}"
             android:visibility="@{StringUtils.isNotBlank(titleModel.rightTitle) ? View.VISIBLE : View.GONE}" />
     </RelativeLayout>
 </layout>

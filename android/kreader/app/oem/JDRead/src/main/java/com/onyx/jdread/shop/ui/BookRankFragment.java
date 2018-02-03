@@ -6,20 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookRankBinding;
-import com.onyx.jdread.library.event.HideAllDialogEvent;
-import com.onyx.jdread.library.event.LoadingDialogEvent;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.BookRankAction;
-import com.onyx.jdread.shop.adapter.BookRankAdapter;
+import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
@@ -27,7 +26,8 @@ import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.event.ViewAllNextClickEvent;
 import com.onyx.jdread.shop.model.RankViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.view.DividerItemDecoration;
+import com.onyx.jdread.shop.view.CustomRecycleView;
+import com.onyx.jdread.shop.view.SpaceItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,12 +38,9 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 
 public class BookRankFragment extends BaseFragment {
-    private static final int SCROLL_TOTAL = 3;
     private FragmentBookRankBinding bookRankBinding;
-    private int bookDetailSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_detail_recycle_view_space);
-    private DividerItemDecoration itemDecoration;
-    private PageRecyclerView recyclerView;
-    private GPaginator paginator;
+    private int space = ResManager.getInteger(R.integer.custom_recycle_view_space);
+    private CustomRecycleView recyclerView;
 
     @Nullable
     @Override
@@ -66,7 +63,8 @@ public class BookRankFragment extends BaseFragment {
         rankAction.execute(getShopDataBundle(), new RxCallback<BookRankAction>() {
             @Override
             public void onNext(BookRankAction rankAction) {
-
+                bookRankBinding.scrollBar.setTotal(getRankViewModel().getTotalPages());
+                scrollToTop();
             }
 
             @Override
@@ -76,35 +74,30 @@ public class BookRankFragment extends BaseFragment {
         });
     }
 
+    private void scrollToTop() {
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
+    }
+
     private void initView() {
-        initDividerItemDecoration();
         setRecycleView();
-        bookRankBinding.scrollBar.setTotal(SCROLL_TOTAL);
         bookRankBinding.setRankViewModel(getRankViewModel());
-        getRankViewModel().setRankItems();
         getRankViewModel().getTitleBarViewModel().leftText = getString(R.string.ranking);
     }
 
     private void setRecycleView() {
-        BookRankAdapter adapter = new BookRankAdapter();
-        recyclerView = bookRankBinding.recyclerViewRanks;
+        ShopMainConfigAdapter adapter = new ShopMainConfigAdapter();
+        recyclerView = bookRankBinding.recycleView;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.addItemDecoration(new SpaceItemDecoration(space));
         recyclerView.setAdapter(adapter);
-        paginator = recyclerView.getPaginator();
-        recyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+        recyclerView.setOnPagingListener(new CustomRecycleView.OnPagingListener() {
             @Override
-            public void onPageChange(int position, int itemCount, int pageSize) {
-                int currentPage = paginator.getCurrentPage();
-                bookRankBinding.scrollBar.setFocusPosition(currentPage);
+            public void onPageChange(int position) {
+                bookRankBinding.scrollBar.setFocusPosition(position);
             }
         });
-    }
-
-    private void initDividerItemDecoration() {
-        itemDecoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
-        itemDecoration.setDrawLine(false);
-        itemDecoration.setSpace(bookDetailSpace);
     }
 
     @Override
@@ -134,7 +127,7 @@ public class BookRankFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
         if (isAdded()) {
-            showLoadingDialog(getString(event.getResId()));
+            showLoadingDialog(event.getMessage());
         }
     }
 

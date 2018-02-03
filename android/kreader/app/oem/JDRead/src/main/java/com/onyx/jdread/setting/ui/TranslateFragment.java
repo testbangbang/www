@@ -83,4 +83,9 @@ public class TranslateFragment extends BaseFragment {
     public void onBackToReadingToolsEvent(BackToReadingToolsEvent event) {
         viewEventCallBack.viewBack();
     }
+
+    @Override
+    public void hideWindow() {
+        super.hideWindow();
+    }
 }

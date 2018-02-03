@@ -8,6 +8,12 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
+import com.onyx.jdread.shop.model.BannerViewModel;
+import com.onyx.jdread.shop.model.BaseSubjectViewModel;
+import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.model.SubjectViewModel;
+import com.onyx.jdread.shop.model.TitleSubjectViewModel;
+import com.onyx.jdread.shop.utils.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +28,11 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
 
     private ShopMainConfigRequestBean requestBean;
     private BookModelConfigResultBean resultBean;
-    private List<BookModelConfigResultBean.DataBean.AdvBean> bannerList;
-    private List<BookModelConfigResultBean.DataBean.ModulesBean> subjectDataList;
+    private List<BaseSubjectViewModel> subjectDataList;
+    private List<BaseSubjectViewModel> mainConfigSubjectList;
+    private List<BaseSubjectViewModel> mainConfigFinalSubjectList = new ArrayList<>();
 
-    public List<BookModelConfigResultBean.DataBean.AdvBean> getBannerList() {
-        return bannerList;
-    }
-
-    public List<BookModelConfigResultBean.DataBean.ModulesBean> getSubjectDataList() {
+    public List<BaseSubjectViewModel> getSubjectDataList() {
         return subjectDataList;
     }
 
@@ -61,20 +64,81 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
     }
 
     private void parseResult() {
-        BookModelConfigResultBean resultBean = getResultBean();
-        if (resultBean != null) {
-            BookModelConfigResultBean.DataBean data = resultBean.data;
-            initDataContainer();
-            if (requestBean.getCid() == Constants.BOOK_SHOP_MAIN_CONFIG_CID) {
-                parseAdvBeanList(data);
-                for (int i = Constants.SHOP_MAIN_INDEX_THREE; i < data.modules.size(); i++) {
-                    parseMainSubjectDataList(data, i);
-                }
-            } else {
-                for (int i = 0; i < data.modules.size(); i++) {
-                    parseCommonSubjectDataList(data,i);
+        BookModelConfigResultBean.DataBean data = resultBean.data;
+        if (requestBean.getCid() == Constants.BOOK_SHOP_MAIN_CONFIG_CID) {
+            parseMainConfigDataList(data);
+        } else {
+            for (int i = 0; i < data.modules.size(); i++) {
+                parseCommonSubjectDataList(data, i);
+            }
+        }
+    }
+
+    private void parseMainConfigDataList(BookModelConfigResultBean.DataBean dataBean) {
+        if (dataBean.modules != null && dataBean.ebook != null) {
+            initMainConfigSubjectContainer();
+            ShopDataBundle shopDataBundle = ShopDataBundle.getInstance();
+            List<BookModelConfigResultBean.DataBean.ModulesBean> subjectTitleList = new ArrayList<>();
+            for (BookModelConfigResultBean.DataBean.ModulesBean modulesBean : dataBean.modules) {
+                if (modulesBean.module_type == Constants.MODULE_TYPE_ADV_FIX_TWO) {// banner subject
+                    List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
+                    BannerViewModel viewModel = new BannerViewModel(shopDataBundle.getEventBus());
+                    viewModel.setBannerList(getbannerSubItems(dataBean, items));
+                    mainConfigSubjectList.add(viewModel);
+                } else if (modulesBean.module_type == Constants.MODULE_TYPE_RECOMMEND) {
+                    if (modulesBean.show_type == 1) {// cover subject
+                        List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
+                        modulesBean.bookList = getCommonSubjectSubItems(dataBean, items);
+                        SubjectViewModel viewModel = new SubjectViewModel(shopDataBundle.getEventBus());
+                        viewModel.setModelBean(modulesBean);
+                        mainConfigSubjectList.add(viewModel);
+                    } else {// title subject
+                        subjectTitleList.add(modulesBean);
+                    }
                 }
             }
+            TitleSubjectViewModel viewModel = new TitleSubjectViewModel(shopDataBundle.getEventBus());
+            viewModel.setTilteList(subjectTitleList);
+            mainConfigSubjectList.add(viewModel);
+            if (mainConfigFinalSubjectList != null) {
+                mainConfigFinalSubjectList.clear();
+                mainConfigFinalSubjectList.add(shopDataBundle.getShopViewModel().getTopFunctionViewModel());
+                mainConfigFinalSubjectList.addAll(mainConfigSubjectList);
+                mainConfigFinalSubjectList.add(shopDataBundle.getShopViewModel().getMainConfigEndViewModel());
+                shopDataBundle.getShopViewModel().setMainConfigSubjcet(mainConfigFinalSubjectList);
+                int totalPage = ViewHelper.calculateTotalPages(mainConfigFinalSubjectList, Constants.SHOP_VIEW_RECYCLE_HEIGHT);
+                shopDataBundle.getShopViewModel().setTotalPages(Math.max(totalPage, 1));
+            }
+        }
+    }
+
+    private List<BookModelConfigResultBean.DataBean.AdvBean> getbannerSubItems(BookModelConfigResultBean.DataBean dataBean, List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items) {
+        List<BookModelConfigResultBean.DataBean.AdvBean> bannerItemList = new ArrayList<>();
+        for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
+            if (Constants.MAIN_CONFIG_TYPE_ADV.equals(itemsBean.type)) {
+                BookModelConfigResultBean.DataBean.AdvBean advBean = dataBean.adv.get(itemsBean.id);
+                bannerItemList.add(advBean);
+            }
+        }
+        return bannerItemList;
+    }
+
+    private List<ResultBookBean> getCommonSubjectSubItems(BookModelConfigResultBean.DataBean dataBean, List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items) {
+        List<ResultBookBean> bookItemList = new ArrayList<>();
+        for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
+            if (Constants.MAIN_CONFIG_TYPE_EBOOK.equals(itemsBean.type)) {
+                ResultBookBean bookBean = dataBean.ebook.get(itemsBean.id);
+                bookItemList.add(bookBean);
+            }
+        }
+        return bookItemList;
+    }
+
+    private void initMainConfigSubjectContainer() {
+        if (mainConfigSubjectList == null) {
+            mainConfigSubjectList = new ArrayList<>();
+        } else {
+            mainConfigSubjectList.clear();
         }
     }
 
@@ -88,6 +152,7 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
 
     private void parseCommonSubjectDataList(BookModelConfigResultBean.DataBean dataBean, int index) {
         if (dataBean.ebook != null && dataBean.modules != null) {
+            initDataContainer();
             ArrayList<ResultBookBean> bookList = new ArrayList<>();
             BookModelConfigResultBean.DataBean.ModulesBean modulesBean = dataBean.modules.get(index);
             List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
@@ -96,57 +161,9 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                 bookList.add(bookBean);
             }
             modulesBean.bookList = bookList;
-            if (index % 2 == 1) {
-                if (dataBean.modules.size() - 1 >= (index + 1)) {
-                    BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
-                    modulesBean.show_name_next = modulesBeanNext.show_name;
-                    modulesBean.f_type_next = modulesBeanNext.f_type;
-                    modulesBean.id_next = modulesBeanNext.id;
-                    modulesBean.showNextTitle = true;
-                }
-            }
-            subjectDataList.add(modulesBean);
-        }
-    }
-
-    private void parseAdvBeanList(BookModelConfigResultBean.DataBean dataBean) {
-        if (dataBean.modules != null && dataBean.ebook != null) {
-            if (bannerList == null) {
-                bannerList = new ArrayList<>();
-            } else {
-                bannerList.clear();
-            }
-            List<BookModelConfigResultBean.DataBean.ModulesBean> bannerModules = dataBean.modules.subList(0, Constants.SHOP_MAIN_INDEX_TWO);
-            for (BookModelConfigResultBean.DataBean.ModulesBean modulesBean : bannerModules) {
-                List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
-                for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
-                    BookModelConfigResultBean.DataBean.AdvBean advBean = dataBean.adv.get(itemsBean.id);
-                    bannerList.add(advBean);
-                }
-            }
-        }
-    }
-
-    public void parseMainSubjectDataList(BookModelConfigResultBean.DataBean dataBean, int index) {
-        if (dataBean.ebook != null && dataBean.modules != null) {
-            ArrayList<ResultBookBean> bookList = new ArrayList<>();
-            BookModelConfigResultBean.DataBean.ModulesBean modulesBean = dataBean.modules.get(index);
-            List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
-            for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
-                ResultBookBean bookBean = dataBean.ebook.get(itemsBean.id);
-                bookList.add(bookBean);
-            }
-            modulesBean.bookList = bookList;
-            if (index >= Constants.SHOP_MAIN_INDEX_SIX && index <= Constants.SHOP_MAIN_INDEX_TEN && index % 2 == 0) {
-                if (dataBean.modules.size() - 1 >= (index + 1)) {
-                    BookModelConfigResultBean.DataBean.ModulesBean modulesBeanNext = dataBean.modules.get(index + 1);
-                    modulesBean.show_name_next = modulesBeanNext.show_name;
-                    modulesBean.f_type_next = modulesBeanNext.f_type;
-                    modulesBean.id_next = modulesBeanNext.id;
-                    modulesBean.showNextTitle = true;
-                }
-            }
-            subjectDataList.add(modulesBean);
+            SubjectViewModel viewModel = new SubjectViewModel(ShopDataBundle.getInstance().getEventBus());
+            viewModel.setModelBean(modulesBean);
+            subjectDataList.add(viewModel);
         }
     }
 

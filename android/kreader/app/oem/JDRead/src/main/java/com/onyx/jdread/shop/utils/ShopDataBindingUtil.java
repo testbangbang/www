@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.utils;
 
 import android.databinding.BindingAdapter;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -11,11 +12,14 @@ import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
+import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
+import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.adapter.SubjectWithVipAdapter;
+import com.onyx.jdread.shop.adapter.TitleSubjectAdapter;
 import com.onyx.jdread.shop.adapter.VipReadAdapter;
 import com.onyx.jdread.shop.common.ManageImageCache;
 import com.onyx.jdread.shop.view.AutoPagedWebView;
@@ -60,14 +64,6 @@ public class ShopDataBindingUtil {
         }
     }
 
-    @BindingAdapter({"categorySubjectItems"})
-    public static void setCategoryItems(PageRecyclerView recyclerView, List items) {
-        CategorySubjectAdapter adapter = (CategorySubjectAdapter) recyclerView.getAdapter();
-        if (adapter != null && items != null) {
-            adapter.setRawData(items, recyclerView.getContext());
-        }
-    }
-
     @BindingAdapter({"categoryItems"})
     public static void setAllCategoryItems(PageRecyclerView recyclerView, List items) {
         CategorySubjectAdapter adapter = (CategorySubjectAdapter) recyclerView.getAdapter();
@@ -103,7 +99,7 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"htmlContent"})
     public static void setHtmlContent(HtmlTextView htmlTextView, String content) {
         String title = ResManager.getString(R.string.book_detail_text_view_content_introduce) + ":";
-        if (!StringUtils.isNullOrEmpty(content)){
+        if (!StringUtils.isNullOrEmpty(content)) {
             htmlTextView.setHtml(title + content);
         } else {
             String emptyCOntent = ResManager.getString(R.string.book_detail_empty_introduce);
@@ -113,7 +109,7 @@ public class ShopDataBindingUtil {
 
     @BindingAdapter({"htmlContentDialog"})
     public static void setHtmlContentDialog(HtmlTextView htmlTextView, String content) {
-        if (!StringUtils.isNullOrEmpty(content)){
+        if (!StringUtils.isNullOrEmpty(content)) {
             htmlTextView.setHtml(content);
         } else {
             String emptyCOntent = ResManager.getString(R.string.book_detail_empty_introduce);
@@ -123,7 +119,7 @@ public class ShopDataBindingUtil {
 
     @BindingAdapter({"bookInfoWebView"})
     public static void setBookInfoDialog(AutoPagedWebView webView, String content) {
-        if (StringUtils.isNullOrEmpty(content)){
+        if (StringUtils.isNullOrEmpty(content)) {
             content = ResManager.getString(R.string.book_detail_empty_introduce);
         }
         webView.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
@@ -141,13 +137,37 @@ public class ShopDataBindingUtil {
     public static void setSubjectModels(PageRecyclerView recyclerView, List items) {
         BookRankAdapter adapter = (BookRankAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
-            adapter.setRawData(items, recyclerView.getContext());
+            adapter.setDatas(items);
         }
     }
 
     @BindingAdapter({"vipSubjectItems"})
     public static void setVipSubjectItems(PageRecyclerView recyclerView, List items) {
         VipReadAdapter adapter = (VipReadAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"titleSubjectItems"})
+    public static void setTitleItems(PageRecyclerView recyclerView, List items) {
+        TitleSubjectAdapter adapter = (TitleSubjectAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"shopConfigSubjects"})
+    public static void setConfigSubjects(RecyclerView recyclerView, List items) {
+        ShopMainConfigAdapter adapter = (ShopMainConfigAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setDatas(items);
+        }
+    }
+
+    @BindingAdapter({"goodList"})
+    public static void setVipGoodList(RecyclerView recyclerView, List items) {
+        BuyReadVipAdapter adapter = (BuyReadVipAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }

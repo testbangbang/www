@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data class="DialogTopUpBinding">
 
@@ -17,19 +18,16 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/top_up_dialog_title_height"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
                 android:padding="@dimen/top_up_padding">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
                     android:text="@string/top_up"
+                    android:layout_centerInParent="true"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_one_heading_font" />
 
@@ -37,46 +35,35 @@
                     android:id="@+id/dialog_top_up_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:src="@mipmap/ic_close" />
-            </LinearLayout>
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/line_width"
                 android:background="@color/divider_color" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/top_up_tips_margin_left"
-                android:layout_marginTop="@dimen/top_up_tips_margin_top"
-                android:text="@string/top_up_tips"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/top_up_tips_margin_left"
-                android:text="@{@string/current_balance(userInfo.yuedou, userInfo.voucher)}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
-
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/dialog_top_up_recycler"
+            <include
+                android:id="@+id/dialog_top_up_detail_layout"
+                layout="@layout/dialog_top_up_detail_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/top_up_tips_recycler_margin"
-                android:layout_marginLeft="@dimen/top_up_tips_recycler_margin"
-                android:layout_marginRight="@dimen/top_up_tips_recycler_margin"
-                android:layout_marginTop="@dimen/top_up_tips_margin_top" />
-        </LinearLayout>
+                bind:userInfo="@{userInfo}"/>
 
-        <include
-            android:id="@+id/dialog_top_up_qr_code_layout"
-            layout="@layout/dialog_top_up_qrcode_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
+            <include
+                android:id="@+id/dialog_top_up_qr_code_layout"
+                layout="@layout/dialog_top_up_qrcode_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/dialog_top_up_success_layout"
+                layout="@layout/dialog_top_up_success_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </LinearLayout>
     </FrameLayout>
 </layout>

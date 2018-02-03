@@ -338,7 +338,7 @@ public class LibraryViewDataModel extends Observable {
     }
 
     private boolean isSelectAll() {
-        return (getLibrarySelectedModel().isSelectedAll() && getListSelected().size() == 0) || (!getLibrarySelectedModel().isSelectedAll() && getListSelected().size() == count.get());
+        return (getLibrarySelectedModel().isSelectedAll() && getListSelected().size() == 0) || (!getLibrarySelectedModel().isSelectedAll() && getListSelected().size() > 0 && getListSelected().size() == count.get());
     }
 
     public LibrarySelectedModel getLibrarySelectedModel() {
@@ -347,15 +347,15 @@ public class LibraryViewDataModel extends Observable {
 
     public void clearSelectedData() {
         selectHelper.clearSelectedData();
-        clearCurrentLibrarySelectedData();
         librarySelected.clear();
+        clearCurrentLibrarySelectedData();
     }
 
     private void clearCurrentLibrarySelectedData() {
         getLibrarySelectedModel().setSelectedAll(false);
-        setSelectAllBtnText();
         clearItemSelectedList();
         checkedOrCancelAll(false);
+        setSelectAllBtnText();
     }
 
     public void quitMultiSelectionMode() {

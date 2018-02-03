@@ -1,10 +1,12 @@
 package com.onyx.jdread.setting.view;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -15,8 +17,10 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogAssociatedEmailLayoutBinding;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.util.RegularUtil;
+import com.onyx.jdread.util.Utils;
 
 import java.util.Observable;
 
@@ -66,7 +70,7 @@ public class AssociatedEmailDialog extends Dialog {
 
         private boolean checkedEdit() {
             if (StringUtils.isNullOrEmpty(emailAddress.get()) || !RegularUtil.isEmail(emailAddress.get())) {
-                ToastUtil.showToast(JDReadApplication.getInstance(), JDReadApplication.getInstance().getString(R.string.email_address_wrong));
+                ToastUtil.showOffsetToast(ResManager.getString(R.string.email_address_wrong), ResManager.getInteger(R.integer.toast_offset_y));
                 return false;
             }
             return true;
@@ -91,10 +95,12 @@ public class AssociatedEmailDialog extends Dialog {
     @Override
     public void show() {
         Window window = getWindow();
-        window.setGravity(Gravity.CENTER);
+        window.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
         WindowManager.LayoutParams attributes = window.getAttributes();
         attributes.width = getContext().getResources().getInteger(R.integer.move_to_library_list_dialog_width);
         attributes.height = JDReadApplication.getInstance().getResources().getInteger(R.integer.dialog_associated_width);
+        attributes.y = ResManager.getInteger(R.integer.associated_email_dialog_offset_y);
+        attributes.x = ResManager.getInteger(R.integer.associated_email_dialog_offset_x);
         window.setAttributes(attributes);
         window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         super.show();

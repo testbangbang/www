@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/wifi_pass_book_prompt_margin_top"
                 android:text="@string/wifi_pass_book_prompt_bottom_1"
-                android:textColor="@android:color/black"
+                android:textColor="@color/text_gray_color"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <TextView
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/wifi_pass_book_prompt_line_space"
                 android:text="@string/wifi_pass_book_prompt_bottom_2"
-                android:textColor="@android:color/black"
+                android:textColor="@color/text_gray_color"
                 android:textSize="@dimen/level_three_heading_font" />
         </LinearLayout>
     </LinearLayout>

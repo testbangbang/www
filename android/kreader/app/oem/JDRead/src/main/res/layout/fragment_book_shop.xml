@@ -24,21 +24,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/book_shop_main_config_recycle_view_margin_top"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/book_shop_container"
+            <com.onyx.jdread.shop.view.CustomRecycleView
+                android:id="@+id/shop_main_config_recycle_view"
+                shopConfigSubjects="@{viewModel.mainConfigSubjcet}"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+                android:layout_marginRight="@dimen/custom_recycle_view_margin_right"
                 android:layout_weight="1"
-                android:orientation="vertical">
-
-                <include
-                    android:id="@+id/book_shop_one"
-                    layout="@layout/fragment_book_shop_one"
-                    bind:viewModel="@{viewModel}" />
-
-            </LinearLayout>
+                android:background="@android:color/white" />
 
             <com.onyx.jdread.shop.view.CustomScrollBar
                 android:id="@+id/scroll_bar"

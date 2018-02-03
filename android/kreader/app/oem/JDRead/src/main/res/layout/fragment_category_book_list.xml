@@ -131,11 +131,21 @@
                     android:id="@+id/subject_list_show_vip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/subject_list_just_vip_margin"
-                    android:button="@drawable/selected_subject_list_show_vip_bg"
+                    android:layout_gravity="left"
+                    android:layout_marginTop="@dimen/subject_list_just_vip_margin_top_and_bottom"
+                    android:layout_marginBottom="@dimen/subject_list_just_vip_margin_top_and_bottom"
+                    android:layout_marginLeft="@dimen/subject_list_just_vip_margin_left"
+                    android:background="@drawable/text_stroke_background"
+                    android:button="@null"
                     android:checked="false"
-                    android:text="@string/subject_list_just_vip" />
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                    android:paddingLeft="@dimen/category_book_list_selected_button_padding_left_and_right"
+                    android:paddingRight="@dimen/category_book_list_selected_button_padding_left_and_right"
+                    android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                    android:text="@string/subject_list_just_vip"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/font_size_15" />
 
                 <include layout="@layout/layout_line" />
 

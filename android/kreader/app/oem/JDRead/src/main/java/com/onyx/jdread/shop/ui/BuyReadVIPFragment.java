@@ -7,20 +7,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.BuyReadVipBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.main.model.TitleBarModel;
-import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
+import com.onyx.jdread.shop.action.GetVipGoodListAction;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
+import com.onyx.jdread.shop.event.TopBackEvent;
+import com.onyx.jdread.shop.event.VipButtonClickEvent;
 import com.onyx.jdread.shop.model.BuyReadVipModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by li on 2018/1/10.
@@ -33,51 +40,105 @@ public class BuyReadVIPFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = (BuyReadVipBinding) DataBindingUtil.inflate(inflater, R.layout.fragment_buy_read_vip, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_buy_read_vip, container, false);
         initView();
+        initLibrary();
         initData();
-        initListener();
         return binding.getRoot();
     }
 
+    private void initLibrary() {
+        if (!getEventBus().isRegistered(this)) {
+            getEventBus().register(this);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initLibrary();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getEventBus().unregister(this);
+    }
+
     private void initView() {
-        binding.buyVipRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        OnyxPageDividerItemDecoration decoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
-        binding.buyVipRecycler.addItemDecoration(decoration);
-        adapter = new BuyReadVipAdapter();
-        binding.buyVipRecycler.setAdapter(adapter);
+        initRecycleView();
+        binding.setViewModel(getBuyReadVipModel());
+        getBuyReadVipModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.buy_read_vip);
+        getBuyReadVipModel().setVipUserInfoViewModel(getShopDataBundle().getVipUserInfoViewModel());
+    }
+
+    private void initRecycleView() {
+        DashLineItemDivider itemDecoration = new DashLineItemDivider();
+        PageRecyclerView buyVipRecycleView = binding.buyVipRecycleView;
+        buyVipRecycleView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        adapter = new BuyReadVipAdapter(getEventBus());
+        buyVipRecycleView.setAdapter(adapter);
+        buyVipRecycleView.addItemDecoration(itemDecoration);
     }
 
     private void initData() {
-        TitleBarModel titleBarModel = ShopDataBundle.getInstance().getTitleBarModel();
-        titleBarModel.title.set(ResManager.getString(R.string.buy_read_vip));
-        titleBarModel.backEvent.set(new BackToSettingFragmentEvent());
-        binding.buyVipTitle.setTitleModel(titleBarModel);
+        GetVipGoodListAction vipGoodListAction = new GetVipGoodListAction();
+        vipGoodListAction.execute(getShopDataBundle(), new RxCallback<GetVipGoodListAction>() {
+            @Override
+            public void onNext(GetVipGoodListAction action) {
 
-        BuyReadVipModel buyReadVipModel = ShopDataBundle.getInstance().getBuyReadVipModel();
-        if (adapter != null) {
-            adapter.setData(buyReadVipModel.getBuyReadVipData());
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+        });
+
+    }
+
+    private BuyReadVipModel getBuyReadVipModel() {
+        return getShopDataBundle().getBuyReadVipModel();
+    }
+
+    private EventBus getEventBus() {
+        return getShopDataBundle().getEventBus();
+    }
+
+    public ShopDataBundle getShopDataBundle() {
+        return ShopDataBundle.getInstance();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTopBackEvent(TopBackEvent event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().viewBack();
         }
     }
 
-    private void initListener() {
-        if (adapter == null) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onVipButtonClickEvent(VipButtonClickEvent event) {
+        if (checkWfiDisConnected()) {
             return;
         }
+        //TODO pay order
+    }
 
-        adapter.setOnItemClickListener(new PageRecyclerView.PageAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                // TODO: 2018/1/13 to order
-                ToastUtil.showToast(position + "");
-            }
-        });
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoadingDialogEvent(LoadingDialogEvent event) {
+        if (isAdded()) {
+            showLoadingDialog(getString(event.getResId()));
+        }
+    }
 
-        binding.buyReadVipNotice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: 2018/1/13
-            }
-        });
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        hideLoadingDialog();
     }
 }
