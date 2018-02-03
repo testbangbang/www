@@ -66,6 +66,7 @@
                     android:hint="@string/enter_hint"
                     android:imeOptions="actionDone"
                     android:inputType="text"
+                    android:maxLength="50"
                     android:textSize="20sp" />
 
                 <ImageView
