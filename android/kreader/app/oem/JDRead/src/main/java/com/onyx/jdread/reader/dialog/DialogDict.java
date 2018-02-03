@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityDictBinding;
 import com.onyx.jdread.reader.model.DictViewModel;
@@ -53,5 +54,11 @@ public class DialogDict extends Dialog implements ViewCallBack {
     @Override
     public Dialog getContent() {
         return this;
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        DeviceUtils.adjustFullScreenStatus(this.getWindow(),true);
     }
 }
