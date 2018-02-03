@@ -426,6 +426,8 @@
     <string name="power_off_prompt">您确定关闭阅读器吗?</string>
     <string name="speed_refresh_is_opened">极速翻页已开启</string>
     <string name="speed_refresh_is_closed">极速翻页已关闭</string>
+    <string name="input_translate_content">请输入需要翻译的内容</string>
+    <string name="uninstall_translate_app">未安装翻译客户端</string>
     <string name="not_login">未登录</string>
     <string name="open_vip_read">开通会员</string>
     <string name="renew_vip_read">续费会员</string>
