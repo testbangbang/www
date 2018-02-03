@@ -20,14 +20,14 @@ import java.util.List;
  * Created by jackdeng on 2017/12/12.
  */
 
-public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> {
+public class CategoryBookListAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> {
 
-    private EventBus eventBus;
+    protected EventBus eventBus;
     private int row;
     private int col;
     private boolean canSelected = false;
 
-    public CategorySubjectAdapter(EventBus eventBus) {
+    public CategoryBookListAdapter(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 

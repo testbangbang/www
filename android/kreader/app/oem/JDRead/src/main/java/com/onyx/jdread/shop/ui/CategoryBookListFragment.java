@@ -19,7 +19,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.SearchBookListAction;
-import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
+import com.onyx.jdread.shop.adapter.CategoryBookListAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
@@ -135,6 +135,7 @@ public class CategoryBookListFragment extends BaseFragment {
         SubjectListAdapter adapter = new SubjectListAdapter(getEventBus());
         DashLineItemDivider itemDecoration = new DashLineItemDivider();
         recyclerView = categoryBookListBinding.recyclerViewSubjectList;
+        recyclerView.setPageTurningCycled(true);
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
@@ -149,12 +150,12 @@ public class CategoryBookListFragment extends BaseFragment {
             }
         });
         categoryBookListBinding.setViewModel(getCategoryBookListViewModel());
-        CategorySubjectAdapter categorySubjectAdapter = new CategorySubjectAdapter(getEventBus());
-        categorySubjectAdapter.setRowAndCol(catRow, catCol);
-        categorySubjectAdapter.setCanSelected(true);
+        CategoryBookListAdapter categoryBookListAdapter = new CategoryBookListAdapter(getEventBus());
+        categoryBookListAdapter.setRowAndCol(catRow, catCol);
+        categoryBookListAdapter.setCanSelected(true);
         PageRecyclerView recyclerViewCategoryList = categoryBookListBinding.recyclerViewCategoryList;
         recyclerViewCategoryList.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewCategoryList.setAdapter(categorySubjectAdapter);
+        recyclerViewCategoryList.setAdapter(categoryBookListAdapter);
         recyclerViewCategoryList.addItemDecoration(itemDecoration);
     }
 
@@ -240,6 +241,7 @@ public class CategoryBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
+        showOrCloseAllCatButton();
         if (checkWfiDisConnected()) {
             return;
         }
@@ -256,7 +258,6 @@ public class CategoryBookListFragment extends BaseFragment {
         JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
         JDPreferenceManager.setStringValue(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
-        showOrCloseAllCatButton();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -305,6 +306,7 @@ public class CategoryBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSubjectListSortKeyChangeEvent(SubjectListSortKeyChangeEvent event) {
+        showOrCloseSortButton();
         if (checkWfiDisConnected()) {
             return;
         }
@@ -315,7 +317,6 @@ public class CategoryBookListFragment extends BaseFragment {
             sortkey = event.sortKey;
         }
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
-        showOrCloseSortButton();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

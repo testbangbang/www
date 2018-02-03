@@ -187,6 +187,7 @@ public class BookDetailFragment extends BaseFragment {
     private void setRecommendRecycleView() {
         RecommendAdapter adapter = new RecommendAdapter(getEventBus());
         recyclerViewRecommend = bookDetailBinding.bookDetailInfo.recyclerViewRecommend;
+        recyclerViewRecommend.setPageTurningCycled(true);
         recyclerViewRecommend.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewRecommend.addItemDecoration(itemDecoration);
         recyclerViewRecommend.setAdapter(adapter);
@@ -297,13 +298,7 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecommendNextPageEvent(RecommendNextPageEvent event) {
         if (recyclerViewRecommend != null) {
-            if (paginator != null) {
-                if (paginator.isLastPage()) {
-                    recyclerViewRecommend.gotoPage(0);
-                } else {
-                    recyclerViewRecommend.nextPage();
-                }
-            }
+            recyclerViewRecommend.nextPage();
         }
     }
 
@@ -360,16 +355,20 @@ public class BookDetailFragment extends BaseFragment {
         if (checkWfiDisConnected()) {
             return;
         }
-        if (!hasAddToCart) {
-            if (bookDetailBean != null) {
-                if (!bookDetailBean.can_buy) {
-                    ToastUtil.showToast(getString(R.string.book_detail_add_cart_tip_the_book_not_can_buy));
-                    return;
-                }
-                addToCart(bookDetailBean.ebook_id);
-            }
+        if (!JDReadApplication.getInstance().getLogin()) {
+            LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
         } else {
-            gotoShopCartFragment();
+            if (!hasAddToCart) {
+                if (bookDetailBean != null) {
+                    if (!bookDetailBean.can_buy) {
+                        ToastUtil.showToast(getString(R.string.book_detail_add_cart_tip_the_book_not_can_buy));
+                        return;
+                    }
+                    addToCart(bookDetailBean.ebook_id);
+                }
+            } else {
+                gotoShopCartFragment();
+            }
         }
     }
 
