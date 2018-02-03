@@ -360,16 +360,20 @@ public class BookDetailFragment extends BaseFragment {
         if (checkWfiDisConnected()) {
             return;
         }
-        if (!hasAddToCart) {
-            if (bookDetailBean != null) {
-                if (!bookDetailBean.can_buy) {
-                    ToastUtil.showToast(getString(R.string.book_detail_add_cart_tip_the_book_not_can_buy));
-                    return;
-                }
-                addToCart(bookDetailBean.ebook_id);
-            }
+        if (!JDReadApplication.getInstance().getLogin()) {
+            LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
         } else {
-            gotoShopCartFragment();
+            if (!hasAddToCart) {
+                if (bookDetailBean != null) {
+                    if (!bookDetailBean.can_buy) {
+                        ToastUtil.showToast(getString(R.string.book_detail_add_cart_tip_the_book_not_can_buy));
+                        return;
+                    }
+                    addToCart(bookDetailBean.ebook_id);
+                }
+            } else {
+                gotoShopCartFragment();
+            }
         }
     }
 
