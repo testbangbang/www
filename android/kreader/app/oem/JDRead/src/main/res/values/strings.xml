@@ -445,4 +445,5 @@
     <string name="speed_refresh_is_opened">Speed refresh is opened</string>
     <string name="speed_refresh_is_closed">Speed refresh is closed</string>
     <string name="input_translate_content">Please input the content that needs to be translated.</string>
+    <string name="uninstall_translate_app">No translation client installed.</string>
 </resources>

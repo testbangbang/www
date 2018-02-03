@@ -21,7 +21,7 @@
             android:layout_width="@dimen/line_width"
             android:layout_alignParentRight="true"
             android:layout_height="match_parent"
-            android:background="@color/divider_color"/>
+            android:background="@color/divider_color_setting"/>
 
         <LinearLayout
             android:layout_toLeftOf="@id/line_setting"
