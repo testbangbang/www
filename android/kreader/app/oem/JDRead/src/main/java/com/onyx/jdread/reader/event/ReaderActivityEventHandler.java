@@ -233,7 +233,7 @@ public class ReaderActivityEventHandler {
         if (event.getToggleSwitch() == ToggleBookmarkAction.ToggleSwitch.Off) {
             messageId = R.string.reader_bookmark_delete_success;
         }
-        ToastMessage.showMessage(readerViewModel.getReaderDataHolder().getAppContext(),readerViewModel.getReaderDataHolder().getAppContext().getResources().getString(messageId));
+        ToastMessage.showMessageCenter(readerViewModel.getReaderDataHolder().getAppContext(),readerViewModel.getReaderDataHolder().getAppContext().getResources().getString(messageId));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
