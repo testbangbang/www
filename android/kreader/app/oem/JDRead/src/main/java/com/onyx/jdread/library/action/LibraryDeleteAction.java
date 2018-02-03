@@ -10,6 +10,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.action.BaseAction;
+import com.onyx.jdread.main.common.ResManager;
 
 /**
  * Created by hehai on 17-12-22.
@@ -36,8 +37,7 @@ public class LibraryDeleteAction extends BaseAction<LibraryDataBundle> {
         dialogModel.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
             @Override
             public void onClicked() {
-                RxSingleLibraryDeleteRequest request = new RxSingleLibraryDeleteRequest(libraryDataBundle.getDataManager(), dataModel.idString.get(), deleteBooks);
-                request.execute(baseCallback);
+                deleteLibrary(libraryDataBundle, baseCallback);
                 libraryDeleteDialog.dismiss();
             }
         });
@@ -47,6 +47,26 @@ public class LibraryDeleteAction extends BaseAction<LibraryDataBundle> {
                 libraryDeleteDialog.dismiss();
             }
         });
+    }
+
+    private void deleteLibrary(final LibraryDataBundle libraryDataBundle, final RxCallback baseCallback) {
+        RxSingleLibraryDeleteRequest request = new RxSingleLibraryDeleteRequest(libraryDataBundle.getDataManager(), dataModel.idString.get(), deleteBooks);
+        request.execute(new RxCallback<RxSingleLibraryDeleteRequest>() {
+            @Override
+            public void onNext(RxSingleLibraryDeleteRequest o) {
+                if (baseCallback != null) {
+                    baseCallback.onNext(o);
+                }
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog(libraryDataBundle);
+            }
+        });
+
+        showLoadingDialog(libraryDataBundle, String.format(ResManager.getString(R.string.loading_format), ResManager.getString(R.string.delete)));
     }
 
     @NonNull

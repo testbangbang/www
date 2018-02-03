@@ -34,12 +34,14 @@ import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
 import com.onyx.jdread.library.event.BookDetailEvent;
 import com.onyx.jdread.library.event.DeleteBookEvent;
+import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LibraryBackEvent;
 import com.onyx.jdread.library.event.LibraryDeleteEvent;
 import com.onyx.jdread.library.event.LibraryDeleteIncludeBookEvent;
 import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
 import com.onyx.jdread.library.event.LibraryRenameEvent;
+import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.library.event.MoveToLibraryEvent;
 import com.onyx.jdread.library.event.MyBookEvent;
 import com.onyx.jdread.library.event.SearchBookEvent;
@@ -53,6 +55,7 @@ import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.library.view.SingleItemManageDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.LoadingDialog;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
@@ -84,6 +87,8 @@ public class LibraryFragment extends BaseFragment {
     private GPaginator pagination;
     private PageIndicatorModel pageIndicatorModel;
     private SingleItemManageDialog singleItemManageDialog;
+    private LoadingDialog loadingDialog;
+    private LoadingDialog.DialogModel dialogModel;
 
     @Nullable
     @Override
@@ -373,7 +378,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onSortByTimeEvent(SortByTimeEvent event) {
         libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.LastOpenTime, SortOrder.Desc);
-        loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(0),false,false);
+        loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(0), false, false);
     }
 
     private void refreshData() {
@@ -383,7 +388,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onSortByNameEvent(SortByNameEvent event) {
         libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.Name, SortOrder.Asc);
-        loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(0),false,false);
+        loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(0), false, false);
     }
 
     @Subscribe
@@ -408,6 +413,27 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onWifiPassBookEvent(WifiPassBookEvent event) {
         viewEventCallBack.gotoView(WiFiPassBookFragment.class.getName());
+    }
+
+    @Subscribe
+    public void onLoadingDialogEvent(LoadingDialogEvent event) {
+        if (loadingDialog == null) {
+            dialogModel = new LoadingDialog.DialogModel();
+            dialogModel.setLoadingText(event.getMessage());
+            LoadingDialog.Builder builder = new LoadingDialog.Builder(JDReadApplication.getInstance(), dialogModel);
+            loadingDialog = builder.create();
+            loadingDialog.show();
+        } else {
+            dialogModel.setLoadingText(event.getMessage());
+            loadingDialog.show();
+        }
+    }
+
+    @Subscribe
+    public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
     }
 
     @Subscribe
