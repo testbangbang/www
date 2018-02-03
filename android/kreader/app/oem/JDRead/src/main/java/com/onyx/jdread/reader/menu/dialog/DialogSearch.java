@@ -157,7 +157,6 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
                     hideSoftInputWindow();
                     loadSearchData();
                 }
-                Log.i("hxm","editViewSearch----->" + v.getText().toString());
                 return true;
             }
         });
