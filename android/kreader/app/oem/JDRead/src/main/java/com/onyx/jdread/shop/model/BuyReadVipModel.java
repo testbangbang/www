@@ -15,7 +15,7 @@ import java.util.List;
 public class BuyReadVipModel extends BaseObservable {
 
     private EventBus eventBus;
-    private List<GetVipGoodsListResultBean> goodsList;
+    private List<GetVipGoodsListResultBean.DataBean> goodsList;
     private TitleBarViewModel titleBarViewModel;
     private VipUserInfoViewModel vipUserInfoViewModel;
 
@@ -29,11 +29,11 @@ public class BuyReadVipModel extends BaseObservable {
         return eventBus;
     }
 
-    public List<GetVipGoodsListResultBean> getGoodsList() {
+    public List<GetVipGoodsListResultBean.DataBean> getGoodsList() {
         return goodsList;
     }
 
-    public void setGoodsList(List<GetVipGoodsListResultBean> goodsList) {
+    public void setGoodsList(List<GetVipGoodsListResultBean.DataBean> goodsList) {
         this.goodsList = goodsList;
         notifyChange();
     }

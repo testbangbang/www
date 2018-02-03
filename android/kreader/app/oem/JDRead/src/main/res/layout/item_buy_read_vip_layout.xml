@@ -7,6 +7,8 @@
             name="data"
             type="com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean.DataBean" />
 
+        <import type="com.onyx.jdread.shop.utils.ViewHelper" />
+
     </data>
 
     <LinearLayout
@@ -30,7 +32,7 @@
             android:background="@drawable/rectangle_stroke_corners"
             android:gravity="center"
             android:padding="@dimen/item_points_for_points_padding"
-            android:text="@{data.promotion_price}"
+            android:text="@{@string/format_rmb(ViewHelper.formatRMB(data.promotion_price))}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_one_heading_font" />
     </LinearLayout>

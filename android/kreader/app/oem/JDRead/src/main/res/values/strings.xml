@@ -449,4 +449,5 @@
     <string name="vip_read_days">The remaining days of the Vip：%s</string>
     <string name="vip_read_notice">Vip Notice</string>
     <string name="not_open_vip_read">Do not open Vip</string>
+    <string name="format_rmb">¥%s</string>
 </resources>

@@ -29,6 +29,10 @@ public class ViewHelper {
         return String.valueOf(new DecimalFormat("0").format(price * 100));
     }
 
+    public static String formatRMB(float price) {
+        return String.valueOf(new DecimalFormat("0.00").format(price));
+    }
+
     public static boolean isCanNowRead(BookDetailResultBean.DetailBean detailBean){
         boolean canNowRead = false;
         if (detailBean != null) {

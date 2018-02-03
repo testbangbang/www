@@ -26,6 +26,7 @@
             bind:titleBarViewModel="@{viewModel.titleBarViewModel}" />
 
         <RelativeLayout
+            android:layout_marginTop="@dimen/book_detail_margin"
             android:layout_width="match_parent"
             android:layout_height="@dimen/vip_user_info_item_height"
             android:paddingTop="@dimen/vip_user_info_container_padding">
@@ -69,6 +70,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/bottom_line"
+                android:onClick="@{()->viewModel.vipUserInfoViewModel.onVipButtonClick()}"
                 android:text="@string/read_vip_instructions"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
@@ -86,7 +88,8 @@
             android:orientation="vertical">
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/buy_vip_recycler"
+                android:id="@+id/buy_vip_recycle_view"
+                goodList="@{viewModel.goodsList}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

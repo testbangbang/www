@@ -1,15 +1,20 @@
 package com.onyx.jdread.shop.adapter;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemBuyReadVipBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
+import com.onyx.jdread.shop.event.VipGoodItemClickEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -17,8 +22,13 @@ import java.util.List;
  * Created by li on 2018/1/13.
  */
 
-public class BuyReadVipAdapter extends PageAdapter implements View.OnClickListener {
-    private List<GetVipGoodsListResultBean.DataBean> data;
+public class BuyReadVipAdapter extends PageAdapter<PageRecyclerView.ViewHolder, GetVipGoodsListResultBean.DataBean, GetVipGoodsListResultBean.DataBean> implements View.OnClickListener {
+
+    private EventBus eventBus;
+
+    public BuyReadVipAdapter(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
     @Override
     public int getRowCount() {
@@ -32,7 +42,7 @@ public class BuyReadVipAdapter extends PageAdapter implements View.OnClickListen
 
     @Override
     public int getDataCount() {
-        return data == null ? 0 : data.size();
+        return getItemVMList().size();
     }
 
     @Override
@@ -44,14 +54,17 @@ public class BuyReadVipAdapter extends PageAdapter implements View.OnClickListen
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         BuyReadVipViewHolder viewHolder = (BuyReadVipViewHolder) holder;
+        final GetVipGoodsListResultBean.DataBean dataBean = getItemVMList().get(position);
         ItemBuyReadVipBinding bind = viewHolder.getBind();
         bind.itemReadVipPaid.setOnClickListener(this);
         bind.itemReadVipPaid.setTag(position);
-        viewHolder.bindTo(data.get(position));
+        viewHolder.bindTo(dataBean);
     }
 
-    public void setData(List<GetVipGoodsListResultBean.DataBean> data) {
-        this.data = data;
+    @Override
+    public void setRawData(List<GetVipGoodsListResultBean.DataBean> rawData, Context context) {
+        super.setRawData(rawData, context);
+        setItemVMList(rawData);
         notifyDataSetChanged();
     }
 
@@ -62,8 +75,8 @@ public class BuyReadVipAdapter extends PageAdapter implements View.OnClickListen
             return;
         }
         int position = (int) tag;
-        if (onItemClickListener != null) {
-            onItemClickListener.onItemClick(position);
+        if (eventBus != null && getItemVMList() != null && getItemVMList().get(position) != null) {
+            eventBus.post(new VipGoodItemClickEvent(getItemVMList().get(position)));
         }
     }
 
@@ -72,7 +85,7 @@ public class BuyReadVipAdapter extends PageAdapter implements View.OnClickListen
 
         public BuyReadVipViewHolder(View itemView) {
             super(itemView);
-            bind =  DataBindingUtil.bind(itemView);
+            bind = DataBindingUtil.bind(itemView);
         }
 
         public ItemBuyReadVipBinding getBind() {

@@ -105,7 +105,7 @@ public class ShopMainConfigAction extends BaseAction {
                 int totalPages = ViewHelper.calculateTotalPages(commonSubjcet, Constants.COMMOM_SUBJECT_RECYCLE_HEIGHT);
                 dataBundle.getBookSaleViewModel().setTotalPages(totalPages);
             } else if (cid == Constants.BOOK_SHOP_VIP_CONFIG_CID) {
-                VipUserInfoViewModel vipUserInfoViewModel = new VipUserInfoViewModel(dataBundle.getEventBus());
+                VipUserInfoViewModel vipUserInfoViewModel = dataBundle.getVipUserInfoViewModel();
                 setVipUserInfo(vipUserInfoViewModel);
                 commonSubjcet.add(0, vipUserInfoViewModel);
                 dataBundle.getVipReadViewModel().setSubjectModels(commonSubjcet);

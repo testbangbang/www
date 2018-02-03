@@ -31,6 +31,7 @@ public class ShopDataBundle {
     private NewBookViewModel newBookViewModel;
     private VipReadViewModel vipReadViewModel;
     private List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryBean;
+    private VipUserInfoViewModel vipUserInfoViewModel;
 
     private ShopDataBundle() {
 
@@ -63,6 +64,17 @@ public class ShopDataBundle {
             }
         }
         return shopViewModel;
+    }
+
+    public VipUserInfoViewModel getVipUserInfoViewModel() {
+        if (vipUserInfoViewModel == null) {
+            synchronized (VipUserInfoViewModel.class) {
+                if (vipUserInfoViewModel == null) {
+                    vipUserInfoViewModel = new VipUserInfoViewModel(getEventBus());
+                }
+            }
+        }
+        return vipUserInfoViewModel;
     }
 
     public BookDetailViewModel getBookDetailViewModel() {
