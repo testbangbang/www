@@ -13,7 +13,7 @@ import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
-import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
+import com.onyx.jdread.shop.adapter.CategoryBookListAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
@@ -66,7 +66,7 @@ public class ShopDataBindingUtil {
 
     @BindingAdapter({"categoryItems"})
     public static void setAllCategoryItems(PageRecyclerView recyclerView, List items) {
-        CategorySubjectAdapter adapter = (CategorySubjectAdapter) recyclerView.getAdapter();
+        CategoryBookListAdapter adapter = (CategoryBookListAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }

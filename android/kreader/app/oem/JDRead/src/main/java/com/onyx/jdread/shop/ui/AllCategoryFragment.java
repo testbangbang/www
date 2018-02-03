@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -19,8 +18,8 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.BookCategoryAction;
+import com.onyx.jdread.shop.adapter.AllCategoryAdapter;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
-import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.CategoryItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryTitleOneClick;
@@ -117,7 +116,7 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     private void initView() {
-        CategorySubjectAdapter adapter = new CategorySubjectAdapter(getEventBus());
+        AllCategoryAdapter adapter = new AllCategoryAdapter(getEventBus());
         DashLineItemDivider itemDecoration = new DashLineItemDivider();
         adapter.setRowAndCol(row, col);
         recyclerView = allCategoryBinding.recyclerViewAllCategorys;
@@ -188,10 +187,6 @@ public class AllCategoryFragment extends BaseFragment {
 
     private EventBus getEventBus() {
         return getShopDataBundle().getEventBus();
-    }
-
-    private Context getContextJD() {
-        return JDReadApplication.getInstance().getApplicationContext();
     }
 
     @Override
