@@ -354,8 +354,8 @@
     <dimen name="category_book_list_selected_button_padding_top_and_bottom">9dp</dimen>
     <dimen name="subject_list_sort_button_container_padding_left">5dp</dimen>
     <dimen name="subject_list_sort_button_container_padding_bottom">12dp</dimen>
-    <dimen name="subject_list_just_vip_margin">15dp</dimen>
-    <dimen name="subject_list_category_items_container_height">350dp</dimen>
+    <dimen name="subject_list_just_vip_margin_top_and_bottom">15dp</dimen>
+    <dimen name="subject_list_category_items_container_height">398dp</dimen>
     <dimen name="item_subject_common_next_title_margin_top">20dp</dimen>
     <dimen name="password_setting_confirm_width">380dp</dimen>
     <dimen name="password_setting_drawable_padding">12dp</dimen>
@@ -492,4 +492,5 @@
     <dimen name="circle_height">30dp</dimen>
     <dimen name="dialog_system_update_padding">20dp</dimen>
     <dimen name="dialog_system_update_progress_padding">10dp</dimen>
+    <dimen name="subject_list_just_vip_margin_left">50dp</dimen>
 </resources>

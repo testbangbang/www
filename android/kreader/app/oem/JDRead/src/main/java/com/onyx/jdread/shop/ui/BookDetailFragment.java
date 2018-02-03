@@ -362,6 +362,10 @@ public class BookDetailFragment extends BaseFragment {
         }
         if (!hasAddToCart) {
             if (bookDetailBean != null) {
+                if (!bookDetailBean.can_buy) {
+                    ToastUtil.showToast(getString(R.string.book_detail_add_cart_tip_the_book_not_can_buy));
+                    return;
+                }
                 addToCart(bookDetailBean.ebook_id);
             }
         } else {
