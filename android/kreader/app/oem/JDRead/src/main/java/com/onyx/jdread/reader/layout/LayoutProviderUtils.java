@@ -190,18 +190,14 @@ public class LayoutProviderUtils {
             return null;
         }
         int size = tocChapterNodeList.size();
+        int start = 0;
         ChapterInfo chapterInfo = null;
         for (int i = 0; i < size; i++) {
             chapterInfo = tocChapterNodeList.get(i);
-            if (pagePosition < chapterInfo.getPosition()) {
-                chapterInfo = tocChapterNodeList.get(i);
-                int position = chapterInfo.getPosition();
-                if (position > pagePosition) {
-                    return chapterInfo;
-                } else {
-                    return getChapterInfoByPage(pagePosition + 1, tocChapterNodeList);
-                }
+            if(pagePosition > start && pagePosition <= chapterInfo.getPosition()){
+                return chapterInfo;
             }
+            start = chapterInfo.getPosition();
         }
 
         return chapterInfo;
