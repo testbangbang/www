@@ -21,6 +21,7 @@ import com.onyx.jdread.reader.dialog.DialogDict;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
+import com.onyx.jdread.reader.menu.dialog.CloseDocumentDialog;
 import com.onyx.jdread.reader.menu.dialog.DialogSearch;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
@@ -43,6 +44,7 @@ public class ReaderActivityEventHandler {
     private ReaderViewBack readerViewBack;
     private ReaderSettingMenuDialog readerSettingMenuDialog;
     private ReaderNoteDialog readerNoteDialog;
+    private CloseDocumentDialog closeDocumentDialog;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -242,5 +244,20 @@ public class ReaderActivityEventHandler {
 
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowCloseDocumentDialogEvent(ShowCloseDocumentDialogEvent event){
+        if(getCloseDocumentDialog().isShowing()){
+            return;
+        }
+        getCloseDocumentDialog().show();
+    }
+
+    public CloseDocumentDialog getCloseDocumentDialog(){
+        if(closeDocumentDialog == null){
+            closeDocumentDialog = new CloseDocumentDialog(readerViewModel.getReaderDataHolder(),readerViewBack.getContext());
+        }
+        return closeDocumentDialog;
     }
 }
