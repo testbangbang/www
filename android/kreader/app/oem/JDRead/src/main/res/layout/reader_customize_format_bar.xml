@@ -5,6 +5,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.onyx.jdread.reader.menu.model.ReaderMarginModel" />
+
         <variable
             name="readerMarginModel"
             type="com.onyx.jdread.reader.menu.model.ReaderMarginModel" />
@@ -30,21 +32,56 @@
                 style="@style/ReaderCustomizeFormatTitleStyle"
                 android:text="@string/reader_line_spacing" />
 
-            <ImageView
-                style="@style/ReaderCustomizeMinusStyle"
-                android:onClick="@{()->readerMarginModel.onLineSpacingMinusClick()}"
-                android:src="@mipmap/ic_read_minus" />
+            <LinearLayout
+                style="@style/ReaderTextSettingItemParentStyle"
+                android:layout_weight="5">
 
-            <SeekBar
-                android:id="@+id/reader_line_spacing"
-                style="@style/ReaderCustomizeFormatSeekBarStyle"
-                android:max="@{readerMarginModel.maxLineSpacing}"
-                android:progress="@{readerMarginModel.lineSpacingProgress}"/>
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_ONE?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
+                    android:onClick="@{()->readerMarginModel.onLineSpacingOneClick()}"
+                    android:text="@string/reader_font_size_one" />
 
-            <ImageView
-                style="@style/ReaderCustomizePlusStyle"
-                android:onClick="@{()->readerMarginModel.onLineSpacingPlusClick()}"
-                android:src="@mipmap/ic_read_plus" />
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_TWO?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onLineSpacingTwoClick()}"
+                    android:text="@string/reader_font_size_two" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_THREE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onLineSpacingThreeClick()}"
+                    android:text="@string/reader_font_size_three" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_FOUR?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onLineSpacingFourClick()}"
+                    android:text="@string/reader_font_size_four" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_FIVE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onLineSpacingFiveClick()}"
+                    android:text="@string/reader_font_size_five" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_SIX?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
+                    android:onClick="@{()->readerMarginModel.onLineSpacingSixClick()}"
+                    android:text="@string/reader_font_size_six" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -54,45 +91,56 @@
                 style="@style/ReaderCustomizeFormatTitleStyle"
                 android:text="@string/reader_segment_spacing" />
 
-            <ImageView
-                style="@style/ReaderCustomizeMinusStyle"
-                android:onClick="@{()->readerMarginModel.onLineSegmentMinusClick()}"
-                android:src="@mipmap/ic_read_minus" />
+            <LinearLayout
+                style="@style/ReaderTextSettingItemParentStyle"
+                android:layout_weight="5">
 
-            <SeekBar
-                android:id="@+id/reader_segment_spacing"
-                android:max="@{readerMarginModel.maxSegmentSpacing}"
-                android:progress="@{readerMarginModel.segmentProgress}"
-                style="@style/ReaderCustomizeFormatSeekBarStyle" />
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_ONE?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
+                    android:onClick="@{()->readerMarginModel.onParagraphSpacingOneClick()}"
+                    android:text="@string/reader_font_size_one" />
 
-            <ImageView
-                style="@style/ReaderCustomizePlusStyle"
-                android:onClick="@{()->readerMarginModel.onLineSegmentPlusClick()}"
-                android:src="@mipmap/ic_read_plus" />
+                <View style="@style/ReaderVerticalSeparationLine" />
 
-        </LinearLayout>
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_TWO?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onParagraphSpacingTwoClick()}"
+                    android:text="@string/reader_font_size_two" />
 
-        <LinearLayout style="@style/ReaderCustomizeFormatLayoutStyle">
+                <View style="@style/ReaderVerticalSeparationLine" />
 
-            <TextView
-                style="@style/ReaderCustomizeFormatTitleStyle"
-                android:text="@string/reader_left_and_right_spacing" />
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_THREE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onParagraphSpacingThreeClick()}"
+                    android:text="@string/reader_font_size_three" />
 
-            <ImageView
-                style="@style/ReaderCustomizeMinusStyle"
-                android:onClick="@{()->readerMarginModel.onLineLeftAndRightMinusClick()}"
-                android:src="@mipmap/ic_read_minus" />
+                <View style="@style/ReaderVerticalSeparationLine" />
 
-            <SeekBar
-                android:id="@+id/reader_lef_and_right_spacing"
-                android:max="@{readerMarginModel.maxLeftAndRightSpacing}"
-                android:progress="@{readerMarginModel.leftAndRightProgress}"
-                style="@style/ReaderCustomizeFormatSeekBarStyle" />
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_FOUR?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onParagraphSpacingFourClick()}"
+                    android:text="@string/reader_font_size_four" />
 
-            <ImageView
-                style="@style/ReaderCustomizePlusStyle"
-                android:onClick="@{()->readerMarginModel.onLineLeftAndRightPlusClick()}"
-                android:src="@mipmap/ic_read_plus" />
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_FIVE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onParagraphSpacingFiveClick()}"
+                    android:text="@string/reader_font_size_five" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_SIX?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
+                    android:onClick="@{()->readerMarginModel.onParagraphSpacingSixClick()}"
+                    android:text="@string/reader_font_size_six" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -102,21 +150,115 @@
                 style="@style/ReaderCustomizeFormatTitleStyle"
                 android:text="@string/reader_up_and_down_spacing" />
 
-            <ImageView
-                style="@style/ReaderCustomizeMinusStyle"
-                android:onClick="@{()->readerMarginModel.onLineUpAndDownMinusClick()}"
-                android:src="@mipmap/ic_read_minus" />
+            <LinearLayout
+                style="@style/ReaderTextSettingItemParentStyle"
+                android:layout_weight="5">
 
-            <SeekBar
-                android:id="@+id/reader_up_and_down_spacing"
-                android:max="@{readerMarginModel.maxUpAndDownSpacing}"
-                android:progress="@{readerMarginModel.upAndDownProgress}"
-                style="@style/ReaderCustomizeFormatSeekBarStyle" />
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_ONE?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
+                    android:onClick="@{()->readerMarginModel.onUpAndDownSpacingOneClick()}"
+                    android:text="@string/reader_font_size_one" />
 
-            <ImageView
-                style="@style/ReaderCustomizePlusStyle"
-                android:onClick="@{()->readerMarginModel.onLineUpAndDownPlusClick()}"
-                android:src="@mipmap/ic_read_plus" />
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_TWO?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onUpAndDownSpacingTwoClick()}"
+                    android:text="@string/reader_font_size_two" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_THREE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onUpAndDownSpacingThreeClick()}"
+                    android:text="@string/reader_font_size_three" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_FOUR?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onUpAndDownSpacingFourClick()}"
+                    android:text="@string/reader_font_size_four" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_FIVE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onUpAndDownSpacingFiveClick()}"
+                    android:text="@string/reader_font_size_five" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_SIX?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
+                    android:onClick="@{()->readerMarginModel.onUpAndDownSpacingSixClick()}"
+                    android:text="@string/reader_font_size_six" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/ReaderCustomizeFormatLayoutStyle">
+
+            <TextView
+                style="@style/ReaderCustomizeFormatTitleStyle"
+                android:text="@string/reader_left_and_right_spacing" />
+
+            <LinearLayout
+                style="@style/ReaderTextSettingItemParentStyle"
+                android:layout_weight="5">
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_ONE?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
+                    android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingOneClick()}"
+                    android:text="@string/reader_font_size_one" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_TWO?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingTwoClick()}"
+                    android:text="@string/reader_font_size_two" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_THREE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingThreeClick()}"
+                    android:text="@string/reader_font_size_three" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_FOUR?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingFourClick()}"
+                    android:text="@string/reader_font_size_four" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_FIVE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingFiveClick()}"
+                    android:text="@string/reader_font_size_five" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_SIX?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
+                    android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingSixClick()}"
+                    android:text="@string/reader_font_size_six" />
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
