@@ -8,10 +8,13 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -35,6 +38,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogSearchBinding;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogSearchViewCallBack;
@@ -167,6 +171,27 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
                 }
             }
         });
+        binding.editViewSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                if(StringUtils.isNotBlank(text)){
+                    dialogSearchModel.setDeleteInputWord(true);
+                }else{
+                    dialogSearchModel.setDeleteInputWord(false);
+                }
+            }
+        });
         binding.editViewSearch.requestFocus();
     }
 
@@ -253,6 +278,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         stopSearch();
         searchText = binding.editViewSearch.getText().toString();
         if (StringUtils.isNullOrEmpty(searchText)) {
+            ToastUtil.showToast(R.string.search_view_hint);
             return;
         }
 
@@ -547,5 +573,16 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     public void searchBack() {
         hideFloatToolBar();
         binding.searchRecyclerView.gotoPageByIndex(currentSearchIndex);
+    }
+
+    @Override
+    public void searchData() {
+        hideSoftInputWindow();
+        loadSearchData();
+    }
+
+    @Override
+    public void deleteInputWord() {
+        binding.editViewSearch.setText("");
     }
 }

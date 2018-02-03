@@ -6,6 +6,7 @@ import android.databinding.ObservableField;
 import com.onyx.jdread.reader.menu.event.CloseHistoryClickEvent;
 import com.onyx.jdread.reader.menu.event.CloseSearchClickEvent;
 import com.onyx.jdread.reader.menu.event.DeleteHistoryClickEvent;
+import com.onyx.jdread.reader.menu.event.DeleteInputWordEvent;
 import com.onyx.jdread.reader.menu.event.DialogSearchBackClickEvent;
 import com.onyx.jdread.reader.menu.event.NextIconClickEvent;
 import com.onyx.jdread.reader.menu.event.PreIconClickEvent;
@@ -172,6 +173,6 @@ public class DialogSearchModel {
     }
 
     public void deleteInputWordClick() {
-
+        eventBus.post(new DeleteInputWordEvent());
     }
 }

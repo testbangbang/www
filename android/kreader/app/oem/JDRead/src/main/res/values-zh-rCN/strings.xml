@@ -204,10 +204,10 @@
     <string name="off_brightness">关灯</string>
     <string name="brightest_brightness">最亮</string>
     <string name="reader_typeface">字体</string>
-    <string name="reader_boldface">黑体</string>
-    <string name="reader_arial">宋体</string>
-    <string name="reader_italics">楷体</string>
-    <string name="reader_round_body">圆体</string>
+    <string name="reader_boldface">方正黑体</string>
+    <string name="reader_arial">方正新书宋</string>
+    <string name="reader_italics">方正新楷体</string>
+    <string name="reader_round_body">方正兰亭黑</string>
     <string name="reader_traditional">繁体</string>
     <string name="reader_simplified">简体</string>
     <string name="reader_font_size">字号</string>
