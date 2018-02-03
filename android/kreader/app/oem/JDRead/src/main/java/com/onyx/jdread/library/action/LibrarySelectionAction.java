@@ -108,21 +108,21 @@ public class LibrarySelectionAction extends BaseAction<LibraryDataBundle> {
         model.setPositiveClickLister(new LibraryBuildDialog.DialogModel.OnClickListener() {
             @Override
             public void onClicked() {
-                    if (InputUtils.haveSpecialCharacters(model.libraryName.get())) {
-                        ToastUtil.showOffsetToast(ResManager.getString(R.string.group_names_do_not_support_special_characters));
-                        return;
-                    }
-                    if (isExist(libraryDataBundle, model.libraryName.get())) {
-                        ToastUtil.showOffsetToast(String.format(ResManager.getString(R.string.group_exist), model.libraryName.get()));
-                        return;
-                    }
-                    librarySelected = new DataModel(libraryDataBundle.getEventBus());
-                    librarySelected.idString.set(UUID.randomUUID().toString());
-                    librarySelected.title.set(model.libraryName.get());
-                    libraryDataBundle.getLibraryViewDataModel().buildingLibrary = true;
-                    callback.onNext(librarySelected);
-                    libraryBuildDialog.dismiss();
-                    libraryBuildDialog.dismiss();
+                if (InputUtils.haveSpecialCharacters(model.libraryName.get())) {
+                    ToastUtil.showOffsetToast(ResManager.getString(R.string.group_names_do_not_support_special_characters), ResManager.getInteger(R.integer.toast_offset_y));
+                    return;
+                }
+                if (isExist(libraryDataBundle, model.libraryName.get())) {
+                    ToastUtil.showOffsetToast(String.format(ResManager.getString(R.string.group_exist), model.libraryName.get()), ResManager.getInteger(R.integer.toast_offset_y));
+                    return;
+                }
+                librarySelected = new DataModel(libraryDataBundle.getEventBus());
+                librarySelected.idString.set(UUID.randomUUID().toString());
+                librarySelected.title.set(model.libraryName.get());
+                libraryDataBundle.getLibraryViewDataModel().buildingLibrary = true;
+                callback.onNext(librarySelected);
+                libraryBuildDialog.dismiss();
+                libraryBuildDialog.dismiss();
             }
         });
 

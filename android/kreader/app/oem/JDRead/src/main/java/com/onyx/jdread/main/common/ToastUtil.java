@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.util.Utils;
 
 /**
  * Created by jackdeng on 2017/12/7.
@@ -34,15 +33,15 @@ public class ToastUtil {
     private static float dy = JDReadApplication.getInstance().getResources().getInteger(R.integer.toast_view_shadow_dy);
     private static float textSize = JDReadApplication.getInstance().getResources().getDimension(R.dimen.level_three_heading_font);
 
-    public static void showOffsetToast(String message) {
-        showToast(JDReadApplication.getInstance(), message, true);
+    public static void showOffsetToast(String message, int offsetY) {
+        showToast(JDReadApplication.getInstance(), message, offsetY);
     }
 
     public static void showToast(Context appContext, String message) {
-        showToast(appContext, message, false);
+        showToast(appContext, message, 0);
     }
 
-    public static void showToast(Context appContext, String message, boolean isOffset) {
+    public static void showToast(Context appContext, String message, int offset) {
         if (TextUtils.isEmpty(message)) {
             return;
         }
@@ -56,23 +55,23 @@ public class ToastUtil {
             textView.setGravity(Gravity.CENTER);
             textView.setPadding(left, top, right, bottom);
             textView.setShadowLayer(radius, dx, dy, Color.TRANSPARENT);
-            if (isOffset) {
-                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, ResManager.getInteger(R.integer.toast_offset_y));
+            if (offset != 0) {
+                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, offset);
             }
             toast.show();
         } else {
             if (message.equals(oldMsg)) {
                 if (!toast.getView().isShown()) {
-                    if (isOffset) {
-                        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, ResManager.getInteger(R.integer.toast_offset_y));
+                    if (offset != 0) {
+                        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, offset);
                     }
                     toast.show();
                 }
             } else {
                 oldMsg = message;
                 toast.setText(message);
-                if (isOffset) {
-                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, ResManager.getInteger(R.integer.toast_offset_y));
+                if (offset != 0) {
+                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, offset);
                 }
                 toast.show();
             }

@@ -69,7 +69,7 @@ public class LibraryBuildDialog extends Dialog {
                     selectionStart = bind.editName.getSelectionStart();
                     selectionEnd = bind.editName.getSelectionEnd();
                     if (InputUtils.getByteCount(temp.toString()) > ResManager.getInteger(R.integer.group_name_max_length)) {
-                        ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
+                        ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.toast_offset_y));
                         s.delete(selectionStart - 1, selectionEnd);
                         int tempSelection = selectionStart;
                         bind.editName.setText(s);
@@ -83,12 +83,12 @@ public class LibraryBuildDialog extends Dialog {
                 public void onClick(View v) {
                     if (StringUtils.isNotBlank(model.libraryName.get())) {
                         if (InputUtils.haveSpecialCharacters(model.libraryName.get())) {
-                            ToastUtil.showOffsetToast(ResManager.getString(R.string.group_names_do_not_support_special_characters));
+                            ToastUtil.showOffsetToast(ResManager.getString(R.string.group_names_do_not_support_special_characters), ResManager.getInteger(R.integer.toast_offset_y));
                             return;
                         }
                         model.onPositiveClick();
                     } else {
-                        ToastUtil.showOffsetToast(ResManager.getString(R.string.please_enter_group_name));
+                        ToastUtil.showOffsetToast(ResManager.getString(R.string.please_enter_group_name), ResManager.getInteger(R.integer.toast_offset_y));
                     }
                 }
             });

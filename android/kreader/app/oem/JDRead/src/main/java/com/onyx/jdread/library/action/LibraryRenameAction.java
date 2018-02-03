@@ -59,11 +59,11 @@ public class LibraryRenameAction extends BaseAction<LibraryDataBundle> {
             @Override
             public void onClicked() {
                 if (model.libraryName.get().equals(dataModel.title.get())) {
-                    ToastUtil.showOffsetToast(ResManager.getString(R.string.the_same_name));
+                    ToastUtil.showOffsetToast(ResManager.getString(R.string.the_same_name), ResManager.getInteger(R.integer.toast_offset_y));
                     return;
                 }
                 if (isExist(libraryDataBundle, model.libraryName.get())) {
-                    ToastUtil.showOffsetToast(String.format(ResManager.getString(R.string.group_exist), model.libraryName.get()));
+                    ToastUtil.showOffsetToast(String.format(ResManager.getString(R.string.group_exist), model.libraryName.get()), ResManager.getInteger(R.integer.toast_offset_y));
                     return;
                 }
                 renameLibrary(libraryDataBundle, model.libraryName.get(), baseCallback);
