@@ -93,6 +93,7 @@ public class CommentFragment extends BaseFragment {
     private void setCommentsRecycleView() {
         BookCommentsAdapter adapter = new BookCommentsAdapter(getEventBus());
         recyclerViewComments = bookCommentBinding.recyclerViewComments;
+        recyclerViewComments.setPageTurningCycled(true);
         recyclerViewComments.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewComments.addItemDecoration(itemDecoration);
         recyclerViewComments.setAdapter(adapter);

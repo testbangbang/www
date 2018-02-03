@@ -121,6 +121,7 @@ public class AllCategoryFragment extends BaseFragment {
         adapter.setRowAndCol(row, col);
         recyclerView = allCategoryBinding.recyclerViewAllCategorys;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerView.setPageTurningCycled(true);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(itemDecoration);
         paginator = recyclerView.getPaginator();

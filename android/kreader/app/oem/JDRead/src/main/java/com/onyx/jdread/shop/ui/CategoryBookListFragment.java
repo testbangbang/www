@@ -135,6 +135,7 @@ public class CategoryBookListFragment extends BaseFragment {
         SubjectListAdapter adapter = new SubjectListAdapter(getEventBus());
         DashLineItemDivider itemDecoration = new DashLineItemDivider();
         recyclerView = categoryBookListBinding.recyclerViewSubjectList;
+        recyclerView.setPageTurningCycled(true);
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);

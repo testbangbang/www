@@ -187,6 +187,7 @@ public class BookDetailFragment extends BaseFragment {
     private void setRecommendRecycleView() {
         RecommendAdapter adapter = new RecommendAdapter(getEventBus());
         recyclerViewRecommend = bookDetailBinding.bookDetailInfo.recyclerViewRecommend;
+        recyclerViewRecommend.setPageTurningCycled(true);
         recyclerViewRecommend.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewRecommend.addItemDecoration(itemDecoration);
         recyclerViewRecommend.setAdapter(adapter);
@@ -297,13 +298,7 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecommendNextPageEvent(RecommendNextPageEvent event) {
         if (recyclerViewRecommend != null) {
-            if (paginator != null) {
-                if (paginator.isLastPage()) {
-                    recyclerViewRecommend.gotoPage(0);
-                } else {
-                    recyclerViewRecommend.nextPage();
-                }
-            }
+            recyclerViewRecommend.nextPage();
         }
     }
 
