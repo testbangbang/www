@@ -438,4 +438,5 @@
     <string name="click_to_translate">Click to translate</string>
     <string name="delete_book">Delete book</string>
     <string name="network_or_server_error">Network or server error, wait for a while to try again</string>
+    <string name="reader_check_network">Please check your network</string>
 </resources>
