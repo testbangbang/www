@@ -27,44 +27,6 @@
 
             <TextView
                 style="@style/ReaderTextSettingStyle"
-                android:text="@string/reader_format" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="1dp">
-
-                <LinearLayout
-                    style="@style/ReaderTextSettingItemParentStyle"
-                    android:layout_weight="5">
-
-                    <TextView
-                        style="@style/ReaderTextSettingFormatStyle"
-                        android:background="@{readerImageModel.currentImageMode == ImageShowMode.defaultMode?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
-                        android:onClick="@{()->readerImageModel.onDefaultModeClick()}"
-                        android:text="@string/reader_default_mode" />
-
-                    <View style="@style/ReaderVerticalSeparationLine" />
-
-                    <TextView
-                        style="@style/ReaderTextSettingFormatStyle"
-                        android:background="@{readerImageModel.currentImageMode == ImageShowMode.comicMode?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
-                        android:onClick="@{()->readerImageModel.onComicModeClick()}"
-                        android:text="@string/reader_comic_mode" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="5" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout style="@style/ReaderTextSettingLayoutStyle">
-
-            <TextView
-                style="@style/ReaderTextSettingStyle"
                 android:text="@string/reader_with_black" />
 
             <LinearLayout
