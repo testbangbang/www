@@ -11,7 +11,6 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryLoadRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.view.LibraryBuildDialog;
@@ -109,11 +108,6 @@ public class LibrarySelectionAction extends BaseAction<LibraryDataBundle> {
         model.setPositiveClickLister(new LibraryBuildDialog.DialogModel.OnClickListener() {
             @Override
             public void onClicked() {
-                if (StringUtils.isNotBlank(model.libraryName.get())) {
-                    if (InputUtils.getByteCount(model.libraryName.get()) > ResManager.getInteger(R.integer.group_name_max_length)) {
-                        ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
-                        return;
-                    }
                     if (InputUtils.haveSpecialCharacters(model.libraryName.get())) {
                         ToastUtil.showOffsetToast(ResManager.getString(R.string.group_names_do_not_support_special_characters));
                         return;
@@ -128,18 +122,10 @@ public class LibrarySelectionAction extends BaseAction<LibraryDataBundle> {
                     libraryDataBundle.getLibraryViewDataModel().buildingLibrary = true;
                     callback.onNext(librarySelected);
                     libraryBuildDialog.dismiss();
-                } else {
-                    ToastUtil.showOffsetToast(ResManager.getString(R.string.please_enter_group_name));
-                }
+                    libraryBuildDialog.dismiss();
             }
         });
 
-        model.setNegativeClickLister(new LibraryBuildDialog.DialogModel.OnClickListener() {
-            @Override
-            public void onClicked() {
-                libraryBuildDialog.dismiss();
-            }
-        });
         libraryBuildDialog.show();
     }
 
