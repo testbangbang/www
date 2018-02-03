@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/source_language"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_two_heading_font" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
                 android:layout_marginLeft="5dp"
                 android:text="@{translateViewModel.currentLanguage?@string/simplified_chinese:@string/english}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_two_heading_font" />
 
             <ImageView
                 android:layout_width="0dp"
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/reader_target_language"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_two_heading_font" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -83,7 +83,7 @@
                 android:layout_marginLeft="5dp"
                 android:text="@{translateViewModel.currentLanguage?@string/english:@string/simplified_chinese}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_two_heading_font" />
         </LinearLayout>
     </LinearLayout>
 </layout>
