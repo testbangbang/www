@@ -1,39 +1,37 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
+import com.onyx.jdread.shop.cloud.entity.GetVipGoodListRequestBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
-import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.request.cloud.RxRequestBookRank;
-
-import java.util.List;
+import com.onyx.jdread.shop.request.cloud.RxRequestGetVipGoodList;
 
 /**
- * Created by jackdeng on 2017/12/13.
+ * Created by jackdeng on 2018/2/3.
  */
 
-public class BookRankAction extends BaseAction<ShopDataBundle> {
+public class GetVipGoodListAction extends BaseAction<ShopDataBundle> {
 
-    private BookModelConfigResultBean resultBean;
-    private List<BaseSubjectViewModel> rankDataList;
+    private GetVipGoodsListResultBean resultBean;
 
-    public BookModelConfigResultBean getResultBean() {
+    public GetVipGoodsListResultBean getResultBean() {
         return resultBean;
     }
 
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
-        BaseRequestInfo requestBean = new BaseRequestInfo();
+        GetVipGoodListRequestBean requestBean = new GetVipGoodListRequestBean();
         JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
-        appBaseInfo.setSign(appBaseInfo.getSignValue(CloudApiContext.BookShopURI.BOOK_RANK_URI));
+        appBaseInfo.setSign(appBaseInfo.getSignValue(CloudApiContext.BookShopURI.GET_VIP_GOOD_LIST));
         requestBean.setAppBaseInfo(appBaseInfo);
-        RxRequestBookRank request = new RxRequestBookRank();
+        requestBean.withCookie = JDReadApplication.getInstance().getLogin();
+        RxRequestGetVipGoodList request = new RxRequestGetVipGoodList();
         request.setRequestBean(requestBean);
-        request.execute(new RxCallback<RxRequestBookRank>() {
+        request.execute(new RxCallback<RxRequestGetVipGoodList>() {
 
             @Override
             public void onSubscribe() {
@@ -48,12 +46,11 @@ public class BookRankAction extends BaseAction<ShopDataBundle> {
             }
 
             @Override
-            public void onNext(RxRequestBookRank request) {
+            public void onNext(RxRequestGetVipGoodList request) {
                 resultBean = request.getResultBean();
-                rankDataList = request.getRankDataList();
                 setResult(shopDataBundle);
                 if (rxCallback != null) {
-                    rxCallback.onNext(BookRankAction.this);
+                    rxCallback.onNext(GetVipGoodListAction.this);
                 }
             }
 
@@ -76,8 +73,8 @@ public class BookRankAction extends BaseAction<ShopDataBundle> {
     }
 
     private void setResult(ShopDataBundle shopDataBundle) {
-        if (rankDataList != null) {
-            shopDataBundle.getRankViewModel().setRankItems(rankDataList);
+        if (resultBean != null) {
+            shopDataBundle.getBuyReadVipModel().setGoodsList(resultBean.data);
         }
     }
 }

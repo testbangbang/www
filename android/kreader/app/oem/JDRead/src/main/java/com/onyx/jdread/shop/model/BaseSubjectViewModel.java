@@ -12,7 +12,6 @@ import org.greenrobot.eventbus.EventBus;
 
 public class BaseSubjectViewModel extends BaseObservable {
 
-    private int pageIndex;
     private int subjectType;
     private EventBus eventBus;
     private BookModelConfigResultBean.DataBean.ModulesBean modelBean;
@@ -40,13 +39,5 @@ public class BaseSubjectViewModel extends BaseObservable {
 
     public void setSubjectType(int subjectType) {
         this.subjectType = subjectType;
-    }
-
-    public int getPageIndex() {
-        return pageIndex;
-    }
-
-    public void setPageIndex(int pageIndex) {
-        this.pageIndex = pageIndex;
     }
 }

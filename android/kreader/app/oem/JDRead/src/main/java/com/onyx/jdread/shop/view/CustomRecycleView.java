@@ -12,6 +12,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.jdread.shop.adapter.SubjectCommonAdapter;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public class CustomRecycleView extends RecyclerView {
     private float lastY;
     private int curPageIndex;
     private OnPagingListener onPagingListener;
+    private HashMap<Integer, Integer> pageIndexMap = new HashMap<>();
 
     public CustomRecycleView(Context context) {
         super(context);
@@ -46,6 +48,7 @@ public class CustomRecycleView extends RecyclerView {
         setClipToPadding(true);
         setClipChildren(true);
         setLayoutManager(new DisableScrollLinearManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        pageIndexMap.put(0, 0);
     }
 
     public void setOnPagingListener(OnPagingListener listener) {
@@ -104,20 +107,12 @@ public class CustomRecycleView extends RecyclerView {
             if (curPageIndex <= 0) {
                 return;
             }
-            List<BaseSubjectViewModel> datas = adapter.getDatas();
-            int preIndex = 0;
-            for (int i = 0; i < datas.size(); i++) {
-                int pageIndex = datas.get(i).getPageIndex();
-                if (pageIndex == curPageIndex - 1) {
-                    preIndex = i;
-                    break;
-                }
-            }
             if (curPageIndex > 0) {
                 curPageIndex--;
             }
+            int preIndex = pageIndexMap.get(curPageIndex);
             managerScrollToPosition(preIndex);
-            if (onPagingListener != null){
+            if (onPagingListener != null) {
                 onPagingListener.onPageChange(curPageIndex);
             }
         }
@@ -132,22 +127,10 @@ public class CustomRecycleView extends RecyclerView {
                 return;
             }
             int lastVisibleItemPosition = getDisableLayoutManager().findLastVisibleItemPosition();
-            int nextPageIndex = datas.get(lastVisibleItemPosition).getPageIndex();
-            if (nextPageIndex == 0) {
-                int finalIndex = 0;
-                for (int i = 1; i < datas.size(); i++) {
-                    int pageIndex = datas.get(i).getPageIndex();
-                    if (pageIndex > finalIndex) {
-                        finalIndex = pageIndex;
-                    }
-                }
-                nextPageIndex = finalIndex + 1;
-                datas.get(lastVisibleItemPosition).setPageIndex(nextPageIndex);
-            }
-
-            curPageIndex = nextPageIndex;
+            curPageIndex++;
+            pageIndexMap.put(curPageIndex, lastVisibleItemPosition);
             managerScrollToPosition(lastVisibleItemPosition);
-            if (onPagingListener != null){
+            if (onPagingListener != null) {
                 onPagingListener.onPageChange(curPageIndex);
             }
         }
@@ -156,7 +139,7 @@ public class CustomRecycleView extends RecyclerView {
     @Override
     public void scrollToPosition(int position) {
         super.scrollToPosition(position);
-        if (onPagingListener != null){
+        if (onPagingListener != null) {
             if (position == 0) {
                 curPageIndex = 0;
                 onPagingListener.onPageChange(curPageIndex);

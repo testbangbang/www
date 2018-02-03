@@ -15,6 +15,16 @@ public class BookSaleViewModel extends BaseObservable {
     private EventBus eventBus;
     private List<BaseSubjectViewModel> subjectModels;
     private TitleBarViewModel titleBarViewModel;
+    private VipUserInfoViewModel userInfoViewModel;
+    private int totalPages = 1;
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
 
     public BookSaleViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -39,7 +49,12 @@ public class BookSaleViewModel extends BaseObservable {
         return titleBarViewModel;
     }
 
-    public void setTitleBarViewModel(TitleBarViewModel titleBarViewModel) {
-        this.titleBarViewModel = titleBarViewModel;
+    public VipUserInfoViewModel getUserInfoViewModel() {
+        return userInfoViewModel;
+    }
+
+    public void setUserInfoViewModel(VipUserInfoViewModel userInfoViewModel) {
+        this.userInfoViewModel = userInfoViewModel;
+        notifyChange();
     }
 }

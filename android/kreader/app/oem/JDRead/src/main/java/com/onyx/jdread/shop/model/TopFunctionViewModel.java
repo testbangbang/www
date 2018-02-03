@@ -17,7 +17,6 @@ public class TopFunctionViewModel extends BaseSubjectViewModel {
     public TopFunctionViewModel(EventBus eventBus) {
         setEventBus(eventBus);
         setSubjectType(SubjectType.TYPE_TOP_FUNCTION);
-        setPageIndex(0);
     }
 
     public void onRankViewClick() {
