@@ -23,11 +23,13 @@ public class FunctionBarItem extends BaseObservable {
     public final ObservableField<ViewConfig.FunctionModule> functionModule = new ObservableField<>();
     public final ObservableField<String> itemName = new ObservableField<>();
     public final ObservableBoolean isSelected = new ObservableBoolean(false);
+    public final ObservableBoolean backControl = new ObservableBoolean(true);
 
-    public FunctionBarItem(ViewConfig.FunctionModule functionModule,String firstFragmentName, String itemName, int drawableRes) {
+    public FunctionBarItem(ViewConfig.FunctionModule functionModule,String firstFragmentName, String itemName, int drawableRes, boolean backControl) {
         this.functionModule.set(functionModule);
         this.itemName.set(itemName);
         drawableTop.set(drawableRes);
+        this.backControl.set(backControl);
         stackList = new StackList();
         ViewConfig.initStackByName(stackList, firstFragmentName);
     }
@@ -64,6 +66,14 @@ public class FunctionBarItem extends BaseObservable {
 
     public boolean getSelected() {
         return isSelected.get();
+    }
+
+    public void setBackControl(boolean backControl) {
+        this.backControl.set(backControl);
+    }
+
+    public boolean getBackControl() {
+        return backControl.get();
     }
 
     public ViewConfig.FunctionModule getFunctionModule() {

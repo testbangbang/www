@@ -12,7 +12,8 @@ import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
-import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
+import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
+import com.onyx.jdread.shop.adapter.CategoryBookListAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
@@ -65,7 +66,7 @@ public class ShopDataBindingUtil {
 
     @BindingAdapter({"categoryItems"})
     public static void setAllCategoryItems(PageRecyclerView recyclerView, List items) {
-        CategorySubjectAdapter adapter = (CategorySubjectAdapter) recyclerView.getAdapter();
+        CategoryBookListAdapter adapter = (CategoryBookListAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }
@@ -98,7 +99,7 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"htmlContent"})
     public static void setHtmlContent(HtmlTextView htmlTextView, String content) {
         String title = ResManager.getString(R.string.book_detail_text_view_content_introduce) + ":";
-        if (!StringUtils.isNullOrEmpty(content)){
+        if (!StringUtils.isNullOrEmpty(content)) {
             htmlTextView.setHtml(title + content);
         } else {
             String emptyCOntent = ResManager.getString(R.string.book_detail_empty_introduce);
@@ -108,7 +109,7 @@ public class ShopDataBindingUtil {
 
     @BindingAdapter({"htmlContentDialog"})
     public static void setHtmlContentDialog(HtmlTextView htmlTextView, String content) {
-        if (!StringUtils.isNullOrEmpty(content)){
+        if (!StringUtils.isNullOrEmpty(content)) {
             htmlTextView.setHtml(content);
         } else {
             String emptyCOntent = ResManager.getString(R.string.book_detail_empty_introduce);
@@ -118,7 +119,7 @@ public class ShopDataBindingUtil {
 
     @BindingAdapter({"bookInfoWebView"})
     public static void setBookInfoDialog(AutoPagedWebView webView, String content) {
-        if (StringUtils.isNullOrEmpty(content)){
+        if (StringUtils.isNullOrEmpty(content)) {
             content = ResManager.getString(R.string.book_detail_empty_introduce);
         }
         webView.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
@@ -161,6 +162,14 @@ public class ShopDataBindingUtil {
         ShopMainConfigAdapter adapter = (ShopMainConfigAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setDatas(items);
+        }
+    }
+
+    @BindingAdapter({"goodList"})
+    public static void setVipGoodList(RecyclerView recyclerView, List items) {
+        BuyReadVipAdapter adapter = (BuyReadVipAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
         }
     }
 }

@@ -23,6 +23,7 @@
             android:gravity="center"
             android:onClick="@{()->viewModel.onViewAllBookViewClick()}"
             android:text="@string/view_all_books"
+            android:background="@drawable/bottom_line"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
 
@@ -31,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/shop_back_top_button_margin_top"
-            android:background="@drawable/rectangle_stroke"
+            android:background="@drawable/rectangle_stroke_round"
             android:gravity="center"
             android:onClick="@{()->viewModel.onBackTopViewClick()}"
             android:padding="@dimen/shop_back_top_button_padding"

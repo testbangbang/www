@@ -12,8 +12,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/vip_user_info_container_padding"
+        android:layout_height="@dimen/vip_user_info_item_height"
         android:paddingTop="@dimen/vip_user_info_container_padding">
 
         <ImageView
@@ -27,24 +26,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/book_detail_margin"
+            android:layout_marginLeft="@dimen/vip_user_info_name_margin_left"
             android:layout_toRightOf="@id/image_portraits"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
+                android:layout_marginTop="@dimen/book_detail_margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.name}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/font_size_15" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.vipStatus}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>
 
@@ -53,15 +53,20 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/rectangle_stroke"
+            android:background="@drawable/rectangle_stroke_round"
             android:onClick="@{()->viewModel.onVipButtonClick()}"
             android:paddingBottom="@dimen/book_detail_margin"
             android:paddingLeft="@dimen/renew_vip_button_padding_left_and_right"
             android:paddingRight="@dimen/renew_vip_button_padding_left_and_right"
             android:paddingTop="@dimen/book_detail_margin"
-            android:text="@string/renew_vip"
+            android:text="@{viewModel.buttonContent}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
+
+        <View
+            android:layout_marginTop="@dimen/vip_user_info_container_padding"
+            android:layout_alignParentBottom="true"
+            style="@style/book_detail_dot_line_Style"/>
 
     </RelativeLayout>
 

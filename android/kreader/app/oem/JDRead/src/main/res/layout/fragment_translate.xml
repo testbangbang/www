@@ -27,31 +27,21 @@
             android:paddingLeft="@dimen/fragment_content_padding"
             android:paddingRight="@dimen/fragment_content_padding">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/black" />
-
             <EditText
                 android:id="@+id/translate_edit"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/translation_edit_height"
-                android:background="@null"
+                android:background="@drawable/rectangle_stroke"
                 android:gravity="top"
+                android:hint="@string/input_translate_content"
                 android:padding="@dimen/translate_content_padding"
                 android:text="@={model.inputWords}" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/black" />
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="@dimen/fragment_translate_exchange_padding">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -71,13 +61,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{@string/target_language(model.targetLanguage)}"
                     android:textColor="@android:color/black"/>
-
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/black" />
 
             <TextView
                 android:id="@+id/translate_result"
@@ -85,20 +69,21 @@
                 android:layout_height="@dimen/translate_result_height"
                 android:clickable="true"
                 android:fadeScrollbars="false"
+                android:background="@drawable/rectangle_stroke"
                 android:padding="@dimen/translate_content_padding"
                 android:scrollbars="vertical"
                 android:text="@{model.translateResult}" />
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/black" />
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
             <TextView
-                android:layout_width="@dimen/translate_button_width"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/personal_logout_width"
+                android:layout_height="@dimen/personal_logout_height"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/translate_button_margin_top"
+                android:layout_marginBottom="@dimen/translate_button_margin_bottom"
                 android:background="@drawable/rectangle_stroke_common_corners_selector"
                 android:clickable="true"
                 android:gravity="center"
@@ -107,8 +92,6 @@
                 android:text="@string/click_to_translate"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
-
         </LinearLayout>
     </LinearLayout>
-
 </layout>

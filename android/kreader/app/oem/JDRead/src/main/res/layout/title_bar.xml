@@ -6,6 +6,7 @@
         <import type="android.view.View" />
 
         <import type="com.onyx.android.sdk.utils.StringUtils" />
+        <import type="com.onyx.jdread.util.Utils"/>
 
         <variable
             name="titleModel"
@@ -54,6 +55,7 @@
             android:text="@{titleModel.rightTitle}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font"
+            android:background="@{Utils.isEquals(titleModel.rightTitle, @string/view_history_version) ? @drawable/bottom_line : null}"
             android:visibility="@{StringUtils.isNotBlank(titleModel.rightTitle) ? View.VISIBLE : View.GONE}" />
     </RelativeLayout>
 </layout>

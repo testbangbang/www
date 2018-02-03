@@ -9,9 +9,6 @@ import android.view.LayoutInflater;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 
-import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.common.ReaderViewInfo;
-import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -23,22 +20,18 @@ import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
-import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
-import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.event.GotoPageEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuDialogHandler;
-import com.onyx.jdread.reader.menu.model.ReaderMarginModel;
 import com.onyx.jdread.reader.menu.model.ReaderImageModel;
+import com.onyx.jdread.reader.menu.model.ReaderMarginModel;
 import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
 import com.onyx.jdread.reader.menu.model.ReaderTextModel;
 import com.onyx.jdread.reader.menu.model.ReaderTitleBarModel;
 import com.onyx.jdread.setting.model.BrightnessModel;
-
-import org.greenrobot.eventbus.EventBus;
 
 
 /**
@@ -148,73 +141,6 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initCustomizeEvent() {
-        binding.readerSettingCustomizeFormatBar.readerLineSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                binding.readerSettingCustomizeFormatBar.getReaderMarginModel().setLineSpacingProgress(seekBar.getProgress());
-            }
-        });
-
-        binding.readerSettingCustomizeFormatBar.readerSegmentSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                binding.readerSettingCustomizeFormatBar.getReaderMarginModel().setSegmentProgress(seekBar.getProgress());
-            }
-        });
-
-        binding.readerSettingCustomizeFormatBar.readerLefAndRightSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                binding.readerSettingCustomizeFormatBar.getReaderMarginModel().setLeftAndRightProgress(seekBar.getProgress());
-            }
-        });
-
-        binding.readerSettingCustomizeFormatBar.readerUpAndDownSpacing.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                binding.readerSettingCustomizeFormatBar.getReaderMarginModel().setUpAndDownProgress(seekBar.getProgress());
-            }
-        });
     }
 
     private void initBrightnessBar(){
@@ -258,7 +184,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
         PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
         int col = getContext().getResources().getInteger(R.integer.function_bar_col);
-        functionBarAdapter.setRowAndCol(functionBarAdapter.getRowCount(), show ? col : col - 1);
+        functionBarAdapter.setRowAndCol(functionBarAdapter.getRowCount(), col);
         functionBarRecycler.setAdapter(functionBarAdapter);
         updateFunctionBar();
     }

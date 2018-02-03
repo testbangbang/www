@@ -89,6 +89,7 @@ public class SearchBookListFragment extends BaseFragment {
         SubjectListAdapter adapter = new SubjectListAdapter(getEventBus());
         DashLineItemDivider itemDecoration = new DashLineItemDivider();
         recyclerView = viewAllBinding.recyclerViewSubjectList;
+        recyclerView.setPageTurningCycled(true);
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.setAdapter(adapter);

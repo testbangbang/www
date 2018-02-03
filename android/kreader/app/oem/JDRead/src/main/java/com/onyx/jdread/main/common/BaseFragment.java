@@ -33,7 +33,7 @@ public class BaseFragment extends Fragment {
     }
 
     public void hideWindow() {
-
+        Utils.hideSoftWindow(getActivity());
     }
 
     protected ChildViewEventCallBack getViewEventCallBack() {

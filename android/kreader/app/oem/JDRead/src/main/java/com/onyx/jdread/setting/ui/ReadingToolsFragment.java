@@ -114,6 +114,8 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
 
     @Override
     public void onLoginFinished(boolean successful) {
-        ToastUtil.showToast("login success");
+        if (successful) {
+            ToastUtil.showToast(ResManager.getString(R.string.login_success));
+        }
     }
 }

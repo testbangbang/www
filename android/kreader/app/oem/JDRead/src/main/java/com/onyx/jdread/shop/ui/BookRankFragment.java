@@ -11,8 +11,8 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookRankBinding;
-import com.onyx.jdread.library.event.HideAllDialogEvent;
-import com.onyx.jdread.library.event.LoadingDialogEvent;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
@@ -38,7 +38,6 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 
 public class BookRankFragment extends BaseFragment {
-    private static final int SCROLL_TOTAL = 3;
     private FragmentBookRankBinding bookRankBinding;
     private int space = ResManager.getInteger(R.integer.custom_recycle_view_space);
     private CustomRecycleView recyclerView;
@@ -64,7 +63,8 @@ public class BookRankFragment extends BaseFragment {
         rankAction.execute(getShopDataBundle(), new RxCallback<BookRankAction>() {
             @Override
             public void onNext(BookRankAction rankAction) {
-
+                bookRankBinding.scrollBar.setTotal(getRankViewModel().getTotalPages());
+                scrollToTop();
             }
 
             @Override
@@ -74,11 +74,15 @@ public class BookRankFragment extends BaseFragment {
         });
     }
 
+    private void scrollToTop() {
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
+    }
+
     private void initView() {
         setRecycleView();
-        bookRankBinding.scrollBar.setTotal(SCROLL_TOTAL);
         bookRankBinding.setRankViewModel(getRankViewModel());
-        getRankViewModel().setRankItems();
         getRankViewModel().getTitleBarViewModel().leftText = getString(R.string.ranking);
     }
 
@@ -123,7 +127,7 @@ public class BookRankFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
         if (isAdded()) {
-            showLoadingDialog(event.getMessage());
+            showLoadingDialog(getString(event.getResId()));
         }
     }
 

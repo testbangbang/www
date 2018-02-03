@@ -11,16 +11,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/white"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/reader_dict_title_padding_top"
+            android:gravity="center_vertical"
             android:paddingBottom="@dimen/reader_dict_title_padding_bottom"
             android:paddingLeft="@dimen/reader_dict_title_padding_left"
             android:paddingRight="@dimen/reader_dict_title_padding_right"
-            android:gravity="center_vertical">
+            android:paddingTop="@dimen/reader_dict_title_padding_top">
 
             <TextView
                 style="@style/ReaderTitleBarBuyStyle"
@@ -32,6 +33,11 @@
                 android:text="@string/baidupedia" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black"/>
 
         <WebView
             android:id="@+id/dict_view"

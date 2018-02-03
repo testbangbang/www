@@ -21,6 +21,7 @@ import com.onyx.jdread.reader.dialog.DialogDict;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
+import com.onyx.jdread.reader.menu.dialog.CloseDocumentDialog;
 import com.onyx.jdread.reader.menu.dialog.DialogSearch;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.menu.event.CloseReaderSettingMenuEvent;
@@ -30,6 +31,7 @@ import com.onyx.jdread.reader.menu.event.ToggleBookmarkSuccessEvent;
 import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -43,6 +45,7 @@ public class ReaderActivityEventHandler {
     private ReaderViewBack readerViewBack;
     private ReaderSettingMenuDialog readerSettingMenuDialog;
     private ReaderNoteDialog readerNoteDialog;
+    private CloseDocumentDialog closeDocumentDialog;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -203,6 +206,10 @@ public class ReaderActivityEventHandler {
         if (activity == null) {
             return;
         }
+        if(!Utils.isNetworkConnected(activity)){
+            ToastUtil.showToast(R.string.reader_check_network);
+            return;
+        }
         String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
         DialogDict dialogDict = new DialogDict(activity, text);
         dialogDict.show();
@@ -242,5 +249,20 @@ public class ReaderActivityEventHandler {
 
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowCloseDocumentDialogEvent(ShowCloseDocumentDialogEvent event){
+        if(getCloseDocumentDialog().isShowing()){
+            return;
+        }
+        getCloseDocumentDialog().show();
+    }
+
+    public CloseDocumentDialog getCloseDocumentDialog(){
+        if(closeDocumentDialog == null){
+            closeDocumentDialog = new CloseDocumentDialog(readerViewModel.getReaderDataHolder(),readerViewBack.getContext());
+        }
+        return closeDocumentDialog;
     }
 }

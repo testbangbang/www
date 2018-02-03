@@ -131,7 +131,9 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         readerDocumentTableOfContent = readerUserDataInfo.getTableOfContent();
         final int row = getContext().getResources().getInteger(R.integer.book_info_dialog_catalog_row);
         ArrayList<TreeRecyclerView.TreeNode> rootNodes = ReaderBookInfoDialogConfig.buildTreeNodesFromToc(readerDocumentTableOfContent);
+        binding.getReaderBookInfoModel().setRootNodes(rootNodes);
         binding.bookInfoCatalogContent.setDefaultPageKeyBinding();
+        binding.bookInfoCatalogContent.setPageTurningCycled(true);
         binding.bookInfoCatalogContent.bindTree(rootNodes, new TreeRecyclerView.Callback() {
             @Override
             public void onTreeNodeClicked(TreeRecyclerView.TreeNode node) {
