@@ -55,7 +55,6 @@ public class RxMetadataLoadAction extends BaseAction<LibraryDataBundle> {
         libraryRequest.execute(new RxCallback<RxLibraryLoadRequest>() {
             @Override
             public void onNext(RxLibraryLoadRequest rxLibraryLoadRequest) {
-                hideLoadingDialog(dataHolder);
                 if (baseCallback != null) {
                     dataModel.count.set((int) libraryRequest.getTotalCount());
                     dataModel.libraryCount.set((int) libraryRequest.getLibraryCount());
@@ -71,6 +70,12 @@ public class RxMetadataLoadAction extends BaseAction<LibraryDataBundle> {
                 if (baseCallback != null) {
                     baseCallback.onError(throwable);
                 }
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog(dataHolder);
             }
         });
 

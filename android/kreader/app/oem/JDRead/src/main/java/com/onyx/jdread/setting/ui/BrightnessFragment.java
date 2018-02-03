@@ -10,6 +10,7 @@ import android.widget.RatingBar;
 import com.onyx.jdread.databinding.FragmentBrightnessBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
+import com.onyx.jdread.setting.event.BrightnessChangeEvent;
 import com.onyx.jdread.setting.model.BrightnessModel;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.util.Utils;
@@ -65,5 +66,10 @@ public class BrightnessFragment extends BaseFragment {
     @Subscribe
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
         viewEventCallBack.viewBack();
+    }
+
+    @Subscribe
+    public void onBrightnessChangeEvent(BrightnessChangeEvent event){
+        brightnessModel.updateLight();
     }
 }

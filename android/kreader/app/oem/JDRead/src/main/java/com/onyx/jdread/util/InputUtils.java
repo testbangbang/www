@@ -19,7 +19,7 @@ public class InputUtils {
     }
 
     public static int getByteCount(String s) {
-        if (StringUtils.isNullOrEmpty(s)){
+        if (StringUtils.isNullOrEmpty(s)) {
             return 0;
         }
         int length = 0;
@@ -34,8 +34,29 @@ public class InputUtils {
         return length;
     }
 
+    public static String getEffectiveString(String s, int maxByteCount) {
+        if (StringUtils.isNullOrEmpty(s)) {
+            return s;
+        }
+        int length = 0;
+        int endIndex = s.length() - 1;
+        for (int i = 0; i < s.length(); i++) {
+            int ascii = Character.codePointAt(s, i);
+            if (ascii >= 0 && ascii <= 255) {
+                length++;
+            } else {
+                length += 2;
+            }
+            if (length > maxByteCount) {
+                endIndex = i;
+                break;
+            }
+        }
+        return s.substring(0, endIndex);
+    }
+
     public static String filterSpecialCharacters(String string) {
-        String regEx = "[a-zA-Z0-9\\u4e00-\\u9fa5]";
+        String regEx = "[-_.a-zA-Z0-9\\u4e00-\\u9fa5]";
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(string);
         StringBuilder sb = new StringBuilder();

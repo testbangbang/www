@@ -1,17 +1,23 @@
 package com.onyx.jdread.library.event;
 
+import com.onyx.jdread.main.common.ResManager;
+
 /**
  * Created by hehai on 17-11-25.
  */
 
 public class LoadingDialogEvent {
-    private int resId;
+    private String message;
 
     public LoadingDialogEvent(int resId) {
-        this.resId = resId;
+        message = ResManager.getString(resId);
     }
 
-    public int getResId() {
-        return resId;
+    public LoadingDialogEvent(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

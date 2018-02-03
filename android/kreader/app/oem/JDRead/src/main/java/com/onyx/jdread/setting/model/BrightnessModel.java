@@ -8,6 +8,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
+import com.onyx.jdread.setting.event.BrightnessChangeEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,6 +92,7 @@ public class BrightnessModel extends BaseObservable {
     public void setBrightness(int progress) {
         if (progress > 0) {
             FrontLightController.setBrightness(JDReadApplication.getInstance(), mLightSteps.get(progress - 1));
+            SettingBundle.getInstance().getEventBus().post(new BrightnessChangeEvent());
         } else {
             closeBrightness();
         }
@@ -99,6 +101,7 @@ public class BrightnessModel extends BaseObservable {
     public void closeBrightness() {
         setProgress(0);
         FrontLightController.setBrightness(JDReadApplication.getInstance(), 0);
+        SettingBundle.getInstance().getEventBus().post(new BrightnessChangeEvent());
     }
 
     public void maxBrightness() {
