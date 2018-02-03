@@ -7,9 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentDictionaryBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.setting.adapter.DictionaryListAdapter;
 import com.onyx.jdread.setting.event.BackToReadingToolsEvent;
 import com.onyx.jdread.setting.model.DictionaryModel;
@@ -54,6 +57,10 @@ public class DictionaryFragment extends BaseFragment {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                if (dictionaryModel.list == null || dictionaryModel.list.size() == 0) {
+                    ToastUtil.showToast(ResManager.getString(R.string.uninstall_translate_app));
+                    return;
+                }
                 dictionaryListAdapter.notifyDataSetChanged();
             }
         });

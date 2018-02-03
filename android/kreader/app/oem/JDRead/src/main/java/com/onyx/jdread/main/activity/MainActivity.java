@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
         PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
         int col = getResources().getInteger(R.integer.function_bar_col);
-        functionBarAdapter.setRowAndCol(functionBarAdapter.getRowCount(), show ? col : col - 1);
+        functionBarAdapter.setRowAndCol(functionBarAdapter.getRowCount(), col);
         functionBarRecycler.setAdapter(functionBarAdapter);
         updateFunctionBar();
     }

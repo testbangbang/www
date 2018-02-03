@@ -5,6 +5,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.onyx.jdread.util.Utils" />
+
         <variable
             name="functionBarItem"
             type="com.onyx.jdread.main.model.FunctionBarItem" />
@@ -13,8 +15,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()->functionBarItem.tabClicked()}"
         android:gravity="center_horizontal"
+        android:onClick="@{()->functionBarItem.tabClicked()}"
         android:orientation="vertical">
 
         <View
@@ -23,18 +25,27 @@
             android:background="@color/normal_black"
             android:visibility="@{functionBarItem.isSelected?View.VISIBLE:View.INVISIBLE}" />
 
-        <ImageView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="@dimen/function_bar_item_image_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@{functionBarItem.drawableTop}" />
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_marginTop="@dimen/function_bar_item_name_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/font_size_15"
-            android:textColor="@android:color/black"
-            android:text="@{functionBarItem.itemName}" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@{functionBarItem.drawableTop}"
+                android:visibility="@{functionBarItem.backControl ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/function_bar_item_name_margin"
+                android:text="@{functionBarItem.itemName}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15"
+                android:visibility="@{Utils.isEquals(functionBarItem.itemName, @string/back_name) ? View.GONE : View.VISIBLE}" />
+        </LinearLayout>
     </LinearLayout>
 </layout>

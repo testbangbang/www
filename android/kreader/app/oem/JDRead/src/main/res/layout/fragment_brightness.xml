@@ -47,7 +47,7 @@
                 android:max="@{brightnessModel.maxLight}"
                 android:numStars="@{brightnessModel.numStar}"
                 android:progress="@{brightnessModel.progress}"
-                android:progressDrawable="@drawable/light_bar_big_step"
+                android:progressDrawable="@drawable/light_bar_step"
                 android:stepSize="1.0" />
 
             <TextView

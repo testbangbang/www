@@ -420,12 +420,15 @@
     <string name="click_to_translate">点击翻译</string>
     <string name="delete_book">删除本书</string>
     <string name="network_or_server_error">网络或者服务器出错，稍等会再试</string>
+    <string name="reader_check_network">请检查您的网络</string>
     <string name="morning">上午</string>
     <string name="afternoon">下午</string>
     <string name="updating">正在进行系统更新，请稍后...</string>
     <string name="power_off_prompt">您确定关闭阅读器吗?</string>
     <string name="speed_refresh_is_opened">极速翻页已开启</string>
     <string name="speed_refresh_is_closed">极速翻页已关闭</string>
+    <string name="input_translate_content">请输入需要翻译的内容</string>
+    <string name="uninstall_translate_app">未安装翻译客户端</string>
     <string name="not_login">未登录</string>
     <string name="open_vip_read">开通会员</string>
     <string name="renew_vip_read">续费会员</string>

@@ -1,6 +1,7 @@
 package com.onyx.jdread.setting.ui;
 
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SettingBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.setting.adapter.SettingAdapter;
 import com.onyx.jdread.setting.event.FeedbackEvent;
@@ -76,6 +78,7 @@ public class SettingFragment extends BaseFragment {
     private void initView() {
         binding.settingRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDivider(new ColorDrawable(ResManager.getColor(R.color.divider_color_setting)));
         binding.settingRecycler.addItemDecoration(dividerItemDecoration);
         settingAdapter = new SettingAdapter(SettingBundle.getInstance().getEventBus());
         binding.settingRecycler.setAdapter(settingAdapter);

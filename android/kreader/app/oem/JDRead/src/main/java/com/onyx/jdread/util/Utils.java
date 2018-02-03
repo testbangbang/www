@@ -17,7 +17,6 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 
 import org.greenrobot.eventbus.EventBus;
@@ -131,11 +130,11 @@ public class Utils {
         }
     }
 
-    public static boolean isEquals(String str) {
-        if (StringUtils.isNullOrEmpty(str)) {
+    public static boolean isEquals(String s1, String s2) {
+        if (StringUtils.isNullOrEmpty(s1) || StringUtils.isNullOrEmpty(s2)) {
             return false;
         }
-        return ResManager.getString(R.string.allow_get).equals(str);
+        return s1.equals(s2);
     }
 
     public static String addPercent(String str) {
