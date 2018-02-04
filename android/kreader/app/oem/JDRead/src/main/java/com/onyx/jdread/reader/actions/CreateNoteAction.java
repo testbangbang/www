@@ -52,8 +52,8 @@ public class CreateNoteAction extends BaseReaderAction {
         noteInfo.isSrcNoteModify = true;
         noteInfo.createDate = TimeUtils.getCurrentDataInString();
         noteInfo.pagePosition = annotation.getPosition();
-        noteInfo.newNote = annotation.getQuote();
-        noteInfo.srcNote = annotation.getNote();
+        noteInfo.newNote = annotation.getNote();
+        noteInfo.srcNote = annotation.getQuote();
         noteInfo.chapterName = annotation.getChapterName();
         noteInfo.bookName = readerDataHolder.getBookName();
         return noteInfo;

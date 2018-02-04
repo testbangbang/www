@@ -120,6 +120,7 @@
                 android:textSize="@dimen/level_one_heading_font" />
 
             <EditText
+                android:id="@+id/new_note"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -172,6 +173,7 @@
             </RelativeLayout>
 
             <EditText
+                android:id="@+id/src_note"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
