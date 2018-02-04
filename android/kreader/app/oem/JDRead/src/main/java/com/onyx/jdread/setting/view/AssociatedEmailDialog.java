@@ -70,7 +70,7 @@ public class AssociatedEmailDialog extends Dialog {
 
         private boolean checkedEdit() {
             if (StringUtils.isNullOrEmpty(emailAddress.get()) || !RegularUtil.isEmail(emailAddress.get())) {
-                ToastUtil.showOffsetToast(ResManager.getString(R.string.email_address_wrong), ResManager.getInteger(R.integer.toast_offset_y));
+                ToastUtil.showOffsetToast(ResManager.getString(R.string.email_address_wrong), ResManager.getInteger(R.integer.associated_toast_offset_y));
                 return false;
             }
             return true;

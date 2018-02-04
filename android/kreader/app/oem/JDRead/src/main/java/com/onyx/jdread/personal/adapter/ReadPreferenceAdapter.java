@@ -74,7 +74,7 @@ public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implemen
         int position = (int) tag;
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = data.get(position);
         if (catListBean.cateLevel == Constants.CATEGORY_LEVEL_TWO) {
-            catListBean.isSelect = true;
+            catListBean.isSelect = !catListBean.isSelect;
             notifyItemChanged(position);
             return;
         }

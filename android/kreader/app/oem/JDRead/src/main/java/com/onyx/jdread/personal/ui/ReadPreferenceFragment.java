@@ -17,6 +17,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.SetReadPreferenceAction;
 import com.onyx.jdread.personal.adapter.ReadPreferenceAdapter;
+import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.shop.action.BookCategoryAction;
@@ -39,7 +40,7 @@ import java.util.Map;
 public class ReadPreferenceFragment extends BaseFragment {
     private ReadPreferenceBinding binding;
     private ReadPreferenceAdapter readPreferenceAdapter;
-    private final static int SUB_CATGORY = 1;
+    private final static int SUB_CATEGORY = 2;
     private Map<Integer, List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo>> datas = new HashMap<>();
 
     @Nullable
@@ -74,7 +75,7 @@ public class ReadPreferenceFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.read_preference));
+        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.my_read_preference));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.readPreferenceTitle.setTitleModel(titleModel);
 
@@ -109,9 +110,10 @@ public class ReadPreferenceFragment extends BaseFragment {
                 public void onItemClick(int position) {
                     List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> data = readPreferenceAdapter.getData();
                     CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = data.get(position);
-                    List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> sub_category = catListBean.sub_category;
-                    if (sub_category != null && sub_category.size() > 0) {
-                        readPreferenceAdapter.setData(sub_category);
+                    List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> subCategory = catListBean.sub_category;
+                    if (subCategory != null && subCategory.size() > 0) {
+                        datas.put(subCategory.get(0).cateLevel, subCategory);
+                        readPreferenceAdapter.setData(subCategory);
                     }
                 }
             });
@@ -120,13 +122,25 @@ public class ReadPreferenceFragment extends BaseFragment {
         binding.readPreferenceSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (datas.size() == SUB_CATGORY) {
-                    List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> selectedBean = readPreferenceAdapter.getSelectedBean();
+                if (datas.size() == SUB_CATEGORY) {
+                    final List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> selectedBean = readPreferenceAdapter.getSelectedBean();
                     if (selectedBean!= null && selectedBean.size() > 0) {
-                        SetReadPreferenceAction action = new SetReadPreferenceAction(selectedBean);
-                        action.execute(PersonalDataBundle.getInstance(), null);
+                        final SetReadPreferenceAction action = new SetReadPreferenceAction(selectedBean);
+                        action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+                            @Override
+                            public void onNext(Object o) {
+                                SetReadPreferenceBean resultBean = action.getResultBean();
+                                if (resultBean.getResultCode() == 0) {
+                                    readPreferenceAdapter.setData(datas.get(SUB_CATEGORY - 1));
+                                    datas.remove(SUB_CATEGORY);
+                                    for (int i = 0; i < selectedBean.size(); i++) {
+                                        CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = selectedBean.get(i);
+                                        categoryBeanLevelTwo.isSelect = false;
+                                    }
+                                }
+                            }
+                        });
                     }
-                    readPreferenceAdapter.setData(datas.get(SUB_CATGORY));
                 }
             }
         });
@@ -134,6 +148,20 @@ public class ReadPreferenceFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
+        if (datas.size() == SUB_CATEGORY) {
+            backToCategory();
+            return;
+        }
         viewEventCallBack.viewBack();
+    }
+
+    private void backToCategory() {
+        final List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> selectedBean = readPreferenceAdapter.getSelectedBean();
+        for (int i = 0; i < selectedBean.size(); i++) {
+            CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = selectedBean.get(i);
+            categoryBeanLevelTwo.isSelect = false;
+        }
+        readPreferenceAdapter.setData(datas.get(SUB_CATEGORY - 1));
+        datas.remove(SUB_CATEGORY);
     }
 }
