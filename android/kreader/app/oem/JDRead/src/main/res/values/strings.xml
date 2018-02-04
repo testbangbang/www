@@ -445,6 +445,8 @@
     <string name="power_off_prompt">Power off?</string>
     <string name="speed_refresh_is_opened">Speed refresh is opened</string>
     <string name="speed_refresh_is_closed">Speed refresh is closed</string>
+    <string name="last_fragment_key">last_fragment_key</string>
+    <string name="change_tab_key">change_tab_key</string>
     <string name="input_translate_content">Please input the content that needs to be translated.</string>
     <string name="uninstall_translate_app">No translation client installed.</string>
     <string name="not_login">not login</string>

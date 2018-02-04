@@ -16,6 +16,7 @@ public class FunctionBarModel extends Observable {
     private static final String TAG = FunctionBarModel.class.getSimpleName();
     private ObservableBoolean isShow = new ObservableBoolean(true);
     public ObservableList<FunctionBarItem> itemModels = new ObservableArrayList<>();
+    private FunctionBarItem currentFunctionBarItem;
 
     public FunctionBarModel() {
 
@@ -31,13 +32,18 @@ public class FunctionBarModel extends Observable {
 
     public void changeTabSelection(ViewConfig.FunctionModule selectedTab) {
         for (FunctionBarItem itemModel : itemModels) {
-            itemModel.setSelected(selectedTab.equals(itemModel.functionModule.get()));
+            if (selectedTab.equals(itemModel.functionModule.get())) {
+                itemModel.setSelected(true);
+                currentFunctionBarItem = itemModel;
+            } else {
+                itemModel.setSelected(false);
+            }
         }
     }
 
-    public FunctionBarItem findFunctionGroup(ViewConfig.FunctionModule functionModule){
+    public FunctionBarItem findFunctionGroup() {
         for (FunctionBarItem itemModel : itemModels) {
-            if(functionModule.equals(itemModel.functionModule.get())){
+            if (itemModel.getSelected()) {
                 return itemModel;
             }
         }
@@ -45,11 +51,6 @@ public class FunctionBarModel extends Observable {
     }
 
     public FunctionBarItem getSelectedFunctionItem() {
-        for (FunctionBarItem itemModel : itemModels) {
-            if (itemModel.getSelected()) {
-                return itemModel;
-            }
-        }
-        return null;
+        return currentFunctionBarItem;
     }
 }

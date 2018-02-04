@@ -28,6 +28,7 @@ import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.main.event.ChangeChildViewEvent;
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         initSystemBar();
         initFunctionBar();
         switchCurrentFragment(LibraryFragment.class.getName());
+        changeFunctionItem(LibraryFragment.class.getName());
     }
 
     private void initSystemBar() {
@@ -194,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
         }
         transaction.replace(R.id.main_content_view, baseFragment);
         transaction.commitAllowingStateLoss();
-        changeFunctionItem(childViewName);
         saveChildViewInfo(childViewName, baseFragment);
         systemBarModel.updateTime();
     }
@@ -290,8 +291,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
         switchCurrentFragment(event.childClassName);
-        ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(event.childClassName);
-        FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup(functionModule);
+        FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
             functionBarItem.getStackList().push(event.childClassName);
         }
@@ -299,8 +299,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
-        ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(currentChildViewName);
-        FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup(functionModule);
+        FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
             String childClassName = functionBarItem.getStackList().popChildView();
             switchCurrentFragment(childClassName);
@@ -308,13 +307,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onChangeChildViewEvent(ChangeChildViewEvent event) {
-        switchCurrentFragment(event.childViewName);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFunctionBarTabModel(FunctionBarItem event) {
         functionBarModel.changeTabSelection(event.functionModule.get());
+        if (currentFragment != null) {
+            currentFragment.setBundle(null);
+        }
+        switchCurrentFragment(event.getStackList().peek());
     }
 
     @Subscribe
@@ -338,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
     public void onSystemBarClickedEvent(SystemBarClickedEvent event) {
         if (systemBarPopupWindowModel == null) {
             systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
-        }else {
+        } else {
             systemBarPopupWindowModel.brightnessModel.updateLight();
         }
         SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(this, systemBarPopupWindowModel);
