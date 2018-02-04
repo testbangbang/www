@@ -201,6 +201,12 @@ public class BaseHandler {
             } else if (direction == PageTurningDirection.Right) {
                 nextScreen(readerDataHolder);
             }
+            direction = PageTurningDetector.detectVerticalTuring(readerDataHolder.getAppContext(), -offsetY);
+            if (direction == PageTurningDirection.Right) {
+                prevScreen(readerDataHolder);
+            } else if (direction == PageTurningDirection.Left) {
+                nextScreen(readerDataHolder);
+            }
             return;
         }
     }
