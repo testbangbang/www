@@ -17,10 +17,12 @@
 package com.onyx.jdread.shop.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -35,6 +37,8 @@ public class HtmlTextView extends JellyBeanSpanFixTextView {
     boolean linkHit;
     boolean dontConsumeNonUrlClicks = true;
     private boolean removeFromHtmlSpace = true;
+    private int maxLlineCount;
+    private String ellipsisStr = "...";
 
     public HtmlTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -139,4 +143,25 @@ public class HtmlTextView extends JellyBeanSpanFixTextView {
         return res;
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (getLineCount() > (maxLlineCount - 1)) {
+            CharSequence charSequence = getText();
+            int lastCharDown = getLayout().getLineVisibleEnd(maxLlineCount - 1);
+            if (charSequence.length() > lastCharDown) {
+                SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+                spannableStringBuilder.append(charSequence.subSequence(0, lastCharDown - 1)).append(ellipsisStr);
+                setText(spannableStringBuilder);
+            }
+        }
+        super.onDraw(canvas);
+    }
+
+    public void setEllipsisStr(String ellipsisStr) {
+        this.ellipsisStr = ellipsisStr;
+    }
+
+    public void setMaxLineCount(int maxLlineCount) {
+        this.maxLlineCount = maxLlineCount;
+    }
 }

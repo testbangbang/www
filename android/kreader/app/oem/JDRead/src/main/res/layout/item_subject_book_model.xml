@@ -40,6 +40,7 @@
                 android:lines="2"
                 android:text="@{bookBean.name}"
                 android:textColor="@android:color/black"
+                android:lineSpacingExtra="@dimen/item_subject_common_name_line_space"
                 android:textSize="@dimen/font_size_15" />
 
         </LinearLayout>

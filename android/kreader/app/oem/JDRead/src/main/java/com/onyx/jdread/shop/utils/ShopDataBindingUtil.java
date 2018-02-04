@@ -99,6 +99,7 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"htmlContent"})
     public static void setHtmlContent(HtmlTextView htmlTextView, String content) {
         String title = ResManager.getString(R.string.book_detail_text_view_content_introduce) + ":";
+        htmlTextView.setMaxLineCount(ResManager.getInteger(R.integer.book_detail_info_lines));
         if (!StringUtils.isNullOrEmpty(content)) {
             htmlTextView.setHtml(title + content);
         } else {
@@ -107,8 +108,9 @@ public class ShopDataBindingUtil {
         }
     }
 
-    @BindingAdapter({"htmlContentDialog"})
-    public static void setHtmlContentDialog(HtmlTextView htmlTextView, String content) {
+    @BindingAdapter({"htmlContentNoTitle"})
+    public static void setHtmlContentNoTitle(HtmlTextView htmlTextView, String content) {
+        htmlTextView.setMaxLineCount(ResManager.getInteger(R.integer.item_subject_list_info_lines));
         if (!StringUtils.isNullOrEmpty(content)) {
             htmlTextView.setHtml(content);
         } else {

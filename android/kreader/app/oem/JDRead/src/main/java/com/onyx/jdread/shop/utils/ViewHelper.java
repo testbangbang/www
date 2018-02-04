@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ViewHelper {
 
-    public static boolean isShowBookDetailView(BookDetailResultBean resultBean){
+    public static boolean isShowBookDetailView(BookDetailResultBean resultBean) {
         boolean show = false;
         if (resultBean != null && resultBean.data != null && Constants.RESULT_CODE_SUCCESS.equals(String.valueOf(resultBean.result_code))) {
             show = true;
@@ -33,7 +33,7 @@ public class ViewHelper {
         return String.valueOf(new DecimalFormat("0.00").format(price));
     }
 
-    public static boolean isCanNowRead(BookDetailResultBean.DetailBean detailBean){
+    public static boolean isCanNowRead(BookDetailResultBean.DetailBean detailBean) {
         boolean canNowRead = false;
         if (detailBean != null) {
             canNowRead = detailBean.can_try;
