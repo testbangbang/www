@@ -321,7 +321,9 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void resetLibraryPagination() {
-        pagination = libraryDataBundle.getLibraryViewDataModel().pageStack.pop();
+        if (!libraryDataBundle.getLibraryViewDataModel().pageStack.isEmpty()) {
+            pagination = libraryDataBundle.getLibraryViewDataModel().pageStack.pop();
+        }
         libraryDataBundle.getLibraryViewDataModel().setQueryPagination(pagination);
         pageIndicatorModel.resetGPaginator(pagination);
     }

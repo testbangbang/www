@@ -38,6 +38,10 @@ public class LoadDocumentOptionsRequest extends ReaderBaseRequest {
     public final BaseOptions getDocumentOptions() {
         final BaseOptions baseOptions = BaseOptions.optionsFromJSONString(document.getExtraAttributes());
         baseOptions.setMd5(md5);
+        String currentPage = baseOptions.getCurrentPage();
+        if(StringUtils.isNullOrEmpty(currentPage)){
+            baseOptions.setCurrentPage("0");
+        }
         return baseOptions;
     }
 }

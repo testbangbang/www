@@ -18,6 +18,7 @@ public class CloseDocumentRequest extends ReaderBaseRequest {
         if (reader == null || reader.getReaderHelper().getDocument() == null) {
             return this;
         }
+        saveReaderOptions(reader);
         reader.getReaderHelper().getDocument().close();
         reader.getReaderHelper().onDocumentClosed();
         return this;

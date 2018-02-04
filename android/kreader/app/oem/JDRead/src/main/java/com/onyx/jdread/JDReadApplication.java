@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.evernote.client.android.EvernoteSession;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -27,10 +28,13 @@ import com.onyx.jdread.manager.CrashExceptionHandler;
 import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.personal.action.AutoLoginAction;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.reader.actions.ReaderDocumentCoverAction;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.util.Utils;
+import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.JDReadGeneratedDatabaseHolder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,7 +76,7 @@ public class JDReadApplication extends MultiDexApplication {
 
     private void initConfig() {
         instance = this;
-        DataManager.init(instance, null);
+        DataManager.init(instance, databaseHolderList());
         initContentProvider(this);
         initFrescoLoader();
         JDPreferenceManager.initWithAppContext(instance);
@@ -96,6 +100,11 @@ public class JDReadApplication extends MultiDexApplication {
                     File file = new File(data.getPath());
                     if (SupportType.getDocumentExtension().contains(FileUtils.getFileExtension(file))) {
                         mtpBuffer.add(data.getPath());
+                    }
+
+                    if (SupportType.getSupportThumbnailType().contains(FileUtils.getFileExtension(file))) {
+                        ReaderDocumentCoverAction action = new ReaderDocumentCoverAction(ResManager.getInteger(R.integer.cloud_book_cover_width), ResManager.getInteger(R.integer.cloud_book_cover_height));
+                        action.execute(ReaderDocumentCoverAction.initReaderDataHolder(data.getPath()), null);
                     }
                 }
             }
@@ -181,5 +190,11 @@ public class JDReadApplication extends MultiDexApplication {
         }
         AutoLoginAction autoLoginAction = new AutoLoginAction();
         autoLoginAction.execute(PersonalDataBundle.getInstance(), null);
+    }
+
+    private List<Class<? extends DatabaseHolder>> databaseHolderList() {
+        List<Class<? extends DatabaseHolder>> dataHolderList = new ArrayList<>();
+        dataHolderList.add(JDReadGeneratedDatabaseHolder.class);
+        return dataHolderList;
     }
 }

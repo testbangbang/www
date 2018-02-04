@@ -4,6 +4,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
+import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.GammaCorrectionEvent;
@@ -24,8 +25,35 @@ public class ReaderImageModel {
     private ObservableInt currentFontColorDepth = new ObservableInt(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
     private EventBus eventBus;
 
-    public ReaderImageModel(EventBus eventBus) {
+    public ReaderImageModel(EventBus eventBus, GammaInfo gammaInfo) {
         this.eventBus = eventBus;
+        setDefaultTypeColorDepth(gammaInfo);
+    }
+
+    private void setDefaultTypeColorDepth(GammaInfo gammaInfo) {
+        switch (gammaInfo.getEmboldenLevel()) {
+            case ReaderConfig.TypefaceColorDepth.LEVEL_ONE:
+                updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
+                break;
+            case ReaderConfig.TypefaceColorDepth.LEVEL_TWO:
+                updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_TWO);
+                break;
+            case ReaderConfig.TypefaceColorDepth.LEVEL_THREE:
+                updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_THREE);
+                break;
+            case ReaderConfig.TypefaceColorDepth.LEVEL_FOUR:
+                updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FOUR);
+                break;
+            case ReaderConfig.TypefaceColorDepth.LEVEL_FIVE:
+                updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FIVE);
+                break;
+            case ReaderConfig.TypefaceColorDepth.LEVEL_SIX:
+                updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_SIX);
+                break;
+            default:
+                updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
+                break;
+        }
     }
 
     public EventBus getEventBus() {
@@ -68,8 +96,8 @@ public class ReaderImageModel {
         currentFontColorDepth.set(colorDepth);
     }
 
-    private boolean updateFontColorDepth(int colorDepth){
-        if(currentFontColorDepth.get() == colorDepth) {
+    private boolean updateFontColorDepth(int colorDepth) {
+        if (currentFontColorDepth.get() == colorDepth) {
             return false;
         }
         setCurrentFontColorDepth(colorDepth);
@@ -91,37 +119,37 @@ public class ReaderImageModel {
     }
 
     public void onOneFontColorDepthClick() {
-        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_ONE)) {
+        if (updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_ONE)) {
             setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
         }
     }
 
     public void onTwoFontColorDepthClick() {
-        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_TWO)) {
+        if (updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_TWO)) {
             setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_TWO);
         }
     }
 
     public void onThreeFontColorDepthClick() {
-        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_THREE)) {
+        if (updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_THREE)) {
             setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_THREE);
         }
     }
 
     public void onFourFontColorDepthClick() {
-        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FOUR)) {
+        if (updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FOUR)) {
             setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FOUR);
         }
     }
 
     public void onFiveFontColorDepthClick() {
-        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FIVE)) {
+        if (updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FIVE)) {
             setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_FIVE);
         }
     }
 
     public void onSixFontColorDepthClick() {
-        if(updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_SIX)) {
+        if (updateFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_SIX)) {
             setFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_SIX);
         }
     }
@@ -138,7 +166,7 @@ public class ReaderImageModel {
         getEventBus().post(event);
     }
 
-    public void resetMode(){
+    public void resetMode() {
         setCurrentImageMode(ImageShowMode.defaultMode);
         setCurrentFontColorDepth(ReaderConfig.TypefaceColorDepth.LEVEL_ONE);
     }

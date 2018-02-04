@@ -202,7 +202,7 @@ public class ReaderHelper {
     }
 
     public boolean isReaderLayoutManagerCreated() {
-        return false;
+        return (readerLayoutManager != null);
     }
 
     public ReaderHitTestManager getHitTestManager() {
@@ -406,11 +406,41 @@ public class ReaderHelper {
      * collect all options from reader components to BaseOptions.
      */
     public void saveOptions() {
+        if (!isReaderLayoutManagerCreated()) {
+            return;
+        }
+        try {
+            final ReaderLayoutManager layoutManager = getReaderLayoutManager();
+            getDocumentOptions().setLayoutType(layoutManager.getCurrentLayoutType());
+            getDocumentOptions().setSpecialScale(layoutManager.getSpecialScale());
+            getDocumentOptions().setActualScale(layoutManager.getActualScale());
+            getDocumentOptions().setCurrentPage(layoutManager.getCurrentPagePosition());
+            getDocumentOptions().setTotalPage(getNavigator().getTotalPage());
+            getDocumentOptions().setViewport(layoutManager.getViewportRect());
+            getDocumentOptions().setNavigationArgs(layoutManager.getCurrentLayoutProvider().getNavigationArgs());
+            getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
 
+            final ReaderTextStyle style = layoutManager.getTextStyleManager().getStyle();
+            saveReaderTextStyle(style);
+        } catch (Exception e) {
+
+        }
     }
 
     private void saveReaderTextStyle(final ReaderTextStyle style) {
-
+        if (style == null) {
+            return;
+        }
+        getDocumentOptions().setFontFace(style.getFontFace());
+        getDocumentOptions().setFontSize(style.getFontSize().getValue());
+        getDocumentOptions().setParagraphSpacing(style.getParagraphSpacing().getPercent());
+        getDocumentOptions().setFontFace(style.getFontFace());
+        getDocumentOptions().setLineSpacing(style.getLineSpacing().getPercent());
+        getDocumentOptions().setParagraphIndent(style.getIndent().getIndent());
+        getDocumentOptions().setLeftMargin(style.getPageMargin().getLeftMargin().getPercent());
+        getDocumentOptions().setTopMargin(style.getPageMargin().getTopMargin().getPercent());
+        getDocumentOptions().setRightMargin(style.getPageMargin().getRightMargin().getPercent());
+        getDocumentOptions().setBottomMargin(style.getPageMargin().getBottomMargin().getPercent());
     }
 
     public String getDocumentMd5() {

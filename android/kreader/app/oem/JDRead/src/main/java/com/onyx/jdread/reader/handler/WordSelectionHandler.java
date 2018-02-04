@@ -80,6 +80,7 @@ public class WordSelectionHandler extends BaseHandler {
             lastSelectStartPosition = 0;
             lastSelectEndPosition = 0;
             isCrossScreenSelect = false;
+            super.onLongPress(event);
             downPagePosition = getReaderDataHolder().getCurrentPagePosition();
             getReaderDataHolder().getReaderSelectionInfo().setMoveSelectCount(0);
             selectWord(getStartPoint().x, getStartPoint().y, event.getX(), event.getY());
@@ -280,6 +281,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public void selectWord(final float x1, final float y1, final float x2, final float y2) {
+        ReaderDeviceManager.disableRegal();
         SelectWordInfo info = new SelectWordInfo(getReaderDataHolder().getCurrentPagePosition(),
                 new PointF(x1, y1),
                 new PointF(x2, y2),
@@ -357,6 +359,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     private void clearWordSelection() {
+        setLongPress(false);
         getReaderDataHolder().getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
         getReaderDataHolder().getReaderSelectionInfo().clear();
         new CleanSelectionAction().execute(getReaderDataHolder(),null);
