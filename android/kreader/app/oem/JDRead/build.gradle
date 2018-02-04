@@ -17,6 +17,12 @@ android {
 
         testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [targetModuleName: 'JDRead']
+            }
+        }
+
     }
 
     buildTypes {
@@ -82,4 +88,7 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:$rootProject.convertergsonVersion"
     compile "com.evernote:android-sdk:$rootProject.evernoteVersion"
     compile "com.squareup.retrofit2:converter-scalars:$rootProject.converterScalers"
+
+    // db
+    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
 }

@@ -63,6 +63,7 @@
     <string name="illegalInput">Illegal Input</string>
 
     <string name="loading">Loading…</string>
+    <string name="loading_more">Loading more…</string>
 
     <string name="save">Save</string>
     <string name="custom_line_width">Custom Line Width</string>

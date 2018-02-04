@@ -3,6 +3,9 @@
 
     <data class="ItemFeedbackRecordBinding">
 
+        <variable
+            name="feedbackRecord"
+            type="com.onyx.jdread.setting.data.database.FeedbackRecord" />
     </data>
 
     <LinearLayout
@@ -16,15 +19,17 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
+            android:text="@{feedbackRecord.desc}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
         <TextView
+            android:id="@+id/time_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:singleLine="true"
-            android:textColor="@android:color/black"
+            android:textColor="@color/text_gray_color"
             android:textSize="@dimen/level_three_heading_font" />
     </LinearLayout>
 </layout>
