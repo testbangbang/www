@@ -24,12 +24,12 @@ public class ReaderMarginModel {
     public final ObservableInt upAndDownSpacing = new ObservableInt(DEFAULT_UP_AND_DOWN_SPACING);
 
 
-    public static final int LINE_SPACING_ONE = 10  + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int LINE_SPACING_TWO = 20  + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int LINE_SPACING_THREE = 30 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int LINE_SPACING_FOUR = 40 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int LINE_SPACING_FIVE = 50 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int LINE_SPACING_SIX = 60 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_ONE = 18  + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_TWO = 21  + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_THREE = 24 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_FOUR = 27 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_FIVE = 29 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_SIX = 32 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
     public static final int DEFAULT_LINE_SPACING = LINE_SPACING_TWO;
 
     public static final int PARAGRAPH_SPACING_ONE = 20;
