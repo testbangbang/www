@@ -166,4 +166,6 @@
     <integer name="associated_toast_offset_y">-10</integer>
     <integer name="dialog_jd_loading_width">320</integer>
     <integer name="dialog_jd_loading_height">100</integer>
+    <integer name="item_subject_list_info_lines">2</integer>
+    <integer name="book_detail_info_lines">2</integer>
 </resources>

@@ -96,7 +96,7 @@
     <dimen name="book_shop_search_view_padding_top">17dp</dimen>
     <dimen name="book_shop_contain_recycler_margin_top">20dp</dimen>
     <dimen name="text_no_stoke_background_radius">2dp</dimen>
-    <dimen name="book_shop_recycler_view_margin">10dp</dimen>
+    <dimen name="book_shop_recycler_view_margin">17dp</dimen>
     <dimen name="book_shop_title_padding">10dp</dimen>
     <dimen name="book_shop_recycler_height">190dp</dimen>
     <dimen name="book_shop_banner_recycler_height">90dp</dimen>
@@ -114,8 +114,8 @@
     <dimen name="search_view_edit_text_padding_bottom">6dp</dimen>
     <dimen name="search_view_edit_text_padding_left">15dp</dimen>
     <dimen name="subject_model_item_padding">2dp</dimen>
-    <dimen name="subject_model_item_width">105dp</dimen>
-    <dimen name="subject_model_item_height">142dp</dimen>
+    <dimen name="subject_model_item_width">103dp</dimen>
+    <dimen name="subject_model_item_height">137dp</dimen>
     <dimen name="shop_back_top_button_margin_top">133dp</dimen>
     <dimen name="loading_dialog_min_height">120dp</dimen>
     <dimen name="loading_dialog_min_width">140dp</dimen>
@@ -127,8 +127,8 @@
     <dimen name="toast_view_padding_left_and_right">10px</dimen>
     <dimen name="toast_view_padding_top_and_bottom">5px</dimen>
     <dimen name="banner_subject_model_item_padding">0dp</dimen>
-    <dimen name="banner_subject_model_item_width">233dp</dimen>
-    <dimen name="banner_subject_model_item_height">90dp</dimen>
+    <dimen name="banner_subject_model_item_width">234dp</dimen>
+    <dimen name="banner_subject_model_item_height">85dp</dimen>
     <dimen name="shop_back_top_button_padding">8dp</dimen>
     <dimen name="layout_book_detail_directory_margin_top_and_bottom">10dp</dimen>
     <dimen name="layout_book_detail_directory_margin_right_left">20dp</dimen>
@@ -152,8 +152,9 @@
     <dimen name="book_detail_button_padding">10dp</dimen>
     <dimen name="book_detail_button_margin">10dp</dimen>
     <dimen name="book_comment_indicator_padding">5dp</dimen>
-    <dimen name="book_copyright_contain_padding">25dp</dimen>
-    <dimen name="book_copyright_contain_padding_bottom">20dp</dimen>
+    <dimen name="book_copyright_contain_padding">23dp</dimen>
+    <dimen name="book_copyright_contain_padding_bottom">58dp</dimen>
+    <dimen name="book_info_contain_padding_bottom">20dp</dimen>
     <dimen name="book_copyright_item_margin_top">20dp</dimen>
     <dimen name="cancel_button_padding">5dp</dimen>
     <dimen name="book_copyright_cancel_button_width_and_height">30dp</dimen>
@@ -468,7 +469,7 @@
     <dimen name="top_up_qr_code_height">200dp</dimen>
     <dimen name="top_up_qr_code_margin_bottom">60dp</dimen>
     <dimen name="system_bar_icon_space">10dp</dimen>
-    <dimen name="item_subject_common_name_margin_top">2dp</dimen>
+    <dimen name="item_subject_common_name_margin_top">8dp</dimen>
     <dimen name="common_subject_bottom_item_margin_top">60dp</dimen>
     <dimen name="top_up_continue_width">300dp</dimen>
     <dimen name="top_up_continue_padding">10dp</dimen>
@@ -499,4 +500,9 @@
     <dimen name="subject_list_just_vip_margin_left">50dp</dimen>
     <dimen name="reader_toast_view_padding_left_and_right">20dp</dimen>
     <dimen name="reader_toast_view_padding_top_and_bottom">3dp</dimen>
+    <dimen name="item_subject_common_name_line_space">5dp</dimen>
+    <dimen name="book_detail_drawable_left_padding">6dp</dimen>
+    <dimen name="book_detail_view_catalog_container_margin_left_and_right">30dp</dimen>
+    <dimen name="shop_dialog_title_height">55dp</dimen>
+    <dimen name="shop_dialog_content_height">300dp</dimen>
 </resources>

@@ -67,21 +67,21 @@ public class ViewAllBooksFragment extends BaseFragment {
     }
 
     private void initData() {
-        String title= JDPreferenceManager.getStringValue(Constants.SP_KEY_SUBJECT_NAME, "");
+        String title = JDPreferenceManager.getStringValue(Constants.SP_KEY_SUBJECT_NAME, "");
         getTitleBarViewModel().leftText = title;
-        int bookListType= JDPreferenceManager.getIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, -1);
+        int bookListType = JDPreferenceManager.getIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, -1);
         if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_MODEL) {
             modelId = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
             modelType = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
             getBookModelData(currentPage);
         } else if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_RANK) {
             int rankType = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_RANK_TYPE, -1);
-            getBookRankData(rankType,currentPage);
+            getBookRankData(rankType, currentPage);
         }
     }
 
     private void getBookModelData(int currentPage) {
-        BookModelAction booksAction = new BookModelAction(modelId,modelType,currentPage);
+        BookModelAction booksAction = new BookModelAction(modelId, modelType, currentPage);
         booksAction.execute(getShopDataBundle(), new RxCallback<BookModelAction>() {
             @Override
             public void onNext(BookModelAction booksAction) {
