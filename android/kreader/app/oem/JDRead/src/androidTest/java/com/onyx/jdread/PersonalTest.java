@@ -63,7 +63,7 @@ public class PersonalTest extends ApplicationTestCase<JDReadApplication> {
             public void onNext(Object o) {
                 SetReadPreferenceBean resultBean = rq.getResultBean();
                 assertNotNull(resultBean);
-                assertEquals(resultBean.getResult_code(), 0);
+                assertEquals(resultBean.getResultCode(), 0);
                 countDownLatch.countDown();
             }
 
