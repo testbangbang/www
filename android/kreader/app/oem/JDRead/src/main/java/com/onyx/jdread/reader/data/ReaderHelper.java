@@ -434,7 +434,6 @@ public class ReaderHelper {
         getDocumentOptions().setFontFace(style.getFontFace());
         getDocumentOptions().setFontSize(style.getFontSize().getValue());
         getDocumentOptions().setParagraphSpacing(style.getParagraphSpacing().getPercent());
-        getDocumentOptions().setChineseConvertType();
         getDocumentOptions().setFontFace(style.getFontFace());
         getDocumentOptions().setLineSpacing(style.getLineSpacing().getPercent());
         getDocumentOptions().setParagraphIndent(style.getIndent().getIndent());
