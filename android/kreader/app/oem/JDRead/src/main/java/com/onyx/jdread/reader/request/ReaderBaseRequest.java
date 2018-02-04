@@ -111,7 +111,6 @@ public abstract class ReaderBaseRequest extends RxRequest {
             reader.getReaderHelper().saveOptions();
             saveToDocumentOptions(reader);
         }
-        saveToLegacyDataProvider(reader);
     }
 
     private void saveToDocumentOptions(final Reader reader) {
@@ -119,24 +118,5 @@ public abstract class ReaderBaseRequest extends RxRequest {
                 reader.getDocumentInfo().getBookPath(),
                 reader.getReaderHelper().getDocumentMd5(),
                 reader.getReaderHelper().getDocumentOptions().toJSONString());
-    }
-
-    private void saveToLegacyDataProvider(final Reader reader) {
-        try {
-            if (reader.getReaderHelper().getNavigator() != null) {
-                int currentPage = PagePositionUtils.getPageNumber(reader.getReaderHelper().getReaderLayoutManager().getCurrentPageInfo() != null ?
-                        reader.getReaderHelper().getReaderLayoutManager().getCurrentPageInfo().getName() :
-                        reader.getReaderHelper().getNavigator().getInitPosition());
-                int totalPage = reader.getReaderHelper().getNavigator().getTotalPage();
-                LegacySdkDataUtils.updateProgress(reader.getReaderHelper().getContext(), reader.getDocumentInfo().getBookPath(),
-                        currentPage, totalPage);
-                ContentSdkDataUtils.updateProgress(reader.getReaderHelper().getContext(), reader.getDocumentInfo().getBookPath(),
-                        currentPage, totalPage);
-                LegacySdkDataUtils.recordFinishReading(reader.getReaderHelper().getContext(), currentPage, totalPage);
-            }
-        } catch (Throwable tr) {
-            Log.w(TAG, this.getClass().toString());
-            Log.w(TAG, tr);
-        }
     }
 }
