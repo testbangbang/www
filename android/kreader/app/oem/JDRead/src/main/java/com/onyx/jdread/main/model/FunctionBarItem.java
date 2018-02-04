@@ -40,9 +40,7 @@ public class FunctionBarItem extends BaseObservable {
             return;
         }
 
-        ChangeChildViewEvent event = new ChangeChildViewEvent();
-        event.childViewName = stackList.peek();
-        EventBus.getDefault().post(event);
+        EventBus.getDefault().post(this);
     }
 
     public boolean tabLongClicked() {

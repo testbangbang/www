@@ -8,4 +8,5 @@
     <color name="gray">#AFAFAF</color>
     <color name="under_line_gray">#3d3c3c</color>
     <color name="gray_line_color">#d9d9d9</color>
+    <color name="reader_text_item_selected">#d9d9d9</color>
 </resources>

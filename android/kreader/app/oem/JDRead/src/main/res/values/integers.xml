@@ -110,6 +110,8 @@
     <item name="top_up_dialog_height_rate" type="integer" format="float">0.6</item>
     <item name="export_dialog_width_rate" type="integer" format="float">0.8</item>
     <item name="export_dialog_height_rate" type="integer" format="float">0.3</item>
+    <item name="login_dialog_width_rate" type="integer" format="float">0.8</item>
+    <item name="login_dialog_height_rate" type="integer" format="float">0.5</item>
     <integer name="book_info_dialog_mark_row">4</integer>
     <integer name="book_info_dialog_catalog_row">12</integer>
     <integer name="book_info_dialog_note_row">4</integer>
@@ -161,6 +163,7 @@
     <integer name="associated_email_dialog_offset_y">40</integer>
     <integer name="associated_email_dialog_offset_x">0</integer>
     <integer name="pass_book_toast_offset_y">-50</integer>
+    <integer name="associated_toast_offset_y">-10</integer>
     <integer name="dialog_jd_loading_width">320</integer>
     <integer name="dialog_jd_loading_height">100</integer>
     <integer name="item_subject_list_info_lines">2</integer>

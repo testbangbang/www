@@ -495,8 +495,11 @@
     <dimen name="circle_height">30dp</dimen>
     <dimen name="dialog_system_update_padding">20dp</dimen>
     <dimen name="dialog_system_update_progress_padding">10dp</dimen>
+    <dimen name="clear_search_history_padding">5dp</dimen>
     <dimen name="device_config_update_record_margin_right">24dp</dimen>
     <dimen name="subject_list_just_vip_margin_left">50dp</dimen>
+    <dimen name="reader_toast_view_padding_left_and_right">20dp</dimen>
+    <dimen name="reader_toast_view_padding_top_and_bottom">3dp</dimen>
     <dimen name="item_subject_common_name_line_space">5dp</dimen>
     <dimen name="book_detail_drawable_left_padding">6dp</dimen>
     <dimen name="book_detail_view_catalog_container_margin_left_and_right">30dp</dimen>

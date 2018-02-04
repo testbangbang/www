@@ -178,7 +178,8 @@ public class ReaderPageInfoModel {
 
     public static int getChapterPositionByPage(int pagePosition, boolean back, List<ChapterInfo> tocChapterNodeList) {
         int size = tocChapterNodeList.size();
-        for (int i = 0; i < size; i++) {
+        int i = 0;
+        for (i = 0; i < size; i++) {
             ChapterInfo chapterInfo = tocChapterNodeList.get(i);
             if (pagePosition < chapterInfo.getPosition()) {
                 if (back) {
@@ -206,6 +207,16 @@ public class ReaderPageInfoModel {
         }
 
         if (back) {
+            if(i == size){
+                int index = i - 1;
+                if(index > 0){
+                    ChapterInfo chapterInfo = tocChapterNodeList.get(index);
+                    if(pagePosition >= chapterInfo.getPosition()){
+                        chapterInfo = tocChapterNodeList.get(index - 1);
+                        return chapterInfo.getPosition();
+                    }
+                }
+            }
             return pagePosition - 1;
         } else {
             return pagePosition + 1;
