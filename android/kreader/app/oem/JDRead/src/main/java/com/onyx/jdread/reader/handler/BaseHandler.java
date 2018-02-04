@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyBinding;
@@ -14,6 +15,10 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
+import com.onyx.jdread.reader.actions.NextPageAction;
+import com.onyx.jdread.reader.actions.PrevPageAction;
+import com.onyx.jdread.reader.data.PageTurningDetector;
+import com.onyx.jdread.reader.data.PageTurningDirection;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 import java.util.List;
@@ -27,6 +32,7 @@ public class BaseHandler {
     private static final String TAG = BaseHandler.class.getSimpleName();
     public static final int TOUCH_HORIZONTAL_PART = 3;
     public static final int TOUCH_VERTICAL_PART = 2;
+    private boolean longPress = false;
     private ReaderDataHolder readerDataHolder;
     private static Point startPoint = new Point();
 
@@ -81,11 +87,11 @@ public class BaseHandler {
     }
 
     public boolean isLongPress() {
-        return true;
+        return longPress;
     }
 
     public void setLongPress(boolean l) {
-
+        longPress = l;
     }
 
     public Point getStartPoint() {
@@ -188,6 +194,25 @@ public class BaseHandler {
     }
 
     public void panFinished(int offsetX, int offsetY) {
+        if (!readerDataHolder.getReaderViewInfo().canPan()) {
+            PageTurningDirection direction = PageTurningDetector.detectHorizontalTuring(readerDataHolder.getAppContext(), -offsetX);
+            if (direction == PageTurningDirection.Left) {
+                prevScreen(readerDataHolder);
+            } else if (direction == PageTurningDirection.Right) {
+                nextScreen(readerDataHolder);
+            }
+            return;
+        }
+    }
+
+    public void nextScreen(ReaderDataHolder readerDataHolder) {
+        final NextPageAction action = new NextPageAction();
+        action.execute(readerDataHolder, null);
+    }
+
+    public void prevScreen(ReaderDataHolder readerDataHolder) {
+        final PrevPageAction action = new PrevPageAction();
+        action.execute(readerDataHolder, null);
     }
 
     private Point bookmarkPosition(Bitmap bitmap) {
@@ -212,7 +237,7 @@ public class BaseHandler {
     }
 
     public boolean isPinchZooming() {
-        return true;
+        return false;
     }
 
     public boolean isSkipPinchZooming() {
