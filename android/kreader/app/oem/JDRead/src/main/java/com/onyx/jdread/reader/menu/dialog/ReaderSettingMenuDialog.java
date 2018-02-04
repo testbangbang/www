@@ -128,15 +128,16 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initTextBar(){
-        binding.readerSettingTextSettingBar.setReaderTextModel(new ReaderTextModel(readerDataHolder.getEventBus()));
+        binding.readerSettingTextSettingBar.setReaderTextModel(new ReaderTextModel(readerDataHolder.getEventBus(),
+                readerDataHolder.getStyleCopy(),readerDataHolder.getReaderUserDataInfo()));
     }
 
     private void initImageBar(){
-        binding.readerSettingImageSettingBar.setReaderImageModel(new ReaderImageModel(readerDataHolder.getEventBus()));
+        binding.readerSettingImageSettingBar.setReaderImageModel(new ReaderImageModel(readerDataHolder.getEventBus(),readerDataHolder.getGammaInfo()));
     }
 
     private void initCustomizeBar(){
-        binding.readerSettingCustomizeFormatBar.setReaderMarginModel(new ReaderMarginModel(readerDataHolder.getEventBus()));
+        binding.readerSettingCustomizeFormatBar.setReaderMarginModel(new ReaderMarginModel(readerDataHolder.getEventBus(),readerDataHolder.getStyleCopy()));
         initCustomizeEvent();
     }
 

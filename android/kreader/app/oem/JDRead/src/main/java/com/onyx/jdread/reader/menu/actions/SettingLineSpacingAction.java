@@ -17,7 +17,7 @@ public class SettingLineSpacingAction extends BaseReaderAction {
     private ReaderTextStyle style;
 
     public SettingLineSpacingAction(ReaderTextStyle style, int lineSpacing) {
-        this.lineSpacing = lineSpacing + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+        this.lineSpacing = lineSpacing;
         this.style = style;
     }
 

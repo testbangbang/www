@@ -25,6 +25,7 @@ public class SettingTextStyleRequest extends ReaderBaseRequest {
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
 
         updateSetting(reader);
+        saveReaderOptions(reader);
         return this;
     }
 }

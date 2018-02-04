@@ -2,11 +2,10 @@ package com.onyx.jdread.reader.menu.model;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.databinding.ObservableInt;
 
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
-import com.onyx.jdread.reader.menu.actions.SettingFontSizeAction;
+import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.ChangeChineseConvertTypeEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingFontSizeEvent;
@@ -16,10 +15,16 @@ import com.onyx.jdread.reader.menu.event.ReaderSettingTypefaceEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
-import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.arialTypeface;
-import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.boldFaceType;
-import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.italicsTypeface;
-import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.roundBodyTypeface;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_LARGE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_MEDIUM;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_SMALL;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_XX_LARGE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_X_LARGE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_X_SMALL;
+import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.TypefaceFour;
+import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.TypefaceOne;
+import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.TypefaceThree;
+import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.TypefaceTwo;
 
 /**
  * Created by huxiaomao on 2018/1/4.
@@ -28,17 +33,81 @@ import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.r
 public class ReaderTextModel {
     private ObservableBoolean isShow = new ObservableBoolean(false);
     private ObservableBoolean isPdf = new ObservableBoolean(false);
-    private ObservableField<ReaderTypeface> currentTypeface = new ObservableField<>(boldFaceType);
+    private ObservableField<ReaderTypeface> currentTypeface = new ObservableField<>(TypefaceOne);
     private ObservableField<ReaderFontSize> currentFontSize = new ObservableField<>(ReaderFontSize.LevelThreeFontSize);
     private ObservableField<Language> currentLanguage = new ObservableField<>(Language.Simplified);
     private EventBus eventBus;
 
-    public ReaderTextModel(EventBus eventBus) {
+    public ReaderTextModel(EventBus eventBus, ReaderTextStyle style, ReaderUserDataInfo readerUserDataInfo) {
         this.eventBus = eventBus;
+        setDefaultStyle(style, readerUserDataInfo);
     }
 
-    public enum Language{
-        Simplified,Traditional
+    public void setDefaultStyle(ReaderTextStyle style, ReaderUserDataInfo readerUserDataInfo) {
+        if(style != null) {
+            setDefaultFontSize((int) style.getFontSize().getValue());
+            ReaderChineseConvertType chineseConvertType = readerUserDataInfo.getChineseConvertType();
+            setDefaultTypeFace(style.getFontFace());
+            setDefaultLanguage(chineseConvertType);
+        }
+    }
+
+    public void setDefaultLanguage(ReaderChineseConvertType chineseConvertType) {
+        if (chineseConvertType == ReaderChineseConvertType.NONE || chineseConvertType == ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED) {
+            setCurrentLanguage(Language.Simplified);
+        } else {
+            setCurrentLanguage(Language.Traditional);
+        }
+    }
+
+    public void setDefaultTypeFace(String typeFace) {
+        switch (typeFace) {
+            case ReaderConfig.Typeface.TYPEFACE_ONE:
+                onTypefaceOneClick();
+                break;
+            case ReaderConfig.Typeface.TYPEFACE_TWO:
+                onTypefaceTwoClick();
+                break;
+            case ReaderConfig.Typeface.TYPEFACE_THREE:
+                onTypefaceThreeClick();
+                break;
+            case ReaderConfig.Typeface.TYPEFACE_FOUR:
+                onTypefaceFourClick();
+                break;
+            default:
+                onTypefaceOneClick();
+                break;
+        }
+    }
+
+    public void setDefaultFontSize(int fontSize) {
+        switch (fontSize) {
+            case FONT_SIZE_X_SMALL:
+                onLevelOneClick();
+                break;
+            case FONT_SIZE_SMALL:
+                onLevelTwoClick();
+                break;
+            case FONT_SIZE_MEDIUM:
+                onLevelThreeClick();
+                break;
+            case FONT_SIZE_LARGE:
+                onLevelFourClick();
+                break;
+            case FONT_SIZE_X_LARGE:
+                onLevelFiveClick();
+                break;
+            case FONT_SIZE_XX_LARGE:
+                onLevelSixClick();
+                break;
+            default:
+                onLevelThreeClick();
+                break;
+        }
+    }
+
+    public enum Language {
+        Simplified, Traditional
     }
 
     public enum ReaderFontSize {
@@ -46,7 +115,7 @@ public class ReaderTextModel {
     }
 
     public enum ReaderTypeface {
-        boldFaceType, arialTypeface, italicsTypeface, roundBodyTypeface
+        TypefaceOne, TypefaceTwo, TypefaceThree, TypefaceFour
     }
 
     public ObservableField<Language> getCurrentLanguage() {
@@ -62,7 +131,7 @@ public class ReaderTextModel {
     }
 
     public boolean setCurrentTypeface(ReaderTypeface typeface) {
-        if(currentTypeface.get() == typeface){
+        if (currentTypeface.get() == typeface) {
             return false;
         }
         this.currentTypeface.set(typeface);
@@ -101,31 +170,31 @@ public class ReaderTextModel {
         eventBus.post(new ReaderSettingMenuItemCustomizeEvent());
     }
 
-    public void onBoldfaceTypefaceClick() {
-        if(setCurrentTypeface(boldFaceType)) {
-            setTypeface(ReaderConfig.Typeface.BOLD_FACE_TYPEFACE);
+    public void onTypefaceOneClick() {
+        if (setCurrentTypeface(TypefaceOne)) {
+            setTypeface(ReaderConfig.Typeface.TYPEFACE_ONE);
         }
     }
 
-    public void onArialTypefaceClick() {
-        if(setCurrentTypeface(arialTypeface)) {
-            setTypeface(ReaderConfig.Typeface.ARIAL_TYPEFACE);
+    public void onTypefaceTwoClick() {
+        if (setCurrentTypeface(TypefaceTwo)) {
+            setTypeface(ReaderConfig.Typeface.TYPEFACE_TWO);
         }
     }
 
-    public void onItalicsTypefaceClick() {
-        if(setCurrentTypeface(italicsTypeface)) {
-            setTypeface(ReaderConfig.Typeface.ITALICS_TYPEFACE);
+    public void onTypefaceThreeClick() {
+        if (setCurrentTypeface(TypefaceThree)) {
+            setTypeface(ReaderConfig.Typeface.TYPEFACE_THREE);
         }
     }
 
-    public void onRoundBodyTypefaceClick() {
-        if(setCurrentTypeface(roundBodyTypeface)) {
-            setTypeface(ReaderConfig.Typeface.ROUND_BODY_TYPEFACE);
+    public void onTypefaceFourClick() {
+        if (setCurrentTypeface(TypefaceFour)) {
+            setTypeface(ReaderConfig.Typeface.TYPEFACE_FOUR);
         }
     }
 
-    public void setTypeface(String typeface){
+    public void setTypeface(String typeface) {
         ReaderSettingTypefaceEvent event = new ReaderSettingTypefaceEvent();
         event.typeFace = typeface;
         eventBus.post(event);
@@ -133,46 +202,46 @@ public class ReaderTextModel {
 
     public void onLevelOneClick() {
         setCurrentFontSize(ReaderFontSize.LevelOneFontSize);
-        setFontSize(ReaderConfig.FontSize.FONT_SIZE_X_SMALL);
+        setFontSize(FONT_SIZE_X_SMALL);
     }
 
     public void onLevelTwoClick() {
         setCurrentFontSize(ReaderFontSize.LevelTwoFontSize);
-        setFontSize(ReaderConfig.FontSize.FONT_SIZE_SMALL);
+        setFontSize(FONT_SIZE_SMALL);
     }
 
     public void onLevelThreeClick() {
         setCurrentFontSize(ReaderFontSize.LevelThreeFontSize);
-        setFontSize(ReaderConfig.FontSize.FONT_SIZE_MEDIUM);
+        setFontSize(FONT_SIZE_MEDIUM);
     }
 
     public void onLevelFourClick() {
         setCurrentFontSize(ReaderFontSize.LevelFourFontSize);
-        setFontSize(ReaderConfig.FontSize.FONT_SIZE_LARGE);
+        setFontSize(FONT_SIZE_LARGE);
     }
 
     public void onLevelFiveClick() {
         setCurrentFontSize(ReaderFontSize.LevelFiveFontSize);
-        setFontSize(ReaderConfig.FontSize.FONT_SIZE_X_LARGE);
+        setFontSize(FONT_SIZE_X_LARGE);
     }
 
     public void onLevelSixClick() {
         setCurrentFontSize(ReaderFontSize.LevelSixFontSize);
-        setFontSize(ReaderConfig.FontSize.FONT_SIZE_XX_LARGE);
+        setFontSize(FONT_SIZE_XX_LARGE);
     }
 
-    private void setFontSize(int fontSize){
+    private void setFontSize(int fontSize) {
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
         event.fontSize = fontSize;
         eventBus.post(event);
     }
 
-    public void onChangeChineseClick(){
+    public void onChangeChineseClick() {
         ChangeChineseConvertTypeEvent event = new ChangeChineseConvertTypeEvent();
-        if(currentLanguage.get() == Language.Simplified){
+        if (currentLanguage.get() == Language.Simplified) {
             event.convertType = ReaderChineseConvertType.SIMPLIFIED_TO_TRADITIONAL;
             setCurrentLanguage(Language.Traditional);
-        }else{
+        } else {
             event.convertType = ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED;
             setCurrentLanguage(Language.Simplified);
         }
