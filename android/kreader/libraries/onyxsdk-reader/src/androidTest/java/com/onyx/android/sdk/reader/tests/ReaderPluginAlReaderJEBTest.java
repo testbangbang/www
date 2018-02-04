@@ -69,7 +69,7 @@ public class ReaderPluginAlReaderJEBTest extends ApplicationTestCase<Application
                     0,
                     LocaleUtils.getLocaleDefaultCodePage(),
                     ReaderChineseConvertType.NONE,
-                    false);
+                    false,0);
 
             assertEquals(wrapper.openDocument(bookPaths.get(i), documentOptions), wrapper.NO_ERROR);
 
