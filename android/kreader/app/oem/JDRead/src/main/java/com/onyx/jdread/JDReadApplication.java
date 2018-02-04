@@ -100,7 +100,7 @@ public class JDReadApplication extends MultiDexApplication {
                         mtpBuffer.add(data.getPath());
                     }
 
-                    if ("epub".equals(FileUtils.getFileExtension(file))) {
+                    if (SupportType.getSupportThumbnailType().contains(FileUtils.getFileExtension(file))) {
                         ReaderDocumentCoverAction action = new ReaderDocumentCoverAction(ResManager.getInteger(R.integer.cloud_book_cover_width), ResManager.getInteger(R.integer.cloud_book_cover_height));
                         action.execute(ReaderDocumentCoverAction.initReaderDataHolder(data.getPath()), null);
                     }
