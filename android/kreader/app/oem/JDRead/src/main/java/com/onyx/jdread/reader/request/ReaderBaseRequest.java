@@ -1,11 +1,15 @@
 package com.onyx.jdread.reader.request;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.rx.RxRequest;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.Reader;
@@ -18,6 +22,7 @@ import io.reactivex.Scheduler;
  */
 
 public abstract class ReaderBaseRequest extends RxRequest {
+    private static final String TAG = ReaderBaseRequest.class.getSimpleName();
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
     private ReaderSelectionInfo selectionInfoManager;
@@ -98,6 +103,40 @@ public abstract class ReaderBaseRequest extends RxRequest {
 
         if (readerViewInfo != null) {
             readerUserDataInfo.loadPageAnnotations(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
+        }
+    }
+
+    public void saveReaderOptions(final Reader reader) {
+        if (reader.getReaderHelper().getDocument().saveOptions()) {
+            reader.getReaderHelper().saveOptions();
+            saveToDocumentOptions(reader);
+        }
+        saveToLegacyDataProvider(reader);
+    }
+
+    private void saveToDocumentOptions(final Reader reader) {
+        ContentSdkDataUtils.getDataProvider().saveDocumentOptions(reader.getReaderHelper().getContext(),
+                reader.getDocumentInfo().getBookPath(),
+                reader.getReaderHelper().getDocumentMd5(),
+                reader.getReaderHelper().getDocumentOptions().toJSONString());
+    }
+
+    private void saveToLegacyDataProvider(final Reader reader) {
+        try {
+            if (reader.getReaderHelper().getNavigator() != null) {
+                int currentPage = PagePositionUtils.getPageNumber(reader.getReaderHelper().getReaderLayoutManager().getCurrentPageInfo() != null ?
+                        reader.getReaderHelper().getReaderLayoutManager().getCurrentPageInfo().getName() :
+                        reader.getReaderHelper().getNavigator().getInitPosition());
+                int totalPage = reader.getReaderHelper().getNavigator().getTotalPage();
+                LegacySdkDataUtils.updateProgress(reader.getReaderHelper().getContext(), reader.getDocumentInfo().getBookPath(),
+                        currentPage, totalPage);
+                ContentSdkDataUtils.updateProgress(reader.getReaderHelper().getContext(), reader.getDocumentInfo().getBookPath(),
+                        currentPage, totalPage);
+                LegacySdkDataUtils.recordFinishReading(reader.getReaderHelper().getContext(), currentPage, totalPage);
+            }
+        } catch (Throwable tr) {
+            Log.w(TAG, this.getClass().toString());
+            Log.w(TAG, tr);
         }
     }
 }

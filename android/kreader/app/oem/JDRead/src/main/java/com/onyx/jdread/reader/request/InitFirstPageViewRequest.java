@@ -4,10 +4,12 @@ import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
-import com.onyx.android.sdk.utils.PreferenceManager;
+import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
+import com.onyx.jdread.reader.menu.model.ReaderMarginModel;
 
 /**
  * Created by huxiaomao on 2017/12/22.
@@ -17,6 +19,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private Reader reader;
     private int width;
     private int height;
+    private GammaInfo gammaInfo;
 
     public InitFirstPageViewRequest(Reader reader) {
         this.reader = reader;
@@ -74,7 +77,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
 
     private void initPosition() throws Exception {
         String bookPath = reader.getDocumentInfo().getBookPath();
-        String position = PreferenceManager.getStringValue(reader.getReaderHelper().getContext(), bookPath, null);
+        String position = reader.getReaderHelper().getDocumentOptions().getCurrentPage();
         if(StringUtils.isNullOrEmpty(position)){
             position = reader.getReaderHelper().getNavigator().getInitPosition();
         }
@@ -97,12 +100,13 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
 
         ReaderTextStyle style = ReaderTextStyle.create(fontFace, spUnit, lineSpacing, leftMargin, topMargin, rightMarin, BottomMarin,paragraphSpacing);
         reader.getReaderHelper().getReaderLayoutManager().setStyle(style);
+        restoreContrast();
     }
 
     private int getTopMarin(){
         int percent = reader.getReaderHelper().getDocumentOptions().getTopMargin();
         if(percent <= 0){
-            percent = ReaderConfig.PageLeftAndRightSpacing.DEFAULT_LEFT_AND_RIGHT_SPACING;
+            percent = ReaderMarginModel.DEFAULT_UP_AND_DOWN_SPACING;
         }
         return percent;
     }
@@ -110,7 +114,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private int getBottomMarin(){
         int percent = reader.getReaderHelper().getDocumentOptions().getBottomMargin();
         if(percent <= 0){
-            percent = ReaderConfig.PageLeftAndRightSpacing.DEFAULT_LEFT_AND_RIGHT_SPACING;
+            percent = ReaderMarginModel.DEFAULT_UP_AND_DOWN_SPACING;
         }
         return percent;
     }
@@ -118,7 +122,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private int getRightMarin(){
         int percent = reader.getReaderHelper().getDocumentOptions().getRightMargin();
         if(percent <= 0){
-            percent = ReaderConfig.PageLeftAndRightSpacing.DEFAULT_LEFT_AND_RIGHT_SPACING;
+            percent = ReaderMarginModel.DEFAULT_LEFT_AND_RIGHT_SPACING;
         }
         return percent;
     }
@@ -126,7 +130,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private int getLeftMarin(){
         int percent = reader.getReaderHelper().getDocumentOptions().getLeftMargin();
         if(percent <= 0){
-            percent = ReaderConfig.PageLeftAndRightSpacing.DEFAULT_LEFT_AND_RIGHT_SPACING;
+            percent = ReaderMarginModel.DEFAULT_LEFT_AND_RIGHT_SPACING;
         }
         return percent;
     }
@@ -134,7 +138,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private int getLineSpacing(){
         int lineSpacing = reader.getReaderHelper().getDocumentOptions().getLineSpacing();
         if(lineSpacing <= 0){
-            lineSpacing = ReaderConfig.PageLineSpacing.DEFAULT_LINE_SPACING;
+            lineSpacing = ReaderMarginModel.DEFAULT_LINE_SPACING;
         }
         return lineSpacing;
     }
@@ -142,7 +146,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private int getParagraphSpacing(){
         int paragraphSpacing = reader.getReaderHelper().getDocumentOptions().getParagraphSpacing();
         if(paragraphSpacing <= 0){
-            paragraphSpacing = ReaderConfig.PageParagraphSpacing.DEFAULT_PARAGRAPH_SPACING;
+            paragraphSpacing = ReaderMarginModel.DEFAULT_PARAGRAPH_SPACING;
         }
         return paragraphSpacing;
     }
@@ -161,5 +165,15 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
             fontFace = ReaderConfig.Typeface.DEFAULT_TYPEFACE;
         }
         return fontFace;
+    }
+
+    private void restoreContrast() {
+        gammaInfo = new GammaInfo();
+        gammaInfo.setEmboldenLevel(reader.getReaderHelper().getDocumentOptions().getEmboldenLevel());
+        reader.getReaderHelper().getDocumentOptions().setEmboldenLevel(reader.getReaderHelper().getDocumentOptions().getEmboldenLevel());
+    }
+
+    public GammaInfo getGammaInfo() {
+        return gammaInfo;
     }
 }

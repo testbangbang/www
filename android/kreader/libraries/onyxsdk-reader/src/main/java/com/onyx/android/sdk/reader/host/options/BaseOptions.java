@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentOptionsImpl;
@@ -639,7 +640,7 @@ public class BaseOptions {
     public final ReaderDocumentOptionsImpl documentOptions() {
         return new ReaderDocumentOptionsImpl(getPassword(), getZipPassword(),
                 getCodePage(), LocaleUtils.getLocaleDefaultCodePage(),
-                getChineseConvertType(), isCustomFormEnabled());
+                getChineseConvertType(), isCustomFormEnabled(), PagePositionUtils.getPosition(getCurrentPage()));
     }
 
     public final ReaderPluginOptions pluginOptions() {

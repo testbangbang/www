@@ -101,7 +101,7 @@ public class AlReaderWrapper {
         bookOpt.codePage = documentOptions.getCodePage();
         bookOpt.codePageDefault = documentOptions.getCodePageFallback();
         bookOpt.formatOptions = 0;
-        bookOpt.readPosition = 0;
+        bookOpt.readPosition = documentOptions.getReadPosition();
         if (bookEng.openBook(path, bookOpt) != TAL_RESULT.OK) {
             return ERROR_FILE_INVALID;
         }

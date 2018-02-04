@@ -4,6 +4,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.SettingLeftAndRightSpacingEvent;
 import com.onyx.jdread.reader.menu.event.SettingLineSpacingEvent;
@@ -17,18 +18,19 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ReaderMarginModel {
-    public final ObservableInt lineSpacing = new ObservableInt(LINE_SPACING_TWO);
-    public final ObservableInt paragraphSpacing = new ObservableInt(PARAGRAPH_SPACING_THREE);
-    public final ObservableInt leftAndRightSpacing = new ObservableInt(LEFT_AND_RIGHT_SPACING_FOUR);
-    public final ObservableInt upAndDownSpacing = new ObservableInt(UP_AND_DOWN_SPACING_THREE);
+    public final ObservableInt lineSpacing = new ObservableInt(DEFAULT_LINE_SPACING);
+    public final ObservableInt paragraphSpacing = new ObservableInt(DEFAULT_PARAGRAPH_SPACING);
+    public final ObservableInt leftAndRightSpacing = new ObservableInt(DEFAULT_LEFT_AND_RIGHT_SPACING);
+    public final ObservableInt upAndDownSpacing = new ObservableInt(DEFAULT_UP_AND_DOWN_SPACING);
 
 
-    public static final int LINE_SPACING_ONE = 10;
-    public static final int LINE_SPACING_TWO = 20;
-    public static final int LINE_SPACING_THREE = 30;
-    public static final int LINE_SPACING_FOUR = 40;
-    public static final int LINE_SPACING_FIVE = 50;
-    public static final int LINE_SPACING_SIX = 60;
+    public static final int LINE_SPACING_ONE = 10  + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_TWO = 20  + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_THREE = 30 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_FOUR = 40 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_FIVE = 50 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int LINE_SPACING_SIX = 60 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
+    public static final int DEFAULT_LINE_SPACING = LINE_SPACING_TWO;
 
     public static final int PARAGRAPH_SPACING_ONE = 20;
     public static final int PARAGRAPH_SPACING_TWO = 50;
@@ -36,8 +38,7 @@ public class ReaderMarginModel {
     public static final int PARAGRAPH_SPACING_FOUR = 110;
     public static final int PARAGRAPH_SPACING_FIVE = 140;
     public static final int PARAGRAPH_SPACING_SIX = 170;
-
-
+    public static final int DEFAULT_PARAGRAPH_SPACING = PARAGRAPH_SPACING_THREE;
 
     public static final int  LEFT_AND_RIGHT_SPACING_ONE = 3;
     public static final int  LEFT_AND_RIGHT_SPACING_TWO = 6;
@@ -45,7 +46,7 @@ public class ReaderMarginModel {
     public static final int LEFT_AND_RIGHT_SPACING_FOUR = 12;
     public static final int  LEFT_AND_RIGHT_SPACING_FIVE = 15;
     public static final int LEFT_AND_RIGHT_SPACING_SIX = 18;
-
+    public static final int DEFAULT_LEFT_AND_RIGHT_SPACING = LEFT_AND_RIGHT_SPACING_FOUR;
 
     public static final int UP_AND_DOWN_SPACING_ONE = 3;
     public static final int UP_AND_DOWN_SPACING_TWO = 6;
@@ -53,12 +54,23 @@ public class ReaderMarginModel {
     public static final int UP_AND_DOWN_SPACING_FOUR = 12;
     public static final int UP_AND_DOWN_SPACING_FIVE = 15;
     public static final int UP_AND_DOWN_SPACING_SIX = 18;
+    public static final int DEFAULT_UP_AND_DOWN_SPACING = UP_AND_DOWN_SPACING_THREE;
 
 
     private EventBus eventBus;
 
-    public ReaderMarginModel(EventBus eventBus) {
+    public ReaderMarginModel(EventBus eventBus, ReaderTextStyle style) {
         this.eventBus = eventBus;
+        setDefaultStyle(style);
+    }
+
+    private void setDefaultStyle(ReaderTextStyle style){
+        if(style != null) {
+            setLineSpacing(style.getLineSpacing().getPercent());
+            setParagraphSpacing(style.getParagraphSpacing().getPercent());
+            setUpAndDownSpacing(style.getPageMargin().getTopMargin().getPercent());
+            setLeftAndRightSpacing(style.getPageMargin().getLeftMargin().getPercent());
+        }
     }
 
     public EventBus getEventBus() {

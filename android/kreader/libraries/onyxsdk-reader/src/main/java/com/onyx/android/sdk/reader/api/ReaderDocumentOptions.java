@@ -20,4 +20,6 @@ public interface ReaderDocumentOptions {
 
     public boolean isCustomFormEnabled();
 
+    int getReadPosition();
+
 }
