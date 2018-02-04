@@ -15,213 +15,229 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_stroke"
+        android:background="@drawable/rectangle_stroke_corners"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/book_copyright_contain_padding_bottom"
-        android:paddingLeft="@dimen/book_copyright_contain_padding"
-        android:paddingRight="@dimen/book_copyright_contain_padding">
+        android:paddingBottom="@dimen/book_copyright_contain_padding_bottom">
 
-        <ImageView
-            android:layout_width="@dimen/book_copyright_cancel_button_width_and_height"
-            android:layout_height="@dimen/book_copyright_cancel_button_width_and_height"
-            android:layout_gravity="right"
-            android:layout_marginTop="@dimen/book_copyright_cancel_button_margin_top"
-            android:onClick="@{()->bookDetailViewModel.onCopyrightCancelClick()}"
-            android:padding="@dimen/cancel_button_padding"
-            android:src="@mipmap/ic_cancel" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shop_dialog_title_height">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/book_detail_view_copyright"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_two_heading_font"
-            android:textStyle="bold" />
+            <ImageView
+                android:layout_width="@dimen/book_copyright_cancel_button_width_and_height"
+                android:layout_height="@dimen/book_copyright_cancel_button_width_and_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/book_copyright_contain_padding"
+                android:onClick="@{()->bookDetailViewModel.onCopyrightCancelClick()}"
+                android:padding="@dimen/cancel_button_padding"
+                android:src="@mipmap/ic_cancel" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/book_detail_view_copyright"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/layout_gray_line" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/book_copyright_item_margin_top"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/book_copyright_contain_padding"
+            android:paddingRight="@dimen/book_copyright_contain_padding">
 
-            <TextView
-                android:id="@+id/book_copyright_book_name"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{bookDetailViewModel.bookDetailResultBean.data.name}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:layout_marginTop="@dimen/book_copyright_item_margin_top"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/book_copyright_book_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.name}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/book_copyright_item_margin_top"
-            android:orientation="horizontal">
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/copyright_book_format"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:layout_marginTop="@dimen/book_copyright_item_margin_top"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/copyright_book_format"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.format}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{bookDetailViewModel.bookDetailResultBean.data.format}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:layout_marginTop="@dimen/book_copyright_item_margin_top"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/copyright_book_word_count"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/book_copyright_item_margin_top"
-            android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{CommonUtils.formatWordCount(bookDetailViewModel.bookDetailResultBean.data.word_count)}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/copyright_book_word_count"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:layout_marginTop="@dimen/book_copyright_item_margin_top"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/copyright_book_publish"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.publisher}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{CommonUtils.formatWordCount(bookDetailViewModel.bookDetailResultBean.data.word_count)}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:layout_marginTop="@dimen/book_copyright_item_margin_top"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/copyright_book_publish_time"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/book_copyright_item_margin_top"
-            android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.publish_time}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/copyright_book_publish"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:layout_marginTop="@dimen/book_copyright_item_margin_top"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/copyright_book_isbn"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.isbn}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{bookDetailViewModel.bookDetailResultBean.data.publisher}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:layout_marginTop="@dimen/book_copyright_item_margin_top"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/copyright_book_edition"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/book_copyright_item_margin_top"
-            android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.edition}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/copyright_book_publish_time"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:layout_marginTop="@dimen/book_copyright_item_margin_top"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{bookDetailViewModel.bookDetailResultBean.data.publish_time}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/copyright_book_size"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{@string/copyright_book_size_value(bookDetailViewModel.bookDetailResultBean.data.file_size)}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/book_copyright_item_margin_top"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/copyright_book_isbn"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{bookDetailViewModel.bookDetailResultBean.data.isbn}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/book_copyright_item_margin_top"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/copyright_book_edition"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{bookDetailViewModel.bookDetailResultBean.data.edition}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/book_copyright_item_margin_top"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/copyright_book_size"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{@string/copyright_book_size_value(bookDetailViewModel.bookDetailResultBean.data.file_size)}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+            </LinearLayout>
 
         </LinearLayout>
 

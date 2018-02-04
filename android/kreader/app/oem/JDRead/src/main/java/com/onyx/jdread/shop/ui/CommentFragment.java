@@ -22,6 +22,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
@@ -34,7 +35,6 @@ import com.onyx.jdread.shop.event.TopRightTitleEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-import com.onyx.jdread.shop.view.AutoPagedWebView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -208,15 +208,15 @@ public class CommentFragment extends BaseFragment {
         infoBinding.setViewModel(dialogBookInfoViewModel);
         AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
         build.setView(infoBinding.getRoot());
-        build.setCancelable(true);
-        AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
+        build.setCancelable(false);
+        HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);
         settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
-        pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
+        pagedWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
             @Override
-            public void onPageChanged(int currentPage, int totalPage) {
-                dialogBookInfoViewModel.currentPage.set(currentPage);
+            public void onPageChanged(int totalPage, int curPage) {
+                dialogBookInfoViewModel.currentPage.set(curPage);
                 dialogBookInfoViewModel.totalPage.set(totalPage);
             }
         });

@@ -152,8 +152,9 @@
     <dimen name="book_detail_button_padding">10dp</dimen>
     <dimen name="book_detail_button_margin">10dp</dimen>
     <dimen name="book_comment_indicator_padding">5dp</dimen>
-    <dimen name="book_copyright_contain_padding">25dp</dimen>
-    <dimen name="book_copyright_contain_padding_bottom">20dp</dimen>
+    <dimen name="book_copyright_contain_padding">23dp</dimen>
+    <dimen name="book_copyright_contain_padding_bottom">58dp</dimen>
+    <dimen name="book_info_contain_padding_bottom">20dp</dimen>
     <dimen name="book_copyright_item_margin_top">20dp</dimen>
     <dimen name="cancel_button_padding">5dp</dimen>
     <dimen name="book_copyright_cancel_button_width_and_height">30dp</dimen>
@@ -497,4 +498,8 @@
     <dimen name="device_config_update_record_margin_right">24dp</dimen>
     <dimen name="subject_list_just_vip_margin_left">50dp</dimen>
     <dimen name="item_subject_common_name_line_space">5dp</dimen>
+    <dimen name="book_detail_drawable_left_padding">6dp</dimen>
+    <dimen name="book_detail_view_catalog_container_margin_left_and_right">30dp</dimen>
+    <dimen name="shop_dialog_title_height">55dp</dimen>
+    <dimen name="shop_dialog_content_height">300dp</dimen>
 </resources>

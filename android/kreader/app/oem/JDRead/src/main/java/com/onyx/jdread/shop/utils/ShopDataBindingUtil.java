@@ -8,6 +8,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
@@ -22,7 +23,6 @@ import com.onyx.jdread.shop.adapter.SubjectWithVipAdapter;
 import com.onyx.jdread.shop.adapter.TitleSubjectAdapter;
 import com.onyx.jdread.shop.adapter.VipReadAdapter;
 import com.onyx.jdread.shop.common.ManageImageCache;
-import com.onyx.jdread.shop.view.AutoPagedWebView;
 import com.onyx.jdread.shop.view.HtmlTextView;
 
 import java.util.List;
@@ -120,11 +120,10 @@ public class ShopDataBindingUtil {
     }
 
     @BindingAdapter({"bookInfoWebView"})
-    public static void setBookInfoDialog(AutoPagedWebView webView, String content) {
-        if (StringUtils.isNullOrEmpty(content)) {
-            content = ResManager.getString(R.string.book_detail_empty_introduce);
+    public static void setBookInfoDialog(HTMLReaderWebView webView, String content) {
+        if (!StringUtils.isNullOrEmpty(content)) {
+            webView.loadData(content, "text/html; charset=UTF-8", null);
         }
-        webView.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
     }
 
     @BindingAdapter({"subjectList"})
