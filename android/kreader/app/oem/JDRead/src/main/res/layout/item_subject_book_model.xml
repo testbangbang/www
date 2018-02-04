@@ -12,8 +12,7 @@
     <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:padding="@dimen/subject_model_item_padding">
+        android:gravity="center">
 
         <LinearLayout
             android:id="@+id/cover_panel"
@@ -26,7 +25,6 @@
                 android:id="@+id/image_cover"
                 android:layout_width="@dimen/subject_model_item_width"
                 android:layout_height="@dimen/subject_model_item_height"
-                android:padding="@dimen/rectangle_stroke_width"
                 android:scaleType="fitXY"
                 bind:cover="@{bookBean.image_url}" />
 

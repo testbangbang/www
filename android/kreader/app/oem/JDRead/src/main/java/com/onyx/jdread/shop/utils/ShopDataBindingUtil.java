@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
@@ -44,6 +45,9 @@ public class ShopDataBindingUtil {
     public static void setItems(PageRecyclerView recyclerView, List items) {
         SubjectAdapter adapter = (SubjectAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
+            if (items.size() > Constants.SHOP_MAIN_INDEX_FOUR) {
+                items = items.subList(0, Constants.SHOP_MAIN_INDEX_FOUR);
+            }
             adapter.setRawData(items, recyclerView.getContext());
         }
     }
@@ -60,6 +64,9 @@ public class ShopDataBindingUtil {
     public static void setBannerItems(PageRecyclerView recyclerView, List items) {
         BannerSubjectAdapter adapter = (BannerSubjectAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
+            if (items.size() > Constants.SHOP_MAIN_INDEX_TWO) {
+                items = items.subList(0, Constants.SHOP_MAIN_INDEX_TWO);
+            }
             adapter.setRawData(items, recyclerView.getContext());
         }
     }

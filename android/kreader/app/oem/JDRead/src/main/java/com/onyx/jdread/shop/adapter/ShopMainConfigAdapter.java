@@ -16,6 +16,7 @@ import com.onyx.jdread.databinding.LayoutBackTopViewBinding;
 import com.onyx.jdread.databinding.LayoutBookShopTopFunctionBinding;
 import com.onyx.jdread.databinding.SubjectCommonBinding;
 import com.onyx.jdread.databinding.SubjectTitleBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.model.BannerViewModel;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.MainConfigEndViewModel;
@@ -25,6 +26,7 @@ import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.TitleSubjectViewModel;
 import com.onyx.jdread.shop.model.TopFunctionViewModel;
 import com.onyx.jdread.shop.model.VipUserInfoViewModel;
+import com.onyx.jdread.shop.view.SubjectBookItemSpaceItemDecoration;
 
 /**
  * Created by jackdeng on 2018/1/31.
@@ -108,6 +110,9 @@ public class ShopMainConfigAdapter extends SubjectCommonAdapter {
             bind = DataBindingUtil.bind(view);
             SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter(ShopDataBundle.getInstance().getEventBus());
             PageRecyclerView recyclerViewSuject = bind.recyclerViewSuject;
+            SubjectBookItemSpaceItemDecoration dividerItemDecoration = new SubjectBookItemSpaceItemDecoration(false,
+                    ResManager.getDimens(R.dimen.subject_model_item_space));
+            recyclerViewSuject.addItemDecoration(dividerItemDecoration);
             recyclerViewSuject.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
             recyclerViewSuject.setAdapter(recyclerViewOneAdapter);
         }
@@ -131,6 +136,9 @@ public class ShopMainConfigAdapter extends SubjectCommonAdapter {
             bind = DataBindingUtil.bind(view);
             BannerSubjectAdapter adapter = new BannerSubjectAdapter(ShopDataBundle.getInstance().getEventBus());
             PageRecyclerView recyclerViewSuject = bind.recyclerViewBanner;
+            SubjectBookItemSpaceItemDecoration dividerItemDecoration = new SubjectBookItemSpaceItemDecoration(true,
+                    ResManager.getDimens(R.dimen.banner_subject_model_item_space));
+            recyclerViewSuject.addItemDecoration(dividerItemDecoration);
             recyclerViewSuject.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
             recyclerViewSuject.setAdapter(adapter);
         }
