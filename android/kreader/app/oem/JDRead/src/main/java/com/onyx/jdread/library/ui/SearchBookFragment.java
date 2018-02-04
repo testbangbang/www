@@ -88,6 +88,7 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchHintRecycler.setAdapter(searchHintAdapter);
 
         binding.searchResultRecycler.setLayoutManager(new DisableScrollGridManager(getContext().getApplicationContext()));
+        binding.searchResultRecycler.setPageTurningCycled(true);
         binding.searchResultRecycler.addItemDecoration(new DashLineItemDivider());
         searchResultAdapter = new SearchResultAdapter();
         binding.searchResultRecycler.setAdapter(searchResultAdapter);
