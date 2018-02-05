@@ -13,24 +13,19 @@ import com.onyx.jdread.reader.highlight.SelectionInfo;
 
 public class UpdateAnnotationRequest extends ReaderBaseRequest {
     private Reader reader;
-    private SelectionInfo readerSelectionInfo;
+    private Annotation annotation;
     private NoteInfo noteInfo;
 
-    public UpdateAnnotationRequest(Reader reader, SelectionInfo readerSelectionInfo, NoteInfo noteInfo) {
+    public UpdateAnnotationRequest(Reader reader, Annotation annotation, NoteInfo noteInfo) {
         this.reader = reader;
-        this.readerSelectionInfo = readerSelectionInfo;
+        this.annotation = annotation;
         this.noteInfo = noteInfo;
     }
 
     @Override
     public UpdateAnnotationRequest call() throws Exception {
-
-        ReaderSelection selection = readerSelectionInfo.getCurrentSelection();
-        Annotation annotation = AddAnnotationRequest.createAnnotation(reader, readerSelectionInfo.pageInfo,
-                selection.getStartPosition(), selection.getEndPosition(),
-                selection.getRectangles(), noteInfo.srcNote, noteInfo.newNote,noteInfo.chapterName);
-
-        ContentSdkDataUtils.getDataProvider().addAnnotation(annotation);
+        annotation.setNote(noteInfo.newNote);
+        ContentSdkDataUtils.getDataProvider().updateAnnotation(annotation);
         updateSetting(reader);
         return this;
     }
