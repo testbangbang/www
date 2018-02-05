@@ -29,7 +29,11 @@ public class NoteLibraryRemoveRequest extends AsyncBaseNoteRequest {
         noteList = NoteDataProvider.loadAllNoteLibraryList();
         targetRemoveList = new ArrayList<>();
         for (String id : uniqueIdList) {
-            if (NoteDataProvider.load(getContext(), id).getType() == NoteModel.TYPE_DOCUMENT) {
+            NoteModel noteModel = NoteDataProvider.load(getContext(), id);
+            if (noteModel == null) {
+                continue;
+            }
+            if (noteModel.getType() == NoteModel.TYPE_DOCUMENT) {
                 NoteDataProvider.remove(getContext(), id);
                 continue;
             }

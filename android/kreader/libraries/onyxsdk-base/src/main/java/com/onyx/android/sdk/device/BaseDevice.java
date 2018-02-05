@@ -510,4 +510,7 @@ public class BaseDevice {
 
     public void enableElectromagneticTp(boolean enable) {
     }
+
+    public void mergeDisplayUpdate(int timeout, UpdateMode mode) {
+    }
 }

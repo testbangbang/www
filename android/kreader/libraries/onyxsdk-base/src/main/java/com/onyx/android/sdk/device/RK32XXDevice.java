@@ -188,6 +188,8 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodEnableCapacitanceTp;
     private static Method sMethodEnableElectromagneticTp;
 
+    private static Method sMethodMergeDisplayUpdate = null;
+
     private RK32XXDevice() {
     }
 
@@ -823,6 +825,8 @@ public class RK32XXDevice extends BaseDevice {
             sMethodGetStorageRootDirectory = ReflectUtil.getMethodSafely(Environment.class,"getStorageRootDirectory");
             sMethodGetRemovableSDCardDirectory = ReflectUtil.getMethodSafely(Environment.class,"getRemovableSDCardDirectory");
 
+            sMethodMergeDisplayUpdate = ReflectUtil.getMethodSafely(cls, "mergeDisplayUpdate", int.class, int.class);
+
             Log.d(TAG, "init device EINK_ONYX_GC_MASK.");
             return sInstance;
         }
@@ -1191,5 +1195,10 @@ public class RK32XXDevice extends BaseDevice {
     @Override
     public void enableElectromagneticTp(boolean enable) {
         invokeDeviceControllerMethod(null, sMethodEnableElectromagneticTp, enable);
+    }
+
+    @Override
+    public void mergeDisplayUpdate(int timeout, UpdateMode mode) {
+        ReflectUtil.invokeMethodSafely(sMethodMergeDisplayUpdate, null, timeout, getUpdateMode(mode));
     }
 }
