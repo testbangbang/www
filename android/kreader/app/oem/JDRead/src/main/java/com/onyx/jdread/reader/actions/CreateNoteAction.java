@@ -62,4 +62,8 @@ public class CreateNoteAction extends BaseReaderAction {
     public NoteInfo getNoteInfo() {
         return noteInfo;
     }
+
+    public Annotation getAnnotation() {
+        return annotation;
+    }
 }

@@ -60,7 +60,7 @@ public class ReaderNoteDialog extends Dialog implements ReaderNoteViewBack {
         createNoteAction.execute(readerDataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                noteViewModel.setNoteInfo(readerDataHolder.getAppContext(), createNoteAction.getNoteInfo());
+                noteViewModel.setNoteInfo(readerDataHolder.getAppContext(), createNoteAction.getNoteInfo(),annotation);
             }
         });
     }

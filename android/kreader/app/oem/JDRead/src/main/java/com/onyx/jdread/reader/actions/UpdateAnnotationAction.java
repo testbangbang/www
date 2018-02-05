@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.actions;
 
+import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -13,18 +14,17 @@ import com.onyx.jdread.reader.request.UpdateAnnotationRequest;
 
 public class UpdateAnnotationAction extends BaseReaderAction {
     private NoteInfo noteInfo;
-    private String pagePosition;
+    private Annotation annotation;
 
-    public UpdateAnnotationAction(NoteInfo noteInfo, String pagePosition) {
+    public UpdateAnnotationAction(NoteInfo noteInfo,Annotation annotation) {
         this.noteInfo = noteInfo;
-        this.pagePosition = pagePosition;
+        this.annotation = annotation;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
-        SelectionInfo readerSelectionInfo = readerDataHolder.getReaderSelectionInfo().getReaderSelectionInfo(pagePosition);
 
-        final UpdateAnnotationRequest request = new UpdateAnnotationRequest(readerDataHolder.getReader(), readerSelectionInfo, noteInfo);
+        final UpdateAnnotationRequest request = new UpdateAnnotationRequest(readerDataHolder.getReader(), annotation, noteInfo);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
