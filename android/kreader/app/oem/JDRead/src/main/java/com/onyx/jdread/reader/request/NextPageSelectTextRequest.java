@@ -83,7 +83,8 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
         readerSelectionManager.update(pagePosition, reader.getReaderHelper().getContext(),
                 getReaderUserDataInfo().getHighlightResult(),
                 getReaderUserDataInfo().getTouchPoint(),
-                pageInfo);
+                pageInfo,
+                reader.getReaderHelper().getReaderLayoutManager().getTextStyleManager().getStyle());
         readerSelectionManager.updateDisplayPosition(pagePosition);
         readerSelectionManager.setEnable(pagePosition, true);
 
@@ -141,7 +142,8 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
         readerSelectionManager.update(currentPagePosition, reader.getReaderHelper().getContext(),
                 currentPageReaderSelect,
                 currentPageTouchPoint,
-                pageInfo);
+                pageInfo,
+                reader.getReaderHelper().getReaderLayoutManager().getTextStyleManager().getStyle());
         readerSelectionManager.updateDisplayPosition(currentPagePosition);
         readerSelectionManager.setEnable(currentPagePosition, true);
     }
