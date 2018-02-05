@@ -49,6 +49,7 @@
             subjectItems="@{viewModel.modelBean.bookList}"
             android:layout_width="match_parent"
             android:layout_height="@dimen/book_shop_recycler_height"
+            android:layout_marginRight="@dimen/book_shop_recycler_margin_right"
             android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
 
     </LinearLayout>
