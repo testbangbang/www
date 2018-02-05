@@ -1,6 +1,7 @@
 package com.onyx.jdread.personal.ui;
 
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.adapter.PersonalAdapter;
@@ -107,7 +109,9 @@ public class PersonalFragment extends BaseFragment {
 
     private void initView() {
         binding.personalRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        binding.personalRecycler.addItemDecoration(new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL));
+        OnyxPageDividerItemDecoration decoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        decoration.setDivider(new ColorDrawable(ResManager.getColor(R.color.divider_color_setting)));
+        binding.personalRecycler.addItemDecoration(decoration);
         personalAdapter = new PersonalAdapter(PersonalDataBundle.getInstance().getEventBus());
         binding.personalRecycler.setAdapter(personalAdapter);
     }

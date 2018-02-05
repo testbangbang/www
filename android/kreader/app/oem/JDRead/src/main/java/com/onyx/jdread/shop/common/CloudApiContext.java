@@ -241,6 +241,14 @@ public class CloudApiContext {
         return retrofit.create(ReadContentService.class);
     }
 
+    public static ReadContentService getServiceForNoLogin(String baseUrl) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return retrofit.create(ReadContentService.class);
+    }
+
     public static OkHttpClient getClientNoCookie() {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new EnhancedCacheInterceptor())
