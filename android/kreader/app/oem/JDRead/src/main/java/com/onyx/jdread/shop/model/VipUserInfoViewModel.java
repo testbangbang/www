@@ -23,6 +23,6 @@ public class VipUserInfoViewModel extends BaseSubjectViewModel{
     }
 
     public void onVipButtonClick() {
-        getEventBus().post(new VipButtonClickEvent());
+        getEventBus().post(new VipButtonClickEvent(buttonContent.get()));
     }
 }

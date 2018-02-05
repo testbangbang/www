@@ -10,4 +10,6 @@ public class BookExtraInfoBean {
     public int downLoadState;
     public String localPath;
     public Object downLoadTaskTag;
+    public float totalSize;
+    public float progress;
 }

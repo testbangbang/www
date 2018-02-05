@@ -27,6 +27,8 @@ public class CustomRecycleView extends RecyclerView {
     private int curPageIndex;
     private OnPagingListener onPagingListener;
     private HashMap<Integer, Integer> pageIndexMap = new HashMap<>();
+    private boolean pageTurningCycled = false;
+    private int totalPages;
 
     public CustomRecycleView(Context context) {
         super(context);
@@ -49,6 +51,22 @@ public class CustomRecycleView extends RecyclerView {
         setClipChildren(true);
         setLayoutManager(new DisableScrollLinearManager(getContext(), LinearLayoutManager.VERTICAL, false));
         pageIndexMap.put(0, 0);
+    }
+
+    public boolean isPageTurningCycled() {
+        return pageTurningCycled;
+    }
+
+    public void setPageTurningCycled(boolean cycled) {
+        this.pageTurningCycled = cycled;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
     }
 
     public void setOnPagingListener(OnPagingListener listener) {
@@ -105,6 +123,15 @@ public class CustomRecycleView extends RecyclerView {
         SubjectCommonAdapter adapter = getAdapter();
         if (adapter != null) {
             if (curPageIndex <= 0) {
+                if (isPageTurningCycled()) {
+                    List<BaseSubjectViewModel> datas = adapter.getDatas();
+                    if (datas != null) {
+                        int lastPosition = datas.size() - 1;
+                        curPageIndex = getTotalPages() - 1;
+                        pageIndexMap.put(curPageIndex, lastPosition);
+                        scrollToPosition(lastPosition);
+                    }
+                }
                 return;
             }
             if (curPageIndex > 0) {
@@ -124,6 +151,9 @@ public class CustomRecycleView extends RecyclerView {
             int lastCompletelyPosition = getDisableLayoutManager().findLastCompletelyVisibleItemPosition();
             List<BaseSubjectViewModel> datas = adapter.getDatas();
             if (lastCompletelyPosition == datas.size() - 1) {
+                if (isPageTurningCycled()) {
+                    scrollToPosition(0);
+                }
                 return;
             }
             int lastVisibleItemPosition = getDisableLayoutManager().findLastVisibleItemPosition();
@@ -141,9 +171,9 @@ public class CustomRecycleView extends RecyclerView {
         super.scrollToPosition(position);
         if (onPagingListener != null) {
             if (position == 0) {
-                curPageIndex = 0;
-                onPagingListener.onPageChange(curPageIndex);
+                curPageIndex = position;
             }
+            onPagingListener.onPageChange(curPageIndex);
         }
     }
 
