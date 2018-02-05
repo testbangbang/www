@@ -23,11 +23,16 @@ public class RemoveByPointListAction extends BaseNoteAction {
     private volatile TouchPointList touchPointList;
     private volatile List<Shape> stash = new ArrayList<>();
     private volatile SurfaceView surfaceView;
+    private volatile boolean transBackground;
 
-    public RemoveByPointListAction(TouchPointList touchPointList, List<Shape> stash, SurfaceView surfaceView) {
+    public RemoveByPointListAction(TouchPointList touchPointList,
+                                   List<Shape> stash,
+                                   SurfaceView surfaceView,
+                                   boolean transBackground) {
         this.touchPointList = touchPointList;
         this.stash = stash;
         this.surfaceView = surfaceView;
+        this.transBackground = transBackground;
     }
 
     @Override
@@ -35,7 +40,7 @@ public class RemoveByPointListAction extends BaseNoteAction {
         if (touchPointList == null) {
             return;
         }
-        changeRequest = new ShapeRemoveByPointListRequest(touchPointList, stash, surfaceView);
+        changeRequest = new ShapeRemoveByPointListRequest(touchPointList, stash, surfaceView, transBackground);
         noteViewHelper.submit(getAppContext(), changeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
