@@ -10,11 +10,13 @@ import com.onyx.android.libsetting.SettingConfig;
 import com.onyx.android.libsetting.manager.SettingsPreferenceManager;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.data.CloudStore;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.manager.OssManager;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.settings.device.DeviceConfig;
+import com.onyx.android.settings.request.CheckForceAutoSleepTimeRequest;
 
 /**
  * Created by suicheng on 2017/4/28.
@@ -45,6 +47,7 @@ public class SettingsApplication extends MultiDexApplication {
             initDeviceConfig();
             initCloudStore();
             initErrorReportAction();
+            checkForceAutoSleepTime();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,7 +76,7 @@ public class SettingsApplication extends MultiDexApplication {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                if (AppCompatUtils.isColorDevice(activity)){
+                if (AppCompatUtils.isColorDevice(activity)) {
                     Device.currentDevice().postInvalidate(activity.getWindow().getDecorView(), UpdateMode.GC);
                 }
             }
@@ -111,5 +114,11 @@ public class SettingsApplication extends MultiDexApplication {
         ossConfig.setKeyId(OSS_LOG_KEY_ID);
         ossConfig.setKeySecret(OSS_LOG_KEY_SECRET);
         return new OssManager(context.getApplicationContext(), ossConfig);
+    }
+
+    private void checkForceAutoSleepTime() {
+        CheckForceAutoSleepTimeRequest timeRequest = new CheckForceAutoSleepTimeRequest();
+        DataManager dataManager = new DataManager();
+        dataManager.submit(getApplicationContext(), timeRequest, null);
     }
 }
