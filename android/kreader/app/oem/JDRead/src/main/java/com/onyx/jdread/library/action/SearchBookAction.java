@@ -8,10 +8,12 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.request.RxSaveSearchHistoryRequest;
 import com.onyx.jdread.library.request.RxSearchBookRequest;
 import com.onyx.jdread.main.action.BaseAction;
+import com.onyx.jdread.util.InputUtils;
 
 /**
  * Created by hehai on 18-1-18.
@@ -29,7 +31,12 @@ public class SearchBookAction extends BaseAction<LibraryDataBundle> {
         if (submit) {
             saveSearchHistory(libraryDataBundle);
         }
-        QueryArgs queryArgs = QueryBuilder.searchQuery(libraryDataBundle.getSearchBookModel().searchKey.get(), SortBy.None, SortOrder.Asc);
+        String key = libraryDataBundle.getSearchBookModel().searchKey.get();
+        key = InputUtils.filterSpecialCharacters(key);
+        if (StringUtils.isNullOrEmpty(key)) {
+            return;
+        }
+        QueryArgs queryArgs = QueryBuilder.searchQuery(key, SortBy.None, SortOrder.Asc);
         RxSearchBookRequest request = new RxSearchBookRequest(libraryDataBundle.getDataManager(), queryArgs, libraryDataBundle.getEventBus());
         request.execute(new RxCallback<RxSearchBookRequest>() {
             @Override

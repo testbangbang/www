@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class InputUtils {
 
     public static boolean haveSpecialCharacters(String str) {
-        String limitEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@①#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        String limitEx = "[^a-zA-Z0-9\\u4e00-\\u9fa5]";
         Pattern pattern = Pattern.compile(limitEx);
         Matcher m = pattern.matcher(str);
         return m.find();
@@ -56,13 +56,17 @@ public class InputUtils {
     }
 
     public static String filterSpecialCharacters(String string) {
-        String regEx = "[-_().a-zA-Z0-9\\u4e00-\\u9fa5]";
-        Pattern p = Pattern.compile(regEx);
-        Matcher m = p.matcher(string);
-        StringBuilder sb = new StringBuilder();
-        while (m.find()) {
-            sb.append(m.group());
+        if (!isHaveAvailableCharacters(string)) {
+            return null;
         }
-        return sb.toString();
+        String regEx = "[^a-zA-Z0-9\\u4e00-\\u9fa5]";
+        return string.replaceAll(regEx, "%");
+    }
+
+    private static boolean isHaveAvailableCharacters(String string) {
+        String limitEx = "[a-zA-Z0-9\\u4e00-\\u9fa5]";
+        Pattern pattern = Pattern.compile(limitEx);
+        Matcher m = pattern.matcher(string);
+        return m.find();
     }
 }
