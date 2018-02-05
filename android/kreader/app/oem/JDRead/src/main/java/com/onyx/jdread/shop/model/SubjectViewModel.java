@@ -1,7 +1,6 @@
 package com.onyx.jdread.shop.model;
 
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
-import com.onyx.jdread.shop.event.ViewAllNextClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -18,9 +17,5 @@ public class SubjectViewModel extends BaseSubjectViewModel {
 
     public void onViewAllClick() {
         getEventBus().post(new ViewAllClickEvent(getModelBean()));
-    }
-
-    public void onNextViewAllClick() {
-        getEventBus().post(new ViewAllNextClickEvent(getModelBean()));
     }
 }

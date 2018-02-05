@@ -11,7 +11,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.TilteSubjectItemBinding;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
-import com.onyx.jdread.shop.event.TitleSubjectItemClickEvent;
+import com.onyx.jdread.shop.event.ViewAllClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -82,7 +82,7 @@ public class TitleSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder
         int position = (int) tag;
         BookModelConfigResultBean.DataBean.ModulesBean modulesBean = getItemVMList().get(position);
         if (eventBus != null && modulesBean != null) {
-            eventBus.post(new TitleSubjectItemClickEvent(modulesBean));
+            eventBus.post(new ViewAllClickEvent(modulesBean));
         }
     }
 

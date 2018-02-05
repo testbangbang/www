@@ -120,4 +120,7 @@ public class Constants {
     public static final String CATEGORY_MATH_CONTENT = "数字内容";
     public static final String CATEGORY_BOY_ORIGINAL = "男生原创";
     public static final String CATEGORY_GIRL_ORIGINAL = "女生原创";
+    public static final int RELATE_TYPE_BOOK_LIST = 1;
+    public static final int RELATE_TYPE_LINK = 2;
+    public static final int RELATE_TYPE_BOOK_DETAIL = 4;
 }
