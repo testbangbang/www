@@ -61,11 +61,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:drawableLeft="@{noteViewModel.saveIcon}"
+                    android:drawableLeft="@mipmap/ic_read_save"
                     android:onClick="@{()->noteViewModel.saveClick()}"
-                    android:text="@{noteViewModel.isEdit?@string/save:@string/reader_edit}"
+                    android:text="@string/save"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_two_heading_font" />
+                    android:textSize="@dimen/level_two_heading_font"
+                    android:visibility="@{noteViewModel.isEdit?View.VISIBLE:View.GONE}"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:drawableLeft="@mipmap/ic_read_edit"
+                    android:onClick="@{()->noteViewModel.editClick()}"
+                    android:text="@string/reader_edit"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font"
+                    android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -178,7 +190,6 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:gravity="top"
-                android:inputType="@{noteViewModel.isEdit?InputType.TYPE_CLASS_TEXT:InputType.TYPE_NULL}"
                 android:padding="10dp"
                 android:text="@={noteViewModel.srcNote}"
                 android:textColor="@android:color/black"
