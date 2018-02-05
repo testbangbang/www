@@ -458,4 +458,7 @@
     <string name="format_rmb">¥%s</string>
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">the book already purchase</string>
     <string name="no_more_content">No more content</string>
+    <string name="category_publish">Published</string>
+    <string name="category_boy">Boy</string>
+    <string name="category_girl">Girl</string>
 </resources>

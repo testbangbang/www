@@ -1,6 +1,7 @@
 package com.onyx.jdread.personal.ui;
 
 import android.databinding.DataBindingUtil;
+import android.databinding.ObservableList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,8 +11,14 @@ import android.view.ViewGroup;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
+import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -19,6 +26,9 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalBookBinding;
+import com.onyx.jdread.library.action.RxMetadataLoadAction;
+import com.onyx.jdread.library.model.LibraryDataBundle;
+import com.onyx.jdread.library.model.LibraryViewDataModel;
 import com.onyx.jdread.library.model.PopMenuModel;
 import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.library.view.DashLineItemDivider;
@@ -50,7 +60,10 @@ import com.onyx.jdread.util.Utils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * Created by li on 2018/1/4.
@@ -61,6 +74,10 @@ public class PersonalBookFragment extends BaseFragment {
     private PersonalBookAdapter personalBookAdapter;
     private PersonalBookModel personalBookModel;
     private GPaginator paginator;
+    private List<Metadata> allBook = new ArrayList<>();
+    private List<Metadata> importBooks = new ArrayList<>();
+    private List<Metadata> boughtBooks;
+    private List<Metadata> unlimitedBooks;
 
     @Nullable
     @Override
@@ -82,6 +99,17 @@ public class PersonalBookFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         Utils.ensureUnregister(PersonalDataBundle.getInstance().getEventBus(), this);
+        if (boughtBooks != null) {
+            boughtBooks.clear();
+            boughtBooks = null;
+        }
+        if (unlimitedBooks != null) {
+            unlimitedBooks.clear();
+            unlimitedBooks = null;
+        }
+        if (allBook != null) {
+            allBook.clear();
+        }
     }
 
     private void initView() {
@@ -250,32 +278,59 @@ public class PersonalBookFragment extends BaseFragment {
                 break;
             case R.string.self_import:
                 binding.setFilterName(JDReadApplication.getInstance().getResources().getString(R.string.self_import));
+                getSelfImportBooks();
                 break;
         }
     }
 
+    private void getSelfImportBooks() {
+        QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.None, SortOrder.Asc);
+        queryArgs.conditionGroup.and(Metadata_Table.cloudId.isNull());
+        final RxMetadataLoadAction action = new RxMetadataLoadAction(queryArgs);
+        action.execute(LibraryDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                LibraryViewDataModel libraryViewDataModel = LibraryDataBundle.getInstance().getLibraryViewDataModel();
+                ObservableList<DataModel> items = libraryViewDataModel.items;
+                List<Metadata> metadatas = convertToMetadata(items);
+                if (metadatas != null) {
+                    setAdapterData(metadatas);
+                }
+            }
+        });
+    }
+
     private void getUnlimitedBooks() {
+        if (unlimitedBooks != null) {
+            setAdapterData(unlimitedBooks);
+            return;
+        }
         final GetUnlimitedAction unlimitedAction = new GetUnlimitedAction();
         unlimitedAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                List<Metadata> unlimitedBooks = unlimitedAction.getUnlimitedBooks();
+                unlimitedBooks = unlimitedAction.getUnlimitedBooks();
                 if (unlimitedBooks != null) {
-                    compareLocalMetadata(unlimitedBooks);
+                    compareLocalMetadata(unlimitedBooks, true);
                 }
             }
         });
     }
 
     private void getBoughtBooks() {
+        if (boughtBooks != null) {
+            setAdapterData(boughtBooks);
+            return;
+        }
         final GetBoughtAction boughtAction = new GetBoughtAction();
         boughtAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                List<Metadata> boughtBooks = boughtAction.getBoughtBooks();
-                if (boughtBooks != null) {
-                    compareLocalMetadata(boughtBooks);
+                boughtBooks = boughtAction.getBoughtBooks();
+                if (boughtBooks != null && boughtBooks.size() > 0) {
+                    compareLocalMetadata(boughtBooks, false);
                 }
+                getUnlimitedBooks();
             }
         });
     }
@@ -286,20 +341,36 @@ public class PersonalBookFragment extends BaseFragment {
             @Override
             public void onNext(Object o) {
                 List<Metadata> metadatas = queryAction.getMetadatas();
-                setAdapterData(metadatas);
+                if (metadatas != null && metadatas.size() > 0) {
+                    allBook.addAll(metadatas);
+                }
+                getBoughtBooks();
             }
         });
     }
 
-    private void compareLocalMetadata(List<Metadata> list) {
+    private void compareLocalMetadata(List<Metadata> list, final boolean isAll) {
         final CompareLocalMetadataAction action = new CompareLocalMetadataAction(list);
         action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 List<Metadata> metadataList = action.getMetadataList();
-                setAdapterData(metadataList);
+                if (metadataList != null) {
+                    allBook.addAll(metadataList);
+                }
+                if (isAll) {
+                    List<Metadata> list = deleteRepeat(allBook);
+                    setAdapterData(list);
+                }
             }
         });
+    }
+
+    private List<Metadata> deleteRepeat(List<Metadata> list) {
+        HashSet<Metadata> set = new HashSet<>(list);
+        list.clear();
+        list.addAll(set);
+        return list;
     }
 
     private void setAdapterData(List<Metadata> metadatas) {
@@ -333,5 +404,33 @@ public class PersonalBookFragment extends BaseFragment {
         }
         detail.bookExtraInfoBean = infoBean;
         return detail;
+    }
+
+    private List<Metadata> convertToMetadata(ObservableList<DataModel> items) {
+        if (importBooks != null && importBooks.size() > 0) {
+            importBooks.clear();
+        }
+        if (items != null && items.size() > 0) {
+            for (int i = 0; i < items.size(); i++) {
+                DataModel dataModel = items.get(i);
+                Metadata metadata = new Metadata();
+                metadata.setName(dataModel.title.get());
+                metadata.setParentId(dataModel.parentId.get());
+                metadata.setCloudId(dataModel.cloudId.get() + "");
+                metadata.setTitle(dataModel.title.get());
+                metadata.setIdString(dataModel.idString.get());
+                metadata.setId(dataModel.id.get());
+                metadata.setAuthors(dataModel.author.get());
+                metadata.setSize((long) dataModel.size.get());
+                metadata.setProgress(dataModel.progress.get());
+                metadata.setDescription(dataModel.desc.get());
+                metadata.setNativeAbsolutePath(dataModel.absolutePath.get());
+                BookExtraInfoBean bean = new BookExtraInfoBean();
+                bean.percentage = 100;
+                metadata.setExtraAttributes(JSONObjectParseUtils.toJson(bean));
+                importBooks.add(metadata);
+            }
+        }
+        return importBooks;
     }
 }
