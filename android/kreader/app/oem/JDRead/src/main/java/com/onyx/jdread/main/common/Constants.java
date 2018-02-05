@@ -117,4 +117,6 @@ public class Constants {
     public static final int SHOP_VIEW_SUBJECT_HEIGHT = 424;
     public static final int SHOP_VIEW_END_VIEW_HEIGHT = 366;
     public static final int SHOP_VIEW_VIP_INFO_VIEW_HEIGHT = 214;
+
+    public static final String MTP_EXTRA_TAG_OLD_FILE_PATH = "old_file_path";
 }
