@@ -20,7 +20,7 @@
 
         <variable
             name="isSignToday"
-            type="boolean"/>
+            type="boolean" />
     </data>
 
     <LinearLayout
@@ -98,21 +98,12 @@
                 android:visibility="@{isLogin ? View.INVISIBLE : View.VISIBLE}" />
         </FrameLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line_width"
-            android:layout_marginTop="@dimen/personal_recycler_margin_top"
-            android:background="@color/divider_color" />
-
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/personal_recycler"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/personal_recycler_height" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line_width"
-            android:background="@color/divider_color" />
+            android:layout_height="@dimen/personal_recycler_height"
+            android:layout_marginTop="@dimen/personal_recycler_margin_top"
+            android:background="@drawable/light_rectangle_stroke" />
 
         <View
             android:layout_width="wrap_content"

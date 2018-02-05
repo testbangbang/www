@@ -27,10 +27,8 @@ import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
-import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
-import com.onyx.jdread.main.event.ChangeChildViewEvent;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
@@ -101,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initLibrary() {
-        EventBus.getDefault().register(this);
         registerScreenReceive();
     }
 
@@ -165,8 +162,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
         systemBarModel.unRegisterReceiver(JDReadApplication.getInstance());
         unregisterReceiver(screenStateReceive);
         super.onDestroy();
