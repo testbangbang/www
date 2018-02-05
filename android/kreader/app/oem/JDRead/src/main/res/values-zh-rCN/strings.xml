@@ -113,8 +113,8 @@
     <string name="sale">特价</string>
     <string name="new_book">新书</string>
     <string name="category">分类</string>
-    <string name="back_to_top">返回顶部</string>
-    <string name="view_all_books">查看全库图书</string>
+    <string name="back_to_top">回到顶部</string>
+    <string name="view_all_books">查看全部图书</string>
     <string name="search_view_hint">请输入搜索内容</string>
     <string name="book_detail_yuedou_price">%1$s 阅豆</string>
     <string name="book_detail_button_now_read">立即阅读</string>
