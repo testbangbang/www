@@ -33,10 +33,8 @@ public class GetBoughtAction extends BaseAction {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                if (rxCallback != null) {
-                    boughtBooks = rq.getBooks();
-                    rxCallback.onNext(GetBoughtAction.class);
-                }
+                boughtBooks = rq.getBooks();
+                RxCallback.invokeNext(rxCallback, GetBoughtAction.this);
             }
 
             @Override
