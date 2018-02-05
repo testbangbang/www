@@ -6,6 +6,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
+import com.onyx.jdread.reader.actions.AnnotationCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.CloseDocumentAction;
 import com.onyx.jdread.reader.actions.DeleteAnnotationAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
@@ -195,6 +196,11 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupCopyClickEvent(PopupCopyClickEvent event) {
         new SelectTextCopyToClipboardAction().execute(readerViewModel.getReaderDataHolder(), null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnnotationCopyEvent(AnnotationCopyEvent event) {
+        new AnnotationCopyToClipboardAction(event.getAnnotation()).execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

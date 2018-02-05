@@ -11,6 +11,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PopupSelectionMenuBinding;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.AnnotationCopyEvent;
 import com.onyx.jdread.reader.event.DeleteAnnotationEvent;
 import com.onyx.jdread.reader.event.EditNoteClickEvent;
 import com.onyx.jdread.reader.event.PopupBaidupediaClickEvent;
@@ -113,7 +114,12 @@ public class SelectMenuModel {
     }
 
     public void onCopyClick() {
-        getEventBus().post(new PopupCopyClickEvent());
+        if(currentAnnotations != null){
+            AnnotationCopyEvent annotationCopyEvent = new AnnotationCopyEvent(currentAnnotations.getAnnotation());
+            getEventBus().post(annotationCopyEvent);
+        }else {
+            getEventBus().post(new PopupCopyClickEvent());
+        }
         setIsShowSelectMenu(false);
     }
 
