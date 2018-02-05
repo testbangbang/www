@@ -110,17 +110,29 @@ public class SelectMenuModel {
     }
 
     public void onCopyClick() {
-        getEventBus().post(new PopupCopyClickEvent());
+        PopupCopyClickEvent event = new PopupCopyClickEvent();
+        if(currentAnnotations != null) {
+            event.setAnnotation(currentAnnotations.getAnnotation());
+        }
+        getEventBus().post(event);
         setIsShowSelectMenu(false);
     }
 
     public void onTranslationClick() {
-        getEventBus().post(new PopupTranslationClickEvent());
+        PopupTranslationClickEvent event = new PopupTranslationClickEvent();
+        if(currentAnnotations != null) {
+            event.setAnnotation(currentAnnotations.getAnnotation());
+        }
+        getEventBus().post(event);
         setIsShowSelectMenu(false);
     }
 
     public void onBaidupediaClick() {
-        getEventBus().post(new PopupBaidupediaClickEvent());
+        PopupBaidupediaClickEvent event = new PopupBaidupediaClickEvent();
+        if(currentAnnotations != null) {
+            event.setAnnotation(currentAnnotations.getAnnotation());
+        }
+        getEventBus().post(event);
         setIsShowSelectMenu(false);
     }
 

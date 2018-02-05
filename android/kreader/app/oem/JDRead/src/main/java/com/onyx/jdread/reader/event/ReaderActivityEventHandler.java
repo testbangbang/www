@@ -184,7 +184,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupCopyClickEvent(PopupCopyClickEvent event) {
-        new SelectTextCopyToClipboardAction().execute(readerViewModel.getReaderDataHolder(), null);
+        new SelectTextCopyToClipboardAction(event.getAnnotation()).execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -193,7 +193,12 @@ public class ReaderActivityEventHandler {
         if (activity == null) {
             return;
         }
-        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
+        String text;
+        if(event.getAnnotation() != null){
+            text = event.getAnnotation().getQuote();
+        }else {
+            text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
+        }
         float x = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastX();
         float y = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastY();
         TranslateDialog translateDialog = new TranslateDialog(activity, text, readerViewModel.getEventBus(), x, y);
@@ -211,7 +216,12 @@ public class ReaderActivityEventHandler {
             ToastUtil.showToast(R.string.reader_check_network);
             return;
         }
-        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
+        String text;
+        if(event.getAnnotation() != null){
+            text = event.getAnnotation().getQuote();
+        }else {
+            text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
+        }
         DialogDict dialogDict = new DialogDict(activity, text);
         dialogDict.show();
     }
