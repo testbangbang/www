@@ -169,11 +169,21 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupLineationClickEvent(PopupLineationClickEvent event) {
-        new AddAnnotationAction().execute(readerViewModel.getReaderDataHolder(), null);
+        new AddAnnotationAction("").execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupNoteClickEvent(PopupNoteClickEvent event) {
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+        readerNoteDialog = new ReaderNoteDialog(readerViewModel.getReaderDataHolder(), activity,null);
+        readerNoteDialog.show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupNoteClickEvent(EditNoteClickEvent event) {
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
             return;
@@ -184,7 +194,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupCopyClickEvent(PopupCopyClickEvent event) {
-        new SelectTextCopyToClipboardAction(event.getAnnotation()).execute(readerViewModel.getReaderDataHolder(), null);
+        new SelectTextCopyToClipboardAction().execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -193,12 +203,7 @@ public class ReaderActivityEventHandler {
         if (activity == null) {
             return;
         }
-        String text;
-        if(event.getAnnotation() != null){
-            text = event.getAnnotation().getQuote();
-        }else {
-            text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
-        }
+        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
         float x = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastX();
         float y = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastY();
         TranslateDialog translateDialog = new TranslateDialog(activity, text, readerViewModel.getEventBus(), x, y);
@@ -216,12 +221,7 @@ public class ReaderActivityEventHandler {
             ToastUtil.showToast(R.string.reader_check_network);
             return;
         }
-        String text;
-        if(event.getAnnotation() != null){
-            text = event.getAnnotation().getQuote();
-        }else {
-            text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
-        }
+        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
         DialogDict dialogDict = new DialogDict(activity, text);
         dialogDict.show();
     }

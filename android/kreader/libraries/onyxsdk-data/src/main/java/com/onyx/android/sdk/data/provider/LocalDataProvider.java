@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
+import com.onyx.android.sdk.data.db.table.OnyxAnnotationProvider;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Annotation_Table;
 import com.onyx.android.sdk.data.model.Bookmark;
@@ -34,6 +35,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -165,6 +167,7 @@ public class LocalDataProvider implements DataProviderBase {
 
     public void updateAnnotation(final Annotation annotation) {
         annotation.save();
+        ContentUtils.update(OnyxAnnotationProvider.CONTENT_URI, annotation);
     }
 
     public void deleteAnnotation(final Annotation annotation) {

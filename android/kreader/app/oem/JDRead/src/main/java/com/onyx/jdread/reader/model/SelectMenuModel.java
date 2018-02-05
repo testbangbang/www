@@ -12,6 +12,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PopupSelectionMenuBinding;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.DeleteAnnotationEvent;
+import com.onyx.jdread.reader.event.EditNoteClickEvent;
 import com.onyx.jdread.reader.event.PopupBaidupediaClickEvent;
 import com.onyx.jdread.reader.event.PopupCopyClickEvent;
 import com.onyx.jdread.reader.event.PopupLineationClickEvent;
@@ -101,38 +102,28 @@ public class SelectMenuModel {
     }
 
     public void onNoteClick() {
-        PopupNoteClickEvent popupNoteClickEvent = new PopupNoteClickEvent();
         if(currentAnnotations != null) {
-            popupNoteClickEvent.setAnnotation(currentAnnotations.getAnnotation());
+            EditNoteClickEvent event = new EditNoteClickEvent();
+            event.setAnnotation(currentAnnotations.getAnnotation());
+            getEventBus().post(event);
+        }else {
+            getEventBus().post(new PopupNoteClickEvent());
         }
-        getEventBus().post(popupNoteClickEvent);
         setIsShowSelectMenu(false);
     }
 
     public void onCopyClick() {
-        PopupCopyClickEvent event = new PopupCopyClickEvent();
-        if(currentAnnotations != null) {
-            event.setAnnotation(currentAnnotations.getAnnotation());
-        }
-        getEventBus().post(event);
+        getEventBus().post(new PopupCopyClickEvent());
         setIsShowSelectMenu(false);
     }
 
     public void onTranslationClick() {
-        PopupTranslationClickEvent event = new PopupTranslationClickEvent();
-        if(currentAnnotations != null) {
-            event.setAnnotation(currentAnnotations.getAnnotation());
-        }
-        getEventBus().post(event);
+        getEventBus().post(new PopupTranslationClickEvent());
         setIsShowSelectMenu(false);
     }
 
     public void onBaidupediaClick() {
-        PopupBaidupediaClickEvent event = new PopupBaidupediaClickEvent();
-        if(currentAnnotations != null) {
-            event.setAnnotation(currentAnnotations.getAnnotation());
-        }
-        getEventBus().post(event);
+        getEventBus().post(new PopupBaidupediaClickEvent());
         setIsShowSelectMenu(false);
     }
 
