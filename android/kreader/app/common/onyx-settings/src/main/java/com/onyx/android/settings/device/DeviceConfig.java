@@ -23,6 +23,7 @@ public class DeviceConfig {
     private GObject backend;
 
     static public final String DEVICE_SUPPORT_COLOR = "support_color";
+    static public final String FORCE_AUTO_SELECT_TIME = "force_auto_sleep_time";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -95,5 +96,9 @@ public class DeviceConfig {
 
     public boolean isDeviceSupportColor() {
         return backend.getBoolean(DEVICE_SUPPORT_COLOR, false);
+    }
+
+    public int getForceAutoSleepTime() {
+        return backend.getInt(FORCE_AUTO_SELECT_TIME, -1);
     }
 }
