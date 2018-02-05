@@ -459,4 +459,6 @@
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">the book already purchase</string>
     <string name="empty_search_key_prompt">Please enter the content you want to search.</string>
     <string name="no_more_content">No more content</string>
+    <string name="delete_library_prompt">Whether to delete the group (group books back into the bookshelf)</string>
+    <string name="delete_library_include_book_prompt">Whether to delete this group and group books from this machine</string>
 </resources>
