@@ -224,6 +224,10 @@ public class BaseNoteRequest extends BaseRequest {
     }
 
     private void drawTextView(final Canvas canvas, final NoteViewHelper parent, int pagePosition) {
+        Bitmap bitmap = parent.getReviewBitmap();
+        if (bitmap != null && !bitmap.isRecycled()) {
+            return;
+        }
         StaticLayout sl = parent.createTextLayout(getViewportSize().width());
         if (sl == null) {
             return;
