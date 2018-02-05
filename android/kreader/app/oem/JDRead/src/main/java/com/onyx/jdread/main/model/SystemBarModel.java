@@ -21,6 +21,7 @@ import com.onyx.jdread.util.TimeUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Observable;
 
 /**
@@ -103,19 +104,16 @@ public class SystemBarModel extends Observable {
     }
 
     private String handleTime(String time) {
-        if (time.contains(ResManager.getString(R.string.morning))) {
-            int index = time.indexOf(" ");
-            time = time.substring(0, index + 1) + ResManager.getString(R.string.AM);
+        if (TimeUtils.is24Hour()) {
+            return time;
         }
-        if (time.contains(ResManager.getString(R.string.afternoon))) {
-            int index = time.indexOf(" ");
-            time = time.substring(0, index + 1) + ResManager.getString(R.string.PM);
-        }
-        return time;
+        int apm = Calendar.getInstance().get(Calendar.AM_PM);
+        int resId = apm == Calendar.AM ? R.string.AM : R.string.PM;
+        return time + " " + ResManager.getString(resId);
     }
 
     public void setTimeFormat(boolean is24Hour) {
-        TimeUtils.setFormat(new SimpleDateFormat(is24Hour ? TimeUtils.DATA_TIME_24 : TimeUtils.DATA_TIME_12_WITH_AMPM));
+        TimeUtils.setFormat(new SimpleDateFormat(is24Hour ? TimeUtils.DATA_TIME_24 : TimeUtils.DATA_TIME_12));
     }
 
     private BroadcastReceiver phoneBatteryReceiver = new BroadcastReceiver() {
