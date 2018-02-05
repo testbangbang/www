@@ -46,7 +46,7 @@ public class ReaderTextModel {
     public void setDefaultStyle(ReaderTextStyle style, ReaderUserDataInfo readerUserDataInfo) {
         if(style != null) {
             setDefaultFontSize((int) style.getFontSize().getValue());
-            ReaderChineseConvertType chineseConvertType = readerUserDataInfo.getChineseConvertType();
+            ReaderChineseConvertType chineseConvertType = ReaderConfig.getReaderChineseConvertType();
             setDefaultTypeFace(style.getFontFace());
             setDefaultLanguage(chineseConvertType);
         }

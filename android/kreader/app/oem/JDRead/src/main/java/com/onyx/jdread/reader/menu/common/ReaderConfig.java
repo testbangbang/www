@@ -1,5 +1,9 @@
 package com.onyx.jdread.reader.menu.common;
 
+import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
+import com.onyx.jdread.main.common.JDPreferenceManager;
+
 /**
  * Created by huxiaomao on 2018/1/6.
  */
@@ -37,4 +41,55 @@ public class ReaderConfig {
     }
 
      public static final int SIGN_RIGHT_MARGIN = 10;
+
+    public static final String READER_FONTFACE_KEY = "FontFace";
+    public static final String READER_FONTSIZE_KEY = "FontSize";
+    public static final String READER_PARAGRAPHSPACING_KEY = "ParagraphSpacing";
+    public static final String READER_LINESPACING_KEY = "LineSpacing";
+    public static final String READER_PARAGRAPHINDENT_KEY = "ParagraphIndent";
+    public static final String READER_LEFT_MARGIN_KEY = "LeftMargin";
+    public static final String READER_TOP_MARGIN_KEY = "TopMargin";
+    public static final String READER_RIGHT_MARGIN_KEY = "RightMargin";
+    public static final String READER_BOTTOM_MARGIN_KEY = "BottomMargin";
+    public static final String READER_CHINESE_CONVERT_TYPE_KEY = "ChineseConvertType";
+    public static final String READER_EMBOLDENLEVEL_KEY = "emboldenLevel";
+    public static final int CHINESE = 1;
+    public static final int SIMPLIFIED = 2;
+
+    public static void saveUserSetting(final ReaderTextStyle style, ReaderChineseConvertType type,int emboldenLevel){
+        JDPreferenceManager.setStringValue(ReaderConfig.READER_FONTFACE_KEY,style.getFontFace());
+        JDPreferenceManager.setIntValue(ReaderConfig.READER_FONTSIZE_KEY,(int)style.getFontSize().getValue());
+        JDPreferenceManager.setIntValue(ReaderConfig.READER_PARAGRAPHSPACING_KEY,style.getParagraphSpacing().getPercent());
+
+        JDPreferenceManager.setIntValue(ReaderConfig.READER_LINESPACING_KEY,style.getLineSpacing().getPercent());
+
+        JDPreferenceManager.setIntValue(ReaderConfig.READER_PARAGRAPHINDENT_KEY,style.getIndent().getIndent());
+
+        JDPreferenceManager.setIntValue(ReaderConfig.READER_LEFT_MARGIN_KEY,style.getPageMargin().getLeftMargin().getPercent());
+
+        JDPreferenceManager.setIntValue(ReaderConfig.READER_TOP_MARGIN_KEY,style.getPageMargin().getTopMargin().getPercent());
+
+        JDPreferenceManager.setIntValue(ReaderConfig.READER_RIGHT_MARGIN_KEY,style.getPageMargin().getRightMargin().getPercent());
+        JDPreferenceManager.setIntValue(ReaderConfig.READER_BOTTOM_MARGIN_KEY,style.getPageMargin().getBottomMargin().getPercent());
+
+        if(ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED == type ||
+                ReaderChineseConvertType.NONE == type) {
+            JDPreferenceManager.setIntValue(ReaderConfig.READER_CHINESE_CONVERT_TYPE_KEY, ReaderConfig.CHINESE);
+        }else{
+            JDPreferenceManager.setIntValue(ReaderConfig.READER_CHINESE_CONVERT_TYPE_KEY, ReaderConfig.SIMPLIFIED);
+        }
+
+        JDPreferenceManager.setIntValue(ReaderConfig.READER_EMBOLDENLEVEL_KEY, emboldenLevel);
+    }
+
+    public static ReaderChineseConvertType getReaderChineseConvertType(){
+        ReaderChineseConvertType chineseConvertType;
+        int type = JDPreferenceManager.getIntValue(ReaderConfig.READER_CHINESE_CONVERT_TYPE_KEY, ReaderConfig.CHINESE);
+        if(type == CHINESE) {
+            chineseConvertType = ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED;
+        }else{
+            chineseConvertType = ReaderChineseConvertType.SIMPLIFIED_TO_TRADITIONAL;
+        }
+        return chineseConvertType;
+    }
 }
