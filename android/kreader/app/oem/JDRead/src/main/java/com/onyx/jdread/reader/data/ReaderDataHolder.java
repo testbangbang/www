@@ -9,6 +9,7 @@ import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.common.DocumentInfo;
+import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewConfig;
 import com.onyx.jdread.reader.handler.HandlerManger;
@@ -36,6 +37,7 @@ public class ReaderDataHolder {
     private SelectMenuModel selectMenuModel;
     private DocumentInfo documentInfo;
     private ReaderSelectionInfo readerSelectionInfo;
+    private GammaInfo gammaInfo;
     private EventBus eventBus = EventBus.getDefault();
 
     public ReaderDataHolder(final Context appContext) {
@@ -203,5 +205,13 @@ public class ReaderDataHolder {
 
     public boolean supportScalable() {
         return getReaderViewInfo() != null && getReaderViewInfo().supportScalable;
+    }
+
+    public GammaInfo getGammaInfo() {
+        return gammaInfo;
+    }
+
+    public void setGammaInfo(GammaInfo gammaInfo) {
+        this.gammaInfo = gammaInfo;
     }
 }

@@ -101,7 +101,11 @@ public class SelectMenuModel {
     }
 
     public void onNoteClick() {
-        getEventBus().post(new PopupNoteClickEvent());
+        PopupNoteClickEvent popupNoteClickEvent = new PopupNoteClickEvent();
+        if(currentAnnotations != null) {
+            popupNoteClickEvent.setAnnotation(currentAnnotations.getAnnotation());
+        }
+        getEventBus().post(popupNoteClickEvent);
         setIsShowSelectMenu(false);
     }
 
@@ -121,6 +125,7 @@ public class SelectMenuModel {
     }
 
     public void showSelectMenu(ReaderDataHolder readerDataHolder,boolean isDictionary){
+        currentAnnotations = null;
         String pagePosition = readerDataHolder.getCurrentPagePosition();
         HighlightCursor beginHighlightCursor = readerDataHolder.getReaderSelectionInfo().getHighlightCursor(pagePosition, HighlightCursor.BEGIN_CURSOR_INDEX);
         HighlightCursor endHighlightCursor = readerDataHolder.getReaderSelectionInfo().getHighlightCursor(pagePosition, HighlightCursor.END_CURSOR_INDEX);

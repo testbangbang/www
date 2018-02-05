@@ -85,7 +85,6 @@ public class ViewConfig {
         childViewInfo.put(BookSaleFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(BookNewBooksFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(SearchBookListFragment.class.getName(), FunctionModule.SHOP);
-        childViewInfo.put(SearchBookFragment.class.getSimpleName(),FunctionModule.SHOP);
         childViewInfo.put(BuyReadVIPFragment.class.getName(),FunctionModule.SHOP);
         //setting
         childViewInfo.put(SettingFragment.class.getName(), FunctionModule.SETTING);

@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.data.utils;
 
+import com.onyx.android.sdk.data.QueryBase;
 import com.onyx.android.sdk.data.db.OnyxCloudDatabase;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.transaction.ProcessDeleteModel;
@@ -14,6 +15,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLOperator;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction;
@@ -149,6 +151,15 @@ public class StoreUtils {
         clearTable(Dictionary.class);
         clearTable(Category.class);
         clearTable(DownloadLink.class);
+    }
+
+    static public <T> List<T> queryDataList(final Class<T> clazz, QueryBase queryArgs) {
+        Where<T> where = new Select(queryArgs.propertyList.toArray(new IProperty[0])).from(clazz)
+                .where(queryArgs.conditionGroup);
+        for (OrderBy orderBy : queryArgs.orderByList) {
+            where.orderBy(orderBy);
+        }
+        return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
     }
 
     static public <T extends BaseModel> List<T> queryDataList(final Class<T> clazz, int limit) {

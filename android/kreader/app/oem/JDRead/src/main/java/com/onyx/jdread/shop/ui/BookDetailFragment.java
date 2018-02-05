@@ -31,7 +31,6 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.common.LoginHelper;
@@ -41,6 +40,7 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
+import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.setting.ui.WifiFragment;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.BookDetailAction;
@@ -82,7 +82,6 @@ import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.shop.utils.ViewHelper;
-import com.onyx.jdread.shop.view.AutoPagedWebView;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -483,11 +482,6 @@ public class BookDetailFragment extends BaseFragment {
             }
         }
 
-        if (!CommonUtils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ManagerActivityUtils.showWifiDialog(getActivity());
-            return;
-        }
-
         if (!bookDetailBean.can_buy) {
             BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
             return;
@@ -567,10 +561,6 @@ public class BookDetailFragment extends BaseFragment {
             ToastUtil.showToast(getContext(), getResources().getString(R.string.empty_url));
             return;
         }
-        if (!CommonUtils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ManagerActivityUtils.showWifiDialog(getActivity());
-            return;
-        }
         if (DownLoadHelper.isDownloading(downloadTaskState)) {
             ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_downloading));
             return;
@@ -626,7 +616,7 @@ public class BookDetailFragment extends BaseFragment {
         if (copyRightDialog == null) {
             AlertDialog.Builder copyRightDialogBuild = new AlertDialog.Builder(getActivity());
             copyRightDialogBuild.setView(copyrightBinding.getRoot());
-            copyRightDialogBuild.setCancelable(true);
+            copyRightDialogBuild.setCancelable(false);
             copyRightDialog = copyRightDialogBuild.create();
         }
         if (copyRightDialog != null) {
@@ -762,15 +752,15 @@ public class BookDetailFragment extends BaseFragment {
         infoBinding.setViewModel(dialogBookInfoViewModel);
         AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
         build.setView(infoBinding.getRoot());
-        build.setCancelable(true);
-        AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
+        build.setCancelable(false);
+        HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);
         settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
-        pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
+        pagedWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
             @Override
-            public void onPageChanged(int currentPage, int totalPage) {
-                dialogBookInfoViewModel.currentPage.set(currentPage);
+            public void onPageChanged(int totalPage, int curPage) {
+                dialogBookInfoViewModel.currentPage.set(curPage);
                 dialogBookInfoViewModel.totalPage.set(totalPage);
             }
         });

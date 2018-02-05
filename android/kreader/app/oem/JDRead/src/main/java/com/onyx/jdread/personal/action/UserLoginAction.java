@@ -8,11 +8,9 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ClientUtils;
-import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SignForVoucherBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserLoginResultErrorBean;
@@ -63,10 +61,6 @@ public class UserLoginAction extends BaseAction {
         }
         if (password == null || password.length() < Constants.PASSWORD_MIN_LENGTH) {
             ToastUtil.showToast(JDReadApplication.getInstance(), JDReadApplication.getInstance().getString(R.string.check_password));
-            return;
-        }
-        if (!CommonUtils.isNetworkConnected(context)) {
-            ManagerActivityUtils.showWifiDialog(context);
             return;
         }
         userLogin(dataBundle, account, MD5.encrypt32(password));

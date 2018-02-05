@@ -23,6 +23,7 @@ public class InitPageViewAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                readerDataHolder.setGammaInfo(request.getGammaInfo());
                 readerDataHolder.getEventBus().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
             }

@@ -187,7 +187,7 @@ public class ShopFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSearchViewClickEvent(SearchViewClickEvent event) {
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(SearchBookFragment.class.getSimpleName());
+            getViewEventCallBack().gotoView(SearchBookFragment.class.getName());
         }
     }
 

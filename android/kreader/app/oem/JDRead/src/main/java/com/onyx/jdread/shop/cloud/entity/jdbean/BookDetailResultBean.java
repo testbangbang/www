@@ -19,7 +19,7 @@ public class BookDetailResultBean {
         public String image_url;
         public String large_image_url;
         public String info;
-        public Object format;
+        public String format;
         public String publisher;
         public String publish_time;
         public String edition;

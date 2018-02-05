@@ -20,9 +20,12 @@ public class ChangeChineseConvertTypeRequest extends ReaderBaseRequest {
 
     @Override
     public ChangeChineseConvertTypeRequest call() throws Exception {
+        reader.getReaderHelper().getDocumentOptions().setChineseConvertType(convertType);
         reader.getReaderHelper().getRenderer().setChineseConvertType(convertType);
+        reader.getReaderHelper().getBitmapCache().clear();
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(reader);
+        saveReaderOptions(reader);
         return this;
     }
 }

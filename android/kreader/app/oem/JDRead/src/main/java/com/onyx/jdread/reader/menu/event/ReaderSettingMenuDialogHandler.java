@@ -158,9 +158,8 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGammaCorrectionEvent(GammaCorrectionEvent event) {
-        GammaInfo gammaInfo = new GammaInfo();
-        gammaInfo.setTextGamma(event.textGamma);
-        new GammaCorrectionAction(gammaInfo).execute(readerDataHolder,null);
+        readerDataHolder.getGammaInfo().setEmboldenLevel(event.textGamma);
+        new GammaCorrectionAction(readerDataHolder.getGammaInfo()).execute(readerDataHolder,null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
