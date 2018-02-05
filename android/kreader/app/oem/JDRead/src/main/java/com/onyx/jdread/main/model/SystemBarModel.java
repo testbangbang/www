@@ -35,7 +35,7 @@ public class SystemBarModel extends Observable {
             R.drawable.ic_wifi_3,
             R.drawable.ic_wifi_4};
 
-    private static final int[][] BATTERY_SIGNAL_STRENGTH = {
+    private static final int[][] BATTERY_LEVEL = {
             {R.drawable.ic_battery_0,
                     R.drawable.ic_battery_10,
                     R.drawable.ic_battery_20,
@@ -88,7 +88,7 @@ public class SystemBarModel extends Observable {
         this.isShow.set(isShow);
     }
 
-    public final ObservableInt wifiImageRes = new ObservableInt(R.drawable.ic_qs_wifi);
+    public final ObservableInt wifiImageRes = new ObservableInt();
     public final ObservableInt batteryImageRes = new ObservableInt();
     public final ObservableField<String> battery = new ObservableField<>();
     public final ObservableField<String> time = new ObservableField<>();
@@ -124,9 +124,9 @@ public class SystemBarModel extends Observable {
                 int connectCondition = (connectionStatus ? 1 : 0);
                 int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
                 int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
-                int levels = scale / BATTERY_SIGNAL_STRENGTH[connectCondition].length;
+                int levels = scale / (BATTERY_LEVEL[connectCondition].length - 1);
                 int interval = 100 / levels;
-                batteryImageRes.set(BATTERY_SIGNAL_STRENGTH[connectCondition][level / interval]);
+                batteryImageRes.set(BATTERY_LEVEL[connectCondition][level / interval]);
                 int power = level * 100 / scale;
                 battery.set(power + "%");
             }
