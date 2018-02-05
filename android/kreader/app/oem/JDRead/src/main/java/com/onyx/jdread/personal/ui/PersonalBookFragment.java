@@ -86,6 +86,7 @@ public class PersonalBookFragment extends BaseFragment {
 
     private void initView() {
         binding.personalBookRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        binding.personalBookRecycler.setPageTurningCycled(true);
         DashLineItemDivider decoration = new DashLineItemDivider();
         binding.personalBookRecycler.addItemDecoration(decoration);
         personalBookAdapter = new PersonalBookAdapter();

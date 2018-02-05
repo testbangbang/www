@@ -457,5 +457,6 @@
     <string name="not_open_vip_read">Do not open Vip</string>
     <string name="format_rmb">¥%s</string>
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">the book already purchase</string>
+    <string name="empty_search_key_prompt">Please enter the content you want to search.</string>
     <string name="no_more_content">No more content</string>
 </resources>
