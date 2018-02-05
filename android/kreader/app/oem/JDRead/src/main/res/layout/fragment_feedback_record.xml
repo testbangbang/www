@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data class="FeedbackRecordBinding">
 
+        <variable
+            name="indicatorModel"
+            type="com.onyx.jdread.library.model.PageIndicatorModel" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context="com.onyx.jdread.setting.ui.FeedbackRecordFragment">
 
         <include
             android:id="@+id/feedback_record_title"
@@ -17,8 +23,14 @@
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/feedback_record_recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:paddingLeft="@dimen/fragment_content_padding"
             android:paddingRight="@dimen/fragment_content_padding" />
+
+        <include
+            layout="@layout/page_indicator_layout"
+            bind:model="@{indicatorModel}" />
+
     </LinearLayout>
 </layout>

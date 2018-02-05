@@ -126,6 +126,7 @@
     <integer name="dictionary_list_col">1</integer>
     <integer name="feedback_record_adapter_row">6</integer>
     <integer name="feedback_record_adapter_col">1</integer>
+    <integer name="feedback_record_query_limit">20</integer>
     <integer name="gift_center_adapter_row">5</integer>
     <integer name="gift_center_adapter_col">1</integer>
     <integer name="personal_account_adapter_row">4</integer>
