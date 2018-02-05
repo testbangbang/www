@@ -52,7 +52,7 @@
                         android:id="@+id/book_detail_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:ellipsize="middle"
+                        android:ellipsize="end"
                         android:maxLines="2"
                         android:text="@{bookDetailViewModel.bookDetailResultBean.data.name}"
                         android:textColor="@android:color/black"

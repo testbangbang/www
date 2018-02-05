@@ -88,6 +88,7 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchHintRecycler.setAdapter(searchHintAdapter);
 
         binding.searchResultRecycler.setLayoutManager(new DisableScrollGridManager(getContext().getApplicationContext()));
+        binding.searchResultRecycler.setPageTurningCycled(true);
         binding.searchResultRecycler.addItemDecoration(new DashLineItemDivider());
         searchResultAdapter = new SearchResultAdapter();
         binding.searchResultRecycler.setAdapter(searchResultAdapter);
@@ -170,7 +171,6 @@ public class SearchBookFragment extends BaseFragment {
             binding.searchView.setQuery(InputUtils.getEffectiveString(newText, ResManager.getInteger(R.integer.search_word_key_max_length)), false);
             return;
         }
-        newText = InputUtils.filterSpecialCharacters(newText);
         searchBookModel.isInputting.set(StringUtils.isNotBlank(newText));
         searchBookModel.searchKey.set(newText);
         checkView();
@@ -184,11 +184,13 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void queryTextSubmit(String query) {
+        if (StringUtils.isNullOrEmpty(query)){
+            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
+        }
         if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
             ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
             return;
         }
-        query = InputUtils.filterSpecialCharacters(query);
         Utils.hideSoftWindow(getActivity());
         searchBookModel.isInputting.set(false);
         searchBookModel.searchKey.set(query);
@@ -251,7 +253,6 @@ public class SearchBookFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         getEventBus().unregister(this);
-        binding.searchView.setQuery("", false);
     }
 
     @Override

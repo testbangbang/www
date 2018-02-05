@@ -295,6 +295,9 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
         switchCurrentFragment(event.childClassName);
+        if (ViewConfig.isCheckFragment(event.childClassName)) {
+            functionBarModel.changeTabSelection(ViewConfig.findChildViewParentId(event.childClassName));
+        }
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
             functionBarItem.getStackList().push(event.childClassName);

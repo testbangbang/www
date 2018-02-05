@@ -35,4 +35,6 @@ public class ReaderConfig {
         public static final int LEVEL_SIX = 5;
         public static final int DEFAULT_COLOR_DEPTH = LEVEL_ONE;
     }
+
+     public static final int SIGN_RIGHT_MARGIN = 10;
 }
