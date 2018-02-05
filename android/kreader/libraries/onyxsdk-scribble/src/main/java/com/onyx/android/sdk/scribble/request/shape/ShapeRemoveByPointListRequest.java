@@ -25,11 +25,16 @@ public class ShapeRemoveByPointListRequest extends BaseNoteRequest {
     private volatile TouchPointList touchPointList;
     private volatile List<Shape> stash = null;
     private volatile SurfaceView surfaceView;
+    private volatile boolean transBackground;
 
-    public ShapeRemoveByPointListRequest(final TouchPointList list, final List<Shape> s, final SurfaceView view) {
+    public ShapeRemoveByPointListRequest(final TouchPointList list,
+                                         final List<Shape> s,
+                                         final SurfaceView view,
+                                         final boolean transBackground) {
         touchPointList = list;
         stash = s;
         surfaceView = view;
+        this.transBackground = transBackground;
         setPauseInputProcessor(true);
         setRender(true);
     }
@@ -57,12 +62,23 @@ public class ShapeRemoveByPointListRequest extends BaseNoteRequest {
         if (canvas == null) {
             return;
         }
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        cleanup(canvas, rect);
         Bitmap bitmap = helper.getRenderBitmap();
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, 0, 0, null);
         }
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    private void cleanup(Canvas canvas, Rect rect) {
+        if (transBackground) {
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        }else {
+            Paint paint = new Paint();
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(Color.WHITE);
+            canvas.drawRect(rect, paint);
+        }
     }
 
 }
