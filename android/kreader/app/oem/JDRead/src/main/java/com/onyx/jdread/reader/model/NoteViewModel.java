@@ -5,12 +5,13 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
+import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.data.NoteInfo;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.NoteBackEvent;
-import com.onyx.jdread.reader.event.SaveNoteEvent;
+import com.onyx.jdread.reader.event.AddNoteEvent;
+import com.onyx.jdread.reader.event.UpdateNoteEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -29,6 +30,8 @@ public class NoteViewModel {
     private ObservableField<String> chapterName = new ObservableField<>();
     private String pagePosition;
     private EventBus eventBus;
+    private boolean isCreateNote = false;
+    private Annotation annotation;
 
     public void setReaderDataHolder(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -46,12 +49,13 @@ public class NoteViewModel {
         this.pagePosition = pagePosition;
     }
 
-    public void setNoteInfo(Context context, NoteInfo noteInfo) {
+    public void setNoteInfo(Context context, NoteInfo noteInfo,Annotation annotation) {
         if (noteInfo == null) {
             ToastUtil.showToast(context, R.string.login_resutl_params_error);
             getEventBus().post(new NoteBackEvent());
             return;
         }
+        this.annotation = annotation;
         update(noteInfo);
     }
 
@@ -61,6 +65,7 @@ public class NoteViewModel {
         setCreateNoteDate(noteInfo.createDate);
         setNewNote(noteInfo.newNote);
         setIsEdit(noteInfo.isCreate);
+        isCreateNote = noteInfo.isCreate;
         setTitle(noteInfo.bookName);
         setIsSrcNoteModify(noteInfo.isSrcNoteModify);
         setPagePosition(noteInfo.pagePosition);
@@ -133,7 +138,11 @@ public class NoteViewModel {
 
     public void saveClick() {
         if (isEdit.get()) {
-            getEventBus().post(new SaveNoteEvent());
+            if(isCreateNote){
+                getEventBus().post(new AddNoteEvent(newNote.get()));
+            }else {
+                getEventBus().post(new UpdateNoteEvent(annotation));
+            }
         } else {
             setIsEdit(true);
         }

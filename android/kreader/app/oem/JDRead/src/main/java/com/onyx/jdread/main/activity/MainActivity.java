@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initLibrary() {
-        EventBus.getDefault().register(this);
         registerScreenReceive();
     }
 
@@ -163,8 +162,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
         systemBarModel.unRegisterReceiver(JDReadApplication.getInstance());
         unregisterReceiver(screenStateReceive);
         super.onDestroy();

@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SubjectModelItemBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 
@@ -24,8 +24,8 @@ import java.util.List;
 public class SubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, ResultBookBean, ResultBookBean> {
 
     private EventBus eventBus;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_subject_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_subject_col);
+    private int row = ResManager.getInteger(R.integer.book_shop_subject_row);
+    private int col = ResManager.getInteger(R.integer.book_shop_subject_col);
 
     public SubjectAdapter(EventBus eventBus) {
         this.eventBus = eventBus;

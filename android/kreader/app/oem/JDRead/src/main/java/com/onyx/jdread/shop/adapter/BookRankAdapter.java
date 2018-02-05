@@ -12,11 +12,13 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemVipReadUserInfoBinding;
 import com.onyx.jdread.databinding.SubjectCommonBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectType;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.VipUserInfoViewModel;
+import com.onyx.jdread.shop.view.SubjectBookItemSpaceItemDecoration;
 
 /**
  * Created by jackdeng on 2017/12/12.
@@ -54,6 +56,9 @@ public class BookRankAdapter extends SubjectCommonAdapter {
             bind = DataBindingUtil.bind(view);
             SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter(ShopDataBundle.getInstance().getEventBus());
             PageRecyclerView recyclerViewSuject = bind.recyclerViewSuject;
+            SubjectBookItemSpaceItemDecoration dividerItemDecoration = new SubjectBookItemSpaceItemDecoration(false,
+                    ResManager.getDimens(R.dimen.subject_model_item_space));
+            recyclerViewSuject.addItemDecoration(dividerItemDecoration);
             recyclerViewSuject.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
             recyclerViewSuject.setAdapter(recyclerViewOneAdapter);
         }

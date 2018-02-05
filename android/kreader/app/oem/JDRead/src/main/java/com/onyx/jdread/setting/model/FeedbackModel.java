@@ -4,6 +4,7 @@ import android.databinding.ObservableField;
 
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -42,7 +43,10 @@ public class FeedbackModel extends Observable {
             ToastUtils.showToast(JDReadApplication.getInstance(), R.string.phone_number_format_error);
             return;
         }
-
+        if (!NetworkUtil.isWiFiConnected(JDReadApplication.getInstance())) {
+            ToastUtils.showToast(JDReadApplication.getInstance(), R.string.wifi_no_connected);
+            return;
+        }
         submitCommitFeedback(feedback.get(), phone.get());
         titleBarModel.back();
     }

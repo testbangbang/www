@@ -6,6 +6,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
+import com.onyx.jdread.reader.actions.AnnotationCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.CloseDocumentAction;
 import com.onyx.jdread.reader.actions.DeleteAnnotationAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
@@ -169,11 +170,21 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupLineationClickEvent(PopupLineationClickEvent event) {
-        new AddAnnotationAction().execute(readerViewModel.getReaderDataHolder(), null);
+        new AddAnnotationAction("").execute(readerViewModel.getReaderDataHolder(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupNoteClickEvent(PopupNoteClickEvent event) {
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+        readerNoteDialog = new ReaderNoteDialog(readerViewModel.getReaderDataHolder(), activity,null);
+        readerNoteDialog.show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPopupNoteClickEvent(EditNoteClickEvent event) {
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
             return;
@@ -188,12 +199,27 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnnotationCopyEvent(AnnotationCopyEvent event) {
+        new AnnotationCopyToClipboardAction(event.getAnnotation()).execute(readerViewModel.getReaderDataHolder(), null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupTranslationClickEvent(PopupTranslationClickEvent event) {
+        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
+        showTranslateDialog(text);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnnotationTranslationEvent(AnnotationTranslationEvent event) {
+        String text = event.getAnnotation().getQuote();
+        showTranslateDialog(text);
+    }
+
+    private void showTranslateDialog(String text){
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
             return;
         }
-        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
         float x = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastX();
         float y = readerViewModel.getReaderDataHolder().getSelectMenuModel().getLastY();
         TranslateDialog translateDialog = new TranslateDialog(activity, text, readerViewModel.getEventBus(), x, y);
@@ -201,8 +227,20 @@ public class ReaderActivityEventHandler {
         translateDialog.setCanceledOnTouchOutside(true);
     }
 
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupBaidupediaClickEvent(PopupBaidupediaClickEvent event) {
+        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
+        showDialogDict(text);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnnotationBaidupediaEvent(AnnotationBaidupediaEvent event) {
+        String text = event.getAnnotation().getQuote();
+        showDialogDict(text);
+    }
+
+    private void showDialogDict(String text){
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
             return;
@@ -211,7 +249,6 @@ public class ReaderActivityEventHandler {
             ToastUtil.showToast(R.string.reader_check_network);
             return;
         }
-        String text = readerViewModel.getReaderDataHolder().getReaderSelectionInfo().getSelectText();
         DialogDict dialogDict = new DialogDict(activity, text);
         dialogDict.show();
     }

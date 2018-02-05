@@ -14,7 +14,10 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReadPreferenceBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
+import com.onyx.jdread.personal.action.GetReadPreferenceAction;
 import com.onyx.jdread.personal.action.SetReadPreferenceAction;
 import com.onyx.jdread.personal.adapter.ReadPreferenceAdapter;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
@@ -82,10 +85,22 @@ public class ReadPreferenceFragment extends BaseFragment {
         if (datas != null && datas.size() > 0) {
             datas.clear();
         }
+        final GetReadPreferenceAction getReadPreferenceAction = new GetReadPreferenceAction();
+        getReadPreferenceAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                List<Integer> getPreferenceItems = getReadPreferenceAction.getData();
+                getCategory(getPreferenceItems);
+            }
+        });
+    }
+
+    private void getCategory(final List<Integer> getPreferenceItems) {
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryBean = ShopDataBundle.getInstance().getCategoryBean();
         if (categoryBean != null && categoryBean.size() > 0) {
             datas.put(categoryBean.get(0).cateLevel, categoryBean);
             if (readPreferenceAdapter != null) {
+                handleData(getPreferenceItems, categoryBean);
                 readPreferenceAdapter.setData(categoryBean);
             }
         } else {
@@ -96,11 +111,49 @@ public class ReadPreferenceFragment extends BaseFragment {
                     List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> cateTwo = ShopDataBundle.getInstance().getCategoryBean();
                     datas.put(cateTwo.get(0).cateLevel, cateTwo);
                     if (readPreferenceAdapter != null) {
+                        handleData(getPreferenceItems, cateTwo);
                         readPreferenceAdapter.setData(cateTwo);
                     }
                 }
             });
         }
+    }
+
+    private void handleData(List<Integer> getPreferenceItems, List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categorys) {
+        for (int i = 0; i < categorys.size(); i++) {
+            CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo category = categorys.get(i);
+            category.name = changeCategoryName(category.name);
+            List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> subCategory = categorys.get(i).sub_category;
+            setSavedCategory(getPreferenceItems, subCategory);
+        }
+    }
+
+    private void setSavedCategory(List<Integer> items, List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> subCategory) {
+        if (items != null && items.size() > 0) {
+            for (int i = 0; i < subCategory.size(); i++) {
+                CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = subCategory.get(i);
+                for (int j = 0; j < items.size(); j++) {
+                    Integer selected = items.get(j);
+                    if (categoryBean.id == selected) {
+                        categoryBean.isSelect = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private String changeCategoryName(String name) {
+        String result = "";
+        if (Constants.CATEGORY_MATH_CONTENT.equals(name)) {
+            result = ResManager.getString(R.string.category_publish);
+        } else if (Constants.CATEGORY_BOY_ORIGINAL.equals(name)) {
+            result = ResManager.getString(R.string.category_boy);
+        } else if (Constants.CATEGORY_GIRL_ORIGINAL.equals(name)) {
+            result = ResManager.getString(R.string.category_girl);
+        } else {
+            result = name;
+        }
+        return result;
     }
 
     private void initListener() {
@@ -124,7 +177,7 @@ public class ReadPreferenceFragment extends BaseFragment {
             public void onClick(View v) {
                 if (datas.size() == SUB_CATEGORY) {
                     final List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> selectedBean = readPreferenceAdapter.getSelectedBean();
-                    if (selectedBean!= null && selectedBean.size() > 0) {
+                    if (selectedBean != null && selectedBean.size() > 0) {
                         final SetReadPreferenceAction action = new SetReadPreferenceAction(selectedBean);
                         action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
                             @Override
@@ -133,10 +186,6 @@ public class ReadPreferenceFragment extends BaseFragment {
                                 if (resultBean.getResultCode() == 0) {
                                     readPreferenceAdapter.setData(datas.get(SUB_CATEGORY - 1));
                                     datas.remove(SUB_CATEGORY);
-                                    for (int i = 0; i < selectedBean.size(); i++) {
-                                        CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = selectedBean.get(i);
-                                        categoryBeanLevelTwo.isSelect = false;
-                                    }
                                 }
                             }
                         });
@@ -156,11 +205,6 @@ public class ReadPreferenceFragment extends BaseFragment {
     }
 
     private void backToCategory() {
-        final List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> selectedBean = readPreferenceAdapter.getSelectedBean();
-        for (int i = 0; i < selectedBean.size(); i++) {
-            CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = selectedBean.get(i);
-            categoryBeanLevelTwo.isSelect = false;
-        }
         readPreferenceAdapter.setData(datas.get(SUB_CATEGORY - 1));
         datas.remove(SUB_CATEGORY);
     }

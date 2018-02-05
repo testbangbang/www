@@ -15,16 +15,25 @@ import java.util.Map;
  */
 
 public class AddAnnotationAction extends BaseReaderAction {
+    private String note;
+
+    public AddAnnotationAction(String note) {
+        this.note = note;
+    }
+
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
         Map<String,SelectionInfo> readerSelectionInfos = new HashMap<>();
         readerSelectionInfos.putAll(readerDataHolder.getReaderSelectionInfo().getReaderSelectionInfos());
 
-        final AddAnnotationRequest request = new AddAnnotationRequest(readerDataHolder.getReader(),readerSelectionInfos);
+        final AddAnnotationRequest request = new AddAnnotationRequest(readerDataHolder.getReader(),readerSelectionInfos,note);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder, request);
+                if(baseCallback != null){
+                    baseCallback.onNext(o);
+                }
             }
 
             @Override

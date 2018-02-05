@@ -22,12 +22,8 @@ public class QueryAllCloudMetadataAction extends BaseAction {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                if (rxCallback != null) {
-                    metadatas = rq.getMetadatas();
-                    if (metadatas != null && metadatas.size() > 0) {
-                        rxCallback.onNext(QueryAllCloudMetadataAction.class);
-                    }
-                }
+                metadatas = rq.getMetadatas();
+                RxCallback.invokeNext(rxCallback, QueryAllCloudMetadataAction.this);
             }
 
             @Override

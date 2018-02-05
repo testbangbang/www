@@ -1,13 +1,13 @@
 package com.onyx.jdread.reader.event;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.UpdateAnnotationAction;
 import com.onyx.jdread.reader.actions.UpdateViewPageAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.ReaderNoteViewBack;
 import com.onyx.jdread.reader.model.NoteViewModel;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -39,8 +39,20 @@ public class NoteActivityEventHandler {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSaveNoteEvent(SaveNoteEvent event) {
-        UpdateAnnotationAction action = new UpdateAnnotationAction(noteViewModel.getNoteInfo(), noteViewModel.getPagePosition());
+    public void onAddNoteEvent(AddNoteEvent event) {
+        AddAnnotationAction action = new AddAnnotationAction(event.getNote());
+        action.execute(readerDataHolder, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                noteViewBack.getContent().dismiss();
+                new UpdateViewPageAction().execute(readerDataHolder, null);
+            }
+        });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateNoteEvent(UpdateNoteEvent event) {
+        UpdateAnnotationAction action = new UpdateAnnotationAction(noteViewModel.getNoteInfo(), event.getAnnotation());
         action.execute(readerDataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {

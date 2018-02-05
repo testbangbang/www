@@ -126,9 +126,10 @@
     <integer name="dictionary_list_col">1</integer>
     <integer name="feedback_record_adapter_row">6</integer>
     <integer name="feedback_record_adapter_col">1</integer>
+    <integer name="feedback_record_query_limit">20</integer>
     <integer name="gift_center_adapter_row">5</integer>
     <integer name="gift_center_adapter_col">1</integer>
-    <integer name="personal_account_adapter_row">5</integer>
+    <integer name="personal_account_adapter_row">4</integer>
     <integer name="personal_account_adapter_col">1</integer>
     <integer name="points_for_adapter_row">5</integer>
     <integer name="points_for_adapter_col">1</integer>
@@ -168,4 +169,5 @@
     <integer name="dialog_jd_loading_height">100</integer>
     <integer name="item_subject_list_info_lines">2</integer>
     <integer name="book_detail_info_lines">2</integer>
+    <integer name="calculate_half">2</integer>
 </resources>

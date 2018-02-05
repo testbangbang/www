@@ -99,6 +99,7 @@
     <dimen name="book_shop_recycler_view_margin">17dp</dimen>
     <dimen name="book_shop_title_padding">10dp</dimen>
     <dimen name="book_shop_recycler_height">190dp</dimen>
+    <dimen name="book_shop_recycler_margin_right">-4dp</dimen>
     <dimen name="book_shop_banner_recycler_height">90dp</dimen>
     <dimen name="book_shop_banner_recycler_margin_top_and_bottom">30dp</dimen>
     <dimen name="view_all_drawable_padding">10dp</dimen>
@@ -113,9 +114,9 @@
     <dimen name="search_view_button_background_padding">4dp</dimen>
     <dimen name="search_view_edit_text_padding_bottom">6dp</dimen>
     <dimen name="search_view_edit_text_padding_left">15dp</dimen>
-    <dimen name="subject_model_item_padding">2dp</dimen>
     <dimen name="subject_model_item_width">103dp</dimen>
     <dimen name="subject_model_item_height">137dp</dimen>
+    <dimen name="subject_model_item_space">32dp</dimen>
     <dimen name="shop_back_top_button_margin_top">133dp</dimen>
     <dimen name="loading_dialog_min_height">120dp</dimen>
     <dimen name="loading_dialog_min_width">140dp</dimen>
@@ -127,8 +128,9 @@
     <dimen name="toast_view_padding_left_and_right">10px</dimen>
     <dimen name="toast_view_padding_top_and_bottom">5px</dimen>
     <dimen name="banner_subject_model_item_padding">0dp</dimen>
-    <dimen name="banner_subject_model_item_width">234dp</dimen>
-    <dimen name="banner_subject_model_item_height">85dp</dimen>
+    <dimen name="banner_subject_model_item_width">246dp</dimen>
+    <dimen name="banner_subject_model_item_height">87dp</dimen>
+    <dimen name="banner_subject_model_item_space">28dp</dimen>
     <dimen name="shop_back_top_button_padding">8dp</dimen>
     <dimen name="layout_book_detail_directory_margin_top_and_bottom">10dp</dimen>
     <dimen name="layout_book_detail_directory_margin_right_left">20dp</dimen>
@@ -505,4 +507,6 @@
     <dimen name="book_detail_view_catalog_container_margin_left_and_right">30dp</dimen>
     <dimen name="shop_dialog_title_height">55dp</dimen>
     <dimen name="shop_dialog_content_height">300dp</dimen>
+    <dimen name="personal_book_image_padding">10dp</dimen>
+    <dimen name="personal_sign_width">100dp</dimen>
 </resources>

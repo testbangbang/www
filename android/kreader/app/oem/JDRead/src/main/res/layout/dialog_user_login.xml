@@ -37,6 +37,7 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/user_login_jd_account"
             android:textSize="@dimen/level_two_heading_font"
+            android:textColor="@android:color/black"
             android:textStyle="bold" />
 
         <RelativeLayout
@@ -62,11 +63,14 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/user_login_account_edit_text_delete_button"
                 android:background="@null"
+                android:cursorVisible="true"
+                android:textCursorDrawable="@null"
                 android:hint="@string/edit_text_account_hint"
                 android:inputType="textVisiblePassword"
                 android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
                 android:singleLine="true"
                 android:text="@={loginViewModel.account}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font"/>
         </RelativeLayout>
 
@@ -95,11 +99,14 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/user_login_password_edit_text_visibility_button"
                 android:background="@null"
+                android:cursorVisible="true"
+                android:textCursorDrawable="@null"
                 android:hint="@string/password_edit_hint"
                 android:inputType="textPassword"
                 android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
                 android:singleLine="true"
                 android:text="@={loginViewModel.password}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font"
                 bind:isShowPassword="@{loginViewModel.isShowPassword}" />
 
@@ -118,6 +125,7 @@
                 android:onClick="@{()->loginViewModel.onRegisterViewClick()}"
                 android:padding="@dimen/user_login_register_button_padding"
                 android:text="@string/register"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </RelativeLayout>
@@ -131,8 +139,7 @@
             android:onClick="@{()->loginViewModel.onLoginViewClick()}"
             android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
             android:text="@string/login"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
-
     </LinearLayout>
-
 </layout>

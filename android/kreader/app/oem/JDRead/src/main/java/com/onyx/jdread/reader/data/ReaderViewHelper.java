@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.data;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -19,12 +20,15 @@ import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.RectUtils;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.R;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewConfig;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.util.TimeUtils;
 
 import java.util.List;
@@ -202,10 +206,23 @@ public class ReaderViewHelper {
             if (readerUserDataInfo.hasPageAnnotations(pageInfo)) {
                 List<PageAnnotation> annotations = readerUserDataInfo.getPageAnnotations(pageInfo);
                 for (PageAnnotation annotation : annotations) {
-                    drawHighlightRectangles(reader.getReaderHelper().getContext(), canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
+                    drawHighlightRectangles(reader.getReaderHelper().getContext(), canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getAnnotation().getRectangles()));
+                    String note = annotation.getAnnotation().getNote();
+                    if (!StringUtils.isNullOrEmpty(note)){
+                        drawHighLightSign(reader.getReaderHelper().getContext(), canvas, paint, annotation.getAnnotation().getRectangles());
+                    }
                 }
             }
         }
+    }
+
+    private void drawHighLightSign(Context context, Canvas canvas, Paint paint, List<RectF> rectangles){
+        if (rectangles == null || rectangles.size() < 1) {
+            return;
+        }
+        RectF end = rectangles.get(rectangles.size() - 1);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_read_note);
+        canvas.drawBitmap(bitmap, end.right - ReaderConfig.SIGN_RIGHT_MARGIN, (end.top - bitmap.getHeight() / 2), null);
     }
 
 

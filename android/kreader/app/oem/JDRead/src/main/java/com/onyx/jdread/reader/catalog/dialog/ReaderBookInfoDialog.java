@@ -34,6 +34,7 @@ import com.onyx.jdread.reader.catalog.event.ReaderBookInfoTitleBackEvent;
 import com.onyx.jdread.reader.catalog.model.ReaderBookInfoModel;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.EditNoteClickEvent;
 import com.onyx.jdread.reader.event.PopupNoteClickEvent;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 
@@ -229,9 +230,9 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
 
         Annotation annotation = annotations.get(position);
 
-        PopupNoteClickEvent popupNoteClickEvent = new PopupNoteClickEvent();
-        popupNoteClickEvent.setAnnotation(annotation);
-        eventBus.post(popupNoteClickEvent);
+        EditNoteClickEvent editNoteClickEvent = new EditNoteClickEvent();
+        editNoteClickEvent.setAnnotation(annotation);
+        eventBus.post(editNoteClickEvent);
     }
 
     public String getCurrentPagePosition() {

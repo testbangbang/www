@@ -11,7 +11,11 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PopupSelectionMenuBinding;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.AnnotationBaidupediaEvent;
+import com.onyx.jdread.reader.event.AnnotationCopyEvent;
+import com.onyx.jdread.reader.event.AnnotationTranslationEvent;
 import com.onyx.jdread.reader.event.DeleteAnnotationEvent;
+import com.onyx.jdread.reader.event.EditNoteClickEvent;
 import com.onyx.jdread.reader.event.PopupBaidupediaClickEvent;
 import com.onyx.jdread.reader.event.PopupCopyClickEvent;
 import com.onyx.jdread.reader.event.PopupLineationClickEvent;
@@ -101,26 +105,43 @@ public class SelectMenuModel {
     }
 
     public void onNoteClick() {
-        PopupNoteClickEvent popupNoteClickEvent = new PopupNoteClickEvent();
         if(currentAnnotations != null) {
-            popupNoteClickEvent.setAnnotation(currentAnnotations.getAnnotation());
+            EditNoteClickEvent event = new EditNoteClickEvent();
+            event.setAnnotation(currentAnnotations.getAnnotation());
+            getEventBus().post(event);
+        }else {
+            getEventBus().post(new PopupNoteClickEvent());
         }
-        getEventBus().post(popupNoteClickEvent);
         setIsShowSelectMenu(false);
     }
 
     public void onCopyClick() {
-        getEventBus().post(new PopupCopyClickEvent());
+        if(currentAnnotations != null){
+            AnnotationCopyEvent annotationCopyEvent = new AnnotationCopyEvent(currentAnnotations.getAnnotation());
+            getEventBus().post(annotationCopyEvent);
+        }else {
+            getEventBus().post(new PopupCopyClickEvent());
+        }
         setIsShowSelectMenu(false);
     }
 
     public void onTranslationClick() {
-        getEventBus().post(new PopupTranslationClickEvent());
-        setIsShowSelectMenu(false);
+        if(currentAnnotations != null){
+            AnnotationTranslationEvent event = new AnnotationTranslationEvent(currentAnnotations.getAnnotation());
+            getEventBus().post(event);
+        }else {
+            getEventBus().post(new PopupTranslationClickEvent());
+            setIsShowSelectMenu(false);
+        }
     }
 
     public void onBaidupediaClick() {
-        getEventBus().post(new PopupBaidupediaClickEvent());
+        if(currentAnnotations != null){
+            AnnotationBaidupediaEvent event = new AnnotationBaidupediaEvent(currentAnnotations.getAnnotation());
+            getEventBus().post(event);
+        }else {
+            getEventBus().post(new PopupBaidupediaClickEvent());
+        }
         setIsShowSelectMenu(false);
     }
 
@@ -239,8 +260,8 @@ public class SelectMenuModel {
     }
 
     public void showEditAnnotationMenu(ReaderDataHolder readerDataHolder,PageAnnotation annotations){
-        RectF begin = annotations.getRectangles().get(0);
-        RectF end = annotations.getRectangles().get(annotations.getRectangles().size() - 1);
+        RectF begin = annotations.getAnnotation().getRectangles().get(0);
+        RectF end = annotations.getAnnotation().getRectangles().get(annotations.getAnnotation().getRectangles().size() - 1);
         currentAnnotations = annotations;
         setIsEditAnnotation(true);
         requestLayoutView(readerDataHolder,begin.top,

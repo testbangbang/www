@@ -20,10 +20,12 @@ import java.util.Map;
 public class AddAnnotationRequest extends ReaderBaseRequest {
     private Reader reader;
     private Map<String, SelectionInfo> readerSelectionInfos;
+    private String note;
 
-    public AddAnnotationRequest(Reader reader, Map<String, SelectionInfo> readerSelectionInfos) {
+    public AddAnnotationRequest(Reader reader, Map<String, SelectionInfo> readerSelectionInfos,String note) {
         this.reader = reader;
         this.readerSelectionInfos = readerSelectionInfos;
+        this.note = note;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
             ReaderSelection selection = readerSelectionInfo.getCurrentSelection();
             Annotation annotation = createAnnotation(reader,readerSelectionInfo.pageInfo,
                     selection.getStartPosition(), selection.getEndPosition(),
-                    selection.getRectangles(), selection.getText(), "",readerSelectionInfo.pageInfo.getChapterName());
+                    selection.getRectangles(), selection.getText(), note,readerSelectionInfo.pageInfo.getChapterName());
 
             ContentSdkDataUtils.getDataProvider().addAnnotation(annotation);
         }

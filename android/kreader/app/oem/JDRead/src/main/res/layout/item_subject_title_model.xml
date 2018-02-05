@@ -14,15 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="@dimen/banner_subject_model_item_padding">
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/view_all_drawable_padding"
             android:drawableRight="@mipmap/ic_go_view_all"
-            android:ellipsize="middle"
+            android:ellipsize="end"
             android:gravity="center"
             android:maxLines="2"
             android:textColor="@android:color/black"
