@@ -507,4 +507,6 @@
     <dimen name="book_detail_view_catalog_container_margin_left_and_right">30dp</dimen>
     <dimen name="shop_dialog_title_height">55dp</dimen>
     <dimen name="shop_dialog_content_height">300dp</dimen>
+    <dimen name="personal_book_image_padding">10dp</dimen>
+    <dimen name="personal_sign_width">100dp</dimen>
 </resources>

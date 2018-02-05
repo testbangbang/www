@@ -439,4 +439,7 @@
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">该图书已购买或者是免费书,无需购买!</string>
     <string name="empty_search_key_prompt">请输入需要搜索的内容</string>
     <string name="no_more_content">没有更多内容了</string>
+    <string name="category_publish">出版</string>
+    <string name="category_boy">男生</string>
+    <string name="category_girl">女生</string>
 </resources>

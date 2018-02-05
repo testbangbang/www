@@ -34,10 +34,8 @@ public class GetUnlimitedAction extends BaseAction {
 
             @Override
             public void onNext(Object o) {
-                if (rxCallback != null) {
-                    unlimitedBooks = rq.getBooks();
-                    rxCallback.onNext(GetUnlimitedAction.class);
-                }
+                unlimitedBooks = rq.getBooks();
+                RxCallback.invokeNext(rxCallback, GetUnlimitedAction.this);
             }
 
             @Override

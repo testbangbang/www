@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.QueryBase;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
@@ -18,8 +19,10 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FeedbackRecordBinding;
+import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.adapter.FeedbackRecordAdapter;
@@ -43,12 +46,15 @@ import java.util.List;
 public class FeedbackRecordFragment extends BaseFragment {
     private FeedbackRecordBinding binding;
     private FeedbackRecordAdapter feedbackRecordAdapter;
+    private GPaginator pageIndicator;
+    private PageIndicatorModel pageIndicatorModel;
     private int queryLimit = 20;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_feedback_record, container, false);
+        initConfig();
         initView();
         initData();
         return binding.getRoot();
@@ -72,7 +78,16 @@ public class FeedbackRecordFragment extends BaseFragment {
         hideLoadingDialog();
     }
 
+    private void initConfig() {
+        queryLimit = ResManager.getInteger(R.integer.feedback_record_query_limit);
+    }
+
     private void initView() {
+        initContentView();
+        initPageIndicator();
+    }
+
+    private void initContentView() {
         binding.feedbackRecordRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
         binding.feedbackRecordRecycler.addItemDecoration(dividerItemDecoration);
@@ -81,11 +96,36 @@ public class FeedbackRecordFragment extends BaseFragment {
         binding.feedbackRecordRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
+                updatePageIndicator();
                 if (!feedbackRecordAdapter.getPagePaginator().hasNextPage()) {
                     loadMoreDataList();
                 }
             }
         });
+    }
+
+    private void initPageIndicator() {
+        pageIndicator = binding.feedbackRecordRecycler.getPaginator();
+        pageIndicatorModel = new PageIndicatorModel(pageIndicator, new PageIndicatorModel.PageChangedListener() {
+            @Override
+            public void prev() {
+                prevPage();
+            }
+
+            @Override
+            public void next() {
+                nextPage();
+            }
+
+            @Override
+            public void gotoPage(int currentPage) {
+            }
+
+            @Override
+            public void onRefresh() {
+            }
+        });
+        binding.setIndicatorModel(pageIndicatorModel);
     }
 
     private void initData() {
@@ -147,6 +187,22 @@ public class FeedbackRecordFragment extends BaseFragment {
             return;
         }
         feedbackRecordAdapter.addDataList(list, !loadMore);
+        updatePageIndicator();
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = feedbackRecordAdapter.getDataCount();
+        pageIndicator.resize(feedbackRecordAdapter.getRowCount(), feedbackRecordAdapter.getColumnCount(), totalCount);
+        pageIndicatorModel.setTotalFormat(getString(R.string.total));
+        pageIndicatorModel.updateCurrentPage(totalCount);
+    }
+
+    private void prevPage() {
+        binding.feedbackRecordRecycler.prevPage();
+    }
+
+    private void nextPage() {
+        binding.feedbackRecordRecycler.nextPage();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
