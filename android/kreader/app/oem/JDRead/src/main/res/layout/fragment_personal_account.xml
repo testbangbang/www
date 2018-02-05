@@ -53,7 +53,7 @@
                         android:layout_marginTop="@dimen/personal_account_dec_margin_top"
                         android:gravity="center"
                         android:text="@string/read_bean"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/text_color_grey"
                         android:textSize="@dimen/level_three_heading_font" />
                 </LinearLayout>
 
@@ -83,7 +83,7 @@
                         android:layout_marginTop="@dimen/personal_account_dec_margin_top"
                         android:gravity="center"
                         android:text="@string/vouchers"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/text_color_grey"
                         android:textSize="@dimen/level_three_heading_font" />
                 </LinearLayout>
 
@@ -113,7 +113,7 @@
                         android:layout_marginTop="@dimen/personal_account_dec_margin_top"
                         android:gravity="center"
                         android:text="@string/available_read"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/text_color_grey"
                         android:textSize="@dimen/level_three_heading_font" />
                 </LinearLayout>
             </LinearLayout>

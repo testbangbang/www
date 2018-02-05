@@ -1,7 +1,6 @@
 package com.onyx.jdread.personal.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemPersonalBookBinding;
 import com.onyx.jdread.main.common.ResManager;

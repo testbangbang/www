@@ -9,4 +9,5 @@
     <color name="transparent">#00000000</color>
     <color name="preference_fallback_accent_color">@color/normal_black</color>
     <color name="divider_color_setting">#dcdcdc</color>
+    <color name="text_color_grey">#808080</color>
 </resources>

@@ -117,4 +117,7 @@ public class Constants {
     public static final int SHOP_VIEW_SUBJECT_HEIGHT = 424;
     public static final int SHOP_VIEW_END_VIEW_HEIGHT = 366;
     public static final int SHOP_VIEW_VIP_INFO_VIEW_HEIGHT = 214;
+    public static final String CATEGORY_MATH_CONTENT = "数字内容";
+    public static final String CATEGORY_BOY_ORIGINAL = "男生原创";
+    public static final String CATEGORY_GIRL_ORIGINAL = "女生原创";
 }
