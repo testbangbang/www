@@ -10,7 +10,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Operator;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
@@ -37,6 +37,9 @@ public class NoteDataProvider {
     }
 
     public static NoteModel load(final String uniqueId) {
+        if (StringUtils.isNullOrEmpty(uniqueId)){
+            return null;
+        }
         Select select = new Select();
         Where where = select.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId));
         return (NoteModel) where.querySingle();
@@ -65,30 +68,37 @@ public class NoteDataProvider {
     public static List<NoteModel> loadNoteList(final Context context, final String parentUniqueId,
                                                @SortBy.SortByDef int sortBy, @AscDescOrder.AscDescOrderDef int ascOrder) {
         Select select = new Select();
-        Operator condition;
+        OperatorGroup conditionGroup = OperatorGroup.clause();
         if (StringUtils.isNullOrEmpty(parentUniqueId)) {
-            condition = NoteModel_Table.parentUniqueId.isNull();
+            conditionGroup.and(NoteModel_Table.parentUniqueId.isNull());
         } else {
-            condition = NoteModel_Table.parentUniqueId.eq(parentUniqueId);
+            conditionGroup.and(NoteModel_Table.parentUniqueId.eq(parentUniqueId));
         }
+        buildFilterEmptyUniqueID(conditionGroup);
+
         Where<NoteModel> where;
         boolean ascending = (ascOrder == AscDescOrder.ASC);
         switch (sortBy) {
             case SortBy.UPDATED_AT:
-                where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.updatedAt, ascending);
+                where = select.from(NoteModel.class).where(conditionGroup).orderBy(NoteModel_Table.updatedAt, ascending);
                 break;
             case SortBy.TITLE:
-                where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.title, ascending);
+                where = select.from(NoteModel.class).where(conditionGroup).orderBy(NoteModel_Table.title, ascending);
                 break;
             case SortBy.TYPE:
-                where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.type, ascending);
+                where = select.from(NoteModel.class).where(conditionGroup).orderBy(NoteModel_Table.type, ascending);
                 break;
             case SortBy.CREATED_AT:
             default:
-                where = select.from(NoteModel.class).where(condition).orderBy(NoteModel_Table.createdAt, ascending);
+                where = select.from(NoteModel.class).where(conditionGroup).orderBy(NoteModel_Table.createdAt, ascending);
                 break;
         }
         return where.queryList();
+    }
+
+    private static void buildFilterEmptyUniqueID(OperatorGroup operatorGroup){
+        //TODO:filter all incorrect existed null uniqueId document;
+        operatorGroup.and(NoteModel_Table.uniqueId.isNotNull());
     }
 
     /**
@@ -98,14 +108,17 @@ public class NoteDataProvider {
      */
     public static List<NoteModel> loadAllNoteLibraryList() {
         Select select = new Select();
-        Operator condition;
-        condition = NoteModel_Table.type.eq(NoteModel.TYPE_LIBRARY);
-        Where<NoteModel> where = select.from(NoteModel.class).where(condition);
+        OperatorGroup conditionGroup = OperatorGroup.clause();
+        conditionGroup.and(NoteModel_Table.type.eq(NoteModel.TYPE_LIBRARY));
+        buildFilterEmptyUniqueID(conditionGroup);
+        Where<NoteModel> where = select.from(NoteModel.class).where(conditionGroup);
         return where.queryList();
     }
 
     public static List<NoteModel> loadAllNoteList() {
-        return new Select().from(NoteModel.class).queryList();
+        OperatorGroup conditionGroup = OperatorGroup.clause();
+        buildFilterEmptyUniqueID(conditionGroup);
+        return new Select().from(NoteModel.class).where(conditionGroup).queryList();
     }
 
     public static boolean hasData() {
@@ -116,7 +129,9 @@ public class NoteDataProvider {
         if (model == null) {
             return;
         }
-        model.save();
+        if (StringUtils.isNotBlank(model.getUniqueId())){
+            model.save();
+        }
     }
 
     public static void saveNoteList(final Context context,
@@ -124,7 +139,7 @@ public class NoteDataProvider {
         final DatabaseWrapper database= FlowManager.getDatabase(ShapeDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
         for(NoteModel noteModel : list) {
-            noteModel.save();
+            saveNote(context,noteModel);
         }
         database.setTransactionSuccessful();
         database.endTransaction();
@@ -224,10 +239,8 @@ public class NoteDataProvider {
      */
     public static boolean isChildLibrary(Context context, String checkID, String checkParentID) {
         NoteModel checkNoteModel = load(context, checkID);
-        if (load(context, checkParentID).isDocument()) {
-            return false;
-        }
-        if (checkNoteModel == null) {
+
+        if (checkNoteModel == null || checkNoteModel.isDocument()) {
             return false;
         }
 
@@ -255,9 +268,13 @@ public class NoteDataProvider {
             model = load(context, model.getParentUniqueId());
         } while (model != null && StringUtils.isNotBlank(model.getUniqueId()));
         Collections.reverse(levelTitleList);
+
+        StringBuilder builder = new StringBuilder(path);
         for (String title : levelTitleList) {
-            path = path + levelDivider + title;
+            builder.append(levelDivider);
+            builder.append(title);
         }
+        path = builder.toString();
         return path;
     }
 
