@@ -50,7 +50,9 @@ import com.onyx.jdread.shop.ui.ShopFragment;
 import com.onyx.jdread.shop.ui.ViewAllBooksFragment;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by huxiaomao on 2017/12/8.
@@ -58,6 +60,7 @@ import java.util.Map;
 
 public class ViewConfig {
     private static Map<String, FunctionModule> childViewInfo = new HashMap<>();
+    private static Set<String> checkTabFragmentSet = new HashSet<>();
 
     public enum FunctionModule {
         BACK, LIBRARY, SHOP, SETTING, PERSONAL;
@@ -70,8 +73,8 @@ public class ViewConfig {
     static {
         //library
         childViewInfo.put(LibraryFragment.class.getName(), FunctionModule.LIBRARY);
-        childViewInfo.put(WiFiPassBookFragment.class.getName(),FunctionModule.LIBRARY);
-        childViewInfo.put(SearchBookFragment.class.getName(),FunctionModule.LIBRARY);
+        childViewInfo.put(WiFiPassBookFragment.class.getName(), FunctionModule.LIBRARY);
+        childViewInfo.put(SearchBookFragment.class.getName(), FunctionModule.LIBRARY);
         //shop
         childViewInfo.put(ShopFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(BookDetailFragment.class.getName(), FunctionModule.SHOP);
@@ -85,27 +88,27 @@ public class ViewConfig {
         childViewInfo.put(BookSaleFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(BookNewBooksFragment.class.getName(), FunctionModule.SHOP);
         childViewInfo.put(SearchBookListFragment.class.getName(), FunctionModule.SHOP);
-        childViewInfo.put(BuyReadVIPFragment.class.getName(),FunctionModule.SHOP);
+        childViewInfo.put(BuyReadVIPFragment.class.getName(), FunctionModule.SHOP);
         //setting
         childViewInfo.put(SettingFragment.class.getName(), FunctionModule.SETTING);
-        childViewInfo.put(DeviceConfigFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(LockScreenFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(RefreshFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(SystemUpdateFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(WifiFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(LaboratoryFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(HelpFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(ContactUsFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(FeedbackFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(ManualFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(ScreensaversFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(DeviceInformationFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(PasswordSettingFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(ReadingToolsFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(BrightnessFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(TranslateFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(DictionaryFragment.class.getName(),FunctionModule.SETTING);
-        childViewInfo.put(FeedbackRecordFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(DeviceConfigFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(LockScreenFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(RefreshFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(SystemUpdateFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(WifiFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(LaboratoryFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(HelpFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(ContactUsFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(FeedbackFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(ManualFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(ScreensaversFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(DeviceInformationFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(PasswordSettingFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(ReadingToolsFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(BrightnessFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(TranslateFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(DictionaryFragment.class.getName(), FunctionModule.SETTING);
+        childViewInfo.put(FeedbackRecordFragment.class.getName(), FunctionModule.SETTING);
         //personal
         childViewInfo.put(PersonalFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(PersonalExperienceFragment.class.getName(), FunctionModule.PERSONAL);
@@ -119,6 +122,11 @@ public class ViewConfig {
         childViewInfo.put(ReadPreferenceFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(PersonalNoteFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(PersonalBookFragment.class.getName(), FunctionModule.PERSONAL);
+
+        checkTabFragmentSet.add(LibraryFragment.class.getName());
+        checkTabFragmentSet.add(ShopFragment.class.getName());
+        checkTabFragmentSet.add(SettingFragment.class.getName());
+        checkTabFragmentSet.add(PersonalFragment.class.getName());
     }
 
     public static FunctionModule findChildViewParentId(String childViewName) {
@@ -127,5 +135,9 @@ public class ViewConfig {
 
     public static void initStackByName(StackList stackList, String fragmentName) {
         stackList.push(fragmentName);
+    }
+
+    public static boolean isCheckFragment(String name) {
+        return checkTabFragmentSet.contains(name);
     }
 }

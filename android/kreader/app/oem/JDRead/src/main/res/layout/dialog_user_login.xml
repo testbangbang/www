@@ -37,6 +37,7 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/user_login_jd_account"
             android:textSize="@dimen/level_two_heading_font"
+            android:textColor="@android:color/black"
             android:textStyle="bold" />
 
         <RelativeLayout
@@ -67,6 +68,7 @@
                 android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
                 android:singleLine="true"
                 android:text="@={loginViewModel.account}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font"/>
         </RelativeLayout>
 
@@ -100,6 +102,7 @@
                 android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
                 android:singleLine="true"
                 android:text="@={loginViewModel.password}"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font"
                 bind:isShowPassword="@{loginViewModel.isShowPassword}" />
 
@@ -118,6 +121,7 @@
                 android:onClick="@{()->loginViewModel.onRegisterViewClick()}"
                 android:padding="@dimen/user_login_register_button_padding"
                 android:text="@string/register"
+                android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </RelativeLayout>
@@ -131,8 +135,7 @@
             android:onClick="@{()->loginViewModel.onLoginViewClick()}"
             android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
             android:text="@string/login"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
-
     </LinearLayout>
-
 </layout>

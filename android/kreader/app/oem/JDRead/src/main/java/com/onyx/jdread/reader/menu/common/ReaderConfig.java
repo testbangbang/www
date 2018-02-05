@@ -9,12 +9,12 @@ public class ReaderConfig {
     public static final int HIT_TEST_TEXT_STEP = 30;
 
     public static class FontSize {
-        public static final int FONT_SIZE_X_SMALL = 12;
-        public static final int FONT_SIZE_SMALL = 18;
-        public static final int FONT_SIZE_MEDIUM = 24;
-        public static final int FONT_SIZE_LARGE = 30;
-        public static final int FONT_SIZE_X_LARGE = 36;
-        public static final int FONT_SIZE_XX_LARGE = 42;
+        public static final int FONT_SIZE_X_SMALL = 20;
+        public static final int FONT_SIZE_SMALL = 22;
+        public static final int FONT_SIZE_MEDIUM = 27;
+        public static final int FONT_SIZE_LARGE = 29;
+        public static final int FONT_SIZE_X_LARGE = 33;
+        public static final int FONT_SIZE_XX_LARGE = 40;
         public static final int DEFAULT_FONT_SIZE = FONT_SIZE_MEDIUM;
     }
 
@@ -35,4 +35,6 @@ public class ReaderConfig {
         public static final int LEVEL_SIX = 5;
         public static final int DEFAULT_COLOR_DEPTH = LEVEL_ONE;
     }
+
+     public static final int SIGN_RIGHT_MARGIN = 10;
 }

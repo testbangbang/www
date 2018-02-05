@@ -24,7 +24,6 @@ public class PersonalAccountModel {
             put(ResManager.getString(R.string.consumption_record), new ConsumptionRecordEvent());
             put(ResManager.getString(R.string.paid_record), new PaidRecordEvent());
             put(ResManager.getString(R.string.read_vip), new ReadVipEvent());
-            put(ResManager.getString(R.string.points_for), new PointsForEvent());
         }
     };
 

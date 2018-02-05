@@ -214,4 +214,8 @@ public class ReaderDataHolder {
     public void setGammaInfo(GammaInfo gammaInfo) {
         this.gammaInfo = gammaInfo;
     }
+
+    public boolean supportFontSizeAdjustment() {
+        return getReaderViewInfo() != null && getReaderViewInfo().supportFontSizeAdjustment;
+    }
 }

@@ -439,8 +439,10 @@
     <string name="delete_book">Delete book</string>
     <string name="network_or_server_error">Network or server error, wait for a while to try again</string>
     <string name="reader_check_network">Please check your network</string>
-    <string name="AM">AM</string>
-    <string name="PM">PM</string>
+    <string name="AM" translatable="false">AM</string>
+    <string name="PM" translatable="false">PM</string>
+    <string name="morning">Morning</string>
+    <string name="afternoon">Afternoon</string>
     <string name="updating">The system is being updated, please...</string>
     <string name="power_off_prompt">Power off?</string>
     <string name="speed_refresh_is_opened">Speed refresh is opened</string>
@@ -457,5 +459,8 @@
     <string name="not_open_vip_read">Do not open Vip</string>
     <string name="format_rmb">¥%s</string>
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">the book already purchase</string>
+    <string name="empty_search_key_prompt">Please enter the content you want to search.</string>
     <string name="no_more_content">No more content</string>
+    <string name="delete_library_prompt">Whether to delete the group (group books back into the bookshelf)</string>
+    <string name="delete_library_include_book_prompt">Whether to delete this group and group books from this machine</string>
 </resources>

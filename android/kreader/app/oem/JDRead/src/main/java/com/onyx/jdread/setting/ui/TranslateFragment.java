@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentTranslateBinding;
@@ -81,7 +82,19 @@ public class TranslateFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToReadingToolsEvent(BackToReadingToolsEvent event) {
+        if (processBackEvent()) {
+            return;
+        }
         viewEventCallBack.viewBack();
+    }
+
+    private boolean processBackEvent() {
+        if (InputMethodUtils.isShow(getActivity(), binding.translateEdit)) {
+            hideWindow();
+            binding.translateEdit.clearFocus();
+            return true;
+        }
+        return false;
     }
 
     @Override

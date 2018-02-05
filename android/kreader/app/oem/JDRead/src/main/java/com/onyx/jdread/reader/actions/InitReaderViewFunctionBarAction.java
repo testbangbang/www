@@ -35,20 +35,22 @@ public class InitReaderViewFunctionBarAction extends BaseReaderAction {
     public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         functionBarModel.itemModels.clear();
         ReaderFunctionBarItem catalog = new ReaderFunctionBarItem(ViewConfig.FunctionModule.LIBRARY, LibraryFragment.class.getName(),
-                readerDataHolder.getAppContext().getString(R.string.reader_menu_catalog), R.mipmap.ic_read_list, new ReaderFunctionItemCatalogEvent(), true);
+                readerDataHolder.getAppContext().getString(R.string.reader_menu_catalog), R.mipmap.ic_read_list, new ReaderFunctionItemCatalogEvent());
         functionBarModel.itemModels.add(catalog);
         ReaderFunctionBarItem progress = new ReaderFunctionBarItem(ViewConfig.FunctionModule.SHOP, ShopFragment.class.getName(),
-                readerDataHolder.getAppContext().getString(R.string.reader_menu_progress), R.mipmap.ic_read_pace, new ReaderFunctionItemProgressEvent(), true);
+                readerDataHolder.getAppContext().getString(R.string.reader_menu_progress), R.mipmap.ic_read_pace, new ReaderFunctionItemProgressEvent());
         progress.setSelected(true);
         functionBarModel.itemModels.add(progress);
-        ReaderFunctionBarItem back = new ReaderFunctionBarItem(ViewConfig.FunctionModule.BACK, "back",
-                readerDataHolder.getAppContext().getString(R.string.back_name), R.mipmap.ic_undo, new ReaderFunctionItemBackEvent(), JDPreferenceManager.getBooleanValue(R.string.show_back_tab_key, false));
-        functionBarModel.itemModels.add(back);
+        if (JDPreferenceManager.getBooleanValue(R.string.show_back_tab_key, false)) {
+            ReaderFunctionBarItem back = new ReaderFunctionBarItem(ViewConfig.FunctionModule.BACK, "back",
+                    readerDataHolder.getAppContext().getString(R.string.back_name), R.mipmap.ic_undo, new ReaderFunctionItemBackEvent());
+            functionBarModel.itemModels.add(back);
+        }
         ReaderFunctionBarItem brightness = new ReaderFunctionBarItem(ViewConfig.FunctionModule.SETTING, SettingFragment.class.getName(),
-                readerDataHolder.getAppContext().getString(R.string.reader_menu_brightness), R.mipmap.ic_read_light, new ReaderFunctionItemBrightnessEvent(), true);
+                readerDataHolder.getAppContext().getString(R.string.reader_menu_brightness), R.mipmap.ic_read_light, new ReaderFunctionItemBrightnessEvent());
         functionBarModel.itemModels.add(brightness);
         ReaderFunctionBarItem setting = new ReaderFunctionBarItem(ViewConfig.FunctionModule.PERSONAL, PersonalFragment.class.getName(),
-                readerDataHolder.getAppContext().getString(R.string.reader_format), R.mipmap.ic_read_font, new ReaderFunctionItemSettingEvent(), true);
+                readerDataHolder.getAppContext().getString(R.string.reader_format), R.mipmap.ic_read_font, new ReaderFunctionItemSettingEvent());
         functionBarModel.itemModels.add(setting);
         if (callback != null) {
             callback.onNext(functionBarModel);

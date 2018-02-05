@@ -27,10 +27,8 @@ import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
-import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
-import com.onyx.jdread.main.event.ChangeChildViewEvent;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
@@ -101,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initLibrary() {
-        EventBus.getDefault().register(this);
         registerScreenReceive();
     }
 
@@ -132,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
         PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
         int col = getResources().getInteger(R.integer.function_bar_col);
-        functionBarAdapter.setRowAndCol(functionBarAdapter.getRowCount(), col);
+        functionBarAdapter.setRowAndCol(functionBarAdapter.getRowCount(), show ? col : col - 1);
         functionBarRecycler.setAdapter(functionBarAdapter);
         updateFunctionBar();
     }
@@ -165,8 +162,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
         systemBarModel.unRegisterReceiver(JDReadApplication.getInstance());
         unregisterReceiver(screenStateReceive);
         super.onDestroy();
@@ -287,6 +295,9 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
         switchCurrentFragment(event.childClassName);
+        if (ViewConfig.isCheckFragment(event.childClassName)) {
+            functionBarModel.changeTabSelection(ViewConfig.findChildViewParentId(event.childClassName));
+        }
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
             functionBarItem.getStackList().push(event.childClassName);

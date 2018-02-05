@@ -120,50 +120,6 @@ public class PersonalAccountFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onPointsForEvent(PointsForEvent event) {
-        viewEventCallBack.gotoView(PointsForFragment.class.getName());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onOneYuanEvent(OneYuanEvent event) {
-        // TODO: 2018/1/2    fake data:30104685  30104684   30104683
-        List<String> ids = new ArrayList<>();
-        ids.add("30104685");
-        GetOrderUrlAction getOrderUrlAction = new GetOrderUrlAction(ids);
-        getOrderUrlAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                GetOrderUrlResultBean orderUrlResultBean = PersonalDataBundle.getInstance().getOrderUrlResultBean();
-            }
-        });
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTenYuanEvent(TenYuanEvent event) {
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onFiftyYuanEvent(FiftyYuanEvent event) {
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onHundredYuanEvent(HundredYuanEvent event) {
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTwoHundredYuanEvent(TwoHundredYuanEvent event) {
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onFiveHundredYuanEvent(FiveHundredYuanEvent event) {
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
         viewEventCallBack.viewBack();
     }

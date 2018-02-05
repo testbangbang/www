@@ -7,13 +7,22 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_LARGE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_MEDIUM;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_SMALL;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_XX_LARGE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_X_LARGE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_X_SMALL;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,9 +36,16 @@ import java.util.Map;
  */
 public class ReaderSelectionHelper {
     private Map<String, SelectionInfo> readerSelectionInfos = new HashMap<>();
+    private int currentFontSize = ReaderConfig.FontSize.DEFAULT_FONT_SIZE;
+    private int chooseLeftIcon = R.mipmap.ic_choose_left;
+    private int chooseRightIcon = R.mipmap.ic_choose_right;
 
     public ReaderSelectionHelper() {
         super();
+    }
+
+    public void setCurrentFontSize(int currentFontSize) {
+        this.currentFontSize = currentFontSize;
     }
 
     public ReaderSelection getCurrentSelection(String pagePosition) {
@@ -54,10 +70,10 @@ public class ReaderSelectionHelper {
         return null;
     }
 
-    public String getSelectText(){
+    public String getSelectText() {
         String result = "";
-        for(SelectionInfo readerSelectionInfo : readerSelectionInfos.values()){
-            if(readerSelectionInfo.getCurrentSelection() != null){
+        for (SelectionInfo readerSelectionInfo : readerSelectionInfos.values()) {
+            if (readerSelectionInfo.getCurrentSelection() != null) {
                 result += readerSelectionInfo.getCurrentSelection().getText();
             }
         }
@@ -99,7 +115,7 @@ public class ReaderSelectionHelper {
         SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo != null) {
             for (HighlightCursor cursor : readerSelectionInfo.getCursors()) {
-                if(cursor.getShowState()) {
+                if (cursor.getShowState()) {
                     cursor.draw(canvas, paint);
                 }
             }
@@ -110,23 +126,69 @@ public class ReaderSelectionHelper {
         readerSelectionInfos.clear();
     }
 
+    private boolean getCurrentFontSizeChooseIcon(ReaderTextStyle style) {
+        if (style == null) {
+            chooseLeftIcon = R.mipmap.ic_read_word_left_3;
+            chooseRightIcon = R.mipmap.ic_read_word_right_3;
+            return false;
+        }
+        int fontSize = (int) style.getFontSize().getValue();
+        if (currentFontSize == fontSize) {
+            return false;
+        }
+
+        switch (fontSize) {
+            case FONT_SIZE_X_SMALL:
+                chooseLeftIcon = R.mipmap.ic_read_word_left_1;
+                chooseRightIcon = R.mipmap.ic_read_word_right_1;
+                break;
+            case FONT_SIZE_SMALL:
+                chooseLeftIcon = R.mipmap.ic_read_word_left_2;
+                chooseRightIcon = R.mipmap.ic_read_word_right_2;
+                break;
+            case FONT_SIZE_MEDIUM:
+                chooseLeftIcon = R.mipmap.ic_read_word_left_3;
+                chooseRightIcon = R.mipmap.ic_read_word_right_3;
+                break;
+            case FONT_SIZE_LARGE:
+                chooseLeftIcon = R.mipmap.ic_read_word_left_4;
+                chooseRightIcon = R.mipmap.ic_read_word_right_4;
+                break;
+            case FONT_SIZE_X_LARGE:
+                chooseLeftIcon = R.mipmap.ic_read_word_left_5;
+                chooseRightIcon = R.mipmap.ic_read_word_right_5;
+                break;
+            case FONT_SIZE_XX_LARGE:
+                chooseLeftIcon = R.mipmap.ic_read_word_left_6;
+                chooseRightIcon = R.mipmap.ic_read_word_right_6;
+                break;
+            default:
+                chooseLeftIcon = R.mipmap.ic_read_word_left_3;
+                chooseRightIcon = R.mipmap.ic_read_word_right_3;
+                break;
+        }
+        return true;
+    }
+
     public synchronized boolean update(String pagePosition, final Context context,
                                        ReaderSelection readerSelection, PointF lastPoint,
-                                       PageInfo pageInfo) {
+                                       PageInfo pageInfo,
+                                       ReaderTextStyle style) {
         SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo == null || readerSelectionInfo.getCurrentSelection() == null) {
-            readerSelectionInfo = addPageSelection(pagePosition, readerSelection,pageInfo);
+            readerSelectionInfo = addPageSelection(pagePosition, readerSelection, pageInfo);
         } else {
-            readerSelectionInfo.setCurrentSelection(readerSelection,pageInfo);
+            readerSelectionInfo.setCurrentSelection(readerSelection, pageInfo);
         }
         readerSelectionInfo.setTouchPoint(lastPoint);
         List<RectF> rects = readerSelectionInfo.getCurrentSelection().getRectangles();
         if (rects == null || rects.size() <= 0) {
             return false;
         }
-        if (readerSelectionInfo.getCursors().size() <= 0) {
-            readerSelectionInfo.getCursors().add(new HighlightCursor(context, R.mipmap.ic_choose_left, R.mipmap.ic_choose_right, HighlightCursor.Type.BEGIN_CURSOR));
-            readerSelectionInfo.getCursors().add(new HighlightCursor(context, R.mipmap.ic_choose_left, R.mipmap.ic_choose_right, HighlightCursor.Type.END_CURSOR));
+        if (getCurrentFontSizeChooseIcon(style) || readerSelectionInfo.getCursors().size() <= 0) {
+            readerSelectionInfo.getCursors().clear();
+            readerSelectionInfo.getCursors().add(new HighlightCursor(context, chooseLeftIcon, chooseRightIcon, HighlightCursor.Type.BEGIN_CURSOR));
+            readerSelectionInfo.getCursors().add(new HighlightCursor(context, chooseLeftIcon, chooseRightIcon, HighlightCursor.Type.END_CURSOR));
         }
         HighlightCursor cursor = readerSelectionInfo.getCursors().get(0);
         float fontHeight = rects.get(0).bottom - rects.get(0).top;
@@ -145,13 +207,13 @@ public class ReaderSelectionHelper {
 
     private SelectionInfo addPageSelection(String pagePosition, ReaderSelection readerSelection, PageInfo pageInfo) {
         SelectionInfo readerSelectionInfo = new SelectionInfo();
-        readerSelectionInfo.setCurrentSelection(readerSelection,pageInfo);
+        readerSelectionInfo.setCurrentSelection(readerSelection, pageInfo);
         readerSelectionInfos.put(pagePosition, readerSelectionInfo);
 
         return readerSelectionInfo;
     }
 
-    public void deletePageSelection(String pagePosition){
+    public void deletePageSelection(String pagePosition) {
         readerSelectionInfos.remove(pagePosition);
     }
 
