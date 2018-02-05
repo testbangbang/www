@@ -11,8 +11,8 @@ import org.greenrobot.eventbus.EventBus;
 
 public class ReaderFunctionBarItem extends FunctionBarItem {
     public Object event;
-    public ReaderFunctionBarItem(ViewConfig.FunctionModule functionModule, String firstFragmentName, String itemName, int drawableRes,Object event, boolean backControl) {
-        super(functionModule, firstFragmentName, itemName, drawableRes, backControl);
+    public ReaderFunctionBarItem(ViewConfig.FunctionModule functionModule, String firstFragmentName, String itemName, int drawableRes,Object event) {
+        super(functionModule, firstFragmentName, itemName, drawableRes);
         this.event = event;
     }
 
