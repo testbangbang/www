@@ -238,9 +238,10 @@ public class NoteDataProvider {
      * @return
      */
     public static boolean isChildLibrary(Context context, String checkID, String checkParentID) {
-        NoteModel checkNoteModel = load(context, checkID);
+        NoteModel checkNoteModel = load(checkID);
+        NoteModel checkParentNoteModel = load(checkParentID);
 
-        if (checkNoteModel == null || checkNoteModel.isDocument()) {
+        if (checkParentNoteModel == null || checkNoteModel == null || checkParentNoteModel.isDocument()) {
             return false;
         }
 
@@ -248,7 +249,7 @@ public class NoteDataProvider {
             if (checkNoteModel.getParentUniqueId().equals(checkParentID)) {
                 return true;
             }
-            checkNoteModel = load(context, checkNoteModel.getParentUniqueId());
+            checkNoteModel = load(checkNoteModel.getParentUniqueId());
         }
         return false;
     }
