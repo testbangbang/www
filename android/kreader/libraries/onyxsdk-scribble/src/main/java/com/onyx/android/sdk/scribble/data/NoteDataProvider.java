@@ -245,7 +245,8 @@ public class NoteDataProvider {
             return false;
         }
 
-        while (StringUtils.isNotBlank(checkNoteModel.getParentUniqueId())) {
+        while (checkNoteModel != null &&
+                StringUtils.isNotBlank(checkNoteModel.getParentUniqueId())) {
             if (checkNoteModel.getParentUniqueId().equals(checkParentID)) {
                 return true;
             }
