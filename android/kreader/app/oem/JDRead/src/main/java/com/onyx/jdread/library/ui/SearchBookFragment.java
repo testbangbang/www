@@ -253,7 +253,6 @@ public class SearchBookFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         getEventBus().unregister(this);
-        binding.searchView.setQuery("", false);
     }
 
     @Override

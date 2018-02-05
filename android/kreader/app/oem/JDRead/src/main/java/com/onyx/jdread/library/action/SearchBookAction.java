@@ -1,7 +1,5 @@
 package com.onyx.jdread.library.action;
 
-import android.util.Log;
-
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
