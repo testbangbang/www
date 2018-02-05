@@ -1,3 +1,4 @@
 {
-  "support_color": true
+  "support_color": true,
+  "force_auto_sleep_time": 1800000
 }
