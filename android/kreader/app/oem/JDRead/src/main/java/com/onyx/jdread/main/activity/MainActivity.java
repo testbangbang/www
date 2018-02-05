@@ -27,10 +27,8 @@ import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
-import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
-import com.onyx.jdread.main.event.ChangeChildViewEvent;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
@@ -287,6 +285,9 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
         switchCurrentFragment(event.childClassName);
+        if (ViewConfig.isCheckFragment(event.childClassName)) {
+            functionBarModel.changeTabSelection(ViewConfig.findChildViewParentId(event.childClassName));
+        }
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
             functionBarItem.getStackList().push(event.childClassName);
