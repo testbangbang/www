@@ -275,6 +275,9 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public void onManageClick() {
+        if (count.get() == 0) {
+            return;
+        }
         eventBus.post(new LibraryManageEvent());
     }
 

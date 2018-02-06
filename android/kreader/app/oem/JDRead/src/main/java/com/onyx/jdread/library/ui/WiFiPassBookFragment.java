@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentWifiPassBookBinding;
@@ -15,6 +16,8 @@ import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
 import com.onyx.jdread.library.fileserver.FileServer;
 import com.onyx.jdread.library.model.FileServerModel;
 import com.onyx.jdread.library.request.RxFileServerAddressRequest;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -72,6 +75,7 @@ public class WiFiPassBookFragment extends BaseFragment {
         super.onStop();
         server.stop();
         LibraryDataBundle.getInstance().getEventBus().unregister(this);
+        ToastUtil.showOffsetToast(ResManager.getString(R.string.quit_wifi_pass_book), ResManager.getInteger(R.integer.pass_book_toast_offset_y));
     }
 
     @Subscribe
