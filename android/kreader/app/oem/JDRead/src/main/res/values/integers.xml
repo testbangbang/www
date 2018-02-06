@@ -170,4 +170,5 @@
     <integer name="item_subject_list_info_lines">2</integer>
     <integer name="book_detail_info_lines">2</integer>
     <integer name="calculate_half">2</integer>
+    <integer name="child_over_limit">99</integer>
 </resources>

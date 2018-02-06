@@ -61,31 +61,10 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
                 metadata.setHashTag(file.getAbsolutePath());
                 getDataProvider().saveMetadata(getAppContext(), metadata);
             }
-            String parent = file.getParentFile().getName();
-            Library library = getDataProvider().findLibraryByName(getAppContext(), parent);
-            if (library == null || !library.hasValidId()) {
-                library = new Library();
-                library.setIdString(parent);
-                library.setName(parent);
-                library.setParentUniqueId(null);
-                getDataProvider().addLibrary(library);
-            }
-            MetadataCollection collection = getDataProvider().loadMetadataCollection(getAppContext(), library.getIdString(), metadata.getAssociationId());
-            if (collection == null || !collection.hasValidId()) {
-                getDataProvider().addMetadataCollection(getAppContext(), MetadataCollection.create(metadata.getAssociationId(), library.getIdString()));
-            }
         } else {
             Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
-            if (metadata != null && metadata.hasValidId()) {
-                getDataProvider().removeMetadata(getAppContext(), metadata);
-                Library library = getDataProvider().loadLibrary(file.getParentFile().getName());
-                if (library != null && library.hasValidId()) {
-                    getDataProvider().deleteMetadataCollection(getAppContext(), library.getIdString(), metadata.getAssociationId());
-                    if (StringUtils.isNotBlank(library.getIdString()) && getDataProvider().libraryMetadataCount(library.getIdString()) == 0) {
-                        getDataProvider().deleteLibrary(library.getIdString());
-                    }
-                }
-            }
+            getDataProvider().removeMetadata(getAppContext(), metadata);
+            getDataProvider().deleteMetadataCollectionByDocId(getAppContext(), metadata.getAssociationId());
         }
     }
 }

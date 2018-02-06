@@ -58,12 +58,12 @@
                 android:visibility="@{StringUtils.isNotBlank(model.childCount)?View.VISIBLE:View.GONE}" />
 
             <TextView
+                android:id="@+id/child_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:padding="@dimen/model_item_child_count_padding"
-                android:text="@{model.childCount}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
