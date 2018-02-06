@@ -184,7 +184,7 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void queryTextSubmit(String query) {
-        if (StringUtils.isNullOrEmpty(query)){
+        if (StringUtils.isNullOrEmpty(query)) {
             ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
         }
         if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
@@ -273,6 +273,7 @@ public class SearchBookFragment extends BaseFragment {
 
     @Subscribe
     public void onBackToLibraryFragmentEvent(BackToLibraryFragmentEvent event) {
+        binding.searchView.setQuery("", false);
         viewEventCallBack.viewBack();
     }
 

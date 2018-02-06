@@ -57,6 +57,7 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
             Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
             if (metadata == null || !metadata.hasValidId()) {
                 metadata = Metadata.createFromFile(file, false);
+                metadata.setName(FileUtils.getBaseName(file.getAbsolutePath()));
                 metadata.setHashTag(file.getAbsolutePath());
                 getDataProvider().saveMetadata(getAppContext(), metadata);
             }
