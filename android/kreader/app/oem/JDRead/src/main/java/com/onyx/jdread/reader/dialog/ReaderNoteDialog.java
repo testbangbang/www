@@ -13,6 +13,7 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityNoteBinding;
 import com.onyx.jdread.reader.actions.CreateNoteAction;
+import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.NoteActivityEventHandler;
 import com.onyx.jdread.reader.model.NoteViewModel;
@@ -49,7 +50,7 @@ public class ReaderNoteDialog extends Dialog implements ReaderNoteViewBack {
         binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.activity_note, null, false);
         setContentView(binding.getRoot());
 
-        noteViewModel = new NoteViewModel();
+        noteViewModel = new NoteViewModel(binding);
         noteViewModel.setReaderDataHolder(readerDataHolder.getEventBus());
         binding.setNoteViewModel(noteViewModel);
         noteActivityEventHandler = new NoteActivityEventHandler(readerDataHolder,noteViewModel, this);
@@ -60,7 +61,8 @@ public class ReaderNoteDialog extends Dialog implements ReaderNoteViewBack {
         createNoteAction.execute(readerDataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                noteViewModel.setNoteInfo(readerDataHolder.getAppContext(), createNoteAction.getNoteInfo(),annotation);
+                NoteInfo noteInfo = createNoteAction.getNoteInfo();
+                noteViewModel.setNoteInfo(readerDataHolder.getAppContext(),noteInfo ,annotation);
             }
         });
     }

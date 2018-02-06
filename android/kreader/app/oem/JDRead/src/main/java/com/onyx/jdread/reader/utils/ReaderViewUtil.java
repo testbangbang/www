@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.utils.StringUtils;
 
 public class ReaderViewUtil {
     private static final String TAG = ReaderViewUtil.class.getSimpleName();
@@ -56,5 +57,16 @@ public class ReaderViewUtil {
     private static void unlockDrawingCanvas(SurfaceView surfaceView, Canvas canvas) {
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
         mIsFullUpdate = false;
+    }
+
+    public static String trim(String input) {
+        if (StringUtils.isNotBlank(input)) {
+            input = input.trim();
+            input = input.replace("\u0032", "");
+            input = input.replace("\\u0032", "");
+            input = input.replaceAll("\\u0032", ""); // removes NUL chars
+            input = input.replaceAll("\\\\u0032", ""); // removes backslash+u0000
+        }
+        return input;
     }
 }
