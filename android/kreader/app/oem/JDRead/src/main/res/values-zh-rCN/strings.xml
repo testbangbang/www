@@ -442,4 +442,5 @@
     <string name="category_publish">出版</string>
     <string name="category_boy">男生</string>
     <string name="category_girl">女生</string>
+    <string name="unassociated_impression_notes">未关联印象笔记</string>
 </resources>

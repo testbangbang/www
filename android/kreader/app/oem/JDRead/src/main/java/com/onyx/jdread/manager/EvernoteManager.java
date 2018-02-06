@@ -6,6 +6,8 @@ import com.evernote.client.android.EvernoteSession;
 import com.evernote.client.android.asyncclient.EvernoteCallback;
 import com.evernote.client.android.asyncclient.EvernoteNoteStoreClient;
 import com.evernote.edam.type.Note;
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ToastUtil;
 
 import java.util.List;
 
@@ -34,6 +36,7 @@ public class EvernoteManager {
 
     public static void createNotes(List<Note> notes) {
         if (!EvernoteSession.getInstance().isLoggedIn()) {
+            ToastUtil.showToast(R.string.unassociated_impression_notes);
             return;
         }
 

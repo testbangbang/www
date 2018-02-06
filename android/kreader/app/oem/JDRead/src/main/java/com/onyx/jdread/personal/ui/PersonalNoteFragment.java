@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.evernote.edam.type.Note;
+import com.evernote.edam.type.NoteAttributes;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -16,7 +18,9 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalNoteBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
+import com.onyx.jdread.manager.EvernoteManager;
 import com.onyx.jdread.personal.action.GetPersonalNotesAction;
 import com.onyx.jdread.personal.adapter.PersonalNoteAdapter;
 import com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean;
@@ -31,6 +35,7 @@ import com.onyx.jdread.util.Utils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -103,6 +108,7 @@ public class PersonalNoteFragment extends BaseFragment {
                     for (NoteBean bean :data) {
                         bean.checked = true;
                     }
+                    setExportText(true);
                     personalNoteAdapter.notifyDataSetChanged();
                 }
             }
@@ -121,6 +127,27 @@ public class PersonalNoteFragment extends BaseFragment {
                 binding.setPageText(paginator.getProgressText());
             }
         });
+
+        personalNoteAdapter.setOnItemClickListener(new PageRecyclerView.PageAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                List<NoteBean> data = personalNoteAdapter.getData();
+                List<Boolean> list = new ArrayList<>();
+                if (data != null && data.size() > 0) {
+                    for (NoteBean bean : data) {
+                        if (bean.checked) {
+                            list.add(bean.checked);
+                        }
+                    }
+                }
+                setExportText(list.size() != 0);
+            }
+        });
+    }
+
+    private void setExportText(boolean enable) {
+        binding.personalNoteExport.setEnabled(enable);
+        binding.personalNoteExport.setTextColor(enable ? ResManager.getColor(R.color.normal_black) : ResManager.getColor(R.color.text_gray_color));
     }
 
     private void showExportDialog() {
@@ -143,5 +170,24 @@ public class PersonalNoteFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToImpressionEvent(ExportToImpressionEvent event) {
+        if (personalNoteAdapter != null) {
+            List<Note> notes = new ArrayList<>();
+            List<NoteBean> data = personalNoteAdapter.getData();
+            for (NoteBean bean : data) {
+                if (bean.checked) {
+                    Note note = new Note();
+                    note.setContent(bean.ebook.info);
+                    note.setTitle(bean.ebook.name);
+                    note.setGuid(bean.ebook.ebook_id);
+                    NoteAttributes attributes = new NoteAttributes();
+                    attributes.setAuthor(bean.ebook.author);
+                    attributes.setSourceURL(bean.ebook.large_image_url);
+                    attributes.setCreatorId(Integer.parseInt(bean.ebook.ebook_id));
+                    note.setAttributes(attributes);
+                    notes.add(note);
+                }
+            }
+            EvernoteManager.createNotes(notes);
+        }
     }
 }
