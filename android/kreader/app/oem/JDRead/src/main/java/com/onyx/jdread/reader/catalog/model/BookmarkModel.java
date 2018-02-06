@@ -12,6 +12,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.common.ReaderPageInfoFormat;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -74,7 +75,7 @@ public class BookmarkModel extends BaseObservable {
             ReaderDocumentTableOfContentEntry entry = locateEntry(readerDocumentTableOfContent.getRootEntry().getChildren(), PagePositionUtils.getPosition(bookmark.getPosition()));
             title = entry.getTitle();
         }
-        bookmarkModel.setChapter(title);
+        bookmarkModel.setChapter(ReaderViewUtil.trim(title));
         Date date = new Date(bookmark.getCreatedAt().getTime());
         bookmarkModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
         String content = bookmark.getQuote();

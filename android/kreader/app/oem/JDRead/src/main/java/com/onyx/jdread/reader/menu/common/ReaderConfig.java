@@ -56,7 +56,20 @@ public class ReaderConfig {
     public static final int CHINESE = 1;
     public static final int SIMPLIFIED = 2;
 
-    public static void saveUserSetting(final ReaderTextStyle style, ReaderChineseConvertType type,int emboldenLevel){
+    public static void setReaderChineseConvertType(ReaderChineseConvertType type){
+        if(ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED == type ||
+                ReaderChineseConvertType.NONE == type) {
+            JDPreferenceManager.setIntValue(ReaderConfig.READER_CHINESE_CONVERT_TYPE_KEY, ReaderConfig.CHINESE);
+        }else{
+            JDPreferenceManager.setIntValue(ReaderConfig.READER_CHINESE_CONVERT_TYPE_KEY, ReaderConfig.SIMPLIFIED);
+        }
+    }
+
+    public static void setEmboldenLevel(int emboldenLevel){
+        JDPreferenceManager.setIntValue(ReaderConfig.READER_EMBOLDENLEVEL_KEY, emboldenLevel);
+    }
+
+    public static void saveUserSetting(final ReaderTextStyle style){
         JDPreferenceManager.setStringValue(ReaderConfig.READER_FONTFACE_KEY,style.getFontFace());
         JDPreferenceManager.setIntValue(ReaderConfig.READER_FONTSIZE_KEY,(int)style.getFontSize().getValue());
         JDPreferenceManager.setIntValue(ReaderConfig.READER_PARAGRAPHSPACING_KEY,style.getParagraphSpacing().getPercent());
@@ -71,15 +84,6 @@ public class ReaderConfig {
 
         JDPreferenceManager.setIntValue(ReaderConfig.READER_RIGHT_MARGIN_KEY,style.getPageMargin().getRightMargin().getPercent());
         JDPreferenceManager.setIntValue(ReaderConfig.READER_BOTTOM_MARGIN_KEY,style.getPageMargin().getBottomMargin().getPercent());
-
-        if(ReaderChineseConvertType.TRADITIONAL_TO_SIMPLIFIED == type ||
-                ReaderChineseConvertType.NONE == type) {
-            JDPreferenceManager.setIntValue(ReaderConfig.READER_CHINESE_CONVERT_TYPE_KEY, ReaderConfig.CHINESE);
-        }else{
-            JDPreferenceManager.setIntValue(ReaderConfig.READER_CHINESE_CONVERT_TYPE_KEY, ReaderConfig.SIMPLIFIED);
-        }
-
-        JDPreferenceManager.setIntValue(ReaderConfig.READER_EMBOLDENLEVEL_KEY, emboldenLevel);
     }
 
     public static ReaderChineseConvertType getReaderChineseConvertType(){

@@ -444,7 +444,9 @@ public class ReaderHelper {
         getDocumentOptions().setRightMargin(style.getPageMargin().getRightMargin().getPercent());
         getDocumentOptions().setBottomMargin(style.getPageMargin().getBottomMargin().getPercent());
 
-        ReaderConfig.saveUserSetting(style,getDocumentOptions().getChineseConvertType(),getDocumentOptions().getEmboldenLevel());
+        ReaderConfig.saveUserSetting(style);
+        ReaderConfig.setReaderChineseConvertType(getDocumentOptions().getChineseConvertType());
+        ReaderConfig.setEmboldenLevel(getDocumentOptions().getEmboldenLevel());
     }
 
     public String getDocumentMd5() {
