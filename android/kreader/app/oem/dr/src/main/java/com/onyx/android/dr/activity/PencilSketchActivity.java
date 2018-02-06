@@ -107,13 +107,13 @@ public class PencilSketchActivity extends BaseActivity implements PencilSketchVi
     }
 
     @OnClick({R.id.sketch_activity_share,
-            R.id.image_view_back,
+            R.id.menu_back,
             R.id.sketch_activity_delete,
             R.id.sketch_activity_new,
             R.id.sketch_activity_export})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.sketch_activity_delete:
