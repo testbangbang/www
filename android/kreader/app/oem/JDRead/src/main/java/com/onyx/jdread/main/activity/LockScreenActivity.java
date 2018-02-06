@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 
+import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityLockScreenBinding;
 import com.onyx.jdread.manager.ManagerActivityUtils;
@@ -41,7 +42,7 @@ public class LockScreenActivity extends AppCompatActivity {
 
     @Subscribe
     public void onPasswordIsCorrectEvent(PasswordIsCorrectEvent event) {
-        ManagerActivityUtils.startMainActivity(this);
+        InputMethodUtils.hideInputKeyboard(this);
         finish();
     }
 
