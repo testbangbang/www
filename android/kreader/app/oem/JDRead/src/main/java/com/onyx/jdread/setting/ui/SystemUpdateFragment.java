@@ -133,13 +133,20 @@ public class SystemUpdateFragment extends BaseFragment {
 
         @Override
         public void done(BaseRequest request, Throwable e) {
-            systemUpdateData.setProgress(100);
-            systemUpdateData.setShowProgress(false);
-            systemUpdateData.setShowDownloaded(true);
-            systemUpdateData.setUpdateDes(JDReadApplication.getInstance().getResources().getString(R.string.upgrade_immediately));
-            settingUpdateModel.setDownloaded(true);
+            finishSystemUpdatePackageDownload(e == null);
         }
     };
+
+    private void finishSystemUpdatePackageDownload(boolean success) {
+        if (systemUpdateData == null || settingUpdateModel == null) {
+            return;
+        }
+        systemUpdateData.setProgress(success ? 100 : 0);
+        systemUpdateData.setShowProgress(false);
+        systemUpdateData.setShowDownloaded(success);
+        systemUpdateData.setUpdateDes(ResManager.getString(success ? R.string.upgrade_immediately : R.string.download_update_package));
+        settingUpdateModel.setDownloaded(success);
+    }
 
     private void initData() {
         TitleBarModel titleModel = new TitleBarModel(SettingBundle.getInstance().getEventBus());
