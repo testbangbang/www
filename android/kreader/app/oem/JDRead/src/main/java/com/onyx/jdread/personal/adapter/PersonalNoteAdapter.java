@@ -65,6 +65,9 @@ public class PersonalNoteAdapter extends PageRecyclerView.PageAdapter implements
         int position = (int) tag;
         NoteBean noteBean = data.get(position);
         noteBean.checked = !noteBean.checked;
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClick(position);
+        }
         notifyItemChanged(position);
     }
 

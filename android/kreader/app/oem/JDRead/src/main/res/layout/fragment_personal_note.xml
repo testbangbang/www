@@ -55,7 +55,8 @@
                     android:drawablePadding="@dimen/personal_note_export_drawable_padding"
                     android:gravity="center_vertical"
                     android:text="@string/export_note"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/text_gray_color"
+                    android:enabled="false"
                     android:textSize="@dimen/level_one_heading_font" />
             </LinearLayout>
         </RelativeLayout>
