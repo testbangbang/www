@@ -2,7 +2,6 @@ package com.onyx.jdread.shop.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +34,7 @@ import com.onyx.jdread.shop.event.TopRightTitleEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.view.BookInfoDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -55,7 +55,7 @@ public class CommentFragment extends BaseFragment {
     private PageRecyclerView recyclerViewComments;
     private int currentPage = 1;
     private GPaginator paginator;
-    private AlertDialog infoDialog;
+    private BookInfoDialog infoDialog;
 
     @Nullable
     @Override
@@ -206,9 +206,9 @@ public class CommentFragment extends BaseFragment {
         dialogBookInfoViewModel.content.set(content);
         dialogBookInfoViewModel.title.set(ResManager.getString(R.string.book_comment_detail));
         infoBinding.setViewModel(dialogBookInfoViewModel);
-        AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
-        build.setView(infoBinding.getRoot());
-        build.setCancelable(false);
+        infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
+        infoDialog.setView(infoBinding.getRoot());
+        infoDialog.setCancelable(false);
         HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);
@@ -226,7 +226,6 @@ public class CommentFragment extends BaseFragment {
                 dismissInfoDialog();
             }
         });
-        infoDialog = build.create();
         if (infoDialog != null) {
             infoDialog.show();
         }
