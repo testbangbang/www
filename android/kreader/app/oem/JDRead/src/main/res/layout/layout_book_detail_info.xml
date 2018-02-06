@@ -203,6 +203,7 @@
                         android:gravity="center"
                         android:onClick="@{()->bookDetailViewModel.onNowReadClick()}"
                         android:padding="@dimen/book_detail_button_padding"
+                        android:singleLine="true"
                         android:text="@string/book_detail_button_now_read"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
@@ -360,7 +361,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/book_detail_margin"
+                    android:layout_marginLeft="@dimen/book_detail_recommend_next_button_margin_left"
                     android:onClick="@{()->bookDetailViewModel.onRecommendNextPageClick()}"
                     android:padding="@dimen/book_detail_button_padding"
                     android:src="@mipmap/ic_go_view_all"

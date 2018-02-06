@@ -506,12 +506,13 @@
     <dimen name="book_detail_drawable_left_padding">6dp</dimen>
     <dimen name="book_detail_view_catalog_container_margin_left_and_right">30dp</dimen>
     <dimen name="shop_dialog_title_height">55dp</dimen>
-    <dimen name="shop_dialog_content_height">300dp</dimen>
+    <dimen name="shop_dialog_content_height">290dp</dimen>
     <dimen name="personal_book_image_padding">10dp</dimen>
     <dimen name="personal_sign_width">100dp</dimen>
-    <dimen name="book_detail_info_margin_top">10dp</dimen>
+    <dimen name="book_detail_info_margin_top">8dp</dimen>
     <dimen name="book_detail_cart_button_margin_right">20dp</dimen>
     <dimen name="book_detail_buy_book_button_cart_button_space">44dp</dimen>
     <dimen name="book_detail_buy_book_button_now_read_button_space">20dp</dimen>
-    <dimen name="book_detail_recommend_recycle_view_space">30dp</dimen>
+    <dimen name="book_detail_recommend_recycle_view_space">26dp</dimen>
+    <dimen name="book_detail_recommend_next_button_margin_left">20dp</dimen>
 </resources>

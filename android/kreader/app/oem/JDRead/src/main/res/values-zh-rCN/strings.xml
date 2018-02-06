@@ -118,7 +118,7 @@
     <string name="search_view_hint">请输入搜索内容</string>
     <string name="book_detail_yuedou_price">%1$s 阅豆</string>
     <string name="book_detail_button_now_read">立即阅读</string>
-    <string name="book_detail_button_buy_whole_book">全本购买</string>
+    <string name="book_detail_button_buy_whole_book">购买全本</string>
     <string name="cart">购物车</string>
     <string name="book_detail_text_view_content_introduce">内容简介</string>
     <string name="book_comment_detail">评论详情</string>
