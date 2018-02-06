@@ -4,6 +4,7 @@ import android.os.RecoverySystem;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.android.sdk.utils.OTAUtil;
 import com.onyx.jdread.R;
 import com.onyx.jdread.setting.event.SystemPackageDownloadEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -11,7 +12,6 @@ import com.onyx.jdread.setting.utils.UpdateUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 /**
  * Created by li on 2017/12/25.
@@ -46,6 +46,11 @@ public class RxFirmwareLocalUpdateRequest extends RxBaseCloudRequest {
         File updateFile = UpdateUtil.getUpdateZipFile();
         if (!updateFile.exists()) {
             failString = getAppContext().getString(R.string.file_does_not_exist);
+            return;
+        }
+        success = OTAUtil.checkLocalUpdateZipLegality(updateFile.getAbsolutePath());
+        if (!success) {
+            failString = getAppContext().getString(R.string.updating_package_model_no_match);
             return;
         }
         success = verifyPackage(updateFile);
