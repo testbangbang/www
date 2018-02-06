@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ModelItemBinding;
@@ -63,6 +64,10 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
         final DataModel dataModel = getItemVMList().get(position);
         setEnableSelection(dataModel);
         ModelViewHolder viewHolder = (ModelViewHolder) holder;
+        if (StringUtils.isNotBlank(dataModel.childCount.get())) {
+            viewHolder.bind.childCount.setText(
+                    Integer.valueOf(dataModel.childCount.get()) > ResManager.getInteger(R.integer.child_over_limit) ? ResManager.getString(R.string.child_over_limit_display) : dataModel.childCount.get());
+        }
         viewHolder.bindTo(dataModel);
     }
 

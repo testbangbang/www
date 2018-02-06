@@ -11,6 +11,7 @@ public class Constants {
     public static final String COOKIE_DOMAIN = ".jd.com";
     public static final String UTF_8 = "UTF-8";
     public static final String CLIENT_VERSION = "2.6.3";
+    public static final int SYSTEM_SETTING_PRESS_COUNT = 6;
     public static boolean isUseCache = true;
     public static final String POST = "POST";
     public static final String MD_5 = "MD5";
@@ -117,6 +118,7 @@ public class Constants {
     public static final int SHOP_VIEW_SUBJECT_HEIGHT = 424;
     public static final int SHOP_VIEW_END_VIEW_HEIGHT = 366;
     public static final int SHOP_VIEW_VIP_INFO_VIEW_HEIGHT = 214;
+    public static final String MTP_EXTRA_TAG_OLD_FILE_PATH = "old_file_path";
     public static final String CATEGORY_MATH_CONTENT = "数字内容";
     public static final String CATEGORY_BOY_ORIGINAL = "男生原创";
     public static final String CATEGORY_GIRL_ORIGINAL = "女生原创";

@@ -379,7 +379,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onSortByTimeEvent(SortByTimeEvent event) {
-        libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.LastOpenTime, SortOrder.Desc);
+        libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.UpdateTime, SortOrder.Desc);
         loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(0), false, false);
     }
 

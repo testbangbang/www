@@ -437,8 +437,14 @@ public class QueryBuilder {
             case Ordinal:
                 property = getMetadataOrdinalProperty();
                 break;
+            case UpdateTime:
+                property = getMetadataUpdateAtProperty();
         }
         return property;
+    }
+
+    private static Property<Date> getMetadataUpdateAtProperty() {
+        return Metadata_Table.updatedAt;
     }
 
     public static OrderBy generateOrderBy(SortBy sortBy, SortOrder order) {
