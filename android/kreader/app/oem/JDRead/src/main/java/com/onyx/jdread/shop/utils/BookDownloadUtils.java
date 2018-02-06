@@ -41,14 +41,14 @@ public class BookDownloadUtils {
                 @Override
                 public void onNext(DownLoadWholeBookAction action) {
                     DownLoadWholeBookResultBean resultBean = action.getResultBean();
-                    if (resultBean.result_code == Constants.RESULT_CODE_SUCCESS) {
+                    if (Constants.RESULT_CODE_SUCCESS.equals(String.valueOf(resultBean.result_code))) {
                         DownLoadWholeBookResultBean.DataBean data = resultBean.data;
                         bookDetailBean.key = data.key;
                         bookDetailBean.random = data.random;
                         bookDetailBean.downLoadUrl = data.content_url;
                         downloadBook(dataBundle, bookDetailBean);
                     } else {
-                        ToastUtil.showToastErrorMsgForDownBook(resultBean.result_code);
+                        ToastUtil.showToastErrorMsgForDownBook(String.valueOf(resultBean.result_code));
                     }
                 }
 

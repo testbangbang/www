@@ -1,11 +1,13 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BookRecommendListRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import retrofit2.Call;
 
@@ -35,8 +37,7 @@ public class RxRequestRecommendList extends RxBaseCloudRequest {
         ReadContentService getCommonService = CloudApiContext.getServiceNoCookie(CloudApiContext.getJDBooxBaseUrl());
         Call<RecommendListResultBean> call = getCall(getCommonService);
         recommendListResultBean = done(call);
-        checkQuestResult();
-
+        checkRequestResult();
     }
 
     private RecommendListResultBean done(Call<RecommendListResultBean> call) {
@@ -44,9 +45,9 @@ public class RxRequestRecommendList extends RxBaseCloudRequest {
         return enhancedCall.execute(call, RecommendListResultBean.class);
     }
 
-    private void checkQuestResult() {
-        if (recommendListResultBean != null && recommendListResultBean.data != null) {
-
+    private void checkRequestResult() {
+        if (recommendListResultBean != null && recommendListResultBean.result_code != 0) {
+            ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(recommendListResultBean.message));
         }
     }
 

@@ -1,11 +1,13 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.common.ReadContentService;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import retrofit2.Call;
 
@@ -35,6 +37,13 @@ public class RxRequestSearchHotWord extends RxBaseCloudRequest {
         ReadContentService getCommonService = CloudApiContext.getServiceNoCookie(CloudApiContext.getJDBooxBaseUrl());
         Call<SearchHotWord> call = getCall(getCommonService);
         searchHotWord = done(call);
+        checkRequestResult();
+    }
+
+    private void checkRequestResult() {
+        if (searchHotWord != null && searchHotWord.result_code != 0) {
+            ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(searchHotWord.message));
+        }
     }
 
     private SearchHotWord done(Call<SearchHotWord> call) {

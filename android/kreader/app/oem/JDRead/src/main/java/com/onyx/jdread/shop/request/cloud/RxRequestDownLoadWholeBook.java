@@ -3,11 +3,13 @@ package com.onyx.jdread.shop.request.cloud;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.personal.common.EncryptHelper;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.entity.DownLoadWholeBookRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.DownLoadWholeBookResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.common.ReadContentService;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import java.io.IOException;
 
@@ -60,8 +62,8 @@ public class RxRequestDownLoadWholeBook extends RxBaseCloudRequest {
     }
 
     private void checkQuestResult() {
-        if (resultBean != null && resultBean.data != null) {
-
+        if (resultBean != null && resultBean.result_code != 0) {
+            ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));
         }
     }
 

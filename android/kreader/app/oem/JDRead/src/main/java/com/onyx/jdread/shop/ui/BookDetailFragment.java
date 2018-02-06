@@ -222,9 +222,6 @@ public class BookDetailFragment extends BaseFragment {
                 BookDetailResultBean bookDetailResultBean = bookDetailAction.getBookDetailResultBean();
                 if (bookDetailResultBean != null) {
                     if (bookDetailResultBean.result_code != Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
-                        if (!StringUtils.isNullOrEmpty(bookDetailResultBean.message)) {
-                            ToastUtil.showToast(bookDetailResultBean.message);
-                        }
                         return;
                     }
                     bookDetailBean = bookDetailResultBean.data;

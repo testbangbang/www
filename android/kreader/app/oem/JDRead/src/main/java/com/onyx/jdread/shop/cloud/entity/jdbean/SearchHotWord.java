@@ -9,5 +9,6 @@ import java.util.List;
 public class SearchHotWord {
 
     public int result_code;
+    public String message;
     public List<String> data;
 }

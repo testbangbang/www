@@ -6,7 +6,8 @@ package com.onyx.jdread.shop.cloud.entity.jdbean;
 
 public class DownLoadWholeBookResultBean {
     public DataBean data;
-    public String result_code;
+    public int result_code;
+    public String message;
 
     public static class DataBean {
         public String random;
