@@ -319,7 +319,9 @@ public class MainActivity extends AppCompatActivity {
         if (currentFragment != null) {
             currentFragment.setBundle(null);
         }
-        switchCurrentFragment(event.getStackList().peek());
+        boolean isSelectedItem = event.equals(functionBarModel.getSelectedFunctionItem());
+        switchCurrentFragment(isSelectedItem ? event.getStackList().remainLastStack() :
+                event.getStackList().peek());
     }
 
     @Subscribe

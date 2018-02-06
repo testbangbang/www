@@ -1,5 +1,7 @@
 package com.onyx.jdread.main.model;
 
+import com.onyx.android.sdk.utils.CollectionUtils;
+
 import java.util.LinkedList;
 
 /**
@@ -17,7 +19,6 @@ public class StackList {
         return stack.getFirst();
     }
 
-
     public String pop(){
         return stack.removeFirst();
     }
@@ -32,6 +33,16 @@ public class StackList {
         }
         stack.pop();
         return stack.peek();
+    }
+
+    public String remainLastStack() {
+        if (stack.size() <= 1) {
+            return stack.peek();
+        }
+        String last = stack.getLast();
+        stack.clear();
+        push(last);
+        return last;
     }
 
     public String toString(){
