@@ -287,6 +287,8 @@ public class SearchBookFragment extends BaseFragment {
         CharSequence query = binding.searchView.getQuery();
         if (!TextUtils.isEmpty(query)) {
             binding.searchView.setQuery(query, true);
+        } else {
+            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
         }
     }
 
