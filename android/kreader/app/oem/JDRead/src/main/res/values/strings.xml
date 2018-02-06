@@ -444,6 +444,9 @@
     <string name="morning">Morning</string>
     <string name="afternoon">Afternoon</string>
     <string name="updating">The system is being updated, please...</string>
+    <string name="updating_package_model_no_match">System update package model does not match</string>
+    <string name="updating_package_parse_failed">System update package parsing failed</string>
+    <string name="updating_package_install_failed">System update package installation failed</string>
     <string name="power_off_prompt">Power off?</string>
     <string name="speed_refresh_is_opened">Speed refresh is opened</string>
     <string name="speed_refresh_is_closed">Speed refresh is closed</string>
