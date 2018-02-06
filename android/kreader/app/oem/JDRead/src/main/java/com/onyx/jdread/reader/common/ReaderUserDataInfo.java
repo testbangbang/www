@@ -284,7 +284,7 @@ public class ReaderUserDataInfo {
         List<Bookmark> bookmarks = ContentSdkDataUtils.getDataProvider().loadBookmarks(
                 displayName,
                 md5,
-                OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
+                OrderBy.fromProperty(Bookmark_Table.createdAt).ascending());
         String startPos = navigator.getScreenStartPosition();
         String endPos = navigator.getScreenEndPosition();
         if (bookmarks != null) {

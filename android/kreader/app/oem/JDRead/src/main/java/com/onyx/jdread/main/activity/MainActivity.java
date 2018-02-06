@@ -315,11 +315,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFunctionBarTabModel(FunctionBarItem event) {
+        boolean isSelectedBefore = event.equals(functionBarModel.getSelectedFunctionItem());
         functionBarModel.changeTabSelection(event.functionModule.get());
         if (currentFragment != null) {
             currentFragment.setBundle(null);
         }
-        switchCurrentFragment(event.getStackList().peek());
+        switchCurrentFragment(isSelectedBefore ? event.getStackList().remainLastStack() :
+                event.getStackList().peek());
     }
 
     @Subscribe

@@ -7,6 +7,7 @@ import android.databinding.ObservableInt;
 
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.jdread.R;
+import com.onyx.jdread.databinding.ActivityNoteBinding;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.event.NoteBackEvent;
@@ -25,13 +26,17 @@ public class NoteViewModel {
     private ObservableField<String> createNoteDate = new ObservableField<>();
     private ObservableBoolean isSrcNoteModify = new ObservableBoolean(false);
     private ObservableField<String> title = new ObservableField<>();
-    private ObservableBoolean isEdit = new ObservableBoolean(false);
-    private ObservableInt saveIcon = new ObservableInt(R.mipmap.ic_read_edit);
+    private ObservableBoolean isEdit = new ObservableBoolean(true);
     private ObservableField<String> chapterName = new ObservableField<>();
     private String pagePosition;
     private EventBus eventBus;
     private boolean isCreateNote = false;
     private Annotation annotation;
+    private ActivityNoteBinding binding;
+
+    public NoteViewModel(ActivityNoteBinding binding) {
+        this.binding = binding;
+    }
 
     public void setReaderDataHolder(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -49,7 +54,7 @@ public class NoteViewModel {
         this.pagePosition = pagePosition;
     }
 
-    public void setNoteInfo(Context context, NoteInfo noteInfo,Annotation annotation) {
+    public void setNoteInfo(Context context, NoteInfo noteInfo, Annotation annotation) {
         if (noteInfo == null) {
             ToastUtil.showToast(context, R.string.login_resutl_params_error);
             getEventBus().post(new NoteBackEvent());
@@ -95,14 +100,6 @@ public class NoteViewModel {
         this.createNoteDate.set(createNoteDate);
     }
 
-    public ObservableInt getSaveIcon() {
-        return saveIcon;
-    }
-
-    public void setSaveIcon(int saveIcon) {
-        this.saveIcon.set(saveIcon);
-    }
-
     public ObservableField<String> getTitle() {
         return title;
     }
@@ -116,20 +113,14 @@ public class NoteViewModel {
     }
 
     public void setIsEdit(boolean isEdit) {
-        this.isEdit.set(isEdit);
         if (isEdit) {
-            setSaveIconSave();
+            binding.srcNote.setEnabled(true);
+            binding.newNote.setEnabled(true);
         } else {
-            setSaveIconEdit();
+            binding.srcNote.setEnabled(false);
+            binding.newNote.setEnabled(false);
         }
-    }
-
-    private void setSaveIconEdit() {
-        setSaveIcon(R.mipmap.ic_read_edit);
-    }
-
-    private void setSaveIconSave() {
-        setSaveIcon(R.mipmap.ic_read_save);
+        this.isEdit.set(isEdit);
     }
 
     public void backClick() {
@@ -137,15 +128,15 @@ public class NoteViewModel {
     }
 
     public void saveClick() {
-        if (isEdit.get()) {
-            if(isCreateNote){
-                getEventBus().post(new AddNoteEvent(newNote.get()));
-            }else {
-                getEventBus().post(new UpdateNoteEvent(annotation));
-            }
+        if (isCreateNote) {
+            getEventBus().post(new AddNoteEvent(newNote.get()));
         } else {
-            setIsEdit(true);
+            getEventBus().post(new UpdateNoteEvent(annotation));
         }
+    }
+
+    public void editClick() {
+        setIsEdit(true);
     }
 
     public ObservableField<String> getSrcNote() {
@@ -164,7 +155,7 @@ public class NoteViewModel {
         this.newNote.set(newNote);
     }
 
-    public NoteInfo getNoteInfo(){
+    public NoteInfo getNoteInfo() {
         NoteInfo noteInfo = new NoteInfo();
         noteInfo.srcNote = srcNote.get();
         noteInfo.newNote = newNote.get();

@@ -2,10 +2,12 @@ package com.onyx.jdread.reader.request;
 
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
@@ -101,10 +103,11 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         ReaderTextStyle style = ReaderTextStyle.create(fontFace, spUnit, lineSpacing, leftMargin, topMargin, rightMarin, BottomMarin,paragraphSpacing);
         reader.getReaderHelper().getReaderLayoutManager().setStyle(style);
         restoreContrast();
+        setChineseConvertType();
     }
 
     private int getTopMarin(){
-        int percent = reader.getReaderHelper().getDocumentOptions().getTopMargin();
+        int percent = JDPreferenceManager.getIntValue(ReaderConfig.READER_TOP_MARGIN_KEY,-1);
         if(percent <= 0){
             percent = ReaderMarginModel.DEFAULT_UP_AND_DOWN_SPACING;
         }
@@ -112,7 +115,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private int getBottomMarin(){
-        int percent = reader.getReaderHelper().getDocumentOptions().getBottomMargin();
+        int percent = JDPreferenceManager.getIntValue(ReaderConfig.READER_BOTTOM_MARGIN_KEY,-1);
         if(percent <= 0){
             percent = ReaderMarginModel.DEFAULT_UP_AND_DOWN_SPACING;
         }
@@ -120,7 +123,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private int getRightMarin(){
-        int percent = reader.getReaderHelper().getDocumentOptions().getRightMargin();
+        int percent = JDPreferenceManager.getIntValue(ReaderConfig.READER_RIGHT_MARGIN_KEY,-1);
         if(percent <= 0){
             percent = ReaderMarginModel.DEFAULT_LEFT_AND_RIGHT_SPACING;
         }
@@ -128,7 +131,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private int getLeftMarin(){
-        int percent = reader.getReaderHelper().getDocumentOptions().getLeftMargin();
+        int percent = JDPreferenceManager.getIntValue(ReaderConfig.READER_LEFT_MARGIN_KEY,-1);
         if(percent <= 0){
             percent = ReaderMarginModel.DEFAULT_LEFT_AND_RIGHT_SPACING;
         }
@@ -136,7 +139,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private int getLineSpacing(){
-        int lineSpacing = reader.getReaderHelper().getDocumentOptions().getLineSpacing();
+        int lineSpacing = JDPreferenceManager.getIntValue(ReaderConfig.READER_LINESPACING_KEY,-1);
         if(lineSpacing <= 0){
             lineSpacing = ReaderMarginModel.DEFAULT_LINE_SPACING;
         }
@@ -144,7 +147,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private int getParagraphSpacing(){
-        int paragraphSpacing = reader.getReaderHelper().getDocumentOptions().getParagraphSpacing();
+        int paragraphSpacing = JDPreferenceManager.getIntValue(ReaderConfig.READER_PARAGRAPHSPACING_KEY,-1);
         if(paragraphSpacing <= 0){
             paragraphSpacing = ReaderMarginModel.DEFAULT_PARAGRAPH_SPACING;
         }
@@ -152,7 +155,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private float getFontSize(){
-        float fontSize = reader.getReaderHelper().getDocumentOptions().getFontSize();
+        float fontSize = (float) (JDPreferenceManager.getIntValue(ReaderConfig.READER_FONTSIZE_KEY,-1));
         if(fontSize <= 0.0f){
             fontSize = ReaderConfig.FontSize.DEFAULT_FONT_SIZE;
         }
@@ -160,7 +163,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private String getFontFace() {
-        String fontFace = reader.getReaderHelper().getDocumentOptions().getFontFace();
+        String fontFace = JDPreferenceManager.getStringValue(ReaderConfig.READER_FONTFACE_KEY,null);
         if (StringUtils.isNullOrEmpty(fontFace)) {
             fontFace = ReaderConfig.Typeface.DEFAULT_TYPEFACE;
         }
@@ -169,8 +172,14 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
 
     private void restoreContrast() {
         gammaInfo = new GammaInfo();
-        gammaInfo.setEmboldenLevel(reader.getReaderHelper().getDocumentOptions().getEmboldenLevel());
-        reader.getReaderHelper().getDocumentOptions().setEmboldenLevel(reader.getReaderHelper().getDocumentOptions().getEmboldenLevel());
+        gammaInfo.setEmboldenLevel(JDPreferenceManager.getIntValue(ReaderConfig.READER_EMBOLDENLEVEL_KEY, 0));
+        reader.getReaderHelper().getDocumentOptions().setEmboldenLevel(gammaInfo.getEmboldenLevel());
+    }
+
+    private void setChineseConvertType(){
+        ReaderChineseConvertType convertType = ReaderConfig.getReaderChineseConvertType();
+        reader.getReaderHelper().getDocumentOptions().setChineseConvertType(convertType);
+        reader.getReaderHelper().getRenderer().setChineseConvertType(convertType);
     }
 
     public GammaInfo getGammaInfo() {

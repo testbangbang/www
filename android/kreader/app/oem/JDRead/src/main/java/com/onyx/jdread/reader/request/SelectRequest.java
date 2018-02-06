@@ -51,6 +51,7 @@ public class SelectRequest extends ReaderBaseRequest {
     @Override
     public SelectRequest call() throws Exception {
         if (!reader.getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().canHitTest()) {
+            LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
             return this;
         }
         readerSelectionManager = reader.getReaderSelectionHelper();

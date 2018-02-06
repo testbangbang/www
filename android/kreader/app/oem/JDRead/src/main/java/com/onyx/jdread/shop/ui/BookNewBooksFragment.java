@@ -67,6 +67,9 @@ public class BookNewBooksFragment extends BaseFragment {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
                 bookNewBooksBinding.scrollBar.setTotal(getNewBookViewModel().getTotalPages());
+                if (recyclerView != null) {
+                    recyclerView.setTotalPages(getNewBookViewModel().getTotalPages());
+                }
                 scrollToTop();
             }
 
@@ -92,6 +95,7 @@ public class BookNewBooksFragment extends BaseFragment {
     private void setRecycleView() {
         ShopMainConfigAdapter adapter = new ShopMainConfigAdapter();
         recyclerView = bookNewBooksBinding.recycleView;
+        recyclerView.setPageTurningCycled(true);
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(new SpaceItemDecoration(space));
         recyclerView.setAdapter(adapter);

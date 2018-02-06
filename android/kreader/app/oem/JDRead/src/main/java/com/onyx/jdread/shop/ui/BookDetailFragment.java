@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +81,7 @@ import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.shop.utils.ViewHelper;
+import com.onyx.jdread.shop.view.BookInfoDialog;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -102,7 +102,7 @@ public class BookDetailFragment extends BaseFragment {
     private DividerItemDecoration itemDecoration;
     private long ebookId;
     private PageRecyclerView recyclerViewRecommend;
-    private AlertDialog copyRightDialog;
+    private BookInfoDialog copyRightDialog;
     private boolean isTryRead;
     private boolean isSmoothRead;
     private String localPath;
@@ -114,7 +114,7 @@ public class BookDetailFragment extends BaseFragment {
     private int percentage;
     private boolean isWholeBookDownLoad;
     private GPaginator paginator;
-    private AlertDialog infoDialog;
+    private BookInfoDialog infoDialog;
     private boolean hasAddToCart = false;
 
     @Nullable
@@ -432,6 +432,8 @@ public class BookDetailFragment extends BaseFragment {
         }
         bookDetailBean.bookExtraInfoBean.percentage = percentage;
         bookDetailBean.bookExtraInfoBean.localPath = localPath;
+        bookDetailBean.bookExtraInfoBean.progress = task.getSmallFileSoFarBytes();
+        bookDetailBean.bookExtraInfoBean.totalSize = task.getSmallFileTotalBytes();
         if (DownLoadHelper.canInsertBookDetail(downloadTaskState)) {
             insertBookDetail(bookDetailBean, localPath);
         }
@@ -614,10 +616,8 @@ public class BookDetailFragment extends BaseFragment {
         LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         copyrightBinding.setBookDetailViewModel(getBookDetailViewModel());
         if (copyRightDialog == null) {
-            AlertDialog.Builder copyRightDialogBuild = new AlertDialog.Builder(getActivity());
-            copyRightDialogBuild.setView(copyrightBinding.getRoot());
-            copyRightDialogBuild.setCancelable(false);
-            copyRightDialog = copyRightDialogBuild.create();
+            copyRightDialog = new BookInfoDialog(JDReadApplication.getInstance());
+            copyRightDialog.setView(copyrightBinding.getRoot());
         }
         if (copyRightDialog != null) {
             copyRightDialog.show();
@@ -750,9 +750,8 @@ public class BookDetailFragment extends BaseFragment {
         dialogBookInfoViewModel.content.set(content);
         dialogBookInfoViewModel.title.set(ResManager.getString(R.string.book_detail_text_view_content_introduce));
         infoBinding.setViewModel(dialogBookInfoViewModel);
-        AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
-        build.setView(infoBinding.getRoot());
-        build.setCancelable(false);
+        infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
+        infoDialog.setView(infoBinding.getRoot());
         HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);
@@ -770,7 +769,6 @@ public class BookDetailFragment extends BaseFragment {
                 dismissInfoDialog();
             }
         });
-        infoDialog = build.create();
         if (infoDialog != null) {
             infoDialog.show();
         }

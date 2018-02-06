@@ -69,8 +69,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/personal_experience_dec_margin_top"
                         android:text="@string/in_number_days"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/level_three_heading_font" />
+                        android:textColor="@color/text_gray_color"
+                        android:textSize="@dimen/level_four_heading_font" />
                 </LinearLayout>
 
                 <View
@@ -97,8 +97,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/personal_experience_dec_margin_top"
                         android:text="@string/cumulative_reading"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/level_three_heading_font" />
+                        android:textColor="@color/text_gray_color"
+                        android:textSize="@dimen/level_four_heading_font" />
                 </LinearLayout>
 
                 <View
@@ -125,8 +125,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/personal_experience_dec_margin_top"
                         android:text="@string/finish_read"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/level_three_heading_font" />
+                        android:textColor="@color/text_gray_color"
+                        android:textSize="@dimen/level_four_heading_font" />
                 </LinearLayout>
 
                 <View
@@ -153,8 +153,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/personal_experience_dec_margin_top"
                         android:text="@string/read_note"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/level_three_heading_font" />
+                        android:textColor="@color/text_gray_color"
+                        android:textSize="@dimen/level_four_heading_font" />
                 </LinearLayout>
             </LinearLayout>
 

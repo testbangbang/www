@@ -467,4 +467,5 @@
     <string name="delete_library_prompt">Whether to delete the group (group books back into the bookshelf)</string>
     <string name="delete_library_include_book_prompt">Whether to delete this group and group books from this machine</string>
     <string name="child_over_limit_display">99+</string>
+    <string name="unassociated_impression_notes">Unassociated impression notes</string>
 </resources>
