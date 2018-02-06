@@ -22,9 +22,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/book_detail_margin_top"
-            android:layout_weight="5"
             android:orientation="vertical">
 
             <LinearLayout
@@ -52,8 +51,8 @@
                         android:id="@+id/book_detail_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="2"
+                        android:ellipsize="middle"
+                        android:singleLine="true"
                         android:text="@{bookDetailViewModel.bookDetailResultBean.data.name}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_two_heading_font"
@@ -61,8 +60,8 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/book_detail_info_margin_top"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -97,9 +96,8 @@
                     <TextView
                         android:id="@+id/book_detail_author"
                         android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="@dimen/book_detail_author_margin_top"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/book_detail_info_margin_top"
                         android:drawablePadding="@dimen/view_all_drawable_padding"
                         android:ellipsize="end"
                         android:enabled="false"
@@ -112,8 +110,8 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/book_detail_info_margin_top"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -122,17 +120,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@{@string/book_detail_yuedou_price(ViewHelper.getYueDouPrice(bookDetailViewModel.bookDetailResultBean.data.jd_price))}"
-                            android:textColor="@android:color/darker_gray"
-                            android:textSize="@dimen/font_size_15"
-                            android:visibility="gone" />
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/font_size_15" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/book_detail_sub_info_margin_left"
                             android:text="@{@string/book_detail_yuedou_price(ViewHelper.getYueDouPrice(bookDetailViewModel.bookDetailResultBean.data.jd_price))}"
-                            android:textColor="@android:color/black"
-                            android:textSize="@dimen/font_size_15" />
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="@dimen/font_size_15"
+                            android:visibility="gone" />
 
                         <TextView
                             android:id="@+id/book_detail_discount"
@@ -151,8 +149,8 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/book_detail_info_margin_top"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -161,6 +159,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelTwoClick()}"
+                            android:singleLine="true"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.second_catid1_str}"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/font_size_15" />
@@ -171,6 +170,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/book_detail_cat_two_margin_left"
                             android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelThreeClick()}"
+                            android:singleLine="true"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.third_catid1_str}"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/font_size_15" />
@@ -207,29 +207,37 @@
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
+                    <View
+                        android:id="@+id/space_one"
+                        android:layout_width="@dimen/book_detail_buy_book_button_now_read_button_space"
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:id="@+id/book_detail_buy_book"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/book_detail_button_margin"
                         android:layout_weight="1"
                         android:background="@drawable/rectangle_stroke_corners"
                         android:gravity="center"
                         android:onClick="@{()->bookDetailViewModel.onDownBookClick()}"
                         android:padding="@dimen/book_detail_button_padding"
+                        android:singleLine="true"
                         android:text="@string/book_detail_button_buy_whole_book"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
                 </LinearLayout>
 
+                <View
+                    android:id="@+id/space_two"
+                    android:layout_width="@dimen/book_detail_buy_book_button_cart_button_space"
+                    android:layout_height="match_parent" />
+
                 <LinearLayout
                     android:id="@+id/shop_cart_container"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/book_detail_button_margin"
-                    android:layout_marginRight="@dimen/book_detail_button_margin"
-                    android:layout_weight="1"
+                    android:layout_marginRight="@dimen/book_detail_cart_button_margin_right"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onShoppingCartClick()}"
                     android:orientation="vertical">
@@ -253,9 +261,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/book_detail_common_margin_top"
-                android:layout_weight="1"
                 android:onClick="@{()->bookDetailViewModel.onInfoClick()}">
 
                 <com.onyx.jdread.shop.view.HtmlTextView
@@ -272,18 +279,18 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:layout_marginLeft="@dimen/book_detail_view_catalog_container_margin_left_and_right"
-                android:layout_marginRight="@dimen/book_detail_view_catalog_container_margin_left_and_right"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/book_detail_view_catalog_container_margin_left_and_right"
+                android:layout_marginRight="@dimen/book_detail_view_catalog_container_margin_left_and_right"
                 android:layout_marginTop="@dimen/book_detail_common_margin_top">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:drawablePadding="@dimen/book_detail_drawable_left_padding"
                     android:drawableLeft="@mipmap/ic_view_catalog"
+                    android:drawablePadding="@dimen/book_detail_drawable_left_padding"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onViewDirectoryClick()}"
                     android:text="@string/book_detail_view_catalog"
@@ -294,8 +301,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:drawablePadding="@dimen/book_detail_drawable_left_padding"
                     android:drawableLeft="@mipmap/ic_view_comment"
+                    android:drawablePadding="@dimen/book_detail_drawable_left_padding"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onViewCommentClick()}"
                     android:text="@string/book_detail_view_comments"
@@ -306,8 +313,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:drawablePadding="@dimen/book_detail_drawable_left_padding"
                     android:drawableLeft="@mipmap/ic_view_copyright"
+                    android:drawablePadding="@dimen/book_detail_drawable_left_padding"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onCopyrightClick()}"
                     android:text="@string/book_detail_view_copyright"
@@ -325,8 +332,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -353,9 +359,8 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
-                    android:layout_margin="@dimen/book_detail_margin"
+                    android:layout_marginLeft="@dimen/book_detail_margin"
                     android:onClick="@{()->bookDetailViewModel.onRecommendNextPageClick()}"
                     android:padding="@dimen/book_detail_button_padding"
                     android:src="@mipmap/ic_go_view_all"

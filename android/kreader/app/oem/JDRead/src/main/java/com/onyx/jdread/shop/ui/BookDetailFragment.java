@@ -11,7 +11,6 @@ import android.webkit.WebSettings;
 import android.widget.TextView;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
@@ -82,7 +81,7 @@ import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.BookInfoDialog;
-import com.onyx.jdread.shop.view.DividerItemDecoration;
+import com.onyx.jdread.shop.view.SubjectBookItemSpaceItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -98,8 +97,8 @@ import java.util.ArrayList;
 public class BookDetailFragment extends BaseFragment {
 
     private FragmentBookDetailBinding bookDetailBinding;
-    private int bookDetailSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_detail_recycle_view_space);
-    private DividerItemDecoration itemDecoration;
+    private int bookRecommendSpace = ResManager.getDimens(R.dimen.book_detail_recommend_recycle_view_space);
+    private SubjectBookItemSpaceItemDecoration itemDecoration;
     private long ebookId;
     private PageRecyclerView recyclerViewRecommend;
     private BookInfoDialog copyRightDialog;
@@ -113,7 +112,6 @@ public class BookDetailFragment extends BaseFragment {
     private boolean isDataBaseHaveBook;
     private int percentage;
     private boolean isWholeBookDownLoad;
-    private GPaginator paginator;
     private BookInfoDialog infoDialog;
     private boolean hasAddToCart = false;
 
@@ -190,19 +188,10 @@ public class BookDetailFragment extends BaseFragment {
         recyclerViewRecommend.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewRecommend.addItemDecoration(itemDecoration);
         recyclerViewRecommend.setAdapter(adapter);
-        paginator = recyclerViewRecommend.getPaginator();
-        recyclerViewRecommend.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
-            @Override
-            public void onPageChange(int position, int itemCount, int pageSize) {
-
-            }
-        });
     }
 
     private void initDividerItemDecoration() {
-        itemDecoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.HORIZONTAL_LIST);
-        itemDecoration.setDrawLine(false);
-        itemDecoration.setSpace(bookDetailSpace);
+        itemDecoration = new SubjectBookItemSpaceItemDecoration(false,bookRecommendSpace);
     }
 
     @Override
@@ -243,10 +232,12 @@ public class BookDetailFragment extends BaseFragment {
 
                     if (!ViewHelper.isCanNowRead(bookDetailBean)) {
                         nowReadButton.setVisibility(View.GONE);
+                        bookDetailBinding.bookDetailInfo.spaceOne.setVisibility(View.GONE);
                     }
                     if (!bookDetailBean.can_buy) {
                         buyBookButton.setVisibility(View.GONE);
                         bookDetailBinding.bookDetailInfo.shopCartContainer.setVisibility(View.GONE);
+                        bookDetailBinding.bookDetailInfo.spaceTwo.setVisibility(View.GONE);
                     }
                     if (!StringUtils.isNullOrEmpty(bookDetailBean.author) && !getString(R.string.content_empty).equals(bookDetailBean.author)) {
                         getAuthorBooksData(bookDetailBean.author);
@@ -603,6 +594,7 @@ public class BookDetailFragment extends BaseFragment {
             isWholeBookDownLoad = extraInfoBean.isWholeBookDownLoad;
             if (isWholeBookDownLoad && isDataBaseHaveBook) {
                 nowReadButton.setVisibility(View.GONE);
+                bookDetailBinding.bookDetailInfo.spaceOne.setVisibility(View.GONE);
                 buyBookButton.setText(getString(R.string.book_detail_button_now_read));
             }
         }
@@ -683,6 +675,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void changeBuyBookButtonState() {
         nowReadButton.setVisibility(View.GONE);
+        bookDetailBinding.bookDetailInfo.spaceOne.setVisibility(View.GONE);
         buyBookButton.setEnabled(false);
         buyBookButton.setText(getString(R.string.book_detail_downloading));
     }
