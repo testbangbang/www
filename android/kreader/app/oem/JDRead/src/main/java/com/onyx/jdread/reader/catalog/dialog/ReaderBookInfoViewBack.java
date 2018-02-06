@@ -11,4 +11,5 @@ import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 public interface ReaderBookInfoViewBack {
     Dialog getContent();
     void updateView();
+    void changeTab();
 }

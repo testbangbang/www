@@ -194,6 +194,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         binding.bookInfoBookmarkContent.setDefaultPageKeyBinding();
         BookmarkAdapter adapter = new BookmarkAdapter();
         binding.bookInfoBookmarkContent.setAdapter(adapter);
+        binding.bookInfoBookmarkContent.setOnPagingListener(this);
         binding.getReaderBookInfoModel().setBookmarks(readerDocumentTableOfContent, bookmarkList,readerViewInfo.getTotalPage());
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,7 +209,8 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         binding.bookInfoNoteContent.setDefaultPageKeyBinding();
         NoteAdapter adapter = new NoteAdapter();
         binding.bookInfoNoteContent.setAdapter(adapter);
-        binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotations());
+        binding.getReaderBookInfoModel().setNotes(readerBookInfoDialogHandler.getReaderDataHolder().getAppContext(),
+                readerUserDataInfo.getAnnotations());
         binding.bookInfoNoteContent.setOnPagingListener(this);
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,5 +306,10 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
             String format = String.format("%d/%d", currentPage, totalPage);
             binding.getReaderBookInfoModel().setPageInfo(format);
         }
+    }
+
+    @Override
+    public void changeTab() {
+        onPageChanged();
     }
 }
