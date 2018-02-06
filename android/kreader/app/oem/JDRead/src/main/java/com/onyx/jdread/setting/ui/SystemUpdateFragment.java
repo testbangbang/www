@@ -40,6 +40,7 @@ import com.onyx.jdread.setting.model.DeviceConfigData;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingUpdateModel;
 import com.onyx.jdread.setting.model.SystemUpdateData;
+import com.onyx.jdread.setting.request.RxFirmwareLocalUpdateRequest;
 import com.onyx.jdread.setting.utils.UpdateUtil;
 import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
@@ -295,12 +296,19 @@ public class SystemUpdateFragment extends BaseFragment {
             UpdateUtil.startUpdateApkActivity(JDReadApplication.getInstance(), downloadPath);
             return;
         }
-        LocalUpdateSystemAction action = new LocalUpdateSystemAction();
         final SystemUpdateTipDialog dialog = new SystemUpdateTipDialog();
         dialog.show(getActivity().getFragmentManager(), "");
-        action.execute(SettingBundle.getInstance(), new RxCallback() {
+        LocalUpdateSystemAction action = new LocalUpdateSystemAction();
+        action.execute(SettingBundle.getInstance(), new RxCallback<RxFirmwareLocalUpdateRequest>() {
             @Override
-            public void onNext(Object o) {
+            public void onNext(RxFirmwareLocalUpdateRequest request) {
+                if (!request.isSuccess()) {
+                    ToastUtil.showToast(request.getFailString());
+                }
+            }
+
+            @Override
+            public void onFinally() {
                 if (dialog != null) {
                     dialog.dismiss();
                 }

@@ -425,6 +425,8 @@
     <string name="morning">上午</string>
     <string name="afternoon">下午</string>
     <string name="updating">正在进行系统更新，请稍后...</string>
+    <string name="updating_package_parse_failed">系统更新包解析失败</string>
+    <string name="updating_package_install_failed">系统更新包安装失败</string>
     <string name="power_off_prompt">您确定关闭阅读器吗?</string>
     <string name="speed_refresh_is_opened">极速翻页已开启</string>
     <string name="speed_refresh_is_closed">极速翻页已关闭</string>
