@@ -63,6 +63,9 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
             @Override
             public void start(BaseRequest request) {
                 dataBundle.getEventBus().post(new DownloadStartEvent(tag));
+                if (downLoadCallback != null) {
+                    downLoadCallback.start(tag);
+                }
             }
 
             @Override
@@ -77,11 +80,17 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
                     infoModel.progress = infoModel.soFarBytes / infoModel.totalBytes;
                 }
                 dataBundle.getEventBus().post(new DownloadingEvent(tag, infoModel));
+                if (downLoadCallback != null) {
+                    downLoadCallback.progress(tag, infoModel);
+                }
             }
 
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dataBundle.getEventBus().post(new DownloadFinishEvent(tag));
+                if (downLoadCallback != null) {
+                    downLoadCallback.done(tag);
+                }
                 if (rxCallback != null) {
                     if (e != null) {
                         ToastUtil.showToast(context, R.string.download_fail);
@@ -117,5 +126,23 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
 
     public void setBookDetailBean(BookDetailResultBean.DetailBean bookDetailBean) {
         this.bookDetailBean = bookDetailBean;
+    }
+
+    public interface DownLoadCallback {
+        void start(Object tag);
+
+        void progress(Object tag,ProgressInfoModel progressInfoModel);
+
+        void done(Object tag);
+    }
+
+    private DownLoadCallback downLoadCallback;
+
+    public void setDownLoadCallback(DownLoadCallback downLoadCallback) {
+        this.downLoadCallback = downLoadCallback;
+    }
+
+    public void removeDownLoadCallback(DownLoadCallback downLoadCallback) {
+        this.downLoadCallback = downLoadCallback;
     }
 }

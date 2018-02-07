@@ -349,6 +349,10 @@ public class BookDetailFragment extends BaseFragment {
         } else {
             if (!hasAddToCart) {
                 if (bookDetailBean != null) {
+                    if (bookDetailBean.add_cart) {
+                        ToastUtil.showToast(getString(R.string.book_detail_add_cart_tip_the_book_already_add_cart));
+                        return;
+                    }
                     if (!bookDetailBean.can_buy) {
                         ToastUtil.showToast(getString(R.string.book_detail_add_cart_tip_the_book_not_can_buy));
                         return;
@@ -469,7 +473,7 @@ public class BookDetailFragment extends BaseFragment {
                 return;
             }
             if (bookDetailBean != null && DownLoadHelper.isPause(downloadTaskState)) {
-                BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
+                downLoadWholeBook();
                 ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_download_go_on));
                 return;
             }
@@ -478,13 +482,13 @@ public class BookDetailFragment extends BaseFragment {
         if (PersonalDataBundle.getInstance().isUserVip()) {
             if (bookDetailBean.can_read) {
                 bookDetailBean.downLoadType = CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ;
-                BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
+                downLoadWholeBook();
                 return;
             }
         }
 
         if (!bookDetailBean.can_buy) {
-            BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
+            downLoadWholeBook();
             return;
         }
 
@@ -492,6 +496,10 @@ public class BookDetailFragment extends BaseFragment {
             showPayDialog(bookDetailBean.ebook_id);
             return;
         }
+    }
+
+    private void downLoadWholeBook() {
+        BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
     }
 
     private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean) {
@@ -685,7 +693,7 @@ public class BookDetailFragment extends BaseFragment {
     public void onBuyBookSuccessEvent(BuyBookSuccessEvent event) {
         String msg = getString(R.string.buy_book_success) + bookDetailBean.name + getString(R.string.book_detail_tip_book_add_to_bookself);
         ToastUtil.showToast(JDReadApplication.getInstance(), msg);
-        BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
+        downLoadWholeBook();
         changeBuyBookButtonState();
     }
 

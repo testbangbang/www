@@ -59,17 +59,7 @@ public class CloudApiContext {
         public static final String DETAIL = "detail";
         public static final String TYPE = "type";
         public static final String BOOK_LIST = "bookList";
-        public static final String BOOK_ID = "bookId";
-        public static final String NEW_BOOK_REVIEW = "newBookReview";
-        public static final String ADD_BOOK_COMMENT = "addBookComment";
-        public static final String ADD_BOOK_TO_SMOOTH_CARD = "addNewReadInfo";
-        public static final String ADD_BOOKS_TO_SMOOTH_CARD = "addNewReadInfoBatch";
-        public static final String SHOPPING_CART = "shoppingCart";
-        public static final String USER_BASIC_INFO = "userBasicInfo";
-        public static final String SYNC_LOGIN_INFO = "SyncLoginInfo";
         public static final String GET_TOKEN = "genToken";
-        public static final String READ_TOTAL_BOOK = "userReadEBookScale";
-        public static final String NEW_BOUGHT_BOOK_ORDER = "newBuyedEbookOrderList";
     }
 
     public static class BookShopURI {

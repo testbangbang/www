@@ -449,4 +449,5 @@
     <string name="dialog_pay_order_cash">现金</string>
     <string name="dialog_pay_order_confirm_pay">确认支付</string>
     <string name="payment_order">订单支付</string>
+    <string name="book_detail_add_cart_tip_the_book_already_add_cart">图书已经加入到购物车</string>
 </resources>

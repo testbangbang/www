@@ -473,4 +473,5 @@
     <string name="dialog_pay_order_cash">Cash</string>
     <string name="dialog_pay_order_confirm_pay">Confirm Payment</string>
     <string name="payment_order">Payment Order</string>
+    <string name="book_detail_add_cart_tip_the_book_already_add_cart">the book already add to cart</string>
 </resources>
