@@ -13,6 +13,7 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.catalog.event.TabBookmarkClickEvent;
 import com.onyx.jdread.reader.catalog.event.TabCatalogClickEvent;
 import com.onyx.jdread.reader.catalog.event.TabNoteClickEvent;
@@ -94,8 +95,8 @@ public class ReaderBookInfoModel {
         }
     }
 
-    public void setNotes(Context context,List<Annotation> annotationList) {
-        String content = context.getResources().getString(R.string.reader_content);
+    public void setNotes(List<Annotation> annotationList) {
+        String content = ResManager.getString(R.string.reader_content);
         for (Annotation annotation : annotationList) {
             NoteModel noteModel = new NoteModel();
             noteModel.setChapter(ReaderViewUtil.trim(annotation.getChapterName()));

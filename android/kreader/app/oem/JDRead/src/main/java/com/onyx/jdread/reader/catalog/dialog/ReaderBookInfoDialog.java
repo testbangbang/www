@@ -209,8 +209,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         binding.bookInfoNoteContent.setDefaultPageKeyBinding();
         NoteAdapter adapter = new NoteAdapter();
         binding.bookInfoNoteContent.setAdapter(adapter);
-        binding.getReaderBookInfoModel().setNotes(readerBookInfoDialogHandler.getReaderDataHolder().getAppContext(),
-                readerUserDataInfo.getAnnotations());
+        binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotations());
         binding.bookInfoNoteContent.setOnPagingListener(this);
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
