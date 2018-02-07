@@ -77,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:onClick="@{()->libraryModel.onManageClick()}"
                     android:padding="@dimen/library_manage_layout_padding"
-                    android:src="@mipmap/ic_manage" />
+                    android:src="@{libraryModel.count == 0?@drawable/ic_manage_gray:@drawable/ic_manage}" />
 
                 <ImageView
                     android:id="@+id/image_menu"
