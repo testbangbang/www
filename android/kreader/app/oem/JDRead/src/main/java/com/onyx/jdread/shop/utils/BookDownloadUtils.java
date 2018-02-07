@@ -70,9 +70,8 @@ public class BookDownloadUtils {
             ToastUtil.showToast(ResManager.getString(R.string.empty_url));
             return;
         }
-        String bookName = bookDetailBean.downLoadUrl.substring(bookDetailBean.downLoadUrl.lastIndexOf("/") + 1);
-        String localPath = CommonUtils.getJDBooksPath() + File.separator + bookName;
-        DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.downLoadUrl, localPath, bookName);
+        String localPath = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.name + Constants.BOOK_FORMAT;
+        DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.downLoadUrl, localPath, bookDetailBean.name);
         downloadAction.setBookDetailBean(bookDetailBean);
         downloadAction.execute(dataBundle, new RxCallback() {
             @Override

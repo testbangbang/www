@@ -424,6 +424,7 @@ public class BookDetailFragment extends BaseFragment {
         bookDetailBean.bookExtraInfoBean.localPath = localPath;
         bookDetailBean.bookExtraInfoBean.progress = task.getSmallFileSoFarBytes();
         bookDetailBean.bookExtraInfoBean.totalSize = task.getSmallFileTotalBytes();
+        bookDetailBean.file_size = task.getSmallFileTotalBytes();
         if (DownLoadHelper.canInsertBookDetail(downloadTaskState)) {
             insertBookDetail(bookDetailBean, localPath);
         }
@@ -461,7 +462,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
 
-        String path = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.name;
+        String path = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.name + Constants.BOOK_FORMAT;
         if (path.equals(localPath)) {
             if (bookDetailBean != null && DownLoadHelper.isDownloading(downloadTaskState)) {
                 ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_downloading));
@@ -587,9 +588,7 @@ public class BookDetailFragment extends BaseFragment {
             ToastUtil.showToast(getContext(), getResources().getString(R.string.empty_url));
             return;
         }
-        String bookName = tryDownLoadUrl.substring(tryDownLoadUrl.lastIndexOf("/") + 1);
-        bookName = bookName.substring(0, bookName.indexOf(Constants.BOOK_FORMAT)) + Constants.BOOK_FORMAT;
-        String localPath = CommonUtils.getJDBooksPath() + File.separator + bookName;
+        String localPath = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.name + Constants.BOOK_FORMAT;
         DownloadAction downloadAction = new DownloadAction(getContext(), tryDownLoadUrl, localPath, bookDetailBean.name);
         downloadAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
