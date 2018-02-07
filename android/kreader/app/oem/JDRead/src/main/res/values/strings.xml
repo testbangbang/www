@@ -467,4 +467,10 @@
     <string name="delete_library_prompt">Whether to delete the group (group books back into the bookshelf)</string>
     <string name="delete_library_include_book_prompt">Whether to delete this group and group books from this machine</string>
     <string name="unassociated_impression_notes">Unassociated impression notes</string>
+    <string name="dialog_pay_order_book_price">Price: %1$d Read Bean</string>
+    <string name="dialog_pay_order_cur_balance">Balance: %1$d Read Bean/%2$d Voucher</string>
+    <string name="dialog_pay_order_pay_type">Payment:</string>
+    <string name="dialog_pay_order_cash">Cash</string>
+    <string name="dialog_pay_order_confirm_pay">Confirm Payment</string>
+    <string name="payment_order">Payment Order</string>
 </resources>

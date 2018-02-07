@@ -18,6 +18,10 @@ public class DocumentInfo {
     private int messageId = Integer.MAX_VALUE;
     private SecurityInfo securityInfo;
 
+    public void setSecurityInfo(SecurityInfo securityInfo) {
+        this.securityInfo = securityInfo;
+    }
+
     public static class SecurityInfo {
         public static final String KEY = "key";
         public static final String RANDOM = "random";

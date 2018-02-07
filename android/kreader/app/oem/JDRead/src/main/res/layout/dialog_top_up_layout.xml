@@ -7,6 +7,11 @@
         <variable
             name="userInfo"
             type="com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo" />
+
+        <variable
+            name="orderModel"
+            type="com.onyx.jdread.shop.model.PayOrderViewModel" />
+
     </data>
 
     <FrameLayout
@@ -26,7 +31,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/top_up"
+                    android:text="@{orderModel.title}"
                     android:layout_centerInParent="true"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_one_heading_font" />
@@ -39,12 +44,15 @@
                     android:src="@mipmap/ic_close" />
             </RelativeLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line_width"
-                android:background="@color/divider_color" />
+            <include layout="@layout/layout_gray_line" />
 
             <include
+                bind:orderModel="@{orderModel}"
+                layout="@layout/dialog_pay_order_layout"
+                android:id="@+id/pay_order"/>
+
+            <include
+                android:visibility="gone"
                 android:id="@+id/dialog_top_up_detail_layout"
                 layout="@layout/dialog_top_up_detail_layout"
                 android:layout_width="match_parent"

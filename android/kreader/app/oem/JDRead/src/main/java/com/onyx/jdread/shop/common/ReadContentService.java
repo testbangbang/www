@@ -128,6 +128,10 @@ public interface ReadContentService {
     Call<SetReadPreferenceBean> setReadPreference(@QueryMap Map<String, String> map,
                                                   @Body RequestBody body);
 
+    @POST(CloudApiContext.GotoOrder.ORDER_STEPONE)
+    Call<String> getOrderInfo(@QueryMap Map<String, String> map,
+                                              @Body RequestBody body);
+
     @GET(CloudApiContext.User.READ_PREFERENCE)
     Call<GetReadPreferenceBean> getReadPreference(@QueryMap Map<String, String> map);
 

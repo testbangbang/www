@@ -31,9 +31,7 @@ public class BookDownloadUtils {
         bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = true;
         if (StringUtils.isNullOrEmpty(bookDetailBean.downLoadUrl)) {
             int downLoadType = CloudApiContext.BookDownLoad.TYPE_ORDER;
-            if (!bookDetailBean.can_buy) {
-                downLoadType = CloudApiContext.BookDownLoad.TYPE_ORDER;
-            } else if (bookDetailBean.can_read) {
+            if (bookDetailBean.downLoadType == CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ) {
                 downLoadType = CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ;
             }
             DownLoadWholeBookAction action = new DownLoadWholeBookAction(bookDetailBean.ebook_id, downLoadType);

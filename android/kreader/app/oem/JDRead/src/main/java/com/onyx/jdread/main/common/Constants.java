@@ -123,4 +123,8 @@ public class Constants {
     public static final int RELATE_TYPE_BOOK_LIST = 1;
     public static final int RELATE_TYPE_LINK = 2;
     public static final int RELATE_TYPE_BOOK_DETAIL = 4;
+    public static final String PAY_DIALOG_TYPE = "pay_dialog_type";
+    public static final int PAY_DIALOG_TYPE_PAY_ORDER = 1;
+    public static final int PAY_DIALOG_TYPE_TOP_UP = 2;
+    public static final String ORDER_INFO = "order_info";
 }

@@ -186,6 +186,7 @@ public class CloudApiContext {
         public static final String BOOLEAN = "true";
         public static final String CART = "cart";
         public static final String CART_DETAIL = "cart/detail";
+        public static final String ORDER_STEPONE = "order/stepone";
     }
 
     public static String getJDBooxBaseUrl() {

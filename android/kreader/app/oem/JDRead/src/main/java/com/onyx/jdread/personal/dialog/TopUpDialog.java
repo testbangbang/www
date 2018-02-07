@@ -18,6 +18,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogTopUpBinding;
 import com.onyx.jdread.library.utils.QRCodeUtil;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.action.GetPayQRCodeAction;
 import com.onyx.jdread.personal.action.GetRechargeStatusAction;
@@ -29,6 +30,9 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargeStatusBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.event.GetRechargePollEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
+import com.onyx.jdread.shop.model.PayOrderViewModel;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.util.Utils;
 
@@ -90,6 +94,28 @@ public class TopUpDialog extends DialogFragment {
     }
 
     private void initData() {
+        Bundle arguments = getArguments();
+        PayOrderViewModel payOrderViewModel = ShopDataBundle.getInstance().getPayOrderViewModel();
+        if (arguments != null) {
+            int payDialogType = arguments.getInt(Constants.PAY_DIALOG_TYPE);
+            if (payDialogType == Constants.PAY_DIALOG_TYPE_PAY_ORDER) {
+                GetOrderInfoResultBean.DataBean orderInfo = (GetOrderInfoResultBean.DataBean) arguments.getSerializable(Constants.ORDER_INFO);
+                payOrderViewModel.title.set(ResManager.getString(R.string.payment_order));
+                payOrderViewModel.setOrderInfo(orderInfo);
+                payOrderViewModel.setUserInfo(PersonalDataBundle.getInstance().getUserInfo());
+                binding.setOrderModel(payOrderViewModel);
+                binding.setUserInfo(PersonalDataBundle.getInstance().getUserInfo());
+            } else {
+                binding.payOrder.getRoot().setVisibility(View.GONE);
+                binding.dialogTopUpDetailLayout.getRoot().setVisibility(View.VISIBLE);
+                payOrderViewModel.title.set(ResManager.getString(R.string.top_up));
+                binding.setOrderModel(payOrderViewModel);
+                getTopUpValue();
+            }
+        }
+    }
+
+    private void getTopUpValue() {
         GetTopUpValueAction action = new GetTopUpValueAction();
         action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override

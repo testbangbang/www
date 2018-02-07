@@ -443,4 +443,10 @@
     <string name="category_boy">男生</string>
     <string name="category_girl">女生</string>
     <string name="unassociated_impression_notes">未关联印象笔记</string>
+    <string name="dialog_pay_order_book_price">价格: %1$d阅豆</string>
+    <string name="dialog_pay_order_cur_balance">当前余额: %1$d阅豆/%2$d代金券</string>
+    <string name="dialog_pay_order_pay_type">付款方式:</string>
+    <string name="dialog_pay_order_cash">现金</string>
+    <string name="dialog_pay_order_confirm_pay">确认支付</string>
+    <string name="payment_order">订单支付</string>
 </resources>

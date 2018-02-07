@@ -29,9 +29,8 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.personal.action.GetOrderUrlAction;
-import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.dialog.TopUpDialog;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
@@ -45,12 +44,14 @@ import com.onyx.jdread.shop.action.BookDetailAction;
 import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.action.BookshelfInsertAction;
 import com.onyx.jdread.shop.action.DownloadAction;
+import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.MetadataQueryAction;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -88,7 +89,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by jackdeng on 2017/12/16.
@@ -149,9 +149,11 @@ public class BookDetailFragment extends BaseFragment {
             @Override
             public void onNext(MetadataQueryAction queryAction) {
                 Metadata metadata = queryAction.getMetadataResult();
-                String extraInfoStr = metadata.getExtraAttributes();
-                BookExtraInfoBean extraInfoBean = JSONObjectParseUtils.toBean(extraInfoStr, BookExtraInfoBean.class);
-                setQueryResult(extraInfoBean);
+                if (metadata != null) {
+                    String extraInfoStr = metadata.getExtraAttributes();
+                    BookExtraInfoBean extraInfoBean = JSONObjectParseUtils.toBean(extraInfoStr, BookExtraInfoBean.class);
+                    setQueryResult(extraInfoBean);
+                }
             }
         });
     }
@@ -450,12 +452,12 @@ public class BookDetailFragment extends BaseFragment {
 
     private void smoothDownload() {
         if (isWholeBookDownLoad && isDataBaseHaveBook && new File(localPath).exists()) {
-            openBook(bookDetailBean.name, localPath);
+            openBook(localPath, bookDetailBean);
             return;
         }
 
         if (isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && new File(localPath).exists()) {
-            openBook(bookDetailBean.name, localPath);
+            openBook(localPath, bookDetailBean);
             return;
         }
 
@@ -472,45 +474,63 @@ public class BookDetailFragment extends BaseFragment {
             }
         }
 
+        if (PersonalDataBundle.getInstance().isUserVip()) {
+            if (bookDetailBean.can_read) {
+                bookDetailBean.downLoadType = CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ;
+                BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
+                return;
+            }
+        }
+
         if (!bookDetailBean.can_buy) {
             BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
             return;
         }
 
         if (bookDetailBean.can_buy) {
-            //TODO  showPayDialog(bookDetailBean.ebook_id);
-            BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
+            showPayDialog(bookDetailBean.ebook_id);
             return;
         }
     }
 
-    private void openBook(String name, String localPath) {
+    private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean) {
         DocumentInfo documentInfo = new DocumentInfo();
+        DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
+        securityInfo.setKey(detailBean.key);
+        securityInfo.setRandom(detailBean.random);
+        documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
-        documentInfo.setBookName(name);
+        documentInfo.setBookName(detailBean.name);
         OpenBookHelper.openBook(super.getContext(), documentInfo);
     }
 
     private void showPayDialog(long ebookId) {
-        ArrayList<String> bookIds = new ArrayList<>();
-        bookIds.add(String.valueOf(ebookId));
-        final GetOrderUrlAction orderUrlAction = new GetOrderUrlAction(bookIds);
-        orderUrlAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                GetOrderUrlResultBean orderUrlResultBean = PersonalDataBundle.getInstance().getOrderUrlResultBean();
-                if (orderUrlResultBean != null) {
-                    String url = CloudApiContext.JD_BOOK_ORDER_URL + CloudApiContext.GotoOrder.ORDER_ORDERSTEP1_ACTION;
-                    String tokenKey = CloudApiContext.GotoOrder.TOKENKEY;
-                    String payUrl = url + tokenKey + orderUrlResultBean.getTokenKey();
-                    PayFragment payFragment = new PayFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Constants.PAY_URL, payUrl);
-                    payFragment.setArguments(bundle);
-                    payFragment.show(getActivity().getFragmentManager(), "");
+        getOrderInfo(new String[]{String.valueOf(ebookId)});
+    }
+
+    private void getOrderInfo(String[] bookIds) {
+        if (bookIds != null) {
+            GetOrderInfoAction action = new GetOrderInfoAction(bookIds);
+            action.execute(getShopDataBundle(), new RxCallback<GetOrderInfoAction>() {
+                @Override
+                public void onNext(GetOrderInfoAction getOrderInfoAction) {
+                    GetOrderInfoResultBean.DataBean dataBean = getOrderInfoAction.getDataBean();
+                    if (dataBean != null) {
+                        TopUpDialog dialog = new TopUpDialog();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(Constants.PAY_DIALOG_TYPE, Constants.PAY_DIALOG_TYPE_PAY_ORDER);
+                        bundle.putSerializable(Constants.ORDER_INFO, dataBean);
+                        dialog.setArguments(bundle);
+                        dialog.show(getActivity().getFragmentManager(), "");
+                    }
                 }
-            }
-        });
+
+                @Override
+                public void onError(Throwable throwable) {
+                    super.onError(throwable);
+                }
+            });
+        }
     }
 
     private void addToCart(long ebookId) {
@@ -540,11 +560,11 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
         if (isDataBaseHaveBook && new File(localPath).exists()) {
-            openBook(bookDetailBean.name, localPath);
+            openBook(localPath, bookDetailBean);
             return;
         }
         if (DownLoadHelper.isDownloaded(downloadTaskState) && new File(localPath).exists()) {
-            openBook(bookDetailBean.name, localPath);
+            openBook(localPath, bookDetailBean);
             return;
         }
         if (StringUtils.isNullOrEmpty(bookDetailBean.try_url)) {
