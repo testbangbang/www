@@ -25,7 +25,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:drawablePadding="@dimen/top_menu_drawable_padding"
-                android:drawableTop="@mipmap/ic_top_menu_wifi"
+                android:drawableTop="@{systemBarPopModel.wifiIsOn?@drawable/ic_top_menu_wifi:@drawable/ic_top_menu_qs_wifi}"
                 android:gravity="center_horizontal"
                 android:onClick="@{()->systemBarPopModel.toggleWifi()}"
                 android:text="@{systemBarPopModel.currentWifi}"
@@ -86,7 +86,7 @@
                 android:max="@{systemBarPopModel.brightnessModel.maxLight}"
                 android:numStars="@{systemBarPopModel.brightnessModel.numStar}"
                 android:progress="@{systemBarPopModel.brightnessModel.progress}"
-                android:progressDrawable="@drawable/light_bar_big_step"
+                android:progressDrawable="@drawable/light_bar_step"
                 android:stepSize="1.0" />
 
             <TextView

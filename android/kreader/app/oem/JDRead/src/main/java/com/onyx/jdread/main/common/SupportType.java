@@ -9,6 +9,7 @@ import java.util.Set;
 
 public class SupportType {
     private static final Set<String> docExtension = new HashSet<String>();
+    private static final Set<String> supportThumbnailType = new HashSet<String>();
 
     public static Set<String> getDocumentExtension() {
         if (docExtension.isEmpty()) {
@@ -21,6 +22,13 @@ public class SupportType {
             docExtension.add("png");
             docExtension.add("jpeg");
             docExtension.add("jpg");
+        }
+        return docExtension;
+    }
+
+    public static Set<String> getSupportThumbnailType() {
+        if (docExtension.isEmpty()) {
+            supportThumbnailType.add("epub");
         }
         return docExtension;
     }

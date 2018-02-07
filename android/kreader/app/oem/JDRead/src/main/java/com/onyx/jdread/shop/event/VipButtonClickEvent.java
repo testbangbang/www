@@ -5,4 +5,10 @@ package com.onyx.jdread.shop.event;
  */
 
 public class VipButtonClickEvent {
+
+    public String buttonContent;
+
+    public VipButtonClickEvent(String buttonContent) {
+        this.buttonContent = buttonContent;
+    }
 }

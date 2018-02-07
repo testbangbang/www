@@ -9,41 +9,33 @@
             type="com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean" />
     </data>
 
-    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+    <LinearLayout
+        android:id="@+id/cover_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:padding="@dimen/subject_model_item_padding">
+        android:gravity="left"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/cover_panel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
+        <ImageView
+            android:id="@+id/image_cover"
+            android:layout_width="@dimen/subject_model_item_width"
+            android:layout_height="@dimen/subject_model_item_height"
+            android:scaleType="fitXY"
+            bind:cover="@{bookBean.image_url}" />
 
-            <ImageView
-                android:id="@+id/image_cover"
-                android:layout_width="@dimen/subject_model_item_width"
-                android:layout_height="@dimen/subject_model_item_height"
-                android:padding="@dimen/rectangle_stroke_width"
-                android:scaleType="fitXY"
-                bind:cover="@{bookBean.image_url}" />
+        <TextView
+            android:id="@+id/textView_title"
+            android:layout_width="@dimen/subject_model_item_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_subject_common_name_margin_top"
+            android:ellipsize="end"
+            android:gravity="top|left"
+            android:lineSpacingExtra="@dimen/item_subject_common_name_line_space"
+            android:lines="2"
+            android:text="@{bookBean.name}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/font_size_15" />
 
-            <TextView
-                android:id="@+id/textView_title"
-                android:layout_width="@dimen/subject_model_item_width"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/item_subject_common_name_margin_top"
-                android:ellipsize="end"
-                android:gravity="top|left"
-                android:lines="2"
-                android:text="@{bookBean.name}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/font_size_15" />
-
-        </LinearLayout>
-
-    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+    </LinearLayout>
 
 </layout>

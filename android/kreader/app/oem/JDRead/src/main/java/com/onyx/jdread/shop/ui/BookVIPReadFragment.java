@@ -8,19 +8,22 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookVipReadBinding;
-import com.onyx.jdread.shop.event.HideAllDialogEvent;
-import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.event.VipButtonClickEvent;
@@ -68,6 +71,9 @@ public class BookVIPReadFragment extends BaseFragment {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
                 bookVipReadBinding.scrollBar.setTotal(getVipReadViewModel().getTotalPages());
+                if (recyclerView != null) {
+                    recyclerView.setTotalPages(getVipReadViewModel().getTotalPages());
+                }
                 scrollToTop();
             }
 
@@ -93,6 +99,7 @@ public class BookVIPReadFragment extends BaseFragment {
     private void setRecycleView() {
         ShopMainConfigAdapter adapter = new ShopMainConfigAdapter();
         recyclerView = bookVipReadBinding.vipSubjectRecycleView;
+        recyclerView.setPageTurningCycled(true);
         recyclerView.setLayoutManager(new DisableScrollLinearManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(new SpaceItemDecoration(space));
         recyclerView.setAdapter(adapter);
@@ -181,7 +188,14 @@ public class BookVIPReadFragment extends BaseFragment {
             return;
         }
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BuyReadVIPFragment.class.getName());
+            String buttonContent = event.buttonContent;
+            if (!StringUtils.isNullOrEmpty(buttonContent)) {
+                if (ResManager.getString(R.string.login_immediately).equals(buttonContent)) {
+                    LoginHelper.showUserLoginDialog(PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel());
+                } else {
+                    getViewEventCallBack().gotoView(BuyReadVIPFragment.class.getName());
+                }
+            }
         }
     }
 

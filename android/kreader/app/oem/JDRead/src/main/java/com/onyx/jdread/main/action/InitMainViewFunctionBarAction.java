@@ -32,11 +32,13 @@ public class InitMainViewFunctionBarAction extends BaseAction<MainBundle> {
     @Override
     public void execute(MainBundle mainBundle, RxCallback baseCallback) {
         functionBarModel.itemModels.clear();
-        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.LIBRARY, LibraryFragment.class.getName(), mainBundle.getAppContext().getString(R.string.library_name), R.mipmap.ic_shelf, true));
-        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.SHOP, ShopFragment.class.getName(), mainBundle.getAppContext().getString(R.string.shop_name), R.mipmap.ic_shop, true));
-        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.BACK, "back", mainBundle.getAppContext().getString(R.string.back_name), R.mipmap.ic_undo, JDPreferenceManager.getBooleanValue(R.string.show_back_tab_key, false)));
-        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.SETTING, SettingFragment.class.getName(), mainBundle.getAppContext().getString(R.string.setting_name), R.mipmap.ic_setting, true));
-        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.PERSONAL, PersonalFragment.class.getName(), mainBundle.getAppContext().getString(R.string.personal_name), R.mipmap.ic_me, true));
+        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.LIBRARY, LibraryFragment.class.getName(), mainBundle.getAppContext().getString(R.string.library_name), R.mipmap.ic_shelf));
+        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.SHOP, ShopFragment.class.getName(), mainBundle.getAppContext().getString(R.string.shop_name), R.mipmap.ic_shop));
+        if (JDPreferenceManager.getBooleanValue(R.string.show_back_tab_key, false)) {
+            functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.BACK, "back", mainBundle.getAppContext().getString(R.string.back_name), R.mipmap.ic_undo));
+        }
+        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.SETTING, SettingFragment.class.getName(), mainBundle.getAppContext().getString(R.string.setting_name), R.mipmap.ic_setting));
+        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.PERSONAL, PersonalFragment.class.getName(), mainBundle.getAppContext().getString(R.string.personal_name), R.mipmap.ic_me));
         setSelectedFunctionItem();
         if (baseCallback != null) {
             baseCallback.onNext(functionBarModel);

@@ -2,17 +2,18 @@ package com.onyx.jdread.setting.model;
 
 import android.databinding.ObservableField;
 
-import com.onyx.android.sdk.data.model.LogCollection;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
-import com.onyx.android.sdk.utils.InputMethodUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.main.util.RegularUtil;
+import com.onyx.jdread.setting.data.database.FeedbackRecord;
 import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
 import com.onyx.jdread.util.BroadcastHelper;
+import com.raizlabs.android.dbflow.structure.AsyncModel;
 
 import java.util.Observable;
 
@@ -42,18 +43,27 @@ public class FeedbackModel extends Observable {
             ToastUtils.showToast(JDReadApplication.getInstance(), R.string.phone_number_format_error);
             return;
         }
-
+        if (!NetworkUtil.isWiFiConnected(JDReadApplication.getInstance())) {
+            ToastUtils.showToast(JDReadApplication.getInstance(), R.string.wifi_no_connected);
+            return;
+        }
         submitCommitFeedback(feedback.get(), phone.get());
         titleBarModel.back();
     }
 
     private void submitCommitFeedback(String desc, String phone) {
-        LogCollection logCollection = new LogCollection();
-        logCollection.desc = desc;
-        logCollection.phone = phone;
+        FeedbackRecord record = new FeedbackRecord();
+        record.desc = desc;
+        record.phone = phone;
 
         BroadcastHelper.sendFeedbackBroadcast(JDReadApplication.getInstance(),
-                String.valueOf(JSONObjectParseUtils.toJson(logCollection)));
+                String.valueOf(JSONObjectParseUtils.toJson(record)));
+        saveFeedbackRecord(record);
         ToastUtils.showToast(JDReadApplication.getInstance(), R.string.feedback_success);
+    }
+
+    private void saveFeedbackRecord(FeedbackRecord record) {
+        record.updateDate();
+        new AsyncModel<>(record).save();
     }
 }

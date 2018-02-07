@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
@@ -56,31 +57,14 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
             Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
             if (metadata == null || !metadata.hasValidId()) {
                 metadata = Metadata.createFromFile(file, false);
+                metadata.setName(FileUtils.getBaseName(file.getAbsolutePath()));
                 metadata.setHashTag(file.getAbsolutePath());
                 getDataProvider().saveMetadata(getAppContext(), metadata);
             }
-            String parent = file.getParentFile().getName();
-            Library library = getDataProvider().findLibraryByName(getAppContext(), parent);
-            if (library == null || !library.hasValidId()) {
-                library = new Library();
-                library.setIdString(Library.generateUniqueId());
-                library.setName(parent);
-                library.setParentUniqueId(null);
-                getDataProvider().addLibrary(library);
-            }
-            MetadataCollection collection = getDataProvider().loadMetadataCollection(getAppContext(), library.getIdString(), metadata.getAssociationId());
-            if (collection == null || !collection.hasValidId()) {
-                getDataProvider().addMetadataCollection(getAppContext(), MetadataCollection.create(metadata.getAssociationId(), library.getIdString()));
-            }
         } else {
             Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
-            if (metadata != null && metadata.hasValidId()) {
-                getDataProvider().removeMetadata(getAppContext(), metadata);
-                Library library = getDataProvider().findLibraryByName(getAppContext(), file.getParentFile().getName());
-                if (library != null && library.hasValidId()) {
-                    getDataProvider().deleteMetadataCollection(getAppContext(), library.getIdString(), metadata.getAssociationId());
-                }
-            }
+            getDataProvider().removeMetadata(getAppContext(), metadata);
+            getDataProvider().deleteMetadataCollectionByDocId(getAppContext(), metadata.getAssociationId());
         }
     }
 }

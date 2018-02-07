@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.common.LoginHelper;
@@ -41,6 +39,7 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
+import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.setting.ui.WifiFragment;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.BookDetailAction;
@@ -82,7 +81,7 @@ import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.shop.utils.ViewHelper;
-import com.onyx.jdread.shop.view.AutoPagedWebView;
+import com.onyx.jdread.shop.view.BookInfoDialog;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -103,7 +102,7 @@ public class BookDetailFragment extends BaseFragment {
     private DividerItemDecoration itemDecoration;
     private long ebookId;
     private PageRecyclerView recyclerViewRecommend;
-    private AlertDialog copyRightDialog;
+    private BookInfoDialog copyRightDialog;
     private boolean isTryRead;
     private boolean isSmoothRead;
     private String localPath;
@@ -115,7 +114,7 @@ public class BookDetailFragment extends BaseFragment {
     private int percentage;
     private boolean isWholeBookDownLoad;
     private GPaginator paginator;
-    private AlertDialog infoDialog;
+    private BookInfoDialog infoDialog;
     private boolean hasAddToCart = false;
 
     @Nullable
@@ -433,6 +432,8 @@ public class BookDetailFragment extends BaseFragment {
         }
         bookDetailBean.bookExtraInfoBean.percentage = percentage;
         bookDetailBean.bookExtraInfoBean.localPath = localPath;
+        bookDetailBean.bookExtraInfoBean.progress = task.getSmallFileSoFarBytes();
+        bookDetailBean.bookExtraInfoBean.totalSize = task.getSmallFileTotalBytes();
         if (DownLoadHelper.canInsertBookDetail(downloadTaskState)) {
             insertBookDetail(bookDetailBean, localPath);
         }
@@ -481,11 +482,6 @@ public class BookDetailFragment extends BaseFragment {
                 ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_download_go_on));
                 return;
             }
-        }
-
-        if (!CommonUtils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ManagerActivityUtils.showWifiDialog(getActivity());
-            return;
         }
 
         if (!bookDetailBean.can_buy) {
@@ -567,10 +563,6 @@ public class BookDetailFragment extends BaseFragment {
             ToastUtil.showToast(getContext(), getResources().getString(R.string.empty_url));
             return;
         }
-        if (!CommonUtils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ManagerActivityUtils.showWifiDialog(getActivity());
-            return;
-        }
         if (DownLoadHelper.isDownloading(downloadTaskState)) {
             ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_downloading));
             return;
@@ -624,10 +616,8 @@ public class BookDetailFragment extends BaseFragment {
         LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         copyrightBinding.setBookDetailViewModel(getBookDetailViewModel());
         if (copyRightDialog == null) {
-            AlertDialog.Builder copyRightDialogBuild = new AlertDialog.Builder(getActivity());
-            copyRightDialogBuild.setView(copyrightBinding.getRoot());
-            copyRightDialogBuild.setCancelable(true);
-            copyRightDialog = copyRightDialogBuild.create();
+            copyRightDialog = new BookInfoDialog(JDReadApplication.getInstance());
+            copyRightDialog.setView(copyrightBinding.getRoot());
         }
         if (copyRightDialog != null) {
             copyRightDialog.show();
@@ -760,17 +750,16 @@ public class BookDetailFragment extends BaseFragment {
         dialogBookInfoViewModel.content.set(content);
         dialogBookInfoViewModel.title.set(ResManager.getString(R.string.book_detail_text_view_content_introduce));
         infoBinding.setViewModel(dialogBookInfoViewModel);
-        AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
-        build.setView(infoBinding.getRoot());
-        build.setCancelable(true);
-        AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
+        infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
+        infoDialog.setView(infoBinding.getRoot());
+        HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);
         settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
-        pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
+        pagedWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
             @Override
-            public void onPageChanged(int currentPage, int totalPage) {
-                dialogBookInfoViewModel.currentPage.set(currentPage);
+            public void onPageChanged(int totalPage, int curPage) {
+                dialogBookInfoViewModel.currentPage.set(curPage);
                 dialogBookInfoViewModel.totalPage.set(totalPage);
             }
         });
@@ -780,7 +769,6 @@ public class BookDetailFragment extends BaseFragment {
                 dismissInfoDialog();
             }
         });
-        infoDialog = build.create();
         if (infoDialog != null) {
             infoDialog.show();
         }

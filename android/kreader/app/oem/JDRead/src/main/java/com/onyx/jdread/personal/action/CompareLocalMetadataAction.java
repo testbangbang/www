@@ -31,10 +31,8 @@ public class CompareLocalMetadataAction extends BaseAction {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                if (rxCallback != null) {
-                    metadataList = rq.getList();
-                    rxCallback.onNext(CompareLocalMetadataAction.class);
-                }
+                metadataList = rq.getList();
+                RxCallback.invokeNext(rxCallback, CompareLocalMetadataAction.this);
             }
         });
     }

@@ -56,9 +56,9 @@
                 android:layout_height="0dp"
                 android:layout_weight="5"
                 android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:maxLines="2"
-                bind:htmlContentDialog="@{bookBean.info}"
+                android:gravity="left|top"
+                android:lines="@integer/item_subject_list_info_lines"
+                bind:htmlContentNoTitle="@{bookBean.info}"
                 android:lineSpacingExtra="@dimen/book_info_line_space"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_size_13" />

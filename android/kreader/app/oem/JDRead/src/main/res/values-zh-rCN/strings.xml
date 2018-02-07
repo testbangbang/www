@@ -113,8 +113,8 @@
     <string name="sale">特价</string>
     <string name="new_book">新书</string>
     <string name="category">分类</string>
-    <string name="back_to_top">返回顶部</string>
-    <string name="view_all_books">查看全库图书</string>
+    <string name="back_to_top">回到顶部</string>
+    <string name="view_all_books">查看全部图书</string>
     <string name="search_view_hint">请输入搜索内容</string>
     <string name="book_detail_yuedou_price">%1$s 阅豆</string>
     <string name="book_detail_button_now_read">立即阅读</string>
@@ -425,6 +425,9 @@
     <string name="morning">上午</string>
     <string name="afternoon">下午</string>
     <string name="updating">正在进行系统更新，请稍后...</string>
+    <string name="updating_package_model_no_match">系统更新包型号不匹配</string>
+    <string name="updating_package_parse_failed">系统更新包解析失败</string>
+    <string name="updating_package_install_failed">系统更新包安装失败</string>
     <string name="power_off_prompt">您确定关闭阅读器吗?</string>
     <string name="speed_refresh_is_opened">极速翻页已开启</string>
     <string name="speed_refresh_is_closed">极速翻页已关闭</string>
@@ -437,4 +440,14 @@
     <string name="vip_read_notice">会员须知</string>
     <string name="not_open_vip_read">未开通会员</string>
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">该图书已购买或者是免费书,无需购买!</string>
+    <string name="empty_search_key_prompt">请输入需要搜索的内容</string>
+    <string name="no_more_content">没有更多内容了</string>
+    <string name="category_publish">出版</string>
+    <string name="category_boy">男生</string>
+    <string name="category_girl">女生</string>
+    <string name="unassociated_impression_notes">未关联印象笔记</string>
+    <string name="quit_wifi_pass_book">已退出WiFi传书</string>
+    <string name="wifi_pass_book_failed">传书失败</string>
+    <string name="wifi_pass_book_failed_network_exception">网络异常,传书失败</string>
+    <string name="empty_library_prompt">暂无图书, 请去 我的书店 下载</string>
 </resources>

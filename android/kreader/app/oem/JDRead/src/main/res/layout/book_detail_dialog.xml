@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/rectangle_stroke_corners"
     android:orientation="vertical">
 
     <LinearLayout
@@ -20,19 +21,17 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ellipsize="middle"
+            android:gravity="center"
             android:singleLine="true"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_one_heading_font" />
 
-        <ImageView
-            android:id="@+id/iv_book_detail_dialog_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_cancel" />
-
     </LinearLayout>
 
-    <include layout="@layout/layout_line" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_width"
+        android:background="@color/dark" />
 
     <LinearLayout
         android:id="@+id/ll_book_detail_content"
@@ -51,7 +50,7 @@
 
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/book_detail_dialog_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,22 +61,23 @@
 
         <TextView
             android:id="@+id/tv_book_detail_dialog_refuse"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/book_detail_dialog_message_margin_left"
+            android:layout_weight="1"
+            android:gravity="center"
             android:padding="@dimen/dialog_button_padding_top"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
         <TextView
             android:id="@+id/tv_book_detail_dialog_go"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/tv_book_detail_dialog_refuse"
+            android:layout_weight="1"
+            android:gravity="center"
             android:padding="@dimen/dialog_button_padding_top"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

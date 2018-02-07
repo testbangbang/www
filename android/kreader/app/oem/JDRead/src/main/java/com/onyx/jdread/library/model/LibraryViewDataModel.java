@@ -72,7 +72,7 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public static LibraryViewDataModel create(EventBus eventBus, int rows, int cols) {
-        return new LibraryViewDataModel(eventBus, rows, cols, SortBy.Name, SortOrder.Asc);
+        return new LibraryViewDataModel(eventBus, rows, cols, SortBy.UpdateTime, SortOrder.Desc);
     }
 
     public LibraryViewDataModel(EventBus eventBus, int row, int col, SortBy sortBy, SortOrder sortOrder) {
@@ -275,6 +275,9 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public void onManageClick() {
+        if (count.get() == 0) {
+            return;
+        }
         eventBus.post(new LibraryManageEvent());
     }
 
@@ -404,5 +407,9 @@ public class LibraryViewDataModel extends Observable {
 
     public void checkHaveSelected() {
         haveSelected.set(selectHelper.haveSelected());
+    }
+
+    public int getQueryLimit() {
+        return queryLimit;
     }
 }

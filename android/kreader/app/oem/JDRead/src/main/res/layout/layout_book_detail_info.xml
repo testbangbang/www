@@ -52,28 +52,12 @@
                         android:id="@+id/book_detail_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:ellipsize="middle"
+                        android:ellipsize="end"
                         android:maxLines="2"
                         android:text="@{bookDetailViewModel.bookDetailResultBean.data.name}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_two_heading_font"
                         android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/book_detail_author"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="@dimen/book_detail_author_margin_top"
-                        android:layout_weight="1"
-                        android:drawablePadding="@dimen/view_all_drawable_padding"
-                        android:ellipsize="end"
-                        android:enabled="false"
-                        android:gravity="center_vertical"
-                        android:maxLines="1"
-                        android:onClick="@{()->bookDetailViewModel.onAuthorClick()}"
-                        android:text="@{bookDetailViewModel.bookDetailResultBean.data.author}"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_size_15" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -109,6 +93,22 @@
                         </LinearLayout>
 
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/book_detail_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="@dimen/book_detail_author_margin_top"
+                        android:layout_weight="1"
+                        android:drawablePadding="@dimen/view_all_drawable_padding"
+                        android:ellipsize="end"
+                        android:enabled="false"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:onClick="@{()->bookDetailViewModel.onAuthorClick()}"
+                        android:text="@{bookDetailViewModel.bookDetailResultBean.data.author}"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_size_15" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -160,8 +160,6 @@
                             android:id="@+id/book_detail_category_second_path"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:drawablePadding="@dimen/view_all_drawable_padding"
-                            android:drawableRight="@mipmap/ic_go_view_all"
                             android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelTwoClick()}"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.second_catid1_str}"
                             android:textColor="@android:color/black"
@@ -172,8 +170,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/book_detail_cat_two_margin_left"
-                            android:drawablePadding="@dimen/view_all_drawable_padding"
-                            android:drawableRight="@mipmap/ic_go_view_all"
                             android:onClick="@{()->bookDetailViewModel.onCategoryPathLevelThreeClick()}"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.third_catid1_str}"
                             android:textColor="@android:color/black"
@@ -203,7 +199,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/rectangle_stroke"
+                        android:background="@drawable/rectangle_stroke_corners"
                         android:gravity="center"
                         android:onClick="@{()->bookDetailViewModel.onNowReadClick()}"
                         android:padding="@dimen/book_detail_button_padding"
@@ -217,7 +213,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/book_detail_button_margin"
                         android:layout_weight="1"
-                        android:background="@drawable/rectangle_stroke"
+                        android:background="@drawable/rectangle_stroke_corners"
                         android:gravity="center"
                         android:onClick="@{()->bookDetailViewModel.onDownBookClick()}"
                         android:padding="@dimen/book_detail_button_padding"
@@ -268,7 +264,7 @@
                     android:layout_height="match_parent"
                     android:ellipsize="end"
                     android:lineSpacingExtra="@dimen/book_info_line_space"
-                    android:maxLines="2"
+                    android:lines="@integer/book_detail_info_lines"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/font_size_15"
                     bind:htmlContent="@{bookDetailViewModel.bookDetailResultBean.data.info}" />
@@ -276,6 +272,8 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:layout_marginLeft="@dimen/book_detail_view_catalog_container_margin_left_and_right"
+                android:layout_marginRight="@dimen/book_detail_view_catalog_container_margin_left_and_right"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/book_detail_common_margin_top">
@@ -284,8 +282,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:drawablePadding="@dimen/view_all_drawable_padding"
-                    android:drawableRight="@mipmap/ic_go_view_all"
+                    android:drawablePadding="@dimen/book_detail_drawable_left_padding"
+                    android:drawableLeft="@mipmap/ic_view_catalog"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onViewDirectoryClick()}"
                     android:text="@string/book_detail_view_catalog"
@@ -296,8 +294,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:drawablePadding="@dimen/view_all_drawable_padding"
-                    android:drawableRight="@mipmap/ic_go_view_all"
+                    android:drawablePadding="@dimen/book_detail_drawable_left_padding"
+                    android:drawableLeft="@mipmap/ic_view_comment"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onViewCommentClick()}"
                     android:text="@string/book_detail_view_comments"
@@ -308,8 +306,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:drawablePadding="@dimen/view_all_drawable_padding"
-                    android:drawableRight="@mipmap/ic_go_view_all"
+                    android:drawablePadding="@dimen/book_detail_drawable_left_padding"
+                    android:drawableLeft="@mipmap/ic_view_copyright"
                     android:gravity="center"
                     android:onClick="@{()->bookDetailViewModel.onCopyrightClick()}"
                     android:text="@string/book_detail_view_copyright"

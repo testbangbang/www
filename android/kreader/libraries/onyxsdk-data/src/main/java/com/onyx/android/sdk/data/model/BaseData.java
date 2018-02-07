@@ -113,4 +113,10 @@ public class BaseData extends BaseModel {
         } catch (Exception e) {
         }
     }
+
+    @Override
+    public boolean update() {
+        beforeSave();
+        return super.update();
+    }
 }

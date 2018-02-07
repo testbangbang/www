@@ -124,11 +124,12 @@
     <integer name="buy_read_vip_adapter_row">6</integer>
     <integer name="dictionary_list_row">7</integer>
     <integer name="dictionary_list_col">1</integer>
-    <integer name="feedback_record_adapter_row">5</integer>
+    <integer name="feedback_record_adapter_row">6</integer>
     <integer name="feedback_record_adapter_col">1</integer>
+    <integer name="feedback_record_query_limit">20</integer>
     <integer name="gift_center_adapter_row">5</integer>
     <integer name="gift_center_adapter_col">1</integer>
-    <integer name="personal_account_adapter_row">5</integer>
+    <integer name="personal_account_adapter_row">4</integer>
     <integer name="personal_account_adapter_col">1</integer>
     <integer name="points_for_adapter_row">5</integer>
     <integer name="points_for_adapter_col">1</integer>
@@ -144,8 +145,8 @@
     <integer name="search_result_recycler_col">1</integer>
     <integer name="library_cover_row">2</integer>
     <integer name="library_cover_col">2</integer>
-    <integer name="cloud_book_cover_width">128</integer>
-    <integer name="cloud_book_cover_height">185</integer>
+    <integer name="cloud_book_cover_width">260</integer>
+    <integer name="cloud_book_cover_height">377</integer>
     <integer name="add_wifi_dialog_x">0</integer>
     <integer name="add_wifi_dialog_y">30</integer>
     <integer name="library_menu_offset_y">20</integer>
@@ -166,4 +167,10 @@
     <integer name="associated_toast_offset_y">-10</integer>
     <integer name="dialog_jd_loading_width">320</integer>
     <integer name="dialog_jd_loading_height">100</integer>
+    <integer name="item_subject_list_info_lines">2</integer>
+    <integer name="book_detail_info_lines">2</integer>
+    <integer name="calculate_half">2</integer>
+    <integer name="child_over_limit">99</integer>
+    <integer name="empty_library_prompt_clickable_start">9</integer>
+    <integer name="empty_library_prompt_clickable_end">13</integer>
 </resources>

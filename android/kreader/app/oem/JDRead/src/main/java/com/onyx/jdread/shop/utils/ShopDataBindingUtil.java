@@ -7,7 +7,9 @@ import android.widget.ImageView;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
@@ -22,7 +24,6 @@ import com.onyx.jdread.shop.adapter.SubjectWithVipAdapter;
 import com.onyx.jdread.shop.adapter.TitleSubjectAdapter;
 import com.onyx.jdread.shop.adapter.VipReadAdapter;
 import com.onyx.jdread.shop.common.ManageImageCache;
-import com.onyx.jdread.shop.view.AutoPagedWebView;
 import com.onyx.jdread.shop.view.HtmlTextView;
 
 import java.util.List;
@@ -44,6 +45,9 @@ public class ShopDataBindingUtil {
     public static void setItems(PageRecyclerView recyclerView, List items) {
         SubjectAdapter adapter = (SubjectAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
+            if (items.size() > Constants.SHOP_MAIN_INDEX_FOUR) {
+                items = items.subList(0, Constants.SHOP_MAIN_INDEX_FOUR);
+            }
             adapter.setRawData(items, recyclerView.getContext());
         }
     }
@@ -60,6 +64,9 @@ public class ShopDataBindingUtil {
     public static void setBannerItems(PageRecyclerView recyclerView, List items) {
         BannerSubjectAdapter adapter = (BannerSubjectAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
+            if (items.size() > Constants.SHOP_MAIN_INDEX_TWO) {
+                items = items.subList(0, Constants.SHOP_MAIN_INDEX_TWO);
+            }
             adapter.setRawData(items, recyclerView.getContext());
         }
     }
@@ -99,6 +106,7 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"htmlContent"})
     public static void setHtmlContent(HtmlTextView htmlTextView, String content) {
         String title = ResManager.getString(R.string.book_detail_text_view_content_introduce) + ":";
+        htmlTextView.setMaxLineCount(ResManager.getInteger(R.integer.book_detail_info_lines));
         if (!StringUtils.isNullOrEmpty(content)) {
             htmlTextView.setHtml(title + content);
         } else {
@@ -107,8 +115,9 @@ public class ShopDataBindingUtil {
         }
     }
 
-    @BindingAdapter({"htmlContentDialog"})
-    public static void setHtmlContentDialog(HtmlTextView htmlTextView, String content) {
+    @BindingAdapter({"htmlContentNoTitle"})
+    public static void setHtmlContentNoTitle(HtmlTextView htmlTextView, String content) {
+        htmlTextView.setMaxLineCount(ResManager.getInteger(R.integer.item_subject_list_info_lines));
         if (!StringUtils.isNullOrEmpty(content)) {
             htmlTextView.setHtml(content);
         } else {
@@ -118,11 +127,10 @@ public class ShopDataBindingUtil {
     }
 
     @BindingAdapter({"bookInfoWebView"})
-    public static void setBookInfoDialog(AutoPagedWebView webView, String content) {
-        if (StringUtils.isNullOrEmpty(content)) {
-            content = ResManager.getString(R.string.book_detail_empty_introduce);
+    public static void setBookInfoDialog(HTMLReaderWebView webView, String content) {
+        if (!StringUtils.isNullOrEmpty(content)) {
+            webView.loadData(content, "text/html; charset=UTF-8", null);
         }
-        webView.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
     }
 
     @BindingAdapter({"subjectList"})

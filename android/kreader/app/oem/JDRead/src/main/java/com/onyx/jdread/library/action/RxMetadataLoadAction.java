@@ -49,6 +49,7 @@ public class RxMetadataLoadAction extends BaseAction<LibraryDataBundle> {
             dataHolder.getDataManager().getCacheManager().clearLibraryCache();
         }
         final LibraryViewDataModel dataModel = dataHolder.getLibraryViewDataModel();
+        queryArgs.limit = dataModel.getQueryLimit();
         final RxLibraryLoadRequest libraryRequest = new RxLibraryLoadRequest(dataHolder.getDataManager(), queryArgs, dataModel.getLibrarySelectedModel().getSelectedList(), dataModel.getLibrarySelectedModel().isSelectedAll(), dataHolder.getEventBus(), loadMetadata);
         libraryRequest.setLoadFromCache(loadFromCache);
         RxLibraryLoadRequest.setAppContext(dataHolder.getAppContext());

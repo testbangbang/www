@@ -3,15 +3,12 @@ package com.onyx.jdread.shop.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.jdread.R;
@@ -156,16 +153,10 @@ public class CustomDialog extends Dialog {
                         View.GONE);
             }
 
-            ((ImageView) layout.findViewById(R.id.iv_book_detail_dialog_close)).setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
             if (message != null) {
                 ((TextView) layout.findViewById(R.id.tv_book_detail_dialog_message)).setText(message);
             } else if (contentView != null) {
-                ((RelativeLayout) layout.findViewById(R.id.book_detail_dialog_select)).setVisibility(View.GONE);
+                ((LinearLayout) layout.findViewById(R.id.book_detail_dialog_select)).setVisibility(View.GONE);
                 ((LinearLayout) layout.findViewById(R.id.ll_book_detail_content))
                         .removeAllViews();
                 ((LinearLayout) layout.findViewById(R.id.ll_book_detail_content))

@@ -14,4 +14,5 @@ public class ResultBookBean extends BaseObservable{
     public String large_image_url;
     public String info;
     public String bookType;
+    public float file_size;
 }
