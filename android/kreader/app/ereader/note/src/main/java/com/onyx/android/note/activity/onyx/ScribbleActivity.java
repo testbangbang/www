@@ -584,6 +584,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         }
         updateMenuView(isLineLayoutMode);
         updateWorkView(isLineLayoutMode);
+        updatePenStyleInfo(shapeDataInfo);
+        resetScribbleShape();
     }
 
     private void updateMenuView(boolean isLineLayoutMode) {
@@ -1297,9 +1299,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void onEraseClicked(boolean isPartialErase) {
         if (isPartialErase) {
-            setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
-            functionContentView.unCheckAllViews();
-            syncWithCallback(true, false, null);
+            onNoteShapeChanged(true, false, ShapeFactory.SHAPE_ERASER, null);
         } else {
             boolean resume = shouldResume();
             ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>(resume);
@@ -1418,6 +1418,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
         super.onScreenShotEnd(reloadDocument);
         if (reloadDocument && !TextUtils.isEmpty(uniqueID)) {
             handleDocumentEdit(uniqueID, parentID);
+        }
+    }
+
+    private void resetScribbleShape(){
+        if (shapeDataInfo.getCurrentShapeType() == ShapeFactory.SHAPE_ERASER){
+            onNoteShapeChanged(true, true, NoteDrawingArgs.defaultShape(), null);
         }
     }
 }
