@@ -16,6 +16,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.RefreshBinding;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.setting.adapter.RefreshAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -84,11 +85,7 @@ public class RefreshFragment extends BaseFragment {
         binding.refreshCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ScreenUtils.toggleA2Mode(JDReadApplication.getInstance());
-                binding.setRecyclerEnable(isChecked);
-                if (refreshAdapter != null) {
-                    refreshAdapter.setA2Mode(isChecked);
-                }
+                JDPreferenceManager.setBooleanValue(R.string.speed_refresh_key, isChecked);
             }
         });
 
