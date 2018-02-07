@@ -65,7 +65,8 @@
                 android:layout_alignParentLeft="true"
                 android:padding="@dimen/model_item_child_count_padding"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textSize="@dimen/level_two_heading_font"
+                android:visibility="@{StringUtils.isNotBlank(model.childCount)?View.VISIBLE:View.GONE}" />
 
             <CheckBox
                 android:id="@+id/multi_select_check_box"
