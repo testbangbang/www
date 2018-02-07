@@ -150,6 +150,9 @@ public class LibraryFragment extends BaseFragment {
         if (libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() > 0 && libraryDataBundle.getLibraryViewDataModel().items.size() == 0) {
             processBackRequest();
         }
+        if (libraryDataBundle.getLibraryViewDataModel().count.get() == 0 && isMultiSelectionMode()) {
+            quitMultiSelectionMode();
+        }
     }
 
     private void updateContentView() {
