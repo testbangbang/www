@@ -14,32 +14,23 @@ import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
  */
 
 public class SettingFontSizeAction extends BaseReaderAction {
-    public ReaderConfig.PresetSixStyle presetSixStyle;
+    private int styleIndex;
     private ReaderTextStyle style;
 
-    public SettingFontSizeAction(ReaderTextStyle style,ReaderConfig.PresetSixStyle presetSixStyle) {
-        this.presetSixStyle = presetSixStyle;
+    public SettingFontSizeAction(ReaderTextStyle style,int styleIndex) {
+        this.styleIndex = styleIndex;
         this.style = style;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        ReaderTextStyle.SPUnit oldFontSize = style.getFontSize();
-        oldFontSize.setValue(presetSixStyle.fontSize);
+        ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
 
-        ReaderTextStyle.Percentage lineSpacing = style.getLineSpacing();
-        lineSpacing.setPercent(presetSixStyle.lineSpacing);
+        style.setFontSize(presetStyle.getFontSize());
+        style.setLineSpacing(presetStyle.getLineSpacing());
+        style.setPageMargin(presetStyle.getPageMargin());
 
-        ReaderTextStyle.Percentage paragraphSpacing = style.getParagraphSpacing();
-        paragraphSpacing.setPercent(presetSixStyle.paragraphSpacing);
-
-        ReaderTextStyle.PageMargin pageMargin = style.getPageMargin();
-        pageMargin.setLeftMargin(ReaderTextStyle.Percentage.create(presetSixStyle.marginLeft));
-        pageMargin.setTopMargin(ReaderTextStyle.Percentage.create(presetSixStyle.marginTop));
-        pageMargin.setRightMargin(ReaderTextStyle.Percentage.create(presetSixStyle.marginRight));
-        pageMargin.setBottomMargin(ReaderTextStyle.Percentage.create(presetSixStyle.marginBottom));
-
-        final  SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(),style,readerDataHolder.getSettingInfo());
+        final  SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(), this.style,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

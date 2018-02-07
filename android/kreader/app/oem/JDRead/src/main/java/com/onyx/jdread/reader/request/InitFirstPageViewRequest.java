@@ -95,52 +95,32 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         settingInfo = new SettingInfo();
         String fontFace = getFontFace();
         settingInfo.settingType = ReaderConfig.getSettingType();
-        float fontSize = 0;
-        int lineSpacing = 0;
-        int marginLeft = 0;
-        int marginTop = 0;
-        int marginRight = 0;
-        int marginBottom = 0;
-        int paragraphSpacing = 0;
         settingInfo.settingStyle = ReaderConfig.getSettingStyle();
-        ReaderConfig.PresetSixStyle presetSixStyle = ReaderConfig.presetSixStyle.get(settingInfo.settingStyle);
-        fontSize = presetSixStyle.fontSize;
-        if (settingInfo.settingType == ReaderConfig.SETTING_TYPE_PRESET) {
-            lineSpacing = presetSixStyle.lineSpacing;
-            marginLeft = presetSixStyle.marginLeft;
-            marginTop = presetSixStyle.marginTop;
-            marginRight = presetSixStyle.marginRight;
-            marginBottom = presetSixStyle.marginBottom;
-            paragraphSpacing = presetSixStyle.paragraphSpacing;
-        } else {
+        ReaderTextStyle style = ReaderConfig.presetStyle.get(settingInfo.settingStyle);
+        style.setFontFace(fontFace);
+        if (settingInfo.settingType != ReaderConfig.SETTING_TYPE_PRESET) {
+            ReaderTextStyle customStyle = ReaderConfig.presetStyle.get(ReaderConfig.CUSTOM_STYLE_KEY);
+            customStyle.setFontSize(style.getFontSize());
+            customStyle.setFontFace(fontFace);
+
             settingInfo.customLineSpacing = ReaderConfig.getCustomLineSpacing();
-            lineSpacing = ReaderConfig.customLineSpacing.get(settingInfo.customLineSpacing);
+            customStyle.getLineSpacing().setPercent(ReaderConfig.customLineSpacing.get(settingInfo.customLineSpacing));
 
             settingInfo.customLeftAndRightMargin = ReaderConfig.getCustomLeftAndRightMargin();
             ReaderConfig.LeftAndRight leftAndRight = ReaderConfig.customLeftAndRightMargin.get(settingInfo.customLeftAndRightMargin);
-            marginLeft = leftAndRight.left;
-            marginRight = leftAndRight.right;
+            customStyle.getPageMargin().setLeftMargin(ReaderTextStyle.Percentage.create(leftAndRight.left));
+            customStyle.getPageMargin().setRightMargin(ReaderTextStyle.Percentage.create(leftAndRight.right));
 
             settingInfo.customTopAndBottomMargin = ReaderConfig.getCustomTopAndBottomMargin();
             ReaderConfig.TopAndBottom topAndBottom = ReaderConfig.customTopAndBottomMargin.get(settingInfo.customTopAndBottomMargin);
-            marginTop = topAndBottom.top;
-            marginBottom = topAndBottom.bottom;
+            customStyle.getPageMargin().setTopMargin(ReaderTextStyle.Percentage.create(topAndBottom.top));
+            customStyle.getPageMargin().setBottomMargin(ReaderTextStyle.Percentage.create(topAndBottom.bottom));
+
             settingInfo.customParagraphSpacing = ReaderConfig.getCustomParagraphSpacing();
-            paragraphSpacing = ReaderConfig.customParagraphSpacing.get(settingInfo.customParagraphSpacing);
+            customStyle.getParagraphSpacing().setPercent(ReaderConfig.customParagraphSpacing.get(settingInfo.customParagraphSpacing));
+            style = customStyle;
         }
-        ReaderTextStyle.SPUnit spUnit = ReaderTextStyle.SPUnit.create(fontSize);
-        ReaderTextStyle.Percentage lineSpacingValue = ReaderTextStyle.Percentage.create(lineSpacing);
-        ReaderTextStyle.Percentage paragraphSpacingValue = ReaderTextStyle.Percentage.create(paragraphSpacing);
 
-        ReaderTextStyle.CharacterIndent characterIndent = ReaderTextStyle.CharacterIndent.create((int) baseOptions.getParagraphIndent());
-
-        ReaderTextStyle.Percentage leftMargin = ReaderTextStyle.Percentage.create(marginLeft);
-        ReaderTextStyle.Percentage rightMarin = ReaderTextStyle.Percentage.create(marginRight);
-        ReaderTextStyle.Percentage topMargin = ReaderTextStyle.Percentage.create(marginTop);
-        ReaderTextStyle.Percentage BottomMarin = ReaderTextStyle.Percentage.create(marginBottom);
-
-
-        ReaderTextStyle style = ReaderTextStyle.create(fontFace, spUnit, lineSpacingValue, leftMargin, topMargin, rightMarin, BottomMarin, paragraphSpacingValue);
         reader.getReaderHelper().getReaderLayoutManager().setStyle(style);
         restoreContrast();
         setChineseConvertType();

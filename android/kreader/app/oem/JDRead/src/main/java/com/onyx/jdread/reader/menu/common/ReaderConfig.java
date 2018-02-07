@@ -49,6 +49,7 @@ public class ReaderConfig {
     public static final int SETTING_FOUR_STYLE_KEY = 3;
     public static final int SETTING_FIVE_STYLE_KEY = 4;
     public static final int SETTING_SIX_STYLE_KEY = 5;
+    public static final int CUSTOM_STYLE_KEY = 6;
 
     public static final int SETTING_TYPE_PRESET = 1;
     public static final int SETTING_TYPE_CUSTOM = 2;
@@ -58,7 +59,7 @@ public class ReaderConfig {
     public static final String SETTING_TYPE_KEY = "setting_type_key";
     public static final String SETTING_STYLE_KEY = "setting_style_key";
 
-    public static Map<Integer, PresetSixStyle> presetSixStyle = new HashMap<>();
+    public static Map<Integer, ReaderTextStyle> presetStyle = new HashMap<>();
     public static final int DEFAULT_PRESET_STYLE = SETTING_THREE_STYLE_KEY;
 
     public static final int FONT_SIZE_X_SMALL = 20;
@@ -69,32 +70,13 @@ public class ReaderConfig {
     public static final int FONT_SIZE_XX_LARGE = 40;
 
     static {
-        presetSixStyle.put(SETTING_ONE_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_X_SMALL, 135, 50));
-        presetSixStyle.put(SETTING_TWO_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_SMALL, 140, 60));
-        presetSixStyle.put(SETTING_THREE_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_MEDIUM, 145, 70));
-        presetSixStyle.put(SETTING_FOUR_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_LARGE, 155, 85));
-        presetSixStyle.put(SETTING_FIVE_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_X_LARGE, 165, 100));
-        presetSixStyle.put(SETTING_SIX_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_XX_LARGE, 175, 120));
-    }
-
-    public static class PresetSixStyle {
-        public int marginLeft;
-        public int marginRight;
-        public int marginTop;
-        public int marginBottom;
-        public int fontSize;
-        public int lineSpacing;
-        public int paragraphSpacing;
-
-        public PresetSixStyle(int marginLeft, int marginRight, int marginTop, int marginBottom, int fontSize, int lineSpacing, int paragraphSpacing) {
-            this.marginLeft = marginLeft;
-            this.marginRight = marginRight;
-            this.marginTop = marginTop;
-            this.marginBottom = marginBottom;
-            this.fontSize = fontSize;
-            this.lineSpacing = lineSpacing;
-            this.paragraphSpacing = paragraphSpacing;
-        }
+        presetStyle.put(SETTING_ONE_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_X_SMALL, 135, 50));
+        presetStyle.put(SETTING_TWO_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_SMALL, 140, 60));
+        presetStyle.put(SETTING_THREE_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_MEDIUM, 145, 70));
+        presetStyle.put(SETTING_FOUR_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_LARGE, 155, 85));
+        presetStyle.put(SETTING_FIVE_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_X_LARGE, 165, 100));
+        presetStyle.put(SETTING_SIX_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_XX_LARGE, 175, 120));
+        presetStyle.put(CUSTOM_STYLE_KEY, new ReaderTextStyle(0, 0, 0, 0, 0, 0, 0));
     }
 
     public static Map<Integer, Integer> customLineSpacing = new HashMap<>();
