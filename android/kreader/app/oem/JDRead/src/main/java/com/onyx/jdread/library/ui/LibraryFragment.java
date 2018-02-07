@@ -2,6 +2,10 @@ package com.onyx.jdread.library.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +69,7 @@ import com.onyx.jdread.personal.ui.PersonalBookFragment;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
+import com.onyx.jdread.shop.ui.ShopFragment;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -200,6 +205,16 @@ public class LibraryFragment extends BaseFragment {
                 nextPage();
             }
         });
+
+        SpannableString spannableString = new SpannableString(ResManager.getString(R.string.empty_library_prompt));
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                viewEventCallBack.gotoView(ShopFragment.class.getName());
+            }
+        }, ResManager.getInteger(R.integer.empty_library_prompt_clickable_start), ResManager.getInteger(R.integer.empty_library_prompt_clickable_end), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        libraryBinding.emptyLibraryPrompt.setText(spannableString);
+        libraryBinding.emptyLibraryPrompt.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void initPageIndicator() {
