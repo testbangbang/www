@@ -550,8 +550,8 @@ public abstract class AlAXML extends AlFormat {
 							    currentTable.title = s.toString();
 
 							currentTable.startParagraph = par0.size();
-							currentTable.startSize = currentRow.start = size;
-							currentCell.clear(size);
+							currentTable.startSize = currentRow.start = customSize;
+							currentCell.clear(customSize);
 							currentRow.cells.clear();
 							currentTable.crow = 0;
 							currentTable.start = allState.start_position_par;
@@ -590,11 +590,11 @@ public abstract class AlAXML extends AlFormat {
 					if (tag.closed) {
 						clearParagraphStyle(AlParProperty.SL2_JUST_MASK);
 
-						currentCell.stop = size;
+						currentCell.stop = customSize;
 						currentRow.cells.add(currentCell);
 						newParagraph();
                         currentCell = new AlOneTableCell();
-						currentCell.clear(size);
+						currentCell.clear(customSize);
 					} else {
 						StringBuilder s;
 						s = tag.getATTRValue(AlFormatTag.TAG_COLSPAN);
@@ -630,11 +630,11 @@ public abstract class AlAXML extends AlFormat {
 								}
 							}
 						} else {
-							currentCell.stop = size;
+							currentCell.stop = customSize;
 							currentRow.cells.add(currentCell);
 							newParagraph();
                             currentCell = new AlOneTableCell();
-							currentCell.clear(size);
+							currentCell.clear(customSize);
 						}
 					}
 				}
@@ -644,7 +644,7 @@ public abstract class AlAXML extends AlFormat {
 					if (tag.closed) {
 						currentTable.rows.add(currentRow);
 						currentRow = new AlOneTableRow();
-						currentRow.start = size;
+						currentRow.start = customSize;
 						currentTable.crow++;
 						newParagraph();
 					} else
