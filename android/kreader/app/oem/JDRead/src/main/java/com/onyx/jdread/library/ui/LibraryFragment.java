@@ -36,6 +36,7 @@ import com.onyx.jdread.library.action.LibraryRenameAction;
 import com.onyx.jdread.library.action.MetadataDeleteAction;
 import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
+import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.event.BookDetailEvent;
 import com.onyx.jdread.library.event.DeleteBookEvent;
 import com.onyx.jdread.library.event.HideAllDialogEvent;
@@ -414,6 +415,14 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onMyBookEvent(MyBookEvent event) {
         checkLogin(PersonalBookFragment.class.getName());
+    }
+
+    @Subscribe
+    public void onBackToRootFragment(BackToRootFragment event) {
+        if (!CollectionUtils.isNullOrEmpty(libraryDataBundle.getLibraryViewDataModel().libraryPathList)) {
+            removeLastParentLibrary();
+            backToParentLibraryPage();
+        }
     }
 
     private void checkLogin(String name) {

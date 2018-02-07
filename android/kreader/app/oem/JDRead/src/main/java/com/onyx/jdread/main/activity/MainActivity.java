@@ -22,6 +22,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.library.action.RxFileSystemScanAction;
+import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
@@ -319,6 +320,9 @@ public class MainActivity extends AppCompatActivity {
         functionBarModel.changeTabSelection(event.functionModule.get());
         if (currentFragment != null) {
             currentFragment.setBundle(null);
+        }
+        if (isSelectedBefore && currentFragment != null && currentFragment.getClass().getName().equals(LibraryFragment.class.getName())) {
+            LibraryDataBundle.getInstance().getEventBus().post(new BackToRootFragment());
         }
         switchCurrentFragment(isSelectedBefore ? event.getStackList().remainLastStack() :
                 event.getStackList().peek());

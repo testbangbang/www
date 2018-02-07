@@ -9,9 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.api.device.epd.UpdateScheme;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityReaderBinding;
+import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.OpenDocumentAction;
 import com.onyx.jdread.reader.actions.ParserOpenDocumentInfoAction;
@@ -56,6 +61,9 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     }
 
     private void initData() {
+        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
+            EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+        }
         ParserOpenDocumentInfoAction parserOpenDocumentInfoAction = new ParserOpenDocumentInfoAction(getIntent());
         parserOpenDocumentInfoAction.execute(readerViewModel.getReaderDataHolder(),null);
         if (binding.getReadViewModel().setDocumentInfo(parserOpenDocumentInfoAction.getDocumentInfo())) {
@@ -108,6 +116,9 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
 
     @Override
     protected void onDestroy() {
+        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
+            EpdController.clearSystemUpdateModeAndScheme();
+        }
         readerActivityEventHandler.unregisterListener();
         MainBundle.getInstance().getSystemBarModel().setIsShow(true);
         super.onDestroy();
