@@ -105,7 +105,7 @@ public class SystemBarPopupWindow extends PopupWindow {
         }
 
         public void toggleA2Model() {
-            boolean useFastMode = !EpdController.inSystemFastMode();
+            boolean useFastMode = !JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false);
             ToastUtil.showToast(useFastMode ? ResManager.getString(R.string.speed_refresh_is_opened) : ResManager.getString(R.string.speed_refresh_is_closed));
             speedRefresh.set(useFastMode);
             JDPreferenceManager.setBooleanValue(R.string.speed_refresh_key, useFastMode);
