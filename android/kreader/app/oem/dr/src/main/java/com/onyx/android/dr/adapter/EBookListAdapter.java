@@ -106,16 +106,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         final Metadata eBook = eBookList.get(position);
         viewHolder.titleView.setVisibility(View.VISIBLE);
         viewHolder.titleView.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.price_format), eBook.getPrice()));
-        if (isFileExists(eBook)) {
-            viewHolder.paid.setText(DRApplication.getInstance().getResources().getString(R.string.read));
-        } else {
-            if (downloading) {
-                viewHolder.paid.setText(DRApplication.getInstance().getString(R.string.being_downloading));
-            } else {
-                viewHolder.paid.setText(DRApplication.getInstance().getResources().getString(R.string.download));
-            }
-        }
-        viewHolder.paid.setText(isFileExists(eBook) ? DRApplication.getInstance().getResources().getString(R.string.read) : DRApplication.getInstance().getResources().getString(R.string.download));
+        updatePaidButtonStatus(viewHolder, eBook);
         Bitmap bitmap = getBitmap(eBook.getAssociationId());
         if (bitmap == null) {
             viewHolder.coverImage.setImageResource(R.drawable.book_cover);
@@ -144,14 +135,24 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         viewHolder.paid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openBookOrDownload(eBook, position);
+                openBookOrDownload(viewHolder, eBook);
             }
         });
         viewHolder.buyLayout.setVisibility(eBook.isPaid() ? View.GONE : View.VISIBLE);
         viewHolder.paid.setVisibility(eBook.isPaid() ? View.VISIBLE : View.GONE);
     }
 
-    private void openBookOrDownload(Metadata eBook, int position) {
+    private void updatePaidButtonStatus(final LibraryItemViewHolder viewHolder, final Metadata eBook) {
+        int resId = R.string.download;
+        if (isFileExists(eBook)) {
+            resId = R.string.read;
+        } else if (downloading) {
+            resId = R.string.being_downloading;
+        }
+        viewHolder.paid.setText(DRApplication.getInstance().getResources().getString(resId));
+    }
+
+    private void openBookOrDownload(final LibraryItemViewHolder viewHolder, final Metadata eBook) {
         if (isFileExists(eBook)) {
             openCloudFile(eBook);
             return;
@@ -160,7 +161,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
             return;
         }
-        startDownload(eBook, position);
+        startDownload(viewHolder, eBook);
     }
 
     @Override
@@ -175,7 +176,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         EventBus.getDefault().post(new BookDetailEvent(book.getCloudId()));
     }
 
-    private void startDownload(final Metadata eBook, final int position) {
+    private void startDownload(final LibraryItemViewHolder viewHolder, final Metadata eBook) {
         final String filePath = getDataSaveFilePath(eBook);
         String bookDownloadUrl = DeviceConfig.sharedInstance(DRApplication.getInstance()).getBookDownloadUrl(eBook.getGuid());
         String token = DRApplication.getCloudStore().getCloudManager().getToken();
@@ -191,12 +192,14 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
                 } else {
                     downloading = true;
                 }
-                notifyItemChanged(position);
+                updatePaidButtonStatus(viewHolder, eBook);
             }
 
             @Override
             public void progress(BaseRequest request, ProgressInfo info) {
                 Log.i(TAG, "progress:" + info.progress);
+                downloading = true;
+                updatePaidButtonStatus(viewHolder, eBook);
             }
         });
         getDownLoaderManager().startDownload(download);
