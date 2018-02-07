@@ -446,4 +446,5 @@
     <string name="quit_wifi_pass_book">已退出WiFi传书</string>
     <string name="wifi_pass_book_failed">传书失败</string>
     <string name="wifi_pass_book_failed_network_exception">网络异常,传书失败</string>
+    <string name="empty_library_prompt">暂无图书, 请去 我的书店 下载</string>
 </resources>

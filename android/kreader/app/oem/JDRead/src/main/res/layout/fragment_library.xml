@@ -89,11 +89,25 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
-            android:id="@+id/content_pageView"
-            items="@{libraryModel.items}"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/library_content_page_view_height" />
+            android:layout_height="@dimen/library_content_page_view_height">
+
+            <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
+                android:id="@+id/content_pageView"
+                items="@{libraryModel.items}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/empty_library_prompt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:clickable="true"
+                android:textSize="@dimen/level_two_heading_font"
+                android:visibility="@{libraryModel.count == 0?View.VISIBLE:View.GONE}" />
+        </RelativeLayout>
 
         <include
             layout="@layout/page_indicator_layout"
