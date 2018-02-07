@@ -13,6 +13,7 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.rx.RxRequest;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.SettingInfo;
 import com.onyx.jdread.reader.highlight.ReaderSelectionInfo;
 
 import io.reactivex.Scheduler;
@@ -106,9 +107,9 @@ public abstract class ReaderBaseRequest extends RxRequest {
         }
     }
 
-    public void saveReaderOptions(final Reader reader) {
+    public void saveReaderOptions(final Reader reader, final SettingInfo settingInfo) {
         if (reader.getReaderHelper().getDocument().saveOptions()) {
-            reader.getReaderHelper().saveOptions();
+            reader.getReaderHelper().saveOptions(settingInfo);
             saveToDocumentOptions(reader);
         }
     }

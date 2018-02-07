@@ -2,10 +2,11 @@ package com.onyx.jdread.reader.menu.model;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.databinding.ObservableInt;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
-import com.onyx.jdread.reader.common.ReaderUserDataInfo;
+import com.onyx.jdread.reader.data.SettingInfo;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.ChangeChineseConvertTypeEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingFontSizeEvent;
@@ -15,12 +16,6 @@ import com.onyx.jdread.reader.menu.event.ReaderSettingTypefaceEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_LARGE;
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_MEDIUM;
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_SMALL;
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_XX_LARGE;
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_X_LARGE;
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_X_SMALL;
 import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.TypefaceFour;
 import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.TypefaceOne;
 import static com.onyx.jdread.reader.menu.model.ReaderTextModel.ReaderTypeface.TypefaceThree;
@@ -34,22 +29,34 @@ public class ReaderTextModel {
     private ObservableBoolean isShow = new ObservableBoolean(false);
     private ObservableBoolean isPdf = new ObservableBoolean(false);
     private ObservableField<ReaderTypeface> currentTypeface = new ObservableField<>(TypefaceOne);
-    private ObservableField<ReaderFontSize> currentFontSize = new ObservableField<>(ReaderFontSize.LevelThreeFontSize);
+    private ObservableInt currentFontSize = new ObservableInt(ReaderConfig.DEFAULT_PRESET_STYLE);
     private ObservableField<Language> currentLanguage = new ObservableField<>(Language.Simplified);
+    private ObservableInt currentSettingType = new ObservableInt(ReaderConfig.DEFAULT_SETTING_TYPE);
     private EventBus eventBus;
+    private SettingInfo settingInfo;
 
-    public ReaderTextModel(EventBus eventBus, ReaderTextStyle style, ReaderUserDataInfo readerUserDataInfo) {
+    public ReaderTextModel(EventBus eventBus, ReaderTextStyle style, SettingInfo settingInfo) {
         this.eventBus = eventBus;
-        setDefaultStyle(style, readerUserDataInfo);
+        setDefaultStyle(style, settingInfo);
     }
 
-    public void setDefaultStyle(ReaderTextStyle style, ReaderUserDataInfo readerUserDataInfo) {
+    public void setDefaultStyle(ReaderTextStyle style, SettingInfo settingInfo) {
         if(style != null) {
-            setDefaultFontSize((int) style.getFontSize().getValue());
+            currentFontSize.set(settingInfo.settingStyle);
+            currentSettingType.set(settingInfo.settingType);
             ReaderChineseConvertType chineseConvertType = ReaderConfig.getReaderChineseConvertType();
             setDefaultTypeFace(style.getFontFace());
             setDefaultLanguage(chineseConvertType);
+            this.settingInfo = settingInfo;
         }
+    }
+
+    public ObservableInt getCurrentSettingType() {
+        return currentSettingType;
+    }
+
+    public void setCurrentSettingType(int currentSettingType) {
+        this.currentSettingType.set(currentSettingType);
     }
 
     public void setDefaultLanguage(ReaderChineseConvertType chineseConvertType) {
@@ -80,38 +87,8 @@ public class ReaderTextModel {
         }
     }
 
-    public void setDefaultFontSize(int fontSize) {
-        switch (fontSize) {
-            case FONT_SIZE_X_SMALL:
-                onLevelOneClick();
-                break;
-            case FONT_SIZE_SMALL:
-                onLevelTwoClick();
-                break;
-            case FONT_SIZE_MEDIUM:
-                onLevelThreeClick();
-                break;
-            case FONT_SIZE_LARGE:
-                onLevelFourClick();
-                break;
-            case FONT_SIZE_X_LARGE:
-                onLevelFiveClick();
-                break;
-            case FONT_SIZE_XX_LARGE:
-                onLevelSixClick();
-                break;
-            default:
-                onLevelThreeClick();
-                break;
-        }
-    }
-
     public enum Language {
         Simplified, Traditional
-    }
-
-    public enum ReaderFontSize {
-        LevelOneFontSize, LevelTwoFontSize, LevelThreeFontSize, LevelFourFontSize, LevelFiveFontSize, LevelSixFontSize
     }
 
     public enum ReaderTypeface {
@@ -138,12 +115,16 @@ public class ReaderTextModel {
         return true;
     }
 
-    public ObservableField<ReaderFontSize> getCurrentFontSize() {
+    public ObservableInt getCurrentFontSize() {
         return currentFontSize;
     }
 
-    public void setCurrentFontSize(ReaderFontSize fontSize) {
-        this.currentFontSize.set(fontSize);
+    public void setCurrentFontSize(int style) {
+        if(currentFontSize.get() == style){
+            return;
+        }
+        this.currentFontSize.set(style);
+        setFontSize(style);
     }
 
     public ObservableBoolean getIsShow() {
@@ -201,38 +182,35 @@ public class ReaderTextModel {
     }
 
     public void onLevelOneClick() {
-        setCurrentFontSize(ReaderFontSize.LevelOneFontSize);
-        setFontSize(FONT_SIZE_X_SMALL);
+        setCurrentFontSize(ReaderConfig.SETTING_ONE_STYLE_KEY);
     }
 
     public void onLevelTwoClick() {
-        setCurrentFontSize(ReaderFontSize.LevelTwoFontSize);
-        setFontSize(FONT_SIZE_SMALL);
+        setCurrentFontSize(ReaderConfig.SETTING_TWO_STYLE_KEY);
     }
 
     public void onLevelThreeClick() {
-        setCurrentFontSize(ReaderFontSize.LevelThreeFontSize);
-        setFontSize(FONT_SIZE_MEDIUM);
+        setCurrentFontSize(ReaderConfig.SETTING_THREE_STYLE_KEY);
     }
 
     public void onLevelFourClick() {
-        setCurrentFontSize(ReaderFontSize.LevelFourFontSize);
-        setFontSize(FONT_SIZE_LARGE);
+        setCurrentFontSize(ReaderConfig.SETTING_FOUR_STYLE_KEY);
     }
 
     public void onLevelFiveClick() {
-        setCurrentFontSize(ReaderFontSize.LevelFiveFontSize);
-        setFontSize(FONT_SIZE_X_LARGE);
+        setCurrentFontSize(ReaderConfig.SETTING_FIVE_STYLE_KEY);
     }
 
     public void onLevelSixClick() {
-        setCurrentFontSize(ReaderFontSize.LevelSixFontSize);
-        setFontSize(FONT_SIZE_XX_LARGE);
+        setCurrentFontSize(ReaderConfig.SETTING_SIX_STYLE_KEY);
     }
 
-    private void setFontSize(int fontSize) {
+    private void setFontSize(int style) {
+        settingInfo.settingType = ReaderConfig.SETTING_TYPE_PRESET;
+        currentSettingType.set(settingInfo.settingType);
+        settingInfo.settingStyle = style;
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
-        event.fontSize = fontSize;
+        event.presetSixStyle = ReaderConfig.presetSixStyle.get(style);
         eventBus.post(event);
     }
 

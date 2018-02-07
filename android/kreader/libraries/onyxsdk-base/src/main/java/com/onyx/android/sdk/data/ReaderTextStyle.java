@@ -1,7 +1,5 @@
 package com.onyx.android.sdk.data;
 
-import android.preference.Preference;
-
 /**
  * Created by zhuzeng on 11/6/15.
  */

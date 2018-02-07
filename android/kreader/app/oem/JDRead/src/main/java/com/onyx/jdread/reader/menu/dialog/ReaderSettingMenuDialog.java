@@ -129,7 +129,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void initTextBar(){
         binding.readerSettingTextSettingBar.setReaderTextModel(new ReaderTextModel(readerDataHolder.getEventBus(),
-                readerDataHolder.getStyleCopy(),readerDataHolder.getReaderUserDataInfo()));
+                readerDataHolder.getStyleCopy(),readerDataHolder.getSettingInfo()));
     }
 
     private void initImageBar(){
@@ -137,7 +137,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initCustomizeBar(){
-        binding.readerSettingCustomizeFormatBar.setReaderMarginModel(new ReaderMarginModel(readerDataHolder.getEventBus(),readerDataHolder.getStyleCopy()));
+        binding.readerSettingCustomizeFormatBar.setReaderMarginModel(new ReaderMarginModel(readerDataHolder.getEventBus(),readerDataHolder.getSettingInfo()));
         initCustomizeEvent();
     }
 

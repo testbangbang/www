@@ -13,11 +13,13 @@ import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
  */
 
 public class SettingUpAndDownSpacingAction extends BaseReaderAction {
-    private int margin;
+    private int top;
+    private int bottom;
     private ReaderTextStyle style;
 
-    public SettingUpAndDownSpacingAction(ReaderTextStyle style, int margin) {
-        this.margin = margin;
+    public SettingUpAndDownSpacingAction(ReaderTextStyle style, int top,int bottom) {
+        this.top = top;
+        this.bottom = bottom;
         this.style = style;
     }
 
@@ -26,10 +28,10 @@ public class SettingUpAndDownSpacingAction extends BaseReaderAction {
         ReaderTextStyle.PageMargin pageMargin = style.getPageMargin();
 
         ReaderTextStyle.Percentage topMargin = pageMargin.getTopMargin();
-        topMargin.setPercent(margin);
+        topMargin.setPercent(top);
         ReaderTextStyle.Percentage bottomMargin = pageMargin.getBottomMargin();
-        bottomMargin.setPercent(margin);
-        final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(), style);
+        bottomMargin.setPercent(bottom);
+        final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(), style,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
