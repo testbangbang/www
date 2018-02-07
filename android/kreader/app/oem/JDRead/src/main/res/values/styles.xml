@@ -11,6 +11,7 @@
     <style name="ActivityFullscreen" parent="@style/OnyxAppCompat">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <style name="CustomDialogStyle" parent="@style/OnyxAppCompat.AlertDialog">
