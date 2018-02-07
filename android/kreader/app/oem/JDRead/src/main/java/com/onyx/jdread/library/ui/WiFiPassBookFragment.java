@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.library.event.WifiPassBookErrorEvent;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentWifiPassBookBinding;
@@ -20,6 +21,7 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 
@@ -79,7 +81,12 @@ public class WiFiPassBookFragment extends BaseFragment {
     }
 
     @Subscribe
-    public void onBackToLibraryFragment(BackToLibraryFragmentEvent event){
+    public void onBackToLibraryFragment(BackToLibraryFragmentEvent event) {
         viewEventCallBack.gotoView(LibraryFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWifiPassBookErrorEvent(WifiPassBookErrorEvent event) {
+        ToastUtil.showOffsetToast(event.getMessage(), ResManager.getInteger(R.integer.pass_book_toast_offset_y));
     }
 }

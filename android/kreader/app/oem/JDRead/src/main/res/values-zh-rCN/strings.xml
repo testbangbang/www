@@ -447,4 +447,6 @@
     <string name="category_girl">女生</string>
     <string name="unassociated_impression_notes">未关联印象笔记</string>
     <string name="quit_wifi_pass_book">已退出WiFi传书</string>
+    <string name="wifi_pass_book_failed">传书失败</string>
+    <string name="wifi_pass_book_failed_network_exception">网络异常,传书失败</string>
 </resources>
