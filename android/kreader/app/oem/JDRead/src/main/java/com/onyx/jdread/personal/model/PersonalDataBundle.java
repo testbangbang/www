@@ -192,7 +192,7 @@ public class PersonalDataBundle {
     public boolean isUserVip() {
         boolean isVip = false;
         UserInfo userInfo = getUserInfo();
-        if (userInfo != null && userInfo.vip_remain_days >= 0) {
+        if (userInfo != null && userInfo.vip_remain_days > 0) {
             isVip = true;
         }
         return isVip;

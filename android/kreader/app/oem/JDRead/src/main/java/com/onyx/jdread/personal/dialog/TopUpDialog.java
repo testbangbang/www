@@ -4,12 +4,14 @@ import android.app.DialogFragment;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RadioGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -115,7 +117,17 @@ public class TopUpDialog extends DialogFragment {
                 payOrderViewModel.setUserInfo(PersonalDataBundle.getInstance().getUserInfo());
                 binding.setOrderModel(payOrderViewModel);
                 binding.setUserInfo(PersonalDataBundle.getInstance().getUserInfo());
-                changePayButtonState(payOrderViewModel);
+                changePayButtonState(!orderInfo.need_recharge);
+                binding.payOrder.paymentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                        if (R.id.payment_read_bean == checkedId) {
+                            changePayButtonState(!getPayOrderViewModel().getOrderInfo().need_recharge);
+                        } else {
+                            changePayButtonState(true);
+                        }
+                    }
+                });
             } else {
                 setVisible(R.id.dialog_top_up_detail_layout);
                 binding.setOrderModel(payOrderViewModel);
@@ -124,11 +136,13 @@ public class TopUpDialog extends DialogFragment {
         }
     }
 
-    private void changePayButtonState(PayOrderViewModel payOrderViewModel) {
-        payOrderViewModel.confirmButtonText.set(payOrderViewModel.getOrderInfo().need_recharge ? ResManager.getString(R.string.pay_dialog_insufficient_balance) : ResManager.getString(R.string.dialog_pay_order_confirm_pay));
+    private void changePayButtonState(boolean showPayStatus) {
+        PayOrderViewModel payOrderViewModel = getPayOrderViewModel();
+        payOrderViewModel.confirmButtonText.set(showPayStatus ? ResManager.getString(R.string.dialog_pay_order_confirm_pay) :
+                ResManager.getString(R.string.pay_dialog_insufficient_balance));
     }
 
-    private PayOrderViewModel getPayOrderViewModel(){
+    private PayOrderViewModel getPayOrderViewModel() {
         return ShopDataBundle.getInstance().getPayOrderViewModel();
     }
 
@@ -221,22 +235,20 @@ public class TopUpDialog extends DialogFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConfirmPayClickEvent(ConfirmPayClickEvent event) {
-        if (getPayOrderViewModel().getOrderInfo().need_recharge) {
-            setVisible(R.id.dialog_top_up_detail_layout);
-        } else {
-            int checkedRadioButtonId = binding.payOrder.paymentRadioGroup.getCheckedRadioButtonId();
-            if (checkedRadioButtonId == R.id.payment_read_bean) {
-                payByReadBean();
+        int checkedRadioButtonId = binding.payOrder.paymentRadioGroup.getCheckedRadioButtonId();
+        if (checkedRadioButtonId == R.id.payment_read_bean) {
+            if (getPayOrderViewModel().getOrderInfo().need_recharge) {
+                setVisible(R.id.dialog_top_up_detail_layout);
             } else {
-                payByCash();
+                payByReadBean();
             }
+        } else {
+            payByCash();
         }
     }
 
     private void payByCash() {
         String url = CloudApiContext.getJDBooxBaseUrl() + CloudApiContext.ReadBean.PAY_BY_CASH + File.separator + "?" + CloudApiContext.ReadBean.PAY_TOKEN + "=";
-
-
     }
 
     private void payByReadBean() {
@@ -253,7 +265,7 @@ public class TopUpDialog extends DialogFragment {
                         countDownClose();
                     } else if (resultBean.result_code == Constants.RESULT_PAY_ORDER_INSUFFICIENT_BALANCE) {
                         getPayOrderViewModel().getOrderInfo().need_recharge = true;
-                        changePayButtonState(getPayOrderViewModel());
+                        changePayButtonState(false);
                     } else {
                         // TODO pay failure
                     }
