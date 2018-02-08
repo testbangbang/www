@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -28,6 +29,7 @@ import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private SystemBarModel systemBarModel;
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
     private ScreenStateReceive screenStateReceive;
+    private int tabCheckedCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,10 +205,17 @@ public class MainActivity extends AppCompatActivity {
         if (currentFragment != null) {
             baseFragment.setBundle(currentFragment.getBundle());
         }
-        transaction.replace(R.id.main_content_view, baseFragment);
         transaction.commitAllowingStateLoss();
+        transaction.replace(R.id.main_content_view, baseFragment);
+        if (tabCheckedCount >= ResManager.getInteger(R.integer.refresh_count)) {
+            EpdController.appliGcOnce();
+            tabCheckedCount = 0;
+        } else {
+            tabCheckedCount++;
+        }
         saveChildViewInfo(childViewName, baseFragment);
         systemBarModel.updateTime();
+
     }
 
     private void changeFunctionItem(String childViewName) {
