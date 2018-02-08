@@ -104,13 +104,14 @@ public class QuestionFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 gotoDraft();
-                binding.draft.setVisibility(View.INVISIBLE);
             }
         });
         bindQuestionOption(binding.option, question);
     }
 
     private void gotoDraft() {
+        binding.imageView.setVisibility(View.GONE);
+        binding.draft.setVisibility(View.INVISIBLE);
         Intent intent = new Intent(getActivity(), DraftActivity.class);
         intent.putExtra(Constant.TAG_QUESTION, question);
         startActivity(intent);
