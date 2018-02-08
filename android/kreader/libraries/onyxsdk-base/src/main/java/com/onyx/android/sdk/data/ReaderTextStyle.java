@@ -8,10 +8,10 @@ public class ReaderTextStyle {
         this.fontSize = ReaderTextStyle.SPUnit.create(fontSize);
 
         this.lineSpacing = ReaderTextStyle.Percentage.create(lineSpacing);
-        this.pageMargin.setLeftMargin(ReaderTextStyle.Percentage.create(marginLeft));
-        this.pageMargin.setRightMargin(ReaderTextStyle.Percentage.create(marginRight));
-        this.pageMargin.setTopMargin(ReaderTextStyle.Percentage.create(marginTop));
-        this.pageMargin.setBottomMargin(ReaderTextStyle.Percentage.create(marginBottom));
+        this.pageMargin = PageMargin.create(ReaderTextStyle.Percentage.create(marginLeft),
+                ReaderTextStyle.Percentage.create(marginBottom),
+                ReaderTextStyle.Percentage.create(marginRight),
+                ReaderTextStyle.Percentage.create(marginTop));
 
         this.paragraphSpacing = ReaderTextStyle.Percentage.create(paragraphSpacing);;
     }
@@ -152,6 +152,10 @@ public class ReaderTextStyle {
             this.leftMargin = leftMargin;
             this.rightMargin = rightMargin;
             this.topMargin = topMargin;
+        }
+
+        public static PageMargin create(Percentage leftMargin, Percentage bottomMargin, Percentage rightMargin, Percentage topMargin){
+            return new PageMargin(leftMargin,bottomMargin,rightMargin,topMargin);
         }
 
         public static PageMargin copy(PageMargin pageMargin) {
