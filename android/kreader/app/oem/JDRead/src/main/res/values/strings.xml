@@ -287,6 +287,7 @@
     <string name="encrypted">Encrypted</string>
     <string name="unlock_the_password">Unlock the password</string>
     <string name="password_key">password_key</string>
+    <string name="phone_key" translatable="false">phone_key</string>
     <string name="password_format_error">The password is wrongly formatted. Please enter %1$d-%2$d digits</string>
     <string name="wrong_password">Wrong password</string>
     <string name="reading_tools">Reading tools</string>
@@ -476,4 +477,5 @@
     <string name="wifi_pass_book_failed_network_exception">Network exception,Pass book failed</string>
     <string name="empty_library_prompt">Without book,Please go to the shop to download</string>
     <string name="speed_refresh_key">speed_refresh_key</string>
+    <string name="forgot_psw">Forgot psw</string>
 </resources>
