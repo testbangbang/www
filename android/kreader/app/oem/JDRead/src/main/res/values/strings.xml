@@ -321,7 +321,7 @@
     <string name="subject_list_sort_type_price">Price</string>
     <string name="subject_list_sort_type_newest">Newest</string>
     <string name="subject_list_all">All</string>
-    <string name="subject_list_just_vip">Read VIP</string>
+    <string name="subject_list_just_vip">JoyRead VIP</string>
     <string name="downloading_progress">Downloading %d</string>
     <string name="paused">Paused %d</string>
     <string name="total_book">Total%d</string>
