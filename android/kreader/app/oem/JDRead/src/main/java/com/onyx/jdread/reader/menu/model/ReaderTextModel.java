@@ -210,7 +210,7 @@ public class ReaderTextModel {
         currentSettingType.set(settingInfo.settingType);
         settingInfo.settingStyle = style;
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
-        event.presetSixStyle = ReaderConfig.presetSixStyle.get(style);
+        event.styleIndex = style;
         eventBus.post(event);
     }
 

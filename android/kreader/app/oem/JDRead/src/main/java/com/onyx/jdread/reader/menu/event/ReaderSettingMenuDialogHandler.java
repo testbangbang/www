@@ -138,7 +138,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event) {
-        new SettingFontSizeAction(readerDataHolder.getStyleCopy(), event.presetSixStyle).execute(readerDataHolder,null);
+        new SettingFontSizeAction(readerDataHolder.getStyleCopy(), event.styleIndex).execute(readerDataHolder,null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
