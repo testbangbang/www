@@ -47,17 +47,13 @@ public class PayByReadBeanAction extends BaseAction {
             @Override
             public void onNext(RxRequestPayByReadBean request) {
                 resultBean = request.getResultBean();
-                if (rxCallback != null) {
-                    rxCallback.onNext(PayByReadBeanAction.this);
-                }
+                invokeNext(rxCallback, PayByReadBeanAction.this);
             }
 
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                if (rxCallback != null) {
-                    rxCallback.onError(throwable);
-                }
+                invokeNext(rxCallback, throwable);
             }
         });
     }

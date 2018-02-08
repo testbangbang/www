@@ -1,5 +1,7 @@
 package com.onyx.jdread.shop.cloud.entity.jdbean;
 
+import com.onyx.jdread.main.common.Constants;
+
 import java.io.Serializable;
 
 /**
@@ -21,5 +23,9 @@ public class GetOrderInfoResultBean {
         public int yuedou_amount;
         public int voucher_amount;
         public String token;
+    }
+
+    public boolean isSucceed() {
+        return result_code == Integer.valueOf(Constants.RESULT_CODE_SUCCESS);
     }
 }

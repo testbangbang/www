@@ -2,7 +2,6 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -47,20 +46,16 @@ public class GetOrderInfoAction extends BaseAction {
             @Override
             public void onNext(RxRequestGetOrderInfo rq) {
                 GetOrderInfoResultBean resultBean = rq.getResultBean();
-                if (resultBean != null && resultBean.result_code == Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
+                if (resultBean != null && resultBean.isSucceed()) {
                     dataBean = resultBean.data;
                 }
-                if (rxCallback != null) {
-                    rxCallback.onNext(GetOrderInfoAction.this);
-                }
+                invokeNext(rxCallback, GetOrderInfoAction.this);
             }
 
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                if (rxCallback != null) {
-                    rxCallback.onError(throwable);
-                }
+                invokeError(rxCallback, throwable);
             }
         });
     }
