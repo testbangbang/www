@@ -133,6 +133,7 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
         bookDetailBuyLayout.setVisibility(metadata.isPaid() ? View.GONE : View.VISIBLE);
         bookDetailRead.setVisibility(metadata.isPaid() ? View.VISIBLE : View.GONE);
         bookDetailRead.setText(isFileExists(metadata) ? getString(R.string.read) : getString(R.string.download));
+        bookDetailTryRead.setVisibility(View.GONE);
     }
 
     @Override
