@@ -5,5 +5,5 @@ package com.onyx.jdread.reader.menu.event;
  */
 
 public class ReaderSettingFontSizeEvent {
-    public int fontSize;
+    public int styleIndex;
 }

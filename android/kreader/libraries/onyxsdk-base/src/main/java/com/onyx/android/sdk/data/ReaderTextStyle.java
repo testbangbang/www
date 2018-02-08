@@ -1,11 +1,20 @@
 package com.onyx.android.sdk.data;
 
-import android.preference.Preference;
-
 /**
  * Created by zhuzeng on 11/6/15.
  */
 public class ReaderTextStyle {
+    public ReaderTextStyle(int marginLeft, int marginRight, int marginTop, int marginBottom, int fontSize, int lineSpacing, int paragraphSpacing) {
+        this.fontSize = ReaderTextStyle.SPUnit.create(fontSize);
+
+        this.lineSpacing = ReaderTextStyle.Percentage.create(lineSpacing);
+        this.pageMargin.setLeftMargin(ReaderTextStyle.Percentage.create(marginLeft));
+        this.pageMargin.setRightMargin(ReaderTextStyle.Percentage.create(marginRight));
+        this.pageMargin.setTopMargin(ReaderTextStyle.Percentage.create(marginTop));
+        this.pageMargin.setBottomMargin(ReaderTextStyle.Percentage.create(marginBottom));
+
+        this.paragraphSpacing = ReaderTextStyle.Percentage.create(paragraphSpacing);;
+    }
 
     public enum Alignment {
         ALIGNMENT_NONE,

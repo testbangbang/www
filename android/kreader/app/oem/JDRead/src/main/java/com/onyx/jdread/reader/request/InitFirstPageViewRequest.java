@@ -1,17 +1,19 @@
 package com.onyx.jdread.reader.request;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
-import com.onyx.android.sdk.reader.utils.ImageUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.SettingInfo;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
-import com.onyx.jdread.reader.menu.model.ReaderMarginModel;
 
 /**
  * Created by huxiaomao on 2017/12/22.
@@ -22,6 +24,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private int width;
     private int height;
     private GammaInfo gammaInfo;
+    private SettingInfo settingInfo;
 
     public InitFirstPageViewRequest(Reader reader) {
         this.reader = reader;
@@ -32,7 +35,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         updateView();
         initPosition();
         restoreReaderTextStyle();
-        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo());
+        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
         updateSetting(reader);
         return this;
     }
@@ -80,7 +83,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private void initPosition() throws Exception {
         String bookPath = reader.getDocumentInfo().getBookPath();
         String position = reader.getReaderHelper().getDocumentOptions().getCurrentPage();
-        if(StringUtils.isNullOrEmpty(position)){
+        if (StringUtils.isNullOrEmpty(position)) {
             position = reader.getReaderHelper().getNavigator().getInitPosition();
         }
         reader.getReaderHelper().gotoPosition(position);
@@ -89,81 +92,67 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
 
     private void restoreReaderTextStyle() throws ReaderException {
         BaseOptions baseOptions = reader.getReaderHelper().getDocumentOptions();
-
+        settingInfo = new SettingInfo();
         String fontFace = getFontFace();
-        ReaderTextStyle.SPUnit spUnit = ReaderTextStyle.SPUnit.create(getFontSize());
-        ReaderTextStyle.Percentage lineSpacing = ReaderTextStyle.Percentage.create(getLineSpacing());
-        ReaderTextStyle.Percentage paragraphSpacing = ReaderTextStyle.Percentage.create(getParagraphSpacing());
-        ReaderTextStyle.CharacterIndent characterIndent = ReaderTextStyle.CharacterIndent.create((int) baseOptions.getParagraphIndent());
-        ReaderTextStyle.Percentage leftMargin = ReaderTextStyle.Percentage.create(getLeftMarin());
-        ReaderTextStyle.Percentage rightMarin = ReaderTextStyle.Percentage.create(getRightMarin());
-        ReaderTextStyle.Percentage topMargin = ReaderTextStyle.Percentage.create(getTopMarin());
-        ReaderTextStyle.Percentage BottomMarin = ReaderTextStyle.Percentage.create(getBottomMarin());
+        settingInfo.settingType = ReaderConfig.getSettingType();
+        settingInfo.settingStyle = ReaderConfig.getSettingStyle();
+        ReaderTextStyle style = ReaderConfig.presetStyle.get(settingInfo.settingStyle);
+        style.setFontFace(fontFace);
+        if (settingInfo.settingType != ReaderConfig.SETTING_TYPE_PRESET) {
+            ReaderTextStyle customStyle = ReaderConfig.presetStyle.get(ReaderConfig.CUSTOM_STYLE_KEY);
+            customStyle.setFontSize(style.getFontSize());
+            customStyle.setFontFace(fontFace);
 
-        ReaderTextStyle style = ReaderTextStyle.create(fontFace, spUnit, lineSpacing, leftMargin, topMargin, rightMarin, BottomMarin,paragraphSpacing);
+            settingInfo.customLineSpacing = ReaderConfig.getCustomLineSpacing();
+            customStyle.getLineSpacing().setPercent(ReaderConfig.customLineSpacing.get(settingInfo.customLineSpacing));
+
+            settingInfo.customLeftAndRightMargin = ReaderConfig.getCustomLeftAndRightMargin();
+            ReaderConfig.LeftAndRight leftAndRight = ReaderConfig.customLeftAndRightMargin.get(settingInfo.customLeftAndRightMargin);
+            customStyle.getPageMargin().setLeftMargin(ReaderTextStyle.Percentage.create(leftAndRight.left));
+            customStyle.getPageMargin().setRightMargin(ReaderTextStyle.Percentage.create(leftAndRight.right));
+
+            settingInfo.customTopAndBottomMargin = ReaderConfig.getCustomTopAndBottomMargin();
+            ReaderConfig.TopAndBottom topAndBottom = ReaderConfig.customTopAndBottomMargin.get(settingInfo.customTopAndBottomMargin);
+            customStyle.getPageMargin().setTopMargin(ReaderTextStyle.Percentage.create(topAndBottom.top));
+            customStyle.getPageMargin().setBottomMargin(ReaderTextStyle.Percentage.create(topAndBottom.bottom));
+
+            settingInfo.customParagraphSpacing = ReaderConfig.getCustomParagraphSpacing();
+            customStyle.getParagraphSpacing().setPercent(ReaderConfig.customParagraphSpacing.get(settingInfo.customParagraphSpacing));
+            style = customStyle;
+        }
+
         reader.getReaderHelper().getReaderLayoutManager().setStyle(style);
         restoreContrast();
         setChineseConvertType();
     }
 
-    private int getTopMarin(){
-        int percent = JDPreferenceManager.getIntValue(ReaderConfig.READER_TOP_MARGIN_KEY,-1);
-        if(percent <= 0){
-            percent = ReaderMarginModel.DEFAULT_UP_AND_DOWN_SPACING;
-        }
-        return percent;
-    }
+    private void restoreReaderTextStyleTest() throws ReaderException {
+        BaseOptions baseOptions = reader.getReaderHelper().getDocumentOptions();
 
-    private int getBottomMarin(){
-        int percent = JDPreferenceManager.getIntValue(ReaderConfig.READER_BOTTOM_MARGIN_KEY,-1);
-        if(percent <= 0){
-            percent = ReaderMarginModel.DEFAULT_UP_AND_DOWN_SPACING;
-        }
-        return percent;
-    }
+        String stringStyle = FileUtils.readContentOfFile("/sdcard/style.txt");
+        JSONObject styleObj = JSON.parseObject(stringStyle);
 
-    private int getRightMarin(){
-        int percent = JDPreferenceManager.getIntValue(ReaderConfig.READER_RIGHT_MARGIN_KEY,-1);
-        if(percent <= 0){
-            percent = ReaderMarginModel.DEFAULT_LEFT_AND_RIGHT_SPACING;
-        }
-        return percent;
-    }
+        String fontFace = getFontFace();
 
-    private int getLeftMarin(){
-        int percent = JDPreferenceManager.getIntValue(ReaderConfig.READER_LEFT_MARGIN_KEY,-1);
-        if(percent <= 0){
-            percent = ReaderMarginModel.DEFAULT_LEFT_AND_RIGHT_SPACING;
-        }
-        return percent;
-    }
+        ReaderTextStyle.SPUnit spUnit = ReaderTextStyle.SPUnit.create(styleObj.getInteger("font_size"));
+        ReaderTextStyle.Percentage lineSpacing = ReaderTextStyle.Percentage.create(styleObj.getInteger("line_spacing"));
+        ReaderTextStyle.Percentage paragraphSpacing = ReaderTextStyle.Percentage.create(styleObj.getInteger("paragraph_spacing"));
 
-    private int getLineSpacing(){
-        int lineSpacing = JDPreferenceManager.getIntValue(ReaderConfig.READER_LINESPACING_KEY,-1);
-        if(lineSpacing <= 0){
-            lineSpacing = ReaderMarginModel.DEFAULT_LINE_SPACING;
-        }
-        return lineSpacing;
-    }
+        ReaderTextStyle.CharacterIndent characterIndent = ReaderTextStyle.CharacterIndent.create((int) baseOptions.getParagraphIndent());
 
-    private int getParagraphSpacing(){
-        int paragraphSpacing = JDPreferenceManager.getIntValue(ReaderConfig.READER_PARAGRAPHSPACING_KEY,-1);
-        if(paragraphSpacing <= 0){
-            paragraphSpacing = ReaderMarginModel.DEFAULT_PARAGRAPH_SPACING;
-        }
-        return paragraphSpacing;
-    }
+        ReaderTextStyle.Percentage leftMargin = ReaderTextStyle.Percentage.create(styleObj.getInteger("margin_left"));
+        ReaderTextStyle.Percentage rightMarin = ReaderTextStyle.Percentage.create(styleObj.getInteger("margin_right"));
+        ReaderTextStyle.Percentage topMargin = ReaderTextStyle.Percentage.create(styleObj.getInteger("margin_top"));
+        ReaderTextStyle.Percentage BottomMarin = ReaderTextStyle.Percentage.create(styleObj.getInteger("margin_bottom"));
 
-    private float getFontSize(){
-        float fontSize = (float) (JDPreferenceManager.getIntValue(ReaderConfig.READER_FONTSIZE_KEY,-1));
-        if(fontSize <= 0.0f){
-            fontSize = ReaderConfig.FontSize.DEFAULT_FONT_SIZE;
-        }
-        return fontSize;
+        ReaderTextStyle style = ReaderTextStyle.create(fontFace, spUnit, lineSpacing, leftMargin, topMargin, rightMarin, BottomMarin, paragraphSpacing);
+        reader.getReaderHelper().getReaderLayoutManager().setStyle(style);
+        restoreContrast();
+        setChineseConvertType();
     }
 
     private String getFontFace() {
-        String fontFace = JDPreferenceManager.getStringValue(ReaderConfig.READER_FONTFACE_KEY,null);
+        String fontFace = JDPreferenceManager.getStringValue(ReaderConfig.READER_FONTFACE_KEY, null);
         if (StringUtils.isNullOrEmpty(fontFace)) {
             fontFace = ReaderConfig.Typeface.DEFAULT_TYPEFACE;
         }
@@ -176,7 +165,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         reader.getReaderHelper().getDocumentOptions().setEmboldenLevel(gammaInfo.getEmboldenLevel());
     }
 
-    private void setChineseConvertType(){
+    private void setChineseConvertType() {
         ReaderChineseConvertType convertType = ReaderConfig.getReaderChineseConvertType();
         reader.getReaderHelper().getDocumentOptions().setChineseConvertType(convertType);
         reader.getReaderHelper().getRenderer().setChineseConvertType(convertType);
@@ -184,5 +173,9 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
 
     public GammaInfo getGammaInfo() {
         return gammaInfo;
+    }
+
+    public SettingInfo getSettingInfo() {
+        return settingInfo;
     }
 }

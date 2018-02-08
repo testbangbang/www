@@ -38,6 +38,7 @@ public class ReaderDataHolder {
     private DocumentInfo documentInfo;
     private ReaderSelectionInfo readerSelectionInfo;
     private GammaInfo gammaInfo;
+    private SettingInfo settingInfo;
     private EventBus eventBus = EventBus.getDefault();
 
     public ReaderDataHolder(final Context appContext) {
@@ -46,9 +47,17 @@ public class ReaderDataHolder {
         initView(appContext);
     }
 
+    public SettingInfo getSettingInfo() {
+        return settingInfo;
+    }
+
+    public void setSettingInfo(SettingInfo settingInfo) {
+        this.settingInfo = settingInfo;
+    }
+
     private void initView(Context context){
         float readerBottomStateBarHeight = context.getResources().getDimension(R.dimen.reader_content_view_bottom_state_bar_height);
-        ReaderViewConfig.setReaderBottomStateBarHeight(readerBottomStateBarHeight);
+        ReaderViewConfig.setReaderBottomStateBarHeight(0);
 
         float fontSize = context.getResources().getDimension(R.dimen.level_two_heading_font);
         ReaderViewConfig.setTimeFontSize(fontSize);

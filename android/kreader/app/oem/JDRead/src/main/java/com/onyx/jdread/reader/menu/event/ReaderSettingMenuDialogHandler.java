@@ -138,7 +138,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingFontSizeEvent(ReaderSettingFontSizeEvent event) {
-        new SettingFontSizeAction(readerDataHolder.getStyleCopy(), event.fontSize).execute(readerDataHolder,null);
+        new SettingFontSizeAction(readerDataHolder.getStyleCopy(), event.styleIndex).execute(readerDataHolder,null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -194,7 +194,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingUpAndDownSpacingEvent(SettingUpAndDownSpacingEvent event) {
-        new SettingUpAndDownSpacingAction(readerDataHolder.getStyleCopy(), event.margin).execute(readerDataHolder,null);
+        new SettingUpAndDownSpacingAction(readerDataHolder.getStyleCopy(), event.top,event.bottom).execute(readerDataHolder,null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
