@@ -157,8 +157,11 @@ public class ScribbleFragment extends BaseFragment {
                 }
             };
         }
+        if (transBackground) {
+            binding.scribbleView.setZOrderOnTop(true);
+            binding.scribbleView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        }
         binding.scribbleView.getHolder().addCallback(surfaceCallback);
-        binding.scribbleView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
     }
 
     private void loadPageReview(int page, final BaseCallback callback) {
