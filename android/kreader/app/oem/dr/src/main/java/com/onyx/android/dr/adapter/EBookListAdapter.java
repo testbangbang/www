@@ -58,7 +58,6 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_col);
     private boolean newPage = false;
-    private boolean downloading = false;
     private int noThumbnailPosition = 0;
     private boolean isVisibleToUser = false;
     private List<Metadata> eBookList = new ArrayList<>();
@@ -106,7 +105,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         final Metadata eBook = eBookList.get(position);
         viewHolder.titleView.setVisibility(View.VISIBLE);
         viewHolder.titleView.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.price_format), eBook.getPrice()));
-        updatePaidButtonStatus(viewHolder, eBook);
+        updatePaidButtonStatus(viewHolder, eBook, false);
         Bitmap bitmap = getBitmap(eBook.getAssociationId());
         if (bitmap == null) {
             viewHolder.coverImage.setImageResource(R.drawable.book_cover);
@@ -142,7 +141,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         viewHolder.paid.setVisibility(eBook.isPaid() ? View.VISIBLE : View.GONE);
     }
 
-    private void updatePaidButtonStatus(final LibraryItemViewHolder viewHolder, final Metadata eBook) {
+    private void updatePaidButtonStatus(final LibraryItemViewHolder viewHolder, final Metadata eBook, final boolean downloading) {
         int resId = R.string.download;
         if (isFileExists(eBook)) {
             resId = R.string.read;
@@ -187,19 +186,15 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
             @Override
                 public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
-                    downloading = false;
                     setCloudMetadataNativeAbsolutePath(eBook, filePath);
-                } else {
-                    downloading = true;
                 }
-                updatePaidButtonStatus(viewHolder, eBook);
+                updatePaidButtonStatus(viewHolder, eBook, false);
             }
 
             @Override
             public void progress(BaseRequest request, ProgressInfo info) {
                 Log.i(TAG, "progress:" + info.progress);
-                downloading = true;
-                updatePaidButtonStatus(viewHolder, eBook);
+                updatePaidButtonStatus(viewHolder, eBook, true);
             }
         });
         getDownLoaderManager().startDownload(download);
