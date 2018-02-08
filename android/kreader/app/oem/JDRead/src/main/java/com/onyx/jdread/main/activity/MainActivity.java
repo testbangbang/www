@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -207,15 +206,16 @@ public class MainActivity extends AppCompatActivity {
             baseFragment.setBundle(currentFragment.getBundle());
         }
         transaction.replace(R.id.main_content_view, baseFragment);
-        transaction.commitAllowingStateLoss();
-        saveChildViewInfo(childViewName, baseFragment);
-        systemBarModel.updateTime();
-        if (tabCheckedCount == ResManager.getInteger(R.integer.refresh_count)) {
-            EpdController.refreshScreen(binding.getRoot(), UpdateMode.GC);
+        if (tabCheckedCount >= ResManager.getInteger(R.integer.refresh_count)) {
+            EpdController.appliGcOnce();
             tabCheckedCount = 0;
         } else {
             tabCheckedCount++;
         }
+        transaction.commitAllowingStateLoss();
+        saveChildViewInfo(childViewName, baseFragment);
+        systemBarModel.updateTime();
+
     }
 
     private void changeFunctionItem(String childViewName) {
