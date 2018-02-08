@@ -513,4 +513,5 @@
     <dimen name="shop_dialog_content_height">300dp</dimen>
     <dimen name="personal_book_image_padding">10dp</dimen>
     <dimen name="personal_sign_width">100dp</dimen>
+    <dimen name="keyboard_custom_text_size">21sp</dimen>
 </resources>
