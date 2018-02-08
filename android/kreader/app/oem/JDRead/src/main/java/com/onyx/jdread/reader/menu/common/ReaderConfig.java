@@ -63,18 +63,18 @@ public class ReaderConfig {
 
     public static final int FONT_SIZE_X_SMALL = 20;
     public static final int FONT_SIZE_SMALL = 23;
-    public static final int FONT_SIZE_MEDIUM = 28;
-    public static final int FONT_SIZE_LARGE = 30;
-    public static final int FONT_SIZE_X_LARGE = 36;
+    public static final int FONT_SIZE_MEDIUM = 26;
+    public static final int FONT_SIZE_LARGE = 29;
+    public static final int FONT_SIZE_X_LARGE = 34;
     public static final int FONT_SIZE_XX_LARGE = 40;
 
     static {
         presetSixStyle.put(SETTING_ONE_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_X_SMALL, 135, 50));
         presetSixStyle.put(SETTING_TWO_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_SMALL, 140, 60));
-        presetSixStyle.put(SETTING_THREE_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_MEDIUM, 145, 70));
-        presetSixStyle.put(SETTING_FOUR_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_LARGE, 155, 85));
-        presetSixStyle.put(SETTING_FIVE_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_X_LARGE, 165, 100));
-        presetSixStyle.put(SETTING_SIX_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_XX_LARGE, 175, 120));
+        presetSixStyle.put(SETTING_THREE_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_MEDIUM, 130, 60));
+        presetSixStyle.put(SETTING_FOUR_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_LARGE, 130, 60));
+        presetSixStyle.put(SETTING_FIVE_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_X_LARGE, 130, 60));
+        presetSixStyle.put(SETTING_SIX_STYLE_KEY, new PresetSixStyle(6, 6, 14, 24, FONT_SIZE_XX_LARGE, 130, 60));
     }
 
     public static class PresetSixStyle {
