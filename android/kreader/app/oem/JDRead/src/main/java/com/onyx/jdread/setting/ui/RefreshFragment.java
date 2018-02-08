@@ -19,6 +19,7 @@ import com.onyx.jdread.databinding.RefreshBinding;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.setting.adapter.RefreshAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
+import com.onyx.jdread.setting.event.SpeedRefreshChangeEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingRefreshModel;
 import com.onyx.jdread.setting.model.SettingTitleModel;
@@ -71,6 +72,7 @@ public class RefreshFragment extends BaseFragment {
         settingRefreshModel.setCurrentPageRefreshPage(currentRefreshPage);
         refreshAdapter.setCurrentPage(currentRefreshPage);
         refreshAdapter.setData(settingRefreshModel.getRefreshPages());
+        binding.refreshCheckBox.setChecked(settingRefreshModel.isSpeedRefresh());
     }
 
     private void initView() {
@@ -100,5 +102,10 @@ public class RefreshFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
         viewEventCallBack.viewBack();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSpeedRefreshChangeEvent(SpeedRefreshChangeEvent event) {
+        binding.refreshCheckBox.setChecked(JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false));
     }
 }

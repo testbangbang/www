@@ -17,6 +17,11 @@ public class SettingRefreshModel {
     private String[] refreshPages;
     private String currentRefreshPage;
     private static final String REFRESH_RATE = "refresh_rate";
+    private boolean isSpeedRefresh;
+
+    public SettingRefreshModel() {
+        isSpeedRefresh = JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false);
+    }
 
     public String getCurrentRefreshPage() {
         return currentRefreshPage = JDPreferenceManager.getStringValue(REFRESH_RATE, JDReadApplication.getInstance().getResources().getString(R.string.device_setting_ten_pages));
@@ -32,5 +37,9 @@ public class SettingRefreshModel {
 
     public String[] getRefreshPages() {
         return refreshPages = JDReadApplication.getInstance().getResources().getStringArray(R.array.device_setting_page_refreshes);
+    }
+
+    public boolean isSpeedRefresh() {
+        return isSpeedRefresh;
     }
 }
