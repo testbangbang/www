@@ -193,7 +193,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void initDividerItemDecoration() {
-        itemDecoration = new SubjectBookItemSpaceItemDecoration(false,bookRecommendSpace);
+        itemDecoration = new SubjectBookItemSpaceItemDecoration(false, bookRecommendSpace);
     }
 
     @Override
@@ -318,6 +318,7 @@ public class BookDetailFragment extends BaseFragment {
             bookDetailBean = bookDetailResultBean.data;
             BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
             bookDetailBean.bookExtraInfoBean = extraInfoBean;
+            bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = isWholeBookDownLoad;
             if (!JDReadApplication.getInstance().getLogin()) {
                 LoginHelper.showUserLoginDialog(getUserLoginViewModel());
             } else {
@@ -616,6 +617,9 @@ public class BookDetailFragment extends BaseFragment {
             localPath = extraInfoBean.localPath;
             isDataBaseHaveBook = DownLoadHelper.isDownloaded(extraInfoBean.downLoadState);
             isWholeBookDownLoad = extraInfoBean.isWholeBookDownLoad;
+            if (bookDetailBean != null) {
+                bookDetailBean.bookExtraInfoBean = extraInfoBean;
+            }
             if (isWholeBookDownLoad && isDataBaseHaveBook) {
                 nowReadButton.setVisibility(View.GONE);
                 bookDetailBinding.bookDetailInfo.spaceOne.setVisibility(View.GONE);

@@ -320,7 +320,7 @@
     <string name="subject_list_sort_type_hot">Hot</string>
     <string name="subject_list_sort_type_price">Price</string>
     <string name="subject_list_sort_type_newest">Newest</string>
-    <string name="subject_list_all">All</string>
+    <string name="subject_list_filter">Filter</string>
     <string name="subject_list_just_vip">Read VIP</string>
     <string name="downloading_progress">Downloading %d</string>
     <string name="paused">Paused %d</string>
@@ -454,7 +454,7 @@
     <string name="not_login">not login</string>
     <string name="open_vip_read">Open Vip</string>
     <string name="renew_vip_read">Renew Vip</string>
-    <string name="vip_read_days">The remaining days of the Vip：%s</string>
+    <string name="vip_read_days">The remaining days of the Vip：%s days</string>
     <string name="vip_read_notice">Vip Notice</string>
     <string name="not_open_vip_read">Do not open Vip</string>
     <string name="format_rmb">¥%s</string>
