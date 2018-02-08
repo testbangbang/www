@@ -380,7 +380,7 @@ public class ActivityManager {
 
     public static void openBook(Context context, Metadata metadata, String localPath, int type) {
         OpenBookParam openBookParam = new OpenBookParam();
-        openBookParam.setBookName(metadata.getName());
+        openBookParam.setBookName(metadata.getTitle());
         openBookParam.setLocalPath(localPath);
         openBookParam.setBookId(metadata.getCloudId());
         openBookParam.setType(type);
