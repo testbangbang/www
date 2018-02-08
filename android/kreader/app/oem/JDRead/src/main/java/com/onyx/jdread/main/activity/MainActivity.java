@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
         if (currentFragment != null) {
             baseFragment.setBundle(currentFragment.getBundle());
         }
+        transaction.commitAllowingStateLoss();
         transaction.replace(R.id.main_content_view, baseFragment);
         if (tabCheckedCount >= ResManager.getInteger(R.integer.refresh_count)) {
             EpdController.appliGcOnce();
@@ -212,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             tabCheckedCount++;
         }
-        transaction.commitAllowingStateLoss();
         saveChildViewInfo(childViewName, baseFragment);
         systemBarModel.updateTime();
 
