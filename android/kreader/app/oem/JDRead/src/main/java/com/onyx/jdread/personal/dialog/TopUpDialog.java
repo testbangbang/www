@@ -53,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by li on 2017/12/29.
@@ -283,7 +284,7 @@ public class TopUpDialog extends DialogFragment {
     private void countDownClose() {
         int delayTime = ResManager.getInteger(R.integer.delay_pay_success_close_pay_dialog);
         Observable<Long> timer = Observable.timer(delayTime, TimeUnit.SECONDS);
-        timer.subscribeOn(AndroidSchedulers.mainThread())
+        timer.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Long>() {
                     @Override
