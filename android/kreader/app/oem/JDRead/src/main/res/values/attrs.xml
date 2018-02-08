@@ -4,4 +4,11 @@
         <attr name="width_space" format="dimension"/>
         <attr name="height_space" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="NumberKeyboardView">
+        <attr name="delete_drawable" format="reference" />
+        <attr name="delete_backgroundColor" format="color|reference" />
+        <attr name="custom_string" format="string" />
+        <attr name="custom_drawable" format="reference" />
+    </declare-styleable>
 </resources>

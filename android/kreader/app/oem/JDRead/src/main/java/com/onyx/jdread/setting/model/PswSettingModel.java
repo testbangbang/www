@@ -37,6 +37,7 @@ public class PswSettingModel extends Observable {
         titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.password_setting));
         titleBarModel.backEvent.set(new BackToDeviceConfigFragment());
         password = JDPreferenceManager.getStringValue(R.string.password_key, null);
+        phoneEdit.set(JDPreferenceManager.getStringValue(R.string.phone_key, null));
         encrypted.set(StringUtils.isNotBlank(password));
     }
 
@@ -51,10 +52,10 @@ public class PswSettingModel extends Observable {
             ToastUtil.showToast(JDReadApplication.getInstance(), R.string.phone_number_format_error);
             return;
         }
-        // TODO: 18-1-2 save password
+
         JDPreferenceManager.setStringValue(R.string.password_key, FileUtils.computeMD5(passwordEdit.get()));
+        JDPreferenceManager.setStringValue(R.string.phone_key, phoneEdit.get());
         eventBus.post(new BackToDeviceConfigEvent());
-        //encrypted.set(true);
     }
 
     public void unlockPassword() {
@@ -63,7 +64,6 @@ public class PswSettingModel extends Observable {
             password = JDPreferenceManager.getStringValue(R.string.password_key, null);
         }
         if (StringUtils.isNotBlank(unlockPassword) && FileUtils.computeMD5(unlockPassword).equals(password)) {
-            // TODO: 18-1-2 unlock password
             JDPreferenceManager.setStringValue(R.string.password_key, "");
             encrypted.set(false);
         } else {
