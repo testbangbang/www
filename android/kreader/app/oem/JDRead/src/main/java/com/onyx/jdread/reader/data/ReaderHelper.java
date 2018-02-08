@@ -5,6 +5,7 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderException;
@@ -36,8 +37,10 @@ import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.layout.ReaderLayoutManager;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 
@@ -405,7 +408,7 @@ public class ReaderHelper {
     /**
      * collect all options from reader components to BaseOptions.
      */
-    public void saveOptions() {
+    public void saveOptions(final SettingInfo settingInfo) {
         if (!isReaderLayoutManagerCreated()) {
             return;
         }
@@ -421,26 +424,28 @@ public class ReaderHelper {
             getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
 
             final ReaderTextStyle style = layoutManager.getTextStyleManager().getStyle();
-            saveReaderTextStyle(style);
+            saveReaderTextStyle(style,settingInfo);
         } catch (Exception e) {
 
         }
     }
 
-    private void saveReaderTextStyle(final ReaderTextStyle style) {
+    private void saveReaderTextStyle(final ReaderTextStyle style,final SettingInfo settingInfo) {
         if (style == null) {
             return;
         }
         getDocumentOptions().setFontFace(style.getFontFace());
         getDocumentOptions().setFontSize(style.getFontSize().getValue());
         getDocumentOptions().setParagraphSpacing(style.getParagraphSpacing().getPercent());
-        getDocumentOptions().setFontFace(style.getFontFace());
         getDocumentOptions().setLineSpacing(style.getLineSpacing().getPercent());
         getDocumentOptions().setParagraphIndent(style.getIndent().getIndent());
         getDocumentOptions().setLeftMargin(style.getPageMargin().getLeftMargin().getPercent());
         getDocumentOptions().setTopMargin(style.getPageMargin().getTopMargin().getPercent());
         getDocumentOptions().setRightMargin(style.getPageMargin().getRightMargin().getPercent());
         getDocumentOptions().setBottomMargin(style.getPageMargin().getBottomMargin().getPercent());
+        ReaderConfig.saveUserSetting(style,settingInfo);
+        ReaderConfig.setReaderChineseConvertType(getDocumentOptions().getChineseConvertType());
+        ReaderConfig.setEmboldenLevel(getDocumentOptions().getEmboldenLevel());
     }
 
     public String getDocumentMd5() {

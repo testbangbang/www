@@ -22,7 +22,9 @@ import com.onyx.android.sdk.reader.utils.ChapterInfo;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.reader.data.Reader;
 
 import java.util.List;
@@ -171,13 +173,14 @@ public class LayoutProviderUtils {
         reader.getReaderHelper().getDocument().readTableOfContent(toc);
         boolean hasToc = toc != null && !toc.isEmpty();
         if (!hasToc) {
+            readerViewInfo.setChapterName(reader.getDocumentInfo().getBookName());
             return;
         }
 
         List<ChapterInfo> readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
         int position = PagePositionUtils.getPosition(pagePosition);
         ChapterInfo chapterInfo = getChapterInfoByPage(position, readTocChapterNodeList);
-        if (chapterInfo != null) {
+        if (chapterInfo != null && StringUtils.isNotBlank(chapterInfo.getTitle())) {
             readerViewInfo.setChapterName(chapterInfo.getTitle());
         } else {
             readerViewInfo.setChapterName(reader.getDocumentInfo().getBookName());
@@ -186,20 +189,31 @@ public class LayoutProviderUtils {
     }
 
     public static ChapterInfo getChapterInfoByPage(int pagePosition, List<ChapterInfo> tocChapterNodeList) {
-        if (tocChapterNodeList == null) {
+        if (CollectionUtils.isNullOrEmpty(tocChapterNodeList)) {
             return null;
         }
+
         int size = tocChapterNodeList.size();
         int start = 0;
+        ChapterInfo prevChapterInfo = null;
+        prevChapterInfo = tocChapterNodeList.get(0);
+        int end = prevChapterInfo.getPosition();
+        if(pagePosition >= start && pagePosition <= end){
+            return prevChapterInfo;
+        }
+        start = prevChapterInfo.getPosition();
         ChapterInfo chapterInfo = null;
-        for (int i = 0; i < size; i++) {
+        for (int i = 1; i < size; i++) {
             chapterInfo = tocChapterNodeList.get(i);
-            if(pagePosition > start && pagePosition <= chapterInfo.getPosition()){
+            if(pagePosition >= start && pagePosition < chapterInfo.getPosition()){
+                return prevChapterInfo;
+            }
+            if(pagePosition == chapterInfo.getPosition()){
                 return chapterInfo;
             }
-            start = chapterInfo.getPosition();
+            start = chapterInfo.getPosition() + 1;
+            prevChapterInfo = chapterInfo;
         }
-
         return chapterInfo;
     }
 

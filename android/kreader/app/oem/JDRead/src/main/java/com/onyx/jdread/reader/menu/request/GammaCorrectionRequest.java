@@ -5,6 +5,7 @@ import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.SettingInfo;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 /**
@@ -14,10 +15,12 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
 public class GammaCorrectionRequest extends ReaderBaseRequest {
     private Reader reader;
     private GammaInfo gammaInfo;
+    private SettingInfo settingInfo;
 
-    public GammaCorrectionRequest(final Reader reader, GammaInfo gammaInfo) {
+    public GammaCorrectionRequest(final Reader reader, GammaInfo gammaInfo,final SettingInfo settingInfo) {
         this.gammaInfo = gammaInfo;
         this.reader = reader;
+        this.settingInfo = settingInfo;
     }
 
     @Override
@@ -34,7 +37,7 @@ public class GammaCorrectionRequest extends ReaderBaseRequest {
         }
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(reader);
-        saveReaderOptions(reader);
+        saveReaderOptions(reader,settingInfo);
         return this;
     }
 }

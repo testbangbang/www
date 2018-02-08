@@ -6,6 +6,7 @@ import android.util.Log;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.library.event.WifiPassBookErrorEvent;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.request.RxFileAddToMetadataRequest;
 import com.onyx.jdread.main.common.ResManager;
@@ -66,8 +67,10 @@ public class FileServer extends NanoHTTPD {
                 session.parseBody(files);
             } catch (IOException ioe) {
                 Log.e(TAG, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
+                LibraryDataBundle.getInstance().getEventBus().post(new WifiPassBookErrorEvent(ResManager.getString(R.string.wifi_pass_book_failed_network_exception)));
             } catch (ResponseException re) {
                 Log.e(TAG, re.getMessage());
+                LibraryDataBundle.getInstance().getEventBus().post(new WifiPassBookErrorEvent(ResManager.getString(R.string.wifi_pass_book_failed)));
             }
         }
 

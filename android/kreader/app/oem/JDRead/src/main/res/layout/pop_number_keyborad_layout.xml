@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@android:color/black" />
+
+    <com.onyx.jdread.setting.view.NumberKeyboardView
+        android:id="@+id/keyboard_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:divider="@drawable/divider_keyboard"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:keyBackground="@drawable/selector_keyboard_background"
+        android:keyTextColor="@android:color/black"
+        android:shadowColor="@android:color/black"
+        android:shadowRadius="1"
+        app:custom_string="@string/forgot_psw"
+        app:delete_backgroundColor="@color/gray_background"
+        app:delete_drawable="@drawable/keyboard_backspace" />
+
+</LinearLayout>

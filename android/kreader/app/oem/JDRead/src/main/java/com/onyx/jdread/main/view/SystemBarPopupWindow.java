@@ -22,10 +22,13 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SystemBarPopLayoutBinding;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
+import com.onyx.jdread.setting.event.SpeedRefreshChangeEvent;
 import com.onyx.jdread.setting.model.BrightnessModel;
+import com.onyx.jdread.setting.model.SettingBundle;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -104,14 +107,11 @@ public class SystemBarPopupWindow extends PopupWindow {
         }
 
         public void toggleA2Model() {
-            boolean useFastMode = !EpdController.inSystemFastMode();
-            ToastUtil.showToast(useFastMode? ResManager.getString(R.string.speed_refresh_is_opened):ResManager.getString(R.string.speed_refresh_is_closed));
+            boolean useFastMode = !JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false);
+            ToastUtil.showToast(useFastMode ? ResManager.getString(R.string.speed_refresh_is_opened) : ResManager.getString(R.string.speed_refresh_is_closed));
             speedRefresh.set(useFastMode);
-            if (useFastMode) {
-                EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
-            } else {
-                EpdController.clearSystemUpdateModeAndScheme();
-            }
+            JDPreferenceManager.setBooleanValue(R.string.speed_refresh_key, useFastMode);
+            SettingBundle.getInstance().getEventBus().post(new SpeedRefreshChangeEvent());
         }
     }
 }

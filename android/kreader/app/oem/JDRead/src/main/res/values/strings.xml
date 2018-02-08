@@ -287,6 +287,7 @@
     <string name="encrypted">Encrypted</string>
     <string name="unlock_the_password">Unlock the password</string>
     <string name="password_key">password_key</string>
+    <string name="phone_key" translatable="false">phone_key</string>
     <string name="password_format_error">The password is wrongly formatted. Please enter %1$d-%2$d digits</string>
     <string name="wrong_password">Wrong password</string>
     <string name="reading_tools">Reading tools</string>
@@ -321,7 +322,7 @@
     <string name="subject_list_sort_type_price">Price</string>
     <string name="subject_list_sort_type_newest">Newest</string>
     <string name="subject_list_filter">Filter</string>
-    <string name="subject_list_just_vip">Read VIP</string>
+    <string name="subject_list_just_vip">JoyRead VIP</string>
     <string name="downloading_progress">Downloading %d</string>
     <string name="paused">Paused %d</string>
     <string name="total_book">Total%d</string>
@@ -444,6 +445,9 @@
     <string name="morning">Morning</string>
     <string name="afternoon">Afternoon</string>
     <string name="updating">The system is being updated, please...</string>
+    <string name="updating_package_model_no_match">System update package model does not match</string>
+    <string name="updating_package_parse_failed">System update package parsing failed</string>
+    <string name="updating_package_install_failed">System update package installation failed</string>
     <string name="power_off_prompt">Power off?</string>
     <string name="speed_refresh_is_opened">Speed refresh is opened</string>
     <string name="speed_refresh_is_closed">Speed refresh is closed</string>
@@ -466,7 +470,14 @@
     <string name="category_girl">Girl</string>
     <string name="delete_library_prompt">Whether to delete the group (group books back into the bookshelf)</string>
     <string name="delete_library_include_book_prompt">Whether to delete this group and group books from this machine</string>
+    <string name="child_over_limit_display">99+</string>
     <string name="unassociated_impression_notes">Unassociated impression notes</string>
+    <string name="quit_wifi_pass_book">Quit wifi pass book</string>
+    <string name="wifi_pass_book_failed">Pass book failed</string>
+    <string name="wifi_pass_book_failed_network_exception">Network exception,Pass book failed</string>
+    <string name="empty_library_prompt">Without book,Please go to the shop to download</string>
+    <string name="speed_refresh_key">speed_refresh_key</string>
+    <string name="forgot_psw">Forgot psw</string>
     <string name="dialog_pay_order_book_price">Price: %1$d Read Bean</string>
     <string name="dialog_pay_order_cur_balance">Balance: %1$d Read Bean/%2$d Voucher</string>
     <string name="dialog_pay_order_pay_type">Payment:</string>

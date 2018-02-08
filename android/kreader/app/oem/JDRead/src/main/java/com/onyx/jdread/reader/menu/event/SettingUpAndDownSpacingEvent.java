@@ -5,5 +5,6 @@ package com.onyx.jdread.reader.menu.event;
  */
 
 public class SettingUpAndDownSpacingEvent {
-    public int margin;
+    public int top;
+    public int bottom;
 }

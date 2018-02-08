@@ -40,6 +40,7 @@ import com.onyx.jdread.setting.model.DeviceConfigData;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingUpdateModel;
 import com.onyx.jdread.setting.model.SystemUpdateData;
+import com.onyx.jdread.setting.request.RxFirmwareLocalUpdateRequest;
 import com.onyx.jdread.setting.utils.UpdateUtil;
 import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
@@ -132,13 +133,20 @@ public class SystemUpdateFragment extends BaseFragment {
 
         @Override
         public void done(BaseRequest request, Throwable e) {
-            systemUpdateData.setProgress(100);
-            systemUpdateData.setShowProgress(false);
-            systemUpdateData.setShowDownloaded(true);
-            systemUpdateData.setUpdateDes(JDReadApplication.getInstance().getResources().getString(R.string.upgrade_immediately));
-            settingUpdateModel.setDownloaded(true);
+            finishSystemUpdatePackageDownload(e == null);
         }
     };
+
+    private void finishSystemUpdatePackageDownload(boolean success) {
+        if (systemUpdateData == null || settingUpdateModel == null) {
+            return;
+        }
+        systemUpdateData.setProgress(success ? 100 : 0);
+        systemUpdateData.setShowProgress(false);
+        systemUpdateData.setShowDownloaded(success);
+        systemUpdateData.setUpdateDes(ResManager.getString(success ? R.string.upgrade_immediately : R.string.download_update_package));
+        settingUpdateModel.setDownloaded(success);
+    }
 
     private void initData() {
         TitleBarModel titleModel = new TitleBarModel(SettingBundle.getInstance().getEventBus());
@@ -295,12 +303,19 @@ public class SystemUpdateFragment extends BaseFragment {
             UpdateUtil.startUpdateApkActivity(JDReadApplication.getInstance(), downloadPath);
             return;
         }
-        LocalUpdateSystemAction action = new LocalUpdateSystemAction();
         final SystemUpdateTipDialog dialog = new SystemUpdateTipDialog();
         dialog.show(getActivity().getFragmentManager(), "");
-        action.execute(SettingBundle.getInstance(), new RxCallback() {
+        LocalUpdateSystemAction action = new LocalUpdateSystemAction();
+        action.execute(SettingBundle.getInstance(), new RxCallback<RxFirmwareLocalUpdateRequest>() {
             @Override
-            public void onNext(Object o) {
+            public void onNext(RxFirmwareLocalUpdateRequest request) {
+                if (!request.isSuccess()) {
+                    ToastUtil.showToast(request.getFailString());
+                }
+            }
+
+            @Override
+            public void onFinally() {
                 if (dialog != null) {
                     dialog.dismiss();
                 }

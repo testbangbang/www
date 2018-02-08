@@ -448,7 +448,7 @@
     <dimen name="book_format_margin_right">20dp</dimen>
     <dimen name="library_cover_child_format_margin_top">25dp</dimen>
     <dimen name="library_cover_child_format_margin_left">25dp</dimen>
-    <dimen name="reader_content_view_bottom_state_bar_height">25dp</dimen>
+    <dimen name="reader_content_view_bottom_state_bar_height">68dp</dimen>
     <dimen name="library_cover_child_format_margin_right">5dp</dimen>
     <dimen name="top_menu_brightness_layout_height">90dp</dimen>
     <dimen name="top_menu_setting_layout_height">90dp</dimen>
@@ -502,6 +502,10 @@
     <dimen name="subject_list_just_vip_margin_left">50dp</dimen>
     <dimen name="reader_toast_view_padding_left_and_right">20dp</dimen>
     <dimen name="reader_toast_view_padding_top_and_bottom">3dp</dimen>
+    <dimen name="default_page_left_margin">20dp</dimen>
+    <dimen name="default_page_right_margin">20dp</dimen>
+    <dimen name="default_page_top_margin">40dp</dimen>
+    <dimen name="default_page_bottom_margin">68dp</dimen>
     <dimen name="item_subject_common_name_line_space">5dp</dimen>
     <dimen name="book_detail_drawable_left_padding">6dp</dimen>
     <dimen name="book_detail_view_catalog_container_margin_left_and_right">30dp</dimen>
@@ -509,6 +513,7 @@
     <dimen name="shop_dialog_content_height">290dp</dimen>
     <dimen name="personal_book_image_padding">10dp</dimen>
     <dimen name="personal_sign_width">100dp</dimen>
+    <dimen name="keyboard_custom_text_size">21sp</dimen>
     <dimen name="book_detail_info_margin_top">8dp</dimen>
     <dimen name="book_detail_cart_button_margin_right">20dp</dimen>
     <dimen name="book_detail_buy_book_button_cart_button_space">44dp</dimen>

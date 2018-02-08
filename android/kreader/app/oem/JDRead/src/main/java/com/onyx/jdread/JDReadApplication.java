@@ -20,6 +20,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.main.common.AppBaseInfo;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.SupportType;
@@ -102,10 +103,15 @@ public class JDReadApplication extends MultiDexApplication {
                         mtpBuffer.add(data.getPath());
                     }
 
-                    if (SupportType.getSupportThumbnailType().contains(FileUtils.getFileExtension(file))) {
+                    if (SupportType.getSupportThumbnailType().contains(FileUtils.getFileExtension(file)) && file.exists()) {
                         ReaderDocumentCoverAction action = new ReaderDocumentCoverAction(ResManager.getInteger(R.integer.cloud_book_cover_width), ResManager.getInteger(R.integer.cloud_book_cover_height));
                         action.execute(ReaderDocumentCoverAction.initReaderDataHolder(data.getPath()), null);
                     }
+                }
+
+                String oldFilePath = intent.getStringExtra(Constants.MTP_EXTRA_TAG_OLD_FILE_PATH);
+                if (StringUtils.isNotBlank(oldFilePath) && SupportType.getDocumentExtension().contains(FileUtils.getFileExtension(oldFilePath))) {
+                    mtpBuffer.add(oldFilePath);
                 }
             }
         });

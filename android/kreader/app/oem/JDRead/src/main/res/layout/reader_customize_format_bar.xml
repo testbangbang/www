@@ -5,7 +5,7 @@
 
         <import type="android.view.View" />
 
-        <import type="com.onyx.jdread.reader.menu.model.ReaderMarginModel" />
+        <import type="com.onyx.jdread.reader.menu.common.ReaderConfig" />
 
         <variable
             name="readerMarginModel"
@@ -38,7 +38,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_ONE?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderConfig.SETTING_ONE_STYLE_KEY?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
                     android:onClick="@{()->readerMarginModel.onLineSpacingOneClick()}"
                     android:text="@string/reader_font_size_one" />
 
@@ -46,7 +46,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_TWO?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderConfig.SETTING_TWO_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onLineSpacingTwoClick()}"
                     android:text="@string/reader_font_size_two" />
 
@@ -54,7 +54,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_THREE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderConfig.SETTING_THREE_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onLineSpacingThreeClick()}"
                     android:text="@string/reader_font_size_three" />
 
@@ -62,7 +62,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_FOUR?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderConfig.SETTING_FOUR_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onLineSpacingFourClick()}"
                     android:text="@string/reader_font_size_four" />
 
@@ -70,7 +70,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_FIVE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderConfig.SETTING_FIVE_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onLineSpacingFiveClick()}"
                     android:text="@string/reader_font_size_five" />
 
@@ -78,7 +78,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.lineSpacing == ReaderMarginModel.LINE_SPACING_SIX?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
+                    android:background="@{readerMarginModel.lineSpacing == ReaderConfig.SETTING_SIX_STYLE_KEY?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
                     android:onClick="@{()->readerMarginModel.onLineSpacingSixClick()}"
                     android:text="@string/reader_font_size_six" />
             </LinearLayout>
@@ -97,7 +97,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_ONE?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderConfig.SETTING_ONE_STYLE_KEY?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
                     android:onClick="@{()->readerMarginModel.onParagraphSpacingOneClick()}"
                     android:text="@string/reader_font_size_one" />
 
@@ -105,7 +105,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_TWO?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderConfig.SETTING_TWO_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onParagraphSpacingTwoClick()}"
                     android:text="@string/reader_font_size_two" />
 
@@ -113,7 +113,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_THREE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderConfig.SETTING_THREE_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onParagraphSpacingThreeClick()}"
                     android:text="@string/reader_font_size_three" />
 
@@ -121,7 +121,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_FOUR?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderConfig.SETTING_FOUR_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onParagraphSpacingFourClick()}"
                     android:text="@string/reader_font_size_four" />
 
@@ -129,7 +129,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_FIVE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderConfig.SETTING_FIVE_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onParagraphSpacingFiveClick()}"
                     android:text="@string/reader_font_size_five" />
 
@@ -137,7 +137,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.paragraphSpacing == ReaderMarginModel.PARAGRAPH_SPACING_SIX?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
+                    android:background="@{readerMarginModel.paragraphSpacing == ReaderConfig.SETTING_SIX_STYLE_KEY?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
                     android:onClick="@{()->readerMarginModel.onParagraphSpacingSixClick()}"
                     android:text="@string/reader_font_size_six" />
             </LinearLayout>
@@ -156,7 +156,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_ONE?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderConfig.SETTING_ONE_STYLE_KEY?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
                     android:onClick="@{()->readerMarginModel.onUpAndDownSpacingOneClick()}"
                     android:text="@string/reader_font_size_one" />
 
@@ -164,7 +164,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_TWO?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderConfig.SETTING_TWO_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onUpAndDownSpacingTwoClick()}"
                     android:text="@string/reader_font_size_two" />
 
@@ -172,7 +172,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_THREE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderConfig.SETTING_THREE_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onUpAndDownSpacingThreeClick()}"
                     android:text="@string/reader_font_size_three" />
 
@@ -180,7 +180,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_FOUR?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderConfig.SETTING_FOUR_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onUpAndDownSpacingFourClick()}"
                     android:text="@string/reader_font_size_four" />
 
@@ -188,7 +188,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_FIVE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderConfig.SETTING_FIVE_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onUpAndDownSpacingFiveClick()}"
                     android:text="@string/reader_font_size_five" />
 
@@ -196,7 +196,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderMarginModel.UP_AND_DOWN_SPACING_SIX?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
+                    android:background="@{readerMarginModel.upAndDownSpacing == ReaderConfig.SETTING_SIX_STYLE_KEY?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
                     android:onClick="@{()->readerMarginModel.onUpAndDownSpacingSixClick()}"
                     android:text="@string/reader_font_size_six" />
             </LinearLayout>
@@ -215,7 +215,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_ONE?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderConfig.SETTING_ONE_STYLE_KEY?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
                     android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingOneClick()}"
                     android:text="@string/reader_font_size_one" />
 
@@ -223,7 +223,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_TWO?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderConfig.SETTING_TWO_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingTwoClick()}"
                     android:text="@string/reader_font_size_two" />
 
@@ -231,7 +231,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_THREE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderConfig.SETTING_THREE_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingThreeClick()}"
                     android:text="@string/reader_font_size_three" />
 
@@ -239,7 +239,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_FOUR?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderConfig.SETTING_FOUR_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingFourClick()}"
                     android:text="@string/reader_font_size_four" />
 
@@ -247,7 +247,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_FIVE?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderConfig.SETTING_FIVE_STYLE_KEY?@drawable/reader_text_item_center_selected:@drawable/reader_text_item_center_default}"
                     android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingFiveClick()}"
                     android:text="@string/reader_font_size_five" />
 
@@ -255,7 +255,7 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontSizeStyle"
-                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderMarginModel.LEFT_AND_RIGHT_SPACING_SIX?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
+                    android:background="@{readerMarginModel.leftAndRightSpacing == ReaderConfig.SETTING_SIX_STYLE_KEY?@drawable/reader_text_item_right_selected:@drawable/reader_text_item_right_default}"
                     android:onClick="@{()->readerMarginModel.onLeftAndRightSpacingSixClick()}"
                     android:text="@string/reader_font_size_six" />
             </LinearLayout>

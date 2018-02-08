@@ -29,7 +29,7 @@ public class SettingLeftAndRightSpacingAction extends BaseReaderAction {
         leftMargin.setPercent(margin);
         ReaderTextStyle.Percentage rightMargin = pageMargin.getRightMargin();
         rightMargin.setPercent(margin);
-        final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(),style);
+        final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(),style,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

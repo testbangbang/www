@@ -5,6 +5,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 
@@ -13,19 +14,23 @@ import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
  */
 
 public class SettingFontSizeAction extends BaseReaderAction {
-    private int fontSize;
+    private int styleIndex;
     private ReaderTextStyle style;
 
-    public SettingFontSizeAction(ReaderTextStyle style,int fontSize) {
-        this.fontSize = fontSize;
+    public SettingFontSizeAction(ReaderTextStyle style,int styleIndex) {
+        this.styleIndex = styleIndex;
         this.style = style;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        ReaderTextStyle.SPUnit oldFontSize = style.getFontSize();
-        oldFontSize.setValue(fontSize);
-        final  SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(),style);
+        ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
+
+        style.setFontSize(presetStyle.getFontSize());
+        style.setLineSpacing(presetStyle.getLineSpacing());
+        style.setPageMargin(presetStyle.getPageMargin());
+
+        final  SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(), this.style,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

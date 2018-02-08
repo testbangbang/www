@@ -13,6 +13,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.event.CopyrightNoticeEvent;
+import com.onyx.jdread.setting.event.DeviceModelEvent;
 import com.onyx.jdread.setting.event.ResetDeviceEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,6 +33,7 @@ public class DeviceInformationModel extends Observable {
         titleBarModel.backEvent.set(new BackToDeviceConfigFragment());
         ItemModel itemModel = new ItemModel(eventBus);
         itemModel.text.set(String.format(JDReadApplication.getInstance().getString(R.string.device_model_format), Build.MODEL));
+        itemModel.event.set(new DeviceModelEvent());
         list.add(itemModel);
         itemModel = new ItemModel(eventBus);
         itemModel.text.set(String.format(JDReadApplication.getInstance().getString(R.string.device_version_format), Build.DISPLAY));

@@ -17,12 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_LARGE;
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_MEDIUM;
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_SMALL;
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_XX_LARGE;
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_X_LARGE;
-import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE_X_SMALL;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_LARGE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_MEDIUM;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_SMALL;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_XX_LARGE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_X_LARGE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_X_SMALL;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,7 +36,7 @@ import static com.onyx.jdread.reader.menu.common.ReaderConfig.FontSize.FONT_SIZE
  */
 public class ReaderSelectionHelper {
     private Map<String, SelectionInfo> readerSelectionInfos = new HashMap<>();
-    private int currentFontSize = ReaderConfig.FontSize.DEFAULT_FONT_SIZE;
+    private int currentFontSize = FONT_SIZE_MEDIUM;
     private int chooseLeftIcon = R.mipmap.ic_choose_left;
     private int chooseRightIcon = R.mipmap.ic_choose_right;
 

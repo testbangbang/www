@@ -41,6 +41,7 @@
 				left: 0;
 				position: absolute;
 				opacity: 0;
+				filter:alpha(opacity=0);/ 兼容IE /
 			}
 			.upload-file>table{
 				width: 100%;
@@ -92,6 +93,10 @@
             xhr.upload.onprogress = function (event) {
                 var percent = (event.loaded / event.total * 100).toFixed(0) + '%';
                 document.querySelector('#_' + file.id).innerHTML = percent;
+            };
+            xhr.upload.onerror = function () {
+                document.querySelector('#_' + file.id).innerHTML = "失败";
+                alert("上传失败");
             };
             var data = new FormData();
             data.append('file', file, file.name);

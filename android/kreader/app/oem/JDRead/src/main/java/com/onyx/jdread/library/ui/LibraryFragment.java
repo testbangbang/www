@@ -2,6 +2,10 @@ package com.onyx.jdread.library.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +36,7 @@ import com.onyx.jdread.library.action.LibraryRenameAction;
 import com.onyx.jdread.library.action.MetadataDeleteAction;
 import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
+import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.event.BookDetailEvent;
 import com.onyx.jdread.library.event.DeleteBookEvent;
 import com.onyx.jdread.library.event.HideAllDialogEvent;
@@ -65,6 +70,7 @@ import com.onyx.jdread.personal.ui.PersonalBookFragment;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
+import com.onyx.jdread.shop.ui.ShopFragment;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -150,6 +156,9 @@ public class LibraryFragment extends BaseFragment {
         if (libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() > 0 && libraryDataBundle.getLibraryViewDataModel().items.size() == 0) {
             processBackRequest();
         }
+        if (libraryDataBundle.getLibraryViewDataModel().count.get() == 0 && isMultiSelectionMode()) {
+            quitMultiSelectionMode();
+        }
     }
 
     private void updateContentView() {
@@ -197,6 +206,16 @@ public class LibraryFragment extends BaseFragment {
                 nextPage();
             }
         });
+
+        SpannableString spannableString = new SpannableString(ResManager.getString(R.string.empty_library_prompt));
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                viewEventCallBack.gotoView(ShopFragment.class.getName());
+            }
+        }, ResManager.getInteger(R.integer.empty_library_prompt_clickable_start), ResManager.getInteger(R.integer.empty_library_prompt_clickable_end), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        libraryBinding.emptyLibraryPrompt.setText(spannableString);
+        libraryBinding.emptyLibraryPrompt.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void initPageIndicator() {
@@ -379,7 +398,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onSortByTimeEvent(SortByTimeEvent event) {
-        libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.LastOpenTime, SortOrder.Desc);
+        libraryDataBundle.getLibraryViewDataModel().updateSortBy(SortBy.UpdateTime, SortOrder.Desc);
         loadData(libraryDataBundle.getLibraryViewDataModel().gotoPage(0), false, false);
     }
 
@@ -396,6 +415,14 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onMyBookEvent(MyBookEvent event) {
         checkLogin(PersonalBookFragment.class.getName());
+    }
+
+    @Subscribe
+    public void onBackToRootFragment(BackToRootFragment event) {
+        if (!CollectionUtils.isNullOrEmpty(libraryDataBundle.getLibraryViewDataModel().libraryPathList)) {
+            removeLastParentLibrary();
+            backToParentLibraryPage();
+        }
     }
 
     private void checkLogin(String name) {

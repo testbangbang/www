@@ -54,36 +54,35 @@ public class DownloadPackageAction {
         BaseDownloadTask task = getDownLoaderManager().download(JDReadApplication.getInstance(), url, filePath, tag, new BaseCallback() {
             @Override
             public void start(BaseRequest request) {
-                if (callback != null) {
-                    callback.start(request);
-                }
+                BaseCallback.invokeStart(callback, request);
             }
 
             @Override
             public void progress(BaseRequest request, ProgressInfo info) {
-                if (callback != null) {
-                    callback.progress(request, info);
-                }
+                BaseCallback.invokeProgress(callback, request, info);
             }
 
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    if (e instanceof ConnectException || e instanceof IOException) {
-                        ToastUtil.showToast(ResManager.getString(R.string.network_exception));
-                    } else {
-                        ToastUtil.showToast(e.getMessage());
-                    }
-                    return;
-                }
-                if (callback != null) {
-                    callback.done(request, e);
-                }
                 removeDownloadTask();
+                checkDownloadException(e);
+                BaseCallback.invoke(callback, request, e);
             }
         });
         getDownLoaderManager().addTask(tag, task);
         getDownLoaderManager().startDownload(task);
+    }
+
+    private boolean checkDownloadException(Throwable e) {
+        if (e == null) {
+            return false;
+        }
+        if (e instanceof ConnectException || e instanceof IOException) {
+            ToastUtil.showToast(ResManager.getString(R.string.network_exception));
+        } else {
+            ToastUtil.showToast(e.getMessage());
+        }
+        return true;
     }
 
     private boolean isTaskDownloading(Object tag) {

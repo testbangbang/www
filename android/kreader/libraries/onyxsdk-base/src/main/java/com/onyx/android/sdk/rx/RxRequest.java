@@ -26,7 +26,7 @@ public abstract class RxRequest<T extends RxRequest> implements Callable<T> {
 
     private Benchmark benchmark;
     private WakeLockHolder wakeLockHolder;
-    private boolean enableWakeLock = false;
+    private boolean enableWakeLock = true;
     private AtomicBoolean abort = new AtomicBoolean(false);
 
     private static boolean enableBenchmarkDebug = false;

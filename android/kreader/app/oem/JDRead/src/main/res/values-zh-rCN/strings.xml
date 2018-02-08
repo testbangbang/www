@@ -186,7 +186,7 @@
     <string name="top_up">充值</string>
     <string name="consumption_record">消费记录</string>
     <string name="paid_record">充值记录</string>
-    <string name="read_vip">畅读VIP</string>
+    <string name="read_vip">JoyRead会员</string>
     <string name="points_for">积分兑换</string>
     <string name="top_up_tips">1元=100阅豆，首次充值返等值代金券</string>
     <string name="current_balance">当前余额：%1$d阅豆 | %2$d代金券</string>
@@ -254,7 +254,7 @@
     <string name="device_store_format">存储信息： 剩余%1$sGB/共%2$dGB</string>
     <string name="copyright_notice_and_terms_of_service">版权声明与服务条款</string>
     <string name="reset">恢复出厂设置</string>
-    <string name="points_for_tips">兑换%1$s畅读VIP将扣除%2$s，是否进行兑换？</string>
+    <string name="points_for_tips">兑换%1$sJoyRead将扣除%2$s，是否进行兑换？</string>
     <string name="current_points">当前积分：%1$d</string>
     <string name="receive_gift_package_tips">是否使用当前登录账号领取%1$s？</string>
     <string name="sign_in_vouchers">签到(+5代金券)</string>
@@ -307,7 +307,7 @@
     <string name="subject_list_sort_type_price">价格</string>
     <string name="subject_list_sort_type_newest">最新</string>
     <string name="subject_list_filter">筛选</string>
-    <string name="subject_list_just_vip">VIP会员</string>
+    <string name="subject_list_just_vip">JoyRead会员</string>
     <string name="downloading_progress">下载中 %d</string>
     <string name="paused">已暂停 %d</string>
     <string name="total_book">共%d本书</string>
@@ -331,9 +331,9 @@
     <string name="feedback_success">反馈成功</string>
     <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
     <string name="buy_book_success">购买成功 </string>
-    <string name="buy_read_vip">购买畅读VIP</string>
-    <string name="not_open_vip">还未开通畅读VIP</string>
-    <string name="read_vip_instructions">畅读VIP须知</string>
+    <string name="buy_read_vip">购买JoyRead会员</string>
+    <string name="not_open_vip">还未开通JoyRead会员</string>
+    <string name="read_vip_instructions">JoyRead会员须知</string>
     <string name="ten">￥10.00</string>
     <string name="thirty">￥30.00</string>
     <string name="fifty">￥50.00</string>
@@ -425,6 +425,9 @@
     <string name="morning">上午</string>
     <string name="afternoon">下午</string>
     <string name="updating">正在进行系统更新，请稍后...</string>
+    <string name="updating_package_model_no_match">系统更新包型号不匹配</string>
+    <string name="updating_package_parse_failed">系统更新包解析失败</string>
+    <string name="updating_package_install_failed">系统更新包安装失败</string>
     <string name="power_off_prompt">您确定关闭阅读器吗?</string>
     <string name="speed_refresh_is_opened">极速翻页已开启</string>
     <string name="speed_refresh_is_closed">极速翻页已关闭</string>
@@ -443,6 +446,11 @@
     <string name="category_boy">男生</string>
     <string name="category_girl">女生</string>
     <string name="unassociated_impression_notes">未关联印象笔记</string>
+    <string name="quit_wifi_pass_book">已退出WiFi传书</string>
+    <string name="wifi_pass_book_failed">传书失败</string>
+    <string name="wifi_pass_book_failed_network_exception">网络异常,传书失败</string>
+    <string name="empty_library_prompt">暂无图书, 请去 我的书店 下载</string>
+    <string name="forgot_psw">忘记密码</string>
     <string name="dialog_pay_order_book_price">价格: %1$d阅豆</string>
     <string name="dialog_pay_order_cur_balance">当前余额: %1$d阅豆/%2$d代金券</string>
     <string name="dialog_pay_order_pay_type">付款方式:</string>
