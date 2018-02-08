@@ -56,17 +56,17 @@ public class ReaderBookInfoDialogHandler {
 
     @Subscribe
     public void onTabCatalogClickEvent(TabCatalogClickEvent event){
-
+        readerBookInfoViewBack.changeTab();
     }
 
     @Subscribe
     public void onTabBookmarkClickEvent(TabBookmarkClickEvent event){
-
+        readerBookInfoViewBack.changeTab();
     }
 
     @Subscribe
     public void onTabNoteClickEvent(TabNoteClickEvent event){
-
+        readerBookInfoViewBack.changeTab();
     }
 
     @Subscribe

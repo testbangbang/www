@@ -25,7 +25,7 @@ public class SettingParagraphSpacingAction extends BaseReaderAction {
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         ReaderTextStyle.Percentage oldParagraphSpacing = style.getParagraphSpacing();
         oldParagraphSpacing.setPercent(paragraphSpacing);
-        final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(),style);
+        final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(),style,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

@@ -408,7 +408,7 @@ public class ReaderHelper {
     /**
      * collect all options from reader components to BaseOptions.
      */
-    public void saveOptions() {
+    public void saveOptions(final SettingInfo settingInfo) {
         if (!isReaderLayoutManagerCreated()) {
             return;
         }
@@ -424,13 +424,13 @@ public class ReaderHelper {
             getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
 
             final ReaderTextStyle style = layoutManager.getTextStyleManager().getStyle();
-            saveReaderTextStyle(style);
+            saveReaderTextStyle(style,settingInfo);
         } catch (Exception e) {
 
         }
     }
 
-    private void saveReaderTextStyle(final ReaderTextStyle style) {
+    private void saveReaderTextStyle(final ReaderTextStyle style,final SettingInfo settingInfo) {
         if (style == null) {
             return;
         }
@@ -443,8 +443,7 @@ public class ReaderHelper {
         getDocumentOptions().setTopMargin(style.getPageMargin().getTopMargin().getPercent());
         getDocumentOptions().setRightMargin(style.getPageMargin().getRightMargin().getPercent());
         getDocumentOptions().setBottomMargin(style.getPageMargin().getBottomMargin().getPercent());
-
-        ReaderConfig.saveUserSetting(style);
+        ReaderConfig.saveUserSetting(style,settingInfo);
         ReaderConfig.setReaderChineseConvertType(getDocumentOptions().getChineseConvertType());
         ReaderConfig.setEmboldenLevel(getDocumentOptions().getEmboldenLevel());
     }

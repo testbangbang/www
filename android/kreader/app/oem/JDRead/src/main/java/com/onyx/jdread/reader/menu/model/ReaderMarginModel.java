@@ -5,6 +5,7 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.jdread.reader.data.SettingInfo;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.SettingLeftAndRightSpacingEvent;
 import com.onyx.jdread.reader.menu.event.SettingLineSpacingEvent;
@@ -18,59 +19,24 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ReaderMarginModel {
-    public final ObservableInt lineSpacing = new ObservableInt(DEFAULT_LINE_SPACING);
-    public final ObservableInt paragraphSpacing = new ObservableInt(DEFAULT_PARAGRAPH_SPACING);
-    public final ObservableInt leftAndRightSpacing = new ObservableInt(DEFAULT_LEFT_AND_RIGHT_SPACING);
-    public final ObservableInt upAndDownSpacing = new ObservableInt(DEFAULT_UP_AND_DOWN_SPACING);
-
-
-    public static final int LINE_SPACING_ONE = 18  + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int LINE_SPACING_TWO = 21  + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int LINE_SPACING_THREE = 24 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int LINE_SPACING_FOUR = 27 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int LINE_SPACING_FIVE = 29 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int LINE_SPACING_SIX = 32 + ReaderTextStyle.SMALL_LINE_SPACING.getPercent();
-    public static final int DEFAULT_LINE_SPACING = LINE_SPACING_TWO;
-
-    public static final int PARAGRAPH_SPACING_ONE = 20;
-    public static final int PARAGRAPH_SPACING_TWO = 50;
-    public static final int PARAGRAPH_SPACING_THREE = 80;
-    public static final int PARAGRAPH_SPACING_FOUR = 110;
-    public static final int PARAGRAPH_SPACING_FIVE = 140;
-    public static final int PARAGRAPH_SPACING_SIX = 170;
-    public static final int DEFAULT_PARAGRAPH_SPACING = PARAGRAPH_SPACING_THREE;
-
-    public static final int  LEFT_AND_RIGHT_SPACING_ONE = 3;
-    public static final int  LEFT_AND_RIGHT_SPACING_TWO = 6;
-    public static final int LEFT_AND_RIGHT_SPACING_THREE = 9;
-    public static final int LEFT_AND_RIGHT_SPACING_FOUR = 12;
-    public static final int  LEFT_AND_RIGHT_SPACING_FIVE = 15;
-    public static final int LEFT_AND_RIGHT_SPACING_SIX = 18;
-    public static final int DEFAULT_LEFT_AND_RIGHT_SPACING = LEFT_AND_RIGHT_SPACING_FOUR;
-
-    public static final int UP_AND_DOWN_SPACING_ONE = 3;
-    public static final int UP_AND_DOWN_SPACING_TWO = 6;
-    public static final int UP_AND_DOWN_SPACING_THREE = 9;
-    public static final int UP_AND_DOWN_SPACING_FOUR = 12;
-    public static final int UP_AND_DOWN_SPACING_FIVE = 15;
-    public static final int UP_AND_DOWN_SPACING_SIX = 18;
-    public static final int DEFAULT_UP_AND_DOWN_SPACING = UP_AND_DOWN_SPACING_THREE;
-
-
+    public final ObservableInt lineSpacing = new ObservableInt(ReaderConfig.DEFAULT_CUSTOM_LINE_SPACING);
+    public final ObservableInt paragraphSpacing = new ObservableInt(ReaderConfig.DEFAULT_CUSTOM_PARAGRAPH_SPACING);
+    public final ObservableInt leftAndRightSpacing = new ObservableInt(ReaderConfig.DEFAULT_CUSTOM_LEFTANDRIGHT_MARGIN);
+    public final ObservableInt upAndDownSpacing = new ObservableInt(ReaderConfig.DEFAULT_CUSTOM_TOPANDBOTTOM_MARGIN);
+    private SettingInfo settingInfo;
     private EventBus eventBus;
 
-    public ReaderMarginModel(EventBus eventBus, ReaderTextStyle style) {
+    public ReaderMarginModel(EventBus eventBus, SettingInfo settingInfo) {
         this.eventBus = eventBus;
-        setDefaultStyle(style);
+        setDefaultStyle(settingInfo);
     }
 
-    private void setDefaultStyle(ReaderTextStyle style){
-        if(style != null) {
-            setLineSpacing(style.getLineSpacing().getPercent());
-            setParagraphSpacing(style.getParagraphSpacing().getPercent());
-            setUpAndDownSpacing(style.getPageMargin().getTopMargin().getPercent());
-            setLeftAndRightSpacing(style.getPageMargin().getLeftMargin().getPercent());
-        }
+    private void setDefaultStyle(SettingInfo settingInfo) {
+        setLineSpacing(settingInfo.customLineSpacing);
+        setParagraphSpacing(settingInfo.customParagraphSpacing);
+        setUpAndDownSpacing(settingInfo.customTopAndBottomMargin);
+        setLeftAndRightSpacing(settingInfo.customLeftAndRightMargin);
+        this.settingInfo = settingInfo;
     }
 
     public EventBus getEventBus() {
@@ -97,27 +63,27 @@ public class ReaderMarginModel {
     }
 
     public void onLineSpacingOneClick() {
-        setLineSpacingProgress(LINE_SPACING_ONE);
+        setLineSpacingProgress(ReaderConfig.SETTING_ONE_STYLE_KEY);
     }
 
     public void onLineSpacingTwoClick() {
-        setLineSpacing(LINE_SPACING_TWO);
+        setLineSpacingProgress(ReaderConfig.SETTING_TWO_STYLE_KEY);
     }
 
     public void onLineSpacingThreeClick() {
-        setLineSpacingProgress(LINE_SPACING_THREE);
+        setLineSpacingProgress(ReaderConfig.SETTING_THREE_STYLE_KEY);
     }
 
     public void onLineSpacingFourClick() {
-        setLineSpacing(LINE_SPACING_FOUR);
+        setLineSpacingProgress(ReaderConfig.SETTING_FOUR_STYLE_KEY);
     }
 
     public void onLineSpacingFiveClick() {
-        setLineSpacingProgress(LINE_SPACING_FIVE);
+        setLineSpacingProgress(ReaderConfig.SETTING_FIVE_STYLE_KEY);
     }
 
     public void onLineSpacingSixClick() {
-        setLineSpacingProgress(LINE_SPACING_SIX);
+        setLineSpacingProgress(ReaderConfig.SETTING_SIX_STYLE_KEY);
     }
 
     public void setLineSpacingProgress(int lineSpacing) {
@@ -125,8 +91,12 @@ public class ReaderMarginModel {
             return;
         }
         setLineSpacing(lineSpacing);
+
+        settingInfo.settingType = ReaderConfig.SETTING_TYPE_CUSTOM;
+        settingInfo.customLineSpacing = lineSpacing;
+
         SettingLineSpacingEvent event = new SettingLineSpacingEvent();
-        event.margin = lineSpacing;
+        event.margin = ReaderConfig.customLineSpacing.get(lineSpacing);
         getEventBus().post(event);
     }
 
@@ -139,36 +109,40 @@ public class ReaderMarginModel {
     }
 
     public void onParagraphSpacingOneClick() {
-        setSegmentProgress(PARAGRAPH_SPACING_ONE);
+        applyParagraphSpacing(ReaderConfig.SETTING_ONE_STYLE_KEY);
     }
 
     public void onParagraphSpacingTwoClick() {
-        setSegmentProgress(PARAGRAPH_SPACING_TWO);
+        applyParagraphSpacing(ReaderConfig.SETTING_TWO_STYLE_KEY);
     }
 
     public void onParagraphSpacingThreeClick() {
-        setSegmentProgress(PARAGRAPH_SPACING_THREE);
+        applyParagraphSpacing(ReaderConfig.SETTING_THREE_STYLE_KEY);
     }
 
     public void onParagraphSpacingFourClick() {
-        setSegmentProgress(PARAGRAPH_SPACING_FOUR);
+        applyParagraphSpacing(ReaderConfig.SETTING_FOUR_STYLE_KEY);
     }
 
     public void onParagraphSpacingFiveClick() {
-        setSegmentProgress(PARAGRAPH_SPACING_FIVE);
+        applyParagraphSpacing(ReaderConfig.SETTING_FIVE_STYLE_KEY);
     }
 
     public void onParagraphSpacingSixClick() {
-        setSegmentProgress(PARAGRAPH_SPACING_SIX);
+        applyParagraphSpacing(ReaderConfig.SETTING_SIX_STYLE_KEY);
     }
 
-    public void setSegmentProgress(int paragraphSpacing) {
-        if(this.paragraphSpacing.get() == paragraphSpacing){
+    public void applyParagraphSpacing(int paragraphSpacing) {
+        if (this.paragraphSpacing.get() == paragraphSpacing) {
             return;
         }
         setParagraphSpacing(paragraphSpacing);
+
+        settingInfo.settingType = ReaderConfig.SETTING_TYPE_CUSTOM;
+        settingInfo.customParagraphSpacing = paragraphSpacing;
+
         SettingParagraphSpacingEvent event = new SettingParagraphSpacingEvent();
-        event.spacing = paragraphSpacing;
+        event.spacing = ReaderConfig.customParagraphSpacing.get(paragraphSpacing);
         getEventBus().post(event);
     }
 
@@ -176,41 +150,46 @@ public class ReaderMarginModel {
         return leftAndRightSpacing;
     }
 
-    public void setLeftAndRightSpacing(int leftAndRightSpacing){
+    public void setLeftAndRightSpacing(int leftAndRightSpacing) {
         this.leftAndRightSpacing.set(leftAndRightSpacing);
     }
 
     public void onLeftAndRightSpacingOneClick() {
-        setLeftAndRightProgress(LEFT_AND_RIGHT_SPACING_ONE);
+        setLeftAndRightProgress(ReaderConfig.SETTING_ONE_STYLE_KEY);
     }
 
     public void onLeftAndRightSpacingTwoClick() {
-        setLeftAndRightProgress(LEFT_AND_RIGHT_SPACING_TWO);
+        setLeftAndRightProgress(ReaderConfig.SETTING_TWO_STYLE_KEY);
     }
 
     public void onLeftAndRightSpacingThreeClick() {
-        setLeftAndRightProgress(LEFT_AND_RIGHT_SPACING_THREE);
+        setLeftAndRightProgress(ReaderConfig.SETTING_THREE_STYLE_KEY);
     }
 
     public void onLeftAndRightSpacingFourClick() {
-        setLeftAndRightProgress(LEFT_AND_RIGHT_SPACING_FOUR);
+        setLeftAndRightProgress(ReaderConfig.SETTING_FOUR_STYLE_KEY);
     }
 
     public void onLeftAndRightSpacingFiveClick() {
-        setLeftAndRightProgress(LEFT_AND_RIGHT_SPACING_FIVE);
+        setLeftAndRightProgress(ReaderConfig.SETTING_FIVE_STYLE_KEY);
     }
 
     public void onLeftAndRightSpacingSixClick() {
-        setLeftAndRightProgress(LEFT_AND_RIGHT_SPACING_SIX);
+        setLeftAndRightProgress(ReaderConfig.SETTING_SIX_STYLE_KEY);
     }
 
     public void setLeftAndRightProgress(int spacing) {
-        if(getLeftAndRightSpacing().get() == spacing){
+        if (getLeftAndRightSpacing().get() == spacing) {
             return;
         }
         setLeftAndRightSpacing(spacing);
+
+        settingInfo.settingType = ReaderConfig.SETTING_TYPE_CUSTOM;
+        settingInfo.customLeftAndRightMargin = spacing;
+
         SettingLeftAndRightSpacingEvent event = new SettingLeftAndRightSpacingEvent();
-        event.margin = spacing;
+        ReaderConfig.LeftAndRight leftAndRight = ReaderConfig.customLeftAndRightMargin.get(spacing);
+        event.margin = leftAndRight.left;
         getEventBus().post(event);
     }
 
@@ -218,41 +197,47 @@ public class ReaderMarginModel {
         return upAndDownSpacing;
     }
 
-    public void setUpAndDownSpacing(int spacing){
+    public void setUpAndDownSpacing(int spacing) {
         this.upAndDownSpacing.set(spacing);
     }
 
     public void onUpAndDownSpacingOneClick() {
-        setUpAndDownProgress(UP_AND_DOWN_SPACING_ONE);
+        setUpAndDownProgress(ReaderConfig.SETTING_ONE_STYLE_KEY);
     }
 
     public void onUpAndDownSpacingTwoClick() {
-        setUpAndDownProgress(UP_AND_DOWN_SPACING_TWO);
+        setUpAndDownProgress(ReaderConfig.SETTING_TWO_STYLE_KEY);
     }
 
     public void onUpAndDownSpacingThreeClick() {
-        setUpAndDownProgress(UP_AND_DOWN_SPACING_THREE);
+        setUpAndDownProgress(ReaderConfig.SETTING_THREE_STYLE_KEY);
     }
 
     public void onUpAndDownSpacingFourClick() {
-        setUpAndDownProgress(UP_AND_DOWN_SPACING_FOUR);
+        setUpAndDownProgress(ReaderConfig.SETTING_FOUR_STYLE_KEY);
     }
 
     public void onUpAndDownSpacingFiveClick() {
-        setUpAndDownProgress(UP_AND_DOWN_SPACING_FIVE);
+        setUpAndDownProgress(ReaderConfig.SETTING_FIVE_STYLE_KEY);
     }
 
     public void onUpAndDownSpacingSixClick() {
-        setUpAndDownProgress(UP_AND_DOWN_SPACING_SIX);
+        setUpAndDownProgress(ReaderConfig.SETTING_SIX_STYLE_KEY);
     }
 
     public void setUpAndDownProgress(int spacing) {
-        if(this.upAndDownSpacing.get() == spacing){
+        if (this.upAndDownSpacing.get() == spacing) {
             return;
         }
         setUpAndDownSpacing(spacing);
+
+        settingInfo.settingType = ReaderConfig.SETTING_TYPE_CUSTOM;
+        settingInfo.customTopAndBottomMargin = spacing;
+
         SettingUpAndDownSpacingEvent event = new SettingUpAndDownSpacingEvent();
-        event.margin = spacing;
+        ReaderConfig.TopAndBottom topAndBottom = ReaderConfig.customTopAndBottomMargin.get(spacing);
+        event.top = topAndBottom.top;
+        event.bottom = topAndBottom.bottom;
         getEventBus().post(event);
     }
 }

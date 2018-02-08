@@ -21,7 +21,7 @@ public class GammaCorrectionAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        final GammaCorrectionRequest request = new GammaCorrectionRequest(readerDataHolder.getReader(),gammaInfo);
+        final GammaCorrectionRequest request = new GammaCorrectionRequest(readerDataHolder.getReader(),gammaInfo,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

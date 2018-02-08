@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.catalog.model;
 
+import android.content.Context;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
@@ -11,11 +12,14 @@ import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.catalog.event.TabBookmarkClickEvent;
 import com.onyx.jdread.reader.catalog.event.TabCatalogClickEvent;
 import com.onyx.jdread.reader.catalog.event.TabNoteClickEvent;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -92,11 +96,12 @@ public class ReaderBookInfoModel {
     }
 
     public void setNotes(List<Annotation> annotationList) {
+        String content = ResManager.getString(R.string.reader_content);
         for (Annotation annotation : annotationList) {
             NoteModel noteModel = new NoteModel();
-            noteModel.setChapter(annotation.getChapterName());
+            noteModel.setChapter(ReaderViewUtil.trim(annotation.getChapterName()));
             noteModel.setNote(annotation.getNote());
-            noteModel.setContent(annotation.getQuote());
+            noteModel.setContent(content + annotation.getQuote());
             noteModel.setPosition(annotation.getPosition());
             Date date = new Date(annotation.getCreatedAt().getTime());
             noteModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));

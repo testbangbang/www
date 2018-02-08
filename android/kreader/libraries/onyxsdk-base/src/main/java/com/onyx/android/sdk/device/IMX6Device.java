@@ -68,6 +68,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodScreenshot = null;
     private static Method sMethodSupportRegal = null;
     private static Method sMethodEnableRegal = null;
+    private static Method sMethodApplyGcOnce = null;
 
     private static Method sMethodMoveTo = null;
     private static Method sMethodMoveToView = null;
@@ -811,6 +812,7 @@ public class IMX6Device extends BaseDevice {
             // signature of "public void invalidate(int updateMode)"
             sMethodGetViewDefaultUpdateMode = ReflectUtil.getMethodSafely(cls, "getDefaultUpdateMode");
             sMethodResetViewUpdateMode = ReflectUtil.getMethodSafely(cls, "resetUpdateMode");
+            sMethodApplyGcOnce = ReflectUtil.getMethodSafely(cls, "applyGCOnce");
 
             // signature of "public void invalidate(int updateMode)"
             sMethodGetSystemDefaultUpdateMode = ReflectUtil.getMethodSafely(cls, "getGlobalUpdateMode");
@@ -1209,5 +1211,10 @@ public class IMX6Device extends BaseDevice {
     @Override
     public void shutdown() {
         ReflectUtil.invokeMethodSafely(sMethodShutdown, null);
+    }
+
+    @Override
+    public void applyGCOnce() {
+        ReflectUtil.invokeMethodSafely(sMethodApplyGcOnce, null);
     }
 }
