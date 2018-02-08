@@ -30,7 +30,12 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargeStatusBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.event.GetRechargePollEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.shop.action.PayByReadBeanAction;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.event.BuyBookSuccessEvent;
+import com.onyx.jdread.shop.event.ConfirmPayClickEvent;
 import com.onyx.jdread.shop.model.PayOrderViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
@@ -39,7 +44,12 @@ import com.onyx.jdread.util.Utils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by li on 2017/12/29.
@@ -95,7 +105,7 @@ public class TopUpDialog extends DialogFragment {
 
     private void initData() {
         Bundle arguments = getArguments();
-        PayOrderViewModel payOrderViewModel = ShopDataBundle.getInstance().getPayOrderViewModel();
+        PayOrderViewModel payOrderViewModel = getPayOrderViewModel();
         if (arguments != null) {
             int payDialogType = arguments.getInt(Constants.PAY_DIALOG_TYPE);
             if (payDialogType == Constants.PAY_DIALOG_TYPE_PAY_ORDER) {
@@ -105,14 +115,21 @@ public class TopUpDialog extends DialogFragment {
                 payOrderViewModel.setUserInfo(PersonalDataBundle.getInstance().getUserInfo());
                 binding.setOrderModel(payOrderViewModel);
                 binding.setUserInfo(PersonalDataBundle.getInstance().getUserInfo());
+                changePayButtonState(payOrderViewModel);
             } else {
-                binding.payOrder.getRoot().setVisibility(View.GONE);
-                binding.dialogTopUpDetailLayout.getRoot().setVisibility(View.VISIBLE);
-                payOrderViewModel.title.set(ResManager.getString(R.string.top_up));
+                setVisible(R.id.dialog_top_up_detail_layout);
                 binding.setOrderModel(payOrderViewModel);
                 getTopUpValue();
             }
         }
+    }
+
+    private void changePayButtonState(PayOrderViewModel payOrderViewModel) {
+        payOrderViewModel.confirmButtonText.set(payOrderViewModel.getOrderInfo().need_recharge ? ResManager.getString(R.string.pay_dialog_insufficient_balance) : ResManager.getString(R.string.dialog_pay_order_confirm_pay));
+    }
+
+    private PayOrderViewModel getPayOrderViewModel(){
+        return ShopDataBundle.getInstance().getPayOrderViewModel();
     }
 
     private void getTopUpValue() {
@@ -178,6 +195,13 @@ public class TopUpDialog extends DialogFragment {
         binding.dialogTopUpDetailLayout.dialogTopUpDetail.setVisibility(R.id.dialog_top_up_detail_layout == id ? View.VISIBLE : View.GONE);
         binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode.setVisibility(R.id.dialog_top_up_qr_code_layout == id ? View.VISIBLE : View.GONE);
         binding.dialogTopUpSuccessLayout.dialogTopUpSuccess.setVisibility(R.id.dialog_top_up_success_layout == id ? View.VISIBLE : View.GONE);
+        binding.payOrder.dialogPayOrder.setVisibility(R.id.dialog_pay_order == id ? View.VISIBLE : View.GONE);
+        if (R.id.dialog_pay_order == id) {
+            getPayOrderViewModel().title.set(ResManager.getString(R.string.payment_order));
+        }
+        if (R.id.dialog_top_up_detail_layout == id) {
+            getPayOrderViewModel().title.set(ResManager.getString(R.string.top_up));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -191,6 +215,66 @@ public class TopUpDialog extends DialogFragment {
                     getRechargePollEvent.setPollTime(0);
                     setVisible(R.id.dialog_top_up_success_layout);
                 }
+            }
+        });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConfirmPayClickEvent(ConfirmPayClickEvent event) {
+        if (getPayOrderViewModel().getOrderInfo().need_recharge) {
+            setVisible(R.id.dialog_top_up_detail_layout);
+        } else {
+            int checkedRadioButtonId = binding.payOrder.paymentRadioGroup.getCheckedRadioButtonId();
+            if (checkedRadioButtonId == R.id.payment_read_bean) {
+                payByReadBean();
+            } else {
+                payByCash();
+            }
+        }
+    }
+
+    private void payByCash() {
+        String url = CloudApiContext.getJDBooxBaseUrl() + CloudApiContext.ReadBean.PAY_BY_CASH + File.separator + "?" + CloudApiContext.ReadBean.PAY_TOKEN + "=";
+
+
+    }
+
+    private void payByReadBean() {
+        String token = getPayOrderViewModel().getOrderInfo().token;
+        PayByReadBeanAction payByReadBeanAction = new PayByReadBeanAction(token);
+        payByReadBeanAction.execute(ShopDataBundle.getInstance(), new RxCallback<PayByReadBeanAction>() {
+            @Override
+            public void onNext(PayByReadBeanAction action) {
+                BaseResultBean resultBean = action.getResultBean();
+                if (resultBean != null) {
+                    if (resultBean.result_code == Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
+                        getPayOrderViewModel().confirmButtonText.set(ResManager.getString(R.string.pay_success));
+                        binding.payOrder.confirmPay.setBackgroundDrawable(null);
+                        countDownClose();
+                    } else if (resultBean.result_code == Constants.RESULT_PAY_ORDER_INSUFFICIENT_BALANCE) {
+                        getPayOrderViewModel().getOrderInfo().need_recharge = true;
+                        changePayButtonState(getPayOrderViewModel());
+                    } else {
+                        // TODO pay failure
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+        });
+    }
+
+    private void countDownClose() {
+        int delayTime = ResManager.getInteger(R.integer.delay_pay_success_close_pay_dialog);
+        Observable<Long> timer = Observable.timer(delayTime, TimeUnit.SECONDS);
+        timer.subscribe(new Consumer<Long>() {
+            @Override
+            public void accept(Long aLong) throws Exception {
+                getPayOrderViewModel().getEventBus().post(new BuyBookSuccessEvent(""));
+                dismiss();
             }
         });
     }

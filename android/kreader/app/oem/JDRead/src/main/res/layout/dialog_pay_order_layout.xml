@@ -12,7 +12,7 @@
     </data>
 
     <LinearLayout
-        android:id="@+id/dialog_top_up_qr_code"
+        android:id="@+id/dialog_pay_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/top_up_tips_margin_left"
@@ -92,6 +92,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/confirm_pay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dialog_pay_order_confirm_pay_margin_bottom"
@@ -102,7 +103,7 @@
                 android:gravity="center"
                 android:onClick="@{()->orderModel.onConfirmPayClick()}"
                 android:padding="@dimen/dialog_pay_order_confirm_pay_padding"
-                android:text="@string/dialog_pay_order_confirm_pay"
+                android:text="@{orderModel.confirmButtonText}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_size_15" />
 

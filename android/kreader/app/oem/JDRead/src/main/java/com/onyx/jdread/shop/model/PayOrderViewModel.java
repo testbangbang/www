@@ -5,6 +5,7 @@ import android.databinding.ObservableField;
 
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
+import com.onyx.jdread.shop.event.ConfirmPayClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -21,6 +22,7 @@ public class PayOrderViewModel extends BaseObservable {
     }
 
     public final ObservableField<String> title = new ObservableField();
+    public final ObservableField<String> confirmButtonText = new ObservableField();
     private GetOrderInfoResultBean.DataBean orderInfo;
     private UserInfo userInfo;
 
@@ -40,7 +42,11 @@ public class PayOrderViewModel extends BaseObservable {
         this.orderInfo = orderInfo;
     }
 
-    public void onConfirmPayClick() {
+    public EventBus getEventBus() {
+        return eventBus;
+    }
 
+    public void onConfirmPayClick() {
+        getEventBus().post(new ConfirmPayClickEvent());
     }
 }

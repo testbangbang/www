@@ -60,6 +60,7 @@ public class Constants {
     public static final String RESULT_CODE_BOOK_GENERATE_CERT_ERROR = "111";
     public static final String RESULT_CODE_BOOK_GET_CONTENT_ERROR = "112";
     public static final String RESULT_CODE_BOOK_CERIFY_ORDER_ERROR = "116";
+    public static final int RESULT_PAY_ORDER_INSUFFICIENT_BALANCE = 11;
 
     public static final int PASSWORD_MIN_LENGTH = 6;
     public static final String CODE_STATE_THREE = "3";

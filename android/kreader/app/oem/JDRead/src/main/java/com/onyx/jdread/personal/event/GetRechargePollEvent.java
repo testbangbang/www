@@ -16,7 +16,7 @@ public class GetRechargePollEvent {
     public final static int RECHARGE_POLL_WHAT = 0x1000;
     public final static int DEFAULT_DELAY_TIME = 1000;
     public final static int TWO_MILLIS = 2000;
-    public final static int Thirty_MILLIS = 30000;
+    public final static int THIRTY_MILLIS = 30000;
     private RechargeHandler handler;
     public static int pollTime;
 
@@ -59,7 +59,7 @@ public class GetRechargePollEvent {
                 } else if (pollTime < 300 - 30 - 180) {
                     pollTime -= 30;
                     PersonalDataBundle.getInstance().getEventBus().post(getRechargePollEvent);
-                    sendEmptyMessageDelayed(RECHARGE_POLL_WHAT, Thirty_MILLIS);
+                    sendEmptyMessageDelayed(RECHARGE_POLL_WHAT, THIRTY_MILLIS);
                 } else {
                     pollTime--;
                     sendEmptyMessageDelayed(RECHARGE_POLL_WHAT, DEFAULT_DELAY_TIME);
