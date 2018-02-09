@@ -74,11 +74,6 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
         return this;
     }
 
-    private void preloadPreviousScreen(Reader reader) throws Exception{
-        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
-        reader.getReaderHelper().getReaderLayoutManager().prevScreen();
-    }
-
     private void cleanCurrentPageInfo() {
         readerSelectionManager.deletePageSelection(currentPagePosition);
 

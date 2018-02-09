@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
+import com.onyx.jdread.reader.request.PreloadNextScreenRequest;
 import com.onyx.jdread.reader.request.PreviousPageSelectTextRequest;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
@@ -23,6 +24,8 @@ public class PrevPageSelectTextAction extends BaseReaderAction {
             @Override
             public void onNext(Object o) {
                 readerDataHolder.getReaderSelectionInfo().updateSelectInfo(request.getSelectionInfoManager().getReaderSelectionInfos());
+                PreloadNextScreenRequest preloadNextScreenRequest = new PreloadNextScreenRequest(readerDataHolder.getReader());
+                preloadNextScreenRequest.execute(null);
             }
 
             @Override

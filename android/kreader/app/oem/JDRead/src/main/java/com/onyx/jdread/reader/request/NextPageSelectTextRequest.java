@@ -73,11 +73,6 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
         return this;
     }
 
-    private void preloadNextScreen(Reader reader) throws Exception{
-        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
-        reader.getReaderHelper().nextScreen();
-    }
-
     private void updateReaderSelectInfo(String pagePosition,PageInfo pageInfo) {
         readerSelectionManager.update(pagePosition, reader.getReaderHelper().getContext(),
                 getReaderUserDataInfo().getHighlightResult(),
