@@ -1,11 +1,13 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BookCommentsRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import retrofit2.Call;
 
@@ -45,8 +47,8 @@ public class RxRequestGetBookCommentList extends RxBaseCloudRequest {
     }
 
     private void checkQuestResult() {
-        if (bookCommentsResultBean != null && bookCommentsResultBean.data != null) {
-
+        if (bookCommentsResultBean != null && bookCommentsResultBean.result_code != 0) {
+            ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(bookCommentsResultBean.message));
         }
     }
 

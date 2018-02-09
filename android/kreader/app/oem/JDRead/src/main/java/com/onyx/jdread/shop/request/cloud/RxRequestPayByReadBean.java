@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.personal.common.EncryptHelper;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
-import com.onyx.jdread.shop.cloud.entity.DownLoadWholeBookRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.DownLoadWholeBookResultBean;
+import com.onyx.jdread.shop.cloud.entity.PayCommonRequestBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.common.ReadContentService;
@@ -20,15 +20,15 @@ import retrofit2.Response;
  * Created by jackdeng on 2018-1-23.
  */
 
-public class RxRequestDownLoadWholeBook extends RxBaseCloudRequest {
-    private DownLoadWholeBookRequestBean requestBean;
-    private DownLoadWholeBookResultBean resultBean;
+public class RxRequestPayByReadBean extends RxBaseCloudRequest {
+    private PayCommonRequestBean requestBean;
+    private BaseResultBean resultBean;
 
-    public DownLoadWholeBookResultBean getResultBean() {
+    public BaseResultBean getResultBean() {
         return resultBean;
     }
 
-    public void setRequestBean(DownLoadWholeBookRequestBean requestBean) {
+    public void setRequestBean(PayCommonRequestBean requestBean) {
         this.requestBean = requestBean;
     }
 
@@ -46,14 +46,14 @@ public class RxRequestDownLoadWholeBook extends RxBaseCloudRequest {
         if (response.isSuccessful()) {
             String body = response.body();
             String decryptContent = EncryptHelper.getDecryptContent(body);
-            resultBean = JSONObject.parseObject(decryptContent, DownLoadWholeBookResultBean.class);
+            resultBean = JSONObject.parseObject(decryptContent, BaseResultBean.class);
             checkQuestResult();
         }
     }
 
     private void encryptParams() {
         String encryptKey = EncryptHelper.getEncryptKey(requestBean.saltValue);
-        JDAppBaseInfo appBaseInfo = requestBean.getAppBaseInfo();
+        JDAppBaseInfo appBaseInfo = requestBean.getBaseInfo();
         String encryptParams = EncryptHelper.getEncryptParams(encryptKey, appBaseInfo.getRequestParams());
         appBaseInfo.clear();
         appBaseInfo.setEnc();
@@ -68,6 +68,6 @@ public class RxRequestDownLoadWholeBook extends RxBaseCloudRequest {
     }
 
     private Call<String> getCall(ReadContentService getCommonService) {
-        return getCommonService.getDownLoadBookInfo(requestBean.bookId, requestBean.getAppBaseInfo().getRequestParamsMap());
+        return getCommonService.payByReadBean(requestBean.getBaseInfo().getRequestParamsMap());
     }
 }

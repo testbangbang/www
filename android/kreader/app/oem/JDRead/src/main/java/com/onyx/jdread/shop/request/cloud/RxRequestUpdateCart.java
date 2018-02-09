@@ -1,10 +1,12 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.entity.BaseShopRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateCartBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -32,13 +34,15 @@ public class RxRequestUpdateCart extends RxBaseCloudRequest {
         Response<UpdateCartBean> response = call.execute();
         if (response.isSuccessful()) {
             resultBean = response.body();
-            checkQuestResult();
+            checkRequestResult();
         }
         return this;
     }
 
-    private void checkQuestResult() {
-
+    private void checkRequestResult() {
+        if (resultBean != null && resultBean.result_code != 0) {
+            ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));
+        }
     }
 
     private Call<UpdateCartBean> getCall(ReadContentService service) {

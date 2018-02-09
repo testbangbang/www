@@ -32,6 +32,7 @@ public class ShopDataBundle {
     private VipReadViewModel vipReadViewModel;
     private List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryBean;
     private VipUserInfoViewModel vipUserInfoViewModel;
+    private PayOrderViewModel payOrderViewModel;
 
     private ShopDataBundle() {
 
@@ -192,6 +193,13 @@ public class ShopDataBundle {
             buyReadVipModel = new BuyReadVipModel(getEventBus());
         }
         return buyReadVipModel;
+    }
+
+    public PayOrderViewModel getPayOrderViewModel() {
+        if (payOrderViewModel == null) {
+            payOrderViewModel = new PayOrderViewModel(getEventBus());
+        }
+        return payOrderViewModel;
     }
 
     public void setCategoryBean(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryBean) {

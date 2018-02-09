@@ -174,4 +174,5 @@
     <integer name="empty_library_prompt_clickable_start">9</integer>
     <integer name="empty_library_prompt_clickable_end">13</integer>
     <integer name="refresh_count">4</integer>
+    <integer name="delay_pay_success_close_pay_dialog">2</integer>
 </resources>

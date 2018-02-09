@@ -86,10 +86,11 @@ public class CategoryBookListFragment extends BaseFragment {
         catTwoId = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
         currentCatName = JDPreferenceManager.getStringValue(Constants.SP_KEY_CATEGORY_NAME, "");
         typeFree = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_CATEGORY_ISFREE, false);
+        initDefaultParams();
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
         getCategoryBookListViewModel().getTitleBarViewModel().showRightText2 = true;
         getCategoryBookListViewModel().getTitleBarViewModel().showRightText3 = true;
-        getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_all);
+        getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_filter);
         getCategoryBookListViewModel().getTitleBarViewModel().rightText3 = getString(R.string.subject_list_sort_type_hot);
         setSortButtonIsOpen(false);
         setAllCatIsOpen(false);
@@ -97,6 +98,14 @@ public class CategoryBookListFragment extends BaseFragment {
         setRightText3Icon();
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
         setCategoryV2Data();
+    }
+
+    private void initDefaultParams() {
+        getCategoryBookListViewModel().sortKeyHotSelected.set(true);
+        getCategoryBookListViewModel().sortKeyNewestSelected.set(false);
+        getCategoryBookListViewModel().sortKeyPriceSelected.set(false);
+        sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
+        sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
     }
 
     private String getFinalCatId() {
@@ -154,6 +163,7 @@ public class CategoryBookListFragment extends BaseFragment {
         categoryBookListAdapter.setRowAndCol(catRow, catCol);
         categoryBookListAdapter.setCanSelected(true);
         PageRecyclerView recyclerViewCategoryList = categoryBookListBinding.recyclerViewCategoryList;
+        recyclerViewCategoryList.setPageTurningCycled(true);
         recyclerViewCategoryList.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewCategoryList.setAdapter(categoryBookListAdapter);
         recyclerViewCategoryList.addItemDecoration(itemDecoration);
@@ -254,7 +264,6 @@ public class CategoryBookListFragment extends BaseFragment {
         this.currentPage = 1;
         this.sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
-        getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = currentCatName;
         JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
         JDPreferenceManager.setStringValue(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);

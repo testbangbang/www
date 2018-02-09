@@ -61,6 +61,7 @@ public class Constants {
     public static final String RESULT_CODE_BOOK_GENERATE_CERT_ERROR = "111";
     public static final String RESULT_CODE_BOOK_GET_CONTENT_ERROR = "112";
     public static final String RESULT_CODE_BOOK_CERIFY_ORDER_ERROR = "116";
+    public static final int RESULT_PAY_ORDER_INSUFFICIENT_BALANCE = 11;
 
     public static final int PASSWORD_MIN_LENGTH = 6;
     public static final String CODE_STATE_THREE = "3";
@@ -125,4 +126,8 @@ public class Constants {
     public static final int RELATE_TYPE_BOOK_LIST = 1;
     public static final int RELATE_TYPE_LINK = 2;
     public static final int RELATE_TYPE_BOOK_DETAIL = 4;
+    public static final String PAY_DIALOG_TYPE = "pay_dialog_type";
+    public static final int PAY_DIALOG_TYPE_PAY_ORDER = 1;
+    public static final int PAY_DIALOG_TYPE_TOP_UP = 2;
+    public static final String ORDER_INFO = "order_info";
 }
