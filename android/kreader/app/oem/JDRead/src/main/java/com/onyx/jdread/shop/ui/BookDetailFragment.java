@@ -230,11 +230,10 @@ public class BookDetailFragment extends BaseFragment {
                     //TODO set NowReadButton show or hide with free and set buyBookButton text;
 
                     if (!ViewHelper.isCanNowRead(bookDetailBean)) {
-                        nowReadButton.setVisibility(View.GONE);
-                        bookDetailBinding.bookDetailInfo.spaceOne.setVisibility(View.GONE);
+                        hideNowReadButton();
                     }
                     if (!bookDetailBean.can_buy) {
-                        buyBookButton.setVisibility(View.GONE);
+                        hideNowReadButton();
                         bookDetailBinding.bookDetailInfo.shopCartContainer.setVisibility(View.GONE);
                         bookDetailBinding.bookDetailInfo.spaceTwo.setVisibility(View.GONE);
                     }
@@ -246,6 +245,11 @@ public class BookDetailFragment extends BaseFragment {
                 }
             }
         });
+    }
+
+    private void hideNowReadButton() {
+        nowReadButton.setVisibility(View.GONE);
+        bookDetailBinding.bookDetailInfo.spaceOne.setVisibility(View.GONE);
     }
 
     private void getAuthorBooksData(String keyWord) {
@@ -621,8 +625,7 @@ public class BookDetailFragment extends BaseFragment {
                 bookDetailBean.bookExtraInfoBean = extraInfoBean;
             }
             if (isWholeBookDownLoad && isDataBaseHaveBook) {
-                nowReadButton.setVisibility(View.GONE);
-                bookDetailBinding.bookDetailInfo.spaceOne.setVisibility(View.GONE);
+                hideNowReadButton();
                 buyBookButton.setText(getString(R.string.book_detail_button_now_read));
             }
         }
@@ -702,8 +705,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void changeBuyBookButtonState() {
-        nowReadButton.setVisibility(View.GONE);
-        bookDetailBinding.bookDetailInfo.spaceOne.setVisibility(View.GONE);
+        hideNowReadButton();
         buyBookButton.setEnabled(false);
         buyBookButton.setText(getString(R.string.book_detail_downloading));
     }

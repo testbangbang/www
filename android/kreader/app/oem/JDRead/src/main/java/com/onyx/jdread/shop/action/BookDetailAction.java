@@ -1,7 +1,10 @@
 package com.onyx.jdread.shop.action;
 
+import android.text.TextUtils;
+
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -58,6 +61,12 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onNext(RxRequestBookDetail request) {
                 bookDetailResultBean = request.getBookDetailResultBean();
+                if (bookDetailResultBean != null) {
+                    BookDetailResultBean.DetailBean data = bookDetailResultBean.data;
+                    if (!TextUtils.isEmpty(data.info)) {
+                        bookDetailResultBean.data.info = CommonUtils.removeBlank(data.info);
+                    }
+                }
                 bookDetailViewModel.setBookDetailResultBean(bookDetailResultBean);
                 if (rxCallback != null) {
                     rxCallback.onNext(BookDetailAction.this);
