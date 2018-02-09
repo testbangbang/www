@@ -34,21 +34,25 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.event.GetRechargePollEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.action.PayByReadBeanAction;
+import com.onyx.jdread.shop.cloud.entity.BaseShopRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.event.BuyBookSuccessEvent;
 import com.onyx.jdread.shop.event.ConfirmPayClickEvent;
 import com.onyx.jdread.shop.model.PayOrderViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -253,7 +257,23 @@ public class TopUpDialog extends DialogFragment {
     }
 
     private void payByCash() {
-        String url = CloudApiContext.getJDBooxBaseUrl() + CloudApiContext.ReadBean.PAY_BY_CASH + File.separator + "?" + CloudApiContext.ReadBean.PAY_TOKEN + "=";
+        String encryptUrl = getPayByCashUrl();
+        Bitmap qrImage = QRCodeUtil.createQRImage(encryptUrl, ResManager.getDimens(
+                R.dimen.top_up_qr_code_height), ResManager.getDimens(R.dimen.top_up_qr_code_height));
+        setVisible(R.id.dialog_top_up_qr_code_layout);
+        binding.dialogTopUpQrCodeLayout.topUpQrCode.setImageBitmap(qrImage);
+    }
+
+    private String getPayByCashUrl() {
+        BaseShopRequestBean baseShopRequestBean = new BaseShopRequestBean();
+        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
+        Map<String, String> queryArgs = new HashMap<>();
+        queryArgs.put(CloudApiContext.ReadBean.PAY_TOKEN, getPayOrderViewModel().getOrderInfo().token);
+        baseInfo.addRequestParams(queryArgs);
+        String signValue = baseInfo.getSignValue(CloudApiContext.ReadBean.PAY_BY_CASH);
+        baseInfo.setSign(signValue);
+        baseShopRequestBean.setBaseInfo(baseInfo);
+        return ViewHelper.getPayByCashUrl(baseInfo.getRequestParamsMap());
     }
 
     private void payByReadBean() {
