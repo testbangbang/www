@@ -53,7 +53,7 @@ public class EBookStoreData {
             QueryArgs queryArgs = holder.getCloudViewInfo().buildLibraryQuery(library.getIdString());
             queryArgs.conditionGroup.and(CloudMetadata_Table.language.eq(language));
             queryArgs.limit = 50;
-            queryArgs.fetchPolicy = FetchPolicy.CLOUD_ONLY;
+            queryArgs.fetchPolicy = FetchPolicy.MEM_CLOUD_DB;
             final CloudContentListRequest req = new CloudContentListRequest(queryArgs);
             req.setLoadThumbnail(false);
             DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, new BaseCallback() {
