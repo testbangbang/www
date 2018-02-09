@@ -414,7 +414,6 @@ public class WordSelectionHandler extends BaseHandler {
             }
             isCrossScreenSelect = false;
             updateHighLightRect();
-            drawSelectResult();
         }
     };
 
