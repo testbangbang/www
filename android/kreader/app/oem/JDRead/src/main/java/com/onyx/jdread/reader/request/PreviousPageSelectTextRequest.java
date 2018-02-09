@@ -71,13 +71,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
         }
         getSelectionInfoManager().updateSelectInfo(readerSelectionManager.getReaderSelectionInfos());
         updateSetting(reader);
-        preloadPreviousScreen(reader);
         return this;
-    }
-
-    private void preloadPreviousScreen(Reader reader) throws Exception{
-        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
-        reader.getReaderHelper().getReaderLayoutManager().prevScreen();
     }
 
     private void cleanCurrentPageInfo() {
