@@ -18,14 +18,21 @@ import java.util.List;
 public class ClearPageAction extends BaseAction {
 
     private List<PageInfo> pageInfo = new ArrayList<>();
+    private boolean resumeRawInput = true;
 
     public ClearPageAction(final List<PageInfo> pages) {
         pageInfo.addAll(pages);
     }
 
+
+    public ClearPageAction(final List<PageInfo> pages, boolean resumeRawInput) {
+        pageInfo.addAll(pages);
+        this.resumeRawInput = resumeRawInput;
+    }
+
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        final ClearPageRequest clearPageRequest = new ClearPageRequest(pageInfo);
+        final ClearPageRequest clearPageRequest = new ClearPageRequest(pageInfo, resumeRawInput);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), clearPageRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

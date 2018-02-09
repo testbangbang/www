@@ -13,9 +13,17 @@ import java.util.List;
 public class ClearPageRequest extends ReaderBaseNoteRequest {
 
     private volatile List<PageInfo> pageInfo = new ArrayList<>();
+    private boolean resumeRawInput = true;
+
     public ClearPageRequest(final List<PageInfo> p) {
         pageInfo.addAll(p);
         setVisiblePages(pageInfo);
+    }
+
+    public ClearPageRequest(final List<PageInfo> p, boolean resumeRawInput) {
+        pageInfo.addAll(p);
+        setVisiblePages(pageInfo);
+        this.resumeRawInput = resumeRawInput;
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
@@ -26,6 +34,8 @@ public class ClearPageRequest extends ReaderBaseNoteRequest {
         noteManager.setRenderBitmapDirty(true);
         renderVisiblePages(noteManager);
         getNoteDataInfo().setContentRendered(true);
-        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
+        if (resumeRawInput) {
+            setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
+        }
     }
 }
