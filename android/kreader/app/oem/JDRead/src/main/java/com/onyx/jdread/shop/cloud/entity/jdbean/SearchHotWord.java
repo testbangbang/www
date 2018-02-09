@@ -1,5 +1,7 @@
 package com.onyx.jdread.shop.cloud.entity.jdbean;
 
+import com.onyx.android.sdk.utils.CollectionUtils;
+
 import java.util.List;
 
 /**
@@ -8,7 +10,16 @@ import java.util.List;
 
 public class SearchHotWord {
 
+    public DataBean data;
     public int result_code;
     public String message;
-    public List<String> data;
+
+    public static class DataBean {
+        public String defaultKeyWord;
+        public List<String> keyWord;
+    }
+
+    public boolean isKeyWordEmpty() {
+        return data == null || CollectionUtils.isNullOrEmpty(data.keyWord);
+    }
 }

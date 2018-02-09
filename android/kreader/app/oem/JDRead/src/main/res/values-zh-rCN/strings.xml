@@ -361,7 +361,7 @@
     <string name="encryption_success">加密成功</string>
     <string name="total">总计：</string>
     <string name="bosom">组内：</string>
-    <string name="vip">JoyRead会员</string>
+    <string name="vip">会员</string>
     <string name="error_content_author_unknown">作者未知</string>
     <string name="related_books">相关图书</string>
     <string name="search_history">历史搜索</string>

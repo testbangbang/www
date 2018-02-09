@@ -384,7 +384,7 @@
     <string name="search_hot_words">Popular searches</string>
     <string name="in_library">Location ：Library</string>
     <string name="in_shop">Location ：Shop</string>
-    <string name="vip">JoyRead VIP</string>
+    <string name="vip">VIP</string>
     <string name="content_empty">null</string>
     <string name="error_content_author_unknown">unknown author</string>
     <string name="reader_copy_success">Copy success</string>

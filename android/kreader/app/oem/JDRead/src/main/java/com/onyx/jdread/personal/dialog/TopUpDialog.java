@@ -1,6 +1,7 @@
 package com.onyx.jdread.personal.dialog;
 
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -64,6 +66,7 @@ public class TopUpDialog extends DialogFragment {
     private TopUpAdapter topUpAdapter;
     private GetRechargePollEvent getRechargePollEvent;
     private static final int DEFAULT_POLL_TIME = 300;
+    private Disposable countDownDisposable;
 
     @Nullable
     @Override
@@ -262,9 +265,7 @@ public class TopUpDialog extends DialogFragment {
                 BaseResultBean resultBean = action.getResultBean();
                 if (resultBean != null) {
                     if (resultBean.result_code == Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
-                        getPayOrderViewModel().confirmButtonText.set(ResManager.getString(R.string.pay_success));
-                        binding.payOrder.confirmPay.setBackgroundDrawable(null);
-                        countDownClose();
+                        onPaySuccess();
                     } else if (resultBean.result_code == Constants.RESULT_PAY_ORDER_INSUFFICIENT_BALANCE) {
                         getPayOrderViewModel().getOrderInfo().need_recharge = true;
                         changePayButtonState(false);
@@ -281,10 +282,13 @@ public class TopUpDialog extends DialogFragment {
         });
     }
 
-    private void countDownClose() {
+    private void onPaySuccess() {
+        getPayOrderViewModel().confirmButtonText.set(ResManager.getString(R.string.pay_success));
+        binding.payOrder.confirmPay.setBackgroundDrawable(null);
+        binding.payOrder.confirmPay.setEnabled(false);
         int delayTime = ResManager.getInteger(R.integer.delay_pay_success_close_pay_dialog);
         Observable<Long> timer = Observable.timer(delayTime, TimeUnit.SECONDS);
-        timer.subscribeOn(Schedulers.newThread())
+        countDownDisposable = timer.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Long>() {
                     @Override
@@ -293,5 +297,13 @@ public class TopUpDialog extends DialogFragment {
                         dismiss();
                     }
                 });
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (countDownDisposable != null) {
+            countDownDisposable.dispose();
+        }
     }
 }
