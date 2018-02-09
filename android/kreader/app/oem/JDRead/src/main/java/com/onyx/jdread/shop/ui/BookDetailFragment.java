@@ -701,7 +701,6 @@ public class BookDetailFragment extends BaseFragment {
         String msg = getString(R.string.buy_book_success) + bookDetailBean.name + getString(R.string.book_detail_tip_book_add_to_bookself);
         ToastUtil.showToast(JDReadApplication.getInstance(), msg);
         downLoadWholeBook();
-        changeBuyBookButtonState();
     }
 
     private void changeBuyBookButtonState() {
