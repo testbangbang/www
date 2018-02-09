@@ -47,6 +47,7 @@ public class BookDetailResultBean {
         public String random;
         public String order_id;
         public boolean isAlreadyBuy;
+        public int downLoadType;
 
         public void setAuthor(String author) {
             this.author = author;

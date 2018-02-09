@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.request.db;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxBaseDBRequest;
 
 /**
@@ -23,7 +24,8 @@ public class RxRequestMetadataQuery extends RxBaseDBRequest {
     }
 
     private void queryBook() {
-        metadata = getDataProvider().findMetadataByIdString(getAppContext(), bookId);
+        LocalDataProvider dataProvider = (LocalDataProvider) getDataProvider();
+        metadata = dataProvider.findMetadataByCloudId(bookId);
     }
 
     @Override

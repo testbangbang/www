@@ -31,9 +31,7 @@ public class BookDownloadUtils {
         bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = true;
         if (StringUtils.isNullOrEmpty(bookDetailBean.downLoadUrl)) {
             int downLoadType = CloudApiContext.BookDownLoad.TYPE_ORDER;
-            if (!bookDetailBean.can_buy) {
-                downLoadType = CloudApiContext.BookDownLoad.TYPE_ORDER;
-            } else if (bookDetailBean.can_read) {
+            if (bookDetailBean.downLoadType == CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ) {
                 downLoadType = CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ;
             }
             DownLoadWholeBookAction action = new DownLoadWholeBookAction(bookDetailBean.ebook_id, downLoadType);
@@ -41,14 +39,16 @@ public class BookDownloadUtils {
                 @Override
                 public void onNext(DownLoadWholeBookAction action) {
                     DownLoadWholeBookResultBean resultBean = action.getResultBean();
-                    if (resultBean.result_code == Constants.RESULT_CODE_SUCCESS) {
-                        DownLoadWholeBookResultBean.DataBean data = resultBean.data;
-                        bookDetailBean.key = data.key;
-                        bookDetailBean.random = data.random;
-                        bookDetailBean.downLoadUrl = data.content_url;
-                        downloadBook(dataBundle, bookDetailBean);
-                    } else {
-                        ToastUtil.showToastErrorMsgForDownBook(resultBean.result_code);
+                    if (resultBean != null) {
+                        if (resultBean.isSucceed()) {
+                            DownLoadWholeBookResultBean.DataBean data = resultBean.data;
+                            bookDetailBean.key = data.key;
+                            bookDetailBean.random = data.random;
+                            bookDetailBean.downLoadUrl = data.content_url;
+                            downloadBook(dataBundle, bookDetailBean);
+                        } else {
+                            ToastUtil.showToastErrorMsgForDownBook(String.valueOf(resultBean.result_code));
+                        }
                     }
                 }
 
@@ -72,9 +72,8 @@ public class BookDownloadUtils {
             ToastUtil.showToast(ResManager.getString(R.string.empty_url));
             return;
         }
-        String bookName = bookDetailBean.downLoadUrl.substring(bookDetailBean.downLoadUrl.lastIndexOf("/") + 1);
-        String localPath = CommonUtils.getJDBooksPath() + File.separator + bookName;
-        DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.downLoadUrl, localPath, bookName);
+        String localPath = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.name + Constants.BOOK_FORMAT;
+        DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.downLoadUrl, localPath, bookDetailBean.name);
         downloadAction.setBookDetailBean(bookDetailBean);
         downloadAction.execute(dataBundle, new RxCallback() {
             @Override

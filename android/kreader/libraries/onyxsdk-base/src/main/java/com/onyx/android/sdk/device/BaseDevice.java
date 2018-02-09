@@ -502,4 +502,6 @@ public class BaseDevice {
     }
 
     public void shutdown(){}
+
+    public void applyGCOnce() {}
 }

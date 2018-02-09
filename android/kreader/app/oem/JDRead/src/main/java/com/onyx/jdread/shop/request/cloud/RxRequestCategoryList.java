@@ -1,8 +1,8 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
@@ -50,24 +50,28 @@ public class RxRequestCategoryList extends RxBaseCloudRequest {
 
     private void checkQuestResult() {
         if (categoryListResultBean != null) {
-            List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> adjustLevelTwoList = new ArrayList<>();
-            for (int i = 0; i < categoryListResultBean.data.size(); i++) {
-                adjustLevelTwoList.clear();
-                CategoryListResultBean.CategoryBeanLevelOne categoryBeanLevelOne = categoryListResultBean.data.get(i);
-                categoryBeanLevelOne.cateLevel = Constants.CATEGORY_LEVEL_ONE;
-                for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo : categoryBeanLevelOne.sub_category) {
-                    categoryBeanLevelTwo.cateLevel = Constants.CATEGORY_LEVEL_TWO;
-                    for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelThree : categoryBeanLevelTwo.sub_category) {
-                        categoryBeanLevelThree.cateLevel = Constants.CATEGORY_LEVEL_TWO;
-                        adjustLevelTwoList.add(categoryBeanLevelThree);
+            if (categoryListResultBean.result_Code == 0) {
+                List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> adjustLevelTwoList = new ArrayList<>();
+                for (int i = 0; i < categoryListResultBean.data.size(); i++) {
+                    adjustLevelTwoList.clear();
+                    CategoryListResultBean.CategoryBeanLevelOne categoryBeanLevelOne = categoryListResultBean.data.get(i);
+                    categoryBeanLevelOne.cateLevel = Constants.CATEGORY_LEVEL_ONE;
+                    for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo : categoryBeanLevelOne.sub_category) {
+                        categoryBeanLevelTwo.cateLevel = Constants.CATEGORY_LEVEL_TWO;
+                        for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelThree : categoryBeanLevelTwo.sub_category) {
+                            categoryBeanLevelThree.cateLevel = Constants.CATEGORY_LEVEL_TWO;
+                            adjustLevelTwoList.add(categoryBeanLevelThree);
+                        }
+                    }
+                    if (adjustLevelTwoList.size() > 0) {
+                        categoryBeanLevelOne.sub_category.clear();
+                        categoryBeanLevelOne.sub_category.addAll(adjustLevelTwoList);
                     }
                 }
-                if (adjustLevelTwoList.size() > 0) {
-                    categoryBeanLevelOne.sub_category.clear();
-                    categoryBeanLevelOne.sub_category.addAll(adjustLevelTwoList);
-                }
+                getCateTwo(categoryListResultBean.data);
+            } else {
+                ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(categoryListResultBean.message));
             }
-            getCateTwo(categoryListResultBean.data);
         }
     }
 
@@ -75,9 +79,9 @@ public class RxRequestCategoryList extends RxBaseCloudRequest {
         return getCommonService.getCategoryList(requestBean.getAppBaseInfo().getRequestParamsMap());
     }
 
-    public void getCateTwo(List<CategoryListResultBean.CategoryBeanLevelOne> data){
+    public void getCateTwo(List<CategoryListResultBean.CategoryBeanLevelOne> data) {
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> cateTwoList = new ArrayList<>();
-        for (CategoryListResultBean.CategoryBeanLevelOne cateOne : data){
+        for (CategoryListResultBean.CategoryBeanLevelOne cateOne : data) {
             CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = new CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo();
             categoryBeanLevelTwo.cateLevel = Constants.CATEGORY_LEVEL_ONE;
             categoryBeanLevelTwo.id = cateOne.id;

@@ -118,7 +118,7 @@
     <string name="search_view_hint">请输入搜索内容</string>
     <string name="book_detail_yuedou_price">%1$s 阅豆</string>
     <string name="book_detail_button_now_read">立即阅读</string>
-    <string name="book_detail_button_buy_whole_book">全本购买</string>
+    <string name="book_detail_button_buy_whole_book">购买全本</string>
     <string name="cart">购物车</string>
     <string name="book_detail_text_view_content_introduce">内容简介</string>
     <string name="book_comment_detail">评论详情</string>
@@ -306,8 +306,8 @@
     <string name="subject_list_sort_type_hot">热门</string>
     <string name="subject_list_sort_type_price">价格</string>
     <string name="subject_list_sort_type_newest">最新</string>
-    <string name="subject_list_all">全部</string>
-    <string name="subject_list_just_vip">VIP会员</string>
+    <string name="subject_list_filter">筛选</string>
+    <string name="subject_list_just_vip">JoyRead会员</string>
     <string name="downloading_progress">下载中 %d</string>
     <string name="paused">已暂停 %d</string>
     <string name="total_book">共%d本书</string>
@@ -436,7 +436,7 @@
     <string name="not_login">未登录</string>
     <string name="open_vip_read">开通会员</string>
     <string name="renew_vip_read">续费会员</string>
-    <string name="vip_read_days">会员有效天数：%s</string>
+    <string name="vip_read_days">会员有效天数：%s天</string>
     <string name="vip_read_notice">会员须知</string>
     <string name="not_open_vip_read">未开通会员</string>
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">该图书已购买或者是免费书,无需购买!</string>
@@ -450,4 +450,14 @@
     <string name="wifi_pass_book_failed">传书失败</string>
     <string name="wifi_pass_book_failed_network_exception">网络异常,传书失败</string>
     <string name="empty_library_prompt">暂无图书, 请去 我的书店 下载</string>
+    <string name="forgot_psw">忘记密码</string>
+    <string name="dialog_pay_order_book_price">价格: %1$d阅豆</string>
+    <string name="dialog_pay_order_cur_balance">当前余额: %1$d阅豆/%2$d代金券</string>
+    <string name="dialog_pay_order_pay_type">付款方式:</string>
+    <string name="dialog_pay_order_cash">现金</string>
+    <string name="dialog_pay_order_confirm_pay">确认支付</string>
+    <string name="payment_order">订单支付</string>
+    <string name="book_detail_add_cart_tip_the_book_already_add_cart">图书已经加入到购物车</string>
+    <string name="pay_dialog_insufficient_balance">余额不足，去充值</string>
+    <string name="pay_success">支付成功</string>
 </resources>

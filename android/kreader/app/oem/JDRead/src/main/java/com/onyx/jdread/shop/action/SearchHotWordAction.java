@@ -1,7 +1,6 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
@@ -17,6 +16,7 @@ import java.util.List;
 
 public class SearchHotWordAction extends BaseAction<ShopDataBundle> {
     private List<String> hotWords = new ArrayList<>();
+    private String defaultKeyWord;
 
     @Override
     public void execute(ShopDataBundle dataBundle, final RxCallback rxCallback) {
@@ -29,15 +29,30 @@ public class SearchHotWordAction extends BaseAction<ShopDataBundle> {
             public void onNext(RxRequestSearchHotWord request) {
                 hotWords.clear();
                 SearchHotWord searchHotWord = request.getSearchHotWord();
-                if (searchHotWord != null && !CollectionUtils.isNullOrEmpty(searchHotWord.data)) {
-                    hotWords.addAll(searchHotWord.data);
+                if (searchHotWord != null) {
+                    if (!searchHotWord.isKeyWordEmpty()) {
+                        hotWords.addAll(searchHotWord.data.keyWord);
+                    }
+                    if (searchHotWord.data != null) {
+                        defaultKeyWord = searchHotWord.data.defaultKeyWord;
+                    }
                 }
-                rxCallback.onNext(request);
+                invokeNext(rxCallback, request);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                invokeError(rxCallback, throwable);
             }
         });
     }
 
     public List<String> getHotWords() {
         return hotWords;
+    }
+
+    public String getDefaultKeyWord() {
+        return defaultKeyWord;
     }
 }

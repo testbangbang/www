@@ -8,6 +8,8 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
+import com.onyx.jdread.reader.request.PreloadNextScreenRequest;
+import com.onyx.jdread.reader.request.PreloadPreviousScreenRequest;
 import com.onyx.jdread.reader.request.PreviousScreenRequest;
 
 /**
@@ -23,6 +25,8 @@ public class PrevPageAction extends BaseReaderAction {
             @Override
             public void onNext(Object o) {
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
+                PreloadPreviousScreenRequest preloadPreviousScreenRequest = new PreloadPreviousScreenRequest(readerDataHolder.getReader());
+                preloadPreviousScreenRequest.execute(null);
             }
 
             @Override

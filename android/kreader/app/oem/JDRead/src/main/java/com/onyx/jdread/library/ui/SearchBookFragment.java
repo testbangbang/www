@@ -245,6 +245,10 @@ public class SearchBookFragment extends BaseFragment {
             @Override
             public void onNext(Object o) {
                 hotSearchAdapter.setSearchHotWords(searchHotWordAction.getHotWords());
+                String defaultKeyWord = searchHotWordAction.getDefaultKeyWord();
+                if (!TextUtils.isEmpty(defaultKeyWord)) {
+                    binding.searchView.setQueryHint(defaultKeyWord);
+                }
             }
         });
     }

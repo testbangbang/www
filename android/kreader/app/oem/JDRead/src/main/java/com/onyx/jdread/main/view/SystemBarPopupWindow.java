@@ -26,7 +26,9 @@ import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
+import com.onyx.jdread.setting.event.SpeedRefreshChangeEvent;
 import com.onyx.jdread.setting.model.BrightnessModel;
+import com.onyx.jdread.setting.model.SettingBundle;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -109,6 +111,7 @@ public class SystemBarPopupWindow extends PopupWindow {
             ToastUtil.showToast(useFastMode ? ResManager.getString(R.string.speed_refresh_is_opened) : ResManager.getString(R.string.speed_refresh_is_closed));
             speedRefresh.set(useFastMode);
             JDPreferenceManager.setBooleanValue(R.string.speed_refresh_key, useFastMode);
+            SettingBundle.getInstance().getEventBus().post(new SpeedRefreshChangeEvent());
         }
     }
 }

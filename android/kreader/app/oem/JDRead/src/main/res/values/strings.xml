@@ -287,6 +287,7 @@
     <string name="encrypted">Encrypted</string>
     <string name="unlock_the_password">Unlock the password</string>
     <string name="password_key">password_key</string>
+    <string name="phone_key" translatable="false">phone_key</string>
     <string name="password_format_error">The password is wrongly formatted. Please enter %1$d-%2$d digits</string>
     <string name="wrong_password">Wrong password</string>
     <string name="reading_tools">Reading tools</string>
@@ -320,7 +321,7 @@
     <string name="subject_list_sort_type_hot">Hot</string>
     <string name="subject_list_sort_type_price">Price</string>
     <string name="subject_list_sort_type_newest">Newest</string>
-    <string name="subject_list_all">All</string>
+    <string name="subject_list_filter">Filter</string>
     <string name="subject_list_just_vip">JoyRead VIP</string>
     <string name="downloading_progress">Downloading %d</string>
     <string name="paused">Paused %d</string>
@@ -457,7 +458,7 @@
     <string name="not_login">not login</string>
     <string name="open_vip_read">Open Vip</string>
     <string name="renew_vip_read">Renew Vip</string>
-    <string name="vip_read_days">The remaining days of the Vip：%s</string>
+    <string name="vip_read_days">The remaining days of the Vip：%s days</string>
     <string name="vip_read_notice">Vip Notice</string>
     <string name="not_open_vip_read">Do not open Vip</string>
     <string name="format_rmb">¥%s</string>
@@ -476,4 +477,14 @@
     <string name="wifi_pass_book_failed_network_exception">Network exception,Pass book failed</string>
     <string name="empty_library_prompt">Without book,Please go to the shop to download</string>
     <string name="speed_refresh_key">speed_refresh_key</string>
+    <string name="forgot_psw">Forgot psw</string>
+    <string name="dialog_pay_order_book_price">Price: %1$d Read Bean</string>
+    <string name="dialog_pay_order_cur_balance">Balance: %1$d Read Bean/%2$d Voucher</string>
+    <string name="dialog_pay_order_pay_type">Payment:</string>
+    <string name="dialog_pay_order_cash">Cash</string>
+    <string name="dialog_pay_order_confirm_pay">Confirm Payment</string>
+    <string name="payment_order">Payment Order</string>
+    <string name="book_detail_add_cart_tip_the_book_already_add_cart">the book already add to cart</string>
+    <string name="pay_dialog_insufficient_balance">insufficient balance,go charge</string>
+    <string name="pay_success">pay success</string>
 </resources>

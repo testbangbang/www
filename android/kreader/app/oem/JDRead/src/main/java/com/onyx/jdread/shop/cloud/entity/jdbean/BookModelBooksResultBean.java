@@ -9,7 +9,7 @@ import java.util.List;
 public class BookModelBooksResultBean {
 
     public DataBean data;
-    public int result_Code;
+    public int result_code;
     public String message;
 
     public static class DataBean {

@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
@@ -55,7 +56,11 @@ public class RxRequestBookRank extends RxBaseCloudRequest {
 
     private void checkRequestResult() {
         if (resultBean != null) {
-            parseResult();
+            if (resultBean.result_code != 0) {
+                ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));
+            } else {
+                parseResult();
+            }
         }
     }
 
