@@ -89,8 +89,11 @@ public class NewWordsReviewListAdapter extends PageRecyclerView.PageAdapter<NewW
 
     public List<ReadSummaryNewWordReviewBean> getSelectedList() {
         List<ReadSummaryNewWordReviewBean> selectedList = new ArrayList<>();
+        if(list == null || list.size() <= 0){
+            return selectedList;
+        }
         for (ReadSummaryNewWordReviewBean entity : list) {
-            if (entity.isChecked()) {
+            if (entity != null && entity.isChecked()) {
                 selectedList.add(entity);
             }
         }

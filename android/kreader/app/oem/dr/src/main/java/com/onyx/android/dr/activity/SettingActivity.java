@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
@@ -35,6 +36,8 @@ public class SettingActivity extends BaseActivity {
     TextView title;
     @Bind(R.id.image)
     ImageView image;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     private DeviceSettingFragment deviceSettingFragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -92,10 +95,10 @@ public class SettingActivity extends BaseActivity {
         fragmentTransaction.commit();
     }
 
-    @OnClick({R.id.image_view_back})
+    @OnClick({R.id.menu_back})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 onBackClick();
                 break;
         }

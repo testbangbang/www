@@ -139,10 +139,10 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.image_view_back, R.id.title_bar_title, R.id.title_bar_right_icon_one})
+    @OnClick({R.id.menu_back, R.id.title_bar_title, R.id.title_bar_right_icon_one})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.title_bar_title:

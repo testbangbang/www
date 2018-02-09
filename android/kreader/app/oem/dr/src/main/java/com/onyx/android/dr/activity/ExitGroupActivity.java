@@ -104,12 +104,12 @@ public class ExitGroupActivity extends BaseActivity implements ExitGroupView {
         });
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.exit_group_activity_rollback,
             R.id.exit_group_activity_exit})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.exit_group_activity_exit:

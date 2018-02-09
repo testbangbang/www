@@ -32,8 +32,8 @@ import butterknife.OnClick;
 public class GoodSentenceTypeActivity extends BaseActivity implements GoodSentenceTpyeView {
     @Bind(R.id.good_sentence_activity_type_recyclerview)
     PageRecyclerView typeRecyclerView;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    ImageView menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -94,10 +94,10 @@ public class GoodSentenceTypeActivity extends BaseActivity implements GoodSenten
     public void initEvent() {
     }
 
-    @OnClick({R.id.image_view_back})
+    @OnClick({R.id.menu_back})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
         }

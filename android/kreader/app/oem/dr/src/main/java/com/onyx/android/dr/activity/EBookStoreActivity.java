@@ -174,8 +174,8 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
             metadataList = result;
             listAdapter.setEBookList(result);
             updatePageIndicator();
-            dismissAllProgressDialog();
         }
+        dismissAllProgressDialog();
     }
 
     @Override
@@ -184,6 +184,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
         for (String language : languageList) {
             ebookStoreTab.addTab(ebookStoreTab.newTab().setText(language));
         }
+        dismissAllProgressDialog();
     }
 
     @Override

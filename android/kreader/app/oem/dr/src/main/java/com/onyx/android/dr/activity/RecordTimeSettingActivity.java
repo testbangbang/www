@@ -132,11 +132,11 @@ public class RecordTimeSettingActivity extends BaseActivity implements RecordTim
         });
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.record_time_activity_next_step})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.record_time_activity_next_step:

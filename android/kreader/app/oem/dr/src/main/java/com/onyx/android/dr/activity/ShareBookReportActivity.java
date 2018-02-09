@@ -132,10 +132,10 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     public void setGroupMemberResult(GroupMemberBean groupMembers) {
     }
 
-    @OnClick({R.id.image_view_back, R.id.image, R.id.title_bar_title, R.id.title_bar_right_icon_one})
+    @OnClick({R.id.menu_back, R.id.image, R.id.title_bar_title, R.id.title_bar_right_icon_one})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.image:
