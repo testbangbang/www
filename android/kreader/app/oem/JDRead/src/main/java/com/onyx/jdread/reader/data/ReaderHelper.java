@@ -5,7 +5,6 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderException;
@@ -37,7 +36,6 @@ import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.layout.ReaderLayoutManager;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
@@ -214,12 +212,12 @@ public class ReaderHelper {
 
     public void saveToCache(ReaderBitmapReferenceImpl renderBitmap) {
         if (currentPageBitmap != null && currentPageBitmap.isValid()) {
-            returnBitmapToCache(currentPageBitmap);
+            addToCache(currentPageBitmap);
         }
         currentPageBitmap = renderBitmap;
     }
 
-    public void returnBitmapToCache(ReaderBitmapReferenceImpl bitmap) {
+    public void addToCache(ReaderBitmapReferenceImpl bitmap) {
         if (bitmapCache != null) {
             bitmapCache.put(bitmap.getKey(), bitmap);
         }
