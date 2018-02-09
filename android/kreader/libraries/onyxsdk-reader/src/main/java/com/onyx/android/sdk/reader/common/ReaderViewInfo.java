@@ -40,6 +40,15 @@ public class ReaderViewInfo {
     public int totalPage;
     public String chapterName;
     private List<ChapterInfo> readTocChapterNodeList;
+    private boolean isLoadToc = true;
+
+    public boolean isLoadToc() {
+        return isLoadToc;
+    }
+
+    public void setLoadToc(boolean loadToc) {
+        isLoadToc = loadToc;
+    }
 
     public List<ChapterInfo> getReadTocChapterNodeList() {
         return readTocChapterNodeList;

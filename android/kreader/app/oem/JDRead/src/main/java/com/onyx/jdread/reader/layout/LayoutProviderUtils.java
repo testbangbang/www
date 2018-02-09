@@ -126,12 +126,15 @@ public class LayoutProviderUtils {
     static public void updateReaderViewInfo(final Reader reader,
                                             final ReaderViewInfo readerViewInfo,
                                             final ReaderLayoutManager layoutManager) throws ReaderException {
-        Debug.d(TAG, "updateReaderViewInfo");
         if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
             updateVisiblePagesForFlowDocument(reader, readerViewInfo, layoutManager);
         }
         String pagePosition = layoutManager.getCurrentLayoutProvider().getCurrentPagePosition();
-        setChapterName(reader, readerViewInfo, pagePosition);
+        if(readerViewInfo.isLoadToc()) {
+            setChapterName(reader, readerViewInfo, pagePosition);
+        }else {
+            readerViewInfo.chapterName = reader.getDocumentInfo().getBookName();
+        }
 
         final List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
         for (PageInfo pageInfo : visiblePages) {
