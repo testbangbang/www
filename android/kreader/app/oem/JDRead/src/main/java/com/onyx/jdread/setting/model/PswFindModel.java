@@ -4,7 +4,6 @@ import android.databinding.ObservableField;
 import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
@@ -27,7 +26,7 @@ public class PswFindModel {
 
     public PswFindModel(EventBus eventBus) {
         this.eventBus = eventBus;
-        titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.password_find));
+        titleBarModel.title.set(ResManager.getString(R.string.password_find));
         titleBarModel.backEvent.set(new BackToDeviceConfigEvent());
     }
 
