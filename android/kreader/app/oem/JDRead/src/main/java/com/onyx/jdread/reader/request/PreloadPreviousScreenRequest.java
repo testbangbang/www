@@ -20,7 +20,7 @@ public class PreloadPreviousScreenRequest extends ReaderBaseRequest {
         if (reader.getReaderHelper().previousScreen()) {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, getReaderViewInfo());
-            reader.getReaderHelper().saveToCache(context.renderingBitmap);
+            reader.getReaderHelper().addToCache(context.renderingBitmap);
             reader.getReaderHelper().nextScreen();
         }
         return this;

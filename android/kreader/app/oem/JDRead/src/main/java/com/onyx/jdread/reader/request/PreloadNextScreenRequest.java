@@ -1,6 +1,9 @@
 package com.onyx.jdread.reader.request;
 
+import android.util.Log;
+
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.jdread.reader.data.Reader;
 
 /**
@@ -20,7 +23,7 @@ public class PreloadNextScreenRequest extends ReaderBaseRequest {
         if (reader.getReaderHelper().nextScreen()) {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, getReaderViewInfo());
-            reader.getReaderHelper().saveToCache(context.renderingBitmap);
+            reader.getReaderHelper().addToCache(context.renderingBitmap);
             reader.getReaderHelper().previousScreen();
         }
         return this;

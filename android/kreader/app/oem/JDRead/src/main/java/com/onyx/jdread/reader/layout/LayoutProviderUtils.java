@@ -24,6 +24,7 @@ import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.reader.data.Reader;
 
@@ -288,7 +289,12 @@ public class LayoutProviderUtils {
 
     static public boolean checkCache(final BitmapReferenceLruCache cache, final String key, final ReaderDrawContext context) {
         ReaderBitmapReferenceImpl result = cache.get(key);
-        if (result == null || !canReuse(result, context)) {
+        if (result == null) {
+            Debug.d(TAG, "key not found: " + key);
+            return false;
+        }
+        if (!canReuse(result, context)) {
+            Debug.d(TAG, "result cannot be reused");
             return false;
         }
 

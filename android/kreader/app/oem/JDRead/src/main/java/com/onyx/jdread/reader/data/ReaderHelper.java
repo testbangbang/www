@@ -2,10 +2,10 @@ package com.onyx.jdread.reader.data;
 
 import android.content.Context;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderException;
@@ -37,7 +37,6 @@ import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.layout.ReaderLayoutManager;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
@@ -47,6 +46,7 @@ import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by huxiaomao on 2017/12/20.
@@ -214,14 +214,23 @@ public class ReaderHelper {
 
     public void saveToCache(ReaderBitmapReferenceImpl renderBitmap) {
         if (currentPageBitmap != null && currentPageBitmap.isValid()) {
-            returnBitmapToCache(currentPageBitmap);
+            addToCache(currentPageBitmap);
         }
         currentPageBitmap = renderBitmap;
     }
 
-    public void returnBitmapToCache(ReaderBitmapReferenceImpl bitmap) {
+    public void addToCache(ReaderBitmapReferenceImpl bitmap) {
         if (bitmapCache != null) {
             bitmapCache.put(bitmap.getKey(), bitmap);
+        }
+    }
+
+    public void dumpCache() {
+        if (bitmapCache == null) {
+            return;
+        }
+        for (Map.Entry<String, ReaderBitmapReferenceImpl> entry : bitmapCache.snapshot().entrySet()) {
+            Log.e("bitmap cache########", "key: " + entry.getKey() + " value: " + entry.getValue());
         }
     }
 
