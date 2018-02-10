@@ -2,44 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
+    <data></data>
 
-        <variable
-            name="screenLockModel"
-            type="com.onyx.jdread.main.model.LockScreenModel" />
-    </data>
-
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/main_content_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/activity_screen_lock_margin_top"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        tools:context=".main.activity.LockScreenActivity">
-
-        <TextView
-            style="@style/PasswordEditTextStyle"
-            android:background="@null"
-            android:gravity="center"
-            android:text="@string/password" />
-
-        <EditText
-            style="@style/PasswordEditTextStyle"
-            android:layout_marginTop="@dimen/lock_screen_password_margin_top"
-            android:text="@={screenLockModel.passwordEdit}"
-            android:inputType="number"
-            android:hint="@string/input_number_un_encrypt"/>
-
-        <TextView
-            android:layout_width="@dimen/password_setting_confirm_width"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_stroke"
-            android:padding="@dimen/edit_text_padding"
-            android:layout_marginTop="@dimen/unlock_password_text_margin_top"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:onClick="@{()->screenLockModel.unlockScreen()}"
-            android:text="@string/confirm" />
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
 </layout>
