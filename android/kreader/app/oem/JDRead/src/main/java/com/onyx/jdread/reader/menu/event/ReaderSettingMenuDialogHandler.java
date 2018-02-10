@@ -87,7 +87,6 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingMenuItemPreviousChapterEvent(ReaderSettingMenuItemPreviousChapterEvent event) {
-        Log.i("hxm","prevPage 1");
         new PrevPageAction().execute(readerDataHolder,null);
     }
 
