@@ -38,8 +38,8 @@ import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_X_SMALL;
 public class ReaderSelectionHelper {
     private Map<String, SelectionInfo> readerSelectionInfos = new HashMap<>();
     private int currentFontSize = FONT_SIZE_MEDIUM;
-    private int chooseLeftIcon = R.mipmap.ic_choose_left;
-    private int chooseRightIcon = R.mipmap.ic_choose_right;
+    private int chooseLeftIcon = R.mipmap.ic_read_word_left_3;
+    private int chooseRightIcon = R.mipmap.ic_read_word_right_3;
 
     public ReaderSelectionHelper() {
         super();
