@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
+import com.onyx.jdread.reader.actions.CleanSelectionAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.data.PageTurningDetector;
@@ -134,7 +135,19 @@ public class BaseHandler {
     }
 
     public boolean onSingleTapUp(MotionEvent event) {
+        if(isShowSelectMenu()){
+            return true;
+        }
         return tryHitTest(event.getX(), event.getY());
+    }
+
+    private boolean isShowSelectMenu(){
+        if(getReaderDataHolder().getSelectMenuModel().getIsShowSelectMenu().get()){
+            getReaderDataHolder().getSelectMenuModel().setIsShowSelectMenu(false);
+            new CleanSelectionAction().execute(getReaderDataHolder(),null);
+            return true;
+        }
+        return false;
     }
 
     public boolean onScaleEnd(ScaleGestureDetector detector) {
