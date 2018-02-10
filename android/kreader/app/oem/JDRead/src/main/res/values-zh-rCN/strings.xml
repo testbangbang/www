@@ -30,6 +30,7 @@
     <string name="date_time">日期时间</string>
     <string name="screen_saver">屏幕保护</string>
     <string name="password_setting">密码设置</string>
+    <string name="password_setting_failed">密码设置失败</string>
     <string name="read_tool">阅读工具</string>
     <string name="device_information">设备信息</string>
     <string name="update_package_downloaded">更新包已下载</string>
