@@ -7,7 +7,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyBinding;
@@ -211,14 +210,18 @@ public class BaseHandler {
             PageTurningDirection direction = PageTurningDetector.detectHorizontalTuring(readerDataHolder.getAppContext(), -offsetX);
             if (direction == PageTurningDirection.Left) {
                 prevScreen(readerDataHolder);
+                return;
             } else if (direction == PageTurningDirection.Right) {
                 nextScreen(readerDataHolder);
+                return;
             }
             direction = PageTurningDetector.detectVerticalTuring(readerDataHolder.getAppContext(), -offsetY);
             if (direction == PageTurningDirection.Right) {
                 prevScreen(readerDataHolder);
+                return;
             } else if (direction == PageTurningDirection.Left) {
                 nextScreen(readerDataHolder);
+                return;
             }
             return;
         }
