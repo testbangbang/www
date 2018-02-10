@@ -92,7 +92,7 @@ public class PasswordSettingFragment extends BaseFragment {
     }
 
     private void processForgotPassword() {
-        // TODO: 2018/2/8 add forgotPsw fragment using qrCode
+        getViewEventCallBack().gotoView(PasswordFindFragment.class.getName());
     }
 
     private void processNextEncrypt() {

@@ -438,6 +438,7 @@
     <string name="page" formatted="false">page %d</string>
     <string name="search_end">Have finished searching</string>
     <string name="click_to_translate">Click to translate</string>
+    <string name="click_to_refresh">Click to refresh</string>
     <string name="delete_book">Delete book</string>
     <string name="network_or_server_error">Network or server error, wait for a while to try again</string>
     <string name="reader_check_network">Please check your network</string>
@@ -488,4 +489,8 @@
     <string name="book_detail_add_cart_tip_the_book_already_add_cart">the book already add to cart</string>
     <string name="pay_dialog_insufficient_balance">insufficient balance,go charge</string>
     <string name="pay_success">pay success</string>
+    <string name="password_find">Password find</string>
+    <string name="psw_success_to_unlock">Get success to unlock</string>
+    <string name="find_password_qr_generating">Generating retrieve information...</string>
+    <string name="find_password_qr_scan">Please scan the QR code to retrieve the password</string>
 </resources>
