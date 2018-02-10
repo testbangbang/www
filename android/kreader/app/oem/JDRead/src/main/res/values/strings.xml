@@ -493,4 +493,5 @@
     <string name="psw_success_to_unlock">Get success to unlock</string>
     <string name="find_password_qr_generating">Generating retrieve information...</string>
     <string name="find_password_qr_scan">Please scan the QR code to retrieve the password</string>
+    <string name="setting_device_model_format" translatable="false">%s-1</string>
 </resources>
