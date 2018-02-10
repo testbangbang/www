@@ -4,6 +4,7 @@ import android.graphics.RectF;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.android.sdk.utils.FileUtils;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class PositionSnapshot {
     }
 
     static public String cacheKey(final List<PageInfo> list) {
-        return JSON.toJSONString(list);
+        return FileUtils.computeMD5(JSON.toJSONString(list));
     }
 
     public String key() {

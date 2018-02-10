@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
-import com.onyx.android.sdk.utils.InputMethodUtils;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentPasswordSettingsBinding;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -16,8 +16,10 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.setting.event.BackToDeviceConfigEvent;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
+import com.onyx.jdread.setting.event.PasswordSettingEvent;
 import com.onyx.jdread.setting.model.PswSettingModel;
 import com.onyx.jdread.setting.model.SettingBundle;
+import com.onyx.jdread.setting.request.RxLockPswSettingRequest;
 import com.onyx.jdread.setting.view.NumberKeyboardPopWindow;
 import com.onyx.jdread.setting.view.NumberKeyboardView;
 import com.onyx.jdread.util.Utils;
@@ -90,7 +92,7 @@ public class PasswordSettingFragment extends BaseFragment {
     }
 
     private void processForgotPassword() {
-        // TODO: 2018/2/8 add forgotPsw fragment using qrCode
+        getViewEventCallBack().gotoView(PasswordFindFragment.class.getName());
     }
 
     private void processNextEncrypt() {
@@ -181,5 +183,31 @@ public class PasswordSettingFragment extends BaseFragment {
         ToastUtil.showToast(ResManager.getString(R.string.encryption_success));
         Utils.hideSoftWindow(getActivity());
         viewEventCallBack.viewBack();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLockPasswordSettingEvent(PasswordSettingEvent event) {
+        final RxLockPswSettingRequest request = new RxLockPswSettingRequest(event.data);
+        request.execute(new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                if (request.isSucceed()) {
+                    onBackToDeviceConfigEvent(new BackToDeviceConfigEvent());
+                } else {
+                    ToastUtil.showToast(R.string.password_setting_failed);
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                ToastUtil.showToast(R.string.password_setting_failed);
+            }
+
+            @Override
+            public void onFinally() {
+                hideLoadingDialog();
+            }
+        });
+        showLoadingDialog(getString(R.string.submitting));
     }
 }

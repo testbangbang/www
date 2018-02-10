@@ -33,12 +33,12 @@ public class SettingDataModel extends BaseObservable {
     public final ObservableField<String> deviceSerial = new ObservableField<>();
     private Map<String, Object> itemEvent = new HashMap<String, Object>(){
         {
-            put(JDReadApplication.getInstance().getResources().getString(R.string.wireless_network), new WireLessEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.intensity_control), new IntensityEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.page_refresh), new RefreshEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.interest_rates_screen_time), new ScreenEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.laboratory), new LaboratoryEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.help_and_feedback), new FeedbackEvent());
+            put(ResManager.getString(R.string.wireless_network), new WireLessEvent());
+            put(ResManager.getString(R.string.intensity_control), new IntensityEvent());
+            put(ResManager.getString(R.string.page_refresh), new RefreshEvent());
+            put(ResManager.getString(R.string.interest_rates_screen_time), new ScreenEvent());
+            put(ResManager.getString(R.string.laboratory), new LaboratoryEvent());
+            put(ResManager.getString(R.string.help_and_feedback), new FeedbackEvent());
         }
     };
 
@@ -60,14 +60,14 @@ public class SettingDataModel extends BaseObservable {
     }
 
     private void loadDeviceInfo() {
-        deviceModel.set(Build.MODEL);
+        deviceModel.set(String.format(ResManager.getString(R.string.setting_device_model_format), Build.MODEL));
         deviceVersion.set(String.format(ResManager.getString(R.string.device_setting_version_number), UpdateUtil.getAPPVersionName(JDReadApplication.getInstance())));
         deviceSerial.set(String.format(ResManager.getString(R.string.device_setting_serial_number), Build.SERIAL));
     }
 
     private void loadSettingItem() {
-        String[] settingName = JDReadApplication.getInstance().getResources().getStringArray(R.array.setting_content);
-        TypedArray typedArray = JDReadApplication.getInstance().getResources().obtainTypedArray(R.array.setting_drawables);
+        String[] settingName = ResManager.getStringArray(R.array.setting_content);
+        TypedArray typedArray = ResManager.getTypedArray(R.array.setting_drawables);
         int length = typedArray.length();
         int[] images = new int[length];
         for (int i = 0; i < length; i++) {

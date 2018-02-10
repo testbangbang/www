@@ -45,8 +45,9 @@
 
         <activity
             android:name=".main.activity.LockScreenActivity"
+            android:launchMode="singleInstance"
             android:theme="@style/ActivityFullscreen"
-            android:launchMode="singleInstance"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity android:name ="com.evernote.client.android.EvernoteOAuthActivity"/>
         <activity android:name ="com.evernote.client.android.login.EvernoteLoginActivity"/>
