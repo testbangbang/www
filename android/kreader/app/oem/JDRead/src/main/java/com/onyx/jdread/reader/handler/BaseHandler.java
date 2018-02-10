@@ -321,7 +321,7 @@ public class BaseHandler {
 
             List<PageAnnotation> annotations = readerDataHolder.getReaderUserDataInfo().getPageAnnotations(pageInfo);
             for (PageAnnotation annotation : annotations) {
-                for (RectF rect : annotation.getAnnotation().getRectangles()) {
+                for (RectF rect : annotation.getRectangles()) {
                     if (rect.contains(x, y)) {
                         showEditAnnotationMenu(annotation);
                         return true;
