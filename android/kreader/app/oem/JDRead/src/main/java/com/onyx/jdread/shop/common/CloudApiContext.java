@@ -1,9 +1,11 @@
 package com.onyx.jdread.shop.common;
 
+import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.setting.service.OnyxService;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCacheInterceptor;
 import com.onyx.jdread.shop.request.JavaNetCookieJar;
 import com.onyx.jdread.shop.request.PersistentCookieStore;
@@ -27,6 +29,9 @@ public class CloudApiContext {
     public static final String JD_BASE_URL = "https://gw-e.jd.com/";
     public static final String JD_BOOK_ORDER_URL = "https://order-e.jd.com/";
     public static final String JD_BOOK_BASE_URI = "/eink/api/";
+
+    public static final String ONYX_EINK_HOST = "http://oa.o-in.me:9066/";
+    public static final String ONYX_EINK_API = ONYX_EINK_HOST + "api/";
 
     public static class User {
         public static final String SYNC_INFO = "user/sync";
@@ -201,5 +206,9 @@ public class CloudApiContext {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         return retrofit.create(ReadContentService.class);
+    }
+
+    public static OnyxService getOnyxService(String baseUrl) {
+        return ServiceFactory.getSpecifyService(OnyxService.class, baseUrl);
     }
 }

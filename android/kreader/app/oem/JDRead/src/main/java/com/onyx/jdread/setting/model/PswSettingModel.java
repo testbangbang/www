@@ -2,8 +2,10 @@ package com.onyx.jdread.setting.model;
 
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.os.Build;
 
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -11,8 +13,8 @@ import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.main.util.RegularUtil;
-import com.onyx.jdread.setting.event.BackToDeviceConfigEvent;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
+import com.onyx.jdread.setting.event.PasswordSettingEvent;
 import com.onyx.jdread.setting.utils.Constants;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,6 +44,10 @@ public class PswSettingModel extends Observable {
     }
 
     public void confirmPassword() {
+        if (!NetworkUtil.isWiFiConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(R.string.wifi_no_connected);
+            return;
+        }
         String password = passwordEdit.get();
         if (StringUtils.isNullOrEmpty(password) || (password.length() < Constants.PASSWORD_MIN_LENGTH) || password.length() > Constants.PASSWORD_MAX_LENGTH) {
             ToastUtil.showToast(JDReadApplication.getInstance(), String.format(JDReadApplication.getInstance().getString(R.string.password_format_error), Constants.PASSWORD_MIN_LENGTH, Constants.PASSWORD_MAX_LENGTH));
@@ -53,9 +59,9 @@ public class PswSettingModel extends Observable {
             return;
         }
 
-        JDPreferenceManager.setStringValue(R.string.password_key, FileUtils.computeMD5(passwordEdit.get()));
-        JDPreferenceManager.setStringValue(R.string.phone_key, phoneEdit.get());
-        eventBus.post(new BackToDeviceConfigEvent());
+        PswSettingData data = PswSettingData.create(phoneEdit.get(), password,
+                NetworkUtil.getMacAddress(JDReadApplication.getInstance()), Build.MODEL);
+        eventBus.post(new PasswordSettingEvent(data));
     }
 
     public void unlockPassword() {
