@@ -14,6 +14,10 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="PreloadActivityFullscreen" parent="@style/ActivityFullscreen">
+        <item name="android:background">@mipmap/preload</item>
+    </style>
+
     <style name="CustomDialogStyle" parent="@style/OnyxAppCompat.AlertDialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>

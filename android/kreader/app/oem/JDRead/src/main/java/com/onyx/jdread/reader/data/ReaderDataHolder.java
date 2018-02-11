@@ -40,11 +40,20 @@ public class ReaderDataHolder {
     private GammaInfo gammaInfo;
     private SettingInfo settingInfo;
     private EventBus eventBus = EventBus.getDefault();
+    private boolean isPreload = false;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
         setAppContext(appContext);
         initView(appContext);
+    }
+
+    public boolean isPreload() {
+        return isPreload;
+    }
+
+    public void setPreload(boolean preload) {
+        isPreload = preload;
     }
 
     public SettingInfo getSettingInfo() {
