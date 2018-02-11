@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.device.ReaderDeviceManager;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
@@ -297,6 +298,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public void selectWord(final float x1, final float y1, final float x2, final float y2) {
+        EpdController.disableRegal();
         setReleaseClick(false);
         SelectWordInfo info = new SelectWordInfo(getReaderDataHolder().getCurrentPagePosition(),
                 new PointF(x1, y1),
@@ -378,7 +380,12 @@ public class WordSelectionHandler extends BaseHandler {
         setLongPress(false);
         getReaderDataHolder().getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
         getReaderDataHolder().getReaderSelectionInfo().clear();
-        new CleanSelectionAction().execute(getReaderDataHolder(),null);
+        new CleanSelectionAction().execute(getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                EpdController.enableRegal();
+            }
+        });
     }
 
     private void enableSelectionCursor() {

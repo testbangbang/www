@@ -19,6 +19,7 @@ public class DrawSelectResultRequest extends ReaderBaseRequest {
     public DrawSelectResultRequest call() throws Exception {
         ReaderSelectionHelper readerSelectionHelper = reader.getReaderSelectionHelper();
         LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
+        reader.getReaderViewHelper().setApplyEpdUpdate(false);
         reader.getReaderViewHelper().renderAll(reader,
                 reader.getReaderHelper().getCurrentPageBitmap().getBitmap(), getReaderUserDataInfo(), getReaderViewInfo(),
                 readerSelectionHelper);
