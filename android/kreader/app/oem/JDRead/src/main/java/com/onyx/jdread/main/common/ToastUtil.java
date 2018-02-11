@@ -78,6 +78,14 @@ public class ToastUtil {
         }
     }
 
+    public static void showToast(int resId, Object... formatArgs) {
+        showToast(ResManager.getString(resId), formatArgs);
+    }
+
+    public static void showToast(String text, Object... formatArgs) {
+        showToast(String.format(text, formatArgs));
+    }
+
     public static void showToast(Context appContext, int resId) {
         showToast(appContext, appContext.getString(resId));
     }

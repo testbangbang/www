@@ -35,6 +35,8 @@ public class PswSettingModel extends Observable {
     private final EventBus eventBus;
     private String password;
 
+    private PswFailModel pswFailModel;
+
     public PswSettingModel(EventBus eventBus) {
         this.eventBus = eventBus;
         titleBarModel.title.set(JDReadApplication.getInstance().getString(R.string.password_setting));
@@ -42,6 +44,7 @@ public class PswSettingModel extends Observable {
         password = JDPreferenceManager.getStringValue(R.string.password_key, null);
         phoneEdit.set(JDPreferenceManager.getStringValue(R.string.phone_key, null));
         encrypted.set(StringUtils.isNotBlank(password));
+        pswFailModel = new PswFailModel(eventBus);
     }
 
     public void confirmPassword() {
@@ -69,11 +72,16 @@ public class PswSettingModel extends Observable {
         if (StringUtils.isNullOrEmpty(password)) {
             password = JDPreferenceManager.getStringValue(R.string.password_key, null);
         }
+        boolean valid = pswFailModel.checkUnlockFailData();
+        if (!valid) {
+            return;
+        }
         if (StringUtils.isNotBlank(unlockPassword) && FileUtils.computeMD5(unlockPassword).equals(password)) {
             JDPreferenceManager.setStringValue(R.string.password_key, "");
+            pswFailModel.saveUnlockFailData(null);
             encrypted.set(false);
         } else {
-            ToastUtil.showToast(JDReadApplication.getInstance(), R.string.wrong_password);
+            pswFailModel.updateUnlockFailData();
         }
     }
 
