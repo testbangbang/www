@@ -10,6 +10,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.main.util.RegularUtil;
@@ -49,13 +50,12 @@ public class PswSettingModel extends Observable {
             return;
         }
         String password = passwordEdit.get();
-        if (StringUtils.isNullOrEmpty(password) || (password.length() < Constants.PASSWORD_MIN_LENGTH) || password.length() > Constants.PASSWORD_MAX_LENGTH) {
-            ToastUtil.showToast(JDReadApplication.getInstance(), String.format(JDReadApplication.getInstance().getString(R.string.password_format_error), Constants.PASSWORD_MIN_LENGTH, Constants.PASSWORD_MAX_LENGTH));
+        if (!checkPasswordValid(password)) {
             return;
         }
 
         if (StringUtils.isNullOrEmpty(phoneEdit.get()) || !RegularUtil.isMobile(phoneEdit.get())) {
-            ToastUtil.showToast(JDReadApplication.getInstance(), R.string.phone_number_format_error);
+            ToastUtil.showToast(R.string.phone_number_format_error);
             return;
         }
 
@@ -75,5 +75,19 @@ public class PswSettingModel extends Observable {
         } else {
             ToastUtil.showToast(JDReadApplication.getInstance(), R.string.wrong_password);
         }
+    }
+
+    private boolean checkPasswordValid(String password) {
+        if (StringUtils.isNullOrEmpty(password) || (password.length() < Constants.PASSWORD_MIN_LENGTH)
+                || password.length() > Constants.PASSWORD_MAX_LENGTH) {
+            ToastUtil.showToast(String.format(ResManager.getString(R.string.password_format_error), Constants.PASSWORD_MIN_LENGTH, Constants.PASSWORD_MAX_LENGTH));
+            return false;
+        }
+
+        if (RegularUtil.isAllCharSame(password) || RegularUtil.isOrderChar(password)) {
+            ToastUtil.showToast(R.string.password_too_simple_and_reset);
+            return false;
+        }
+        return true;
     }
 }

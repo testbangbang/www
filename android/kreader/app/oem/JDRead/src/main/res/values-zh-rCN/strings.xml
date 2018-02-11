@@ -466,4 +466,5 @@
     <string name="psw_success_to_unlock">获取成功，去解锁</string>
     <string name="find_password_qr_generating">正在生成找回信息...</string>
     <string name="find_password_qr_scan">请用手机扫描下方二维码找回阅读器密码</string>
+    <string name="password_too_simple_and_reset">密码过于简单，请重置</string>
 </resources>

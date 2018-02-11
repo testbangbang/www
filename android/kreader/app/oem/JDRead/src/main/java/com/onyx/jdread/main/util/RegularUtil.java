@@ -7,6 +7,17 @@ import java.util.regex.Pattern;
  */
 
 public class RegularUtil {
+
+    private static String POSITIVE_ORDER_CHAR_STRING;
+    private static String NEGATIVE_ORDER_CHAR_STRING;
+
+    static {
+        for (int i = 33; i < 127; i++) {
+            POSITIVE_ORDER_CHAR_STRING += Character.toChars(i)[0];
+            NEGATIVE_ORDER_CHAR_STRING += Character.toChars(160 - i)[0];
+        }
+    }
+
     /**
      * regex username
      */
@@ -61,6 +72,10 @@ public class RegularUtil {
      * regex ip
      */
     public static final String REGEX_IP_ADDR = "(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)";
+
+    public static final String REGEX_ALL_CHAR_SAME = "(\\w)(\\1)+";
+
+    public static final String REGEX_LETTER_OR_NUMBER = "((\\d)|([a-z])|([A-Z]))+";
 
     /**
      * Check the username
@@ -140,5 +155,17 @@ public class RegularUtil {
      */
     public static boolean isIPAddr(String ipAddr) {
         return Pattern.matches(REGEX_IP_ADDR, ipAddr);
+    }
+
+    public static boolean isAllCharSame(String text) {
+        return Pattern.matches(REGEX_ALL_CHAR_SAME, text);
+    }
+
+    public static boolean isOrderChar(String text) {
+        boolean match = Pattern.matches(REGEX_LETTER_OR_NUMBER, text);
+        if (!match) {
+            return false;
+        }
+        return POSITIVE_ORDER_CHAR_STRING.contains(text) || NEGATIVE_ORDER_CHAR_STRING.contains(text);
     }
 }
