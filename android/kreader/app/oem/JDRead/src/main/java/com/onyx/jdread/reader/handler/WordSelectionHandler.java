@@ -60,12 +60,21 @@ public class WordSelectionHandler extends BaseHandler {
     private String downPagePosition;
     private boolean isReleaseClick = true;
     private int drawSelectResultCount = 0;
+    private int offsetY = 0;
 
     public WordSelectionHandler(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder);
         movePointOffsetHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.move_point_offset_height);
         crossScreenTouchRegionMinWidth = readerDataHolder.getAppContext().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_width);
         crossScreenTouchRegionMinHeight = readerDataHolder.getAppContext().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_height);
+    }
+
+    public int getOffsetY() {
+        return offsetY;
+    }
+
+    public void setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
     }
 
     public boolean isReleaseClick() {
@@ -88,6 +97,7 @@ public class WordSelectionHandler extends BaseHandler {
         boolean has = hasSelectionWord();
         drawSelectResultCount = 0;
         setReleaseClick(false);
+        setOffsetY(0);
         if (!has) {
             highLightBeginTop = new PointF(event.getX(), event.getY());
             highLightEndBottom = new PointF(event.getX(), event.getY());
@@ -243,7 +253,7 @@ public class WordSelectionHandler extends BaseHandler {
                 if (!isCrossScreenSelect(x, y)) {
                     return true;
                 }
-                highlightAlongTouchMoved(x, y, cursorSelected);
+                highlightAlongTouchMoved(x, y - offsetY, cursorSelected);
                 break;
             case MotionEvent.ACTION_UP:
                 break;
@@ -360,11 +370,13 @@ public class WordSelectionHandler extends BaseHandler {
 
         if (endHighlightCursor != null && endHighlightCursor.hitTest(x, y)) {
             if (endHighlightCursor.getShowState()) {
+                offsetY = endHighlightCursor.getCursorOffsetY(x,y);
                 return HighlightCursor.END_CURSOR_INDEX;
             }
         }
         if (beginHighlightCursor != null && beginHighlightCursor.hitTest(x, y)) {
             if (beginHighlightCursor.getShowState()) {
+                offsetY = endHighlightCursor.getCursorOffsetY(x,y);
                 return HighlightCursor.BEGIN_CURSOR_INDEX;
             }
         }
