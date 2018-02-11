@@ -260,8 +260,8 @@ public class SelectMenuModel {
     }
 
     public void showEditAnnotationMenu(ReaderDataHolder readerDataHolder,PageAnnotation annotations){
-        RectF begin = annotations.getAnnotation().getRectangles().get(0);
-        RectF end = annotations.getAnnotation().getRectangles().get(annotations.getAnnotation().getRectangles().size() - 1);
+        RectF begin = annotations.getRectangles().get(0);
+        RectF end = annotations.getRectangles().get(annotations.getRectangles().size() - 1);
         currentAnnotations = annotations;
         setIsEditAnnotation(true);
         requestLayoutView(readerDataHolder,begin.top,

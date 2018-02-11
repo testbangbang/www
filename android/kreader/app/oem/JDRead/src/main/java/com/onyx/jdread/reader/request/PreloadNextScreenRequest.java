@@ -1,9 +1,7 @@
 package com.onyx.jdread.reader.request;
 
-import android.util.Log;
-
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
-import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.jdread.reader.data.Reader;
 
 /**
@@ -20,11 +18,12 @@ public class PreloadNextScreenRequest extends ReaderBaseRequest {
     @Override
     public PreloadNextScreenRequest call() throws Exception {
         reader.getReaderHelper().getReaderLayoutManager().setSavePosition(false);
+        final PositionSnapshot snapshot = reader.getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
         if (reader.getReaderHelper().nextScreen()) {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, getReaderViewInfo());
             reader.getReaderHelper().addToCache(context.renderingBitmap);
-            reader.getReaderHelper().previousScreen();
+            reader.getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().restoreBySnapshot(snapshot);
         }
         return this;
     }
