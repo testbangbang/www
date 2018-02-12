@@ -44,18 +44,9 @@ public class ReaderViewHelper {
     private Paint paint = new Paint();
     private static final int DEFAULT_MULTIPLEX = 1;
     public float dpiMultiplex = 1.0f;
-    private boolean applyEpdUpdate = true;
 
     public ReaderViewHelper(Context context) {
         initData(context);
-    }
-
-    public boolean isApplyEpdUpdate() {
-        return applyEpdUpdate;
-    }
-
-    public void setApplyEpdUpdate(boolean applyEpdUpdate) {
-        this.applyEpdUpdate = applyEpdUpdate;
     }
 
     private void initData(Context context) {
@@ -106,11 +97,7 @@ public class ReaderViewHelper {
             return;
         }
         paint.setDither(true);
-        if(isApplyEpdUpdate()) {
-            applyEpdUpdate(reader, contentView);
-        }else{
-            resetEpdUpdate(reader,contentView);
-        }
+        applyEpdUpdate(reader, contentView);
         Canvas canvas = contentView.getHolder().lockCanvas();
         if(canvas == null){
             return;
@@ -125,7 +112,6 @@ public class ReaderViewHelper {
         } finally {
             contentView.getHolder().unlockCanvasAndPost(canvas);
         }
-        setApplyEpdUpdate(true);
     }
 
     public void drawPageContent(Canvas canvas, Bitmap bitmap) {
