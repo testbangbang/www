@@ -53,7 +53,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
         SelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(newPagePosition);
         if (readerSelectionInfo == null) {
             PointF start = new PointF(width, height);
-            PointF end = new PointF(style.getPageMargin().getLeftMargin().getPercent(), style.getPageMargin().getTopMargin().getPercent());
+            PointF end = new PointF(0,0);
             readerSelectionInfo = HitTestTextHelper.hitTestTextRegion(start, end, -ReaderConfig.HIT_TEST_TEXT_STEP, reader, getReaderUserDataInfo(), false, newPagePosition);
             if (readerSelectionInfo == null || readerSelectionInfo.getCurrentSelection().getRectangles().size() <= 0) {
                 isSuccess = false;
@@ -109,7 +109,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
     private boolean extendCurrentPageUpperLeftSelectTextRegion() {
         SelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(currentPagePosition);
 
-        PointF start = new PointF(style.getPageMargin().getLeftMargin().getPercent(), style.getPageMargin().getTopMargin().getPercent());
+        PointF start = new PointF(0,0);
         PointF end = new PointF(width, height);
         SelectionInfo newReaderSelectionInfo = HitTestTextHelper.hitTestTextRegion(start, end, ReaderConfig.HIT_TEST_TEXT_STEP, reader, getReaderUserDataInfo(), true, currentPagePosition);
         if (newReaderSelectionInfo != null) {

@@ -51,7 +51,7 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
 
         SelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(newPagePosition);
         if (readerSelectionInfo == null) {
-            PointF start = new PointF(style.getPageMargin().getLeftMargin().getPercent(), style.getPageMargin().getTopMargin().getPercent());
+            PointF start = new PointF(0, 0);
             PointF end = new PointF(width, height);
             readerSelectionInfo = HitTestTextHelper.hitTestTextRegion(start, end, ReaderConfig.HIT_TEST_TEXT_STEP, reader, getReaderUserDataInfo(), true, newPagePosition);
             if (readerSelectionInfo == null || readerSelectionInfo.getCurrentSelection().getRectangles().size() <= 0) {
@@ -110,7 +110,7 @@ public class NextPageSelectTextRequest extends ReaderBaseRequest {
         SelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(currentPagePosition);
 
         PointF start = new PointF(width, height);
-        PointF end = new PointF(style.getPageMargin().getLeftMargin().getPercent(), style.getPageMargin().getTopMargin().getPercent());
+        PointF end = new PointF(0,0);
         SelectionInfo newReaderSelectionInfo = HitTestTextHelper.hitTestTextRegion(start, end, -ReaderConfig.HIT_TEST_TEXT_STEP, reader, getReaderUserDataInfo(), false, currentPagePosition);
         if (newReaderSelectionInfo != null) {
             readerSelectionInfo.setHighLightEndBottom(newReaderSelectionInfo.getHighLightEndBottom());

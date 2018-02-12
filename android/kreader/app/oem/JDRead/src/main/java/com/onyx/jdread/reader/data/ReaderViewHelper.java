@@ -28,6 +28,7 @@ import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewConfig;
+import com.onyx.jdread.reader.epd.ReaderEpdHelper;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.util.TimeUtils;
@@ -43,9 +44,18 @@ public class ReaderViewHelper {
     private Paint paint = new Paint();
     private static final int DEFAULT_MULTIPLEX = 1;
     public float dpiMultiplex = 1.0f;
+    private boolean applyEpdUpdate = true;
 
     public ReaderViewHelper(Context context) {
         initData(context);
+    }
+
+    public boolean isApplyEpdUpdate() {
+        return applyEpdUpdate;
+    }
+
+    public void setApplyEpdUpdate(boolean applyEpdUpdate) {
+        this.applyEpdUpdate = applyEpdUpdate;
     }
 
     private void initData(Context context) {
@@ -96,7 +106,11 @@ public class ReaderViewHelper {
             return;
         }
         paint.setDither(true);
-        applyEpdUpdate(reader, contentView);
+        if(isApplyEpdUpdate()) {
+            applyEpdUpdate(reader, contentView);
+        }else{
+            resetEpdUpdate(reader,contentView);
+        }
         Canvas canvas = contentView.getHolder().lockCanvas();
         if(canvas == null){
             return;
@@ -111,6 +125,7 @@ public class ReaderViewHelper {
         } finally {
             contentView.getHolder().unlockCanvasAndPost(canvas);
         }
+        setApplyEpdUpdate(true);
     }
 
     public void drawPageContent(Canvas canvas, Bitmap bitmap) {
@@ -303,6 +318,11 @@ public class ReaderViewHelper {
 
     private void applyEpdUpdate(final Reader reader, final SurfaceView view) {
         reader.getReaderEpdHelper().applyWithGCInterval(view);
+    }
+
+    private void resetEpdUpdate(final Reader reader,final SurfaceView view){
+        reader.getReaderEpdHelper().setGcInterval(ReaderEpdHelper.DEFAULT_GC_INTERVAL);
+        ReaderEpdHelper.resetUpdateMode(view);
     }
 
     private ColorMatrix getColorMatrix() {

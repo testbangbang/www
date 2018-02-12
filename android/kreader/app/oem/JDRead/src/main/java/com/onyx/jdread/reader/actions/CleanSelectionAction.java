@@ -11,22 +11,24 @@ import com.onyx.jdread.reader.request.CleanSelectionRequest;
 
 public class CleanSelectionAction extends BaseReaderAction {
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
         final CleanSelectionRequest request = new CleanSelectionRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                updateViewPage(readerDataHolder);
+                updateViewPage(readerDataHolder,baseCallback);
             }
         });
     }
 
-    private void updateViewPage(final ReaderDataHolder readerDataHolder){
+    private void updateViewPage(final ReaderDataHolder readerDataHolder,final RxCallback baseCallback){
         final UpdateViewPageAction request =new UpdateViewPageAction();
         request.execute(readerDataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                if(baseCallback != null){
+                    baseCallback.onNext(o);
+                }
             }
 
             @Override

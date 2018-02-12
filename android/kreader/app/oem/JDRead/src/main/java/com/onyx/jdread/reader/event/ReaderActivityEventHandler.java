@@ -1,9 +1,11 @@
 package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.AnnotationCopyToClipboardAction;
@@ -138,7 +140,17 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInitPageViewInfoEvent(InitPageViewInfoEvent event) {
-        new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
+        if(readerViewModel.getReaderDataHolder().isPreload()){
+            startMainActivity();
+            readerViewBack.getContext().finish();
+        }else {
+            new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
+        }
+    }
+
+    private void startMainActivity(){
+        Intent intent = new Intent(readerViewBack.getContext(), MainActivity.class);
+        readerViewBack.getContext().startActivity(intent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

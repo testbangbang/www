@@ -20,6 +20,7 @@ import com.onyx.android.sdk.device.RK3026Device;
 public class ReaderEpdHelper {
 
     private static final String TAG = ReaderEpdHelper.class.getSimpleName();
+    public static final int DEFAULT_GC_INTERVAL = 10;
 
     private int gcInterval;
     private int refreshCount;
@@ -45,7 +46,7 @@ public class ReaderEpdHelper {
 
     public void prepareInitialUpdate(final Context context) {
         // read init value from context.
-        gcInterval = 10;
+        gcInterval = DEFAULT_GC_INTERVAL;
         refreshCount = gcInterval;
     }
 

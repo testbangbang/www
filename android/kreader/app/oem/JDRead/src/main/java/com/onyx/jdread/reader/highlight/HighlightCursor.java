@@ -49,6 +49,14 @@ public class HighlightCursor {
         return hitTestRect.contains(x, y);
     }
 
+    public int getCursorOffsetY(final float x,final float y){
+        float bottom = hitTestRect.height() - (hitTestRect.height() / 3);
+        if(y >= bottom){
+            return startCursorBitmap.getHeight() / 2;
+        }
+        return 0;
+    }
+
     public void setCursorType(Type t) {
         cursorType = t;
     }
