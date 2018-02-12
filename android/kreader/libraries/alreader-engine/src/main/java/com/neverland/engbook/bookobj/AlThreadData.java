@@ -267,14 +267,14 @@ class AlThreadData {
 
 						synchronized (this.book_object) {
 							this.clearWork0();
-							startThread(param, TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL, true);
+							startThread(param, TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL, false);
 						}
 
 				} else {
 					this.clearWork0();
 					synchronized (this.book_object) {
 						this.clearWork0();
-						startThread(param, TAL_THREAD_TASK.PARSER_AFTER_DATA, true);
+						startThread(param, TAL_THREAD_TASK.PARSER_AFTER_DATA, false);
 					}
 				}
 			} else {
