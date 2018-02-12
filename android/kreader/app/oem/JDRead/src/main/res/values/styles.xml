@@ -15,7 +15,7 @@
     </style>
 
     <style name="PreloadActivityFullscreen" parent="@style/ActivityFullscreen">
-        <item name="android:background">@mipmap/preload</item>
+        <item name="android:background">@drawable/preload</item>
     </style>
 
     <style name="CustomDialogStyle" parent="@style/OnyxAppCompat.AlertDialog">
