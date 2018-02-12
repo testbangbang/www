@@ -25,6 +25,7 @@ public class ReaderEpdHelper {
     private int gcInterval;
     private int refreshCount;
     private boolean inFastUpdateMode = false;
+    private boolean useDefaultUpdate = false;
 
     public ReaderEpdHelper(final Context context) {
         prepareInitialUpdate(context);
@@ -50,6 +51,14 @@ public class ReaderEpdHelper {
         refreshCount = gcInterval;
     }
 
+    public boolean isUseDefaultUpdate() {
+        return useDefaultUpdate;
+    }
+
+    public void setUseDefaultUpdate(boolean useDefaultUpdate) {
+        this.useDefaultUpdate = useDefaultUpdate;
+    }
+
     public int getGcInterval() {
         return gcInterval;
     }
@@ -60,7 +69,11 @@ public class ReaderEpdHelper {
     }
 
     public void applyWithGCInterval(View view) {
-        applyWithGCIntervalWitRegal(view);
+        if (isUseDefaultUpdate()) {
+            resetUpdateMode(view);
+        } else {
+            applyWithGCIntervalWitRegal(view);
+        }
     }
 
     public void applyWithGCIntervalWitRegal(View view) {
