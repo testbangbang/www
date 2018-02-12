@@ -16,7 +16,7 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
 public class ParserOpenDocumentInfoAction extends BaseReaderAction {
     private Intent intent;
     private DocumentInfo documentInfo;
-    private static final String BOOK_PATH = "/sdcard/Books/飘.txt";
+
     public ParserOpenDocumentInfoAction(Intent intent) {
         this.intent = intent;
     }
@@ -27,11 +27,17 @@ public class ParserOpenDocumentInfoAction extends BaseReaderAction {
         setSecurityInfo();
     }
 
+    private String getPreloadBookPath(ReaderDataHolder readerDataHolder){
+        CheckPreloadBookStateAction action = new CheckPreloadBookStateAction();
+        action.execute(readerDataHolder,null);
+        return action.getPreloadBook();
+    }
+
     private void setDocumentInfo(ReaderDataHolder readerDataHolder){
         documentInfo = new DocumentInfo();
         String bookPath;
         if(!intent.hasExtra(DocumentInfo.BOOK_PATH)){
-            bookPath = BOOK_PATH;
+            bookPath = getPreloadBookPath(readerDataHolder);
             readerDataHolder.setPreload(true);
         }else {
             bookPath = intent.getStringExtra(DocumentInfo.BOOK_PATH);
