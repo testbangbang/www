@@ -43,8 +43,10 @@ public class AlFormatTXT extends AlFormat {
 
 	public void parserAfterData(final int start_pos){
 		initParserParameter();
-		FileBlockInfo.loadTwoBlockData(this,loadFileBlockInfo.twoBlock);
-		FileBlockInfo.loadThreeBlockData(this,loadFileBlockInfo.threeBlock);
+		if(loadFileBlockInfo != null) {
+			FileBlockInfo.loadTwoBlockData(this, loadFileBlockInfo.twoBlock);
+			FileBlockInfo.loadThreeBlockData(this, loadFileBlockInfo.threeBlock);
+		}
 		size = customSize;
 
 		FileBlockInfo.saveParagraphData(fileBlocks, this);
