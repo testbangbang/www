@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.utils;
 
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,11 +10,17 @@ import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 public class ReaderViewUtil {
     private static final String TAG = ReaderViewUtil.class.getSimpleName();
     private static boolean mIsFullUpdate = false;
+    public static final int BUFFER_SIZE = 1024;
 
     public static void clearSurfaceView(SurfaceView surfaceView) {
         Rect rect = getViewportSize(surfaceView);
@@ -68,5 +75,31 @@ public class ReaderViewUtil {
             input = input.replaceAll("\\\\u0032", ""); // removes backslash+u0000
         }
         return input;
+    }
+
+    public static boolean readAssetsFile(AssetManager am, String srcFileName, String destPath) {
+        InputStream is = null;
+        FileOutputStream fos = null;
+        boolean bRet = true;
+        try {
+            is = am.open(srcFileName);
+            fos = new FileOutputStream(new File(destPath));
+            int len = 0;
+            byte[] buf = new byte[BUFFER_SIZE];
+            while (true) {
+                len = is.read(buf);
+                if (len < 0) {
+                    break;
+                }
+                fos.write(buf, 0, len);
+            }
+        } catch (Exception e) {
+            bRet = false;
+        } finally {
+            FileUtils.closeQuietly(fos);
+            FileUtils.closeQuietly(is);
+        }
+
+        return bRet;
     }
 }
