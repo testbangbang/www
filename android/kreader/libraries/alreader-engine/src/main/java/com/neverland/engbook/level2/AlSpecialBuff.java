@@ -9,6 +9,7 @@ public class AlSpecialBuff {
     public boolean						isCSSStyle = false;
     public boolean						isContent = false;
     public boolean						isGenre = false;
+    public boolean                      isLang = false;
     public boolean						isAuthor = false;
     public boolean						isAuthorFirst = false;
     public boolean						isAuthorLast = false;

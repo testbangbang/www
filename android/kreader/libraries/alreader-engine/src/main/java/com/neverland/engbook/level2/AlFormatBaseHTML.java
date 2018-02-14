@@ -1,13 +1,9 @@
 package com.neverland.engbook.level2;
 
 
-import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.EngBookMyType;
-import com.neverland.engbook.level1.AlFiles;
-import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 
 public class AlFormatBaseHTML extends AlAXML {
     public String		currentFile;
@@ -16,11 +12,6 @@ public class AlFormatBaseHTML extends AlAXML {
 
     public AlFormatBaseHTML() {
         currentFile = EngBookMyType.AL_ROOT_RIGHTPATH_STR + "_";
-    }
-
-    @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
-
     }
 
     public void addTestContent(String s, int level) {

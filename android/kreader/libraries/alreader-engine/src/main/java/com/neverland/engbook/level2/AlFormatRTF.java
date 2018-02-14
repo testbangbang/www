@@ -16,7 +16,6 @@ import com.neverland.engbook.util.AlOneLink;
 import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 import com.neverland.engbook.util.InternalFunc;
 
 import java.util.HashMap;
@@ -51,19 +50,15 @@ public class AlFormatRTF extends AlFormat {
 
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
+
         ident = "RTF";
 
         fnt_charset_mode.clear();
 
-        aFiles = myParent;
-        preference = pref;
-        styles = stl;
-
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
             aFiles.needUnpackData();
-
-        size = 0;
 
         switch (bookOptions.codePageDefault) {
             case TAL_CODE_PAGES.CP1200:

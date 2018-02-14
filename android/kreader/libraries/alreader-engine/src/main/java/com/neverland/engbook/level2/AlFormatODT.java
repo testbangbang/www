@@ -8,7 +8,6 @@ import com.neverland.engbook.level1.AlOneZIPRecord;
 import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 import com.neverland.engbook.util.InternalFunc;
 
 public class AlFormatODT extends AlAXML {
@@ -24,19 +23,14 @@ public class AlFormatODT extends AlAXML {
     }
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
+
         xml_mode = true;
         ident = "ODT";
 
-        aFiles = myParent;
-
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
             aFiles.needUnpackData();
-
-        preference = pref;
-        styles = stl;
-
-        size = 0;
 
         autoCodePage = false;
         setCP(TAL_CODE_PAGES.CP65001);
@@ -44,7 +38,7 @@ public class AlFormatODT extends AlAXML {
         allState.state_parser = STATE_XML_SKIP;
         allState.clearSkipped();
 
-        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_ODT);
+        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_ODT, pref.cssSupportLevel);
         //if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
             cssStyles.disableExternal = true;
         customSize = 0;

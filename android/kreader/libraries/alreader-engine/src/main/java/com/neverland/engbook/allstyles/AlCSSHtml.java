@@ -1,5 +1,6 @@
 package com.neverland.engbook.allstyles;
 
+import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level2.AlFormat;
@@ -114,16 +115,22 @@ public class AlCSSHtml extends AlCSSStyles {
 
     }
 
-    public void init(AlFormat f, int cp4files, int useSet) {
+    public void init(AlFormat f, int cp4files, int useSet, int sLevel) {
 
         format = f;
         cp4f = cp4files;
-        supportFontSize = true;
+        //supportFontSize = true;
         AlSetCSS a = new AlSetCSS(this);
         a.name = "::default";
         allSets.add(a);
 
         AlOneCSSPair p;
+
+        try {
+            parse(0, CSS_DefaultProperty.DEFAULT_CSS_ALL.getBytes("UTF-8"), -1, 0, TAL_CODE_PAGES.CP65001, null, -1);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         switch (useSet) {
             case CSSHTML_SET_FB2:
@@ -171,6 +178,7 @@ public class AlCSSHtml extends AlCSSStyles {
         }
 
         lastUsedSet = -1;
+        supportLevel = sLevel;
         enable = true;
 
     }
@@ -661,6 +669,9 @@ public class AlCSSHtml extends AlCSSStyles {
     }
 
     protected void setMarginTToInternal(AlOneCSSNumberValue a) {
+        if ((supportLevel & AlEngineOptions.CSS_SUPPORT_VERTICAL_MARGINS) == 0)
+            return;
+
         if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
 
         } else
@@ -689,6 +700,9 @@ public class AlCSSHtml extends AlCSSStyles {
     }
 
     protected void setMarginBToInternal(AlOneCSSNumberValue a) {
+        if ((supportLevel & AlEngineOptions.CSS_SUPPORT_VERTICAL_MARGINS) == 0)
+            return;
+
         if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
 
         } else
@@ -717,6 +731,9 @@ public class AlCSSHtml extends AlCSSStyles {
     }
 
     protected void setMarginLToInternal(AlOneCSSNumberValue a) {
+        if ((supportLevel & AlEngineOptions.CSS_SUPPORT_HORIZONTAL_MARGINS) == 0)
+            return;
+
         if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
 
         } else
@@ -755,6 +772,9 @@ public class AlCSSHtml extends AlCSSStyles {
     }
 
     protected void setMarginRToInternal(AlOneCSSNumberValue a) {
+        if ((supportLevel & AlEngineOptions.CSS_SUPPORT_HORIZONTAL_MARGINS) == 0)
+            return;
+
         if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
 
         } else
@@ -792,6 +812,9 @@ public class AlCSSHtml extends AlCSSStyles {
     }
 
     protected void setMarginIToInternal(AlOneCSSNumberValue a) {
+        if ((supportLevel & AlEngineOptions.CSS_SUPPORT_TEXT_INDENT) == 0)
+            return;
+
         if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
 
         } else
@@ -866,14 +889,6 @@ public class AlCSSHtml extends AlCSSStyles {
                     }
                 }
                 break;
-            case TAG_TEXT_SHADOW:
-                internalCSSValue.m0 = AlOneCSS.SHADOW_MASK;
-                if ("none".contentEquals(valS)) {
-                    internalCSSValue.v0 = 0L;
-                } else {
-                    internalCSSValue.v0 = AlOneCSS.SHADOW_MASK;
-                }
-                break;
             case TAG_HYPHENS:
                 internalCSSValue.m0 = AlOneCSS.NOHYPH_MASK;
                 if ("none".contentEquals(valS)) {
@@ -889,7 +904,7 @@ public class AlCSSHtml extends AlCSSStyles {
                     internalCSSValue.v0 = 0L;
                 } else
                 if ("line-through".contentEquals(valS) ||
-                    "strike".contentEquals(valS)) {
+                        "strike".contentEquals(valS)) {
                     internalCSSValue.m0 = AlOneCSS.STRIKE_MASK;
                     internalCSSValue.v0 = AlOneCSS.STRIKE_MASK;
                 } else
@@ -900,111 +915,6 @@ public class AlCSSHtml extends AlCSSStyles {
 
                 }
                 break;
-            case TAG_MARGIN:
-
-                vv.setLength(0);
-                vv.append(valS.toString().trim());
-
-                {
-
-                    i = 0;
-                    while (true) {
-                        if (vv.length() == 0)
-                            break;
-
-                        cnt = AlOneCSSNumberValue.scan(adouble[i], vv);
-                        if (adouble[i++].tp == AlOneCSSNumberValue.CSS_NUM_UNKNOWN) {
-                            i = 0;
-                            break;
-                        }
-
-                        if (i > 3) {
-                            i = 4;
-                            break;
-                        }
-
-                        if (cnt == vv.length())
-                            break;
-                        vv.delete(0, cnt);
-                    }
-                }
-
-                switch (i) {
-                    case 1:
-                        setMarginLToInternal(adouble[0]);
-                        setMarginRToInternal(adouble[0]);
-                        setMarginTToInternal(adouble[0]);
-                        setMarginBToInternal(adouble[0]);
-                        break;
-                    case 2:
-                        setMarginTToInternal(adouble[0]);
-                        setMarginBToInternal(adouble[0]);
-                        setMarginLToInternal(adouble[1]);
-                        setMarginRToInternal(adouble[1]);
-                        break;
-                    case 3:
-                        setMarginTToInternal(adouble[0]);
-                        setMarginLToInternal(adouble[1]);
-                        setMarginRToInternal(adouble[1]);
-                        setMarginBToInternal(adouble[2]);
-                        break;
-                    case 4:
-                        setMarginTToInternal(adouble[0]);
-                        setMarginRToInternal(adouble[1]);
-                        setMarginBToInternal(adouble[2]);
-                        setMarginLToInternal(adouble[3]);
-                        break;
-                }
-                break;
-            case TAG_MARGIN_LEFT:
-                vv.setLength(0);
-                vv.append(valS.toString().trim());
-                AlOneCSSNumberValue.scan(adouble[0], vv);
-                setMarginLToInternal(adouble[0]);
-                break;
-            case TAG_MARGIN_RIGHT:
-                vv.setLength(0);
-                vv.append(valS.toString().trim());
-                AlOneCSSNumberValue.scan(adouble[0], vv);
-                setMarginRToInternal(adouble[0]);
-                break;
-            case TAG_MARGIN_TOP:
-                vv.setLength(0);
-                vv.append(valS.toString().trim());
-                AlOneCSSNumberValue.scan(adouble[0], vv);
-                setMarginTToInternal(adouble[0]);
-                break;
-            case TAG_MARGIN_BOTTOM:
-                vv.setLength(0);
-                vv.append(valS.toString().trim());
-                AlOneCSSNumberValue.scan(adouble[0], vv);
-                setMarginBToInternal(adouble[0]);
-                break;
-            case TAG_LETTER_SPACING:
-                if ("inherit".contentEquals(valS)) {
-
-                } else
-                if ("normal".contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.RAZR_MASK;
-                } else {
-                    internalCSSValue.m0 |= AlOneCSS.RAZR_MASK;
-                    vv.setLength(0);
-                    vv.append(valS.toString().trim());
-                    AlOneCSSNumberValue.scan(adouble[0], vv);
-                    if (adouble[0].dval >= 0.5) {
-                        internalCSSValue.v0 |= AlOneCSS.RAZR_MASK;
-                    }
-                }
-                break;
-            case TAG_TEXT_INDENT:
-                vv.setLength(0);
-                vv.append(valS.toString().trim());
-                AlOneCSSNumberValue.scan(adouble[0], vv);
-                if (adouble[0].ival >= 0)
-                    setMarginIToInternal(adouble[0]);
-                break;
-
-
             case TAG_PAGE_BREAK_BEFORE:		//649569931
                 internalCSSValue.m1 |= AlOneCSS.PAGEBREAKBEFORE_MASK;
                 if ("always".contentEquals(valS)) {
@@ -1016,7 +926,7 @@ public class AlCSSHtml extends AlCSSStyles {
                 if ("always".contentEquals(valS)) {
                     internalCSSValue.v1 |= AlOneCSS.PAGEBREAKAFTER_MASK;
                 }
-            break;
+                break;
             case TAG_VERTICAL_ALIGN:
                 if ("sub".contentEquals(valS)) {
                     internalCSSValue.v0 |= AlOneCSS.SUB_MASK;
@@ -1029,46 +939,13 @@ public class AlCSSHtml extends AlCSSStyles {
 
                 }
                 break;
-            case TAG_TEXT_ALIGN:			//746232421
-                if ("inherit".contentEquals(valS)) {
-
-                } else
-                if ("center".contentEquals(valS)) {
-                    internalCSSValue.v1 |= AlOneCSS.JUST_CENTER;
-                    internalCSSValue.m1 |= AlOneCSS.JUST_MASK;
-                } else
-                if ("left".contentEquals(valS) || "start".contentEquals(valS)) {
-                    internalCSSValue.v1 |= AlOneCSS.JUST_LEFT;
-                    internalCSSValue.m1 |= AlOneCSS.JUST_MASK;
-                } else
-                if ("right".contentEquals(valS) || "end".contentEquals(valS)) {
-                    internalCSSValue.v1 |= AlOneCSS.JUST_RIGHT;
-                    internalCSSValue.m1 |= AlOneCSS.JUST_MASK;
-                } else {
-                    internalCSSValue.v1 |= AlOneCSS.JUST_NONE;
-                    internalCSSValue.m1 |= AlOneCSS.JUST_MASK;
-                }
-                break;
-            case TAG_WHITE_SPACE:
-                if ("normal".contentEquals(valS) ||
-                    "nowrap".contentEquals(valS) ||
-                    "pre-line".contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.PRESERVE_SPACE;
-                    internalCSSValue.v0 |= 0;
-                } else
-                if ("pre".contentEquals(valS) ||
-                    "pre-wrap".contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.PRESERVE_SPACE;
-                    internalCSSValue.v0 |= AlOneCSS.PRESERVE_SPACE;
-                }
-                break;
             case TAG_FONT_STYLE:			//-1923578189
                 if ("inherit".contentEquals(valS)) {
 
                 } else {
                     internalCSSValue.m0 |= AlOneCSS.ITALIC_MASK;
                     if ("italic".contentEquals(valS) ||
-                        "oblique".contentEquals(valS)) {
+                            "oblique".contentEquals(valS)) {
                         internalCSSValue.v0 |= AlOneCSS.ITALIC_MASK;
                     }
                 }
@@ -1076,33 +953,301 @@ public class AlCSSHtml extends AlCSSStyles {
             case TAG_FONT_WEIGHT:			//598800822
                 internalCSSValue.m0 |= AlOneCSS.BOLD_MASK;
                 if ("bold".contentEquals(valS) ||
-                    "700".contentEquals(valS) ||
-                    "800".contentEquals(valS) ||
-                    "900".contentEquals(valS)) {
+                        "700".contentEquals(valS) ||
+                        "800".contentEquals(valS) ||
+                        "900".contentEquals(valS)) {
                     internalCSSValue.v0 |= AlOneCSS.BOLD_MASK;
                 }
                 break;
-            case TAG_FONT_FAMILY:
-                if ("inherit".contentEquals(valS)) {
+            case TAG_WHITE_SPACE:
+                if ("normal".contentEquals(valS) ||
+                        "nowrap".contentEquals(valS) ||
+                        "pre-line".contentEquals(valS)) {
+                    internalCSSValue.m0 |= AlOneCSS.PRESERVE_SPACE;
+                    internalCSSValue.v0 |= 0;
+                } else
+                if ("pre".contentEquals(valS) ||
+                        "pre-wrap".contentEquals(valS)) {
+                    internalCSSValue.m0 |= AlOneCSS.PRESERVE_SPACE;
+                    internalCSSValue.v0 |= AlOneCSS.PRESERVE_SPACE;
+                }
+                break;
 
-                } else
-                if ("initial".contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTTYPE_MASK;
-                    internalCSSValue.v0 |= AlOneCSS.FONTTYPE_TEXT;
-                } else
-                if ("monospace".contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.CODE_MASK;
-                    internalCSSValue.v0 |= AlOneCSS.CODE_MASK;
-                } else
-                if ("fantasy".contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTTYPE_MASK;
-                    internalCSSValue.v0 |= AlOneCSS.FONTTYPE_FLET;
-                } else {
-                    internalCSSValue.m0 |= AlOneCSS.FONTTYPE_MASK;
-                    internalCSSValue.v0 |= AlOneCSS.FONTTYPE_TEXT;
+            // CSS_SUPPORT_FONT_SIZE
+            case TAG_FONT_SIZE:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_FONT_SIZE) != 0) {
+                    if (("xx-small").contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                        internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_MINUS3;
+                    } else if (("x-small").contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                        internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_MINUS2;
+                    } else if (("small").contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                        internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_MINUS1;
+                    } else if (("medium").contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                        internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_NORMAL;
+                    } else if (("large").contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                        internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_PLUS1;
+                    } else if (("x-large").contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                        internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_PLUS2;
+                    } else if (("xx-large").contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                        internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_PLUS3;
+                    } else if (("larger").contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                        internalCSSValue.v0 |= AlOneCSS.FONTSIZE_PLUS1;
+                    } else if (("smaller").contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                        internalCSSValue.v0 |= AlOneCSS.FONTSIZE_MINUS1;
+                    } else {
+                        vv.setLength(0);
+                        vv.append(valS.toString().trim());
+
+                        AlOneCSSNumberValue.scan(adouble[0], vv);
+
+                        switch (adouble[0].tp) {
+                            case AlOneCSSNumberValue.CSS_NUM_REM:
+                                if (adouble[0].dval > 0) {
+                                    i = (int) (adouble[0].dval * 100 + 0.5f);
+                                    if (i < 20) {
+                                        i = 20;
+                                    } else if (i > 511) {
+                                        i = 511;
+                                    }
+                                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | (((long) i * 100) << AlOneCSS.FONTSIZE_VALUE_SHIFT);
+                                }
+                                return internalCSSValue;
+                            case AlOneCSSNumberValue.CSS_NUM_SIMPLE:
+                            case AlOneCSSNumberValue.CSS_NUM_EM:
+                                if (adouble[0].dval > 0) {
+                                    i = (int) (adouble[0].dval * 100 + 0.5f);
+                                    if (i < 20) {
+                                        i = 20;
+                                    } else if (i > 511) {
+                                        i = 511;
+                                    }
+                                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                                    internalCSSValue.v0 |= /*AlOneCSS.FONTSIZE_ABSOLUTE | */(((long) i * 100) << AlOneCSS.FONTSIZE_VALUE_SHIFT);
+                                }
+                                return internalCSSValue;
+                            case AlOneCSSNumberValue.CSS_NUM_PERCENT:
+                                if (adouble[0].dval > 0) {
+                                    i = (int) (adouble[0].dval + 0.5f);
+                                    if (i < 20) {
+                                        i = 20;
+                                    } else if (i > 511) {
+                                        i = 511;
+                                    }
+                                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                                    internalCSSValue.v0 |= (((long) i * 100) << AlOneCSS.FONTSIZE_VALUE_SHIFT);
+                                }
+                                return internalCSSValue;
+                            case AlOneCSSNumberValue.CSS_NUM_PX:
+                                if (adouble[0].dval > 0) {
+                                    i = (int) (adouble[0].dval * 100 / 16 + 0.5f);
+                                    if (i < 20) {
+                                        i = 20;
+                                    } else if (i > 511) {
+                                        i = 511;
+                                    }
+                                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
+                                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | (((long) i * 100) << AlOneCSS.FONTSIZE_VALUE_SHIFT);
+                                }
+                                return internalCSSValue;
+                        }
+                    }
+                }
+                break;
+
+            // CSS_SUPPORT_FONT_FAMILY
+            case TAG_FONT_FAMILY:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_FONT_FAMILY) != 0) {
+                    if ("inherit".contentEquals(valS)) {
+
+                    } else if ("initial".contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTTYPE_MASK;
+                        internalCSSValue.v0 |= AlOneCSS.FONTTYPE_TEXT;
+                    } else if ("monospace".contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.CODE_MASK;
+                        internalCSSValue.v0 |= AlOneCSS.CODE_MASK;
+                    } else if ("fantasy".contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.FONTTYPE_MASK;
+                        internalCSSValue.v0 |= AlOneCSS.FONTTYPE_FLET;
+                    } else {
+                        internalCSSValue.m0 |= AlOneCSS.FONTTYPE_MASK;
+                        internalCSSValue.v0 |= AlOneCSS.FONTTYPE_TEXT;
+                    }
+                }
+                break;
+
+            // CSS_SUPPORT_VERTICAL_MARGINS
+            case TAG_MARGIN_TOP:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_VERTICAL_MARGINS) != 0) {
+                    vv.setLength(0);
+                    vv.append(valS.toString().trim());
+                    AlOneCSSNumberValue.scan(adouble[0], vv);
+                    setMarginTToInternal(adouble[0]);
+                }
+                break;
+            case TAG_MARGIN_BOTTOM:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_VERTICAL_MARGINS) != 0) {
+                    vv.setLength(0);
+                    vv.append(valS.toString().trim());
+                    AlOneCSSNumberValue.scan(adouble[0], vv);
+                    setMarginBToInternal(adouble[0]);
+                }
+                break;
+
+            // CSS_SUPPORT_HORIZONTAL_MARGINS
+            case TAG_MARGIN_LEFT:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_HORIZONTAL_MARGINS) != 0) {
+                    vv.setLength(0);
+                    vv.append(valS.toString().trim());
+                    AlOneCSSNumberValue.scan(adouble[0], vv);
+                    setMarginLToInternal(adouble[0]);
+                }
+                break;
+            case TAG_MARGIN_RIGHT:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_HORIZONTAL_MARGINS) != 0) {
+                    vv.setLength(0);
+                    vv.append(valS.toString().trim());
+                    AlOneCSSNumberValue.scan(adouble[0], vv);
+                    setMarginRToInternal(adouble[0]);
+                }
+                break;
+            case TAG_MARGIN:
+                if ((supportLevel & (AlEngineOptions.CSS_SUPPORT_VERTICAL_MARGINS | AlEngineOptions.CSS_SUPPORT_HORIZONTAL_MARGINS)) != 0) {
+                    vv.setLength(0);
+                    vv.append(valS.toString().trim());
+
+                    {
+
+                        i = 0;
+                        while (true) {
+                            if (vv.length() == 0)
+                                break;
+
+                            cnt = AlOneCSSNumberValue.scan(adouble[i], vv);
+                            if (adouble[i++].tp == AlOneCSSNumberValue.CSS_NUM_UNKNOWN) {
+                                i = 0;
+                                break;
+                            }
+
+                            if (i > 3) {
+                                i = 4;
+                                break;
+                            }
+
+                            if (cnt == vv.length())
+                                break;
+                            vv.delete(0, cnt);
+                        }
+                    }
+
+                    switch (i) {
+                        case 1:
+                            setMarginLToInternal(adouble[0]);
+                            setMarginRToInternal(adouble[0]);
+                            setMarginTToInternal(adouble[0]);
+                            setMarginBToInternal(adouble[0]);
+                            break;
+                        case 2:
+                            setMarginTToInternal(adouble[0]);
+                            setMarginBToInternal(adouble[0]);
+                            setMarginLToInternal(adouble[1]);
+                            setMarginRToInternal(adouble[1]);
+                            break;
+                        case 3:
+                            setMarginTToInternal(adouble[0]);
+                            setMarginLToInternal(adouble[1]);
+                            setMarginRToInternal(adouble[1]);
+                            setMarginBToInternal(adouble[2]);
+                            break;
+                        case 4:
+                            setMarginTToInternal(adouble[0]);
+                            setMarginRToInternal(adouble[1]);
+                            setMarginBToInternal(adouble[2]);
+                            setMarginLToInternal(adouble[3]);
+                            break;
+                    }
+                }
+            break;
+
+            // CSS_SUPPORT_TEXT_INDENT
+            case TAG_TEXT_INDENT:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_TEXT_INDENT) != 0) {
+                    vv.setLength(0);
+                    vv.append(valS.toString().trim());
+                    AlOneCSSNumberValue.scan(adouble[0], vv);
+                    if (adouble[0].ival >= 0)
+                        setMarginIToInternal(adouble[0]);
+                }
+                break;
+
+            // CSS_SUPPORT_JUSTIFY
+            case TAG_TEXT_ALIGN:			//746232421
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_JUSTIFY) != 0) {
+                    if ("inherit".contentEquals(valS)) {
+
+                    } else if ("center".contentEquals(valS)) {
+                        internalCSSValue.v1 |= AlOneCSS.JUST_CENTER;
+                        internalCSSValue.m1 |= AlOneCSS.JUST_MASK;
+                    } else if ("left".contentEquals(valS) || "start".contentEquals(valS)) {
+                        internalCSSValue.v1 |= AlOneCSS.JUST_LEFT;
+                        internalCSSValue.m1 |= AlOneCSS.JUST_MASK;
+                    } else if ("right".contentEquals(valS) || "end".contentEquals(valS)) {
+                        internalCSSValue.v1 |= AlOneCSS.JUST_RIGHT;
+                        internalCSSValue.m1 |= AlOneCSS.JUST_MASK;
+                    } else {
+                        internalCSSValue.v1 |= AlOneCSS.JUST_NONE;
+                        internalCSSValue.m1 |= AlOneCSS.JUST_MASK;
+                    }
+                }
+                break;
+            case TAG___ALREADER_ALIGN_POEM:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_JUSTIFY) != 0) {
+                    internalCSSValue.m1 |= AlOneCSS.JUSTPOEM_MASK;
+                    if ("1".contentEquals(valS)) {
+                        internalCSSValue.v1 |= AlOneCSS.JUSTPOEM_MASK;
+                    }
+                }
+                break;
+
+            // CSS_SUPPORT_ANY_JUNK
+            case TAG_TEXT_SHADOW:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_ANY_JUNK) != 0) {
+                    internalCSSValue.m0 = AlOneCSS.SHADOW_MASK;
+                    if ("none".contentEquals(valS)) {
+                        internalCSSValue.v0 = 0L;
+                    } else {
+                        internalCSSValue.v0 = AlOneCSS.SHADOW_MASK;
+                    }
+                }
+                break;
+            case TAG_LETTER_SPACING:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_ANY_JUNK) != 0) {
+                    if ("inherit".contentEquals(valS)) {
+
+                    } else if ("normal".contentEquals(valS)) {
+                        internalCSSValue.m0 |= AlOneCSS.RAZR_MASK;
+                    } else {
+                        internalCSSValue.m0 |= AlOneCSS.RAZR_MASK;
+                        vv.setLength(0);
+                        vv.append(valS.toString().trim());
+                        AlOneCSSNumberValue.scan(adouble[0], vv);
+                        if (adouble[0].dval >= 0.5) {
+                            internalCSSValue.v0 |= AlOneCSS.RAZR_MASK;
+                        }
+                    }
                 }
                 break;
             case TAG_FONT_STRETCH:
+                if ((supportLevel & AlEngineOptions.CSS_SUPPORT_ANY_JUNK) != 0) {
 /*
 		font-stretch
 
@@ -1117,108 +1262,8 @@ public class AlCSSHtml extends AlCSSStyles {
 		<span style="font-stretch: ultra-expanded">Б</span>
 
 		*/
-                break;
-
-
-            case TAG___ALREADER_ALIGN_POEM:
-                internalCSSValue.m1 |= AlOneCSS.JUSTPOEM_MASK;
-                if ("1".contentEquals(valS)) {
-                    internalCSSValue.v1 |= AlOneCSS.JUSTPOEM_MASK;
                 }
                 break;
-            case TAG_FONT_SIZE:
-                if (("xx-small").contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_MINUS3;
-                } else
-                if (("x-small").contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_MINUS2;
-                } else
-                if (("small").contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_MINUS1;
-                } else
-                if (("medium").contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_NORMAL;
-                } else
-                if (("large").contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_PLUS1;
-                } else
-                if (("x-large").contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_PLUS2;
-                } else
-                if (("xx-large").contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | AlOneCSS.FONTSIZE_PLUS3;
-                } else
-                if (("larger").contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_PLUS1;
-                } else
-                if (("smaller").contentEquals(valS)) {
-                    internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                    internalCSSValue.v0 |= AlOneCSS.FONTSIZE_MINUS1;
-                } else {
-                    vv.setLength(0);
-                    vv.append(valS.toString().trim());
-                    
-                    AlOneCSSNumberValue.scan(adouble[0], vv);
-
-                    switch (adouble[0].tp) {
-                        case AlOneCSSNumberValue.CSS_NUM_REM:
-                            if (adouble[0].dval > 0) {
-                                i = (int)(adouble[0].dval * 100 + 0.5f);
-                                if (i < 20) { i = 20; } else if (i > 511) { i = 511; }
-                                internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                                internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | (((long)i * 100) << AlOneCSS.FONTSIZE_VALUE_SHIFT);
-                            }
-                            return internalCSSValue;
-                        case AlOneCSSNumberValue.CSS_NUM_SIMPLE:
-                        case AlOneCSSNumberValue.CSS_NUM_EM:
-                            if (adouble[0].dval > 0) {
-                                i = (int)(adouble[0].dval * 100 + 0.5f);
-                                if (i < 20) { i = 20; } else if (i > 511) { i = 511; }
-                                internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                                internalCSSValue.v0 |= /*AlOneCSS.FONTSIZE_ABSOLUTE | */(((long)i * 100) << AlOneCSS.FONTSIZE_VALUE_SHIFT);
-                            }
-                            return internalCSSValue;
-                        case AlOneCSSNumberValue.CSS_NUM_PERCENT:
-                            if (adouble[0].dval > 0) {
-                                i = (int)(adouble[0].dval + 0.5f);
-                                if (i < 20) { i = 20; } else if (i > 511) { i = 511; }
-                                internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                                internalCSSValue.v0 |= (((long)i * 100) << AlOneCSS.FONTSIZE_VALUE_SHIFT);
-                            }
-                            return internalCSSValue;
-                        case AlOneCSSNumberValue.CSS_NUM_PX:
-                            if (adouble[0].dval > 0) {
-                                i = (int)(adouble[0].dval * 100 / 16 + 0.5f);
-                                if (i < 20) { i = 20; } else if (i > 511) { i = 511; }
-                                internalCSSValue.m0 |= AlOneCSS.FONTSIZE_MASK_ALL;
-                                internalCSSValue.v0 |= AlOneCSS.FONTSIZE_ABSOLUTE | (((long)i * 100) << AlOneCSS.FONTSIZE_VALUE_SHIFT);
-                            }
-                            return internalCSSValue;
-                    }
-                }
-
-                break;
-
-            //case TAG_TEXT_DECORATION:		//431477072
-            //	if (AlUnicode::equalIgnoreCase(U16("line-through"), val) ||
-            //		AlUnicode::equalIgnoreCase(U16("strike"), val)) {
-            //		res = AlOneCSS::MASK_STRIKE | AlOneCSS::VALUE_BOLD;
-            //	} else
-            //	if (AlUnicode::equalIgnoreCase(U16("underline"), val)) {
-            //		res = AlOneCSS::MASK_UNDER | AlOneCSS::VALUE_UNDER;
-            //	} else
-            //	if (AlUnicode::equalIgnoreCase(U16("none"), val)) {
-            //		res = AlOneCSS::MASK_UNDER | AlOneCSS::MASK_STRIKE;
-            //	}
-            //	break;
         }
 
         return internalCSSValue;

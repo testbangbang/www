@@ -50,7 +50,11 @@ public class AlFonts {
         assetManager = opt.appInstance.getResources().getAssets();
 		loadAllFonts(opt.font_catalog, opt.font_catalogs_addon, opt.font_resource);
 		multiplexer = opt.multiplexer;
-		isChinaLocal = opt.chinezeFormatting;
+		isChinaLocal = opt.chinezeSpecial;
+	}
+
+	public void enableChinaLocal(boolean val) {
+		isChinaLocal = val;
 	}
 
 	public boolean isLoaded(String fontName) {
@@ -135,8 +139,8 @@ public class AlFonts {
 			if (text_size > 300)
 				text_size = 300;
 
-			if (profile.classicFirstLetter && (new_style & AlStyles.SL_MARKFIRTSTLETTER0) != 0)
-				text_size *= 2;
+			//if (profile.classicFirstLetter && (new_style & AlStyles.SL_MARKFIRTSTLETTER0) != 0)
+			//	text_size *= 2;
 
 			modify = true;
 		}

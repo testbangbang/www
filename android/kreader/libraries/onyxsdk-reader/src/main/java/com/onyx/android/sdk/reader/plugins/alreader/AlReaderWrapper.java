@@ -203,7 +203,7 @@ public class AlReaderWrapper {
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
-        engineOptions.chinezeFormatting = true;
+        engineOptions.chinezeSpecial = true;
         engineOptions.drawLinkInternal = false;
         engineOptions.externalBitmap = new AlBitmap();
 

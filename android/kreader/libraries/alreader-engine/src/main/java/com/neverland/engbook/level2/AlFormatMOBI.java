@@ -10,7 +10,6 @@ import com.neverland.engbook.util.AlOneLink;
 import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 import com.neverland.engbook.util.Base32Hex;
 import com.neverland.engbook.util.InternalFunc;
 
@@ -46,20 +45,16 @@ public class AlFormatMOBI extends AlFormatBaseHTML {
     }
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
+
         xml_mode = true;
         ident = "MOBI";
-
-        aFiles = myParent;
 
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
             aFiles.needUnpackData();
 
-        preference = pref;
-        styles = stl;
-
         noUseCover = bookOptions.noUseCover;
-        size = 0;
 
         autoCodePage = false;
         setCP(aFiles.getCodePage());
@@ -76,7 +71,7 @@ public class AlFormatMOBI extends AlFormatBaseHTML {
 
         allState.clearSkipped();
 
-        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_MOBI);
+        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_MOBI, pref.cssSupportLevel);
         if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
             cssStyles.disableExternal = true;
 

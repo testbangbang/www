@@ -24,6 +24,12 @@ public class AlOneXMLAttrClass {
         }
     }
 
+    public void addClass(long cls) {
+        if (count < LEVEL2_CSS_CLS_COUNT) {
+            hash[count++] = cls;
+        }
+    }
+
     public void end() {
         if (hash[count] != 0 && count < LEVEL2_CSS_CLS_COUNT)
             count++;
