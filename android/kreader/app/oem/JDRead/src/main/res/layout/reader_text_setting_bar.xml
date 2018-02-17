@@ -154,7 +154,9 @@
                     <TextView
                         style="@style/ReaderTextSettingFormatStyle"
                         android:background="@{readerTextModel.currentSettingType == ReaderConfig.SETTING_TYPE_PRESET?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
-                        android:text="@string/reader_adaptive" />
+                        android:text="@string/reader_adaptive"
+                        android:clickable="true"
+                        android:onClick="@{()->readerTextModel.onPresetItemClick()}"/>
 
                     <View style="@style/ReaderVerticalSeparationLine" />
 
