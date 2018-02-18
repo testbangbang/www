@@ -114,6 +114,17 @@ public class BaseOptions {
         return JSON.toJSONString(backend);
     }
 
+    public String getStringValue(final String key) {
+        String value = "";
+        if (backend.hasKey(key)) {
+            value = backend.getString(key);
+            if (value == null) {
+                return "";
+            }
+        }
+        return value;
+    }
+
     public String getPassword() {
         if (backend.hasKey(PASSWORD_TAG)) {
             String password = backend.getString(PASSWORD_TAG);
@@ -443,7 +454,7 @@ public class BaseOptions {
     }
 
     public String getCurrentPage() {
-        return backend.getString(CURRENT_PAGE_TAG);
+        return getStringValue(CURRENT_PAGE_TAG);
     }
 
     public void setCurrentPage(final String pageName) {
@@ -638,9 +649,13 @@ public class BaseOptions {
     }
 
     public final ReaderDocumentOptionsImpl documentOptions() {
-        return new ReaderDocumentOptionsImpl(getPassword(), getZipPassword(),
-                getCodePage(), LocaleUtils.getLocaleDefaultCodePage(),
-                getChineseConvertType(), isCustomFormEnabled(), PagePositionUtils.getPosition(getCurrentPage()));
+        return new ReaderDocumentOptionsImpl(getPassword(),
+                getZipPassword(),
+                getCodePage(),
+                LocaleUtils.getLocaleDefaultCodePage(),
+                getChineseConvertType(),
+                isCustomFormEnabled(),
+                PagePositionUtils.getPosition(getCurrentPage()));
     }
 
     public final ReaderPluginOptions pluginOptions() {
