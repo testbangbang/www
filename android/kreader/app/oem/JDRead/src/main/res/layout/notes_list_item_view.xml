@@ -11,9 +11,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/imagebtn_bg"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,6 +29,7 @@
             <TextView
                 style="@style/ReaderBookInfoBookmarkItemTitleStyle"
                 android:layout_weight="3"
+                android:gravity="right"
                 android:text="@{noteModel.data}" />
         </LinearLayout>
 
@@ -38,7 +40,8 @@
 
         <TextView
             style="@style/ReaderBookInfoBookmarkItemStyle"
-            android:text="@{noteModel.content}" />
+            android:text="@{noteModel.content}"
+            android:layout_marginBottom="10dp"/>
 
         <View
             android:id="@+id/split_line"
