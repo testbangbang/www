@@ -97,10 +97,11 @@ public class ReaderBookInfoModel {
 
     public void setNotes(List<Annotation> annotationList) {
         String content = ResManager.getString(R.string.reader_content);
+        String note = ResManager.getString(R.string.reader_note);
         for (Annotation annotation : annotationList) {
             NoteModel noteModel = new NoteModel();
             noteModel.setChapter(ReaderViewUtil.trim(annotation.getChapterName()));
-            noteModel.setNote(annotation.getNote());
+            noteModel.setNote(note + annotation.getNote());
             noteModel.setContent(content + annotation.getQuote());
             noteModel.setPosition(annotation.getPosition());
             Date date = new Date(annotation.getCreatedAt().getTime());
