@@ -189,6 +189,7 @@ public class AlReaderWrapper {
         engineOptions = new AlEngineOptions();
         engineOptions.appInstance = context;
         engineOptions.runInOneThread = true;
+        engineOptions.syncLoading = pluginOptions.isSyncLoading();
         if (pluginOptions.getFontDirectories() != null) {
             engineOptions.font_catalogs_addon = pluginOptions.getFontDirectories().toArray(new String[0]);
         }
