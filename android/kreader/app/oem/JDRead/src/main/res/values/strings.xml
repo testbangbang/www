@@ -498,5 +498,5 @@
     <string name="password_too_simple_and_reset">Password is too simple, please reset</string>
     <string name="password_unlock_times_format">The password has been incorrectly entered more than %d times and device was locked</string>
     <string name="password_unlock_current_times_format">The password was entered incorrectly, you have %d more chances to try</string>
-
+    <string name="reader_note">Note:</string>
 </resources>

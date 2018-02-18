@@ -51,7 +51,6 @@ import com.neverland.engbook.level1.AlFilesZIP;
 import com.neverland.engbook.level1.JEBFilesEPUB;
 import com.neverland.engbook.level1.JEBFilesZIP;
 import com.neverland.engbook.level2.AlFormat;
-
 import com.neverland.engbook.level2.AlFormatCHM;
 import com.neverland.engbook.level2.AlFormatCOMICS;
 import com.neverland.engbook.level2.AlFormatDOC;
@@ -2737,7 +2736,9 @@ public class AlBookEng{
 				fmt = new AlFormatMOBI();
 			} else if (AlFormatEPUB.isEPUB(activeFile)) {
 				fmt = new AlFormatEPUB();
-			} else if (AlFormatDOCX.isDOCX(activeFile) || AlFormatDOCX.isDOCX_XML(activeFile) > 0) {
+			} else if(JEBFormatEPUB.isJEB(activeFile)){
+			    fmt = new JEBFormatEPUB();
+		    }else if (AlFormatDOCX.isDOCX(activeFile) || AlFormatDOCX.isDOCX_XML(activeFile) > 0) {
 				fmt = new AlFormatDOCX();
 			} else if (AlFormatDOC.isDOC(activeFile)) {
 				fmt = new AlFormatDOC();

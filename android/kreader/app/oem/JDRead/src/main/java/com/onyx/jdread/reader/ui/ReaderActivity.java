@@ -54,7 +54,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     }
 
     private void initSelectMenu(){
-        selectMenuModel = new SelectMenuModel();
+        selectMenuModel = new SelectMenuModel(readerViewModel.getReaderDataHolder().getHandlerManger());
         binding.readerPopupSelectionMenu.setSelectMenuModel(selectMenuModel);
         selectMenuModel.setBinding(binding.readerPopupSelectionMenu,readerViewModel.getEventBus());
         readerViewModel.getReaderDataHolder().setSelectMenuModel(selectMenuModel);

@@ -119,6 +119,9 @@ public class AlFilesZIP extends AlFiles {
 			} else
 			if (ext.contentEquals(".fb3")) {
 				maybe = TAL_FILE_TYPE.FB3;
+			}else
+			if(ext.equalsIgnoreCase(".jeb")){
+				maybe = TAL_FILE_TYPE.JEB;
 			}
 		}
 
@@ -240,7 +243,7 @@ public class AlFilesZIP extends AlFiles {
 					if ((ext == null || ext.contentEquals(".fb3")) && of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
 						res = TAL_FILE_TYPE.FB3;
 				}*/
-				if (res == TAL_FILE_TYPE.ZIP)
+				if (res == TAL_FILE_TYPE.ZIP) {
 					switch (maybe) {
 						case RARUnk:
 							if (of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB))
@@ -268,8 +271,21 @@ public class AlFilesZIP extends AlFiles {
 							if (of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
 								res = TAL_FILE_TYPE.FB3;
 							break;
+						case JEB: {
+							res = TAL_FILE_TYPE.JEB;
+						}
+						break;
 					}
-
+				}
+				if(res == TAL_FILE_TYPE.JEB){
+					Integer fileSize = 0;
+					if (of.compress == 8) {
+						fileSize = fileSizeMap.get(of.name);
+						if (fileSize != null && fileSize > 0) {
+							of.uSize = fileSize;
+						}
+					}
+				}
 				fList.add(of);
 				
 				a.read_pos += zipLCD.commlength;			

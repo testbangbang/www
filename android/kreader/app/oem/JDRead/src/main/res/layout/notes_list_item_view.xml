@@ -33,6 +33,7 @@
 
         <TextView
             style="@style/ReaderBookInfoBookmarkItemStyle"
+            android:textSize="@dimen/level_two_heading_font"
             android:text="@{noteModel.note}" />
 
         <TextView
