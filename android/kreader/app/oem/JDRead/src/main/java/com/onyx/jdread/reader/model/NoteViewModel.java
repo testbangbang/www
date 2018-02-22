@@ -69,7 +69,7 @@ public class NoteViewModel {
     private void update(NoteInfo noteInfo) {
         setSrcNote(noteInfo.srcNote);
         setChapterName(noteInfo.chapterName);
-        setCreateNoteDate(noteInfo.createDate);
+        setCreateNoteDate(noteInfo.updateDate);
         setNewNote(noteInfo.newNote);
         setIsEdit(noteInfo.isCreate);
         isCreateNote = noteInfo.isCreate;
@@ -165,7 +165,7 @@ public class NoteViewModel {
         NoteInfo noteInfo = new NoteInfo();
         noteInfo.srcNote = srcNote.get();
         noteInfo.newNote = newNote.get();
-        noteInfo.createDate = createNoteDate.get();
+        noteInfo.updateDate = createNoteDate.get();
         noteInfo.chapterName = chapterName.get();
         return noteInfo;
     }

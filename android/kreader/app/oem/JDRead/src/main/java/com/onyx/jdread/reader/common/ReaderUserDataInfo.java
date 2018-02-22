@@ -58,6 +58,7 @@ public class ReaderUserDataInfo {
     private Map<String, Bookmark> bookmarkMap = new LinkedHashMap<>();
     private Map<String, Bookmark> pageBookmarkMap = new LinkedHashMap<>();
     private Map<String, List<Annotation>> annotationMap = new LinkedHashMap<>();
+    private List<Annotation> annotationList = new ArrayList<>();
     private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
     private List<SearchHistory> searchHistoryList = new ArrayList<>();
     private Map<String, List<ReaderSelection>> pageLinkMap = new HashMap<>();
@@ -146,18 +147,22 @@ public class ReaderUserDataInfo {
         return list;
     }
 
+    public List<Annotation> getAnnotationList() {
+        return annotationList;
+    }
+
     public boolean loadDocumentTableOfContent(final Context context, final ReaderDocument document) {
         toc = new ReaderDocumentTableOfContent();
         return document.readTableOfContent(toc);
     }
 
     public boolean loadDocumentAnnotations(final Context context, final String displayName,final String md5) {
-        final List<Annotation> annotations = ContentSdkDataUtils.getDataProvider().loadAnnotations(
+        annotationList = ContentSdkDataUtils.getDataProvider().loadAnnotations(
                 displayName,
                 md5,
-                OrderBy.fromProperty(Annotation_Table.createdAt).descending());
-        if (annotations != null && annotations.size() > 0) {
-            for (Annotation annotation : annotations) {
+                OrderBy.fromProperty(Annotation_Table.updatedAt).descending());
+        if (annotationList != null && annotationList.size() > 0) {
+            for (Annotation annotation : annotationList) {
                 if (annotationMap.get(annotation.getPosition()) == null) {
                     annotationMap.put(annotation.getPosition(), new ArrayList<Annotation>());
                 }

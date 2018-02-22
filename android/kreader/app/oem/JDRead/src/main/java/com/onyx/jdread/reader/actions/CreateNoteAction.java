@@ -2,10 +2,13 @@ package com.onyx.jdread.reader.actions;
 
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.highlight.SelectionInfo;
 import com.onyx.jdread.util.TimeUtils;
+
+import java.util.Date;
 
 /**
  * Created by huxiaomao on 2018/1/21.
@@ -37,7 +40,7 @@ public class CreateNoteAction extends BaseReaderAction {
         noteInfo = new NoteInfo();
         noteInfo.isCreate = true;
         noteInfo.isSrcNoteModify = false;
-        noteInfo.createDate = TimeUtils.getCurrentDataInString();
+        noteInfo.updateDate = TimeUtils.getCurrentDataInString();
         noteInfo.pagePosition = pagePosition;
         noteInfo.newNote = "";
         noteInfo.srcNote = readerSelectionInfo.getCurrentSelection().getText();
@@ -50,7 +53,8 @@ public class CreateNoteAction extends BaseReaderAction {
         noteInfo = new NoteInfo();
         noteInfo.isCreate = false;
         noteInfo.isSrcNoteModify = true;
-        noteInfo.createDate = TimeUtils.getCurrentDataInString();
+        Date date = new Date(annotation.getUpdatedAt().getTime());
+        noteInfo.updateDate = DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_2);
         noteInfo.pagePosition = annotation.getPosition();
         noteInfo.newNote = annotation.getNote();
         noteInfo.srcNote = annotation.getQuote();

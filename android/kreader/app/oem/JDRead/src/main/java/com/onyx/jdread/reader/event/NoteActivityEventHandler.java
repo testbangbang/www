@@ -4,6 +4,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.UpdateAnnotationAction;
 import com.onyx.jdread.reader.actions.UpdateViewPageAction;
+import com.onyx.jdread.reader.catalog.event.UpdateAnnotationEvent;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.ReaderNoteViewBack;
 import com.onyx.jdread.reader.model.NoteViewModel;
@@ -45,6 +46,7 @@ public class NoteActivityEventHandler {
             @Override
             public void onNext(Object o) {
                 noteViewBack.getContent().dismiss();
+                notifyUpdateAnnotationList();
                 new UpdateViewPageAction().execute(readerDataHolder, null);
             }
         });
@@ -57,7 +59,7 @@ public class NoteActivityEventHandler {
             @Override
             public void onNext(Object o) {
                 noteViewBack.getContent().dismiss();
-                new UpdateViewPageAction().execute(readerDataHolder, null);
+                notifyUpdateAnnotationList();
             }
         });
     }
@@ -65,5 +67,9 @@ public class NoteActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNoteBackEvent(NoteBackEvent event) {
         noteViewBack.getContent().dismiss();
+    }
+
+    private void notifyUpdateAnnotationList(){
+        readerDataHolder.getEventBus().post(new UpdateAnnotationEvent());
     }
 }

@@ -88,4 +88,9 @@ public class ReaderBookInfoDialogHandler {
             }
         });
     }
+
+    @Subscribe
+    public void onUpdateAnnotationEvent(UpdateAnnotationEvent event){
+        readerBookInfoViewBack.updateAnnotation();
+    }
 }

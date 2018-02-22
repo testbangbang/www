@@ -118,7 +118,12 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
                 readerBookInfoDialogHandler.getReaderDataHolder().getReaderViewInfo());
     }
 
-    private void initTabData(ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo) {
+    @Override
+    public void updateAnnotation() {
+        binding.getReaderBookInfoModel().setNotes(readerBookInfoDialogHandler.getReaderDataHolder().getReaderUserDataInfo().getAnnotationList());
+    }
+
+    private void initTabData(ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
         initCatalogView(readerUserDataInfo,readerViewInfo);
         initBookmarkView(readerUserDataInfo,readerViewInfo);
         initAnnotationsView(readerUserDataInfo,readerViewInfo);
@@ -205,7 +210,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         binding.bookInfoNoteContent.setDefaultPageKeyBinding();
         NoteAdapter adapter = new NoteAdapter();
         binding.bookInfoNoteContent.setAdapter(adapter);
-        binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotations());
+        binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotationList());
         binding.bookInfoNoteContent.setOnPagingListener(this);
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,7 +222,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     }
 
     private void showAnnotationContent(int position){
-        List<Annotation> annotations = readerBookInfoDialogHandler.getReaderDataHolder().getReaderUserDataInfo().getAnnotations();
+        List<Annotation> annotations = readerBookInfoDialogHandler.getReaderDataHolder().getReaderUserDataInfo().getAnnotationList();
         if(annotations == null || annotations.size() <= 0){
             return;
         }
