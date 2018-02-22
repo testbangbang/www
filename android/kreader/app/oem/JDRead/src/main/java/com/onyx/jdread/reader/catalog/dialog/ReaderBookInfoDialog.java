@@ -8,8 +8,6 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
@@ -27,7 +25,6 @@ import com.onyx.jdread.reader.actions.GetDocumentInfoAction;
 import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.catalog.adapter.BookmarkAdapter;
 import com.onyx.jdread.reader.catalog.adapter.NoteAdapter;
-import com.onyx.jdread.reader.catalog.event.AnnotationItemClickEvent;
 import com.onyx.jdread.reader.catalog.event.BookmarkItemClickEvent;
 import com.onyx.jdread.reader.catalog.event.ReaderBookInfoDialogHandler;
 import com.onyx.jdread.reader.catalog.event.ReaderBookInfoTitleBackEvent;
@@ -35,7 +32,6 @@ import com.onyx.jdread.reader.catalog.model.ReaderBookInfoModel;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.EditNoteClickEvent;
-import com.onyx.jdread.reader.event.PopupNoteClickEvent;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 
 import org.greenrobot.eventbus.EventBus;
@@ -122,7 +118,12 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
                 readerBookInfoDialogHandler.getReaderDataHolder().getReaderViewInfo());
     }
 
-    private void initTabData(ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo) {
+    @Override
+    public void updateAnnotation() {
+        binding.getReaderBookInfoModel().setNotes(readerBookInfoDialogHandler.getReaderDataHolder().getReaderUserDataInfo().getAnnotationList());
+    }
+
+    private void initTabData(ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
         initCatalogView(readerUserDataInfo,readerViewInfo);
         initBookmarkView(readerUserDataInfo,readerViewInfo);
         initAnnotationsView(readerUserDataInfo,readerViewInfo);
@@ -209,7 +210,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         binding.bookInfoNoteContent.setDefaultPageKeyBinding();
         NoteAdapter adapter = new NoteAdapter();
         binding.bookInfoNoteContent.setAdapter(adapter);
-        binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotations());
+        binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotationList());
         binding.bookInfoNoteContent.setOnPagingListener(this);
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,7 +222,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     }
 
     private void showAnnotationContent(int position){
-        List<Annotation> annotations = readerBookInfoDialogHandler.getReaderDataHolder().getReaderUserDataInfo().getAnnotations();
+        List<Annotation> annotations = readerBookInfoDialogHandler.getReaderDataHolder().getReaderUserDataInfo().getAnnotationList();
         if(annotations == null || annotations.size() <= 0){
             return;
         }

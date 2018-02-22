@@ -66,7 +66,7 @@
                     android:text="@string/save"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font"
-                    android:visibility="@{noteViewModel.isEdit?View.VISIBLE:View.GONE}"/>
+                    android:visibility="@{noteViewModel.isEdit?View.VISIBLE:View.GONE}" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
                     android:text="@string/reader_edit"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font"
-                    android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}"/>
+                    android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}" />
             </LinearLayout>
 
         </LinearLayout>
@@ -131,6 +131,18 @@
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:padding="10dp"
+                android:text="@={noteViewModel.newNote}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font"
+                android:onClick="@{()->noteViewModel.gotoPagePosition()}"
+                android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}"/>
+
             <EditText
                 android:id="@+id/new_note"
                 android:layout_width="match_parent"
@@ -141,7 +153,8 @@
                 android:padding="10dp"
                 android:text="@={noteViewModel.newNote}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:visibility="gone" />
         </LinearLayout>
 
         <View
@@ -184,6 +197,19 @@
                     android:visibility="@{noteViewModel.isSrcNoteModify?View.VISIBLE:View.GONE}" />
             </RelativeLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:gravity="top"
+                android:padding="10dp"
+                android:text="@={noteViewModel.srcNote}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font"
+                android:clickable="true"
+                android:onClick="@{()->noteViewModel.gotoPagePosition()}"
+                android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}"/>
+
             <EditText
                 android:id="@+id/src_note"
                 android:layout_width="match_parent"
@@ -193,7 +219,8 @@
                 android:padding="10dp"
                 android:text="@={noteViewModel.srcNote}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 </layout>

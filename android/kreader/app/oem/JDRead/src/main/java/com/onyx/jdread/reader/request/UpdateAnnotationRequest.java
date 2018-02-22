@@ -27,6 +27,14 @@ public class UpdateAnnotationRequest extends ReaderBaseRequest {
         annotation.setNote(noteInfo.newNote);
         ContentSdkDataUtils.getDataProvider().updateAnnotation(annotation);
         updateSetting(reader);
+        reloadAnnotation();
         return this;
+    }
+
+    private void reloadAnnotation(){
+        String displayName = reader.getReaderHelper().getPlugin().displayName();
+        String md5 = reader.getReaderHelper().getDocumentMd5();
+
+        getReaderUserDataInfo().loadDocumentAnnotations(reader.getReaderHelper().getContext(), displayName, md5);
     }
 }
