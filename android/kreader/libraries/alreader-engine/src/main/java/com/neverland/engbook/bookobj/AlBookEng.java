@@ -2948,6 +2948,7 @@ public class AlBookEng{
 		openState.incState();		
 
 		threadData.param_char1 = path;
+		threadData.syncLoading = engOptions.syncLoading;
 		AlThreadData.startThread(threadData, TAL_THREAD_TASK.CREATEDEBUG, engOptions.runInOneThread);
 		return TAL_RESULT.OK;
 	}
@@ -2979,6 +2980,7 @@ public class AlBookEng{
 
 			threadData.param_void1 = bookOptions;
 			threadData.param_char1 = fName;
+			threadData.syncLoading = engOptions.syncLoading;
 			AlThreadData.startThread(threadData, TAL_THREAD_TASK.OPENBOOK, engOptions.runInOneThread);
 			return TAL_RESULT.OK;
 		}

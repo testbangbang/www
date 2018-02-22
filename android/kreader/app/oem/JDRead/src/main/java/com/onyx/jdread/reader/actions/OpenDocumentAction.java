@@ -9,8 +9,6 @@ import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.request.LoadDocumentOptionsRequest;
 import com.onyx.jdread.reader.request.OpenDocumentRequest;
 
-import org.greenrobot.eventbus.EventBus;
-
 /**
  * Created by huxiaomao on 17/11/13.
  */
@@ -46,22 +44,22 @@ public class OpenDocumentAction extends BaseReaderAction {
         openDocumentRequest.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                analysisOpenDocumentSuccessResult();
+                onDocumentOpened();
             }
 
             @Override
             public void onError(Throwable throwable) {
-                analysisOpenDocumentErrorResult(readerDataHolder,throwable);
+                onDocumentFailed(readerDataHolder,throwable);
             }
         });
     }
 
-    private void analysisOpenDocumentSuccessResult() {
+    private void onDocumentOpened() {
         InitPageViewAction createPageViewAction = new InitPageViewAction();
         createPageViewAction.execute(readerDataHolder,null);
     }
 
-    private void analysisOpenDocumentErrorResult(ReaderDataHolder readerDataHolder,Throwable throwable) {
+    private void onDocumentFailed(ReaderDataHolder readerDataHolder, Throwable throwable) {
         OpenDocumentFailResultEvent event = new OpenDocumentFailResultEvent();
         String message = throwable.getMessage();
         if (StringUtils.isNullOrEmpty(message)) {

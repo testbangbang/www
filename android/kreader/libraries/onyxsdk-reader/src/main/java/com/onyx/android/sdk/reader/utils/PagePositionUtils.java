@@ -27,7 +27,11 @@ public class PagePositionUtils {
     }
 
     public static int getPosition(final String position) {
-        return Integer.parseInt(position);
+        try {
+            return Integer.parseInt(position);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public static String fromPosition(int position) {

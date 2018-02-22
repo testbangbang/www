@@ -132,6 +132,15 @@ public class ReaderHelper {
         return plugin.open(path, documentOptions.documentOptions(), pluginOptions);
     }
 
+    public boolean closeDocument() {
+        if (getDocument() == null) {
+            return false;
+        }
+        getDocument().close();
+        onDocumentClosed();
+        return true;
+    }
+
     public ReaderLayoutManager getReaderLayoutManager() {
         if (readerLayoutManager == null) {
             readerLayoutManager = new ReaderLayoutManager(this,

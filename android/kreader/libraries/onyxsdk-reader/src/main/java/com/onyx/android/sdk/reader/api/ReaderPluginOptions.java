@@ -18,5 +18,6 @@ public interface ReaderPluginOptions {
 
     float getScreenDensity();
 
+    boolean isSyncLoading();
 
 }
