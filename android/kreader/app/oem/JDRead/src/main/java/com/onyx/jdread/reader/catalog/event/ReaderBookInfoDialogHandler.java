@@ -88,9 +88,4 @@ public class ReaderBookInfoDialogHandler {
             }
         });
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAnnotationItemClickEvent(AnnotationItemClickEvent event){
-
-    }
 }
