@@ -473,6 +473,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     @Override
     public void dismiss() {
         super.dismiss();
+        hideSoftInputWindow();
         stopSearch();
         dialogSearchHandler.unregisterListener();
     }
