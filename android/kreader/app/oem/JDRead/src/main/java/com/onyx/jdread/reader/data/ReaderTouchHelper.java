@@ -59,8 +59,6 @@ public class ReaderTouchHelper {
             }
 
             readerDataHolder.getHandlerManger().onTouchEvent(event);
-        }else{
-            readerDataHolder.getHandlerManger().showCloseDocumentDialog();
         }
     }
 }
