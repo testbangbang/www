@@ -25,6 +25,7 @@ public class UpdateAnnotationRequest extends ReaderBaseRequest {
     @Override
     public UpdateAnnotationRequest call() throws Exception {
         annotation.setNote(noteInfo.newNote);
+        annotation.setQuote(noteInfo.srcNote);
         ContentSdkDataUtils.getDataProvider().updateAnnotation(annotation);
         updateSetting(reader);
         reloadAnnotation();
