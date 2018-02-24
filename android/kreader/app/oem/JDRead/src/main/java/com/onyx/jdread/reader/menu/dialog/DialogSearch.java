@@ -205,6 +205,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     }
 
     private void initPageRecyclerView() {
+        binding.searchRecyclerView.setPageTurningCycled(true);
         binding.searchRecyclerView.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
@@ -473,6 +474,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     @Override
     public void dismiss() {
         super.dismiss();
+        hideSoftInputWindow();
         stopSearch();
         dialogSearchHandler.unregisterListener();
     }

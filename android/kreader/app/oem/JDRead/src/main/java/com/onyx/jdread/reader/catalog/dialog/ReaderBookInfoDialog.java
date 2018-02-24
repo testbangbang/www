@@ -194,6 +194,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         List<Bookmark> bookmarkList = deleteDuplicateBookmark(readerUserDataInfo.getBookmarks());
         binding.bookInfoBookmarkContent.setDefaultPageKeyBinding();
         BookmarkAdapter adapter = new BookmarkAdapter();
+        binding.bookInfoBookmarkContent.setPageTurningCycled(true);
         binding.bookInfoBookmarkContent.setAdapter(adapter);
         binding.bookInfoBookmarkContent.setOnPagingListener(this);
         binding.getReaderBookInfoModel().setBookmarks(readerDocumentTableOfContent, bookmarkList,readerViewInfo.getTotalPage());
@@ -209,6 +210,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     private void initAnnotationsView(ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo) {
         binding.bookInfoNoteContent.setDefaultPageKeyBinding();
         NoteAdapter adapter = new NoteAdapter();
+        binding.bookInfoNoteContent.setPageTurningCycled(true);
         binding.bookInfoNoteContent.setAdapter(adapter);
         binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotationList());
         binding.bookInfoNoteContent.setOnPagingListener(this);
