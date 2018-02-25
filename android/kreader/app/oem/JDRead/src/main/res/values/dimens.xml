@@ -91,7 +91,7 @@
     <dimen name="feedback_phone_edit_height">32dp</dimen>
     <dimen name="button_padding">10dp</dimen>
     <dimen name="title_bar_drawable_padding">10dp</dimen>
-    <dimen name="reader_title_bar_drawable_padding">10dp</dimen>
+    <dimen name="reader_title_bar_drawable_padding">1dp</dimen>
     <dimen name="custom_recycle_view_margin_right">14dp</dimen>
     <dimen name="book_shop_main_config_recycle_view_margin_top">30dp</dimen>
     <dimen name="book_shop_search_view_padding_top">17dp</dimen>
@@ -209,7 +209,7 @@
     <dimen name="reader_title_bar_item_padding">10dp</dimen>
     <dimen name="reader_page_info_menu_book_name_padding">10dp</dimen>
     <dimen name="reader_page_info_menu_back_margin_right">15dp</dimen>
-    <dimen name="reader_page_info_menu_margin_bottom">10dp</dimen>
+    <dimen name="reader_page_info_menu_margin_bottom">5dp</dimen>
     <dimen name="reader_page_info_menu_prev_chapter_padding_left">5dp</dimen>
     <dimen name="reader_page_info_menu_prev_chapter_padding_right">5dp</dimen>
     <dimen name="reader_page_info_menu_reading_process_padding">5dp</dimen>
@@ -231,7 +231,7 @@
     <dimen name="reader_customize_format_layout_padding_bottom">10dp</dimen>
     <dimen name="reader_customize_format_layout_padding_left">20dp</dimen>
     <dimen name="reader_customize_format_layout_padding_right">20dp</dimen>
-    <dimen name="reader_customize_format_title_margin_right">20dp</dimen>
+    <dimen name="reader_customize_format_title_margin_right">10dp</dimen>
     <dimen name="reader_customize_minus_style_padding">15dp</dimen>
     <dimen name="reader_customize_minus_style_margin_right">15dp</dimen>
     <dimen name="reader_customize_plus_style_padding">15dp</dimen>
