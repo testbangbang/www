@@ -91,7 +91,7 @@
     <dimen name="feedback_phone_edit_height">32dp</dimen>
     <dimen name="button_padding">10dp</dimen>
     <dimen name="title_bar_drawable_padding">10dp</dimen>
-    <dimen name="reader_title_bar_drawable_padding">25dp</dimen>
+    <dimen name="reader_title_bar_drawable_padding">10dp</dimen>
     <dimen name="custom_recycle_view_margin_right">14dp</dimen>
     <dimen name="book_shop_main_config_recycle_view_margin_top">30dp</dimen>
     <dimen name="book_shop_search_view_padding_top">17dp</dimen>
