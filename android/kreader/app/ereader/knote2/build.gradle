@@ -58,10 +58,14 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     //onyx
-    compile "com.onyx.android.sdk:onyxsdk-note:$rootProject.onyxSdkNoteVersion"
-    compile("com.onyx.android.sdk:onyxsdk-notedata:$rootProject.onyxSdkNoteDataVersion"){
-        exclude group: 'com.alibaba', module: 'fastjson'
-    }
+//    compile "com.onyx.android.sdk:onyxsdk-note:$rootProject.onyxSdkNoteVersion"
+//    compile("com.onyx.android.sdk:onyxsdk-notedata:$rootProject.onyxSdkNoteDataVersion"){
+//        exclude group: 'com.alibaba', module: 'fastjson'
+//    }
+    //for library test
+    compile (name: 'onyxsdk-note-release', ext: 'aar')
+    compile (name: 'onyxsdk-pen-release', ext: 'aar')
+    compile (name: 'onyxsdk-notedata-release', ext: 'aar')
     compile("com.onyx.android.sdk:onyxsdk-base:$rootProject.onyxSdkBaseVersion"){
         exclude group: 'com.alibaba', module: 'fastjson'
     }

@@ -1,5 +1,6 @@
 package com.onyx.android.note;
 
+import android.app.Application;
 import android.support.multidex.MultiDexApplication;
 
 /**
@@ -7,4 +8,12 @@ import android.support.multidex.MultiDexApplication;
  */
 
 public class NoteApp extends MultiDexApplication {
+
+    public static Application instance;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = this;
+    }
 }

@@ -1,4 +1,4 @@
-package com.onyx.android.note.note.tool;
+package com.onyx.android.note.note.menu;
 
 import android.support.annotation.NonNull;
 
@@ -10,9 +10,9 @@ import org.greenrobot.eventbus.EventBus;
  * Created by lxm on 2018/2/2.
  */
 
-public class ToolMenuModel extends BaseViewModel {
+public class NoteMenuModel extends BaseViewModel {
 
-    public ToolMenuModel(@NonNull EventBus eventBus) {
+    public NoteMenuModel(@NonNull EventBus eventBus) {
         super(eventBus);
     }
 }

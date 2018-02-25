@@ -1,5 +1,8 @@
 package com.onyx.android.note;
 
+import com.onyx.android.note.handler.HandlerManager;
+import com.onyx.android.sdk.note.NoteManager;
+
 import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -18,11 +21,27 @@ public class NoteDataBundle {
     }
 
     private EventBus eventBus;
+    private HandlerManager handlerManager;
+    private NoteManager noteManager;
 
     public EventBus getEventBus() {
         if (eventBus == null) {
             eventBus = new EventBus();
         }
         return eventBus;
+    }
+
+    public HandlerManager getHandlerManager() {
+        if (handlerManager == null) {
+            handlerManager = new HandlerManager(getEventBus());
+        }
+        return handlerManager;
+    }
+
+    public NoteManager getNoteManager() {
+        if (noteManager == null) {
+            noteManager = new NoteManager(NoteApp.instance, getEventBus());
+        }
+        return noteManager;
     }
 }

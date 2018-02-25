@@ -1,31 +1,38 @@
-package com.onyx.android.note.note;
+package com.onyx.android.note;
 
-import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.note.scribble.ScribbleViewModel;
-import com.onyx.android.note.note.tool.ToolMenuModel;
+import com.onyx.android.note.note.menu.NoteMenuModel;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.Serializable;
 
 /**
  * Created by lxm on 2018/2/2.
  */
 
-public class NoteUIBundle implements Serializable {
+public class NoteUIBundle {
+
+    private static final NoteUIBundle ourInstance = new NoteUIBundle();
+
+    public static NoteUIBundle getInstance() {
+        return ourInstance;
+    }
+
+    private NoteUIBundle() {
+    }
 
     private EventBus getEventBus() {
         return NoteDataBundle.getInstance().getEventBus();
     }
 
-    private ToolMenuModel toolMenuModel;
+    private NoteMenuModel noteMenuModel;
     private ScribbleViewModel scribbleViewModel;
 
-    public ToolMenuModel getToolMenuModel() {
-        if (toolMenuModel == null) {
-            toolMenuModel = new ToolMenuModel(getEventBus());
+    public NoteMenuModel getNoteMenuModel() {
+        if (noteMenuModel == null) {
+            noteMenuModel = new NoteMenuModel(getEventBus());
         }
-        return toolMenuModel;
+        return noteMenuModel;
     }
 
     public ScribbleViewModel getScribbleViewModel() {

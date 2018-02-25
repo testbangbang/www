@@ -1,4 +1,4 @@
-package com.onyx.android.note.note.scribble;
+package com.onyx.android.note.note.menu;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -10,18 +10,18 @@ import android.view.ViewGroup;
 import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.R;
 import com.onyx.android.note.common.base.BaseFragment;
-import com.onyx.android.note.databinding.FragmentScribbleBinding;
+import com.onyx.android.note.databinding.FragmentNoteMenuBinding;
 
 /**
  * Created by lxm on 2018/2/2.
  */
 
-public class ScribbleFragment extends BaseFragment {
+public class NoteMenuFragment extends BaseFragment {
 
-    private FragmentScribbleBinding binding;
+    private FragmentNoteMenuBinding binding;
 
-    public static ScribbleFragment newInstance() {
-        return new ScribbleFragment();
+    public static NoteMenuFragment newInstance() {
+        return new NoteMenuFragment();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ScribbleFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scribble, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_note_menu, container, false);
         return binding.getRoot();
     }
 
