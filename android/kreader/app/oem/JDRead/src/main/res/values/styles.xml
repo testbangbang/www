@@ -69,7 +69,7 @@
     <style name="ReaderTextSettingStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/level_one_heading_font</item>
+        <item name="android:textSize">@dimen/level_three_heading_font</item>
         <item name="android:layout_marginRight">@dimen/reader_text_setting_margin_right</item>
         <item name="android:padding">@dimen/reader_text_setting_padding</item>
         <item name="android:textColor">@android:color/black</item>
