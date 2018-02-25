@@ -13,11 +13,13 @@ public class ChangeLayoutRequest extends ReaderBaseRequest {
     private Reader reader;
     private ChangeLayoutParameter parameter;
     private ImageReflowSettings settings;
+    private String pageName;
 
-    public ChangeLayoutRequest(Reader reader, ChangeLayoutParameter parameter, ImageReflowSettings settings) {
+    public ChangeLayoutRequest(Reader reader, ChangeLayoutParameter parameter, ImageReflowSettings settings,String pageName) {
         this.reader = reader;
         this.parameter = parameter;
         this.settings = settings;
+        this.pageName = pageName;
     }
 
     @Override
@@ -26,6 +28,7 @@ public class ChangeLayoutRequest extends ReaderBaseRequest {
         reader.getReaderHelper().getBitmapCache().clear();
         reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
         reader.getReaderHelper().getReaderLayoutManager().setCurrentLayout(parameter.getLayout(), parameter.getNavigationArgs());
+        reader.getReaderHelper().getReaderLayoutManager().scaleToPage(pageName);
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
 
         updateSetting(reader);
