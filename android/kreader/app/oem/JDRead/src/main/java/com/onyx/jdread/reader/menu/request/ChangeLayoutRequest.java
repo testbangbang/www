@@ -23,9 +23,12 @@ public class ChangeLayoutRequest extends ReaderBaseRequest {
     @Override
     public ChangeLayoutRequest call() throws Exception {
         updateDefaultSettingValue(reader);
+        reader.getReaderHelper().getBitmapCache().clear();
         reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
         reader.getReaderHelper().getReaderLayoutManager().setCurrentLayout(parameter.getLayout(), parameter.getNavigationArgs());
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
+
+        updateSetting(reader);
         return this;
     }
 
