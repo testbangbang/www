@@ -16,6 +16,7 @@ public class UpdateViewPageRequest extends ReaderBaseRequest {
 
     @Override
     public UpdateViewPageRequest call() throws Exception {
+        reader.getReaderSelectionHelper().clear();
         updatePageView();
         updateSetting(reader);
         return this;
