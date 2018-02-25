@@ -16,6 +16,7 @@ import com.onyx.android.sdk.scribble.shape.TriangleShape;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.android.sdk.utils.ExportUtils;
 import com.onyx.android.sdk.reader.utils.PdfWriterUtils;
@@ -92,9 +93,10 @@ public class ExportNotesRequest extends BaseReaderRequest {
 
     private boolean writeAnnotations(final List<Annotation> annotations) {
         for (Annotation annotation : annotations) {
-            float[] quadPoints = new float[annotation.getRectangles().size() * 4];
-            for (int i = 0; i < annotation.getRectangles().size(); i++) {
-                RectF rect = annotation.getRectangles().get(i);
+            List<RectF> list = RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles());
+            float[] quadPoints = new float[list.size() * 4];
+            for (int i = 0; i < list.size(); i++) {
+                RectF rect = list.get(i);
                 quadPoints[i * 4] = rect.left;
                 quadPoints[(i * 4) + 1] = rect.top;
                 quadPoints[(i * 4) + 2] = rect.right;
