@@ -92,7 +92,7 @@
     <string name="log_out">退出登录</string>
     <string name="login_immediately">立即登录</string>
     <string name="unsigned_in">未签到</string>
-    <string name="signed_in">签到</string>
+    <string name="signed_in">已签到</string>
     <string name="manual">使用手册</string>
     <string name="feedback">问题反馈</string>
     <string name="contact_us">联系我们</string>
@@ -470,4 +470,5 @@
     <string name="password_unlock_times_format">密码输入错误超过了%d次，设备已锁定</string>
     <string name="password_unlock_current_times_format">密码输入错误，您还剩%d次输入机会</string>
     <string name="reader_note">笔记:</string>
+    <string name="intelligent_recommend">智能推荐</string>
 </resources>

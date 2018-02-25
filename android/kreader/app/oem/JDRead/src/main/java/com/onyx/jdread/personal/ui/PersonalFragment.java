@@ -4,12 +4,10 @@ import android.databinding.DataBindingUtil;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -19,10 +17,9 @@ import com.onyx.jdread.databinding.PersonalBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.personal.action.UserLoginAction;
+import com.onyx.jdread.personal.action.LoginOutAction;
 import com.onyx.jdread.personal.adapter.PersonalAdapter;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
-import com.onyx.jdread.personal.common.EncryptHelper;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.GiftCenterEvent;
 import com.onyx.jdread.personal.event.PersonalAccountEvent;
@@ -88,8 +85,8 @@ public class PersonalFragment extends BaseFragment {
         binding.personalLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.setIsLogin(false);
-                JDReadApplication.getInstance().setLogin(false);
+                LoginOutAction loginOutAction = new LoginOutAction(binding);
+                loginOutAction.execute(PersonalDataBundle.getInstance(), null);
             }
         });
     }
