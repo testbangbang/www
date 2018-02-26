@@ -286,8 +286,29 @@ public class BookDetailFragment extends BaseFragment {
         ResultBookBean bookBean = event.getBookBean();
         if (bookBean != null) {
             cleanData();
+            initButton();
             setBookId(bookBean.ebook_id);
         }
+    }
+
+    private void initButton() {
+        resetNowReadButton();
+        resetBuyBookButton();
+        bookDetailBinding.bookDetailInfo.shopCartContainer.setVisibility(View.VISIBLE);
+        bookDetailBinding.bookDetailInfo.spaceTwo.setVisibility(View.VISIBLE);
+    }
+
+    private void resetBuyBookButton() {
+        buyBookButton.setVisibility(View.VISIBLE);
+        buyBookButton.setEnabled(true);
+        buyBookButton.setText(ResManager.getString(R.string.book_detail_button_buy_whole_book));
+        bookDetailBinding.bookDetailInfo.spaceOne.setVisibility(View.VISIBLE);
+    }
+
+    private void resetNowReadButton() {
+        nowReadButton.setVisibility(View.VISIBLE);
+        nowReadButton.setEnabled(true);
+        nowReadButton.setText(ResManager.getString(R.string.book_detail_button_now_read));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
