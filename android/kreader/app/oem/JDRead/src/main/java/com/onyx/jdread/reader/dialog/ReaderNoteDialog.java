@@ -16,6 +16,7 @@ import com.onyx.jdread.reader.actions.CreateNoteAction;
 import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.NoteActivityEventHandler;
+import com.onyx.jdread.reader.event.UpdateViewPageEvent;
 import com.onyx.jdread.reader.model.NoteViewModel;
 
 
@@ -75,6 +76,7 @@ public class ReaderNoteDialog extends Dialog implements ReaderNoteViewBack {
     public void dismiss() {
         noteActivityEventHandler.unregisterListener();
         super.dismiss();
+        readerDataHolder.getEventBus().post(new UpdateViewPageEvent());
     }
 
     @Override

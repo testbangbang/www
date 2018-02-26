@@ -37,7 +37,7 @@
                 android:padding="10dp"
                 android:text="@string/closed"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_three_heading_font" />
 
             <RatingBar
                 android:id="@+id/ratingbar_light_settings"
@@ -61,7 +61,7 @@
                 android:padding="10dp"
                 android:text="@string/brightest_brightness"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>
     </LinearLayout>

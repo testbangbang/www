@@ -47,7 +47,7 @@
                     android:maxLines="1"
                     android:text="@{readerPageInfoModel.readProgress}"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_two_heading_font" />
+                    android:textSize="@dimen/level_three_heading_font" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -59,7 +59,6 @@
 
             <TextView
                 style="@style/ReaderPageInfoChapterStyle"
-                android:layout_marginRight="@dimen/reader_page_info_chapter_margin_left"
                 android:onClick="@{()->readerPageInfoModel.previousChapter()}"
                 android:text="@string/prev_chapter" />
 
@@ -71,7 +70,6 @@
 
             <TextView
                 style="@style/ReaderPageInfoChapterStyle"
-                android:layout_marginLeft="@dimen/reader_page_info_chapter_margin_right"
                 android:onClick="@{()->readerPageInfoModel.nextChapter()}"
                 android:text="@string/next_chapter" />
 
