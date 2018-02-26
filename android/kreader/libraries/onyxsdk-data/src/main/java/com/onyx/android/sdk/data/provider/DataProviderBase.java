@@ -36,6 +36,8 @@ public interface DataProviderBase {
 
     Metadata findMetadataByPath(final Context context, final String path);
 
+    Metadata findMetadataByCloudId(String cloudId);
+
     Metadata findMetadataByHashTag(final Context context, final String path, String hashTag);
 
     long count(final Context context, final QueryArgs queryArgs);
