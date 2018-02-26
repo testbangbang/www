@@ -44,6 +44,7 @@ import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogSearchViewCallBack;
+import com.onyx.jdread.reader.event.UpdateViewPageEvent;
 import com.onyx.jdread.reader.menu.actions.GetSearchHistoryAction;
 import com.onyx.jdread.reader.menu.actions.GotoSearchPageAction;
 import com.onyx.jdread.reader.menu.actions.SearchContentAction;
@@ -479,6 +480,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         hideSoftInputWindow();
         stopSearch();
         dialogSearchHandler.unregisterListener();
+        readerDataHolder.getEventBus().post(new UpdateViewPageEvent());
     }
 
 
