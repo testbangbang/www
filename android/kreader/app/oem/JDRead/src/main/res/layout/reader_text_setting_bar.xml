@@ -33,7 +33,7 @@
 
             <LinearLayout
                 style="@style/ReaderTextSettingItemParentStyle"
-                android:layout_weight="4">
+                android:layout_weight="5">
 
                 <TextView
                     style="@style/ReaderTextSettingFontStyle"
