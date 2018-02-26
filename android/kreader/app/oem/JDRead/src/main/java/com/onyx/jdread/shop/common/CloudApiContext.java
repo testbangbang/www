@@ -33,6 +33,8 @@ public class CloudApiContext {
     public static final String ONYX_EINK_HOST = "http://oa.o-in.me:9066/";
     public static final String ONYX_EINK_API = ONYX_EINK_HOST + "api/";
 
+    public static final String DEFAULT_COVER_PRE_FIX = "https://img10.360buyimg.com/n12/s350x350_";
+
     public static class User {
         public static final String SYNC_INFO = "user/sync";
         public static final String GET_USER_INFO = "user";
