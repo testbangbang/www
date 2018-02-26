@@ -20,4 +20,6 @@ public interface ReaderPluginOptions {
 
     boolean isSyncLoading();
 
+    boolean isLoadAllImages();
+
 }
