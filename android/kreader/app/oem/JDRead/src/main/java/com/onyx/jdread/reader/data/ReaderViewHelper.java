@@ -242,12 +242,6 @@ public class ReaderViewHelper {
     }
 
     private void drawPageAnnotations(Canvas canvas, Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
-        readerUserDataInfo.loadPageAnnotations(reader.getReaderHelper().getContext(),
-                reader.getReaderHelper().getRendererFeatures().supportScale(),
-                reader.getReaderHelper().getPlugin().displayName(),
-                reader.getReaderHelper().getDocumentMd5(),
-                reader.getReaderHelper().getNavigator(),
-                readerViewInfo.getVisiblePages());
         if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
             updateAnnotationRectangles(reader,readerViewInfo,readerUserDataInfo);
         }
