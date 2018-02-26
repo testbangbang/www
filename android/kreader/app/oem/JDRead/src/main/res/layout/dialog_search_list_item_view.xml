@@ -4,15 +4,15 @@
     android:layout_height="match_parent"
     android:background="@drawable/imagebtn_bg"
     android:paddingBottom="1dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:paddingTop="13dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
 
     <TextView
         android:id="@+id/search_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@+id/search_page"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@android:color/darker_gray"
@@ -23,10 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/search_title"
-        android:layout_marginLeft="13dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@+id/search_page"
+        android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:gravity="bottom"
         android:maxLines="1"
@@ -41,6 +39,7 @@
         android:layout_alignParentRight="true"
         android:gravity="right"
         android:textColor="@color/normal_black"
+        android:visibility="gone"
         android:textSize="@dimen/dialog_search_list_item_page_text_size" />
 
     <View

@@ -100,6 +100,7 @@ public class ReaderBookInfoModel {
         String content = ResManager.getString(R.string.reader_content);
         String note = ResManager.getString(R.string.reader_note);
         String none = ResManager.getString(R.string.security_none);
+        this.notes.clear();
         for (Annotation annotation : annotationList) {
             NoteModel noteModel = new NoteModel();
             noteModel.setChapter(ReaderViewUtil.trim(annotation.getChapterName()));
@@ -110,8 +111,8 @@ public class ReaderBookInfoModel {
             }
             noteModel.setContent(content + annotation.getQuote());
             noteModel.setPosition(annotation.getPosition());
-            Date date = new Date(annotation.getCreatedAt().getTime());
-            noteModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
+            Date date = new Date(annotation.getUpdatedAt().getTime());
+            noteModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_2));
             this.notes.add(noteModel);
         }
     }

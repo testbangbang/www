@@ -86,6 +86,7 @@ public class ConsumptionRecordFragment extends BaseFragment {
         adapter = new ConsumptionRecordAdapter();
         binding.consumptionRecordRecycler.setAdapter(adapter);
         paginator = binding.consumptionRecordRecycler.getPaginator();
+        binding.consumptionRecordRecycler.setPageTurningCycled(true);
     }
 
     private void initListener() {

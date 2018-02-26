@@ -2727,7 +2727,6 @@ public class AlBookEng{
 
 		{
 			AlFormat fmt = null;
-
 			if (AlFormatCHM.isCHM(activeFile)) {
 				fmt = new AlFormatCHM();
 			} else if (AlFormatFB3.isFB3(activeFile)) {
@@ -2740,6 +2739,7 @@ public class AlBookEng{
 			    fmt = new JEBFormatEPUB();
 		    }else if (AlFormatDOCX.isDOCX(activeFile) || AlFormatDOCX.isDOCX_XML(activeFile) > 0) {
 				fmt = new AlFormatDOCX();
+				profiles.chinezeFormatting = 1;
 			} else if (AlFormatDOC.isDOC(activeFile)) {
 				fmt = new AlFormatDOC();
 			} else if (AlFormatODT.isODT(activeFile)) {
@@ -3399,7 +3399,7 @@ public class AlBookEng{
 					vP = 0;
 				} else
 				if (preferences.chinezeFormatting) {
-					vE = 8 * 2;
+					vE = profiles.chinezeFormatting * 2;
 					vP = 0;
 				}
             } else

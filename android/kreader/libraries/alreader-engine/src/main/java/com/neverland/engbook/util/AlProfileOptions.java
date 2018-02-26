@@ -40,6 +40,8 @@ public class AlProfileOptions {
 	public int						paragraphSpacing;
 	public boolean					noUseVerticalMarginsFromCSS;
 
+	public int					chinezeFormatting = 8;
+
 	/*public int		       			margin1Style;
 	public int		        		margin2Style;
 	public int		        		margin3Style;*/

@@ -25,7 +25,8 @@ public class ImageReflowAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         ChangeLayoutParameter parameter = new ChangeLayoutParameter(PageConstants.IMAGE_REFLOW_PAGE, new NavigationArgs());
-        final ChangeLayoutRequest request = new ChangeLayoutRequest(readerDataHolder.getReader(), parameter, settings);
+        final ChangeLayoutRequest request = new ChangeLayoutRequest(readerDataHolder.getReader(), parameter, settings,
+                readerDataHolder.getCurrentPageName());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

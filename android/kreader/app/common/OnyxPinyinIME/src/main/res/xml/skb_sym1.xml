@@ -34,12 +34,15 @@
     <key label="￥">
       <toggle_state state_id="@string/toggle_en_sym1" label="$"/>
     </key>
-    <keys splitter="|" labels="%|*"/>
+    <key label="%"/>
+    <key label="*">
+      <toggle_state state_id="@string/toggle_en_sym1" label="“"/>
+    </key>
     <key label="—">
-      <toggle_state state_id="@string/toggle_en_sym1" label="-"/>
+      <toggle_state state_id="@string/toggle_en_sym1" label="*"/>
     </key>
     <key label="、">
-      <toggle_state state_id="@string/toggle_en_sym1" label="“"/>
+      <toggle_state state_id="@string/toggle_en_sym1" label="-"/>
     </key>
     <keys splitter="|" labels="(|)"/>
   </row>

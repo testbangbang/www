@@ -90,6 +90,7 @@ public class PersonalNoteFragment extends BaseFragment {
             public void onNext(Object o) {
                 List<NoteBean> notes = action.getNotes();
                 if (notes != null) {
+                    setSelectAllText(notes.size());
                     personalNoteAdapter.setData(notes);
                     binding.setTotal(String.valueOf(notes.size()));
                     paginator.resize(personalNoteAdapter.getRowCount(), personalNoteAdapter.getColumnCount(), notes.size());
@@ -106,9 +107,9 @@ public class PersonalNoteFragment extends BaseFragment {
                 List<NoteBean> data = personalNoteAdapter.getData();
                 if (data != null && data.size() > 0) {
                     for (NoteBean bean :data) {
-                        bean.checked = true;
+                        bean.checked = !bean.checked;
                     }
-                    setExportText(true);
+                    setExportText(data.get(0).checked);
                     personalNoteAdapter.notifyDataSetChanged();
                 }
             }
@@ -148,6 +149,11 @@ public class PersonalNoteFragment extends BaseFragment {
     private void setExportText(boolean enable) {
         binding.personalNoteExport.setEnabled(enable);
         binding.personalNoteExport.setTextColor(enable ? ResManager.getColor(R.color.normal_black) : ResManager.getColor(R.color.text_gray_color));
+    }
+
+    private void setSelectAllText(int size) {
+        binding.personalNoteCheckAll.setEnabled(size != 0);
+        binding.personalNoteCheckAll.setTextColor(size != 0 ? ResManager.getColor(R.color.normal_black) : ResManager.getColor(R.color.text_gray_color));
     }
 
     private void showExportDialog() {
