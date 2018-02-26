@@ -424,8 +424,10 @@ public class BookDetailFragment extends BaseFragment {
             handlerDownloadResult(task);
             isWholeBookDownLoad = bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad;
             if (isWholeBookDownLoad) {
+                nowReadButton.setEnabled(true);
                 upDataButtonDown(buyBookButton, true, bookDetailBean.bookExtraInfoBean);
             } else {
+                buyBookButton.setEnabled(true);
                 upDataButtonDown(nowReadButton, true, bookDetailBean.bookExtraInfoBean);
             }
         }
@@ -449,6 +451,9 @@ public class BookDetailFragment extends BaseFragment {
     private void handlerDownloadResult(BaseDownloadTask task) {
         downloadTaskState = task.getStatus();
         localPath = task.getPath();
+        if (bookDetailBean.bookExtraInfoBean == null) {
+            bookDetailBean.bookExtraInfoBean = new BookExtraInfoBean();
+        }
         bookDetailBean.bookExtraInfoBean.downLoadState = downloadTaskState;
         bookDetailBean.bookExtraInfoBean.downLoadTaskTag = task.getTag();
         if (DownLoadHelper.isDownloaded(downloadTaskState)) {
@@ -529,6 +534,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void downLoadWholeBook() {
+        nowReadButton.setEnabled(false);
         BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
     }
 
@@ -615,6 +621,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
         nowReadButton.setEnabled(false);
+        buyBookButton.setEnabled(false);
         nowReadButton.setText(getString(R.string.book_detail_downloading));
         download(bookDetailBean);
         ToastUtil.showToast(JDReadApplication.getInstance(), bookDetailBean.name + getString(R.string.book_detail_tip_book_add_to_bookself));
