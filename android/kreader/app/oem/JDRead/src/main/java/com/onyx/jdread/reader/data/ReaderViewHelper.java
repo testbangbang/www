@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
+import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
@@ -81,11 +82,41 @@ public class ReaderViewHelper {
         try {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, readerViewInfo);
+            loadUserData(reader, readerUserDataInfo, readerViewInfo);
             renderAll(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo, readerViewInfo, readerSelectionManager);
 
             reader.getReaderHelper().saveToCache(context.renderingBitmap);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void loadUserData(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
+        readerUserDataInfo.setDocumentPath(reader.getDocumentInfo().getBookPath());
+        readerUserDataInfo.setDocumentCategory(reader.getReaderHelper().getDocumentOptions().getDocumentCategory());
+        readerUserDataInfo.setDocumentCodePage(reader.getReaderHelper().getDocumentOptions().getCodePage());
+        readerUserDataInfo.setChineseConvertType(reader.getReaderHelper().getDocumentOptions().getChineseConvertType());
+        readerUserDataInfo.setDocumentMetadata(reader.getReaderHelper().getDocumentMetadata());
+
+
+        boolean isSupportScale = reader.getReaderHelper().getRendererFeatures().supportScale();
+        String displayName = reader.getReaderHelper().getPlugin().displayName();
+        String md5 = reader.getReaderHelper().getDocumentMd5();
+        ReaderNavigator navigator = reader.getReaderHelper().getNavigator();
+
+        Context context = reader.getReaderHelper().getContext();
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageBookmarks(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageLinks(context, navigator, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageImages(context, navigator, readerViewInfo.getVisiblePages());
+        }
+
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageAnnotations(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
         }
     }
 
