@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -114,6 +115,7 @@ public class BookDetailFragment extends BaseFragment {
     private boolean isWholeBookDownLoad;
     private BookInfoDialog infoDialog;
     private boolean hasAddToCart = false;
+    private boolean hasClick;
 
     @Nullable
     @Override
@@ -355,6 +357,7 @@ public class BookDetailFragment extends BaseFragment {
             if (!hasAddToCart) {
                 if (bookDetailBean != null) {
                     if (bookDetailBean.add_cart) {
+                        hasAddToCart = true;
                         ToastUtil.showToast(getString(R.string.book_detail_add_cart_tip_the_book_already_add_cart));
                         return;
                     }
@@ -636,13 +639,23 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void showCopyRightDialog() {
+        if (hasClick) {
+            return;
+        }
+        hasClick = true;
         LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         copyrightBinding.setBookDetailViewModel(getBookDetailViewModel());
         if (copyRightDialog == null) {
             copyRightDialog = new BookInfoDialog(JDReadApplication.getInstance());
             copyRightDialog.setView(copyrightBinding.getRoot());
+            copyRightDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    hasClick = false;
+                }
+            });
         }
-        if (copyRightDialog != null) {
+        if (copyRightDialog != null && !copyRightDialog.isShowing()) {
             copyRightDialog.show();
         }
     }
@@ -764,7 +777,12 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void showInfoDialog(String content) {
+        if (hasClick) {
+            return;
+        }
+        hasClick = true;
         if (StringUtils.isNullOrEmpty(content)) {
+            hasClick = false;
             return;
         }
         DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
@@ -774,6 +792,12 @@ public class BookDetailFragment extends BaseFragment {
         infoBinding.setViewModel(dialogBookInfoViewModel);
         infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
         infoDialog.setView(infoBinding.getRoot());
+        infoDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                hasClick = false;
+            }
+        });
         HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);
@@ -791,7 +815,7 @@ public class BookDetailFragment extends BaseFragment {
                 dismissInfoDialog();
             }
         });
-        if (infoDialog != null) {
+        if (infoDialog != null && !infoDialog.isShowing()) {
             infoDialog.show();
         }
     }

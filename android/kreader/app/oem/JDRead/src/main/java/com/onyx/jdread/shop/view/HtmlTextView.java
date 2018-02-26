@@ -37,7 +37,7 @@ public class HtmlTextView extends JellyBeanSpanFixTextView {
     boolean linkHit;
     boolean dontConsumeNonUrlClicks = true;
     private boolean removeFromHtmlSpace = true;
-    private int maxLlineCount;
+    private int maxLlineCount = 1;
     private String ellipsisStr = "...";
 
     public HtmlTextView(Context context, AttributeSet attrs, int defStyle) {
