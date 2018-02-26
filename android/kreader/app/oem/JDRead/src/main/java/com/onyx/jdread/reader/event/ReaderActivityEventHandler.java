@@ -284,7 +284,7 @@ public class ReaderActivityEventHandler {
             ToastUtil.showToast(R.string.reader_check_network);
             return;
         }
-        DialogDict dialogDict = new DialogDict(activity, text);
+        DialogDict dialogDict = new DialogDict(activity, text,readerViewModel.getEventBus());
         dialogDict.show();
     }
 
