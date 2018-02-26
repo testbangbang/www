@@ -588,5 +588,6 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     @Override
     public void deleteInputWord() {
         binding.editViewSearch.setText("");
+        reset();
     }
 }
