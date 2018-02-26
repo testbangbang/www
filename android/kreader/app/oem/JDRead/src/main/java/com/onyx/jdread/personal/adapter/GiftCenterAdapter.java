@@ -8,15 +8,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemGiftCenterBinding;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GiftDetailBean;
+
+import java.util.List;
 
 /**
  * Created by li on 2017/12/29.
  */
 
 public class GiftCenterAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
+    private List<GiftDetailBean> data;
+
     @Override
     public int getRowCount() {
         return ResManager.getInteger(R.integer.gift_center_adapter_row);
@@ -29,7 +35,7 @@ public class GiftCenterAdapter extends PageRecyclerView.PageAdapter implements V
 
     @Override
     public int getDataCount() {
-        return 4;
+        return data == null ? 0 : data.size();
     }
 
     @Override
@@ -43,6 +49,12 @@ public class GiftCenterAdapter extends PageRecyclerView.PageAdapter implements V
         GiftCenterViewHolder viewHolder = (GiftCenterViewHolder) holder;
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
+        viewHolder.bindTo(data.get(position));
+    }
+
+    public void setData(List<GiftDetailBean> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -58,6 +70,13 @@ public class GiftCenterAdapter extends PageRecyclerView.PageAdapter implements V
         }
     }
 
+    public void clear() {
+        if (data != null && data.size() > 0) {
+            data.clear();
+            notifyDataSetChanged();
+        }
+    }
+
     static class GiftCenterViewHolder extends RecyclerView.ViewHolder {
         private ItemGiftCenterBinding binding;
 
@@ -70,8 +89,9 @@ public class GiftCenterAdapter extends PageRecyclerView.PageAdapter implements V
             return binding;
         }
 
-        public void bindTo() {
-
+        public void bindTo(GiftDetailBean bean) {
+            binding.setBean(bean);
+            binding.executePendingBindings();
         }
     }
 }

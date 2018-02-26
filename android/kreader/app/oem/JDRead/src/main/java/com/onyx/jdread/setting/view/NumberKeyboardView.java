@@ -10,12 +10,19 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 
 import com.onyx.jdread.R;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by suicheng on 2018/2/7.
@@ -34,8 +41,10 @@ public class NumberKeyboardView extends KeyboardView implements KeyboardView.OnK
     private Rect customDrawRect;
     private Paint customTextPaint;
     private float customTextY = -1;
+    private final static int DELETE_WHAT = 0x1000;
 
     private OnKeyboardListener keyboardListener;
+    private ScheduledExecutorService scheduledExecutor;
 
     public NumberKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -199,6 +208,51 @@ public class NumberKeyboardView extends KeyboardView implements KeyboardView.OnK
     @Override
     public void swipeUp() {
     }
+
+    @Override
+    protected boolean onLongPress(Keyboard.Key popupKey) {
+        if (popupKey.codes[0] == Keyboard.KEYCODE_DELETE) {
+            startDelete();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getAction();
+        if (action == MotionEvent.ACTION_UP) {
+            stopDelete();
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private void startDelete() {
+        scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutor.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                handler.sendEmptyMessage(DELETE_WHAT);
+            }
+        }, 0, 100, TimeUnit.MILLISECONDS);
+    }
+
+    private void stopDelete() {
+        if (scheduledExecutor != null) {
+            scheduledExecutor.shutdown();
+            scheduledExecutor = null;
+        }
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == DELETE_WHAT) {
+                if (keyboardListener != null) {
+                    keyboardListener.onDeleteKeyEvent();
+                }
+            }
+        }
+    };
 
     public void setCustomDrawable(Drawable drawable) {
         this.customDrawable = drawable;

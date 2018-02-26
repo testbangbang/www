@@ -30,7 +30,7 @@ public class RxCompareLocalMetadataRequest extends RxBaseDBRequest {
         ListIterator<Metadata> iterator = list.listIterator();
         while (iterator.hasNext()) {
             Metadata data = iterator.next();
-            Metadata metadata = ((LocalDataProvider)getDataProvider()).findMetadataByCloudId(data.getCloudId());
+            Metadata metadata = getDataProvider().findMetadataByCloudId(data.getCloudId());
             if (metadata != null && StringUtils.isNotBlank(metadata.getCloudId())) {
                 iterator.set(metadata);
             }

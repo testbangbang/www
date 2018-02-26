@@ -267,7 +267,7 @@
     <string name="reset">Reset</string>
     <string name="points_for_tips">For %1$s, the VIP will deduct %2$s, will it be converted?</string>
     <string name="current_points">Current integral:%1$d</string>
-    <string name="receive_gift_package_tips">Are you using current account to receive %1$s?</string>
+    <string name="receive_gift_package_tips">Are you using current account to receive package?</string>
     <string name="sign_in_vouchers">Sign in (+ 5 vouchers)</string>
     <string name="read_thirty">Read for 30 minutes(+10 vouchers)</string>
     <string name="add_ten_vouchers">+%d vouchers receive success</string>
@@ -500,4 +500,8 @@
     <string name="password_unlock_current_times_format">The password was entered incorrectly, you have %d more chances to try</string>
     <string name="reader_note">Note:</string>
     <string name="intelligent_recommend">Intelligent recommendation</string>
+    <string name="new_user_package">New user membership package</string>
+    <string name="new_user_package_detail">The 365 days membership for the new user is bound to the login account.</string>
+    <string name="receive_success">Receive success</string>
+    <string name="receive_fail">Receive failed</string>
 </resources>

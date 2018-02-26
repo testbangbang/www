@@ -257,7 +257,7 @@
     <string name="reset">恢复出厂设置</string>
     <string name="points_for_tips">兑换%1$sJoyRead将扣除%2$s，是否进行兑换？</string>
     <string name="current_points">当前积分：%1$d</string>
-    <string name="receive_gift_package_tips">是否使用当前登录账号领取%1$s？</string>
+    <string name="receive_gift_package_tips">是否使用当前登录账号领取礼包？</string>
     <string name="sign_in_vouchers">签到(+5代金券)</string>
     <string name="read_thirty">阅读30分钟(+10代金券)</string>
     <string name="add_ten_vouchers">+%d代金券 领取成功</string>
@@ -471,4 +471,8 @@
     <string name="password_unlock_current_times_format">密码输入错误，您还剩%d次输入机会</string>
     <string name="reader_note">笔记:</string>
     <string name="intelligent_recommend">智能推荐</string>
+    <string name="new_user_package">新用户会员礼包</string>
+    <string name="new_user_package_detail">为新用户准备的365天会员，领取后即绑定到登录本机的账号上。</string>
+    <string name="receive_success">领取成功</string>
+    <string name="receive_fail">领取失败</string>
 </resources>
