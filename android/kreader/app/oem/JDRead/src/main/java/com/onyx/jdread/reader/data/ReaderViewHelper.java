@@ -135,6 +135,7 @@ public class ReaderViewHelper {
         }
         try {
             drawPageContent(canvas, bitmap);
+            drawPageLinks(canvas, readerUserDataInfo, readerViewInfo);
             drawPageAnnotations(canvas, reader, readerUserDataInfo, readerViewInfo);
             drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
             drawSearchResults(canvas,reader,readerUserDataInfo,readerViewInfo);
@@ -170,6 +171,18 @@ public class ReaderViewHelper {
 
         paint.setColor(oldColor);
         paint.setStyle(oldStyle);
+    }
+
+    private void drawPageLinks(Canvas canvas, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
+        for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
+            if (!userDataInfo.hasPageLinks(pageInfo)) {
+                continue;
+            }
+            List<ReaderSelection> links = userDataInfo.getPageLinks(pageInfo);
+            for (ReaderSelection link : links) {
+                drawUnderLineHighlightRectangles(canvas, paint, link.getRectangles());
+            }
+        }
     }
 
     private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final Reader reader, final ReaderViewInfo readerViewInfo,
