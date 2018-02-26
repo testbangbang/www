@@ -175,13 +175,17 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     }
 
     private static List<Bookmark> deleteDuplicateBookmark(List<Bookmark> bookmarks) {
+        List<Bookmark> result = new ArrayList<>();
         Map<String, Bookmark> map = new HashMap<>();
-        for (int i = 0; i < bookmarks.size(); i++) {
-            Bookmark bookmark = bookmarks.get(i);
+        for (Bookmark bookmark: bookmarks) {
+            if(map.get(bookmark.getPosition()) != null){
+                continue;
+            }
             map.put(bookmark.getPosition(), bookmark);
+            result.add(bookmark);
         }
 
-        return new ArrayList<>(map.values());
+        return result;
     }
 
     @Override

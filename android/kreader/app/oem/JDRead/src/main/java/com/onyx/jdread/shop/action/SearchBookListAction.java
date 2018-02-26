@@ -1,5 +1,6 @@
 package com.onyx.jdread.shop.action;
 
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
@@ -9,7 +10,9 @@ import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestSearchBooks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.onyx.jdread.shop.common.CloudApiContext.CategoryLevel2BookList.PAGE_SIZE_DEFAULT_VALUES;
@@ -28,6 +31,10 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
     private String keyWord;
     private int filter;
     private BookModelBooksResultBean resultBean;
+    private List<DataModel> dataModelList = new ArrayList<>();
+
+    private boolean mapToDataModel = false;
+    private boolean loadCover = false;
 
     public SearchBookListAction(String catId, int currentPage, int sortKey, int sortType, String keyWord, int filter) {
         this.currentPage = currentPage;
@@ -55,6 +62,8 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
         requestBean.setAppBaseInfo(appBaseInfo);
         final RxRequestSearchBooks request = new RxRequestSearchBooks();
         request.setRequestBean(requestBean);
+        request.setMapToDataModel(mapToDataModel);
+        request.setLoadCover(loadCover);
         request.execute(new RxCallback<RxRequestSearchBooks>() {
 
             @Override
@@ -72,30 +81,39 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onNext(RxRequestSearchBooks request) {
                 resultBean = request.getResultBean();
-                if (rxCallback != null) {
-                    rxCallback.onNext(SearchBookListAction.this);
+                if (mapToDataModel) {
+                    dataModelList = request.getDataModelList();
                 }
+                RxCallback.invokeNext(rxCallback, SearchBookListAction.this);
             }
 
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                if (rxCallback != null) {
-                    rxCallback.onError(throwable);
-                }
+                RxCallback.invokeError(rxCallback, throwable);
             }
 
             @Override
             public void onComplete() {
                 super.onComplete();
-                if (rxCallback != null) {
-                    rxCallback.onComplete();
-                }
+                RxCallback.invokeComplete(rxCallback);
             }
         });
     }
 
+    public void setMapToDataModel(boolean beMapTo) {
+        mapToDataModel = beMapTo;
+    }
+
+    public void setLoadCover(boolean loadCover) {
+        this.loadCover = loadCover;
+    }
+
     public BookModelBooksResultBean getBooksResultBean() {
         return resultBean;
+    }
+
+    public List<DataModel> getDataModelList() {
+        return dataModelList;
     }
 }

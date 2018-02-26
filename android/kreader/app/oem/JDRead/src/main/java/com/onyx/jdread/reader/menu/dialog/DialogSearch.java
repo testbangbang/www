@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
@@ -44,6 +45,8 @@ import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogSearchViewCallBack;
+import com.onyx.jdread.reader.epd.ReaderEpdHelper;
+import com.onyx.jdread.reader.event.UpdateViewPageEvent;
 import com.onyx.jdread.reader.menu.actions.GetSearchHistoryAction;
 import com.onyx.jdread.reader.menu.actions.GotoSearchPageAction;
 import com.onyx.jdread.reader.menu.actions.SearchContentAction;
@@ -82,6 +85,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     private int searchAlphaContentLength = 0;
     private int currentSearchIndex = 0;
     private DialogSearchHandler dialogSearchHandler;
+    private WakeLockHolder wakeLockHolder;
 
     public DialogSearch(final Context context, final ReaderDataHolder readerDataHolder) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -91,6 +95,8 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         searchRows = getContext().getResources().getInteger(R.integer.search_row);
         searchChineseContentLength = getContext().getResources().getInteger(R.integer.search_chinese_content_length);
         searchAlphaContentLength = getContext().getResources().getInteger(R.integer.search_alpha_content_length);
+        wakeLockHolder = new WakeLockHolder();
+        wakeLockHolder.acquireWakeLock(context,TAG);
     }
 
     @Override
@@ -321,6 +327,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         public void OnFinishedSearch(int endPage) {
             startPage = endPage;
             hideLoadingLayout();
+            ReaderEpdHelper.applyGCUpdate(binding.searchRecyclerView);
             finishSearchTips();
         }
     };
@@ -479,6 +486,8 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         hideSoftInputWindow();
         stopSearch();
         dialogSearchHandler.unregisterListener();
+        readerDataHolder.getEventBus().post(new UpdateViewPageEvent());
+        wakeLockHolder.releaseWakeLock();
     }
 
 
