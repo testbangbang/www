@@ -102,14 +102,18 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
         documentPath = path;
-        final String baseDir = FileUtils.getParent(path);
-        FileUtils.collectFiles(baseDir, getExtensionFilters(), false, pageList);
-        Collections.sort(pageList, new Comparator<String>() {
-            @Override
-            public int compare(String lhs, String rhs) {
-                return ComparatorUtils.stringComparator(lhs, rhs, SortOrder.Asc);
-            }
-        });
+        if (!pluginOptions.isLoadAllImages()) {
+            pageList.add(documentPath);
+        } else {
+            final String baseDir = FileUtils.getParent(path);
+            FileUtils.collectFiles(baseDir, getExtensionFilters(), false, pageList);
+            Collections.sort(pageList, new Comparator<String>() {
+                @Override
+                public int compare(String lhs, String rhs) {
+                    return ComparatorUtils.stringComparator(lhs, rhs, SortOrder.Asc);
+                }
+            });
+        }
         return this;
     }
 

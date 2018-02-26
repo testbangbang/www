@@ -21,6 +21,7 @@ public class ReaderPluginOptionsImpl implements ReaderPluginOptions {
     private AssetManager assetManager;
     private Resources resources;
     private boolean syncLoading = false;
+    private boolean loadAllImages = true;
 
     public ReaderPluginOptionsImpl() {
     }
@@ -51,6 +52,15 @@ public class ReaderPluginOptionsImpl implements ReaderPluginOptions {
 
     public void setSyncLoading(boolean sync) {
         syncLoading = sync;
+    }
+
+    public boolean isLoadAllImages() {
+        return loadAllImages;
+    }
+
+    public ReaderPluginOptionsImpl setLoadAllImages(boolean loadAllImages) {
+        this.loadAllImages = loadAllImages;
+        return this;
     }
 
     public static ReaderPluginOptionsImpl create(final Context context) {
