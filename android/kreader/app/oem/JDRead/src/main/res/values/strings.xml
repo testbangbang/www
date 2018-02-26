@@ -500,4 +500,7 @@
     <string name="password_unlock_current_times_format">The password was entered incorrectly, you have %d more chances to try</string>
     <string name="reader_note">Note:</string>
     <string name="intelligent_recommend">Intelligent recommendation</string>
+    <string name="bookmark_none">There is no bookmark</string>
+    <string name="note_none">No notes</string>
+    <string name="catalog_none">The catalog is empty</string>
 </resources>

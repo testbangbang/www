@@ -471,4 +471,7 @@
     <string name="password_unlock_current_times_format">密码输入错误，您还剩%d次输入机会</string>
     <string name="reader_note">笔记：</string>
     <string name="intelligent_recommend">智能推荐</string>
+    <string name="bookmark_none">您还未添加书签</string>
+    <string name="note_none">您还未添加笔记</string>
+    <string name="catalog_none">目录为空</string>
 </resources>
