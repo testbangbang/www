@@ -533,4 +533,5 @@
     <dimen name="fragment_find_button_min_width">300dp</dimen>
     <dimen name="fragment_find_button_padding">12dp</dimen>
     <dimen name="fragment_find_button_margin_top">40dp</dimen>
+    <dimen name="vip_user_info_item_login_immediately_width">268dp</dimen>
 </resources>
