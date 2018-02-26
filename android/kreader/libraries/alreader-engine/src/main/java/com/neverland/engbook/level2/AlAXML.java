@@ -161,7 +161,10 @@ public abstract class AlAXML extends AlFormat {
             // kindle specific
             if (cssStyles != null && cssStyles.isKindle && !tag.ended && !tag.special) {
                 switch (tag.tag) {
-                    case AlFormatTag.TAG_P:
+					// don't insert nbsp characters for paragraph indentation,
+					// as we'll handle the indentation uniformly latter
+					// joy@onyx
+                    //case AlFormatTag.TAG_P:
                     case AlFormatTag.TAG_BLOCKQUOTE:
                     case AlFormatTag.TAG_DIV:
                     case AlFormatTag.TAG_SPAN:
