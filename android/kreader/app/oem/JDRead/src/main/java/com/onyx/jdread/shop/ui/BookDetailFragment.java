@@ -189,6 +189,7 @@ public class BookDetailFragment extends BaseFragment {
         RecommendAdapter adapter = new RecommendAdapter(getEventBus());
         recyclerViewRecommend = bookDetailBinding.bookDetailInfo.recyclerViewRecommend;
         recyclerViewRecommend.setPageTurningCycled(true);
+        recyclerViewRecommend.setCanTouchPageTurning(false);
         recyclerViewRecommend.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewRecommend.addItemDecoration(itemDecoration);
         recyclerViewRecommend.setAdapter(adapter);
