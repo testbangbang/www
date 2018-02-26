@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
@@ -37,8 +38,8 @@ import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_X_SMALL;
 public class ReaderSelectionHelper {
     private Map<String, SelectionInfo> readerSelectionInfos = new HashMap<>();
     private int currentFontSize = FONT_SIZE_MEDIUM;
-    private int chooseLeftIcon = R.mipmap.ic_choose_left;
-    private int chooseRightIcon = R.mipmap.ic_choose_right;
+    private int chooseLeftIcon = R.mipmap.ic_read_word_left_3;
+    private int chooseRightIcon = R.mipmap.ic_read_word_right_3;
 
     public ReaderSelectionHelper() {
         super();
@@ -136,7 +137,7 @@ public class ReaderSelectionHelper {
         if (currentFontSize == fontSize) {
             return false;
         }
-
+        currentFontSize = fontSize;
         switch (fontSize) {
             case FONT_SIZE_X_SMALL:
                 chooseLeftIcon = R.mipmap.ic_read_word_left_1;
@@ -170,7 +171,7 @@ public class ReaderSelectionHelper {
         return true;
     }
 
-    public synchronized boolean update(String pagePosition, final Context context,
+    public boolean update(String pagePosition, final Context context,
                                        ReaderSelection readerSelection, PointF lastPoint,
                                        PageInfo pageInfo,
                                        ReaderTextStyle style) {
@@ -194,13 +195,12 @@ public class ReaderSelectionHelper {
         float fontHeight = rects.get(0).bottom - rects.get(0).top;
         cursor.setFontHeight(fontHeight);
         PointF beginBottom = RectUtils.getBeginTop(rects);
-        cursor.setOriginPosition(beginBottom.x, beginBottom.y);
+        cursor.setOriginPosition(beginBottom.x, beginBottom.y + (currentFontSize / 5));
         cursor.setCursorType(HighlightCursor.Type.BEGIN_CURSOR);
-
         cursor = readerSelectionInfo.getCursors().get(1);
         PointF endBottom = RectUtils.getEndRight(rects);
         cursor.setFontHeight(fontHeight);
-        cursor.setOriginPosition(endBottom.x, endBottom.y);
+        cursor.setOriginPosition(endBottom.x, endBottom.y + (currentFontSize / 5));
         cursor.setCursorType(HighlightCursor.Type.END_CURSOR);
         return true;
     }

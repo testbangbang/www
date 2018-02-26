@@ -284,9 +284,11 @@
     <string name="phone_number_edit_hint">The phone number is used for password recovery, please make sure the real and effective</string>
     <string name="confirm_password">Confirm password</string>
     <string name="password_setting">Password setting</string>
+    <string name="password_setting_failed">Password setting failed</string>
     <string name="encrypted">Encrypted</string>
     <string name="unlock_the_password">Unlock the password</string>
     <string name="password_key">password_key</string>
+    <string name="password_fail_data_key" translatable="false">password_fail_data_key</string>
     <string name="phone_key" translatable="false">phone_key</string>
     <string name="password_format_error">The password is wrongly formatted. Please enter %1$d-%2$d digits</string>
     <string name="wrong_password">Wrong password</string>
@@ -437,6 +439,7 @@
     <string name="page" formatted="false">page %d</string>
     <string name="search_end">Have finished searching</string>
     <string name="click_to_translate">Click to translate</string>
+    <string name="click_to_refresh">Click to refresh</string>
     <string name="delete_book">Delete book</string>
     <string name="network_or_server_error">Network or server error, wait for a while to try again</string>
     <string name="reader_check_network">Please check your network</string>
@@ -487,4 +490,14 @@
     <string name="book_detail_add_cart_tip_the_book_already_add_cart">the book already add to cart</string>
     <string name="pay_dialog_insufficient_balance">insufficient balance,go charge</string>
     <string name="pay_success">pay success</string>
+    <string name="password_find">Password find</string>
+    <string name="psw_success_to_unlock">Get success to unlock</string>
+    <string name="find_password_qr_generating">Generating retrieve information...</string>
+    <string name="find_password_qr_scan">Please scan the QR code to retrieve the password</string>
+    <string name="setting_device_model_format" translatable="false">%s-1</string>
+    <string name="password_too_simple_and_reset">Password is too simple, please reset</string>
+    <string name="password_unlock_times_format">The password has been incorrectly entered more than %d times and device was locked</string>
+    <string name="password_unlock_current_times_format">The password was entered incorrectly, you have %d more chances to try</string>
+    <string name="reader_note">Note:</string>
+    <string name="intelligent_recommend">Intelligent recommendation</string>
 </resources>

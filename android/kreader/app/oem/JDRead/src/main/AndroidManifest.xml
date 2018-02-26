@@ -29,9 +29,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".main.activity.MainActivity"
+            android:name=".reader.ui.PreloadActivity"
             android:windowSoftInputMode="adjustPan"
-            android:theme="@style/ActivityFullscreen">
+            android:theme="@style/PreloadActivityFullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME"/>
@@ -40,13 +40,18 @@
         </activity>
 
         <activity
+            android:name=".main.activity.MainActivity"
+            android:theme="@style/ActivityFullscreen"></activity>
+
+        <activity
             android:name=".reader.ui.ReaderActivity"
             android:theme="@style/ActivityFullscreen"></activity>
 
         <activity
             android:name=".main.activity.LockScreenActivity"
+            android:launchMode="singleInstance"
             android:theme="@style/ActivityFullscreen"
-            android:launchMode="singleInstance"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity android:name ="com.evernote.client.android.EvernoteOAuthActivity"/>
         <activity android:name ="com.evernote.client.android.login.EvernoteLoginActivity"/>

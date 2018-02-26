@@ -14,6 +14,7 @@ import android.graphics.RectF;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
@@ -27,6 +28,7 @@ import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewConfig;
+import com.onyx.jdread.reader.epd.ReaderEpdHelper;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.util.TimeUtils;
@@ -202,15 +204,37 @@ public class ReaderViewHelper {
                 reader.getReaderHelper().getDocumentMd5(),
                 reader.getReaderHelper().getNavigator(),
                 readerViewInfo.getVisiblePages());
+        if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
+            updateAnnotationRectangles(reader,readerViewInfo,readerUserDataInfo);
+        }
         for (PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
             if (readerUserDataInfo.hasPageAnnotations(pageInfo)) {
                 List<PageAnnotation> annotations = readerUserDataInfo.getPageAnnotations(pageInfo);
                 for (PageAnnotation annotation : annotations) {
-                    drawHighlightRectangles(reader.getReaderHelper().getContext(), canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getAnnotation().getRectangles()));
+                    drawHighlightRectangles(reader.getReaderHelper().getContext(), canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
                     String note = annotation.getAnnotation().getNote();
                     if (!StringUtils.isNullOrEmpty(note)){
-                        drawHighLightSign(reader.getReaderHelper().getContext(), canvas, paint, annotation.getAnnotation().getRectangles());
+                        drawHighLightSign(reader.getReaderHelper().getContext(), canvas, paint, annotation.getRectangles());
                     }
+                }
+            }
+        }
+    }
+
+    private void updateAnnotationRectangles(final Reader reader,final ReaderViewInfo readerViewInfo,final ReaderUserDataInfo readerUserDataInfo) {
+        for (PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
+            List<PageAnnotation> annotations = readerUserDataInfo.getPageAnnotations(pageInfo);
+            if (annotations == null) {
+                continue;
+            }
+            for (PageAnnotation annotation : annotations) {
+                ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
+                ReaderSelection selection = hitTestManager.selectOnScreen(pageInfo.getPosition(),
+                        annotation.getAnnotation().getLocationBegin(),
+                        annotation.getAnnotation().getLocationEnd());
+                annotation.getRectangles().clear();
+                if (selection != null) {
+                    annotation.getRectangles().addAll(selection.getRectangles());
                 }
             }
         }
@@ -280,6 +304,11 @@ public class ReaderViewHelper {
 
     private void applyEpdUpdate(final Reader reader, final SurfaceView view) {
         reader.getReaderEpdHelper().applyWithGCInterval(view);
+    }
+
+    private void resetEpdUpdate(final Reader reader,final SurfaceView view){
+        reader.getReaderEpdHelper().setGcInterval(ReaderEpdHelper.DEFAULT_GC_INTERVAL);
+        ReaderEpdHelper.resetUpdateMode(view);
     }
 
     private ColorMatrix getColorMatrix() {

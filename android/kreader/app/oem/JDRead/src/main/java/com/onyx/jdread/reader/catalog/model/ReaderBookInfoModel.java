@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.catalog.event.TabBookmarkClickEvent;
@@ -97,14 +98,21 @@ public class ReaderBookInfoModel {
 
     public void setNotes(List<Annotation> annotationList) {
         String content = ResManager.getString(R.string.reader_content);
+        String note = ResManager.getString(R.string.reader_note);
+        String none = ResManager.getString(R.string.security_none);
+        this.notes.clear();
         for (Annotation annotation : annotationList) {
             NoteModel noteModel = new NoteModel();
             noteModel.setChapter(ReaderViewUtil.trim(annotation.getChapterName()));
-            noteModel.setNote(annotation.getNote());
+            if(StringUtils.isNullOrEmpty(annotation.getNote())){
+                noteModel.setNote(note + none);
+            }else {
+                noteModel.setNote(note + annotation.getNote());
+            }
             noteModel.setContent(content + annotation.getQuote());
             noteModel.setPosition(annotation.getPosition());
-            Date date = new Date(annotation.getCreatedAt().getTime());
-            noteModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
+            Date date = new Date(annotation.getUpdatedAt().getTime());
+            noteModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_2));
             this.notes.add(noteModel);
         }
     }

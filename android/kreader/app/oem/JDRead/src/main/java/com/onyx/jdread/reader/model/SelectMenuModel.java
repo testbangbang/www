@@ -22,6 +22,7 @@ import com.onyx.jdread.reader.event.PopupLineationClickEvent;
 import com.onyx.jdread.reader.event.PopupNoteClickEvent;
 import com.onyx.jdread.reader.event.PopupTranslationClickEvent;
 import com.onyx.jdread.reader.event.WordTranslateResultEvent;
+import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.HighlightCursor;
 import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.setting.action.TranslateAction;
@@ -46,6 +47,11 @@ public class SelectMenuModel {
     private float lastX;
     private float lastY;
     private PageAnnotation currentAnnotations;
+    private HandlerManger handlerManger;
+
+    public SelectMenuModel(HandlerManger handlerManger) {
+        this.handlerManger = handlerManger;
+    }
 
     public ObservableBoolean getIsEditAnnotation() {
         return isEditAnnotation;
@@ -102,6 +108,7 @@ public class SelectMenuModel {
     public void onLineationClick() {
         getEventBus().post(new PopupLineationClickEvent());
         setIsShowSelectMenu(false);
+        handlerManger.onStop();
     }
 
     public void onNoteClick() {
@@ -113,6 +120,7 @@ public class SelectMenuModel {
             getEventBus().post(new PopupNoteClickEvent());
         }
         setIsShowSelectMenu(false);
+        handlerManger.onStop();
     }
 
     public void onCopyClick() {
@@ -123,6 +131,7 @@ public class SelectMenuModel {
             getEventBus().post(new PopupCopyClickEvent());
         }
         setIsShowSelectMenu(false);
+        handlerManger.onStop();
     }
 
     public void onTranslationClick() {
@@ -132,6 +141,7 @@ public class SelectMenuModel {
         }else {
             getEventBus().post(new PopupTranslationClickEvent());
             setIsShowSelectMenu(false);
+            handlerManger.onStop();
         }
     }
 
@@ -143,6 +153,7 @@ public class SelectMenuModel {
             getEventBus().post(new PopupBaidupediaClickEvent());
         }
         setIsShowSelectMenu(false);
+        handlerManger.onStop();
     }
 
     public void showSelectMenu(ReaderDataHolder readerDataHolder,boolean isDictionary){
@@ -260,8 +271,8 @@ public class SelectMenuModel {
     }
 
     public void showEditAnnotationMenu(ReaderDataHolder readerDataHolder,PageAnnotation annotations){
-        RectF begin = annotations.getAnnotation().getRectangles().get(0);
-        RectF end = annotations.getAnnotation().getRectangles().get(annotations.getAnnotation().getRectangles().size() - 1);
+        RectF begin = annotations.getRectangles().get(0);
+        RectF end = annotations.getRectangles().get(annotations.getRectangles().size() - 1);
         currentAnnotations = annotations;
         setIsEditAnnotation(true);
         requestLayoutView(readerDataHolder,begin.top,

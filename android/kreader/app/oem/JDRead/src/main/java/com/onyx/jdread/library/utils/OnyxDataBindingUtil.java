@@ -50,6 +50,13 @@ public class OnyxDataBindingUtil {
         }
     }
 
+    @BindingAdapter({"thumbnail"})
+    public static void setImageViewBitmap(ImageView imageView, Bitmap bitmap) {
+        if (bitmap != null && !bitmap.isRecycled()) {
+            imageView.setImageBitmap(bitmap);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @BindingAdapter("items")
     public static void setItems(PageRecyclerView recyclerView, List items) {

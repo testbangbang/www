@@ -873,6 +873,9 @@ public class PinyinIME extends InputMethodService {
                     resetToIdleState(false);
                 }
             } else {
+                if (mDecInfo.mCandidatesList.size() <= 0) {
+                    return;
+                }
                 if (ImeState.STATE_IDLE == mImeState) {
                     if (mDecInfo.getSplStrDecodedLen() == 0) {
                         changeToStateComposing(true);

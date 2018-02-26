@@ -16,23 +16,32 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
 public class ParserOpenDocumentInfoAction extends BaseReaderAction {
     private Intent intent;
     private DocumentInfo documentInfo;
+
     public ParserOpenDocumentInfoAction(Intent intent) {
         this.intent = intent;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        setDocumentInfo();
+        setDocumentInfo(readerDataHolder);
         setSecurityInfo();
     }
 
-    private void setDocumentInfo(){
+    private String getPreloadBookPath(ReaderDataHolder readerDataHolder){
+        CheckPreloadBookStateAction action = new CheckPreloadBookStateAction();
+        action.execute(readerDataHolder,null);
+        return action.getPreloadBook();
+    }
+
+    private void setDocumentInfo(ReaderDataHolder readerDataHolder){
         documentInfo = new DocumentInfo();
+        String bookPath;
         if(!intent.hasExtra(DocumentInfo.BOOK_PATH)){
-            documentInfo.setMessageId(R.string.open_book_parameter_error);
-            return;
+            bookPath = getPreloadBookPath(readerDataHolder);
+            readerDataHolder.setPreload(true);
+        }else {
+            bookPath = intent.getStringExtra(DocumentInfo.BOOK_PATH);
         }
-        String bookPath = intent.getStringExtra(DocumentInfo.BOOK_PATH);
         if(StringUtils.isNullOrEmpty(bookPath)){
             documentInfo.setMessageId(R.string.document_path_error);
             return;

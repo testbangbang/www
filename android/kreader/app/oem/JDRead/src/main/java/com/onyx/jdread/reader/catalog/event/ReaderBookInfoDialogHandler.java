@@ -89,8 +89,8 @@ public class ReaderBookInfoDialogHandler {
         });
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAnnotationItemClickEvent(AnnotationItemClickEvent event){
-
+    @Subscribe
+    public void onUpdateAnnotationEvent(UpdateAnnotationEvent event){
+        readerBookInfoViewBack.updateAnnotation();
     }
 }

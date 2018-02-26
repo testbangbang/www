@@ -7,6 +7,7 @@
     <dimen name="rectangle_corner_common_radius">2dp</dimen>
     <dimen name="function_bar_text_size">18sp</dimen>
     <dimen name="level_large_heading_font">26sp</dimen>
+    <dimen name="level_medium_heading_font">24sp</dimen>
     <dimen name="level_one_heading_font">20sp</dimen>
     <dimen name="level_two_heading_font">18sp</dimen>
     <dimen name="level_three_heading_font">16sp</dimen>
@@ -90,7 +91,7 @@
     <dimen name="feedback_phone_edit_height">32dp</dimen>
     <dimen name="button_padding">10dp</dimen>
     <dimen name="title_bar_drawable_padding">10dp</dimen>
-    <dimen name="reader_title_bar_drawable_padding">25dp</dimen>
+    <dimen name="reader_title_bar_drawable_padding">1dp</dimen>
     <dimen name="custom_recycle_view_margin_right">14dp</dimen>
     <dimen name="book_shop_main_config_recycle_view_margin_top">30dp</dimen>
     <dimen name="book_shop_search_view_padding_top">17dp</dimen>
@@ -208,7 +209,7 @@
     <dimen name="reader_title_bar_item_padding">10dp</dimen>
     <dimen name="reader_page_info_menu_book_name_padding">10dp</dimen>
     <dimen name="reader_page_info_menu_back_margin_right">15dp</dimen>
-    <dimen name="reader_page_info_menu_margin_bottom">10dp</dimen>
+    <dimen name="reader_page_info_menu_margin_bottom">5dp</dimen>
     <dimen name="reader_page_info_menu_prev_chapter_padding_left">5dp</dimen>
     <dimen name="reader_page_info_menu_prev_chapter_padding_right">5dp</dimen>
     <dimen name="reader_page_info_menu_reading_process_padding">5dp</dimen>
@@ -230,7 +231,7 @@
     <dimen name="reader_customize_format_layout_padding_bottom">10dp</dimen>
     <dimen name="reader_customize_format_layout_padding_left">20dp</dimen>
     <dimen name="reader_customize_format_layout_padding_right">20dp</dimen>
-    <dimen name="reader_customize_format_title_margin_right">20dp</dimen>
+    <dimen name="reader_customize_format_title_margin_right">10dp</dimen>
     <dimen name="reader_customize_minus_style_padding">15dp</dimen>
     <dimen name="reader_customize_minus_style_margin_right">15dp</dimen>
     <dimen name="reader_customize_plus_style_padding">15dp</dimen>
@@ -527,4 +528,9 @@
     <dimen name="dialog_pay_order_confirm_pay_margin_left">20dp</dimen>
     <dimen name="dialog_pay_order_confirm_pay_margin_top">80dp</dimen>
     <dimen name="dialog_pay_order_confirm_pay_padding">10dp</dimen>
+    <dimen name="fragment_find_password_qr_image_size">280dp</dimen>
+    <dimen name="fragment_find_password_qr_image_margin">20dp</dimen>
+    <dimen name="fragment_find_button_min_width">300dp</dimen>
+    <dimen name="fragment_find_button_padding">12dp</dimen>
+    <dimen name="fragment_find_button_margin_top">40dp</dimen>
 </resources>

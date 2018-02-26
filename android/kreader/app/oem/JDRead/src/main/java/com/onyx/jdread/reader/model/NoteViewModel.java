@@ -4,11 +4,13 @@ import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
+import android.view.View;
 
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityNoteBinding;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.reader.catalog.event.AnnotationItemClickEvent;
 import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.event.NoteBackEvent;
 import com.onyx.jdread.reader.event.AddNoteEvent;
@@ -67,7 +69,7 @@ public class NoteViewModel {
     private void update(NoteInfo noteInfo) {
         setSrcNote(noteInfo.srcNote);
         setChapterName(noteInfo.chapterName);
-        setCreateNoteDate(noteInfo.createDate);
+        setCreateNoteDate(noteInfo.updateDate);
         setNewNote(noteInfo.newNote);
         setIsEdit(noteInfo.isCreate);
         isCreateNote = noteInfo.isCreate;
@@ -114,11 +116,15 @@ public class NoteViewModel {
 
     public void setIsEdit(boolean isEdit) {
         if (isEdit) {
+            binding.srcNote.setVisibility(View.VISIBLE);
             binding.srcNote.setEnabled(true);
             binding.newNote.setEnabled(true);
+            binding.newNote.setVisibility(View.VISIBLE);
         } else {
             binding.srcNote.setEnabled(false);
+            binding.srcNote.setVisibility(View.GONE);
             binding.newNote.setEnabled(false);
+            binding.newNote.setVisibility(View.GONE);
         }
         this.isEdit.set(isEdit);
     }
@@ -159,8 +165,12 @@ public class NoteViewModel {
         NoteInfo noteInfo = new NoteInfo();
         noteInfo.srcNote = srcNote.get();
         noteInfo.newNote = newNote.get();
-        noteInfo.createDate = createNoteDate.get();
+        noteInfo.updateDate = createNoteDate.get();
         noteInfo.chapterName = chapterName.get();
         return noteInfo;
+    }
+
+    public void gotoPagePosition(){
+        getEventBus().post(new AnnotationItemClickEvent(annotation));
     }
 }

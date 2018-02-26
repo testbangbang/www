@@ -1,21 +1,25 @@
 package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.AnnotationCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.CloseDocumentAction;
 import com.onyx.jdread.reader.actions.DeleteAnnotationAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
+import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.SelectTextCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.actions.ToggleBookmarkAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
+import com.onyx.jdread.reader.catalog.event.AnnotationItemClickEvent;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -48,6 +52,7 @@ public class ReaderActivityEventHandler {
     private ReaderSettingMenuDialog readerSettingMenuDialog;
     private ReaderNoteDialog readerNoteDialog;
     private CloseDocumentDialog closeDocumentDialog;
+    private ReaderBookInfoDialog readerBookInfoDialog;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -131,14 +136,24 @@ public class ReaderActivityEventHandler {
         if (activity == null) {
             return;
         }
-        ReaderBookInfoDialog readerBookInfoDialog = new ReaderBookInfoDialog(activity, readerViewModel.getReaderDataHolder(),
+        readerBookInfoDialog = new ReaderBookInfoDialog(activity, readerViewModel.getReaderDataHolder(),
                 ReaderBookInfoDialogConfig.CATALOG_MODE);
         readerBookInfoDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInitPageViewInfoEvent(InitPageViewInfoEvent event) {
-        new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
+        if(readerViewModel.getReaderDataHolder().isPreload()){
+            startMainActivity();
+            readerViewBack.getContext().finish();
+        }else {
+            new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
+        }
+    }
+
+    private void startMainActivity(){
+        Intent intent = new Intent(readerViewBack.getContext(), MainActivity.class);
+        readerViewBack.getContext().startActivity(intent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -191,6 +206,25 @@ public class ReaderActivityEventHandler {
         }
         readerNoteDialog = new ReaderNoteDialog(readerViewModel.getReaderDataHolder(), activity,event.getAnnotation());
         readerNoteDialog.show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAnnotationItemClickEvent(AnnotationItemClickEvent event){
+        new GotoPositionAction(event.getAnnotation().getPosition()).execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                hideBookInfoDialog();
+            }
+        });
+    }
+
+    private void hideBookInfoDialog(){
+        if(readerNoteDialog != null && readerNoteDialog.isShowing()){
+            readerNoteDialog.dismiss();
+        }
+        if(readerBookInfoDialog != null && readerBookInfoDialog.isShowing()){
+            readerBookInfoDialog.dismiss();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

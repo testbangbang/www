@@ -1,8 +1,13 @@
 package com.onyx.jdread.main.common;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.R;
+import com.onyx.jdread.setting.model.PswFailData;
 
 /**
  * Created by li on 2018/1/19.
@@ -74,5 +79,14 @@ public class JDPreferenceManager extends PreferenceManager {
 
     public static void setLongValue(String key, long value) {
         setLongValue(context, key, value);
+    }
+
+    public static void setPswFailData(@Nullable PswFailData data) {
+        setStringValue(R.string.password_fail_data_key, JSONObjectParseUtils.toJson(data));
+    }
+
+    @Nullable
+    public static PswFailData getPswFailData() {
+        return JSONObjectParseUtils.parseObject(getStringValue(R.string.password_fail_data_key, ""), PswFailData.class);
     }
 }

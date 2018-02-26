@@ -4,6 +4,7 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -33,7 +34,15 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
         saveAnnotation();
         reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
         updateSetting(reader);
+        reloadAnnotation();
         return this;
+    }
+
+    private void reloadAnnotation(){
+        String displayName = reader.getReaderHelper().getPlugin().displayName();
+        String md5 = reader.getReaderHelper().getDocumentMd5();
+
+        getReaderUserDataInfo().loadDocumentAnnotations(reader.getReaderHelper().getContext(), displayName, md5);
     }
 
     private void saveAnnotation() {

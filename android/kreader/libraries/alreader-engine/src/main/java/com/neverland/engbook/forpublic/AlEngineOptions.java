@@ -67,6 +67,7 @@ public class AlEngineOptions {
 
 
 	public boolean 								runInOneThread = false;
+	public boolean 								syncLoading = true;
 
 	public EngSelectionCorrecter				selectCorrecter = null;
 	public AlBitmap 							externalBitmap = null;

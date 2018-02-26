@@ -7,7 +7,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyBinding;
@@ -15,6 +14,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
+import com.onyx.jdread.reader.actions.CleanSelectionAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.data.PageTurningDetector;
@@ -134,7 +134,19 @@ public class BaseHandler {
     }
 
     public boolean onSingleTapUp(MotionEvent event) {
+        if(isShowSelectMenu()){
+            return true;
+        }
         return tryHitTest(event.getX(), event.getY());
+    }
+
+    private boolean isShowSelectMenu(){
+        if(getReaderDataHolder().getSelectMenuModel().getIsShowSelectMenu().get()){
+            getReaderDataHolder().getSelectMenuModel().setIsShowSelectMenu(false);
+            new CleanSelectionAction().execute(getReaderDataHolder(),null);
+            return true;
+        }
+        return false;
     }
 
     public boolean onScaleEnd(ScaleGestureDetector detector) {
@@ -198,14 +210,18 @@ public class BaseHandler {
             PageTurningDirection direction = PageTurningDetector.detectHorizontalTuring(readerDataHolder.getAppContext(), -offsetX);
             if (direction == PageTurningDirection.Left) {
                 prevScreen(readerDataHolder);
+                return;
             } else if (direction == PageTurningDirection.Right) {
                 nextScreen(readerDataHolder);
+                return;
             }
             direction = PageTurningDetector.detectVerticalTuring(readerDataHolder.getAppContext(), -offsetY);
             if (direction == PageTurningDirection.Right) {
                 prevScreen(readerDataHolder);
+                return;
             } else if (direction == PageTurningDirection.Left) {
                 nextScreen(readerDataHolder);
+                return;
             }
             return;
         }
@@ -321,7 +337,7 @@ public class BaseHandler {
 
             List<PageAnnotation> annotations = readerDataHolder.getReaderUserDataInfo().getPageAnnotations(pageInfo);
             for (PageAnnotation annotation : annotations) {
-                for (RectF rect : annotation.getAnnotation().getRectangles()) {
+                for (RectF rect : annotation.getRectangles()) {
                     if (rect.contains(x, y)) {
                         showEditAnnotationMenu(annotation);
                         return true;

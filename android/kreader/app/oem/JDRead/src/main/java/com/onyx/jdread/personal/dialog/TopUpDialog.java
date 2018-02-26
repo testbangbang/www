@@ -187,7 +187,11 @@ public class TopUpDialog extends DialogFragment {
         binding.dialogTopUpClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                if (binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode.getVisibility() == View.VISIBLE) {
+                    setVisible(R.id.dialog_top_up_detail_layout);
+                } else {
+                    dismiss();
+                }
             }
         });
 

@@ -13,8 +13,8 @@ public class NoteInfo {
     public String pagePosition;
     public static final String CHAPTER_NAME = "chapterName";
     public String chapterName;
-    public static final String CREATE_DATE = "createDate";
-    public String createDate;
+    public static final String UPDATE_DATE = "updateDate";
+    public String updateDate;
     public static final String SRC_NOTE = "srcNote";
     public String srcNote;
     public static final String IS_SRC_NOTE_MODIFY = "isSrcNoteModify";
@@ -30,7 +30,7 @@ public class NoteInfo {
         intent.putExtra(BOOK_NAME, bookName);
         intent.putExtra(PAGE_POSITION, pagePosition);
         intent.putExtra(CHAPTER_NAME, chapterName);
-        intent.putExtra(CREATE_DATE, createDate);
+        intent.putExtra(UPDATE_DATE, updateDate);
         intent.putExtra(SRC_NOTE, srcNote);
         intent.putExtra(IS_SRC_NOTE_MODIFY, isSrcNoteModify);
         intent.putExtra(NEW_NOTE, newNote);
@@ -50,8 +50,8 @@ public class NoteInfo {
         if (intent.hasExtra(BOOK_NAME)) {
             noteInfo.bookName = intent.getStringExtra(BOOK_NAME);
         }
-        if (intent.hasExtra(CREATE_DATE)) {
-            noteInfo.createDate = intent.getStringExtra(CREATE_DATE);
+        if (intent.hasExtra(UPDATE_DATE)) {
+            noteInfo.updateDate = intent.getStringExtra(UPDATE_DATE);
         }
         if (!intent.hasExtra(SRC_NOTE)) {
             return null;

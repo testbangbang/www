@@ -30,6 +30,7 @@
     <string name="date_time">日期时间</string>
     <string name="screen_saver">屏幕保护</string>
     <string name="password_setting">密码设置</string>
+    <string name="password_setting_failed">密码设置失败</string>
     <string name="read_tool">阅读工具</string>
     <string name="device_information">设备信息</string>
     <string name="update_package_downloaded">更新包已下载</string>
@@ -91,7 +92,7 @@
     <string name="log_out">退出登录</string>
     <string name="login_immediately">立即登录</string>
     <string name="unsigned_in">未签到</string>
-    <string name="signed_in">签到</string>
+    <string name="signed_in">已签到</string>
     <string name="manual">使用手册</string>
     <string name="feedback">问题反馈</string>
     <string name="contact_us">联系我们</string>
@@ -208,7 +209,7 @@
     <string name="reader_boldface">方正黑体</string>
     <string name="reader_arial">方正新书宋</string>
     <string name="reader_italics">方正新楷体</string>
-    <string name="reader_round_body">方正兰亭黑</string>
+    <string name="reader_round_body">方正悠黑</string>
     <string name="reader_traditional">繁体</string>
     <string name="reader_simplified">简体</string>
     <string name="reader_font_size">字号</string>
@@ -419,6 +420,7 @@
     <string name="delete_library_prompt">是否删除该分组(组内图书重新放入书架)</string>
     <string name="delete_library_include_book_prompt">是否从本机删除该分组及组内图书</string>
     <string name="click_to_translate">点击翻译</string>
+    <string name="click_to_refresh">点击刷新</string>
     <string name="delete_book">删除本书</string>
     <string name="network_or_server_error">网络或者服务器出错，稍等会再试</string>
     <string name="reader_check_network">请检查您的网络</string>
@@ -460,4 +462,13 @@
     <string name="book_detail_add_cart_tip_the_book_already_add_cart">图书已经加入到购物车</string>
     <string name="pay_dialog_insufficient_balance">余额不足，去充值</string>
     <string name="pay_success">支付成功</string>
+    <string name="password_find">密码找回</string>
+    <string name="psw_success_to_unlock">获取成功，去解锁</string>
+    <string name="find_password_qr_generating">正在生成找回信息...</string>
+    <string name="find_password_qr_scan">请用手机扫描下方二维码找回阅读器密码</string>
+    <string name="password_too_simple_and_reset">密码过于简单，请重置</string>
+    <string name="password_unlock_times_format">密码输入错误超过了%d次，设备已锁定</string>
+    <string name="password_unlock_current_times_format">密码输入错误，您还剩%d次输入机会</string>
+    <string name="reader_note">笔记:</string>
+    <string name="intelligent_recommend">智能推荐</string>
 </resources>

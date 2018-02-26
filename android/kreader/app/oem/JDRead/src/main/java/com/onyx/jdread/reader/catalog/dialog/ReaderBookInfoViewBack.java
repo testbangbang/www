@@ -12,4 +12,5 @@ public interface ReaderBookInfoViewBack {
     Dialog getContent();
     void updateView();
     void changeTab();
+    void updateAnnotation();
 }

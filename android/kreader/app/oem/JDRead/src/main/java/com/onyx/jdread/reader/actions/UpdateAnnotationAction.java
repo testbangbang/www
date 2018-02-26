@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.highlight.SelectionInfo;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.request.UpdateAnnotationRequest;
@@ -28,6 +29,7 @@ public class UpdateAnnotationAction extends BaseReaderAction {
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
                 if (baseCallback != null) {
                     baseCallback.onNext(null);
                 }
@@ -40,9 +42,6 @@ public class UpdateAnnotationAction extends BaseReaderAction {
 
             @Override
             public void onFinally() {
-                if (baseCallback != null) {
-                    baseCallback.onNext(null);
-                }
             }
         });
     }

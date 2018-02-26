@@ -177,7 +177,6 @@ public class LocalDataProvider implements DataProviderBase {
 
     public void updateAnnotation(final Annotation annotation) {
         annotation.save();
-        ContentUtils.update(OnyxAnnotationProvider.CONTENT_URI, annotation);
     }
 
     public void deleteAnnotation(final Annotation annotation) {

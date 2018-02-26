@@ -51,7 +51,6 @@ import com.neverland.engbook.level1.AlFilesZIP;
 import com.neverland.engbook.level1.JEBFilesEPUB;
 import com.neverland.engbook.level1.JEBFilesZIP;
 import com.neverland.engbook.level2.AlFormat;
-
 import com.neverland.engbook.level2.AlFormatCHM;
 import com.neverland.engbook.level2.AlFormatCOMICS;
 import com.neverland.engbook.level2.AlFormatDOC;
@@ -2728,7 +2727,6 @@ public class AlBookEng{
 
 		{
 			AlFormat fmt = null;
-
 			if (AlFormatCHM.isCHM(activeFile)) {
 				fmt = new AlFormatCHM();
 			} else if (AlFormatFB3.isFB3(activeFile)) {
@@ -2737,8 +2735,11 @@ public class AlBookEng{
 				fmt = new AlFormatMOBI();
 			} else if (AlFormatEPUB.isEPUB(activeFile)) {
 				fmt = new AlFormatEPUB();
-			} else if (AlFormatDOCX.isDOCX(activeFile) || AlFormatDOCX.isDOCX_XML(activeFile) > 0) {
+			} else if(JEBFormatEPUB.isJEB(activeFile)){
+			    fmt = new JEBFormatEPUB();
+		    }else if (AlFormatDOCX.isDOCX(activeFile) || AlFormatDOCX.isDOCX_XML(activeFile) > 0) {
 				fmt = new AlFormatDOCX();
+				profiles.chinezeFormatting = 1;
 			} else if (AlFormatDOC.isDOC(activeFile)) {
 				fmt = new AlFormatDOC();
 			} else if (AlFormatODT.isODT(activeFile)) {
@@ -2947,6 +2948,7 @@ public class AlBookEng{
 		openState.incState();		
 
 		threadData.param_char1 = path;
+		threadData.syncLoading = engOptions.syncLoading;
 		AlThreadData.startThread(threadData, TAL_THREAD_TASK.CREATEDEBUG, engOptions.runInOneThread);
 		return TAL_RESULT.OK;
 	}
@@ -2978,6 +2980,7 @@ public class AlBookEng{
 
 			threadData.param_void1 = bookOptions;
 			threadData.param_char1 = fName;
+			threadData.syncLoading = engOptions.syncLoading;
 			AlThreadData.startThread(threadData, TAL_THREAD_TASK.OPENBOOK, engOptions.runInOneThread);
 			return TAL_RESULT.OK;
 		}
@@ -3396,7 +3399,7 @@ public class AlBookEng{
 					vP = 0;
 				} else
 				if (preferences.chinezeFormatting) {
-					vE = 8 * 2;
+					vE = profiles.chinezeFormatting * 2;
 					vP = 0;
 				}
             } else
