@@ -147,9 +147,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="center|right"
             android:layout_marginRight="20dp"
-            android:padding="5dp"
+            android:padding="13dp"
             android:text="@{readerBookInfoModel.pageInfo}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
