@@ -435,6 +435,7 @@
     <string name="close_history">Close History</string>
     <string name="delete_history">Delete History</string>
     <string name="searching" formatted="false">Searching %d/%d</string>
+    <string name="reader_searching">Please Waiting...</string>
     <string name="no_more_search_results">No more search results</string>
     <string name="page" formatted="false">page %d</string>
     <string name="search_end">Have finished searching</string>
@@ -503,4 +504,5 @@
     <string name="bookmark_none">There is no bookmark</string>
     <string name="note_none">No notes</string>
     <string name="catalog_none">The catalog is empty</string>
+    <string name="search_result_none">Search result empty</string>
 </resources>

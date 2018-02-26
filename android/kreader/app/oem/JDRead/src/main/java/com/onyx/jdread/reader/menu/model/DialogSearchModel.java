@@ -35,6 +35,7 @@ public class DialogSearchModel {
     private ObservableBoolean dividerLine = new ObservableBoolean(false);
     private ObservableBoolean deleteInputWord = new ObservableBoolean(false);
     private ObservableBoolean totalPageShow = new ObservableBoolean(false);
+    public ObservableBoolean isEmpty = new ObservableBoolean(false);
 
     public ObservableBoolean getTotalPageShow() {
         return totalPageShow;
@@ -42,6 +43,14 @@ public class DialogSearchModel {
 
     public void setTotalPageShow(boolean totalPageShow) {
         this.totalPageShow.set(totalPageShow);
+    }
+
+    public ObservableBoolean getIsEmpty() {
+        return isEmpty;
+    }
+
+    public void setIsEmpty(boolean isEmpty) {
+        this.isEmpty.set(isEmpty);
     }
 
     public ObservableBoolean getDeleteInputWord() {

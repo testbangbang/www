@@ -309,9 +309,10 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         public void OnNext(final List<ReaderSelection> results, int page) {
             updateSearchingText(page);
             if (results == null || results.size() < 1) {
+                binding.getDialogSearchModel().setIsEmpty(true);
                 return;
             }
-
+            binding.getDialogSearchModel().setIsEmpty(false);
             searchList.addAll(results);
             mergeSearchList();
             dialogSearchModel.setTotalPageShow(true);
@@ -340,6 +341,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         binding.searchRecyclerView.setCurrentPage(0);
         startPage = 0;
         readerDataHolder.getReaderUserDataInfo().saveSearchResults(null);
+        binding.getDialogSearchModel().setIsEmpty(false);
     }
 
     private void mergeSearchList() {
