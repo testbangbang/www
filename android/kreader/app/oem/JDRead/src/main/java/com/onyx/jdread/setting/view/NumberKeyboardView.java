@@ -24,6 +24,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Created by suicheng on 2018/2/7.
  */
@@ -41,10 +47,9 @@ public class NumberKeyboardView extends KeyboardView implements KeyboardView.OnK
     private Rect customDrawRect;
     private Paint customTextPaint;
     private float customTextY = -1;
-    private final static int DELETE_WHAT = 0x1000;
 
     private OnKeyboardListener keyboardListener;
-    private ScheduledExecutorService scheduledExecutor;
+    private Disposable disposable;
 
     public NumberKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -227,32 +232,24 @@ public class NumberKeyboardView extends KeyboardView implements KeyboardView.OnK
     }
 
     private void startDelete() {
-        scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutor.scheduleWithFixedDelay(new Runnable() {
-            @Override
-            public void run() {
-                handler.sendEmptyMessage(DELETE_WHAT);
-            }
-        }, 0, 100, TimeUnit.MILLISECONDS);
+        disposable = Observable.interval(100, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        if (keyboardListener != null) {
+                            keyboardListener.onDeleteKeyEvent();
+                        }
+                    }
+                });
     }
 
     private void stopDelete() {
-        if (scheduledExecutor != null) {
-            scheduledExecutor.shutdown();
-            scheduledExecutor = null;
+        if (disposable != null) {
+            disposable.dispose();
         }
     }
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == DELETE_WHAT) {
-                if (keyboardListener != null) {
-                    keyboardListener.onDeleteKeyEvent();
-                }
-            }
-        }
-    };
 
     public void setCustomDrawable(Drawable drawable) {
         this.customDrawable = drawable;
