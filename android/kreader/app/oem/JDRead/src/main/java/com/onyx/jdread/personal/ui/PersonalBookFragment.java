@@ -128,7 +128,7 @@ public class PersonalBookFragment extends BaseFragment {
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.personalBookTitle.setTitleModel(titleModel);
         personalBookModel = PersonalDataBundle.getInstance().getPersonalBookModel();
-        setFilter(R.string.the_default);
+        setFilter(R.string.all);
     }
 
     private void initListener() {
@@ -265,7 +265,7 @@ public class PersonalBookFragment extends BaseFragment {
 
     private void setFilter(int id) {
         switch (id) {
-            case R.string.the_default:
+            case R.string.all:
                 binding.setFilterName(JDReadApplication.getInstance().getResources().getString(R.string.all));
                 queryAllCloud();
                 break;
@@ -337,6 +337,10 @@ public class PersonalBookFragment extends BaseFragment {
     }
 
     private void queryAllCloud() {
+        if (allBook != null && allBook.size() > 0) {
+            setAdapterData(allBook);
+            return;
+        }
         final QueryAllCloudMetadataAction queryAction = new QueryAllCloudMetadataAction();
         queryAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override

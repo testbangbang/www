@@ -74,6 +74,7 @@ public class ReadPreferenceFragment extends BaseFragment {
         binding.readPreferenceRecycler.addItemDecoration(decoration);
         readPreferenceAdapter = new ReadPreferenceAdapter();
         binding.readPreferenceRecycler.setAdapter(readPreferenceAdapter);
+        binding.readPreferenceRecycler.setPageTurningCycled(true);
     }
 
     private void initData() {
@@ -85,6 +86,10 @@ public class ReadPreferenceFragment extends BaseFragment {
         if (datas != null && datas.size() > 0) {
             datas.clear();
         }
+        getPreferences();
+    }
+
+    private void getPreferences() {
         final GetReadPreferenceAction getReadPreferenceAction = new GetReadPreferenceAction();
         getReadPreferenceAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
@@ -136,6 +141,8 @@ public class ReadPreferenceFragment extends BaseFragment {
                     Integer selected = items.get(j);
                     if (categoryBean.id == selected) {
                         categoryBean.isSelect = true;
+                    } else {
+                        categoryBean.isSelect = false;
                     }
                 }
             }
@@ -177,7 +184,7 @@ public class ReadPreferenceFragment extends BaseFragment {
             public void onClick(View v) {
                 if (datas.size() == SUB_CATEGORY) {
                     final List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> selectedBean = readPreferenceAdapter.getSelectedBean();
-                    if (selectedBean != null && selectedBean.size() > 0) {
+                    if (selectedBean != null) {
                         final SetReadPreferenceAction action = new SetReadPreferenceAction(selectedBean);
                         action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
                             @Override
@@ -205,7 +212,7 @@ public class ReadPreferenceFragment extends BaseFragment {
     }
 
     private void backToCategory() {
-        readPreferenceAdapter.setData(datas.get(SUB_CATEGORY - 1));
+        getPreferences();
         datas.remove(SUB_CATEGORY);
     }
 }

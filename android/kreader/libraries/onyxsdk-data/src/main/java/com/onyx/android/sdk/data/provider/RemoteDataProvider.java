@@ -79,6 +79,11 @@ public class RemoteDataProvider implements DataProviderBase {
     }
 
     @Override
+    public Metadata findMetadataByCloudId(String cloudId) {
+        return null;
+    }
+
+    @Override
     public void saveMetadata(Context context, Metadata metadata) {
         metadata.beforeSave();
         Metadata findMeta = findMetadataByHashTag(context, metadata.getNativeAbsolutePath(), metadata.getHashTag());
