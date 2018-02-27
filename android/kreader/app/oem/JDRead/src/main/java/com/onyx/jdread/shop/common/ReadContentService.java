@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.common;
 
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtAndUnlimitedBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.CheckGiftBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
@@ -129,6 +130,9 @@ public interface ReadContentService {
 
     @GET(CloudApiContext.User.USER_GIFT)
     Call<GiftBean> getGiftInfo(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.User.CHECK_GIFT)
+    Call<CheckGiftBean> checkGift(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.RECOMMEND_USER)
     Call<RecommendUserBean> recommendUser(@QueryMap Map<String, String> map);

@@ -17,6 +17,8 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.RefreshBinding;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.setting.adapter.RefreshAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.event.SpeedRefreshChangeEvent;
@@ -88,6 +90,7 @@ public class RefreshFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 JDPreferenceManager.setBooleanValue(R.string.speed_refresh_key, isChecked);
+                ToastUtil.showToast(isChecked ? ResManager.getString(R.string.speed_refresh_is_opened) : ResManager.getString(R.string.speed_refresh_is_closed));
             }
         });
 

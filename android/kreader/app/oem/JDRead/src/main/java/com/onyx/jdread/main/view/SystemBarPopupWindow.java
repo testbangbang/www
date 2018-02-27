@@ -87,7 +87,7 @@ public class SystemBarPopupWindow extends PopupWindow {
 
         public SystemBarPopupModel() {
             updateWifi();
-            speedRefresh.set(!EpdController.inSystemFastMode());
+            updateRefreshMode();
         }
 
         public void updateWifi() {
@@ -112,6 +112,10 @@ public class SystemBarPopupWindow extends PopupWindow {
             speedRefresh.set(useFastMode);
             JDPreferenceManager.setBooleanValue(R.string.speed_refresh_key, useFastMode);
             SettingBundle.getInstance().getEventBus().post(new SpeedRefreshChangeEvent());
+        }
+
+        public void updateRefreshMode() {
+            speedRefresh.set(JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false));
         }
     }
 }
