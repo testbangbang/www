@@ -23,6 +23,6 @@ public class UpdateViewPageRequest extends ReaderBaseRequest {
     }
 
     public void updatePageView() {
-        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo(),null);
+        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo());
     }
 }
