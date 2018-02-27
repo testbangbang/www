@@ -17,6 +17,11 @@ public class DocumentInfo {
     private String password;
     private int messageId = Integer.MAX_VALUE;
     private SecurityInfo securityInfo;
+    private boolean dryRun = false;
+
+    public void setSecurityInfo(SecurityInfo securityInfo) {
+        this.securityInfo = securityInfo;
+    }
 
     public static class SecurityInfo {
         public static final String KEY = "key";
@@ -89,6 +94,14 @@ public class DocumentInfo {
 
     public void setMessageId(int messageId) {
         this.messageId = messageId;
+    }
+
+    public boolean isDryRun() {
+        return dryRun;
+    }
+
+    public void setDryRun(boolean dryrun) {
+        this.dryRun = dryrun;
     }
 
     public void documentInfoToIntent(Intent intent){

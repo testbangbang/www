@@ -29,30 +29,77 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
                 style="@style/ReaderBookInfoTabStyle"
+                android:layout_gravity="center"
                 android:onClick="@{()->readerBookInfoModel.onTabCatalogClick()}"
-                android:text="@string/reader_menu_catalog"
-                android:textSize="@{readerBookInfoModel.currentTab == ReaderBookInfoDialogConfig.CATALOG_MODE?@dimen/level_large_heading_font:@dimen/level_two_heading_font}" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/reader_menu_catalog"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="@{readerBookInfoModel.currentTab == ReaderBookInfoDialogConfig.CATALOG_MODE?@android:color/black:@android:color/white}" />
+            </LinearLayout>
 
             <View style="@style/ReaderVerticalSeparationLine" />
 
-            <TextView
+            <LinearLayout
                 style="@style/ReaderBookInfoTabStyle"
+                android:layout_gravity="center"
                 android:onClick="@{()->readerBookInfoModel.onTabBookmarkClick()}"
-                android:text="@string/reader_book_info_bookmark"
-                android:textSize="@{readerBookInfoModel.currentTab == ReaderBookInfoDialogConfig.BOOKMARK_MODE?@dimen/level_large_heading_font:@dimen/level_two_heading_font}" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/reader_book_info_bookmark"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="@{readerBookInfoModel.currentTab == ReaderBookInfoDialogConfig.BOOKMARK_MODE?@android:color/black:@android:color/white}" />
+            </LinearLayout>
 
             <View style="@style/ReaderVerticalSeparationLine" />
 
-            <TextView
+            <LinearLayout
                 style="@style/ReaderBookInfoTabStyle"
+                android:layout_gravity="center"
                 android:onClick="@{()->readerBookInfoModel.onTabNoteClick()}"
-                android:text="@string/reader_book_info_note"
-                android:textSize="@{readerBookInfoModel.currentTab == ReaderBookInfoDialogConfig.NOTE_MODE?@dimen/level_large_heading_font:@dimen/level_two_heading_font}" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/reader_book_info_note"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="@{readerBookInfoModel.currentTab == ReaderBookInfoDialogConfig.NOTE_MODE?@android:color/black:@android:color/white}" />
+            </LinearLayout>
         </LinearLayout>
 
         <View
@@ -71,7 +118,16 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_dialog_empty_view" />
+                android:layout_marginBottom="10dp"
+                android:src="@mipmap/ic_none" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{readerBookInfoModel.noneString}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font"
+                android:layout_marginBottom="50dp"/>
         </LinearLayout>
 
         <com.onyx.android.sdk.ui.view.TreeRecyclerView
@@ -100,9 +156,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="center|right"
             android:layout_marginRight="20dp"
-            android:padding="5dp"
+            android:padding="13dp"
             android:text="@{readerBookInfoModel.pageInfo}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />

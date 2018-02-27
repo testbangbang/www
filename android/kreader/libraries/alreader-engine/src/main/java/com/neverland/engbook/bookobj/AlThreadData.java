@@ -29,6 +29,7 @@ class AlThreadData {
 	public volatile TAL_NOTIFY_RESULT			result = TAL_NOTIFY_RESULT.ERROR;
 
 	public volatile boolean						_isObjOpen = false;
+	public volatile boolean 					syncLoading = false;
 	
 	public void clearAll() {
 		synchronized (lock) { 
@@ -267,14 +268,14 @@ class AlThreadData {
 
 						synchronized (this.book_object) {
 							this.clearWork0();
-							startThread(param, TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL, false);
+							startThread(param, TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL, syncLoading);
 						}
 
 				} else {
 					this.clearWork0();
 					synchronized (this.book_object) {
 						this.clearWork0();
-						startThread(param, TAL_THREAD_TASK.PARSER_AFTER_DATA, false);
+						startThread(param, TAL_THREAD_TASK.PARSER_AFTER_DATA, syncLoading);
 					}
 				}
 			} else {

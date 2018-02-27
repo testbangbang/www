@@ -20,10 +20,12 @@ import com.onyx.android.sdk.device.RK3026Device;
 public class ReaderEpdHelper {
 
     private static final String TAG = ReaderEpdHelper.class.getSimpleName();
+    public static final int DEFAULT_GC_INTERVAL = 10;
 
     private int gcInterval;
     private int refreshCount;
     private boolean inFastUpdateMode = false;
+    private boolean useDefaultUpdate = false;
 
     public ReaderEpdHelper(final Context context) {
         prepareInitialUpdate(context);
@@ -45,8 +47,16 @@ public class ReaderEpdHelper {
 
     public void prepareInitialUpdate(final Context context) {
         // read init value from context.
-        gcInterval = 10;
+        gcInterval = DEFAULT_GC_INTERVAL;
         refreshCount = gcInterval;
+    }
+
+    public boolean isUseDefaultUpdate() {
+        return useDefaultUpdate;
+    }
+
+    public void setUseDefaultUpdate(boolean useDefaultUpdate) {
+        this.useDefaultUpdate = useDefaultUpdate;
     }
 
     public int getGcInterval() {
@@ -59,7 +69,11 @@ public class ReaderEpdHelper {
     }
 
     public void applyWithGCInterval(View view) {
-        applyWithGCIntervalWitRegal(view);
+        if (isUseDefaultUpdate()) {
+            resetUpdateMode(view);
+        } else {
+            applyWithGCIntervalWitRegal(view);
+        }
     }
 
     public void applyWithGCIntervalWitRegal(View view) {

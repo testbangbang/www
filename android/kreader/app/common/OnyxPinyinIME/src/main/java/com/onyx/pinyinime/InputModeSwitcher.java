@@ -538,7 +538,7 @@ public class InputModeSwitcher {
         case EditorInfo.TYPE_CLASS_NUMBER:
         case EditorInfo.TYPE_CLASS_PHONE:
         case EditorInfo.TYPE_CLASS_DATETIME:
-            english = true;
+            //english = true;
             break;
         case EditorInfo.TYPE_CLASS_TEXT:
             int v = editorInfo.inputType & EditorInfo.TYPE_MASK_VARIATION;

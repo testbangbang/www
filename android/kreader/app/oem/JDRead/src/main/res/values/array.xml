@@ -76,7 +76,7 @@
     </string-array>
 
     <string-array name="book_filter">
-        <item>@string/the_default</item>
+        <item>@string/all</item>
         <item>@string/have_bought</item>
         <item>@string/read_vip</item>
         <item>@string/self_import</item>

@@ -23,7 +23,8 @@ public class SwitchNavigationToArticleAction extends BaseReaderAction {
         RectF limit = new RectF(0, 0, 0, 0);
         args.columnsLeftToRight(NavigationArgs.Type.ALL, 2, 2, limit);
         ChangeLayoutParameter parameter = new ChangeLayoutParameter(PageConstants.SINGLE_PAGE_NAVIGATION_LIST, args);
-        final ChangeLayoutRequest request = new ChangeLayoutRequest(readerDataHolder.getReader(), parameter, null);
+        final ChangeLayoutRequest request = new ChangeLayoutRequest(readerDataHolder.getReader(), parameter, null,
+                readerDataHolder.getCurrentPageName());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

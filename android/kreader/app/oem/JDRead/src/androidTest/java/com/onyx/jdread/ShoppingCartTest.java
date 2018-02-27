@@ -2,20 +2,11 @@ package com.onyx.jdread;
 
 import android.test.ApplicationTestCase;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
-import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class ShoppingCartTest extends ApplicationTestCase<JDReadApplication> {
@@ -25,7 +16,7 @@ public class ShoppingCartTest extends ApplicationTestCase<JDReadApplication> {
         super(JDReadApplication.class);
     }
 
-    public void testGetBookDetail() throws Exception {
+    public void testAddOrDeleteCart() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         AddOrDeleteCartAction addOrDeleteCartAction = new AddOrDeleteCartAction(new String[]{"30310588"}, Constants.CART_TYPE_ADD);
         addOrDeleteCartAction.execute(ShopDataBundle.getInstance(),new RxCallback<AddOrDeleteCartAction>() {
@@ -45,35 +36,4 @@ public class ShoppingCartTest extends ApplicationTestCase<JDReadApplication> {
         });
         countDownLatch.await();
     }
-
-    private String getBookCartJsonBody(List<Map<String, String>> list) {
-        String result = JSON.toJSONString(list);
-        return new String("{\"" + CloudApiContext.GotoOrder.THESKUS + "\":" + result + "}");
-    }
-
-    private String getShoppingCartBody(String bookList, String type) {
-        JSONObject json = new JSONObject();
-        try {
-            json.put(CloudApiContext.NewBookDetail.BOOK_LIST, bookList);
-            json.put(CloudApiContext.NewBookDetail.TYPE, type);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return json.toString();
-    }
-
-    private List<Map<String, String>> getList(String[] bookIds) {
-        List<Map<String, String>> list = new ArrayList<>();
-        if (bookIds != null && bookIds.length > 0) {
-            for (String bookId : bookIds) {
-                Map<String, String> map = new HashMap<>();
-                map.put(CloudApiContext.GotoOrder.ID, bookId);
-                map.put(CloudApiContext.GotoOrder.NUM, Constants.CART_TYPE_GET);
-                list.add(map);
-            }
-        }
-        return list;
-    }
-
-
 }

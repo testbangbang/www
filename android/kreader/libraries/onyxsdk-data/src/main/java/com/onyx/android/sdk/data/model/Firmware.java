@@ -38,6 +38,7 @@ public class Firmware extends BaseData {
         Firmware fw = new Firmware();
         fw.model = Build.MODEL;
         fw.fingerprint = Build.FINGERPRINT;
+        fw.brand = Build.BRAND;
         fw.updateReleaseBuildParameters();
         return fw;
     }

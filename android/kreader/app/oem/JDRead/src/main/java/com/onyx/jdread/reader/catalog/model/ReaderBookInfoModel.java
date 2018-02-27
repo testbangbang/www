@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DateTimeUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.catalog.event.TabBookmarkClickEvent;
@@ -33,6 +34,7 @@ import java.util.List;
 
 public class ReaderBookInfoModel {
     private ObservableField<String> pageInfo = new ObservableField<>();
+    private ObservableField<String> noneString = new ObservableField<>();
     private ObservableInt currentTab = new ObservableInt(ReaderBookInfoDialogConfig.CATALOG_MODE);
     public final ObservableList<BookmarkModel> bookmarks = new ObservableArrayList<>();
     public final ObservableList<NoteModel> notes = new ObservableArrayList<>();
@@ -42,6 +44,14 @@ public class ReaderBookInfoModel {
 
     public ReaderBookInfoModel(EventBus eventBus) {
         this.eventBus = eventBus;
+    }
+
+    public ObservableField<String> getNoneString() {
+        return noneString;
+    }
+
+    public void setNoneString(String noneString) {
+        this.noneString.set(noneString);
     }
 
     public void setRootNodes(ArrayList<TreeRecyclerView.TreeNode> rootNodes) {
@@ -97,45 +107,55 @@ public class ReaderBookInfoModel {
 
     public void setNotes(List<Annotation> annotationList) {
         String content = ResManager.getString(R.string.reader_content);
+        String note = ResManager.getString(R.string.reader_note);
+        String none = ResManager.getString(R.string.security_none);
+        this.notes.clear();
         for (Annotation annotation : annotationList) {
             NoteModel noteModel = new NoteModel();
             noteModel.setChapter(ReaderViewUtil.trim(annotation.getChapterName()));
-            noteModel.setNote(annotation.getNote());
+            if(StringUtils.isNullOrEmpty(annotation.getNote())){
+                noteModel.setNote(note + none);
+            }else {
+                noteModel.setNote(note + annotation.getNote());
+            }
             noteModel.setContent(content + annotation.getQuote());
             noteModel.setPosition(annotation.getPosition());
-            Date date = new Date(annotation.getCreatedAt().getTime());
-            noteModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
+            Date date = new Date(annotation.getUpdatedAt().getTime());
+            noteModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_2));
             this.notes.add(noteModel);
         }
     }
 
     public void onTabCatalogClick() {
-        setCurrentTab(ReaderBookInfoDialogConfig.CATALOG_MODE);
-        getEventBus().post(new TabCatalogClickEvent());
         if (rootNodes.size() > 0) {
             setIsEmpty(false);
         } else {
             setIsEmpty(true);
+            setNoneString(ResManager.getString(R.string.catalog_none));
         }
+        setCurrentTab(ReaderBookInfoDialogConfig.CATALOG_MODE);
+        getEventBus().post(new TabCatalogClickEvent());
     }
 
     public void onTabBookmarkClick() {
-        setCurrentTab(ReaderBookInfoDialogConfig.BOOKMARK_MODE);
-        getEventBus().post(new TabBookmarkClickEvent());
         if (bookmarks.size() > 0) {
             setIsEmpty(false);
         } else {
             setIsEmpty(true);
+            setNoneString(ResManager.getString(R.string.bookmark_none));
         }
+        setCurrentTab(ReaderBookInfoDialogConfig.BOOKMARK_MODE);
+        getEventBus().post(new TabBookmarkClickEvent());
     }
 
     public void onTabNoteClick() {
-        setCurrentTab(ReaderBookInfoDialogConfig.NOTE_MODE);
-        getEventBus().post(new TabNoteClickEvent());
         if (notes.size() > 0) {
             setIsEmpty(false);
         } else {
             setIsEmpty(true);
+            setNoneString(ResManager.getString(R.string.note_none));
         }
+        setCurrentTab(ReaderBookInfoDialogConfig.NOTE_MODE);
+        getEventBus().post(new TabNoteClickEvent());
     }
 }

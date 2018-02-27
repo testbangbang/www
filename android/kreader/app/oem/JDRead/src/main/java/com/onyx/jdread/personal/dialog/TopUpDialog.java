@@ -1,15 +1,18 @@
 package com.onyx.jdread.personal.dialog;
 
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RadioGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -18,6 +21,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogTopUpBinding;
 import com.onyx.jdread.library.utils.QRCodeUtil;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.action.GetPayQRCodeAction;
 import com.onyx.jdread.personal.action.GetRechargeStatusAction;
@@ -29,13 +33,29 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargeStatusBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.event.GetRechargePollEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.shop.action.PayByReadBeanAction;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.event.BuyBookSuccessEvent;
+import com.onyx.jdread.shop.event.ConfirmPayClickEvent;
+import com.onyx.jdread.shop.model.PayOrderViewModel;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by li on 2017/12/29.
@@ -46,6 +66,7 @@ public class TopUpDialog extends DialogFragment {
     private TopUpAdapter topUpAdapter;
     private GetRechargePollEvent getRechargePollEvent;
     private static final int DEFAULT_POLL_TIME = 300;
+    private Disposable countDownDisposable;
 
     @Nullable
     @Override
@@ -90,6 +111,47 @@ public class TopUpDialog extends DialogFragment {
     }
 
     private void initData() {
+        Bundle arguments = getArguments();
+        PayOrderViewModel payOrderViewModel = getPayOrderViewModel();
+        if (arguments != null) {
+            int payDialogType = arguments.getInt(Constants.PAY_DIALOG_TYPE);
+            if (payDialogType == Constants.PAY_DIALOG_TYPE_PAY_ORDER) {
+                GetOrderInfoResultBean.DataBean orderInfo = (GetOrderInfoResultBean.DataBean) arguments.getSerializable(Constants.ORDER_INFO);
+                payOrderViewModel.title.set(ResManager.getString(R.string.payment_order));
+                payOrderViewModel.setOrderInfo(orderInfo);
+                payOrderViewModel.setUserInfo(PersonalDataBundle.getInstance().getUserInfo());
+                binding.setOrderModel(payOrderViewModel);
+                binding.setUserInfo(PersonalDataBundle.getInstance().getUserInfo());
+                changePayButtonState(!orderInfo.need_recharge);
+                binding.payOrder.paymentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                        if (R.id.payment_read_bean == checkedId) {
+                            changePayButtonState(!getPayOrderViewModel().getOrderInfo().need_recharge);
+                        } else {
+                            changePayButtonState(true);
+                        }
+                    }
+                });
+            } else {
+                setVisible(R.id.dialog_top_up_detail_layout);
+                binding.setOrderModel(payOrderViewModel);
+                getTopUpValue();
+            }
+        }
+    }
+
+    private void changePayButtonState(boolean showPayStatus) {
+        PayOrderViewModel payOrderViewModel = getPayOrderViewModel();
+        payOrderViewModel.confirmButtonText.set(showPayStatus ? ResManager.getString(R.string.dialog_pay_order_confirm_pay) :
+                ResManager.getString(R.string.pay_dialog_insufficient_balance));
+    }
+
+    private PayOrderViewModel getPayOrderViewModel() {
+        return ShopDataBundle.getInstance().getPayOrderViewModel();
+    }
+
+    private void getTopUpValue() {
         GetTopUpValueAction action = new GetTopUpValueAction();
         action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
@@ -121,7 +183,11 @@ public class TopUpDialog extends DialogFragment {
         binding.dialogTopUpClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                if (binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode.getVisibility() == View.VISIBLE) {
+                    setVisible(R.id.dialog_top_up_detail_layout);
+                } else {
+                    dismiss();
+                }
             }
         });
 
@@ -152,6 +218,13 @@ public class TopUpDialog extends DialogFragment {
         binding.dialogTopUpDetailLayout.dialogTopUpDetail.setVisibility(R.id.dialog_top_up_detail_layout == id ? View.VISIBLE : View.GONE);
         binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode.setVisibility(R.id.dialog_top_up_qr_code_layout == id ? View.VISIBLE : View.GONE);
         binding.dialogTopUpSuccessLayout.dialogTopUpSuccess.setVisibility(R.id.dialog_top_up_success_layout == id ? View.VISIBLE : View.GONE);
+        binding.payOrder.dialogPayOrder.setVisibility(R.id.dialog_pay_order == id ? View.VISIBLE : View.GONE);
+        if (R.id.dialog_pay_order == id) {
+            getPayOrderViewModel().title.set(ResManager.getString(R.string.payment_order));
+        }
+        if (R.id.dialog_top_up_detail_layout == id) {
+            getPayOrderViewModel().title.set(ResManager.getString(R.string.top_up));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -167,5 +240,74 @@ public class TopUpDialog extends DialogFragment {
                 }
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConfirmPayClickEvent(ConfirmPayClickEvent event) {
+        int checkedRadioButtonId = binding.payOrder.paymentRadioGroup.getCheckedRadioButtonId();
+        if (checkedRadioButtonId == R.id.payment_read_bean) {
+            if (getPayOrderViewModel().getOrderInfo().need_recharge) {
+                setVisible(R.id.dialog_top_up_detail_layout);
+            } else {
+                payByReadBean();
+            }
+        } else {
+            payByCash();
+        }
+    }
+
+    private void payByCash() {
+        String url = CloudApiContext.getJDBooxBaseUrl() + CloudApiContext.ReadBean.PAY_BY_CASH + File.separator + "?" + CloudApiContext.ReadBean.PAY_TOKEN + "=";
+    }
+
+    private void payByReadBean() {
+        String token = getPayOrderViewModel().getOrderInfo().token;
+        PayByReadBeanAction payByReadBeanAction = new PayByReadBeanAction(token);
+        payByReadBeanAction.execute(ShopDataBundle.getInstance(), new RxCallback<PayByReadBeanAction>() {
+            @Override
+            public void onNext(PayByReadBeanAction action) {
+                BaseResultBean resultBean = action.getResultBean();
+                if (resultBean != null) {
+                    if (resultBean.result_code == Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
+                        onPaySuccess();
+                    } else if (resultBean.result_code == Constants.RESULT_PAY_ORDER_INSUFFICIENT_BALANCE) {
+                        getPayOrderViewModel().getOrderInfo().need_recharge = true;
+                        changePayButtonState(false);
+                    } else {
+                        // TODO pay failure
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+        });
+    }
+
+    private void onPaySuccess() {
+        getPayOrderViewModel().confirmButtonText.set(ResManager.getString(R.string.pay_success));
+        binding.payOrder.confirmPay.setBackgroundDrawable(null);
+        binding.payOrder.confirmPay.setEnabled(false);
+        int delayTime = ResManager.getInteger(R.integer.delay_pay_success_close_pay_dialog);
+        Observable<Long> timer = Observable.timer(delayTime, TimeUnit.SECONDS);
+        countDownDisposable = timer.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        getPayOrderViewModel().getEventBus().post(new BuyBookSuccessEvent(""));
+                        dismiss();
+                    }
+                });
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (countDownDisposable != null) {
+            countDownDisposable.dispose();
+        }
     }
 }

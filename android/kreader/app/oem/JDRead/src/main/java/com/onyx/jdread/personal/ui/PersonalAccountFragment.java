@@ -7,31 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalAccountBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
-import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.adapter.PersonalAccountAdapter;
-import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.dialog.TopUpDialog;
 import com.onyx.jdread.personal.event.ConsumptionRecordEvent;
-import com.onyx.jdread.personal.event.FiftyYuanEvent;
-import com.onyx.jdread.personal.event.FiveHundredYuanEvent;
-import com.onyx.jdread.personal.event.HundredYuanEvent;
-import com.onyx.jdread.personal.event.OneYuanEvent;
 import com.onyx.jdread.personal.event.PaidRecordEvent;
-import com.onyx.jdread.personal.event.PointsForEvent;
 import com.onyx.jdread.personal.event.ReadVipEvent;
-import com.onyx.jdread.personal.event.TenYuanEvent;
 import com.onyx.jdread.personal.event.TopUpEvent;
-import com.onyx.jdread.personal.event.TwoHundredYuanEvent;
 import com.onyx.jdread.personal.model.PersonalAccountModel;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
@@ -40,9 +31,6 @@ import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by li on 2017/12/29.
@@ -101,6 +89,9 @@ public class PersonalAccountFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTopUpEvent(TopUpEvent event) {
         TopUpDialog dialog = new TopUpDialog();
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.PAY_DIALOG_TYPE, Constants.PAY_DIALOG_TYPE_TOP_UP);
+        dialog.setArguments(bundle);
         dialog.show(getActivity().getFragmentManager(), "");
     }
 

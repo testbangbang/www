@@ -151,6 +151,14 @@ public class ReaderTextModel {
         eventBus.post(new ReaderSettingMenuItemCustomizeEvent());
     }
 
+    public void onPresetItemClick(){
+        settingInfo.settingType = ReaderConfig.SETTING_TYPE_PRESET;
+        currentSettingType.set(settingInfo.settingType);
+        ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
+        event.styleIndex = settingInfo.settingStyle;
+        eventBus.post(event);
+    }
+
     public void onTypefaceOneClick() {
         if (setCurrentTypeface(TypefaceOne)) {
             setTypeface(ReaderConfig.Typeface.TYPEFACE_ONE);

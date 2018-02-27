@@ -3,6 +3,9 @@
 
     <data class="ItemGiftCenterBinding">
 
+        <variable
+            name="bean"
+            type="com.onyx.jdread.personal.cloud.entity.jdbean.GiftDetailBean"/>
     </data>
 
     <LinearLayout
@@ -21,7 +24,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sdjgeaorheoaihg"
+                android:text="@{bean.packageName}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
@@ -31,7 +34,7 @@
                 android:layout_marginTop="@dimen/item_gift_center_detail_margin_top"
                 android:ellipsize="middle"
                 android:maxLines="2"
-                android:text="ghaiopjghaig"
+                android:text="@{bean.packageDetail}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
         </LinearLayout>
@@ -41,6 +44,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle_stroke_corners"
             android:gravity="center"
+            android:onClick="@{()->bean.onReceivePackage()}"
             android:padding="@dimen/receive_padding"
             android:text="@string/receive"
             android:textColor="@android:color/black"

@@ -5,11 +5,14 @@ import android.test.ApplicationTestCase;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.jdread.personal.cloud.entity.jdbean.CheckGiftBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalNoteBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendUserBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
+import com.onyx.jdread.personal.request.cloud.RxCheckGiftRequest;
 import com.onyx.jdread.personal.request.cloud.RxGetBoughtAndUnlimitedRequest;
 import com.onyx.jdread.personal.request.cloud.RxGetGiftInfoRequest;
 import com.onyx.jdread.personal.request.cloud.RxGetPersonalNotesRequest;
@@ -175,12 +178,38 @@ public class PersonalTest extends ApplicationTestCase<JDReadApplication> {
         countDownLatch.await();
     }
 
+    public void testCheckGift() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
+        baseInfo.setMac();
+        baseInfo.setSn();
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.CHECK_GIFT);
+        baseInfo.setSign(signValue);
+
+        final RxCheckGiftRequest rq = new RxCheckGiftRequest();
+        rq.setBaseInfo(baseInfo);
+        rq.execute(new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                CheckGiftBean checkGiftBean = rq.getCheckGiftBean();
+                assertNotNull(checkGiftBean);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                assertNull(throwable);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
     public void testGetGiftInfo() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        Map<String, String> map = new HashMap<>();
-        map.put("sn", "123");
-        baseInfo.addRequestParams(map);
+        baseInfo.setSn();
+        baseInfo.setMac();
         String signValue = baseInfo.getSignValue(CloudApiContext.User.USER_GIFT);
         baseInfo.setSign(signValue);
 

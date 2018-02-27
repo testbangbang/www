@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="orderModel"
+            type="com.onyx.jdread.shop.model.PayOrderViewModel" />
+
+        <import type="com.onyx.jdread.shop.utils.ViewHelper" />
+
+    </data>
+
+    <LinearLayout
+        android:id="@+id/dialog_pay_order"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/top_up_tips_margin_left"
+        android:layout_marginRight="@dimen/top_up_tips_margin_left"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/top_up_tips_margin_top"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{orderModel.orderInfo.desc}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dialog_pay_order_item_margin_top"
+                android:text="@{@string/dialog_pay_order_book_price(orderModel.orderInfo.pay_amount)}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dialog_pay_order_item_margin_top"
+                android:text="@{@string/dialog_pay_order_cur_balance(orderModel.orderInfo.yuedou_amount,orderModel.orderInfo.voucher_amount)}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dialog_pay_order_pay_type"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/font_size_15" />
+
+                <RadioGroup
+                    android:id="@+id/payment_radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/payment_read_bean"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dialog_pay_order_payment_bean_margin_left"
+                        android:checked="true"
+                        android:text="@string/read_bean"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_size_15" />
+
+                    <RadioButton
+                        android:id="@+id/payment_cash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dialog_pay_order_payment_cash_margin_left"
+                        android:text="@string/dialog_pay_order_cash"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_size_15" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/confirm_pay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dialog_pay_order_confirm_pay_margin_bottom"
+                android:layout_marginLeft="@dimen/dialog_pay_order_confirm_pay_margin_left"
+                android:layout_marginRight="@dimen/dialog_pay_order_confirm_pay_margin_left"
+                android:layout_marginTop="@dimen/dialog_pay_order_confirm_pay_margin_top"
+                android:background="@drawable/rectangle_stroke_round"
+                android:gravity="center"
+                android:onClick="@{()->orderModel.onConfirmPayClick()}"
+                android:padding="@dimen/dialog_pay_order_confirm_pay_padding"
+                android:text="@{orderModel.confirmButtonText}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

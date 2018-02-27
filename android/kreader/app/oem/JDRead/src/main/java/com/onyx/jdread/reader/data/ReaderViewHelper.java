@@ -14,6 +14,8 @@ import android.graphics.RectF;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
+import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
@@ -27,6 +29,7 @@ import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewConfig;
+import com.onyx.jdread.reader.epd.ReaderEpdHelper;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.util.TimeUtils;
@@ -79,11 +82,41 @@ public class ReaderViewHelper {
         try {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, readerViewInfo);
+            loadUserData(reader, readerUserDataInfo, readerViewInfo);
             renderAll(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo, readerViewInfo, readerSelectionManager);
 
             reader.getReaderHelper().saveToCache(context.renderingBitmap);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void loadUserData(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
+        readerUserDataInfo.setDocumentPath(reader.getDocumentInfo().getBookPath());
+        readerUserDataInfo.setDocumentCategory(reader.getReaderHelper().getDocumentOptions().getDocumentCategory());
+        readerUserDataInfo.setDocumentCodePage(reader.getReaderHelper().getDocumentOptions().getCodePage());
+        readerUserDataInfo.setChineseConvertType(reader.getReaderHelper().getDocumentOptions().getChineseConvertType());
+        readerUserDataInfo.setDocumentMetadata(reader.getReaderHelper().getDocumentMetadata());
+
+
+        boolean isSupportScale = reader.getReaderHelper().getRendererFeatures().supportScale();
+        String displayName = reader.getReaderHelper().getPlugin().displayName();
+        String md5 = reader.getReaderHelper().getDocumentMd5();
+        ReaderNavigator navigator = reader.getReaderHelper().getNavigator();
+
+        Context context = reader.getReaderHelper().getContext();
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageBookmarks(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageLinks(context, navigator, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageImages(context, navigator, readerViewInfo.getVisiblePages());
+        }
+
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageAnnotations(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
         }
     }
 
@@ -102,6 +135,7 @@ public class ReaderViewHelper {
         }
         try {
             drawPageContent(canvas, bitmap);
+            drawPageLinks(canvas, readerUserDataInfo, readerViewInfo);
             drawPageAnnotations(canvas, reader, readerUserDataInfo, readerViewInfo);
             drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
             drawSearchResults(canvas,reader,readerUserDataInfo,readerViewInfo);
@@ -137,6 +171,18 @@ public class ReaderViewHelper {
 
         paint.setColor(oldColor);
         paint.setStyle(oldStyle);
+    }
+
+    private void drawPageLinks(Canvas canvas, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
+        for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
+            if (!userDataInfo.hasPageLinks(pageInfo)) {
+                continue;
+            }
+            List<ReaderSelection> links = userDataInfo.getPageLinks(pageInfo);
+            for (ReaderSelection link : links) {
+                drawUnderLineHighlightRectangles(canvas, paint, link.getRectangles());
+            }
+        }
     }
 
     private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final Reader reader, final ReaderViewInfo readerViewInfo,
@@ -196,21 +242,37 @@ public class ReaderViewHelper {
     }
 
     private void drawPageAnnotations(Canvas canvas, Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
-        readerUserDataInfo.loadPageAnnotations(reader.getReaderHelper().getContext(),
-                reader.getReaderHelper().getRendererFeatures().supportScale(),
-                reader.getReaderHelper().getPlugin().displayName(),
-                reader.getReaderHelper().getDocumentMd5(),
-                reader.getReaderHelper().getNavigator(),
-                readerViewInfo.getVisiblePages());
+        if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
+            updateAnnotationRectangles(reader,readerViewInfo,readerUserDataInfo);
+        }
         for (PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
             if (readerUserDataInfo.hasPageAnnotations(pageInfo)) {
                 List<PageAnnotation> annotations = readerUserDataInfo.getPageAnnotations(pageInfo);
                 for (PageAnnotation annotation : annotations) {
-                    drawHighlightRectangles(reader.getReaderHelper().getContext(), canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getAnnotation().getRectangles()));
+                    drawHighlightRectangles(reader.getReaderHelper().getContext(), canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
                     String note = annotation.getAnnotation().getNote();
                     if (!StringUtils.isNullOrEmpty(note)){
-                        drawHighLightSign(reader.getReaderHelper().getContext(), canvas, paint, annotation.getAnnotation().getRectangles());
+                        drawHighLightSign(reader.getReaderHelper().getContext(), canvas, paint, annotation.getRectangles());
                     }
+                }
+            }
+        }
+    }
+
+    private void updateAnnotationRectangles(final Reader reader,final ReaderViewInfo readerViewInfo,final ReaderUserDataInfo readerUserDataInfo) {
+        for (PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
+            List<PageAnnotation> annotations = readerUserDataInfo.getPageAnnotations(pageInfo);
+            if (annotations == null) {
+                continue;
+            }
+            for (PageAnnotation annotation : annotations) {
+                ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
+                ReaderSelection selection = hitTestManager.selectOnScreen(pageInfo.getPosition(),
+                        annotation.getAnnotation().getLocationBegin(),
+                        annotation.getAnnotation().getLocationEnd());
+                annotation.getRectangles().clear();
+                if (selection != null) {
+                    annotation.getRectangles().addAll(selection.getRectangles());
                 }
             }
         }
@@ -280,6 +342,11 @@ public class ReaderViewHelper {
 
     private void applyEpdUpdate(final Reader reader, final SurfaceView view) {
         reader.getReaderEpdHelper().applyWithGCInterval(view);
+    }
+
+    private void resetEpdUpdate(final Reader reader,final SurfaceView view){
+        reader.getReaderEpdHelper().setGcInterval(ReaderEpdHelper.DEFAULT_GC_INTERVAL);
+        ReaderEpdHelper.resetUpdateMode(view);
     }
 
     private ColorMatrix getColorMatrix() {

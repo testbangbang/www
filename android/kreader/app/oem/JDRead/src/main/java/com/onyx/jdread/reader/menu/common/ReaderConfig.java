@@ -13,7 +13,7 @@ import java.util.Map;
  */
 
 public class ReaderConfig {
-    public static final String TYPEFACE_ROOT_PATH = "/sdcard/fonts/";
+    public static final String TYPEFACE_ROOT_PATH = "/system/fonts/";
     public static final int HIT_TEST_TEXT_STEP = 30;
 
     public static class Typeface {

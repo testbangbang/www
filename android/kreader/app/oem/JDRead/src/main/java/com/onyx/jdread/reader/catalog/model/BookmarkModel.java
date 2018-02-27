@@ -77,7 +77,7 @@ public class BookmarkModel extends BaseObservable {
         }
         bookmarkModel.setChapter(ReaderViewUtil.trim(title));
         Date date = new Date(bookmark.getCreatedAt().getTime());
-        bookmarkModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM));
+        bookmarkModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_2));
         String content = bookmark.getQuote();
         if(StringUtils.isNullOrEmpty(content)){
             content = JDReadApplication.getInstance().getString(R.string.security_none);

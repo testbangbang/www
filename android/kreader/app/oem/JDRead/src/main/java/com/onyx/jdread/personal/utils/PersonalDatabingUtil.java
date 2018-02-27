@@ -28,12 +28,12 @@ public class PersonalDatabingUtil {
         if (editText != null) {
             if (showPassword) {
                 editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                String s = editText.getText().toString();
-                if (StringUtils.isNotBlank(s)) {
-                    editText.setSelection(s.length());
-                }
             } else {
                 editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            }
+            String s = editText.getText().toString();
+            if (StringUtils.isNotBlank(s)) {
+                editText.setSelection(s.length());
             }
         }
     }

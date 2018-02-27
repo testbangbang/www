@@ -56,8 +56,10 @@ public class ReaderUserDataInfo {
 
     private ReaderDocumentTableOfContent toc;
     private Map<String, Bookmark> bookmarkMap = new LinkedHashMap<>();
+    private List<Bookmark> bookmarks;
     private Map<String, Bookmark> pageBookmarkMap = new LinkedHashMap<>();
     private Map<String, List<Annotation>> annotationMap = new LinkedHashMap<>();
+    private List<Annotation> annotationList = new ArrayList<>();
     private Map<String, List<PageAnnotation>> pageAnnotationMap = new HashMap<>();
     private List<SearchHistory> searchHistoryList = new ArrayList<>();
     private Map<String, List<ReaderSelection>> pageLinkMap = new HashMap<>();
@@ -146,18 +148,22 @@ public class ReaderUserDataInfo {
         return list;
     }
 
+    public List<Annotation> getAnnotationList() {
+        return annotationList;
+    }
+
     public boolean loadDocumentTableOfContent(final Context context, final ReaderDocument document) {
         toc = new ReaderDocumentTableOfContent();
         return document.readTableOfContent(toc);
     }
 
     public boolean loadDocumentAnnotations(final Context context, final String displayName,final String md5) {
-        final List<Annotation> annotations = ContentSdkDataUtils.getDataProvider().loadAnnotations(
+        annotationList = ContentSdkDataUtils.getDataProvider().loadAnnotations(
                 displayName,
                 md5,
-                OrderBy.fromProperty(Annotation_Table.createdAt).descending());
-        if (annotations != null && annotations.size() > 0) {
-            for (Annotation annotation : annotations) {
+                OrderBy.fromProperty(Annotation_Table.updatedAt).descending());
+        if (annotationList != null && annotationList.size() > 0) {
+            for (Annotation annotation : annotationList) {
                 if (annotationMap.get(annotation.getPosition()) == null) {
                     annotationMap.put(annotation.getPosition(), new ArrayList<Annotation>());
                 }
@@ -256,9 +262,7 @@ public class ReaderUserDataInfo {
     }
 
     public List<Bookmark> getBookmarks() {
-        ArrayList<Bookmark> list = new ArrayList<>();
-        list.addAll(bookmarkMap.values());
-        return list;
+        return bookmarks;
     }
 
     public boolean loadPageBookmarks(final Context context, final boolean isSupportScale,final String displayName,final String md5,final ReaderNavigator navigator, final List<PageInfo> visiblePages) {
@@ -301,10 +305,10 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentBookmarks(final Context context, final String displayName,final String md5) {
-        List<Bookmark> bookmarks = ContentSdkDataUtils.getDataProvider().loadBookmarks(
+        bookmarks = ContentSdkDataUtils.getDataProvider().loadBookmarks(
                 displayName,
                 md5,
-                OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
+                OrderBy.fromProperty(Bookmark_Table.createdAt).ascending());
         if (bookmarks != null) {
             for (Bookmark bookmark : bookmarks) {
                 bookmarkMap.put(bookmark.getPosition(), bookmark);

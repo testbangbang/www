@@ -1,5 +1,7 @@
 package com.onyx.jdread.reader.menu.event;
 
+import android.util.Log;
+
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;

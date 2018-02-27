@@ -189,6 +189,7 @@ public class AlReaderWrapper {
         engineOptions = new AlEngineOptions();
         engineOptions.appInstance = context;
         engineOptions.runInOneThread = true;
+        engineOptions.syncLoading = pluginOptions.isSyncLoading();
         if (pluginOptions.getFontDirectories() != null) {
             engineOptions.font_catalogs_addon = pluginOptions.getFontDirectories().toArray(new String[0]);
         }
@@ -621,6 +622,9 @@ public class AlReaderWrapper {
         }
 
         String ch = getCharAtPos(screenText, pos);
+        if(StringUtils.isNullOrEmpty(ch)){
+            return null;
+        }
         if (!AlUnicode.isChineze(ch.charAt(0))) {
             // simplifying latter work
             return selectTextOnScreen(point, point);

@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityTranslateBinding;
 import com.onyx.jdread.reader.event.TranslateDialogEventHandler;
+import com.onyx.jdread.reader.event.UpdateViewPageEvent;
 import com.onyx.jdread.reader.model.TranslateViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -73,6 +74,7 @@ public class TranslateDialog extends Dialog implements ViewCallBack {
     public void dismiss() {
         handler.unregisterListener();
         super.dismiss();
+        eventBus.post(new UpdateViewPageEvent());
     }
 
     @Override

@@ -189,6 +189,15 @@ public class PersonalDataBundle {
         return userInfo;
     }
 
+    public boolean isUserVip() {
+        boolean isVip = false;
+        UserInfo userInfo = getUserInfo();
+        if (userInfo != null && userInfo.vip_remain_days > 0) {
+            isVip = true;
+        }
+        return isVip;
+    }
+
     public void setSigned(boolean signed) {
         this.signed = signed;
     }

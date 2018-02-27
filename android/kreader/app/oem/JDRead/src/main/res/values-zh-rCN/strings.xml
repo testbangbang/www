@@ -30,6 +30,7 @@
     <string name="date_time">日期时间</string>
     <string name="screen_saver">屏幕保护</string>
     <string name="password_setting">密码设置</string>
+    <string name="password_setting_failed">密码设置失败</string>
     <string name="read_tool">阅读工具</string>
     <string name="device_information">设备信息</string>
     <string name="update_package_downloaded">更新包已下载</string>
@@ -91,7 +92,7 @@
     <string name="log_out">退出登录</string>
     <string name="login_immediately">立即登录</string>
     <string name="unsigned_in">未签到</string>
-    <string name="signed_in">签到</string>
+    <string name="signed_in">已签到</string>
     <string name="manual">使用手册</string>
     <string name="feedback">问题反馈</string>
     <string name="contact_us">联系我们</string>
@@ -118,7 +119,7 @@
     <string name="search_view_hint">请输入搜索内容</string>
     <string name="book_detail_yuedou_price">%1$s 阅豆</string>
     <string name="book_detail_button_now_read">立即阅读</string>
-    <string name="book_detail_button_buy_whole_book">全本购买</string>
+    <string name="book_detail_button_buy_whole_book">购买全本</string>
     <string name="cart">购物车</string>
     <string name="book_detail_text_view_content_introduce">内容简介</string>
     <string name="book_comment_detail">评论详情</string>
@@ -208,7 +209,7 @@
     <string name="reader_boldface">方正黑体</string>
     <string name="reader_arial">方正新书宋</string>
     <string name="reader_italics">方正新楷体</string>
-    <string name="reader_round_body">方正兰亭黑</string>
+    <string name="reader_round_body">方正悠黑</string>
     <string name="reader_traditional">繁体</string>
     <string name="reader_simplified">简体</string>
     <string name="reader_font_size">字号</string>
@@ -256,7 +257,7 @@
     <string name="reset">恢复出厂设置</string>
     <string name="points_for_tips">兑换%1$sJoyRead将扣除%2$s，是否进行兑换？</string>
     <string name="current_points">当前积分：%1$d</string>
-    <string name="receive_gift_package_tips">是否使用当前登录账号领取%1$s？</string>
+    <string name="receive_gift_package_tips">是否使用当前登录账号领取礼包？</string>
     <string name="sign_in_vouchers">签到(+5代金券)</string>
     <string name="read_thirty">阅读30分钟(+10代金券)</string>
     <string name="add_ten_vouchers">+%d代金券 领取成功</string>
@@ -306,8 +307,8 @@
     <string name="subject_list_sort_type_hot">热门</string>
     <string name="subject_list_sort_type_price">价格</string>
     <string name="subject_list_sort_type_newest">最新</string>
-    <string name="subject_list_all">全部</string>
-    <string name="subject_list_just_vip">VIP会员</string>
+    <string name="subject_list_filter">筛选</string>
+    <string name="subject_list_just_vip">JoyRead会员</string>
     <string name="downloading_progress">下载中 %d</string>
     <string name="paused">已暂停 %d</string>
     <string name="total_book">共%d本书</string>
@@ -325,8 +326,8 @@
     <string name="update">更新</string>
     <string name="sure_delete">是否确定删除</string>
     <string name="page_search" formatted="false">%d 页</string>
-    <string name="reader_content">原文:</string>
-    <string name="reader_read_progress">进度:</string>
+    <string name="reader_content">原文：</string>
+    <string name="reader_read_progress">进度：</string>
     <string name="feedback_history">反馈记录</string>
     <string name="feedback_success">反馈成功</string>
     <string name="device_reset_prompt">设备将立即进入重置，是否继续？</string>
@@ -413,12 +414,14 @@
     <string name="close_history">关闭历史记录</string>
     <string name="delete_history">删除历史记录</string>
     <string name="searching" formatted="false">正在搜索 %d/%d</string>
+    <string name="reader_searching">搜索中，请等待...</string>
     <string name="no_more_search_results">没有更多的搜索结果</string>
     <string name="page" formatted="false">页码 %d</string>
     <string name="search_end">完成搜索</string>
     <string name="delete_library_prompt">是否删除该分组(组内图书重新放入书架)</string>
     <string name="delete_library_include_book_prompt">是否从本机删除该分组及组内图书</string>
     <string name="click_to_translate">点击翻译</string>
+    <string name="click_to_refresh">点击刷新</string>
     <string name="delete_book">删除本书</string>
     <string name="network_or_server_error">网络或者服务器出错，稍等会再试</string>
     <string name="reader_check_network">请检查您的网络</string>
@@ -436,7 +439,7 @@
     <string name="not_login">未登录</string>
     <string name="open_vip_read">开通会员</string>
     <string name="renew_vip_read">续费会员</string>
-    <string name="vip_read_days">会员有效天数：%s</string>
+    <string name="vip_read_days">会员有效天数：%s天</string>
     <string name="vip_read_notice">会员须知</string>
     <string name="not_open_vip_read">未开通会员</string>
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">该图书已购买或者是免费书,无需购买!</string>
@@ -451,4 +454,30 @@
     <string name="wifi_pass_book_failed_network_exception">网络异常,传书失败</string>
     <string name="empty_library_prompt">暂无图书, 请去 我的书店 下载</string>
     <string name="forgot_psw">忘记密码</string>
+    <string name="dialog_pay_order_book_price">价格: %1$d阅豆</string>
+    <string name="dialog_pay_order_cur_balance">当前余额: %1$d阅豆/%2$d代金券</string>
+    <string name="dialog_pay_order_pay_type">付款方式:</string>
+    <string name="dialog_pay_order_cash">现金</string>
+    <string name="dialog_pay_order_confirm_pay">确认支付</string>
+    <string name="payment_order">订单支付</string>
+    <string name="book_detail_add_cart_tip_the_book_already_add_cart">图书已经加入到购物车</string>
+    <string name="pay_dialog_insufficient_balance">余额不足，去充值</string>
+    <string name="pay_success">支付成功</string>
+    <string name="password_find">密码找回</string>
+    <string name="psw_success_to_unlock">获取成功，去解锁</string>
+    <string name="find_password_qr_generating">正在生成找回信息...</string>
+    <string name="find_password_qr_scan">请用手机扫描下方二维码找回阅读器密码</string>
+    <string name="password_too_simple_and_reset">密码过于简单，请重置</string>
+    <string name="password_unlock_times_format">密码输入错误超过了%d次，设备已锁定</string>
+    <string name="password_unlock_current_times_format">密码输入错误，您还剩%d次输入机会</string>
+    <string name="reader_note">笔记：</string>
+    <string name="intelligent_recommend">智能推荐</string>
+    <string name="bookmark_none">您还未添加书签</string>
+    <string name="note_none">您还未添加笔记</string>
+    <string name="catalog_none">目录为空</string>
+    <string name="search_result_none">书内无相关信息</string>
+    <string name="new_user_package">新用户会员礼包</string>
+    <string name="new_user_package_detail">为新用户准备的365天会员，领取后即绑定到登录本机的账号上。</string>
+    <string name="receive_success">领取成功</string>
+    <string name="receive_fail">领取失败</string>
 </resources>

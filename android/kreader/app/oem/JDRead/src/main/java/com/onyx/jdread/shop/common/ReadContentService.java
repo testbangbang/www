@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.common;
 
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtAndUnlimitedBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.CheckGiftBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
@@ -15,15 +16,12 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SignForVoucherBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.AddBookToSmoothCardBookBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookDownloadUrlResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CartDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.CertBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
@@ -45,20 +43,6 @@ import retrofit2.http.QueryMap;
  */
 
 public interface ReadContentService {
-    @POST("client.action")
-    Call<AddBookToSmoothCardBookBean> addBookToSmoothCardBook(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                              @Query(AppBaseInfo.BODY_KEY) String body,
-                                                              @QueryMap Map<String, String> map);
-
-    @POST("client.action")
-    Call<CertBean> getBookCert(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                               @QueryMap Map<String, String> map,
-                               @Query(AppBaseInfo.BODY_KEY) String body);
-
-    @POST("client.action")
-    Call<BookDownloadUrlResultBean> getBookDownloadUrl(@QueryMap Map<String, String> map,
-                                                       @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                       @Query(AppBaseInfo.BODY_KEY) String body);
 
     @GET("search")
     Call<BookModelBooksResultBean> getSearchBooks(@QueryMap Map<String, String> baseInfoMap);
@@ -128,6 +112,10 @@ public interface ReadContentService {
     Call<SetReadPreferenceBean> setReadPreference(@QueryMap Map<String, String> map,
                                                   @Body RequestBody body);
 
+    @POST(CloudApiContext.GotoOrder.ORDER_STEPONE)
+    Call<String> getOrderInfo(@QueryMap Map<String, String> map,
+                                              @Body RequestBody body);
+
     @GET(CloudApiContext.User.READ_PREFERENCE)
     Call<GetReadPreferenceBean> getReadPreference(@QueryMap Map<String, String> map);
 
@@ -142,6 +130,9 @@ public interface ReadContentService {
 
     @GET(CloudApiContext.User.USER_GIFT)
     Call<GiftBean> getGiftInfo(@QueryMap Map<String, String> map);
+
+    @GET(CloudApiContext.User.CHECK_GIFT)
+    Call<CheckGiftBean> checkGift(@QueryMap Map<String, String> map);
 
     @GET(CloudApiContext.User.RECOMMEND_USER)
     Call<RecommendUserBean> recommendUser(@QueryMap Map<String, String> map);
@@ -170,4 +161,10 @@ public interface ReadContentService {
 
     @GET(CloudApiContext.User.PERSONAL_NOTES)
     Call<PersonalNoteBean> getPersonalNotes(@QueryMap Map<String, String> map);
+
+    @POST(CloudApiContext.ReadBean.PAY_BY_READ_BEAN)
+    Call<String> payByReadBean(@QueryMap Map<String, String> baseInfoMap);
+
+    @GET(CloudApiContext.ReadBean.PAY_BY_CASH)
+    Call<String> payByCash(@QueryMap Map<String, String> baseInfoMap);
 }

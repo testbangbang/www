@@ -112,9 +112,9 @@
     <item name="export_dialog_height_rate" type="integer" format="float">0.3</item>
     <item name="login_dialog_width_rate" type="integer" format="float">0.8</item>
     <item name="login_dialog_height_rate" type="integer" format="float">0.5</item>
-    <integer name="book_info_dialog_mark_row">4</integer>
+    <integer name="book_info_dialog_mark_row">5</integer>
     <integer name="book_info_dialog_catalog_row">12</integer>
-    <integer name="book_info_dialog_note_row">4</integer>
+    <integer name="book_info_dialog_note_row">5</integer>
     <integer name="dialog_associated_width">600</integer>
     <integer name="reader_cross_screen_touch_region_min_width">60</integer>
     <integer name="reader_cross_screen_touch_region_min_height">60</integer>
@@ -150,7 +150,7 @@
     <integer name="add_wifi_dialog_x">0</integer>
     <integer name="add_wifi_dialog_y">30</integer>
     <integer name="library_menu_offset_y">20</integer>
-    <integer name="search_row">7</integer>
+    <integer name="search_row">6</integer>
     <integer name="search_chinese_content_length">35</integer>
     <integer name="search_alpha_content_length">65</integer>
     <integer name="library_menu_offset_x">175</integer>
@@ -174,4 +174,9 @@
     <integer name="empty_library_prompt_clickable_start">9</integer>
     <integer name="empty_library_prompt_clickable_end">13</integer>
     <integer name="refresh_count">4</integer>
+    <integer name="delay_pay_success_close_pay_dialog">2</integer>
+
+    <integer name="password_unlock_fail_count">5</integer>
+    <integer name="password_unlock_fail_expired">86400000</integer>
+
 </resources>

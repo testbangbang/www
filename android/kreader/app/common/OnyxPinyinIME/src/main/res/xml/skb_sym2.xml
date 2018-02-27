@@ -57,8 +57,8 @@
 
   <row width="14.696%p" key_type="1">
     <key id="8" />
-    <key code="-2" label="中 符" width="15.307%p" repeat="true">
-      <toggle_state state_id="@string/toggle_en_sym2" label="英 符" code="-2"/>
+    <key code="-2" icon="@drawable/ic_kb_zh" width="15.307%p" repeat="true">
+      <toggle_state state_id="@string/toggle_en_sym2" icon="@drawable/ic_kb_en" code="-2"/>
     </key>
     <key code="-3" key_type="1" label="ABC" width="15.307%p"/>
     <key code="62" key_type="5" width="30.608%p"/>

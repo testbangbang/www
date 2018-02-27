@@ -2,9 +2,11 @@ package com.onyx.jdread.reader.handler;
 
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.device.ReaderDeviceManager;
 import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
@@ -14,6 +16,7 @@ import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.actions.CleanSelectionAction;
+import com.onyx.jdread.reader.actions.DrawSelectResultAction;
 import com.onyx.jdread.reader.actions.NextPageSelectTextAction;
 import com.onyx.jdread.reader.actions.PrevPageSelectTextAction;
 import com.onyx.jdread.reader.actions.SelectTextAction;
@@ -35,6 +38,7 @@ public class WordSelectionHandler extends BaseHandler {
 
     private static final String TAG = WordSelectionHandler.class.getSimpleName();
     private static final int MAX_WORD_CHINESE_COUNT = 10;
+    private static final int MAX_DRAW_SELECT_RESULT_COUNT = 10;
 
     private int moveRangeAfterLongPress = 25;
 
@@ -54,12 +58,31 @@ public class WordSelectionHandler extends BaseHandler {
     private int crossScreenTouchRegionMinHeight;
     private boolean isCrossScreenSelect = false;
     private String downPagePosition;
+    private boolean isReleaseClick = true;
+    private int drawSelectResultCount = 0;
+    private int offsetY = 0;
 
     public WordSelectionHandler(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder);
         movePointOffsetHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.move_point_offset_height);
         crossScreenTouchRegionMinWidth = readerDataHolder.getAppContext().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_width);
         crossScreenTouchRegionMinHeight = readerDataHolder.getAppContext().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_height);
+    }
+
+    public int getOffsetY() {
+        return offsetY;
+    }
+
+    public void setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
+    }
+
+    public boolean isReleaseClick() {
+        return isReleaseClick;
+    }
+
+    public void setReleaseClick(boolean releaseClick) {
+        isReleaseClick = releaseClick;
     }
 
     @Override
@@ -72,6 +95,9 @@ public class WordSelectionHandler extends BaseHandler {
         lastMovedPoint = new Point((int) event.getX(), (int) event.getY());
         cursorSelected = getCursorSelected((int) event.getX(), (int) event.getY());
         boolean has = hasSelectionWord();
+        drawSelectResultCount = 0;
+        setReleaseClick(false);
+        setOffsetY(0);
         if (!has) {
             highLightBeginTop = new PointF(event.getX(), event.getY());
             highLightEndBottom = new PointF(event.getX(), event.getY());
@@ -144,12 +170,13 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public void onReleaseClick() {
-
+        setReleaseClick(true);
+        updateHighLightRect();
     }
 
     private void onShowPopupMenu() {
         ReaderSelection readerSelection = getReaderDataHolder().getReaderSelectionInfo().getCurrentSelection(getReaderDataHolder().getCurrentPagePosition());
-        if (getReaderDataHolder().getReaderSelectionInfo().getMoveSelectCount() <= 0 && readerSelection != null) {
+        if (getReaderDataHolder().getReaderSelectionInfo().getMoveSelectCount() <= 0 && readerSelection != null && isReleaseClick()) {
             String text = getReaderDataHolder().getReaderSelectionInfo().getSelectText();
             if (!StringUtils.isNullOrEmpty(text)) {
                 boolean isWord = isWord(text);
@@ -226,7 +253,7 @@ public class WordSelectionHandler extends BaseHandler {
                 if (!isCrossScreenSelect(x, y)) {
                     return true;
                 }
-                highlightAlongTouchMoved(x, y, cursorSelected);
+                highlightAlongTouchMoved(x, y - offsetY, cursorSelected);
                 break;
             case MotionEvent.ACTION_UP:
                 break;
@@ -281,7 +308,8 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public void selectWord(final float x1, final float y1, final float x2, final float y2) {
-        ReaderDeviceManager.disableRegal();
+        EpdController.disableRegal();
+        setReleaseClick(false);
         SelectWordInfo info = new SelectWordInfo(getReaderDataHolder().getCurrentPagePosition(),
                 new PointF(x1, y1),
                 new PointF(x2, y2),
@@ -291,6 +319,7 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public void selectText(final float x1, final float y1, final float x2, final float y2) {
+        setReleaseClick(false);
         PointF touchPoint = new PointF(x2, y2);
         if (cursorSelected == HighlightCursor.BEGIN_CURSOR_INDEX) {
             highLightBeginTop = new PointF(x2, y2);
@@ -341,11 +370,13 @@ public class WordSelectionHandler extends BaseHandler {
 
         if (endHighlightCursor != null && endHighlightCursor.hitTest(x, y)) {
             if (endHighlightCursor.getShowState()) {
+                offsetY = endHighlightCursor.getCursorOffsetY(x,y);
                 return HighlightCursor.END_CURSOR_INDEX;
             }
         }
         if (beginHighlightCursor != null && beginHighlightCursor.hitTest(x, y)) {
             if (beginHighlightCursor.getShowState()) {
+                offsetY = endHighlightCursor.getCursorOffsetY(x,y);
                 return HighlightCursor.BEGIN_CURSOR_INDEX;
             }
         }
@@ -353,7 +384,6 @@ public class WordSelectionHandler extends BaseHandler {
     }
 
     public void quitWordSelection() {
-        ReaderDeviceManager.enableRegal();
         clearWordSelection();
         hideTextSelectionPopupWindow();
     }
@@ -362,7 +392,12 @@ public class WordSelectionHandler extends BaseHandler {
         setLongPress(false);
         getReaderDataHolder().getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
         getReaderDataHolder().getReaderSelectionInfo().clear();
-        new CleanSelectionAction().execute(getReaderDataHolder(),null);
+        new CleanSelectionAction().execute(getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                EpdController.enableRegal();
+            }
+        });
     }
 
     private void enableSelectionCursor() {
@@ -379,6 +414,7 @@ public class WordSelectionHandler extends BaseHandler {
         public void onFinally() {
             updateCursorSelected();
             updateHighLightRect();
+            drawSelectResult();
         }
     };
 
@@ -399,4 +435,14 @@ public class WordSelectionHandler extends BaseHandler {
             updateHighLightRect();
         }
     };
+
+    private void drawSelectResult(){
+        if(drawSelectResultCount >= MAX_DRAW_SELECT_RESULT_COUNT || getReaderDataHolder().getReaderSelectionInfo().getMoveSelectCount() <= 0) {
+            DrawSelectResultAction action = new DrawSelectResultAction();
+            action.execute(getReaderDataHolder(), null);
+            drawSelectResultCount = 0;
+            return;
+        }
+        drawSelectResultCount++;
+    }
 }

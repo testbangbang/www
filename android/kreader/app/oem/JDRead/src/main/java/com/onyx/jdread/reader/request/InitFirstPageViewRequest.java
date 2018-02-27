@@ -7,6 +7,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.main.common.JDPreferenceManager;
@@ -83,6 +84,12 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private void initPosition() throws Exception {
         String bookPath = reader.getDocumentInfo().getBookPath();
         String position = reader.getReaderHelper().getDocumentOptions().getCurrentPage();
+        if(StringUtils.isNotBlank(position)){
+            int pagePosition = PagePositionUtils.getPosition(position);
+            if(pagePosition < 0){
+                position = "";
+            }
+        }
         if (StringUtils.isNullOrEmpty(position)) {
             position = reader.getReaderHelper().getNavigator().getInitPosition();
         }

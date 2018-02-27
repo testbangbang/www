@@ -54,7 +54,7 @@
             android:layout_height="@dimen/shop_dialog_content_height"
             android:layout_marginLeft="@dimen/book_copyright_contain_padding"
             android:layout_marginRight="@dimen/book_copyright_contain_padding"
-            android:layout_marginTop="@dimen/book_detail_common_margin_top"
+            android:layout_marginTop="@dimen/book_copyright_contain_padding"
             android:textSize="@dimen/level_three_heading_font"
             bind:bookInfoWebView="@{viewModel.content}" />
 

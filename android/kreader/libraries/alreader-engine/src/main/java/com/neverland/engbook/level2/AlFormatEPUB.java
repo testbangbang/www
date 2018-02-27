@@ -88,16 +88,19 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
     private String	coverMETAIID = null;
     public FileBlockInfo loadFileBlockInfo;
     public boolean loadComplete = false;
+    public boolean isBlockLoad = true;
 
     public AlFormatEPUB() {
         cssStyles = new AlCSSHtml();
     }
 
     public void parserAfterData(final int start_pos){
-        FileBlockInfo.loadTwoBlockData(this,loadFileBlockInfo.twoBlock);
-        FileBlockInfo.loadThreeBlockData(this,loadFileBlockInfo.threeBlock);
-        size = customSize;
-        FileBlockInfo.saveParagraphData(fileBlocks,this);
+        if(isBlockLoad) {
+            FileBlockInfo.loadTwoBlockData(this, loadFileBlockInfo.twoBlock);
+            FileBlockInfo.loadThreeBlockData(this, loadFileBlockInfo.threeBlock);
+            size = customSize;
+            FileBlockInfo.saveParagraphData(fileBlocks, this);
+        }
         setLoadComplete(true);
         ttl.clear();
         prepareCustom();
@@ -190,6 +193,12 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
         setLoadComplete(false);
         customSize = 0;
         parser(0, -1);
+        if(start_pos >= aFiles.getSize()){
+            isBlockLoad = false;
+            setLoadComplete(true);
+            setSize(customSize);
+            return;
+        }
         List<FileBlockInfo> fileBlockInfos = FileBlockInfo.loadParagraphData(this);
         if(fileBlockInfos != null){
             //int lastBlock = FileBlockInfo.getLastBlockInfo(this);

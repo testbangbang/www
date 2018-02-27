@@ -47,7 +47,7 @@ public class HitTestTextHelper {
                 PointF start = new PointF(x, y);
                 PointF end = new PointF(x, y);
                 readerSelectionInfo = selectOnScreen(start, end, pagePosition, pageInfo, hitTestManager, readerUserDataInfo);
-                if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection().getRectangles().size() >= 0) {
+                if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection().getRectangles().size() > 0) {
                     readerSelectionInfo.setHighLightBeginTop(start);
                     readerSelectionInfo.setHighLightEndBottom(end);
                     readerSelectionInfo.pageInfo = pageInfo;
@@ -71,7 +71,7 @@ public class HitTestTextHelper {
                 PointF start = new PointF(x, y);
                 PointF end = new PointF(x, y);
                 readerSelectionInfo = selectOnScreen(start, end, pagePosition, pageInfo, hitTestManager, readerUserDataInfo);
-                if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection().getRectangles().size() >= 0) {
+                if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection().getRectangles().size() > 0) {
                     readerSelectionInfo.setHighLightBeginTop(start);
                     readerSelectionInfo.setHighLightEndBottom(end);
                     return readerSelectionInfo;
@@ -85,7 +85,7 @@ public class HitTestTextHelper {
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, end);
         ReaderSelection selection = hitTestManager.selectOnScreen(argsStart, argsEnd, ReaderHitTestOptionsImpl.create(false));
-        if (selection != null && selection.getRectangles().size() >= 0) {
+        if (selection != null && selection.getRectangles().size() > 0) {
             PointF touchPoint = new PointF(end.x, end.y);
             readerUserDataInfo.saveHighlightResult(SelectRequest.translateToScreen(pageInfo, selection));
             readerUserDataInfo.setTouchPoint(touchPoint);

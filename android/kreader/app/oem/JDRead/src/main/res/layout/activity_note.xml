@@ -23,8 +23,10 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/reader_note_padding_left"
-            android:paddingRight="@dimen/reader_note_padding_right">
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -34,18 +36,12 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    style="@style/ReaderTitleBarBuyStyle"
-                    android:layout_marginRight="@dimen/reader_title_back_margin_right"
-                    android:drawableLeft="@mipmap/ic_read_back"
-                    android:drawablePadding="@dimen/reader_title_bar_drawable_padding"
-                    android:gravity="center_vertical"
-                    android:onClick="@{()->noteViewModel.backClick()}"
-                    android:padding="@dimen/reader_title_back_padding" />
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@mipmap/ic_read_back"
+                    android:drawablePadding="@dimen/reader_title_bar_drawable_padding"
                     android:ellipsize="end"
+                    android:onClick="@{()->noteViewModel.backClick()}"
                     android:text="@{noteViewModel.title}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
@@ -62,22 +58,24 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:drawableLeft="@mipmap/ic_read_save"
+                    android:drawablePadding="8dp"
                     android:onClick="@{()->noteViewModel.saveClick()}"
                     android:text="@string/save"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font"
-                    android:visibility="@{noteViewModel.isEdit?View.VISIBLE:View.GONE}"/>
+                    android:visibility="@{noteViewModel.isEdit?View.VISIBLE:View.GONE}" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:drawableLeft="@mipmap/ic_read_edit"
+                    android:drawablePadding="8dp"
                     android:onClick="@{()->noteViewModel.editClick()}"
                     android:text="@string/reader_edit"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font"
-                    android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}"/>
+                    android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}" />
             </LinearLayout>
 
         </LinearLayout>
@@ -90,6 +88,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:paddingBottom="@dimen/reader_note_padding_bottom"
             android:paddingLeft="@dimen/reader_note_padding_left"
             android:paddingRight="@dimen/reader_note_padding_right"
@@ -101,7 +100,7 @@
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="@{noteViewModel.chapterName}"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <TextView
@@ -109,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text="@{noteViewModel.createNoteDate}"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>
@@ -117,6 +116,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:orientation="vertical"
             android:paddingLeft="@dimen/reader_note_padding_left"
@@ -131,27 +131,39 @@
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top"
+                android:onClick="@{()->noteViewModel.gotoPagePosition()}"
+                android:text="@={noteViewModel.newNote}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font"
+                android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}" />
+
             <EditText
                 android:id="@+id/new_note"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:gravity="top"
-                android:padding="10dp"
                 android:text="@={noteViewModel.newNote}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:visibility="gone" />
         </LinearLayout>
 
         <View
             style="@style/reader_dotted_line_style"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp" />
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+            android:paddingLeft="@dimen/reader_note_padding_left"
+            android:paddingRight="@dimen/reader_note_padding_right" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
             android:orientation="vertical"
             android:paddingLeft="@dimen/reader_note_padding_left"
@@ -184,6 +196,19 @@
                     android:visibility="@{noteViewModel.isSrcNoteModify?View.VISIBLE:View.GONE}" />
             </RelativeLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:gravity="top"
+                android:onClick="@{()->noteViewModel.gotoPagePosition()}"
+                android:padding="10dp"
+                android:text="@={noteViewModel.srcNote}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font"
+                android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}" />
+
             <EditText
                 android:id="@+id/src_note"
                 android:layout_width="match_parent"
@@ -193,7 +218,8 @@
                 android:padding="10dp"
                 android:text="@={noteViewModel.srcNote}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 </layout>

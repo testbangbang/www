@@ -71,6 +71,16 @@ public class LocalDataProvider implements DataProviderBase {
         }
     }
 
+    public Metadata findMetadataByCloudId(String cloudId) {
+        Metadata metadata = null;
+        try {
+            metadata = new Select().from(Metadata.class).where(Metadata_Table.cloudId.eq(cloudId)).querySingle();
+        } catch (Exception e) {
+        } finally {
+            return MetadataUtils.ensureObject(metadata);
+        }
+    }
+
     public Metadata findMetadataByHashTag(final Context context, final String path, String hashTag) {
         Metadata metadata = null;
         try {
@@ -167,7 +177,6 @@ public class LocalDataProvider implements DataProviderBase {
 
     public void updateAnnotation(final Annotation annotation) {
         annotation.save();
-        ContentUtils.update(OnyxAnnotationProvider.CONTENT_URI, annotation);
     }
 
     public void deleteAnnotation(final Annotation annotation) {

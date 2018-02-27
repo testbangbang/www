@@ -126,6 +126,9 @@
                 android:id="@+id/account_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/personal_account_recycler_height" />
+
+            <View
+                style="@style/NoPaddingDottedLineType"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

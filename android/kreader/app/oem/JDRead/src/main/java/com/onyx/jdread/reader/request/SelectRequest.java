@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.request;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
@@ -59,19 +60,16 @@ public class SelectRequest extends ReaderBaseRequest {
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, end);
         selection = hitTestManager.selectOnScreen(argsStart, argsEnd, hitTestOptions);
+        getReaderViewInfo().setLoadToc(false);
         LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
             getReaderUserDataInfo().setTouchPoint(touchPoint);
             updateReaderSelectInfo(pagePosition,pageInfo);
-            reader.getReaderViewHelper().renderAll(reader,
-                    reader.getReaderHelper().getCurrentPageBitmap().getBitmap(), getReaderUserDataInfo(),getReaderViewInfo(),
-                    readerSelectionManager);
 
             HitTestTextHelper.saveLastHighLightPosition(pagePosition,readerSelectionManager,start,end);
         }
         getSelectionInfoManager().updateSelectInfo(readerSelectionManager.getReaderSelectionInfos());
-        updateSetting(reader);
         return this;
     }
 

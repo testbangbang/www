@@ -33,7 +33,7 @@
 
             <LinearLayout
                 style="@style/ReaderTextSettingItemParentStyle"
-                android:layout_weight="4">
+                android:layout_weight="5">
 
                 <TextView
                     style="@style/ReaderTextSettingFontStyle"
@@ -135,7 +135,7 @@
 
         <LinearLayout
             style="@style/ReaderTextSettingLayoutStyle"
-            android:layout_marginBottom="@dimen/reader_page_info_menu_margin_bottom">
+            android:layout_marginBottom="20dp">
 
             <TextView
                 style="@style/ReaderTextSettingStyle"
@@ -149,12 +149,14 @@
 
                 <LinearLayout
                     style="@style/ReaderTextSettingItemParentStyle"
-                    android:layout_weight="5">
+                    android:layout_weight="7">
 
                     <TextView
                         style="@style/ReaderTextSettingFormatStyle"
                         android:background="@{readerTextModel.currentSettingType == ReaderConfig.SETTING_TYPE_PRESET?@drawable/reader_text_item_left_selected:@drawable/reader_text_item_left_default}"
-                        android:text="@string/reader_adaptive" />
+                        android:text="@string/reader_adaptive"
+                        android:clickable="true"
+                        android:onClick="@{()->readerTextModel.onPresetItemClick()}"/>
 
                     <View style="@style/ReaderVerticalSeparationLine" />
 
@@ -169,7 +171,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="5">
+                    android:layout_weight="3.5">
 
                     <View
                         android:layout_width="0dp"
