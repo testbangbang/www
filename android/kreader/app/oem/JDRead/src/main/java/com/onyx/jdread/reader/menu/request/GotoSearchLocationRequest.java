@@ -20,7 +20,7 @@ public class GotoSearchLocationRequest extends GotoPositionRequest {
     private Reader reader;
 
     public GotoSearchLocationRequest(List<ReaderSelection> results, Reader reader, String position) {
-        super(reader, position, false);
+        super(reader, position, false, true);
         searchResults = new ArrayList<>();
         for (ReaderSelection searchResult : results) {
             this.searchResults.add(searchResult.clone());
