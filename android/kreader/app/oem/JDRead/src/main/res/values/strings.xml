@@ -509,4 +509,5 @@
     <string name="new_user_package_detail">The 365 days membership for the new user is bound to the login account.</string>
     <string name="receive_success">Receive success</string>
     <string name="receive_fail">Receive failed</string>
+    <string name="low_power_reminder">Low battery, please charge in time</string>
 </resources>

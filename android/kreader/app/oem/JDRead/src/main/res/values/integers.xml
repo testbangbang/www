@@ -178,5 +178,6 @@
 
     <integer name="password_unlock_fail_count">5</integer>
     <integer name="password_unlock_fail_expired">86400000</integer>
+    <integer name="low_power_battery_value">15</integer>
 
 </resources>

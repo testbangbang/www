@@ -480,4 +480,5 @@
     <string name="new_user_package_detail">为新用户准备的365天会员，领取后即绑定到登录本机的账号上。</string>
     <string name="receive_success">领取成功</string>
     <string name="receive_fail">领取失败</string>
+    <string name="low_power_reminder">电量过低,请及时充电</string>
 </resources>
