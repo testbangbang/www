@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -90,7 +91,8 @@ public class ScribbleFragment extends BaseFragment {
                 }
             };
         }
-
+        binding.surfaceView.setZOrderOnTop(true);
+        binding.surfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
         binding.surfaceView.getHolder().addCallback(surfaceCallback);
     }
 
@@ -112,10 +114,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void cleanup(final Canvas canvas, final Paint paint, final Rect rect) {
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(rect, paint);
-
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
 
     private Rect getViewportSize() {

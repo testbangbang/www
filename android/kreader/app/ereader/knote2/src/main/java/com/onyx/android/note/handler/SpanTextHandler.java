@@ -21,9 +21,8 @@ public class SpanTextHandler extends BaseHandler {
 
     private List<Shape> dirtyStash = new ArrayList<>();
 
-    public SpanTextHandler(@NonNull EventBus eventBus, NoteManager noteManager, List<Shape> dirtyStash) {
+    public SpanTextHandler(@NonNull EventBus eventBus, NoteManager noteManager) {
         super(eventBus, noteManager);
-        this.dirtyStash = dirtyStash;
     }
 
     @Override
