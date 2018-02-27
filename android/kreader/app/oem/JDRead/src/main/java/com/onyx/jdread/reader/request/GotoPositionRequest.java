@@ -78,7 +78,6 @@ public class GotoPositionRequest extends ReaderBaseRequest {
         if (navigator.comparePosition(persistentPosition, screenBegin) < 0) {
             // in some special cases, position of page may be larger than persistentPosition,
             // so we try to go previous page
-            assert page > 0;
             page--;
             if (!reader.getReaderHelper().getReaderLayoutManager().gotoPage(page)) {
                 return false;
@@ -97,8 +96,6 @@ public class GotoPositionRequest extends ReaderBaseRequest {
                     return false;
                 }
                 continue;
-            } else if (navigator.comparePosition(persistentPosition, screenBegin) < 0) {
-                return false;
             }
 
             return false;
