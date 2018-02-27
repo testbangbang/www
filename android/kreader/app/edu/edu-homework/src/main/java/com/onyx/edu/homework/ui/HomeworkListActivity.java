@@ -530,7 +530,7 @@ public class HomeworkListActivity extends BaseActivity {
     @Subscribe
     public void onGotoQuestionPageEvent(GotoQuestionPageEvent event) {
         if (event.hideRecord) {
-            hideRecordFragment(true);
+            hideRecordFragment(false);
         }
         setCurrentPage(event.page);
         reloadQuestionFragment(currentPage);
