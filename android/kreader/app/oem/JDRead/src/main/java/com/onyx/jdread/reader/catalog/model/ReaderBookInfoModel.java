@@ -34,6 +34,7 @@ import java.util.List;
 
 public class ReaderBookInfoModel {
     private ObservableField<String> pageInfo = new ObservableField<>();
+    private ObservableField<String> noneString = new ObservableField<>();
     private ObservableInt currentTab = new ObservableInt(ReaderBookInfoDialogConfig.CATALOG_MODE);
     public final ObservableList<BookmarkModel> bookmarks = new ObservableArrayList<>();
     public final ObservableList<NoteModel> notes = new ObservableArrayList<>();
@@ -43,6 +44,14 @@ public class ReaderBookInfoModel {
 
     public ReaderBookInfoModel(EventBus eventBus) {
         this.eventBus = eventBus;
+    }
+
+    public ObservableField<String> getNoneString() {
+        return noneString;
+    }
+
+    public void setNoneString(String noneString) {
+        this.noneString.set(noneString);
     }
 
     public void setRootNodes(ArrayList<TreeRecyclerView.TreeNode> rootNodes) {
@@ -118,32 +127,35 @@ public class ReaderBookInfoModel {
     }
 
     public void onTabCatalogClick() {
-        setCurrentTab(ReaderBookInfoDialogConfig.CATALOG_MODE);
-        getEventBus().post(new TabCatalogClickEvent());
         if (rootNodes.size() > 0) {
             setIsEmpty(false);
         } else {
             setIsEmpty(true);
+            setNoneString(ResManager.getString(R.string.catalog_none));
         }
+        setCurrentTab(ReaderBookInfoDialogConfig.CATALOG_MODE);
+        getEventBus().post(new TabCatalogClickEvent());
     }
 
     public void onTabBookmarkClick() {
-        setCurrentTab(ReaderBookInfoDialogConfig.BOOKMARK_MODE);
-        getEventBus().post(new TabBookmarkClickEvent());
         if (bookmarks.size() > 0) {
             setIsEmpty(false);
         } else {
             setIsEmpty(true);
+            setNoneString(ResManager.getString(R.string.bookmark_none));
         }
+        setCurrentTab(ReaderBookInfoDialogConfig.BOOKMARK_MODE);
+        getEventBus().post(new TabBookmarkClickEvent());
     }
 
     public void onTabNoteClick() {
-        setCurrentTab(ReaderBookInfoDialogConfig.NOTE_MODE);
-        getEventBus().post(new TabNoteClickEvent());
         if (notes.size() > 0) {
             setIsEmpty(false);
         } else {
             setIsEmpty(true);
+            setNoneString(ResManager.getString(R.string.note_none));
         }
+        setCurrentTab(ReaderBookInfoDialogConfig.NOTE_MODE);
+        getEventBus().post(new TabNoteClickEvent());
     }
 }
