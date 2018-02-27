@@ -530,7 +530,7 @@ public class HomeworkListActivity extends BaseActivity {
     @Subscribe
     public void onGotoQuestionPageEvent(GotoQuestionPageEvent event) {
         if (event.hideRecord) {
-            hideRecordFragment(true);
+            hideRecordFragment(false);
         }
         setCurrentPage(event.page);
         reloadQuestionFragment(currentPage);
@@ -568,7 +568,7 @@ public class HomeworkListActivity extends BaseActivity {
         binding.newMessage.setVisibility(getDataBundle().canGetReview() ? View.VISIBLE : View.GONE);
         binding.hasAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
         binding.notAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
-        binding.totalScore.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        binding.totalScore.setVisibility(View.GONE);
         binding.singleScore.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
         binding.scoreRank.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
     }
