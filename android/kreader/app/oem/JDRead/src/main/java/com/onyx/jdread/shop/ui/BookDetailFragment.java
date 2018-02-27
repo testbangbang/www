@@ -110,12 +110,10 @@ public class BookDetailFragment extends BaseFragment {
     private int downloadTaskState;
     private TextView buyBookButton;
     private TextView nowReadButton;
-    private boolean isDataBaseHaveBook;
     private int percentage;
     private boolean isWholeBookDownLoad;
     private BookInfoDialog infoDialog;
     private boolean hasAddToCart = false;
-    private boolean hasClick;
 
     @Nullable
     @Override
@@ -154,7 +152,10 @@ public class BookDetailFragment extends BaseFragment {
                 if (metadata != null) {
                     String extraInfoStr = metadata.getExtraAttributes();
                     BookExtraInfoBean extraInfoBean = JSONObjectParseUtils.toBean(extraInfoStr, BookExtraInfoBean.class);
-                    setQueryResult(extraInfoBean);
+                    localPath = metadata.getNativeAbsolutePath();
+                    if (extraInfoBean.localPath != null) {
+                        setQueryResult(extraInfoBean);
+                    }
                 }
             }
         });
@@ -163,7 +164,6 @@ public class BookDetailFragment extends BaseFragment {
     private void cleanData() {
         isTryRead = false;
         isSmoothRead = false;
-        isDataBaseHaveBook = false;
         isWholeBookDownLoad = false;
         hasAddToCart = false;
         ebookId = 0;
@@ -491,12 +491,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void smoothDownload() {
-        if (isWholeBookDownLoad && isDataBaseHaveBook && new File(localPath).exists()) {
-            openBook(localPath, bookDetailBean);
-            return;
-        }
-
-        if (isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && new File(localPath).exists()) {
+        if (isWholeBookDownLoad &&  fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean);
             return;
         }
@@ -522,7 +517,7 @@ public class BookDetailFragment extends BaseFragment {
             }
         }
 
-        if (!bookDetailBean.can_buy) {
+        if (!bookDetailBean.can_buy || bookDetailBean.isAlreadyBuy) {
             downLoadWholeBook();
             return;
         }
@@ -604,14 +599,11 @@ public class BookDetailFragment extends BaseFragment {
         if (bookDetailBean == null) {
             return;
         }
-        if (isDataBaseHaveBook && new File(localPath).exists()) {
+        if (fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean);
             return;
         }
-        if (DownLoadHelper.isDownloaded(downloadTaskState) && new File(localPath).exists()) {
-            openBook(localPath, bookDetailBean);
-            return;
-        }
+
         if (StringUtils.isNullOrEmpty(bookDetailBean.try_url)) {
             ToastUtil.showToast(getContext(), getResources().getString(R.string.empty_url));
             return;
@@ -651,15 +643,23 @@ public class BookDetailFragment extends BaseFragment {
     public void setQueryResult(BookExtraInfoBean extraInfoBean) {
         if (extraInfoBean != null) {
             localPath = extraInfoBean.localPath;
-            isDataBaseHaveBook = DownLoadHelper.isDownloaded(extraInfoBean.downLoadState);
+            downloadTaskState = extraInfoBean.downLoadState;
             isWholeBookDownLoad = extraInfoBean.isWholeBookDownLoad;
             if (bookDetailBean != null) {
                 bookDetailBean.bookExtraInfoBean = extraInfoBean;
             }
-            if (isWholeBookDownLoad && isDataBaseHaveBook) {
+            if (isWholeBookDownLoad && fileIsExists(localPath)) {
                 hideNowReadButton();
                 buyBookButton.setText(getString(R.string.book_detail_button_now_read));
             }
+        }
+    }
+
+    private boolean fileIsExists(String localPath) {
+        if (localPath != null) {
+            return new File(localPath).exists();
+        } else {
+            return false;
         }
     }
 
@@ -668,21 +668,14 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void showCopyRightDialog() {
-        if (hasClick) {
+        if (infoDialog != null && infoDialog.isShowing()) {
             return;
         }
-        hasClick = true;
         LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         copyrightBinding.setBookDetailViewModel(getBookDetailViewModel());
         if (copyRightDialog == null) {
             copyRightDialog = new BookInfoDialog(JDReadApplication.getInstance());
             copyRightDialog.setView(copyrightBinding.getRoot());
-            copyRightDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    hasClick = false;
-                }
-            });
         }
         if (copyRightDialog != null && !copyRightDialog.isShowing()) {
             copyRightDialog.show();
@@ -741,6 +734,7 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBuyBookSuccessEvent(BuyBookSuccessEvent event) {
         String msg = getString(R.string.buy_book_success) + bookDetailBean.name + getString(R.string.book_detail_tip_book_add_to_bookself);
+        bookDetailBean.isAlreadyBuy = true;
         ToastUtil.showToast(JDReadApplication.getInstance(), msg);
         downLoadWholeBook();
     }
@@ -806,12 +800,10 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void showInfoDialog(String content) {
-        if (hasClick) {
+        if (copyRightDialog != null && copyRightDialog.isShowing()) {
             return;
         }
-        hasClick = true;
         if (StringUtils.isNullOrEmpty(content)) {
-            hasClick = false;
             return;
         }
         DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
@@ -821,12 +813,6 @@ public class BookDetailFragment extends BaseFragment {
         infoBinding.setViewModel(dialogBookInfoViewModel);
         infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
         infoDialog.setView(infoBinding.getRoot());
-        infoDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                hasClick = false;
-            }
-        });
         HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);

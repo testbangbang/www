@@ -252,6 +252,8 @@ public class TopUpDialog extends DialogFragment {
         if (checkedRadioButtonId == R.id.payment_read_bean) {
             if (getPayOrderViewModel().getOrderInfo().need_recharge) {
                 setVisible(R.id.dialog_top_up_detail_layout);
+                binding.setOrderModel(getPayOrderViewModel());
+                getTopUpValue();
             } else {
                 payByReadBean();
             }

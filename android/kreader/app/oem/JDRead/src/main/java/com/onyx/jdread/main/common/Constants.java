@@ -55,7 +55,7 @@ public class Constants {
     public static final String RESULT_CODE_PARAMS_FORMAT_ERRO = "7";
     public static final String RESULT_CODE_BOOK_NO_READ_VIP = "100";
     public static final String RESULT_CODE_BOOK_CAN_NOT_READ = "104";
-    public static final String RESULT_CODE_BOOK_NOT_FOUND = "105";
+    public static final String RESULT_CODE_BOOK_NOT_FOUND = "300";
     public static final String RESULT_CODE_BOOK_ILLEGAL_ORDER = "106";
     public static final String RESULT_CODE_BOOK_ILLEGAL_DEVICE = "108";
     public static final String RESULT_CODE_BOOK_GENERATE_CERT_ERROR = "111";
