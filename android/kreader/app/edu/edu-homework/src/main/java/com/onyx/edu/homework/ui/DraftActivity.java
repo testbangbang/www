@@ -3,12 +3,16 @@ package com.onyx.edu.homework.ui;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.data.model.Subject;
 import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
+import com.onyx.android.sdk.utils.DateTimeUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseActivity;
@@ -19,6 +23,8 @@ import com.onyx.edu.homework.event.SaveNoteEvent;
 import com.onyx.edu.homework.utils.TextUtils;
 
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.Date;
 
 /**
  * Created by lxm on 2017/12/6.
@@ -42,7 +48,32 @@ public class DraftActivity extends BaseActivity {
 
     private void initView(final Question question) {
         initFragment();
+        initToolbar();
         DataBundle.getInstance().register(this);
+    }
+
+    private void initToolbar() {
+        String title = getDataBundle().getHomework().title;
+        Subject subject = getDataBundle().getHomework().subject;
+        Date beginTime = getDataBundle().getHomework().beginTime;
+        if (subject != null && !StringUtils.isNullOrEmpty(subject.name)) {
+            title += "  " + getString(R.string.subject, subject.name);
+        }
+        if (beginTime != null) {
+            String time = DateTimeUtil.formatGMTDate(beginTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+            title += "  " + getString(R.string.publish_time, time);
+        }
+        binding.toolbar.title.setText(title);
+        binding.toolbar.backLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    private DataBundle getDataBundle() {
+        return DataBundle.getInstance();
     }
 
     private void initFragment() {
