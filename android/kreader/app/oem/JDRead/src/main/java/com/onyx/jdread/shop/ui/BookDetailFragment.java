@@ -1,7 +1,6 @@
 package com.onyx.jdread.shop.ui;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;

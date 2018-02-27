@@ -120,7 +120,7 @@
     <string name="search_view_hint">Please input what you want to search</string>
     <string name="book_detail_yuedou_price">%1$s Read Bean</string>
     <string name="book_detail_button_now_read">Now Read</string>
-    <string name="book_detail_button_buy_whole_book">Buy the whole book</string>
+    <string name="book_detail_button_buy_whole_book">download the whole book</string>
     <string name="cart">Cart</string>
     <string name="book_detail_text_view_content_introduce">Introduce</string>
     <string name="book_comment_detail">Comment Detail</string>
@@ -500,4 +500,5 @@
     <string name="password_unlock_current_times_format">The password was entered incorrectly, you have %d more chances to try</string>
     <string name="reader_note">Note:</string>
     <string name="intelligent_recommend">Intelligent recommendation</string>
+    <string name="banner">Banner</string>
 </resources>
