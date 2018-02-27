@@ -32,34 +32,7 @@ public class GotoSearchLocationRequest extends GotoPositionRequest {
     public GotoSearchLocationRequest call() throws Exception {
         super.call();
         LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
-        getReaderUserDataInfo().saveSearchResults(translateToScreen(reader, searchResults));
-        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
+        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo(), null, searchResults);
         return this;
-    }
-
-    private List<ReaderSelection> translateToScreen(final Reader reader, final List<ReaderSelection> list) {
-        for (ReaderSelection searchResult : list) {
-            PageInfo pageInfo = getReaderViewInfo().getPageInfo(searchResult.getPagePosition());
-            if (pageInfo == null) {
-                continue;
-            }
-            if (reader.getReaderHelper().getRendererFeatures().supportScale()) {
-                for (int i = 0; i < searchResult.getRectangles().size(); i++) {
-                    PageUtils.translate(pageInfo.getDisplayRect().left,
-                            pageInfo.getDisplayRect().top,
-                            pageInfo.getActualScale(),
-                            searchResult.getRectangles().get(i));
-                }
-            } else {
-                ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
-                ReaderSelection sel = hitTestManager.selectOnScreen(pageInfo.getPosition(),
-                        searchResult.getStartPosition(), searchResult.getEndPosition());
-                searchResult.getRectangles().clear();
-                if (sel != null) {
-                    searchResult.getRectangles().addAll(sel.getRectangles());
-                }
-            }
-        }
-        return list;
     }
 }
