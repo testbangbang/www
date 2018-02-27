@@ -1120,6 +1120,9 @@ public class PinyinIME extends InputMethodService {
                     + String.valueOf(editorInfo.inputType) + " Restarting:"
                     + String.valueOf(restarting));
         }
+        if (restarting) {
+            return;
+        }
         updateIcon(mInputModeSwitcher.requestInputWithHkb(editorInfo));
         resetToIdleState(false);
     }
@@ -1130,6 +1133,9 @@ public class PinyinIME extends InputMethodService {
             Log.d(TAG, "onStartInputView " + " contentType: "
                     + String.valueOf(editorInfo.inputType) + " Restarting:"
                     + String.valueOf(restarting));
+        }
+        if (restarting) {
+            return;
         }
         updateIcon(mInputModeSwitcher.requestInputWithSkb(editorInfo));
         resetToIdleState(false);
