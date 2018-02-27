@@ -545,6 +545,9 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     }
 
     private String removeUselessLetters(String search, String content, boolean first) {
+        if(StringUtils.isNullOrEmpty(search)){
+            return content;
+        }
         if (!ReaderTextSplitterImpl.isAlpha(search.charAt(0))) {
             return content;
         }
