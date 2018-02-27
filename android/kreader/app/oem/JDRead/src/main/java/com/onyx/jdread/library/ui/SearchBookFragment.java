@@ -39,6 +39,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.main.event.KeyCodeEnterEvent;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.shop.action.SearchBookListAction;
@@ -335,6 +336,13 @@ public class SearchBookFragment extends BaseFragment {
     @Subscribe
     public void onSearchBookKeyEvent(SearchBookKeyEvent event) {
         binding.searchView.setQuery(event.getSearchKey(), true);
+    }
+
+    @Subscribe
+    public void onKeyCodeEnterEvent(KeyCodeEnterEvent event) {
+        if (StringUtils.isNullOrEmpty(binding.searchView.getQuery().toString())) {
+            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
+        }
     }
 
     @Subscribe

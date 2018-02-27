@@ -71,4 +71,12 @@ public class CommonUtils {
         }
         return bookArr;
     }
+
+    public static String removeBlank(String content) {
+        String result = "";
+        if (content != null) {
+            result = content.replace((char) 12288, ' ').trim();
+        }
+        return result;
+    }
 }
