@@ -5,6 +5,7 @@ import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.SettingInfo;
 import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 import com.onyx.jdread.reader.request.GotoPositionRequest;
 
@@ -19,8 +20,8 @@ public class GotoSearchLocationRequest extends GotoPositionRequest {
     private List<ReaderSelection> searchResults;
     private Reader reader;
 
-    public GotoSearchLocationRequest(List<ReaderSelection> results, Reader reader, String position) {
-        super(reader, position, false);
+    public GotoSearchLocationRequest(List<ReaderSelection> results, Reader reader, String position, SettingInfo settingInfo) {
+        super(reader, position, false,settingInfo);
         searchResults = new ArrayList<>();
         for (ReaderSelection searchResult : results) {
             this.searchResults.add(searchResult.clone());

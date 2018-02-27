@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.request;
 
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.SettingInfo;
 
 /**
  * Created by huxiaomao on 2018/1/8.
@@ -10,10 +11,12 @@ import com.onyx.jdread.reader.data.Reader;
 public class GotoPageRequest extends ReaderBaseRequest {
     private Reader reader;
     private int page;
+    private SettingInfo settingInfo;
 
-    public GotoPageRequest(Reader reader,int page) {
+    public GotoPageRequest(Reader reader,int page,SettingInfo settingInfo) {
         this.reader = reader;
         this.page = page;
+        this.settingInfo = settingInfo;
     }
 
     @Override
@@ -24,6 +27,7 @@ public class GotoPageRequest extends ReaderBaseRequest {
         }
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(reader);
+        saveReaderOptions(reader,settingInfo);
         return this;
     }
 }

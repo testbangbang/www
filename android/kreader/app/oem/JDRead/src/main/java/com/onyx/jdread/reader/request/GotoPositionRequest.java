@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.request;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.SettingInfo;
 
 /**
  * Created by huxiaomao on 2018/1/30.
@@ -13,27 +14,32 @@ public class GotoPositionRequest extends ReaderBaseRequest {
     private String persistentPosition;
     private int page;
     private boolean isDrawPage = true;
+    private SettingInfo settingInfo;
 
-    public GotoPositionRequest(Reader reader, int page, boolean isDrawPage) {
+    public GotoPositionRequest(Reader reader, int page, boolean isDrawPage,SettingInfo settingInfo) {
         this.reader = reader;
         this.page = page;
         this.isDrawPage = isDrawPage;
+        this.settingInfo = settingInfo;
     }
 
-    public GotoPositionRequest(Reader reader, int page) {
+    public GotoPositionRequest(Reader reader, int page,SettingInfo settingInfo) {
         this.reader = reader;
         this.page = page;
+        this.settingInfo = settingInfo;
     }
 
-    public GotoPositionRequest(Reader reader, String persistentPosition) {
+    public GotoPositionRequest(Reader reader, String persistentPosition,SettingInfo settingInfo) {
         this.reader = reader;
         this.persistentPosition = persistentPosition;
+        this.settingInfo = settingInfo;
     }
 
-    public GotoPositionRequest(Reader reader, String persistentPosition, boolean isDrawPage) {
+    public GotoPositionRequest(Reader reader, String persistentPosition, boolean isDrawPage,SettingInfo settingInfo) {
         this.reader = reader;
         this.persistentPosition = persistentPosition;
         this.isDrawPage = isDrawPage;
+        this.settingInfo = settingInfo;
     }
 
     @Override
@@ -52,6 +58,7 @@ public class GotoPositionRequest extends ReaderBaseRequest {
             reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
         }
         updateSetting(reader);
+        saveReaderOptions(reader,settingInfo);
         return this;
     }
 }

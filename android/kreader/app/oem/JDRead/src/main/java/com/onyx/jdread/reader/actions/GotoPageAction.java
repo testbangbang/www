@@ -20,7 +20,7 @@ public class GotoPageAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        final GotoPageRequest request = new GotoPageRequest(readerDataHolder.getReader(), page);
+        final GotoPageRequest request = new GotoPageRequest(readerDataHolder.getReader(), page,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
