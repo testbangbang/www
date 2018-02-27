@@ -94,7 +94,7 @@ public class BookVIPReadFragment extends BaseFragment {
     private void initView() {
         setRecycleView();
         bookVipReadBinding.setViewModel(getVipReadViewModel());
-        getVipReadViewModel().getTitleBarViewModel().leftText = getString(R.string.vip);
+        getVipReadViewModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.read_vip);
     }
 
     private void setRecycleView() {

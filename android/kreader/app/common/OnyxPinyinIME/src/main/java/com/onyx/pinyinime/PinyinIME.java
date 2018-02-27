@@ -873,6 +873,9 @@ public class PinyinIME extends InputMethodService {
                     resetToIdleState(false);
                 }
             } else {
+                if (mDecInfo.mCandidatesList.size() <= 0) {
+                    return;
+                }
                 if (ImeState.STATE_IDLE == mImeState) {
                     if (mDecInfo.getSplStrDecodedLen() == 0) {
                         changeToStateComposing(true);
@@ -1117,6 +1120,9 @@ public class PinyinIME extends InputMethodService {
                     + String.valueOf(editorInfo.inputType) + " Restarting:"
                     + String.valueOf(restarting));
         }
+        if (restarting) {
+            return;
+        }
         updateIcon(mInputModeSwitcher.requestInputWithHkb(editorInfo));
         resetToIdleState(false);
     }
@@ -1127,6 +1133,9 @@ public class PinyinIME extends InputMethodService {
             Log.d(TAG, "onStartInputView " + " contentType: "
                     + String.valueOf(editorInfo.inputType) + " Restarting:"
                     + String.valueOf(restarting));
+        }
+        if (restarting) {
+            return;
         }
         updateIcon(mInputModeSwitcher.requestInputWithSkb(editorInfo));
         resetToIdleState(false);

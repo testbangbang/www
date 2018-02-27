@@ -15,10 +15,12 @@ import android.view.SurfaceView;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
+import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -74,18 +76,100 @@ public class ReaderViewHelper {
     }
 
     public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
-        updatePageView(reader, readerUserDataInfo, readerViewInfo, null);
+        updatePageView(reader, readerUserDataInfo, readerViewInfo, null, null);
+    }
+
+    public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo, List<ReaderSelection> searchResults) {
+        updatePageView(reader, readerUserDataInfo, readerViewInfo, null, searchResults);
     }
 
     public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo, ReaderSelectionHelper readerSelectionManager) {
+        updatePageView(reader, readerUserDataInfo, readerViewInfo, readerSelectionManager, null);
+    }
+
+    public void updatePageView(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo, ReaderSelectionHelper readerSelectionManager, List<ReaderSelection> searchResults) {
         try {
             ReaderDrawContext context = ReaderDrawContext.create(false);
             reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, readerViewInfo);
+            loadUserData(reader, readerUserDataInfo, readerViewInfo);
+            if (searchResults != null) {
+                readerUserDataInfo.saveSearchResults(translateToScreen(reader, readerViewInfo, searchResults));
+            }
             renderAll(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo, readerViewInfo, readerSelectionManager);
 
             reader.getReaderHelper().saveToCache(context.renderingBitmap);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private List<ReaderSelection> translateToScreen(final Reader reader, ReaderViewInfo readerViewInfo, final List<ReaderSelection> list) {
+        for (ReaderSelection searchResult : list) {
+            if (reader.getReaderHelper().getRendererFeatures().supportScale()) {
+                PageInfo pageInfo = readerViewInfo.getPageInfo(searchResult.getPagePosition());
+                if (pageInfo == null) {
+                    continue;
+                }
+                for (int i = 0; i < searchResult.getRectangles().size(); i++) {
+                    PageUtils.translate(pageInfo.getDisplayRect().left,
+                            pageInfo.getDisplayRect().top,
+                            pageInfo.getActualScale(),
+                            searchResult.getRectangles().get(i));
+                }
+            } else {
+                PageInfo pageInfo = null;
+                ReaderNavigator navigator = reader.getReaderHelper().getNavigator();
+                for (PageInfo p : readerViewInfo.getVisiblePages()) {
+                    String pos = searchResult.getStartPosition();
+                    String pageBegin = p.getRange().startPosition;
+                    String pageEnd = p.getRange().endPosition;
+                    if ((navigator.comparePosition(pos, pageBegin) >= 0) &&
+                            reader.getReaderHelper().getNavigator().comparePosition(pos, pageEnd) <= 0) {
+                        pageInfo = p;
+                        break;
+                    }
+                }
+                if (pageInfo == null) {
+                    continue;
+                }
+                ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
+                ReaderSelection sel = hitTestManager.selectOnScreen(pageInfo.getPosition(),
+                        searchResult.getStartPosition(), searchResult.getEndPosition());
+                searchResult.getRectangles().clear();
+                if (sel != null) {
+                    searchResult.getRectangles().addAll(sel.getRectangles());
+                }
+            }
+        }
+        return list;
+    }
+
+    public void loadUserData(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
+        readerUserDataInfo.setDocumentPath(reader.getDocumentInfo().getBookPath());
+        readerUserDataInfo.setDocumentCategory(reader.getReaderHelper().getDocumentOptions().getDocumentCategory());
+        readerUserDataInfo.setDocumentCodePage(reader.getReaderHelper().getDocumentOptions().getCodePage());
+        readerUserDataInfo.setChineseConvertType(reader.getReaderHelper().getDocumentOptions().getChineseConvertType());
+        readerUserDataInfo.setDocumentMetadata(reader.getReaderHelper().getDocumentMetadata());
+
+
+        boolean isSupportScale = reader.getReaderHelper().getRendererFeatures().supportScale();
+        String displayName = reader.getReaderHelper().getPlugin().displayName();
+        String md5 = reader.getReaderHelper().getDocumentMd5();
+        ReaderNavigator navigator = reader.getReaderHelper().getNavigator();
+
+        Context context = reader.getReaderHelper().getContext();
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageBookmarks(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageLinks(context, navigator, readerViewInfo.getVisiblePages());
+        }
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageImages(context, navigator, readerViewInfo.getVisiblePages());
+        }
+
+        if (readerViewInfo != null) {
+            readerUserDataInfo.loadPageAnnotations(context, isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
         }
     }
 
@@ -104,6 +188,7 @@ public class ReaderViewHelper {
         }
         try {
             drawPageContent(canvas, bitmap);
+            drawPageLinks(canvas, readerUserDataInfo, readerViewInfo);
             drawPageAnnotations(canvas, reader, readerUserDataInfo, readerViewInfo);
             drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
             drawSearchResults(canvas,reader,readerUserDataInfo,readerViewInfo);
@@ -141,6 +226,18 @@ public class ReaderViewHelper {
         paint.setStyle(oldStyle);
     }
 
+    private void drawPageLinks(Canvas canvas, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
+        for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
+            if (!userDataInfo.hasPageLinks(pageInfo)) {
+                continue;
+            }
+            List<ReaderSelection> links = userDataInfo.getPageLinks(pageInfo);
+            for (ReaderSelection link : links) {
+                drawUnderLineHighlightRectangles(canvas, paint, link.getRectangles());
+            }
+        }
+    }
+
     private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final Reader reader, final ReaderViewInfo readerViewInfo,
                                      ReaderSelectionHelper readerSelectionManager) {
         if (readerSelectionManager != null) {
@@ -154,13 +251,10 @@ public class ReaderViewHelper {
     }
 
     private void drawReaderSelection(Context context, Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection,boolean annotationHighlightStyle) {
-        PageInfo pageInfo = viewInfo.getPageInfo(selection.getPagePosition());
-        if (pageInfo != null) {
-            if(annotationHighlightStyle){
-                drawFillHighlightRectangles(canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
-            }else {
-                drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
-            }
+        if(annotationHighlightStyle){
+            drawFillHighlightRectangles(canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
+        }else {
+            drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
         }
     }
 
@@ -198,12 +292,6 @@ public class ReaderViewHelper {
     }
 
     private void drawPageAnnotations(Canvas canvas, Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
-        readerUserDataInfo.loadPageAnnotations(reader.getReaderHelper().getContext(),
-                reader.getReaderHelper().getRendererFeatures().supportScale(),
-                reader.getReaderHelper().getPlugin().displayName(),
-                reader.getReaderHelper().getDocumentMd5(),
-                reader.getReaderHelper().getNavigator(),
-                readerViewInfo.getVisiblePages());
         if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
             updateAnnotationRectangles(reader,readerViewInfo,readerUserDataInfo);
         }
@@ -286,6 +374,10 @@ public class ReaderViewHelper {
         paint.setTextSize(ReaderViewConfig.getPageNumberFontSize());
         int currentPage = PagePositionUtils.getPageNumber(readerViewInfo.getFirstVisiblePage().getName()) + 1;
         int totalPage = readerViewInfo.getTotalPage();
+        if (!readerViewInfo.canNextScreen) {
+            // if can't next screen, then we are at last position of document
+            currentPage = totalPage;
+        }
         String page = currentPage + "/" + totalPage;
         PointF timePoint = ReaderViewConfig.getPageNumberPoint(contentView);
 

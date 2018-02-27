@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -32,6 +33,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
+import com.onyx.jdread.main.event.KeyCodeEnterEvent;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
@@ -303,6 +305,14 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+            LibraryDataBundle.getInstance().getEventBus().post(new KeyCodeEnterEvent());
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
         switchCurrentFragment(event.childClassName);
@@ -321,6 +331,10 @@ public class MainActivity extends AppCompatActivity {
         if (functionBarItem != null) {
             String childClassName = functionBarItem.getStackList().popChildView();
             switchCurrentFragment(childClassName);
+        }
+
+        if (currentFragment != null && currentFragment.getClass().getName().equals(LibraryFragment.class.getName())) {
+            LibraryDataBundle.getInstance().getEventBus().post(new BackToRootFragment());
         }
     }
 
@@ -361,6 +375,7 @@ public class MainActivity extends AppCompatActivity {
             systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
         } else {
             systemBarPopupWindowModel.brightnessModel.updateLight();
+            systemBarPopupWindowModel.updateRefreshMode();
         }
         SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(this, systemBarPopupWindowModel);
         systemBarPopupWindow.show(binding.mainSystemBar.getRoot());

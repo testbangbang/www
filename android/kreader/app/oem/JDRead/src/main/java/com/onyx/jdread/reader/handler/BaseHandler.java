@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.jdread.reader.actions.CleanSelectionAction;
+import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.data.PageTurningDetector;
@@ -357,6 +358,7 @@ public class BaseHandler {
             for (ReaderSelection link : links) {
                 for (RectF rect : link.getRectangles()) {
                     if (rect.contains(x, y)) {
+                        new GotoPositionAction(link.getPagePosition()).execute(readerDataHolder, null);
                         return true;
                     }
                 }

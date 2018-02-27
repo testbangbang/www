@@ -50,7 +50,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_gravity="bottom"
-                    android:background="@{readerBookInfoModel.currentTab == ReaderBookInfoDialogConfig.CATALOG_MODE?@android:color/black:@android:color/white}"/>
+                    android:background="@{readerBookInfoModel.currentTab == ReaderBookInfoDialogConfig.CATALOG_MODE?@android:color/black:@android:color/white}" />
             </LinearLayout>
 
             <View style="@style/ReaderVerticalSeparationLine" />
@@ -74,7 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_gravity="bottom"
-                    android:background="@{readerBookInfoModel.currentTab == ReaderBookInfoDialogConfig.BOOKMARK_MODE?@android:color/black:@android:color/white}"/>
+                    android:background="@{readerBookInfoModel.currentTab == ReaderBookInfoDialogConfig.BOOKMARK_MODE?@android:color/black:@android:color/white}" />
             </LinearLayout>
 
             <View style="@style/ReaderVerticalSeparationLine" />
@@ -118,7 +118,16 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_dialog_empty_view" />
+                android:layout_marginBottom="10dp"
+                android:src="@mipmap/ic_none" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{readerBookInfoModel.noneString}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font"
+                android:layout_marginBottom="50dp"/>
         </LinearLayout>
 
         <com.onyx.android.sdk.ui.view.TreeRecyclerView
@@ -147,9 +156,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="center|right"
             android:layout_marginRight="20dp"
-            android:padding="5dp"
+            android:padding="13dp"
             android:text="@{readerBookInfoModel.pageInfo}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />

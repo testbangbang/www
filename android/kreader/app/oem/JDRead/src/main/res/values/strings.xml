@@ -190,7 +190,7 @@
     <string name="top_up">Top-up</string>
     <string name="consumption_record">Records of consumption</string>
     <string name="paid_record">Records of payment</string>
-    <string name="read_vip">Read VIP</string>
+    <string name="read_vip">JoyRead VIP</string>
     <string name="points_for">Points for</string>
     <string name="top_up_tips">1 yuan =100 reading beans, and the first recharging equivalent voucher</string>
     <string name="current_balance">Current balance: %1$d read bean | %2$d vouchers</string>
@@ -350,7 +350,7 @@
     <string name="bind_to_email">bind to email</string>
     <string name="bind_to_email_failed">bind_to_email_failed</string>
     <string name="send_succeed">send_succeed</string>
-    <string name="buy_book_success">Book purchase success </string>
+    <string name="buy_book_success">Book purchase success</string>
     <string name="buy_read_vip">Buy Read VIP</string>
     <string name="not_open_vip">Not open to read VIP</string>
     <string name="read_vip_instructions">Read VIP instructions</string>
@@ -435,6 +435,7 @@
     <string name="close_history">Close History</string>
     <string name="delete_history">Delete History</string>
     <string name="searching" formatted="false">Searching %d/%d</string>
+    <string name="reader_searching">Please Waiting...</string>
     <string name="no_more_search_results">No more search results</string>
     <string name="page" formatted="false">page %d</string>
     <string name="search_end">Have finished searching</string>
@@ -500,6 +501,10 @@
     <string name="password_unlock_current_times_format">The password was entered incorrectly, you have %d more chances to try</string>
     <string name="reader_note">Note:</string>
     <string name="intelligent_recommend">Intelligent recommendation</string>
+    <string name="bookmark_none">There is no bookmark</string>
+    <string name="note_none">No notes</string>
+    <string name="catalog_none">The catalog is empty</string>
+    <string name="search_result_none">Search result empty</string>
     <string name="new_user_package">New user membership package</string>
     <string name="new_user_package_detail">The 365 days membership for the new user is bound to the login account.</string>
     <string name="receive_success">Receive success</string>

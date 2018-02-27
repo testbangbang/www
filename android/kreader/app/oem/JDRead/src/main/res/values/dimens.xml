@@ -91,7 +91,7 @@
     <dimen name="feedback_phone_edit_height">32dp</dimen>
     <dimen name="button_padding">10dp</dimen>
     <dimen name="title_bar_drawable_padding">10dp</dimen>
-    <dimen name="reader_title_bar_drawable_padding">25dp</dimen>
+    <dimen name="reader_title_bar_drawable_padding">1dp</dimen>
     <dimen name="custom_recycle_view_margin_right">14dp</dimen>
     <dimen name="book_shop_main_config_recycle_view_margin_top">30dp</dimen>
     <dimen name="book_shop_search_view_padding_top">17dp</dimen>
@@ -231,7 +231,7 @@
     <dimen name="reader_customize_format_layout_padding_bottom">10dp</dimen>
     <dimen name="reader_customize_format_layout_padding_left">20dp</dimen>
     <dimen name="reader_customize_format_layout_padding_right">20dp</dimen>
-    <dimen name="reader_customize_format_title_margin_right">20dp</dimen>
+    <dimen name="reader_customize_format_title_margin_right">10dp</dimen>
     <dimen name="reader_customize_minus_style_padding">15dp</dimen>
     <dimen name="reader_customize_minus_style_margin_right">15dp</dimen>
     <dimen name="reader_customize_plus_style_padding">15dp</dimen>
@@ -245,8 +245,8 @@
     <dimen name="reader_title_buy_padding_margin_left">10dp</dimen>
     <dimen name="reader_title_back_margin_right">10dp</dimen>
     <dimen name="reader_title_back_padding">10dp</dimen>
-    <dimen name="reader_page_info_chapter_margin_left">15dp</dimen>
-    <dimen name="reader_page_info_chapter_margin_right">15dp</dimen>
+    <dimen name="reader_page_info_chapter_margin_left">10dp</dimen>
+    <dimen name="reader_page_info_chapter_margin_right">10dp</dimen>
     <dimen name="user_image_height">74dp</dimen>
     <dimen name="login_whole_padding">20dp</dimen>
     <dimen name="login_account_padding">10dp</dimen>
@@ -533,4 +533,5 @@
     <dimen name="fragment_find_button_min_width">300dp</dimen>
     <dimen name="fragment_find_button_padding">12dp</dimen>
     <dimen name="fragment_find_button_margin_top">40dp</dimen>
+    <dimen name="vip_user_info_item_login_immediately_width">268dp</dimen>
 </resources>

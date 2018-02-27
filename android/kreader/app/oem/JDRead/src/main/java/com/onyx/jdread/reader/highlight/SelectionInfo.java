@@ -12,13 +12,25 @@ import java.util.List;
  * Created by huxiaomao on 2018/1/16.
  */
 
-public class SelectionInfo {
+public class SelectionInfo implements Cloneable {
     private ReaderSelection currentSelection;
     private List<HighlightCursor> cursors = new ArrayList<HighlightCursor>();
     private PointF highLightBeginTop;
     private PointF highLightEndBottom;
     private PointF touchPoint;
     public PageInfo pageInfo;
+
+    @Override
+    public SelectionInfo clone() {
+        SelectionInfo copy = new SelectionInfo();
+        copy.currentSelection = currentSelection.clone();
+        copy.cursors = cursors;
+        copy.highLightBeginTop = new PointF(highLightBeginTop.x, highLightBeginTop.y);
+        copy.highLightEndBottom = new PointF(highLightEndBottom.x, highLightEndBottom.y);
+        copy.touchPoint = new PointF(touchPoint.x, touchPoint.y);
+        copy.pageInfo = new PageInfo(pageInfo);
+        return copy;
+    }
 
     public PointF getTouchPoint() {
         return touchPoint;

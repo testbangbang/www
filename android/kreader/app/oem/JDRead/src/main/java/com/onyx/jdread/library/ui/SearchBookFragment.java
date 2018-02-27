@@ -39,9 +39,14 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.main.event.KeyCodeEnterEvent;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
+import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.action.SearchHotWordAction;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
 import com.onyx.jdread.util.InputUtils;
@@ -174,13 +179,7 @@ public class SearchBookFragment extends BaseFragment {
         searchBookModel.isInputting.set(StringUtils.isNotBlank(newText));
         searchBookModel.searchKey.set(newText);
         checkView();
-        SearchBookAction searchBookAction = new SearchBookAction(false);
-        searchBookAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                searchHintAdapter.notifyDataSetChanged();
-            }
-        });
+        searchBook(false, null);
     }
 
     private void queryTextSubmit(String query) {
@@ -192,16 +191,61 @@ public class SearchBookFragment extends BaseFragment {
             return;
         }
         Utils.hideSoftWindow(getActivity());
+        binding.searchView.clearFocus();
         searchBookModel.isInputting.set(false);
         searchBookModel.searchKey.set(query);
         checkView();
-        SearchBookAction searchBookAction = new SearchBookAction(true);
+        searchBook(true, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                updatePageIndicator();
+                loadSearchHistory();
+            }
+        });
+    }
+
+    private void searchBook(final boolean submit, final RxCallback callback) {
+        searchBookFromLocal(submit, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                searchBookFromCloud(submit, callback);
+            }
+        });
+    }
+
+    private void searchBookFromLocal(final boolean submit, final RxCallback rxCallback) {
+        SearchBookAction searchBookAction = new SearchBookAction(submit);
         searchBookAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                searchResultAdapter.notifyDataSetChanged();
-                updatePageIndicator();
-                loadSearchHistory();
+                if (submit) {
+                    searchResultAdapter.notifyDataSetChanged();
+                } else {
+                    searchHintAdapter.notifyDataSetChanged();
+                }
+                RxCallback.invokeNext(rxCallback, o);
+            }
+        });
+    }
+
+    private void searchBookFromCloud(final boolean submit, final RxCallback callback) {
+        SearchBookListAction booksAction = new SearchBookListAction("", 1,
+                CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES,
+                CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES,
+                searchBookModel.searchKey.get(), CloudApiContext.SearchBook.FILTER_DEFAULT);
+        booksAction.setMapToDataModel(true);
+        booksAction.setLoadCover(submit);
+        booksAction.execute(ShopDataBundle.getInstance(), new RxCallback<SearchBookListAction>() {
+            @Override
+            public void onNext(SearchBookListAction action) {
+                if (submit) {
+                    LibraryDataBundle.getInstance().getSearchBookModel().searchResult.addAll(action.getDataModelList());
+                    searchResultAdapter.notifyDataSetChanged();
+                } else {
+                    LibraryDataBundle.getInstance().getSearchBookModel().searchHint.addAll(action.getDataModelList());
+                    searchHintAdapter.notifyDataSetChanged();
+                }
+                RxCallback.invokeNext(callback, action);
             }
         });
     }
@@ -254,15 +298,23 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        hideLoadingDialog();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         getEventBus().unregister(this);
+        ShopDataBundle.getInstance().getEventBus().unregister(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
         getEventBus().register(this);
+        ShopDataBundle.getInstance().getEventBus().register(this);
         if (getBundle() != null) {
             String searchKey = getBundle().getString(getString(R.string.search_name_key));
             if (StringUtils.isNotBlank(searchKey)) {
@@ -284,6 +336,13 @@ public class SearchBookFragment extends BaseFragment {
     @Subscribe
     public void onSearchBookKeyEvent(SearchBookKeyEvent event) {
         binding.searchView.setQuery(event.getSearchKey(), true);
+    }
+
+    @Subscribe
+    public void onKeyCodeEnterEvent(KeyCodeEnterEvent event) {
+        if (StringUtils.isNullOrEmpty(binding.searchView.getQuery().toString())) {
+            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
+        }
     }
 
     @Subscribe
@@ -315,6 +374,16 @@ public class SearchBookFragment extends BaseFragment {
         } else {
             openBook(model);
         }
+    }
+
+    @Subscribe
+    public void onLoadingDialogEvent(LoadingDialogEvent event) {
+        showLoadingDialog(getString(event.getResId()));
+    }
+
+    @Subscribe
+    public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
     }
 
     private void openBook(DataModel model) {

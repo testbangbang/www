@@ -35,7 +35,7 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
     public void initOptions() {
         pluginOptions = srcOptions.pluginOptions();
         if (pluginOptions == null) {
-            pluginOptions = ReaderPluginOptionsImpl.create(getAppContext());
+            pluginOptions = ReaderPluginOptionsImpl.create(getAppContext()).setLoadAllImages(false);
         }
 
     }

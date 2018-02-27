@@ -18,6 +18,7 @@ import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.SelectTextCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.actions.ToggleBookmarkAction;
+import com.onyx.jdread.reader.actions.UpdateViewPageAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.catalog.event.AnnotationItemClickEvent;
 import com.onyx.jdread.reader.common.ReaderViewBack;
@@ -283,7 +284,7 @@ public class ReaderActivityEventHandler {
             ToastUtil.showToast(R.string.reader_check_network);
             return;
         }
-        DialogDict dialogDict = new DialogDict(activity, text);
+        DialogDict dialogDict = new DialogDict(activity, text,readerViewModel.getEventBus());
         dialogDict.show();
     }
 
@@ -336,5 +337,11 @@ public class ReaderActivityEventHandler {
             closeDocumentDialog = new CloseDocumentDialog(readerViewModel.getReaderDataHolder(),readerViewBack.getContext());
         }
         return closeDocumentDialog;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateViewPageEvent(UpdateViewPageEvent event){
+        UpdateViewPageAction action = new UpdateViewPageAction();
+        action.execute(readerViewModel.getReaderDataHolder(),null);
     }
 }

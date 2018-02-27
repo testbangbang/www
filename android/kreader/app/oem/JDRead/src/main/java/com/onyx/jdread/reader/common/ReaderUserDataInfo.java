@@ -56,6 +56,7 @@ public class ReaderUserDataInfo {
 
     private ReaderDocumentTableOfContent toc;
     private Map<String, Bookmark> bookmarkMap = new LinkedHashMap<>();
+    private List<Bookmark> bookmarks;
     private Map<String, Bookmark> pageBookmarkMap = new LinkedHashMap<>();
     private Map<String, List<Annotation>> annotationMap = new LinkedHashMap<>();
     private List<Annotation> annotationList = new ArrayList<>();
@@ -261,9 +262,7 @@ public class ReaderUserDataInfo {
     }
 
     public List<Bookmark> getBookmarks() {
-        ArrayList<Bookmark> list = new ArrayList<>();
-        list.addAll(bookmarkMap.values());
-        return list;
+        return bookmarks;
     }
 
     public boolean loadPageBookmarks(final Context context, final boolean isSupportScale,final String displayName,final String md5,final ReaderNavigator navigator, final List<PageInfo> visiblePages) {
@@ -306,10 +305,10 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentBookmarks(final Context context, final String displayName,final String md5) {
-        List<Bookmark> bookmarks = ContentSdkDataUtils.getDataProvider().loadBookmarks(
+        bookmarks = ContentSdkDataUtils.getDataProvider().loadBookmarks(
                 displayName,
                 md5,
-                OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
+                OrderBy.fromProperty(Bookmark_Table.createdAt).ascending());
         if (bookmarks != null) {
             for (Bookmark bookmark : bookmarks) {
                 bookmarkMap.put(bookmark.getPosition(), bookmark);

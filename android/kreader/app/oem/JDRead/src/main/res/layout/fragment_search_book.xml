@@ -51,13 +51,15 @@
                 android:shadowColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font"
                 app:iconifiedByDefault="false"
-                android:imeOptions="actionSearch"
+                android:imeOptions="flagNoEnterAction"
                 app:queryHint="@string/search_view_hint"
                 app:searchIcon="@null" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:onClick="@{()->searchModel.search()}"
                 android:src="@mipmap/ic_shelf_search" />
         </LinearLayout>

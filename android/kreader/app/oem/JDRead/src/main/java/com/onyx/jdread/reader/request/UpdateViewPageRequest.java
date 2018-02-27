@@ -16,12 +16,13 @@ public class UpdateViewPageRequest extends ReaderBaseRequest {
 
     @Override
     public UpdateViewPageRequest call() throws Exception {
+        reader.getReaderSelectionHelper().clear();
         updatePageView();
         updateSetting(reader);
         return this;
     }
 
     public void updatePageView() {
-        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo(),null);
+        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo());
     }
 }
