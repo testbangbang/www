@@ -41,4 +41,8 @@ public class ResManager {
     public static int[] getIntArray(int resId) {
         return context.getResources().getIntArray(resId);
     }
+
+    static public String getUriOfRawName(String rawName) {
+        return "file:///android_res/raw/" + rawName;
+    }
 }

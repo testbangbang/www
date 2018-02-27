@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -13,9 +14,12 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.BuyReadVipBinding;
+import com.onyx.jdread.databinding.DialogVipNoticeBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.action.GetVipGoodListAction;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
@@ -23,7 +27,9 @@ import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.VipButtonClickEvent;
 import com.onyx.jdread.shop.model.BuyReadVipModel;
+import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.view.BookInfoDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -121,7 +127,36 @@ public class BuyReadVIPFragment extends BaseFragment {
         if (checkWfiDisConnected()) {
             return;
         }
-        //TODO pay order
+        showVipNoticeDialog();
+    }
+
+    private void showVipNoticeDialog() {
+        final DialogVipNoticeBinding infoBinding = DialogVipNoticeBinding.inflate(LayoutInflater.from(getActivity()), null, false);
+        final DialogBookInfoViewModel infoViewModel = new DialogBookInfoViewModel();
+        infoViewModel.title.set(ResManager.getString(R.string.read_vip_instructions));
+        infoBinding.setViewModel(infoViewModel);
+        final BookInfoDialog infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
+        infoDialog.setView(infoBinding.getRoot());
+        HTMLReaderWebView pagedWebView = infoBinding.infoWebView;
+        pagedWebView.setCallParentPageFinishedMethod(false);
+        pagedWebView.loadUrl(ResManager.getUriOfRawName("joyread_notice.html"));
+        WebSettings settings = pagedWebView.getSettings();
+        settings.setSupportZoom(false);
+        settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
+        pagedWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
+            @Override
+            public void onPageChanged(int totalPage, int curPage) {
+                infoViewModel.currentPage.set(curPage);
+                infoViewModel.totalPage.set(totalPage);
+            }
+        });
+        infoBinding.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                infoDialog.dismiss();
+            }
+        });
+        infoDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
