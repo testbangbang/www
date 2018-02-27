@@ -190,7 +190,7 @@
     <string name="top_up">Top-up</string>
     <string name="consumption_record">Records of consumption</string>
     <string name="paid_record">Records of payment</string>
-    <string name="read_vip">Read VIP</string>
+    <string name="read_vip">JoyRead VIP</string>
     <string name="points_for">Points for</string>
     <string name="top_up_tips">1 yuan =100 reading beans, and the first recharging equivalent voucher</string>
     <string name="current_balance">Current balance: %1$d read bean | %2$d vouchers</string>
@@ -350,7 +350,7 @@
     <string name="bind_to_email">bind to email</string>
     <string name="bind_to_email_failed">bind_to_email_failed</string>
     <string name="send_succeed">send_succeed</string>
-    <string name="buy_book_success">Book purchase success </string>
+    <string name="buy_book_success">Book purchase success</string>
     <string name="buy_read_vip">Buy Read VIP</string>
     <string name="not_open_vip">Not open to read VIP</string>
     <string name="read_vip_instructions">Read VIP instructions</string>

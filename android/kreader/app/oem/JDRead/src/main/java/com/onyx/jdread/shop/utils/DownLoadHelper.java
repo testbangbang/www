@@ -12,27 +12,27 @@ public class DownLoadHelper {
 
     public static final int DOWNLOAD_PERCENT_FINISH = 100;
 
-    public static boolean isDownloaded (int status) {
+    public static boolean isDownloaded(int status) {
         return status == FileDownloadStatus.completed;
     }
 
-    public static boolean isDownloading (int status) {
+    public static boolean isDownloading(int status) {
         return status == FileDownloadStatus.progress;
     }
 
-    public static boolean isPause (int status) {
+    public static boolean isPause(int status) {
         return status == FileDownloadStatus.paused;
     }
 
-    public static boolean isError (int status) {
+    public static boolean isError(int status) {
         return status == FileDownloadStatus.error;
     }
 
-    public static boolean isStarted (int status) {
+    public static boolean isStarted(int status) {
         return status == FileDownloadStatus.started;
     }
 
-    public static boolean isConnected (int status) {
+    public static boolean isConnected(int status) {
         return status == FileDownloadStatus.connected;
     }
 
@@ -40,7 +40,7 @@ public class DownLoadHelper {
         return FileDownloadStatus.paused;
     }
 
-    public static boolean canInsertBookDetail (int status){
+    public static boolean canInsertBookDetail(int status) {
         return isDownloaded(status) || isPause(status) || isError(status) || isStarted(status) || isDownloading(status);
     }
 
@@ -54,5 +54,13 @@ public class DownLoadHelper {
 
     public static void removeDownloadingTask(Object tag) {
         OnyxDownloadManager.getInstance().removeTask(tag);
+    }
+
+    private boolean isTaskExist(Object key) {
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(key);
+        if (task != null && !FileDownloadStatus.isOver(task.getStatus())) {
+            return true;
+        }
+        return false;
     }
 }

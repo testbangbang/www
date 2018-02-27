@@ -42,6 +42,7 @@ public class PageRecyclerView extends RecyclerView {
     private int originPaddingBottom;
     private int itemDecorationHeight = 0;
     private boolean pageTurningCycled = false;
+    private boolean canTouchPageTurning = true;
 
     public interface OnPagingListener {
         void onPageChange(int position,int itemCount,int pageSize);
@@ -232,11 +233,15 @@ public class PageRecyclerView extends RecyclerView {
             case MotionEvent.ACTION_UP:
                 int direction = detectDirection(ev);
                 if (direction == PageTurningDirection.NEXT) {
-                    nextPage();
-                    return true;
+                    if (canTouchPageTurning) {
+                        nextPage();
+                        return true;
+                    }
                 } else if (direction == PageTurningDirection.PREV) {
-                    prevPage();
-                    return true;
+                    if (canTouchPageTurning) {
+                        prevPage();
+                        return true;
+                    }
                 }
                 break;
             default:
@@ -306,6 +311,10 @@ public class PageRecyclerView extends RecyclerView {
 
     public void setPageTurningCycled(boolean cycled) {
         this.pageTurningCycled = cycled;
+    }
+
+    public void setCanTouchPageTurning(boolean canTouchPageTurning) {
+        this.canTouchPageTurning = canTouchPageTurning;
     }
 
     public void prevPage() {
