@@ -1,5 +1,6 @@
 package com.onyx.jdread.setting.ui;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -88,8 +89,14 @@ public class ReadingToolsFragment extends BaseFragment implements EvernoteLoginF
         model.title.set(bound ? getString(R.string.unbind_to_email) : getString(R.string.bind_to_email));
         model.emailAddress.set(email);
         model.bound.set(bound);
-        AssociatedEmailDialog.Builder builder = new AssociatedEmailDialog.Builder(JDReadApplication.getInstance(), model);
+        AssociatedEmailDialog.Builder builder = new AssociatedEmailDialog.Builder(getActivity(), model);
         AssociatedEmailDialog dialog = builder.create();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Utils.hideSoftWindow(getActivity());
+            }
+        });
         dialog.show();
     }
 

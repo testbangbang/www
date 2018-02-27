@@ -45,6 +45,7 @@ public class WifiLoginDialog extends OnyxAlertDialog {
         final String signalLevel = arguments.getString(ARGS_SIGNAL_LEVEL);
         final String securityMode = arguments.getString(ARGS_SECURITY_MODE);
         Params params = new Params().setTittleString(ssid)
+                .setCanceledOnTouchOutside(false)
                 .setCustomContentLayoutResID(R.layout.alert_dialog_wifi_login)
                 .setCustomViewAction(new CustomViewAction() {
                     @Override

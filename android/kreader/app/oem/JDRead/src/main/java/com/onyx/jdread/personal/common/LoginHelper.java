@@ -3,10 +3,8 @@ package com.onyx.jdread.personal.common;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
@@ -23,6 +21,7 @@ import com.onyx.jdread.personal.event.UserInfoEvent;
 import com.onyx.jdread.personal.event.VerifySignEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
+import com.onyx.jdread.util.Utils;
 
 /**
  * Created by jackdeng on 2017/12/26.
@@ -81,12 +80,12 @@ public class LoginHelper {
         return JDPreferenceManager.getStringValue(Constants.SP_KEY_USER_NAME, "");
     }
 
-    public static void showUserLoginDialog(final UserLoginViewModel userLoginViewModel) {
+    public static void showUserLoginDialog(final UserLoginViewModel userLoginViewModel, final Activity context) {
         final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(JDReadApplication.getInstance()), null, false);
         userLoginBinding.setLoginViewModel(userLoginViewModel);
         userLoginViewModel.isShowPassword.set(false);
         EncryptHelper.getSaltValue(PersonalDataBundle.getInstance(), null);
-        loginDialog = new LoginDialog(JDReadApplication.getInstance());
+        loginDialog = new LoginDialog(context);
         loginDialog.setView(userLoginBinding.getRoot());
         loginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -97,6 +96,7 @@ public class LoginHelper {
         userLoginBinding.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Utils.hideSoftWindow(context);
                 dismissUserLoginDialog();
             }
         });

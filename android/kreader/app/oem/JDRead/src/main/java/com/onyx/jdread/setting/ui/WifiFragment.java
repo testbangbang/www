@@ -104,7 +104,7 @@ public class WifiFragment extends BaseFragment {
 
     private void addWifi() {
         final AddWIFIConfigurationDialog.DialogModel dialogModel = new AddWIFIConfigurationDialog.DialogModel();
-        AddWIFIConfigurationDialog.Builder builder = new AddWIFIConfigurationDialog.Builder(JDReadApplication.getInstance(), dialogModel);
+        AddWIFIConfigurationDialog.Builder builder = new AddWIFIConfigurationDialog.Builder(getActivity(), dialogModel);
         final AddWIFIConfigurationDialog dialog = builder.create();
         dialogModel.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
             @Override

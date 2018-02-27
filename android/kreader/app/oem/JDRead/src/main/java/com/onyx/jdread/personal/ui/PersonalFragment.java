@@ -170,7 +170,7 @@ public class PersonalFragment extends BaseFragment {
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {
-            LoginHelper.showUserLoginDialog(PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel());
+            LoginHelper.showUserLoginDialog(PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel(), getActivity());
             return;
         }
         if (StringUtils.isNotBlank(name)) {

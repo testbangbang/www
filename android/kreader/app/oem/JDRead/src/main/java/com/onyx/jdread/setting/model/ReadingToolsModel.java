@@ -30,18 +30,22 @@ public class ReadingToolsModel extends Observable {
         DeviceInformationModel.ItemModel itemModel = new DeviceInformationModel.ItemModel(eventBus);
         itemModel.text.set(JDReadApplication.getInstance().getString(R.string.dictionary));
         itemModel.event.set(new DictionaryToolsEvent());
+        itemModel.clickable.set(true);
         list.add(itemModel);
         itemModel = new DeviceInformationModel.ItemModel(eventBus);
         itemModel.text.set(JDReadApplication.getInstance().getString(R.string.translation));
         itemModel.event.set(new TranslationToolsEvent());
+        itemModel.clickable.set(true);
         list.add(itemModel);
         itemModel = new DeviceInformationModel.ItemModel(eventBus);
         itemModel.text.set(JDReadApplication.getInstance().getString(R.string.associated_with_the_impression_notes));
         itemModel.event.set(new AssociatedNotesToolsEvent());
+        itemModel.clickable.set(true);
         list.add(itemModel);
         itemModel = new DeviceInformationModel.ItemModel(eventBus);
         itemModel.text.set(JDReadApplication.getInstance().getString(R.string.associated_with_the_email));
         itemModel.event.set(new AssociatedEmailToolsEvent());
+        itemModel.clickable.set(true);
         list.add(itemModel);
     }
 }
