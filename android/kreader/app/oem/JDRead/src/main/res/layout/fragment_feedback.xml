@@ -51,7 +51,7 @@
                 android:layout_marginRight="@dimen/fragment_content_padding"
                 android:background="@null"
                 android:hint="@string/input_number_for_contact"
-                android:inputType="phone"
+                android:inputType="number"
                 android:singleLine="true"
                 android:text="@={feedbackModel.phone}"
                 android:textSize="@dimen/level_two_heading_font" />
