@@ -67,6 +67,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     private static final String TAG = DialogSearch.class.getSimpleName();
     private static final int SEARCH_HISTORY_COUNT = 10;
     private static final int SEARCH_PAGE_ONE_TIME = 20;
+    private static final int TEXT_MAX_LENGTH = 20;
     private DialogSearchBinding binding;
     private DialogSearchModel dialogSearchModel;
 
@@ -420,6 +421,9 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         public void bindView(ReaderSelection selection, String search, final int position) {
             readerSelection = selection;
             String leftText = StringUtils.deleteNewlineSymbol(StringUtils.leftTrim(selection.getLeftText()));
+            if(StringUtils.isNotBlank(leftText) && leftText.length() > TEXT_MAX_LENGTH){
+                leftText = leftText.substring(leftText.length() - TEXT_MAX_LENGTH,leftText.length());
+            }
             String rightText = StringUtils.deleteNewlineSymbol(StringUtils.rightTrim(selection.getRightText()));
             leftText = removeUselessLetters(search, leftText, true);
             rightText = removeUselessLetters(search, rightText, false);
