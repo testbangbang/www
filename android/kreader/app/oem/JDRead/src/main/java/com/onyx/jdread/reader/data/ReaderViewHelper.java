@@ -374,6 +374,10 @@ public class ReaderViewHelper {
         paint.setTextSize(ReaderViewConfig.getPageNumberFontSize());
         int currentPage = PagePositionUtils.getPageNumber(readerViewInfo.getFirstVisiblePage().getName()) + 1;
         int totalPage = readerViewInfo.getTotalPage();
+        if (!readerViewInfo.canNextScreen) {
+            // if can't next screen, then we are at last position of document
+            currentPage = totalPage;
+        }
         String page = currentPage + "/" + totalPage;
         PointF timePoint = ReaderViewConfig.getPageNumberPoint(contentView);
 
