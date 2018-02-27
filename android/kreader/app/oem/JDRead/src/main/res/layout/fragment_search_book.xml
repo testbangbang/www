@@ -51,7 +51,7 @@
                 android:shadowColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font"
                 app:iconifiedByDefault="false"
-                android:imeOptions="actionSearch"
+                android:imeOptions="flagNoEnterAction"
                 app:queryHint="@string/search_view_hint"
                 app:searchIcon="@null" />
 
