@@ -114,12 +114,12 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
             customStyle.getLineSpacing().setPercent(ReaderConfig.customLineSpacing.get(settingInfo.customLineSpacing));
 
             settingInfo.customLeftAndRightMargin = ReaderConfig.getCustomLeftAndRightMargin();
-            ReaderConfig.LeftAndRight leftAndRight = ReaderConfig.customLeftAndRightMargin.get(settingInfo.customLeftAndRightMargin);
+            ReaderConfig.LeftAndRight leftAndRight = ReaderConfig.getCustomLeftAndRightMargin(settingInfo.settingStyle,settingInfo.customLeftAndRightMargin);
             customStyle.getPageMargin().setLeftMargin(ReaderTextStyle.Percentage.create(leftAndRight.left));
             customStyle.getPageMargin().setRightMargin(ReaderTextStyle.Percentage.create(leftAndRight.right));
 
             settingInfo.customTopAndBottomMargin = ReaderConfig.getCustomTopAndBottomMargin();
-            ReaderConfig.TopAndBottom topAndBottom = ReaderConfig.customTopAndBottomMargin.get(settingInfo.customTopAndBottomMargin);
+            ReaderConfig.TopAndBottom topAndBottom = ReaderConfig.getCustomTopAndBottomMargin(settingInfo.settingStyle,settingInfo.customTopAndBottomMargin);
             customStyle.getPageMargin().setTopMargin(ReaderTextStyle.Percentage.create(topAndBottom.top));
             customStyle.getPageMargin().setBottomMargin(ReaderTextStyle.Percentage.create(topAndBottom.bottom));
 

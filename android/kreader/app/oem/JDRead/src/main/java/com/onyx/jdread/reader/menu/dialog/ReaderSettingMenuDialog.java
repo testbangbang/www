@@ -190,6 +190,11 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         updateFunctionBar();
     }
 
+    @Override
+    public void setFunction() {
+        setFunctionAdapter(getFunctionBarRecycler());
+    }
+
     private void updateFunctionBar() {
         InitReaderViewFunctionBarAction initReaderViewFunctionBarAction = new InitReaderViewFunctionBarAction(functionBarModel, new RxCallback() {
             @Override

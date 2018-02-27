@@ -12,6 +12,8 @@ import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.IMX6Device;
 import com.onyx.android.sdk.device.IMX7Device;
 import com.onyx.android.sdk.device.RK3026Device;
+import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.setting.model.SettingRefreshModel;
 
 /**
  * Created by john on 29/1/2018.
@@ -47,7 +49,7 @@ public class ReaderEpdHelper {
 
     public void prepareInitialUpdate(final Context context) {
         // read init value from context.
-        gcInterval = DEFAULT_GC_INTERVAL;
+        gcInterval = JDPreferenceManager.getIntValue(SettingRefreshModel.REFRESH_RATE, DEFAULT_GC_INTERVAL);
         refreshCount = gcInterval;
     }
 

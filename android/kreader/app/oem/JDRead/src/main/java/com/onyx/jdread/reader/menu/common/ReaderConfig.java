@@ -84,26 +84,31 @@ public class ReaderConfig {
     public static final int DEFAULT_CUSTOM_LINE_SPACING = SETTING_TWO_STYLE_KEY;
     static {
         customLineSpacing.put(SETTING_ONE_STYLE_KEY, 100);
-        customLineSpacing.put(SETTING_TWO_STYLE_KEY, 125);
-        customLineSpacing.put(SETTING_THREE_STYLE_KEY, 150);
-        customLineSpacing.put(SETTING_FOUR_STYLE_KEY, 175);
-        customLineSpacing.put(SETTING_FIVE_STYLE_KEY, 200);
-        customLineSpacing.put(SETTING_SIX_STYLE_KEY, 225);
+        customLineSpacing.put(SETTING_TWO_STYLE_KEY, 110);
+        customLineSpacing.put(SETTING_THREE_STYLE_KEY, 120);
+        customLineSpacing.put(SETTING_FOUR_STYLE_KEY, 130);
+        customLineSpacing.put(SETTING_FIVE_STYLE_KEY, 140);
+        customLineSpacing.put(SETTING_SIX_STYLE_KEY, 150);
     }
 
     public static Map<Integer, Integer> customParagraphSpacing = new HashMap<>();
     public static String CUSTOM_PARAGRAPH_SPACING_KEY = "customParagraphSpacing";
     public static final int DEFAULT_CUSTOM_PARAGRAPH_SPACING = SETTING_TWO_STYLE_KEY;
     static {
-        customParagraphSpacing.put(SETTING_ONE_STYLE_KEY, 60);
-        customParagraphSpacing.put(SETTING_TWO_STYLE_KEY, 70);
+        customParagraphSpacing.put(SETTING_ONE_STYLE_KEY, 0);
+        customParagraphSpacing.put(SETTING_TWO_STYLE_KEY, 40);
         customParagraphSpacing.put(SETTING_THREE_STYLE_KEY, 80);
-        customParagraphSpacing.put(SETTING_FOUR_STYLE_KEY, 90);
-        customParagraphSpacing.put(SETTING_FIVE_STYLE_KEY, 100);
-        customParagraphSpacing.put(SETTING_SIX_STYLE_KEY, 110);
+        customParagraphSpacing.put(SETTING_FOUR_STYLE_KEY, 120);
+        customParagraphSpacing.put(SETTING_FIVE_STYLE_KEY, 160);
+        customParagraphSpacing.put(SETTING_SIX_STYLE_KEY, 200);
     }
 
-    public static Map<Integer, TopAndBottom> customTopAndBottomMargin = new HashMap<>();
+    public static Map<Integer, TopAndBottom> customOneTopAndBottomMargin = new HashMap<>();
+    public static Map<Integer, TopAndBottom> customTwoTopAndBottomMargin = new HashMap<>();
+    public static Map<Integer, TopAndBottom> customThreeTopAndBottomMargin = new HashMap<>();
+    public static Map<Integer, TopAndBottom> customFourTopAndBottomMargin = new HashMap<>();
+    public static Map<Integer, TopAndBottom> customFiveTopAndBottomMargin = new HashMap<>();
+    public static Map<Integer, TopAndBottom> customSixTopAndBottomMargin = new HashMap<>();
     public static String CUSTOM_TOPANDBOTTOM_MARGIN_KEY = "customTopAndBottomMargin";
     public static final int DEFAULT_CUSTOM_TOPANDBOTTOM_MARGIN = SETTING_SIX_STYLE_KEY;
     public static class TopAndBottom {
@@ -116,16 +121,84 @@ public class ReaderConfig {
         }
     }
 
-    static {
-        customTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(2, 11));
-        customTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(4, 14));
-        customTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(6, 17));
-        customTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(8, 20));
-        customTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(10, 23));
-        customTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(14, 26));
+    public static TopAndBottom getCustomTopAndBottomMargin(int settingStyle,int key){
+        switch (settingStyle){
+            case SETTING_ONE_STYLE_KEY:
+                return customOneTopAndBottomMargin.get(key);
+            case SETTING_TWO_STYLE_KEY:
+                return customTwoTopAndBottomMargin.get(key);
+            case SETTING_THREE_STYLE_KEY:
+                return customThreeTopAndBottomMargin.get(key);
+            case SETTING_FOUR_STYLE_KEY:
+                return customFourTopAndBottomMargin.get(key);
+            case SETTING_FIVE_STYLE_KEY:
+                return customFiveTopAndBottomMargin.get(key);
+            case SETTING_SIX_STYLE_KEY:
+                return customSixTopAndBottomMargin.get(key);
+        }
+        return null;
     }
 
-    public static Map<Integer, LeftAndRight> customLeftAndRightMargin = new HashMap<>();
+    static {
+        customOneTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 11));
+        customOneTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(4, 13));
+        customOneTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(9, 17));
+        customOneTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(13, 20));
+        customOneTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(18, 23));
+        customOneTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(23, 26));
+    }
+
+    static {
+        customTwoTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 11));
+        customTwoTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(6, 13));
+        customTwoTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(12, 17));
+        customTwoTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(19, 20));
+        customTwoTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(23, 23));
+        customTwoTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(28, 26));
+    }
+
+    static {
+        customThreeTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 11));
+        customThreeTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(5, 13));
+        customThreeTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(11, 17));
+        customThreeTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(16, 20));
+        customThreeTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(22, 23));
+        customThreeTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(30, 26));
+    }
+
+    static {
+        customFourTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 11));
+        customFourTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(3, 13));
+        customFourTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(11, 17));
+        customFourTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(17, 20));
+        customFourTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(22, 23));
+        customFourTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(30, 26));
+    }
+
+    static {
+        customFiveTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 11));
+        customFiveTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(8, 13));
+        customFiveTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(12, 17));
+        customFiveTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(18, 20));
+        customFiveTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(25, 23));
+        customFiveTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(30, 26));
+    }
+
+    static {
+        customSixTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 11));
+        customSixTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(8, 13));
+        customSixTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(14, 17));
+        customSixTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(15, 20));
+        customSixTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(25, 23));
+        customSixTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(30, 26));
+    }
+
+    public static Map<Integer, LeftAndRight> customOneLeftAndRightMargin = new HashMap<>();
+    public static Map<Integer, LeftAndRight> customTwoLeftAndRightMargin = new HashMap<>();
+    public static Map<Integer, LeftAndRight> customThreeLeftAndRightMargin = new HashMap<>();
+    public static Map<Integer, LeftAndRight> customFourLeftAndRightMargin = new HashMap<>();
+    public static Map<Integer, LeftAndRight> customFiveLeftAndRightMargin = new HashMap<>();
+    public static Map<Integer, LeftAndRight> customSixLeftAndRightMargin = new HashMap<>();
     public static String CUSTOM_LEFTANDRIGHT_MARGIN_KEY = "customLeftAndRightMargin";
     public static final int DEFAULT_CUSTOM_LEFTANDRIGHT_MARGIN = SETTING_FOUR_STYLE_KEY;
     public static class LeftAndRight {
@@ -138,13 +211,76 @@ public class ReaderConfig {
         }
     }
 
+    public static ReaderConfig.LeftAndRight getCustomLeftAndRightMargin(int settingStyle,int key){
+        switch (settingStyle){
+            case SETTING_ONE_STYLE_KEY:
+                return customOneLeftAndRightMargin.get(key);
+            case SETTING_TWO_STYLE_KEY:
+                return customTwoLeftAndRightMargin.get(key);
+            case SETTING_THREE_STYLE_KEY:
+                return customThreeLeftAndRightMargin.get(key);
+            case SETTING_FOUR_STYLE_KEY:
+                return customFourLeftAndRightMargin.get(key);
+            case SETTING_FIVE_STYLE_KEY:
+                return customFiveLeftAndRightMargin.get(key);
+            case SETTING_SIX_STYLE_KEY:
+                return customSixLeftAndRightMargin.get(key);
+        }
+        return null;
+    }
+
     static {
-        customLeftAndRightMargin.put(SETTING_ONE_STYLE_KEY, new LeftAndRight(0, 0));
-        customLeftAndRightMargin.put(SETTING_TWO_STYLE_KEY, new LeftAndRight(2, 2));
-        customLeftAndRightMargin.put(SETTING_THREE_STYLE_KEY, new LeftAndRight(4, 4));
-        customLeftAndRightMargin.put(SETTING_FOUR_STYLE_KEY, new LeftAndRight(6, 6));
-        customLeftAndRightMargin.put(SETTING_FIVE_STYLE_KEY, new LeftAndRight(8, 8));
-        customLeftAndRightMargin.put(SETTING_SIX_STYLE_KEY, new LeftAndRight(10, 10));
+        customOneLeftAndRightMargin.put(SETTING_ONE_STYLE_KEY, new LeftAndRight(0, 0));
+        customOneLeftAndRightMargin.put(SETTING_TWO_STYLE_KEY, new LeftAndRight(2, 2));
+        customOneLeftAndRightMargin.put(SETTING_THREE_STYLE_KEY, new LeftAndRight(4, 4));
+        customOneLeftAndRightMargin.put(SETTING_FOUR_STYLE_KEY, new LeftAndRight(6, 6));
+        customOneLeftAndRightMargin.put(SETTING_FIVE_STYLE_KEY, new LeftAndRight(8, 8));
+        customOneLeftAndRightMargin.put(SETTING_SIX_STYLE_KEY, new LeftAndRight(10, 10));
+    }
+
+    static {
+        customTwoLeftAndRightMargin.put(SETTING_ONE_STYLE_KEY, new LeftAndRight(0, 0));
+        customTwoLeftAndRightMargin.put(SETTING_TWO_STYLE_KEY, new LeftAndRight(2, 2));
+        customTwoLeftAndRightMargin.put(SETTING_THREE_STYLE_KEY, new LeftAndRight(4, 4));
+        customTwoLeftAndRightMargin.put(SETTING_FOUR_STYLE_KEY, new LeftAndRight(6, 6));
+        customTwoLeftAndRightMargin.put(SETTING_FIVE_STYLE_KEY, new LeftAndRight(8, 8));
+        customTwoLeftAndRightMargin.put(SETTING_SIX_STYLE_KEY, new LeftAndRight(10, 10));
+    }
+
+    static {
+        customThreeLeftAndRightMargin.put(SETTING_ONE_STYLE_KEY, new LeftAndRight(0, 0));
+        customThreeLeftAndRightMargin.put(SETTING_TWO_STYLE_KEY, new LeftAndRight(2, 2));
+        customThreeLeftAndRightMargin.put(SETTING_THREE_STYLE_KEY, new LeftAndRight(4, 4));
+        customThreeLeftAndRightMargin.put(SETTING_FOUR_STYLE_KEY, new LeftAndRight(6, 6));
+        customThreeLeftAndRightMargin.put(SETTING_FIVE_STYLE_KEY, new LeftAndRight(10, 8));
+        customThreeLeftAndRightMargin.put(SETTING_SIX_STYLE_KEY, new LeftAndRight(12, 10));
+    }
+
+    static {
+        customFourLeftAndRightMargin.put(SETTING_ONE_STYLE_KEY, new LeftAndRight(0, 0));
+        customFourLeftAndRightMargin.put(SETTING_TWO_STYLE_KEY, new LeftAndRight(2, 2));
+        customFourLeftAndRightMargin.put(SETTING_THREE_STYLE_KEY, new LeftAndRight(4, 4));
+        customFourLeftAndRightMargin.put(SETTING_FOUR_STYLE_KEY, new LeftAndRight(6, 6));
+        customFourLeftAndRightMargin.put(SETTING_FIVE_STYLE_KEY, new LeftAndRight(10, 10));
+        customFourLeftAndRightMargin.put(SETTING_SIX_STYLE_KEY, new LeftAndRight(12, 12));
+    }
+
+    static {
+        customFiveLeftAndRightMargin.put(SETTING_ONE_STYLE_KEY, new LeftAndRight(0, 0));
+        customFiveLeftAndRightMargin.put(SETTING_TWO_STYLE_KEY, new LeftAndRight(3, 3));
+        customFiveLeftAndRightMargin.put(SETTING_THREE_STYLE_KEY, new LeftAndRight(5, 5));
+        customFiveLeftAndRightMargin.put(SETTING_FOUR_STYLE_KEY, new LeftAndRight(8, 8));
+        customFiveLeftAndRightMargin.put(SETTING_FIVE_STYLE_KEY, new LeftAndRight(11, 11));
+        customFiveLeftAndRightMargin.put(SETTING_SIX_STYLE_KEY, new LeftAndRight(14, 14));
+    }
+
+    static {
+        customSixLeftAndRightMargin.put(SETTING_ONE_STYLE_KEY, new LeftAndRight(0, 0));
+        customSixLeftAndRightMargin.put(SETTING_TWO_STYLE_KEY, new LeftAndRight(3, 3));
+        customSixLeftAndRightMargin.put(SETTING_THREE_STYLE_KEY, new LeftAndRight(6, 6));
+        customSixLeftAndRightMargin.put(SETTING_FOUR_STYLE_KEY, new LeftAndRight(10, 10));
+        customSixLeftAndRightMargin.put(SETTING_FIVE_STYLE_KEY, new LeftAndRight(14, 14));
+        customSixLeftAndRightMargin.put(SETTING_SIX_STYLE_KEY, new LeftAndRight(18, 18));
     }
 
     public static void saveCustomLeftAndRightMargin(final int customLeftAndRightMargin){
