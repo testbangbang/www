@@ -9,6 +9,7 @@ import com.onyx.android.sdk.note.event.RawDrawingPointsReceivedEvent;
 import com.onyx.android.sdk.pen.data.TouchPoint;
 import com.onyx.android.sdk.pen.data.TouchPointList;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
@@ -26,6 +27,7 @@ public class BaseHandler {
 
     public BaseHandler(@NonNull EventBus eventBus, NoteManager noteManager) {
         this.eventBus = eventBus;
+        this.noteManager = noteManager;
     }
 
     public EventBus getEventBus() {
@@ -57,10 +59,10 @@ public class BaseHandler {
     }
 
     protected Shape createNewShape(int layoutType) {
-        NoteDocument noteDocument = getNoteManager().getNoteDocument();
-        Shape shape = ShapeFactory.createShape(noteDocument.getCurrentShapeType());
-        shape.setStrokeWidth(noteDocument.getStrokeWidth());
-        shape.setColor(noteDocument.getStrokeColor());
+        NoteDrawingArgs drawingArgs = getNoteManager().getDrawingArgs();
+        Shape shape = ShapeFactory.createShape(drawingArgs.getCurrentShapeType());
+        shape.setStrokeWidth(drawingArgs.strokeWidth);
+        shape.setColor(drawingArgs.getStrokeColor());
         shape.setLayoutType(layoutType);
         return shape;
     }

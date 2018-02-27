@@ -39,4 +39,10 @@ public class RootActivity extends SupportActivity {
         super.onPostResume();
         DeviceUtils.setFullScreenOnResume(this, fullScreen);
     }
+
+    @Override
+    public void onBackPressedSupport() {
+        super.onBackPressedSupport();
+        System.exit(0);
+    }
 }

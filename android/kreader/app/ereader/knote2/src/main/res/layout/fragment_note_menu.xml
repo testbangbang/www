@@ -1,20 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="model"
+            type="com.onyx.android.note.note.menu.NoteMenuModel"/>
     </data>
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/menu_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:gravity="center"
-            android:textSize="26sp"
-            android:text="note_menu"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            style="@style/note_menu_text"
+            android:id="@+id/expand"
+            android:text="expand" />
+
+        <include
+            bind:model="@{model}"
+            android:layout_below="@+id/expand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/menu1_layout"
+            layout="@layout/layout_note_menu1"/>
+
+        <include
+            bind:model="@{model}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/expand"
+            android:id="@+id/menu2_layout"
+            layout="@layout/layout_note_menu2"/>
+    </RelativeLayout>
 </layout>

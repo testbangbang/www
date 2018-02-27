@@ -7,11 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.R;
 import com.onyx.android.note.common.base.BaseFragment;
 import com.onyx.android.note.databinding.FragmentNoteBinding;
 import com.onyx.android.note.note.menu.NoteMenuFragment;
 import com.onyx.android.note.note.scribble.ScribbleFragment;
+import com.onyx.android.sdk.note.*;
+import com.onyx.android.sdk.note.NoteManager;
 
 /**
  * Created by lxm on 2018/2/2.
@@ -43,13 +46,22 @@ public class NoteFragment extends BaseFragment {
 
     @Override
     public void onDestroy() {
+        getNoteBundle().getHandlerManager().quit();
         super.onDestroy();
     }
 
     private void initChildFragment() {
         menuFragment = NoteMenuFragment.newInstance();
         scribbleFragment = ScribbleFragment.newInstance();
-        getChildFragmentManager().beginTransaction().replace(R.id.menu_layout, menuFragment).commit();
         getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.menu_layout, menuFragment).commit();
+    }
+
+    private NoteDataBundle getNoteBundle() {
+        return NoteDataBundle.getInstance();
+    }
+
+    private NoteManager getNoteManager() {
+        return getNoteBundle().getNoteManager();
     }
 }

@@ -30,6 +30,7 @@ public class EpdShapeHandler extends BaseHandler {
     public void onRawDrawingPointsReceived(TouchPointList pointList) {
         super.onRawDrawingPointsReceived(pointList);
         Shape shape = createNewShape(ShapeFactory.POSITION_FREE);
+        shape.addPoints(pointList);
         new RenderToBitmapAction(getNoteManager()).setShape(shape).execute(null);
     }
 

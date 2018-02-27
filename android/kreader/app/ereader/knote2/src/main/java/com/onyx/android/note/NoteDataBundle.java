@@ -2,6 +2,7 @@ package com.onyx.android.note;
 
 import com.onyx.android.note.handler.HandlerManager;
 import com.onyx.android.sdk.note.NoteManager;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,9 +32,13 @@ public class NoteDataBundle {
         return eventBus;
     }
 
+    public void post(Object event) {
+        getEventBus().post(event);
+    }
+
     public HandlerManager getHandlerManager() {
         if (handlerManager == null) {
-            handlerManager = new HandlerManager(getEventBus());
+            handlerManager = new HandlerManager(getEventBus(), getNoteManager());
         }
         return handlerManager;
     }

@@ -37,7 +37,7 @@ public class RenderToBitmapAction extends BaseNoteAction {
 
     @Override
     public void execute(RxCallback rxCallback) {
-        RenderToBitmapRequest request = new RenderToBitmapRequest(getNoteManager(), shapes);
+        RenderToBitmapRequest request = new RenderToBitmapRequest(getNoteManager(), shapes, false);
         getNoteManager().getRxManager().enqueue(request, rxCallback);
     }
 }

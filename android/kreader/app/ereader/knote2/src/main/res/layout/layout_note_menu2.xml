@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="model"
+            type="com.onyx.android.note.note.menu.NoteMenuModel"/>
+    </data>
+
+    <LinearLayout
+        android:id="@+id/note_menu2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            style="@style/note_menu_text"
+            android:text="save" />
+
+        <TextView
+            style="@style/note_menu_text"
+            android:text="redo" />
+
+        <TextView
+            style="@style/note_menu_text"
+            android:text="undo" />
+    </LinearLayout>
+</layout>
