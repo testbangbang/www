@@ -48,6 +48,13 @@
                 android:id="@+id/rank" />
 
             <TextView
+                android:layout_toRightOf="@+id/rank"
+                android:paddingLeft="30dp"
+                android:layout_centerVertical="true"
+                android:id="@+id/total_score"
+                style="@style/homework_text" />
+
+            <TextView
                 android:layout_centerInParent="true"
                 android:text="@string/return_question"
                 android:padding="@dimen/homework_text_margin"

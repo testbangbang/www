@@ -12,10 +12,12 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.data.model.homework.QuestionReview;
 import com.onyx.android.sdk.data.model.homework.StaticRankResult;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -23,6 +25,7 @@ import com.onyx.edu.homework.action.CheckWifiAction;
 import com.onyx.edu.homework.action.StaticRankAction;
 import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
+import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.ScoreItemType;
 import com.onyx.edu.homework.databinding.ActivityScoreBinding;
 import com.onyx.edu.homework.event.ExitEvent;
@@ -30,6 +33,7 @@ import com.onyx.edu.homework.request.StaticRankRequest;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -80,6 +84,7 @@ public class ScoreActivity extends BaseActivity {
             }
         });
         initScoreList();
+        showTotalScore();
     }
 
     private void initScoreList() {
@@ -136,6 +141,25 @@ public class ScoreActivity extends BaseActivity {
                 return position < columns ? TOP_TITLE_ITEM_TYPE : LIST_SCORE_ITEM_TYPE;
             }
         });
+    }
+
+    private void showTotalScore() {
+        if (!Config.getInstance().isShowScore()) {
+            return;
+        }
+        List<Question> questions = getDataBundle().getHomework().questions;
+        if (!getDataBundle().isReview() || CollectionUtils.isNullOrEmpty(questions)) {
+            return;
+        }
+        float score = 0f;
+        for (Question question : questions) {
+            QuestionReview review = question.review;
+            if (review == null) {
+                continue;
+            }
+            score += review.score;
+        }
+        binding.totalScore.setText(getString(R.string.total_score, score));
     }
 
     private void bindScoreContentItem(CommonViewHolder viewHolder, Question question, int index, ScoreItemType scoreItemType) {
