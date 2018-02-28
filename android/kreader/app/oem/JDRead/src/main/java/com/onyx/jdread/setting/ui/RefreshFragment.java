@@ -79,7 +79,7 @@ public class RefreshFragment extends BaseFragment {
 
     private void initView() {
         binding.refreshRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
+        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
         binding.refreshRecycler.addItemDecoration(dividerItemDecoration);
         refreshAdapter = new RefreshAdapter();
         binding.refreshRecycler.setAdapter(refreshAdapter);

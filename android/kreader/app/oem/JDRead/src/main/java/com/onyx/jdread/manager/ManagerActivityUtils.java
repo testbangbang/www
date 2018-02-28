@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class ManagerActivityUtils {
     private static final String TAG = ManagerActivityUtils.class.getSimpleName();
+    public static final String ACTION_MASTER_CLEAR = "android.intent.action.MASTER_CLEAR";
 
     public static void showWifiDialog(final Context context) {
         CustomDialog.Builder builder = new CustomDialog.Builder(context);
@@ -54,5 +55,11 @@ public class ManagerActivityUtils {
         String className = "com.onyx.android.productiontest.activity.ProductionTestMainActivity";
         intent.setClassName(packageName, className);
         context.startActivity(intent);
+    }
+
+    public static void reset(Context context) {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_MASTER_CLEAR);
+        context.sendBroadcast(intent);
     }
 }

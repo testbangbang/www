@@ -56,7 +56,7 @@ public class LockScreenFragment extends BaseFragment {
 
     private void initView() {
         binding.lockScreenRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
+        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
         binding.lockScreenRecycler.addItemDecoration(dividerItemDecoration);
         lockScreenAdapter = new LockScreenAdapter();
         binding.lockScreenRecycler.setAdapter(lockScreenAdapter);

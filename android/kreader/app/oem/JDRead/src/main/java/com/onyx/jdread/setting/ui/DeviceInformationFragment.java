@@ -16,6 +16,7 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.setting.adapter.DeviceInfoAdapter;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.event.CopyrightNoticeEvent;
@@ -106,7 +107,7 @@ public class DeviceInformationFragment extends BaseFragment {
             @Override
             public void onClicked() {
                 dialog.dismiss();
-                // TODO: 18-1-8 reset
+                ManagerActivityUtils.reset(JDReadApplication.getInstance());
             }
         });
 

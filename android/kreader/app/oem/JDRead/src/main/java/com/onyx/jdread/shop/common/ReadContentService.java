@@ -29,11 +29,14 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateCartBean;
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -167,4 +170,13 @@ public interface ReadContentService {
 
     @GET(CloudApiContext.ReadBean.PAY_BY_CASH)
     Call<String> payByCash(@QueryMap Map<String, String> baseInfoMap);
+
+    @POST(CloudApiContext.User.READING_DATA)
+    Call<String> syncReadingData(@QueryMap Map<String, String> map,
+                                 @Body RequestBody body);
+
+    @Multipart
+    @POST(CloudApiContext.User.EXPORT_NOTE)
+    Call<String> exportNote(@QueryMap Map<String, String> map,
+                            @Part MultipartBody.Part file);
 }
