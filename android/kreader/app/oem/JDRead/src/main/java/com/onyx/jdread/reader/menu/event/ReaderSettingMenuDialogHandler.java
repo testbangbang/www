@@ -220,7 +220,7 @@ public class ReaderSettingMenuDialogHandler {
     }
 
     public void updatePageInfo(){
-        new UpdatePageInfoAction(binding, readerDataHolder.getReaderViewInfo()).execute(readerDataHolder,null);
+        new UpdatePageInfoAction(binding, readerDataHolder.getReaderViewInfo(),false).execute(readerDataHolder,null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
