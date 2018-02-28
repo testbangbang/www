@@ -461,7 +461,7 @@
     <string name="not_login">not login</string>
     <string name="open_vip_read">Open Vip</string>
     <string name="renew_vip_read">Renew Vip</string>
-    <string name="vip_read_days">The remaining days of the Vip：%s days</string>
+    <string name="vip_read_days">The remaining days of the JoyRead Vip %s days</string>
     <string name="vip_read_notice">Vip Notice</string>
     <string name="not_open_vip_read">Do not open Vip</string>
     <string name="format_rmb">¥%s</string>

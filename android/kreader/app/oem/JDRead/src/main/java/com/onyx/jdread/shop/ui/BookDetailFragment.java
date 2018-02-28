@@ -240,7 +240,8 @@ public class BookDetailFragment extends BaseFragment {
                         bookDetailBinding.bookDetailInfo.spaceTwo.setVisibility(View.GONE);
                     }
                     if (!StringUtils.isNullOrEmpty(bookDetailBean.author) && !getString(R.string.content_empty).equals(bookDetailBean.author)) {
-                        getAuthorBooksData(bookDetailBean.author);
+                        String author = CommonUtils.removeSymbol(bookDetailBean.author);
+                        getAuthorBooksData(author);
                     } else {
                         bookDetailBean.setAuthor(getString(R.string.error_content_author_unknown));
                     }

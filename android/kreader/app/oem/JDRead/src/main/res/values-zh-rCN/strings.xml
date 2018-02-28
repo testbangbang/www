@@ -437,8 +437,8 @@
     <string name="uninstall_translate_app">未安装翻译客户端</string>
     <string name="not_login">未登录</string>
     <string name="open_vip_read">开通会员</string>
-    <string name="renew_vip_read">续费会员</string>
-    <string name="vip_read_days">会员有效天数：%s天</string>
+    <string name="renew_vip_read">会员续费</string>
+    <string name="vip_read_days">JoyRead会员有效天数%s天</string>
     <string name="vip_read_notice">会员须知</string>
     <string name="not_open_vip_read">未开通会员</string>
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">该图书已购买或者是免费书,无需购买!</string>
