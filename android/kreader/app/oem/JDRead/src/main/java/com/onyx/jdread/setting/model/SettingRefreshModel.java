@@ -30,7 +30,7 @@ public class SettingRefreshModel {
     public void setCurrentPageRefreshPage(String currentPageRefreshTime) {
         String refreshTime = Pattern.compile("[^0-9]").matcher(currentPageRefreshTime).replaceAll("");
         int refreshValue = StringUtils.isNullOrEmpty(refreshTime) ? Integer.MAX_VALUE : Integer.valueOf(refreshTime);
-        JDPreferenceManager.setIntValue(REFRESH_RATE, refreshValue);
+        JDPreferenceManager.setStringValue(REFRESH_RATE, currentPageRefreshTime);
         LegacySdkDataUtils.setScreenUpdateGCInterval(JDReadApplication.getInstance(), refreshValue);
         ReaderDeviceManager.setGcInterval(refreshValue);
     }
