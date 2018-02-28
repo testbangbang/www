@@ -62,7 +62,7 @@ public class DataModelUtil {
             }
             model.id.set(metadata.getId());
             model.title.set(StringUtils.isNotBlank(metadata.getName()) ? metadata.getName() :
-                    FileUtils.getFileName(metadata.getNativeAbsolutePath()));
+                    FileUtils.getBaseName(metadata.getNativeAbsolutePath()));
             model.author.set(StringUtils.isNullOrEmpty(metadata.getAuthors()) ? "" : metadata.getAuthors());
             model.format.set(StringUtils.isNotBlank(metadata.getType()) ? metadata.getType().toUpperCase() : "");
             model.size.set(metadata.getSize());
