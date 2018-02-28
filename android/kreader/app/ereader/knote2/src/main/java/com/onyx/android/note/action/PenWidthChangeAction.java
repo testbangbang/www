@@ -1,9 +1,11 @@
 package com.onyx.android.note.action;
 
 import android.support.annotation.NonNull;
+
+import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.common.base.BaseNoteAction;
+import com.onyx.android.note.event.menu.PenWidthChangeEvent;
 import com.onyx.android.sdk.note.NoteManager;
-import com.onyx.android.sdk.note.event.ResumeRawDrawingEvent;
 import com.onyx.android.sdk.note.request.PenWidthChangeRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 
@@ -14,7 +16,6 @@ import com.onyx.android.sdk.rx.RxCallback;
 public class PenWidthChangeAction extends BaseNoteAction {
 
     private float penWidth;
-    private boolean resumeRawDraw;
 
     public PenWidthChangeAction(NoteManager noteManager) {
         super(noteManager);
@@ -25,22 +26,15 @@ public class PenWidthChangeAction extends BaseNoteAction {
         return this;
     }
 
-    public PenWidthChangeAction setResumeRawDraw(boolean resumeRawDraw) {
-        this.resumeRawDraw = resumeRawDraw;
-        return this;
-    }
-
     @Override
     public void execute(RxCallback rxCallback) {
-        getNoteManager().getDrawingArgs().strokeWidth = penWidth;
+        NoteDataBundle.getInstance().getDrawDataHolder().setStrokeWidth(penWidth);
         PenWidthChangeRequest request = new PenWidthChangeRequest(getNoteManager())
                 .setPenWidth(penWidth);
         getNoteManager().getRxManager().enqueue(request, new RxCallback<PenWidthChangeRequest>() {
             @Override
             public void onNext(@NonNull PenWidthChangeRequest penWidthChangeRequest) {
-                if (resumeRawDraw) {
-                    getNoteManager().post(new ResumeRawDrawingEvent());
-                }
+                getNoteManager().post(new PenWidthChangeEvent(true));
             }
         });
     }

@@ -3,6 +3,7 @@ package com.onyx.android.note.handler;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
+import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.BeginRawDrawEvent;
 import com.onyx.android.sdk.note.event.RawDrawingPointsReceivedEvent;
@@ -59,7 +60,7 @@ public class BaseHandler {
     }
 
     protected Shape createNewShape(int layoutType) {
-        NoteDrawingArgs drawingArgs = getNoteManager().getDrawingArgs();
+        NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawDataHolder().getDrawingArgs();
         Shape shape = ShapeFactory.createShape(drawingArgs.getCurrentShapeType());
         shape.setStrokeWidth(drawingArgs.strokeWidth);
         shape.setColor(drawingArgs.getStrokeColor());

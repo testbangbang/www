@@ -1,6 +1,8 @@
 package com.onyx.android.note;
 
 import com.onyx.android.note.handler.HandlerManager;
+import com.onyx.android.note.note.DrawDataHolder;
+import com.onyx.android.note.note.PenManager;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 
@@ -24,6 +26,8 @@ public class NoteDataBundle {
     private EventBus eventBus;
     private HandlerManager handlerManager;
     private NoteManager noteManager;
+    private PenManager penManager;
+    private DrawDataHolder drawDataHolder;
 
     public EventBus getEventBus() {
         if (eventBus == null) {
@@ -48,5 +52,19 @@ public class NoteDataBundle {
             noteManager = new NoteManager(NoteApp.instance, getEventBus());
         }
         return noteManager;
+    }
+
+    public PenManager getPenManager() {
+        if (penManager == null) {
+            penManager = new PenManager(getEventBus());
+        }
+        return penManager;
+    }
+
+    public DrawDataHolder getDrawDataHolder() {
+        if (drawDataHolder == null) {
+            drawDataHolder = new DrawDataHolder(getEventBus());
+        }
+        return drawDataHolder;
     }
 }

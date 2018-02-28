@@ -7,13 +7,18 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.NoteUIBundle;
 import com.onyx.android.note.R;
 import com.onyx.android.note.common.base.BaseFragment;
 import com.onyx.android.note.databinding.FragmentNoteMenuBinding;
+import com.onyx.android.note.event.menu.CheckMenuRectEvent;
 import com.onyx.android.sdk.note.event.SetDrawExcludeRectEvent;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +39,7 @@ public class NoteMenuFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getNoteBundle().getEventBus().register(this);
     }
 
     @Nullable
@@ -56,28 +62,47 @@ public class NoteMenuFragment extends BaseFragment {
         binding.menuLayout.post(new Runnable() {
             @Override
             public void run() {
-                setDrawMenuExcludeRect();
+                postDrawMenuExcludeRect();
             }
         });
     }
 
-    private void setDrawMenuExcludeRect() {
-        Rect menu1 = new Rect();
-        Rect menu2 = new Rect();
-        Rect expand = new Rect();
-        binding.expand.getGlobalVisibleRect(expand);
-        binding.menu1Layout.noteMenu1.getGlobalVisibleRect(menu1);
-        binding.menu2Layout.noteMenu2.getGlobalVisibleRect(menu2);
+    private void CheckMenuRect() {
+        binding.menuLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                TreeObserverUtils.removeGlobalOnLayoutListener(binding.menuLayout.getViewTreeObserver(), this);
+                postDrawMenuExcludeRect();
+            }
+        });
+    }
+
+    private void postDrawMenuExcludeRect() {
         List<Rect> rectList = new ArrayList<>();
-        rectList.add(menu1);
-        rectList.add(menu2);
-        rectList.add(expand);
+        addExcludeRect(rectList, binding.expand);
+        addExcludeRect(rectList, binding.menu1Layout.noteMenu1);
+        addExcludeRect(rectList, binding.menu2Layout.noteMenu2);
         getNoteBundle().post(new SetDrawExcludeRectEvent(rectList));
+    }
+
+    private void addExcludeRect(List<Rect> rectList, View view) {
+        if (view.getVisibility() != View.VISIBLE) {
+            return;
+        }
+        Rect rect = new Rect();
+        view.getGlobalVisibleRect(rect);
+        rectList.add(rect);
+    }
+
+    @Subscribe
+    public void onCheckMenuRectEvent(CheckMenuRectEvent event) {
+        CheckMenuRect();
     }
 
     @Override
     public void onDestroy() {
         noteMenuHandler.unSubscribe();
+        getNoteBundle().getEventBus().unregister(this);
         super.onDestroy();
     }
 

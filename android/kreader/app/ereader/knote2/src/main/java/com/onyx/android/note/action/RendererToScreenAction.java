@@ -11,21 +11,21 @@ import com.onyx.android.sdk.rx.RxCallback;
 
 public class RendererToScreenAction extends BaseNoteAction {
 
-    private boolean rebuildToBitmap;
+    private boolean redrawBitmap;
 
     public RendererToScreenAction(NoteManager noteManager) {
         super(noteManager);
     }
 
-    public RendererToScreenAction setRebuildToBitmap(boolean rebuildToBitmap) {
-        this.rebuildToBitmap = rebuildToBitmap;
+    public RendererToScreenAction setRedrawBitmap(boolean redrawBitmap) {
+        this.redrawBitmap = redrawBitmap;
         return this;
     }
 
     @Override
     public void execute(RxCallback rxCallback) {
         RendererToScreenRequest request = new RendererToScreenRequest(getNoteManager());
-        request.setRebuildToBitmap(rebuildToBitmap);
+        request.setRedrawBitmap(redrawBitmap);
         getNoteManager().getRxManager().enqueue(request, rxCallback);
     }
 }

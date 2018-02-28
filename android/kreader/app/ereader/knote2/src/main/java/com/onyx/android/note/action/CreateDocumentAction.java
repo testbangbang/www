@@ -3,6 +3,8 @@ package com.onyx.android.note.action;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.note.common.base.BaseNoteAction;
+import com.onyx.android.note.event.OpenDocumentEvent;
+import com.onyx.android.note.event.data.UpdateNoteDrawingArgsEvent;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.ResumeRawDrawingEvent;
 import com.onyx.android.sdk.note.request.CreateDocumentRequest;
@@ -40,7 +42,7 @@ public class CreateDocumentAction extends BaseNoteAction {
 
     @Override
     public void execute(final RxCallback rxCallback) {
-        CreateDocumentRequest request = new CreateDocumentRequest(getNoteManager())
+        final CreateDocumentRequest request = new CreateDocumentRequest(getNoteManager())
                 .setDocumentUniqueId(documentUniqueId)
                 .setParentUniqueId(parentUniqueId)
                 .setDocumentOptionArgs(optionArgs);
@@ -48,7 +50,8 @@ public class CreateDocumentAction extends BaseNoteAction {
             @Override
             public void onNext(@NonNull CreateDocumentRequest createDocumentRequest) {
                 RxCallback.onNext(rxCallback, createDocumentRequest);
-                getNoteManager().post(new ResumeRawDrawingEvent());
+                getNoteManager().post(new UpdateNoteDrawingArgsEvent(createDocumentRequest.getDrawingArgs()));
+                getNoteManager().post(new OpenDocumentEvent(true));
             }
 
             @Override
