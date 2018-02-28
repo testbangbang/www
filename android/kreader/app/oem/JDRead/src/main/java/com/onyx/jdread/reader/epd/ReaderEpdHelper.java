@@ -56,9 +56,7 @@ public class ReaderEpdHelper {
 
     public void prepareInitialUpdate(final Context context) {
         // read init value from context.
-        String currentRefreshPage = JDPreferenceManager.getStringValue(SettingRefreshModel.REFRESH_RATE, ResManager.getString(R.string.device_setting_ten_pages));
-        String refreshTime = Pattern.compile("[^0-9]").matcher(currentRefreshPage).replaceAll("");
-        gcInterval = StringUtils.isNullOrEmpty(refreshTime) ? Integer.MAX_VALUE : Integer.valueOf(refreshTime);
+        gcInterval = JDPreferenceManager.getIntValue(SettingRefreshModel.REFRESH_RATE,DEFAULT_GC_INTERVAL);
         refreshCount = gcInterval;
     }
 
