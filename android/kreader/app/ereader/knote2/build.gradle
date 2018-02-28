@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
 apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
@@ -54,14 +55,30 @@ android {
 
 }
 
+repositories{
+    mavenLocal()
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     //onyx
-    compile "com.onyx.android.sdk:onyxsdk-note:$rootProject.onyxSdkNoteVersion"
-    compile("com.onyx.android.sdk:onyxsdk-notedata:$rootProject.onyxSdkNoteDataVersion"){
-        exclude group: 'com.alibaba', module: 'fastjson'
-    }
+//    compile "com.onyx.android.sdk:onyxsdk-note:$rootProject.onyxSdkNoteVersion"
+//    compile("com.onyx.android.sdk:onyxsdk-notedata:$rootProject.onyxSdkNoteDataVersion"){
+//        exclude group: 'com.alibaba', module: 'fastjson'
+//    }
+    //for library test
+    compile (name: 'onyxsdk-note-debug', ext: 'aar')
+    compile (name: 'onyxsdk-notedata-debug', ext: 'aar')
+    compile (name: 'onyxsdk-pen-release', ext: 'aar')
+
+    compile "org.apache.commons:commons-collections4:$rootProject.apachecommonsVersion"
+    compile "de.ruedigermoeller:fst:$rootProject.ruedigermoellerfstVersion"
+    apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
+    compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
+    compile "de.ruedigermoeller:fst:$rootProject.ruedigermoellerfstVersion"
+
     compile("com.onyx.android.sdk:onyxsdk-base:$rootProject.onyxSdkBaseVersion"){
         exclude group: 'com.alibaba', module: 'fastjson'
     }
@@ -78,4 +95,6 @@ dependencies {
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile "com.android.support:multidex:$multidexVersion"
     compile "me.yokeyword:fragmentation:$fragmentationVersion"
+    compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
+
 }
