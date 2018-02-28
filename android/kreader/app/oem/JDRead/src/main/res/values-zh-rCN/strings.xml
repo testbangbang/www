@@ -408,6 +408,8 @@
     <string name="group_names_do_not_support_special_characters">分组名不支持特殊字符</string>
     <string name="first_chapter">已是首章</string>
     <string name="last_chapter">已是尾章</string>
+    <string name="first_page">已是首页</string>
+    <string name="last_page">已是尾页</string>
     <string name="no_chapters">本文不含章节信息</string>
     <string name="enter_hint">请输入关键词</string>
     <string name="total_page" formatted="false">全部搜索结果（%d）</string>
