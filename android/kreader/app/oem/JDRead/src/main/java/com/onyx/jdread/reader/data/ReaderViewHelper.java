@@ -190,8 +190,8 @@ public class ReaderViewHelper {
             drawPageContent(canvas, bitmap);
             drawPageLinks(canvas, readerUserDataInfo, readerViewInfo);
             drawPageAnnotations(canvas, reader, readerUserDataInfo, readerViewInfo);
-            drawHighlightResult(null, canvas, paint, reader, readerViewInfo, readerSelectionManager);
-            drawSearchResults(canvas,reader,readerUserDataInfo,readerViewInfo);
+            drawHighlightResult(null, canvas, paint, bitmap, reader, readerViewInfo, readerSelectionManager);
+            drawSearchResults(canvas,bitmap,reader,readerUserDataInfo,readerViewInfo);
             drawTime(canvas, reader, readerViewInfo);
             drawPageNumber(canvas, reader, readerViewInfo);
         } finally {
@@ -238,21 +238,21 @@ public class ReaderViewHelper {
         }
     }
 
-    private void drawHighlightResult(Context context, Canvas canvas, Paint paint, final Reader reader, final ReaderViewInfo readerViewInfo,
+    private void drawHighlightResult(Context context, Canvas canvas, Paint paint, Bitmap bitmap, final Reader reader, final ReaderViewInfo readerViewInfo,
                                      ReaderSelectionHelper readerSelectionManager) {
         if (readerSelectionManager != null) {
             String pagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
             ReaderSelection readerSelection = readerSelectionManager.getCurrentSelection(pagePosition);
             if (readerViewInfo != null && readerSelection != null) {
-                drawReaderSelection(context, canvas, paint, readerViewInfo, readerSelection,false);
+                drawReaderSelection(context, canvas, paint, bitmap, readerViewInfo, readerSelection,false);
                 drawSelectionCursor(canvas, paint, readerSelectionManager, pagePosition);
             }
         }
     }
 
-    private void drawReaderSelection(Context context, Canvas canvas, Paint paint, final ReaderViewInfo viewInfo, ReaderSelection selection,boolean annotationHighlightStyle) {
+    private void drawReaderSelection(Context context, Canvas canvas, Paint paint, Bitmap bitmap, final ReaderViewInfo viewInfo, ReaderSelection selection, boolean annotationHighlightStyle) {
         if(annotationHighlightStyle){
-            drawFillHighlightRectangles(canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
+            drawFillHighlightRectangles(canvas, bitmap, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
         }else {
             drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
         }
@@ -271,15 +271,18 @@ public class ReaderViewHelper {
         drawUnderLineHighlightRectangles(canvas, paint, rectangles);
     }
 
-    private void drawFillHighlightRectangles(Canvas canvas, List<RectF> rectangles){
+    private void drawFillHighlightRectangles(Canvas canvas, Bitmap bitmap, List<RectF> rectangles){
         Paint paint = new Paint();
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
         paint.setColorFilter(new ColorMatrixColorFilter(getColorMatrix()));
         int size = rectangles.size();
+        Rect rect = new Rect();
         for (int i = 0; i < size; ++i) {
-            canvas.drawRect(rectangles.get(i), paint);
+            rectangles.get(i).round(rect);
+            canvas.drawBitmap(bitmap, rect, rect, paint);
         }
+        paint.setColorFilter(null);
     }
 
     private void drawUnderLineHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
@@ -338,13 +341,13 @@ public class ReaderViewHelper {
     }
 
 
-    private void drawSearchResults(Canvas canvas, Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo){
+    private void drawSearchResults(Canvas canvas, Bitmap bitmap, Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo){
         List<ReaderSelection> searchResults = readerUserDataInfo.getSearchResults();
         if (searchResults == null || searchResults.size() <= 0) {
             return;
         }
         for (ReaderSelection sel : searchResults) {
-            drawReaderSelection(reader.getReaderHelper().getContext(),canvas, paint, readerViewInfo, sel,false);
+            drawReaderSelection(reader.getReaderHelper().getContext(),canvas, paint, bitmap, readerViewInfo, sel,false);
         }
     }
 
