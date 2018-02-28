@@ -217,6 +217,7 @@ public class TreeRecyclerView extends PageRecyclerView {
         private TextView textViewTitle;
         private TextView textViewDescription;
         private View splitLine;
+        private View currentChapter;
 
         public TreeNodeViewHolder(View itemView, Callback callback) {
             super(itemView);
@@ -225,6 +226,7 @@ public class TreeRecyclerView extends PageRecyclerView {
 
             imageViewIndicator = (ImageView)itemView.findViewById(R.id.image_view_indicator);
             textViewTitle = (TextView)itemView.findViewById(R.id.text_view_title);
+            currentChapter = itemView.findViewById(R.id.current_chapter);
             textViewDescription = (TextView)itemView.findViewById(R.id.text_view_description);
             splitLine = itemView.findViewById(R.id.split_line);
         }
@@ -245,7 +247,11 @@ public class TreeRecyclerView extends PageRecyclerView {
 
             textViewTitle.setText(node.title);
             textViewDescription.setText(node.description);
-            textViewTitle.getPaint().setUnderlineText(currentNode.equals(node));
+            if(currentNode.equals(node)){
+                currentChapter.setVisibility(VISIBLE);
+            }else{
+                currentChapter.setVisibility(GONE);
+            }
             splitLine.setVisibility(VISIBLE);
 
             if (!node.hasChildren()) {

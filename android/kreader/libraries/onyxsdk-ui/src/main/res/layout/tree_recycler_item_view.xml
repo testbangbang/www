@@ -1,46 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:background="@drawable/focused_bg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingRight="@dimen/tree_recycler_item_view_padding"
-                android:paddingLeft="@dimen/tree_recycler_item_view_padding">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/focused_bg"
+    android:paddingLeft="@dimen/tree_recycler_item_view_padding"
+    android:paddingRight="@dimen/tree_recycler_item_view_padding">
 
     <ImageView
-            android:layout_marginRight="@dimen/image_view_indicator_margin_right"
-            android:layout_centerVertical="true"
-            android:id="@+id/image_view_indicator"
-            android:layout_width="@dimen/image_view_indicator_size"
-            android:layout_height="@dimen/image_view_indicator_size"
-            android:src="@drawable/ic_tree_recycler_item_view_indicator"/>
+        android:id="@+id/image_view_indicator"
+        android:layout_width="@dimen/image_view_indicator_size"
+        android:layout_height="@dimen/image_view_indicator_size"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/image_view_indicator_margin_right"
+        android:src="@drawable/ic_tree_recycler_item_view_indicator" />
 
     <TextView
-            android:textSize="@dimen/tree_item_text_size"
-            android:layout_centerVertical="true"
-            android:id="@+id/text_view_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:textColor="@android:color/black"
-            android:layout_marginRight="5dp"/>
+        android:id="@+id/text_view_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/tree_item_text_size" />
 
-    <TextView
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:textSize="@dimen/tree_item_text_size"
-            android:layout_centerVertical="true"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/text_view_description"
+        android:layout_toRightOf="@id/image_view_indicator"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/current_chapter"
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginRight="5dp"
+            android:background="@android:color/black" />
+
+        <TextView
             android:id="@+id/text_view_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:textColor="@android:color/black"
-            android:layout_toLeftOf="@id/text_view_description"
-            android:layout_toRightOf="@id/image_view_indicator"/>
+            android:textSize="@dimen/tree_item_text_size" />
+    </LinearLayout>
 
     <View
-        android:layout_alignParentBottom="true"
         android:id="@+id/split_line"
-        android:layerType="software"
-        android:background="@drawable/dash_line"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/dash_line"
+        android:layerType="software" />
 </RelativeLayout>
