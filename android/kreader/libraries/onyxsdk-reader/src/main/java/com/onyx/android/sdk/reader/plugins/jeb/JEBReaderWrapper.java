@@ -579,6 +579,9 @@ public class JEBReaderWrapper {
         }
 
         String ch = getCharAtPos(screenText, pos);
+        if(StringUtils.isNullOrEmpty(ch)){
+            return null;
+        }
         if (!AlUnicode.isChineze(ch.charAt(0))) {
             // simplifying latter work
             return selectTextOnScreen(point, point);
