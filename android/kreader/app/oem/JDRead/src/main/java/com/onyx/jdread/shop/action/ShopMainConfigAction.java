@@ -118,6 +118,7 @@ public class ShopMainConfigAction extends BaseAction {
     private void setVipUserInfo(VipUserInfoViewModel vipUserInfoViewModel) {
         UserInfo userInfo = PersonalDataBundle.getInstance().getUserInfo();
         boolean login = JDReadApplication.getInstance().getLogin();
+        vipUserInfoViewModel.showLoginButton.set(!login);
         String imgUrl = "";
         String userName = "";
         String buttonContent = "";
@@ -134,9 +135,6 @@ public class ShopMainConfigAction extends BaseAction {
                     buttonContent = ResManager.getString(R.string.open_vip_read);
                 }
             }
-        } else { // un login
-            userName = ResManager.getString(R.string.not_login);
-            buttonContent = ResManager.getString(R.string.login_immediately);
         }
         vipUserInfoViewModel.name.set(userName);
         vipUserInfoViewModel.vipStatus.set(vipStatus);

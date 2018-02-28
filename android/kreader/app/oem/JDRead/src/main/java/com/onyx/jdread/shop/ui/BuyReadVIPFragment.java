@@ -68,7 +68,7 @@ public class BuyReadVIPFragment extends BaseFragment {
     private void initView() {
         initRecycleView();
         binding.setViewModel(getBuyReadVipModel());
-        getBuyReadVipModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.buy_read_vip);
+        getBuyReadVipModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.read_vip);
         getBuyReadVipModel().setVipUserInfoViewModel(getShopDataBundle().getVipUserInfoViewModel());
     }
 

@@ -1,5 +1,6 @@
 package com.onyx.jdread.shop.ui;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -56,6 +57,7 @@ public class CommentFragment extends BaseFragment {
     private int currentPage = 1;
     private GPaginator paginator;
     private BookInfoDialog infoDialog;
+    private boolean hasClick;
 
     @Nullable
     @Override
@@ -198,7 +200,12 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void showInfoDialog(String content) {
+        if (hasClick) {
+            return;
+        }
+        hasClick = true;
         if (StringUtils.isNullOrEmpty(content)) {
+            hasClick = false;
             return;
         }
         DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
@@ -209,6 +216,12 @@ public class CommentFragment extends BaseFragment {
         infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
         infoDialog.setView(infoBinding.getRoot());
         infoDialog.setCancelable(false);
+        infoDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                hasClick = false;
+            }
+        });
         HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);
@@ -226,7 +239,7 @@ public class CommentFragment extends BaseFragment {
                 dismissInfoDialog();
             }
         });
-        if (infoDialog != null) {
+        if (infoDialog != null && !infoDialog.isShowing()) {
             infoDialog.show();
         }
     }

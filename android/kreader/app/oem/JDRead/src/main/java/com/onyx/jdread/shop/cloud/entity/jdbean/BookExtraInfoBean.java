@@ -12,4 +12,6 @@ public class BookExtraInfoBean {
     public Object downLoadTaskTag;
     public float totalSize;
     public float progress;
+    public String key;
+    public String random;
 }
