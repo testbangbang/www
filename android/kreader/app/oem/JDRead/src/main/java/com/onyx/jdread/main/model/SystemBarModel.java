@@ -15,6 +15,7 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
 import com.onyx.jdread.util.TimeUtils;
 
@@ -129,6 +130,9 @@ public class SystemBarModel extends Observable {
                 batteryImageRes.set(BATTERY_LEVEL[connectCondition][level / interval]);
                 int power = level * 100 / scale;
                 battery.set(power + "%");
+                if (power == ResManager.getInteger(R.integer.low_power_battery_value) && !connectionStatus) {
+                    ToastUtil.showToast(ResManager.getString(R.string.low_power_reminder));
+                }
             }
         }
     };

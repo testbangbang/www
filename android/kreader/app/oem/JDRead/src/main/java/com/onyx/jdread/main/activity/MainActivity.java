@@ -23,7 +23,6 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityMainBinding;
-import com.onyx.jdread.library.action.RxFileSystemScanAction;
 import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
@@ -34,7 +33,6 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.main.event.KeyCodeEnterEvent;
-import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
@@ -362,13 +360,6 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onUsbDisconnectedEvent(UsbDisconnectedEvent event) {
         JDReadApplication.getInstance().dealWithMtpBuffer();
-        RxFileSystemScanAction scanAction = new RxFileSystemScanAction(RxFileSystemScanAction.MMC_STORAGE_ID, true);
-        scanAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                LibraryDataBundle.getInstance().getEventBus().post(new ModifyLibraryDataEvent());
-            }
-        });
     }
 
     @Subscribe

@@ -100,11 +100,6 @@ public class JDReadApplication extends MultiDexApplication {
                     if (SupportType.getDocumentExtension().contains(FileUtils.getFileExtension(file))) {
                         mtpBuffer.add(data.getPath());
                     }
-
-                    if (SupportType.getSupportThumbnailType().contains(FileUtils.getFileExtension(file)) && file.exists()) {
-                        ReaderDocumentCoverAction action = new ReaderDocumentCoverAction(ResManager.getInteger(R.integer.cloud_book_cover_width), ResManager.getInteger(R.integer.cloud_book_cover_height));
-                        action.execute(ReaderDocumentCoverAction.initReaderDataHolder(data.getPath()), null);
-                    }
                 }
 
                 String oldFilePath = intent.getStringExtra(Constants.MTP_EXTRA_TAG_OLD_FILE_PATH);
