@@ -13,8 +13,14 @@ import com.onyx.android.sdk.device.IMX6Device;
 import com.onyx.android.sdk.device.IMX7Device;
 import com.onyx.android.sdk.device.RK3026Device;
 import com.onyx.android.sdk.reader.device.ReaderDeviceManager;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.model.SettingRefreshModel;
+
+import java.util.regex.Pattern;
 
 /**
  * Created by john on 29/1/2018.
@@ -50,7 +56,9 @@ public class ReaderEpdHelper {
 
     public void prepareInitialUpdate(final Context context) {
         // read init value from context.
-        gcInterval = ReaderDeviceManager.getGcInterval();
+        String currentRefreshPage = JDPreferenceManager.getStringValue(SettingRefreshModel.REFRESH_RATE, ResManager.getString(R.string.device_setting_ten_pages));
+        String refreshTime = Pattern.compile("[^0-9]").matcher(currentRefreshPage).replaceAll("");
+        gcInterval = StringUtils.isNullOrEmpty(refreshTime) ? Integer.MAX_VALUE : Integer.valueOf(refreshTime);
         refreshCount = gcInterval;
     }
 
