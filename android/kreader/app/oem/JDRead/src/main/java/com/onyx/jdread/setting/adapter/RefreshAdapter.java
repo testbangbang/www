@@ -20,7 +20,8 @@ import com.onyx.jdread.main.common.ResManager;
 public class RefreshAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     private boolean a2Mode;
     private String[] data;
-    private String currentPage;
+    private int currentValue;
+    private int[] values;
 
     @Override
     public int getRowCount() {
@@ -49,7 +50,7 @@ public class RefreshAdapter extends PageRecyclerView.PageAdapter implements View
         ItemRefreshBinding binding = viewHolder.getBinding();
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
-        binding.setShow(data[position].equals(currentPage));
+        binding.setShow(values[position] == currentValue);
         viewHolder.bindTo(data[position]);
     }
 
@@ -57,13 +58,14 @@ public class RefreshAdapter extends PageRecyclerView.PageAdapter implements View
         this.a2Mode = a2Mode;
     }
 
-    public void setData(String[] data) {
+    public void setData(String[] data, int[] refreshValues) {
         this.data = data;
+        this.values = refreshValues;
         notifyDataSetChanged();
     }
 
-    public void setCurrentPage(String currentPage) {
-        this.currentPage = currentPage;
+    public void setCurrentPage(int currentValue) {
+        this.currentValue = currentValue;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class RefreshAdapter extends PageRecyclerView.PageAdapter implements View
         }
 
         int position = (int) tag;
-        currentPage = data[position];
+        currentValue = values[position];
         if (onItemClickListener != null) {
             onItemClickListener.onItemClick(position);
         }

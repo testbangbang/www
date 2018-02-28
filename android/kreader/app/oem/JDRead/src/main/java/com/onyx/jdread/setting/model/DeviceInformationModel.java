@@ -39,7 +39,7 @@ public class DeviceInformationModel extends Observable {
         list.add(createItemModel(eventBus, R.string.device_mac_address_format,
                 new String[]{NetworkUtil.getMacAddress(JDReadApplication.getInstance())}, null, false));
         list.add(createItemModel(eventBus, R.string.device_store_format,
-                new Object[]{StorageSizeUtil.getFreeStorageInGB(), 8}, null, false));
+                new Object[]{StorageSizeUtil.getFreeStorageInGB(), StorageSizeUtil.getTotalStorageAmountInGB()}, null, false));
         list.add(createItemModel(eventBus, R.string.copyright_notice_and_terms_of_service, null, new CopyrightNoticeEvent(), true));
         list.add(createItemModel(eventBus, R.string.reset, null, new ResetDeviceEvent(), true));
     }

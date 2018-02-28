@@ -29,7 +29,7 @@ public class ReaderDocumentCoverRequest extends ReaderBaseRequest {
         cover = ReaderBitmapImpl.create(width, height, Bitmap.Config.ARGB_8888);
         reader.getReaderHelper().getDocument().readCover(cover.getBitmap());
         String documentPath = reader.getDocumentInfo().getBookPath();
-        ThumbnailUtils.insertThumbnail(getAppContext(), ContentSdkDataUtils.getDataProvider(), documentPath, documentPath, cover.getBitmap());
+        ThumbnailUtils.insertThumbnail(getAppContext(), ContentSdkDataUtils.getDataProvider(), documentPath, reader.getReaderHelper().getDocumentMd5(), cover.getBitmap());
         return this;
     }
 
