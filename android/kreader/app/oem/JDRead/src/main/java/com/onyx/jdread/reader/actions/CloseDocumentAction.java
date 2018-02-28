@@ -14,7 +14,7 @@ public class CloseDocumentAction extends BaseReaderAction {
     public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         readerDataHolder.setDocumentInitState();
 
-        final CloseDocumentRequest request = new CloseDocumentRequest(readerDataHolder.getReader(),readerDataHolder.getSettingInfo());
+        final CloseDocumentRequest request = new CloseDocumentRequest(readerDataHolder.getReader());
         request.execute(baseCallback);
     }
 }

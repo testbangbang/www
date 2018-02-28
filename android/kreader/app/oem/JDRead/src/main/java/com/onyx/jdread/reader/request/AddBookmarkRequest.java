@@ -6,6 +6,7 @@ import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.ReaderViewHelper;
 import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 
 /**
@@ -24,7 +25,7 @@ public class AddBookmarkRequest extends ReaderBaseRequest {
     @Override
     public AddBookmarkRequest call() throws Exception {
         ContentSdkDataUtils.getDataProvider().addBookmark(createBookmark());
-        LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
+        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(reader);
         return this;
     }

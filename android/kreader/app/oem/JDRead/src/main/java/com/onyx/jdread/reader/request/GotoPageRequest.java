@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.request;
 
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.SettingInfo;
 
 /**
  * Created by huxiaomao on 2018/1/8.
@@ -24,6 +25,7 @@ public class GotoPageRequest extends ReaderBaseRequest {
         }
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(reader);
+        saveReaderOptions(reader);
         return this;
     }
 }

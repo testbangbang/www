@@ -52,6 +52,7 @@ import com.onyx.jdread.reader.menu.actions.GotoSearchPageAction;
 import com.onyx.jdread.reader.menu.actions.SearchContentAction;
 import com.onyx.jdread.reader.menu.event.DialogSearchHandler;
 import com.onyx.jdread.reader.menu.model.DialogSearchModel;
+import com.onyx.jdread.util.InputUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
     private static final String TAG = DialogSearch.class.getSimpleName();
     private static final int SEARCH_HISTORY_COUNT = 10;
     private static final int SEARCH_PAGE_ONE_TIME = 20;
+    private static final int TEXT_MAX_LENGTH = 20;
     private DialogSearchBinding binding;
     private DialogSearchModel dialogSearchModel;
 
@@ -180,9 +182,12 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
             }
         });
         binding.editViewSearch.addTextChangedListener(new TextWatcher() {
+            private CharSequence temp;
+            private int selectionStart;
+            private int selectionEnd;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                temp = s;
             }
 
             @Override
@@ -192,6 +197,16 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
 
             @Override
             public void afterTextChanged(Editable s) {
+                selectionStart = binding.editViewSearch.getSelectionStart();
+                selectionEnd = binding.editViewSearch.getSelectionEnd();
+                if (InputUtils.getByteCount(temp.toString()) > ResManager.getInteger(R.integer.reader_group_name_max_length)) {
+                    ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.toast_offset_y));
+                    s.delete(selectionStart - 1, selectionEnd);
+                    int tempSelection = selectionStart;
+                    binding.editViewSearch.setText(s);
+                    binding.editViewSearch.setSelection(tempSelection);
+                }
+
                 String text = s.toString();
                 if(StringUtils.isNotBlank(text)){
                     dialogSearchModel.setDeleteInputWord(true);
@@ -406,6 +421,9 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         public void bindView(ReaderSelection selection, String search, final int position) {
             readerSelection = selection;
             String leftText = StringUtils.deleteNewlineSymbol(StringUtils.leftTrim(selection.getLeftText()));
+            if(StringUtils.isNotBlank(leftText) && leftText.length() > TEXT_MAX_LENGTH){
+                leftText = leftText.substring(leftText.length() - TEXT_MAX_LENGTH,leftText.length());
+            }
             String rightText = StringUtils.deleteNewlineSymbol(StringUtils.rightTrim(selection.getRightText()));
             leftText = removeUselessLetters(search, leftText, true);
             rightText = removeUselessLetters(search, rightText, false);

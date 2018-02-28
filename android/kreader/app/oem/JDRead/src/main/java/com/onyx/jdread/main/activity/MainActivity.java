@@ -132,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFunctionAdapter(PageRecyclerView functionBarRecycler) {
+        if(functionBarRecycler == null){
+            return;
+        }
         boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
         PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
         int col = getResources().getInteger(R.integer.function_bar_col);
@@ -164,6 +167,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private PageRecyclerView getFunctionBarRecycler() {
+        if(binding == null){
+            return null;
+        }
         return binding.mainFunctionBar.functionBarRecycler;
     }
 
@@ -298,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         DeviceUtils.setFullScreenOnResume(this, true);
+        setFunctionAdapter(getFunctionBarRecycler());
     }
 
     @Override

@@ -188,7 +188,7 @@ public class ReaderMarginModel {
         settingInfo.customLeftAndRightMargin = spacing;
 
         SettingLeftAndRightSpacingEvent event = new SettingLeftAndRightSpacingEvent();
-        ReaderConfig.LeftAndRight leftAndRight = ReaderConfig.customLeftAndRightMargin.get(spacing);
+        ReaderConfig.LeftAndRight leftAndRight = ReaderConfig.getCustomLeftAndRightMargin(settingInfo.settingStyle,spacing);
         event.margin = leftAndRight.left;
         getEventBus().post(event);
     }
@@ -235,7 +235,7 @@ public class ReaderMarginModel {
         settingInfo.customTopAndBottomMargin = spacing;
 
         SettingUpAndDownSpacingEvent event = new SettingUpAndDownSpacingEvent();
-        ReaderConfig.TopAndBottom topAndBottom = ReaderConfig.customTopAndBottomMargin.get(spacing);
+        ReaderConfig.TopAndBottom topAndBottom = ReaderConfig.getCustomTopAndBottomMargin(settingInfo.settingStyle,spacing);
         event.top = topAndBottom.top;
         event.bottom = topAndBottom.bottom;
         getEventBus().post(event);

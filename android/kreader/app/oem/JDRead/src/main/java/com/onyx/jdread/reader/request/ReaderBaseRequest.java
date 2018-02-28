@@ -76,11 +76,15 @@ public abstract class ReaderBaseRequest extends RxRequest {
         }
     }
 
-    public void saveReaderOptions(final Reader reader, final SettingInfo settingInfo) {
+    public void saveReaderOptions(final Reader reader) {
         if (reader.getReaderHelper().getDocument().saveOptions()) {
-            reader.getReaderHelper().saveOptions(settingInfo);
+            reader.getReaderHelper().saveOptions();
             saveToDocumentOptions(reader);
         }
+    }
+
+    public void saveStyleOptions(final Reader reader,final SettingInfo settingInfo){
+        reader.getReaderHelper().saveStyle(settingInfo);
     }
 
     private void saveToDocumentOptions(final Reader reader) {
