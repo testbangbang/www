@@ -24,7 +24,7 @@ public class GotoPositionAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
-        final GotoPositionRequest request = new GotoPositionRequest(readerDataHolder.getReader(), pagePosition,readerDataHolder.getSettingInfo());
+        final GotoPositionRequest request = new GotoPositionRequest(readerDataHolder.getReader(), pagePosition);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

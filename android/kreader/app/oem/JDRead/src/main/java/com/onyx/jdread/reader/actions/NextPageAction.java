@@ -18,7 +18,7 @@ import com.onyx.jdread.reader.request.PreloadNextScreenRequest;
 public class NextPageAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        final NextScreenRequest request = new NextScreenRequest(readerDataHolder.getReader(),readerDataHolder.getSettingInfo());
+        final NextScreenRequest request = new NextScreenRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

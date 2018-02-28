@@ -11,12 +11,10 @@ import com.onyx.jdread.reader.data.SettingInfo;
 public class GotoPageRequest extends ReaderBaseRequest {
     private Reader reader;
     private int page;
-    private SettingInfo settingInfo;
 
-    public GotoPageRequest(Reader reader,int page,SettingInfo settingInfo) {
+    public GotoPageRequest(Reader reader,int page) {
         this.reader = reader;
         this.page = page;
-        this.settingInfo = settingInfo;
     }
 
     @Override
@@ -27,7 +25,7 @@ public class GotoPageRequest extends ReaderBaseRequest {
         }
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(reader);
-        saveReaderOptions(reader,settingInfo);
+        saveReaderOptions(reader);
         return this;
     }
 }

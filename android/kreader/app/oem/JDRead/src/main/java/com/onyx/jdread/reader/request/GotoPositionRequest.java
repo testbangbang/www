@@ -15,33 +15,28 @@ public class GotoPositionRequest extends ReaderBaseRequest {
     private String persistentPosition;
     private int page;
     private boolean isDrawPage = true;
-    private SettingInfo settingInfo;
     private boolean autoOffset = false;
 
-    public GotoPositionRequest(Reader reader, int page, boolean isDrawPage,SettingInfo settingInfo) {
+    public GotoPositionRequest(Reader reader, int page, boolean isDrawPage) {
         this.reader = reader;
         this.page = page;
         this.isDrawPage = isDrawPage;
-        this.settingInfo = settingInfo;
     }
 
-    public GotoPositionRequest(Reader reader, int page,SettingInfo settingInfo) {
+    public GotoPositionRequest(Reader reader, int page) {
         this.reader = reader;
         this.page = page;
-        this.settingInfo = settingInfo;
     }
 
-    public GotoPositionRequest(Reader reader, String persistentPosition,SettingInfo settingInfo) {
+    public GotoPositionRequest(Reader reader, String persistentPosition) {
         this.reader = reader;
         this.persistentPosition = persistentPosition;
-        this.settingInfo = settingInfo;
     }
 
-    public GotoPositionRequest(Reader reader, String persistentPosition, boolean isDrawPage,boolean autoOffset,SettingInfo settingInfo) {
+    public GotoPositionRequest(Reader reader, String persistentPosition, boolean isDrawPage,boolean autoOffset) {
         this.reader = reader;
         this.persistentPosition = persistentPosition;
         this.isDrawPage = isDrawPage;
-        this.settingInfo = settingInfo;
         this.autoOffset = autoOffset;
     }
 
@@ -69,7 +64,7 @@ public class GotoPositionRequest extends ReaderBaseRequest {
             reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
         }
         updateSetting(reader);
-        saveReaderOptions(reader,settingInfo);
+        saveReaderOptions(reader);
         return this;
     }
 

@@ -30,7 +30,8 @@ public class SettingTextStyleRequest extends ReaderBaseRequest {
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
 
         updateSetting(reader);
-        saveReaderOptions(reader,settingInfo);
+        saveReaderOptions(reader);
+        saveStyleOptions(reader,settingInfo);
         return this;
     }
 }

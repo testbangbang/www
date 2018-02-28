@@ -23,7 +23,7 @@ public class GotoSearchPageAction extends BaseReaderAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
-        final GotoSearchLocationRequest request = new GotoSearchLocationRequest(searchResults, readerDataHolder.getReader(), pagePosition,readerDataHolder.getSettingInfo());
+        final GotoSearchLocationRequest request = new GotoSearchLocationRequest(searchResults, readerDataHolder.getReader(), pagePosition);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

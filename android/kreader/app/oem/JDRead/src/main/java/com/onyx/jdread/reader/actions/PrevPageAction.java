@@ -20,7 +20,7 @@ public class PrevPageAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        final PreviousScreenRequest request = new PreviousScreenRequest(readerDataHolder.getReader(),readerDataHolder.getSettingInfo());
+        final PreviousScreenRequest request = new PreviousScreenRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
