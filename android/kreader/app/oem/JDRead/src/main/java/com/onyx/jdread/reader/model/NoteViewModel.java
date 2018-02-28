@@ -15,6 +15,7 @@ import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.event.NoteBackEvent;
 import com.onyx.jdread.reader.event.AddNoteEvent;
 import com.onyx.jdread.reader.event.UpdateNoteEvent;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -68,7 +69,7 @@ public class NoteViewModel {
 
     private void update(NoteInfo noteInfo) {
         setSrcNote(noteInfo.srcNote);
-        setChapterName(noteInfo.chapterName);
+        setChapterName(ReaderViewUtil.trim(noteInfo.chapterName));
         setCreateNoteDate(noteInfo.updateDate);
         setNewNote(noteInfo.newNote);
         setIsEdit(noteInfo.isCreate);
