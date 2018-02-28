@@ -130,7 +130,7 @@ public class SystemBarModel extends Observable {
                 batteryImageRes.set(BATTERY_LEVEL[connectCondition][level / interval]);
                 int power = level * 100 / scale;
                 battery.set(power + "%");
-                if (power == ResManager.getInteger(R.integer.low_power_battery_value)) {
+                if (power == ResManager.getInteger(R.integer.low_power_battery_value) && !connectionStatus) {
                     ToastUtil.showToast(ResManager.getString(R.string.low_power_reminder));
                 }
             }
