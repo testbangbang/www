@@ -30,7 +30,6 @@ public class SettingRefreshModel {
 
     public void setCurrentPageRefreshPage(int currentPageRefreshTime) {
         JDPreferenceManager.setIntValue(REFRESH_RATE, currentPageRefreshTime);
-        LegacySdkDataUtils.setScreenUpdateGCInterval(JDReadApplication.getInstance(), currentPageRefreshTime);
         ReaderDeviceManager.setGcInterval(currentPageRefreshTime);
     }
 
