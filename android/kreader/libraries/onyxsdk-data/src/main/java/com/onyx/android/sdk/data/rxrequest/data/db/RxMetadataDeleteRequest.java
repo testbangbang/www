@@ -45,7 +45,7 @@ public class RxMetadataDeleteRequest extends RxBaseDBRequest {
         for (Metadata metadata : list) {
             getDataProvider().removeMetadata(getAppContext(), metadata);
             if (StringUtils.isNotBlank(libraryId)) {
-                getDataProvider().deleteMetadataCollection(getAppContext(), libraryId, metadata.getAssociationId());
+                getDataProvider().deleteMetadataCollection(getAppContext(), libraryId, metadata.getIdString());
             }
         }
         database.setTransactionSuccessful();

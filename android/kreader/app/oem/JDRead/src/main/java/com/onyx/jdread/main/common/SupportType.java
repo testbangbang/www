@@ -27,9 +27,9 @@ public class SupportType {
     }
 
     public static Set<String> getSupportThumbnailType() {
-        if (docExtension.isEmpty()) {
+        if (supportThumbnailType.isEmpty()) {
             supportThumbnailType.add("epub");
         }
-        return docExtension;
+        return supportThumbnailType;
     }
 }
