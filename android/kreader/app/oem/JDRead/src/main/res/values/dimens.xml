@@ -258,7 +258,7 @@
     <dimen name="points_for_whole_margin_top">30dp</dimen>
     <dimen name="points_for_recycler_height">350dp</dimen>
     <dimen name="item_consumption_record_date_margin_top">14dp</dimen>
-    <dimen name="item_points_for_points_width">100dp</dimen>
+    <dimen name="item_points_for_points_width">120dp</dimen>
     <dimen name="item_points_for_points_padding">10dp</dimen>
     <dimen name="all_category_title_shadow_padding_bottom">8dp</dimen>
     <dimen name="recycler_view_all_categorys_margin_top">10dp</dimen>

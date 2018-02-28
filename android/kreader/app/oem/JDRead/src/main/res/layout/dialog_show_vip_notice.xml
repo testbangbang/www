@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data class="DialogVipNoticeBinding">
+
+        <variable
+            name="viewModel"
+            type="com.onyx.jdread.shop.model.DialogBookInfoViewModel" />
+
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_stroke_corners"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/book_info_contain_padding_bottom">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shop_dialog_title_height">
+
+            <ImageView
+                android:layout_width="@dimen/book_copyright_cancel_button_width_and_height"
+                android:layout_height="@dimen/book_copyright_cancel_button_width_and_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/book_copyright_contain_padding"
+                android:onClick="@{(view)->listener.onClick(view)}"
+                android:padding="@dimen/cancel_button_padding"
+                android:src="@mipmap/ic_cancel" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_horizontal"
+                android:text="@{viewModel.title}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/layout_gray_line" />
+
+        <com.onyx.jdread.reader.ui.view.HTMLReaderWebView
+            android:id="@+id/info_web_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/shop_dialog_content_height"
+            android:layout_marginLeft="@dimen/book_copyright_contain_padding"
+            android:layout_marginRight="@dimen/book_copyright_contain_padding"
+            android:layout_marginTop="@dimen/book_copyright_contain_padding"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/book_copyright_contain_padding"
+            android:layout_marginRight="@dimen/book_copyright_contain_padding"
+            android:gravity="right"
+            android:paddingBottom="@dimen/book_comment_indicator_padding"
+            android:paddingTop="@dimen/book_comment_indicator_padding"
+            android:text="@{@string/book_comment_indicator_value(viewModel.currentPage,viewModel.totalPage)}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font" />
+
+    </LinearLayout>
+
+</layout>
