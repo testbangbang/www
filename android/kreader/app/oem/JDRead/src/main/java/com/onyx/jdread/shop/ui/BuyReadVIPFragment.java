@@ -19,13 +19,21 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.action.UserInfoAction;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
+import com.onyx.jdread.personal.dialog.TopUpDialog;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
+import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.GetVipGoodListAction;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
+import com.onyx.jdread.shop.event.PayByCashSuccessEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.VipButtonClickEvent;
+import com.onyx.jdread.shop.event.VipGoodItemClickEvent;
 import com.onyx.jdread.shop.model.BuyReadVipModel;
 import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -169,6 +177,56 @@ public class BuyReadVIPFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
         hideLoadingDialog();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPayByCashSuccessEvent(PayByCashSuccessEvent event) {
+        UserInfoAction userInfoAction = new UserInfoAction();
+        userInfoAction.execute(PersonalDataBundle.getInstance(), new RxCallback<UserInfoAction>() {
+            @Override
+            public void onNext(UserInfoAction userInfoAction) {
+                updateVipStatus(userInfoAction.getUserInfoData().data);
+            }
+        });
+    }
+
+    private void updateVipStatus(UserInfo info) {
+        if (info != null) {
+            PersonalDataBundle.getInstance().getUserInfo().vip_remain_days = info.vip_remain_days;
+            getBuyReadVipModel().getVipUserInfoViewModel().vipStatus.set(String.format(
+                    ResManager.getString(R.string.vip_read_days), info.vip_remain_days));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onVipGoodItemClickEvent(VipGoodItemClickEvent event) {
+        if (event.dataBean == null || !event.dataBean.can_buy) {
+            return;
+        }
+        getOrderInfo(new String[]{String.valueOf(event.dataBean.sku_id)});
+    }
+
+    private void getOrderInfo(String[] ids) {
+        if (ids != null) {
+            GetOrderInfoAction action = new GetOrderInfoAction(ids);
+            action.execute(getShopDataBundle(), new RxCallback<GetOrderInfoAction>() {
+                @Override
+                public void onNext(GetOrderInfoAction getOrderInfoAction) {
+                    showTopUpDialog(getOrderInfoAction.getDataBean());
+                }
+            });
+        }
+    }
+
+    private void showTopUpDialog(GetOrderInfoResultBean.DataBean orderData) {
+        if (orderData != null) {
+            TopUpDialog dialog = new TopUpDialog();
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.PAY_DIALOG_TYPE, Constants.PAY_DIALOG_TYPE_PAY_ORDER);
+            bundle.putSerializable(Constants.ORDER_INFO, orderData);
+            dialog.setArguments(bundle);
+            dialog.show(getActivity().getFragmentManager(), "");
+        }
     }
 
     @Override

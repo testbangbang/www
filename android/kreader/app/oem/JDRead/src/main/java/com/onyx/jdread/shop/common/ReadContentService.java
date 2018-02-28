@@ -4,6 +4,7 @@ import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtAndUnlimitedBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.CheckGiftBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderStatusBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargeStatusBean;
@@ -168,8 +169,8 @@ public interface ReadContentService {
     @POST(CloudApiContext.ReadBean.PAY_BY_READ_BEAN)
     Call<String> payByReadBean(@QueryMap Map<String, String> baseInfoMap);
 
-    @GET(CloudApiContext.ReadBean.PAY_BY_CASH)
-    Call<String> payByCash(@QueryMap Map<String, String> baseInfoMap);
+    @GET(CloudApiContext.GotoOrder.ORDER_STATUS)
+    Call<GetOrderStatusBean<Boolean>> payByCash(@QueryMap Map<String, String> baseInfoMap);
 
     @POST(CloudApiContext.User.READING_DATA)
     Call<String> syncReadingData(@QueryMap Map<String, String> map,
