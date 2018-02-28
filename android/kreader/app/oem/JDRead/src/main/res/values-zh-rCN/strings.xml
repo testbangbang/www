@@ -483,4 +483,5 @@
     <string name="receive_success">领取成功</string>
     <string name="receive_fail">领取失败</string>
     <string name="low_power_reminder">电量过低,请及时充电</string>
+    <string name="input_error">搜索关键字中不能包含标点符号</string>
 </resources>
