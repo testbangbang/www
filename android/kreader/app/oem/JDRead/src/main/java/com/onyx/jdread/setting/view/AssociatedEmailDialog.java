@@ -70,7 +70,7 @@ public class AssociatedEmailDialog extends Dialog {
 
         private boolean checkedEdit() {
             if (StringUtils.isNullOrEmpty(emailAddress.get()) || !RegularUtil.isEmail(emailAddress.get())) {
-                ToastUtil.showOffsetToast(ResManager.getString(R.string.email_address_wrong), ResManager.getInteger(R.integer.associated_toast_offset_y));
+                ToastUtil.showToast(ResManager.getString(R.string.email_address_wrong));
                 return false;
             }
             return true;
@@ -95,14 +95,10 @@ public class AssociatedEmailDialog extends Dialog {
     @Override
     public void show() {
         Window window = getWindow();
-        window.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
         WindowManager.LayoutParams attributes = window.getAttributes();
         attributes.width = getContext().getResources().getInteger(R.integer.move_to_library_list_dialog_width);
         attributes.height = JDReadApplication.getInstance().getResources().getInteger(R.integer.dialog_associated_width);
-        attributes.y = ResManager.getInteger(R.integer.associated_email_dialog_offset_y);
-        attributes.x = ResManager.getInteger(R.integer.associated_email_dialog_offset_x);
         window.setAttributes(attributes);
-        window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         super.show();
     }
 }

@@ -33,13 +33,13 @@ public class DeviceInformationModel extends Observable {
     public DeviceInformationModel(EventBus eventBus) {
         titleBarModel.title.set(ResManager.getString(R.string.device_information));
         titleBarModel.backEvent.set(new BackToDeviceConfigFragment());
-        list.add(createItemModel(eventBus, R.string.device_model_format, new String[]{Build.MODEL}, new DeviceModelEvent(), false));
+        list.add(createItemModel(eventBus, R.string.device_model_format, new String[]{String.format(ResManager.getString(R.string.setting_device_model_format), Build.MODEL)}, new DeviceModelEvent(), false));
         list.add(createItemModel(eventBus, R.string.device_version_format, new String[]{Build.DISPLAY}, null, false));
         list.add(createItemModel(eventBus, R.string.device_serial_format, new String[]{Build.SERIAL}, null, false));
         list.add(createItemModel(eventBus, R.string.device_mac_address_format,
                 new String[]{NetworkUtil.getMacAddress(JDReadApplication.getInstance())}, null, false));
         list.add(createItemModel(eventBus, R.string.device_store_format,
-                new Object[]{StorageSizeUtil.getFreeStorageInGB(), StorageSizeUtil.getTotalStorageAmountInGB()}, null, false));
+                new Object[]{StorageSizeUtil.getFreeStorageInGB(), 8}, null, false));
         list.add(createItemModel(eventBus, R.string.copyright_notice_and_terms_of_service, null, new CopyrightNoticeEvent(), true));
         list.add(createItemModel(eventBus, R.string.reset, null, new ResetDeviceEvent(), true));
     }

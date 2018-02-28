@@ -81,7 +81,7 @@ public class PswSettingModel extends Observable {
             pswFailModel.saveUnlockFailData(null);
             encrypted.set(false);
         } else {
-            pswFailModel.updateUnlockFailData();
+            ToastUtil.showToast(ResManager.getString(R.string.wrong_password));
         }
     }
 

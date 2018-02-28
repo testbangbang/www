@@ -44,6 +44,7 @@ public class WifiConnectedDialog extends OnyxAlertDialog {
         final String ipAddress = arguments.getString(ARGS_IP_ADDRESS);
         final String band = arguments.getString(ARGS_BAND);
         Params params = new Params().setTittleString(ssid)
+                .setCanceledOnTouchOutside(false)
                 .setCustomContentLayoutResID(R.layout.alert_dialog_wifi_connected)
                 .setCustomViewAction(new CustomViewAction() {
                     @Override

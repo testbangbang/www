@@ -3,11 +3,12 @@ package com.onyx.jdread.setting.model;
 import android.databinding.ObservableField;
 
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.main.util.RegularUtil;
 import com.onyx.jdread.setting.data.database.FeedbackRecord;
@@ -35,16 +36,20 @@ public class FeedbackModel extends Observable {
 
     public void commitFeedback() {
         if (StringUtils.isNullOrEmpty(feedback.get()) || feedback.get().length() < 5 || feedback.get().length() > 200) {
-            ToastUtils.showToast(JDReadApplication.getInstance(), R.string.feedback_format_error);
+            ToastUtil.showToast(ResManager.getString(R.string.feedback_format_error));
             return;
         }
 
         if (StringUtils.isNullOrEmpty(phone.get()) || !RegularUtil.isMobile(phone.get())) {
-            ToastUtils.showToast(JDReadApplication.getInstance(), R.string.phone_number_format_error);
+            ToastUtil.showToast(ResManager.getString(R.string.phone_number_format_error));
             return;
         }
         if (!NetworkUtil.isWiFiConnected(JDReadApplication.getInstance())) {
-            ToastUtils.showToast(JDReadApplication.getInstance(), R.string.wifi_no_connected);
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+            return;
+        }
+        if (!JDReadApplication.getInstance().getLogin()) {
+            ToastUtil.showToast(ResManager.getString(R.string.login_resutl_not_login));
             return;
         }
         submitCommitFeedback(feedback.get(), phone.get());
@@ -59,7 +64,7 @@ public class FeedbackModel extends Observable {
         BroadcastHelper.sendFeedbackBroadcast(JDReadApplication.getInstance(),
                 String.valueOf(JSONObjectParseUtils.toJson(record)));
         saveFeedbackRecord(record);
-        ToastUtils.showToast(JDReadApplication.getInstance(), R.string.feedback_success);
+        ToastUtil.showToast(ResManager.getString(R.string.feedback_success));
     }
 
     private void saveFeedbackRecord(FeedbackRecord record) {

@@ -192,7 +192,7 @@ public class BookVIPReadFragment extends BaseFragment {
             String buttonContent = event.buttonContent;
             if (!StringUtils.isNullOrEmpty(buttonContent)) {
                 if (ResManager.getString(R.string.login_immediately).equals(buttonContent)) {
-                    LoginHelper.showUserLoginDialog(PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel());
+                    LoginHelper.showUserLoginDialog(PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel(), getActivity());
                 } else {
                     getViewEventCallBack().gotoView(BuyReadVIPFragment.class.getName());
                 }

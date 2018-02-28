@@ -348,7 +348,7 @@ public class BookDetailFragment extends BaseFragment {
             bookDetailBean.bookExtraInfoBean = extraInfoBean;
             bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = isWholeBookDownLoad;
             if (!JDReadApplication.getInstance().getLogin()) {
-                LoginHelper.showUserLoginDialog(getUserLoginViewModel());
+                LoginHelper.showUserLoginDialog(getUserLoginViewModel(), getActivity());
             } else {
                 smoothDownload();
             }
@@ -374,7 +374,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {
-            LoginHelper.showUserLoginDialog(getUserLoginViewModel());
+            LoginHelper.showUserLoginDialog(getUserLoginViewModel(), getActivity());
         } else {
             if (!hasAddToCart) {
                 if (bookDetailBean != null) {
