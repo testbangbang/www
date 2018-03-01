@@ -113,6 +113,11 @@ public class JDAppBaseInfo {
         requestParamsMap.put(SP_KEY, sp);
     }
 
+    public JDAppBaseInfo(Map<String, String> extraAddMap) {
+        this();
+        addRequestParams(extraAddMap);
+    }
+
     public String getBuild() {
         return build;
     }

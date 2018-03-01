@@ -19,7 +19,7 @@
     <string name="device_setting_never">Never</string>
     <string name="refresh_tips">Refresh the page to ensure that the ink screen is clear, to reduce the page damage, please set it according to your needs.</string>
     <string name="refresh_mode">Speed refresh mode</string>
-    <string name="refresh_mode_tips">Greatly improved the page speed, but the shadow was more obvious</string>
+    <string name="refresh_mode_tips">Greatly improved the page speed, but the shadow was more obvious.</string>
     <string name="view_history_version">View history version</string>
     <string name="updatable_version">Updatable version: </string>
     <string name="current_version">Current version: </string>
