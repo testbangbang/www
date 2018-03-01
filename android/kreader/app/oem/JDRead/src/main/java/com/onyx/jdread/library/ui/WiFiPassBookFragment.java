@@ -82,7 +82,7 @@ public class WiFiPassBookFragment extends BaseFragment {
 
     @Subscribe
     public void onBackToLibraryFragment(BackToLibraryFragmentEvent event) {
-        viewEventCallBack.gotoView(LibraryFragment.class.getName());
+        viewEventCallBack.viewBack();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
