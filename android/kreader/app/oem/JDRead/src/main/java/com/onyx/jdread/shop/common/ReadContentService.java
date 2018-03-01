@@ -17,6 +17,7 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SignForVoucherBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
+import com.onyx.jdread.reader.data.ReadingDataResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
@@ -34,7 +35,9 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -173,11 +176,10 @@ public interface ReadContentService {
     Call<GetOrderStatusBean<Boolean>> payByCash(@QueryMap Map<String, String> baseInfoMap);
 
     @POST(CloudApiContext.User.READING_DATA)
-    Call<String> syncReadingData(@QueryMap Map<String, String> map,
-                                 @Body RequestBody body);
+    Call<ReadingDataResultBean> syncReadingData(@QueryMap Map<String, String> map,
+                                                @Body RequestBody body);
 
-    @Multipart
     @POST(CloudApiContext.User.EXPORT_NOTE)
     Call<String> exportNote(@QueryMap Map<String, String> map,
-                            @Part MultipartBody.Part file);
+                            @Body RequestBody body);
 }

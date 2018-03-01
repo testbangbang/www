@@ -93,6 +93,7 @@ public class PersonalFragment extends BaseFragment {
 
     private void initData() {
         binding.setIsLogin(JDReadApplication.getInstance().getLogin());
+        binding.setIsSignToday(PersonalDataBundle.getInstance().isTodaySign());
         if (JDReadApplication.getInstance().getLogin()) {
             LoginHelper.getUserInfo(PersonalDataBundle.getInstance());
             LoginHelper.verifySign(PersonalDataBundle.getInstance());
@@ -131,6 +132,7 @@ public class PersonalFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVerifySignEvent(VerifySignEvent event) {
+        PersonalDataBundle.getInstance().setIsTodaySign(event.isTodaySign());
         binding.setIsSignToday(event.isTodaySign());
     }
 

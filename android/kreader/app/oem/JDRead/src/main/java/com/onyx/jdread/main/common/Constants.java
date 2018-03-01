@@ -131,4 +131,5 @@ public class Constants {
     public static final int PAY_DIALOG_TYPE_TOP_UP = 2;
     public static final String ORDER_INFO = "order_info";
     public static final String BANNER_URL = "banner_url";
+    public static final long LIMIT_TIME = 500;
 }

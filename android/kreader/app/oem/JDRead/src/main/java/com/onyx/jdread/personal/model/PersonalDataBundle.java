@@ -39,6 +39,7 @@ public class PersonalDataBundle {
     private String salt;
     private UserInfo userInfo;
     private boolean signed;
+    private boolean isTodaySign;
 
     private PersonalDataBundle() {
 
@@ -212,5 +213,13 @@ public class PersonalDataBundle {
 
     public String getReceiveReadVoucherTime() {
         return JDPreferenceManager.getStringValue(Constants.RECEIVED_VOUCHER, "");
+    }
+
+    public void setIsTodaySign(boolean isTodaySign) {
+        this.isTodaySign = isTodaySign;
+    }
+
+    public boolean isTodaySign() {
+        return isTodaySign;
     }
 }
