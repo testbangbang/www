@@ -196,18 +196,40 @@
                     android:visibility="@{noteViewModel.isSrcNoteModify?View.VISIBLE:View.GONE}" />
             </RelativeLayout>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:clickable="true"
-                android:gravity="top"
-                android:onClick="@{()->noteViewModel.gotoPagePosition()}"
-                android:padding="10dp"
-                android:text="@={noteViewModel.srcNote}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font"
-                android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}" />
+                android:orientation="vertical">
+
+                <com.onyx.jdread.reader.ui.view.PageTextView
+                    android:id="@+id/tv_src_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="8"
+                    android:maxLines="13"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:gravity="top"
+                    android:onClick="@{()->noteViewModel.gotoPagePosition()}"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:text="@={noteViewModel.srcNote}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:padding="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@{noteViewModel.srcPageNumber}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:visibility="@{noteViewModel.isEdit?View.GONE:View.VISIBLE}" />
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/src_note"

@@ -1,0 +1,201 @@
+package com.onyx.jdread.reader.ui.view;
+
+
+import android.content.Context;
+import android.graphics.Rect;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.Layout;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.widget.TextView;
+
+import com.onyx.android.sdk.ui.utils.PageTurningDetector;
+import com.onyx.android.sdk.ui.utils.PageTurningDirection;
+
+/**
+ * Created by huxiaomao on 2018/3/1.
+ */
+
+public class PageTextView extends AppCompatTextView {
+    private float lastX;
+    private float lastY;
+    private boolean canTouchPageTurning = true;
+    private int currentPageNumber = 0;
+    private CharSequence srcContent = null;
+    private int pageNum;
+    private int totalPageNumber = 0;
+    private int page[];
+    private OnPagingListener onPagingListener;
+    private boolean isLastPage = false;
+    private boolean isFirstPage = false;
+
+    public interface OnPagingListener {
+        void onPageChange(int currentPage, int totalPage);
+    }
+
+    public PageTextView(Context context) {
+        super(context);
+    }
+
+    public PageTextView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public PageTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public void setOnPagingListener(OnPagingListener listener) {
+        this.onPagingListener = listener;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        resize();
+        isFirstPage = true;
+        onPageChange(0);
+    }
+
+    public int resize() {
+        CharSequence oldContent = getText();
+        if (srcContent == null) {
+            getPage();
+            srcContent = oldContent;
+        }
+        CharSequence newContent = oldContent.subSequence(0, getCharNum());
+        setText(newContent);
+        return oldContent.length() - newContent.length();
+    }
+
+    public int getCharNum() {
+        return getLayout().getLineEnd(getLineNum());
+    }
+
+    public int getLineNum() {
+        Layout layout = getLayout();
+        int topOfLastLine = getHeight() - getPaddingTop() - getPaddingBottom() - getLineHeight();
+        return layout.getLineForVertical(topOfLastLine);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                lastX = event.getX();
+                lastY = event.getY();
+                break;
+            case MotionEvent.ACTION_UP:
+                int direction = detectDirection(event);
+                if (direction == PageTurningDirection.NEXT) {
+                    if (canTouchPageTurning) {
+                        nextPage();
+                        return true;
+                    }
+                } else if (direction == PageTurningDirection.PREV) {
+                    if (canTouchPageTurning) {
+                        prevPage();
+                        return true;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    public void prevPage() {
+        if (isFirstPage) {
+            currentPageNumber = pageNum;
+            isFirstPage = false;
+            isLastPage = true;
+        }
+        int start = 0;
+        if (currentPageNumber - 1 >= 0) {
+            currentPageNumber--;
+            start = page[currentPageNumber];
+            setText(srcContent.subSequence(start, srcContent.length()));
+            onPageChange(currentPageNumber);
+        } else {
+            start = 0;
+            gotoFirstPage(start);
+        }
+    }
+
+    private void gotoFirstPage(int start) {
+        isFirstPage = true;
+        setText(srcContent.subSequence(start, srcContent.length()));
+        onPageChange(0);
+    }
+
+    public void nextPage() {
+        if (isLastPage) {
+            currentPageNumber = 0;
+            isFirstPage = true;
+            isLastPage = false;
+            gotoFirstPage(0);
+            return;
+        }
+        int start = 0;
+        if (currentPageNumber + 1 < pageNum) {
+            currentPageNumber++;
+            start = page[currentPageNumber];
+            setText(srcContent.subSequence(start, srcContent.length()));
+            onPageChange(currentPageNumber);
+        } else {
+            isLastPage = true;
+            start = page[pageNum - 1];
+            if (start < srcContent.length()) {
+                setText(srcContent.subSequence(start, srcContent.length()));
+            }
+            onPageChange(pageNum);
+        }
+    }
+
+    public int getCurrentPageNumber() {
+        return currentPageNumber + 1;
+    }
+
+    public int getTotalPageNumber() {
+        return totalPageNumber;
+    }
+
+    private void onPageChange(int currentPage) {
+        if (onPagingListener != null) {
+            onPagingListener.onPageChange(currentPage + 1, totalPageNumber);
+        }
+    }
+
+    private int detectDirection(MotionEvent currentEvent) {
+        return PageTurningDetector.detectBothAxisTuring(getContext(), (int) (currentEvent.getX() - lastX), (int) (currentEvent.getY() - lastY));
+    }
+
+    public int[] getPage() {
+        int count = getLineCount();
+        int pCount = getPageLineCount(this);
+        totalPageNumber = pageNum = count / pCount;
+        if (count % pCount != 0) {
+            totalPageNumber += 1;
+        }
+        page = new int[pageNum];
+        for (int i = 0; i < pageNum; i++) {
+            page[i] = getLayout().getLineEnd((i + 1) * pCount - 1);
+        }
+        return page;
+    }
+
+    private int getPageLineCount(TextView view) {
+        int h = view.getBottom() - view.getTop() - view.getPaddingTop();
+        int firstH = getLineHeight(0, view);
+        int otherH = getLineHeight(1, view);
+        return (h - firstH) / otherH;
+    }
+
+    private int getLineHeight(int line, TextView view) {
+        Rect rect = new Rect();
+        view.getLineBounds(line, rect);
+        return rect.bottom - rect.top;
+    }
+
+}

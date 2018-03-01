@@ -23,6 +23,7 @@ import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
+import com.onyx.android.sdk.reader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderViewOptionsImpl;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
@@ -55,6 +56,7 @@ import java.util.Map;
 public class ReaderHelper {
     private static final String TAG = ReaderHelper.class.getSimpleName();
     private String documentMd5;
+    private DocumentInfo documentInfo;
     private ReaderDocument readerDocument;
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPlugin plugin;
@@ -73,8 +75,13 @@ public class ReaderHelper {
     private ReaderBitmapReferenceImpl currentPageBitmap;
     private Context context;
 
-    public ReaderHelper(Context context) {
+    public ReaderHelper(Context context,DocumentInfo documentInfo) {
         this.context = context;
+        this.documentInfo = documentInfo;
+    }
+
+    public DocumentInfo getDocumentInfo() {
+        return documentInfo;
     }
 
     public Context getContext() {
@@ -129,7 +136,11 @@ public class ReaderHelper {
 
     public ReaderDocument openDocument(final String path, final BaseOptions baseOptions, final ReaderPluginOptions pluginOptions) throws Exception {
         this.documentOptions = baseOptions;
-        return plugin.open(path, documentOptions.documentOptions(), pluginOptions);
+        ReaderDocumentOptionsImpl readerDocumentOptions = documentOptions.documentOptions();
+        readerDocumentOptions.setDocumentKey(documentInfo.getSecurityInfo().getKey());
+        readerDocumentOptions.setDocumentDeviceUUID(documentInfo.getSecurityInfo().getUuId());
+        readerDocumentOptions.setDocumentRandom(documentInfo.getSecurityInfo().getRandom());
+        return plugin.open(path,readerDocumentOptions , pluginOptions);
     }
 
     public boolean closeDocument() {
