@@ -6,6 +6,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 
 import java.util.regex.Pattern;
 
@@ -16,27 +17,28 @@ import java.util.regex.Pattern;
 public class SettingRefreshModel {
     private String[] refreshPages;
     private String currentRefreshPage;
-    private static final String REFRESH_RATE = "refresh_rate";
+    public static final String REFRESH_RATE = "refresh_rate";
     private boolean isSpeedRefresh;
 
     public SettingRefreshModel() {
         isSpeedRefresh = JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false);
     }
 
-    public String getCurrentRefreshPage() {
-        return currentRefreshPage = JDPreferenceManager.getStringValue(REFRESH_RATE, JDReadApplication.getInstance().getResources().getString(R.string.device_setting_ten_pages));
+    public int getCurrentRefreshPage() {
+        return JDPreferenceManager.getIntValue(REFRESH_RATE, ResManager.getInteger(R.integer.default_refresh_value));
     }
 
-    public void setCurrentPageRefreshPage(String currentPageRefreshTime) {
-        JDPreferenceManager.setStringValue(REFRESH_RATE, currentPageRefreshTime);
-        String refreshTime = Pattern.compile("[^0-9]").matcher(currentPageRefreshTime).replaceAll("");
-        int refreshValue = StringUtils.isNullOrEmpty(refreshTime) ? Integer.MAX_VALUE : Integer.valueOf(refreshTime);
-        LegacySdkDataUtils.setScreenUpdateGCInterval(JDReadApplication.getInstance(), refreshValue);
-        ReaderDeviceManager.setGcInterval(refreshValue);
+    public void setCurrentPageRefreshPage(int currentPageRefreshTime) {
+        JDPreferenceManager.setIntValue(REFRESH_RATE, currentPageRefreshTime);
+        ReaderDeviceManager.setGcInterval(currentPageRefreshTime);
     }
 
     public String[] getRefreshPages() {
-        return refreshPages = JDReadApplication.getInstance().getResources().getStringArray(R.array.device_setting_page_refreshes);
+        return refreshPages = ResManager.getStringArray(R.array.device_setting_page_refreshes);
+    }
+
+    public int[] getRefreshValues() {
+        return ResManager.getIntArray(R.array.device_setting_refresh_values);
     }
 
     public boolean isSpeedRefresh() {

@@ -8,6 +8,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.PasswordIsCorrectEvent;
 import com.onyx.jdread.setting.model.PswFailModel;
@@ -43,11 +44,10 @@ public class LockScreenModel extends Observable {
         }
         String unlockPassword = passwordEdit.get();
         if (StringUtils.isNotBlank(unlockPassword) && FileUtils.computeMD5(unlockPassword).equals(password)) {
-            JDPreferenceManager.setStringValue(R.string.password_key, "");
             pswFailModel.saveUnlockFailData(null);
             eventBus.post(new PasswordIsCorrectEvent());
         } else {
-            pswFailModel.updateUnlockFailData();
+            ToastUtil.showToast(ResManager.getString(R.string.wrong_password));
         }
     }
 }

@@ -18,6 +18,8 @@
     <uses-permission android:name="android.permission.RECOVERY" />
     <uses-permission android:name="android.permission.ACCESS_CACHE_FILESYSTEM" />
     <uses-permission android:name="android.permission.REBOOT" />
+    <uses-permission android:name="android.permission.MASTER_CLEAR" />
+
 
     <application
         android:name=".JDReadApplication"
@@ -29,9 +31,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".reader.ui.PreloadActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/PreloadActivityFullscreen">
+            android:name=".main.activity.MainActivity"
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/ActivityFullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME"/>
@@ -40,12 +42,14 @@
         </activity>
 
         <activity
-            android:name=".main.activity.MainActivity"
+            android:name=".reader.ui.PreloadActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:theme="@style/ActivityFullscreen"></activity>
 
         <activity
             android:name=".reader.ui.ReaderActivity"
-            android:theme="@style/ActivityFullscreen"></activity>
+            android:theme="@style/ActivityFullscreen"
+            android:windowSoftInputMode="adjustNothing"></activity>
 
         <activity
             android:name=".main.activity.LockScreenActivity"

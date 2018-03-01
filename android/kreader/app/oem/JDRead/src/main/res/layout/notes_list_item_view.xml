@@ -34,13 +34,14 @@
         </LinearLayout>
 
         <TextView
-            style="@style/ReaderBookInfoBookmarkItemStyle"
+            style="@style/ReaderBookInfoNoteItemStyle"
             android:textSize="@dimen/level_two_heading_font"
             android:text="@{noteModel.note}" />
 
         <TextView
-            style="@style/ReaderBookInfoBookmarkItemStyle"
+            style="@style/ReaderBookInfoNoteItemStyle"
             android:text="@{noteModel.content}"
+            android:textSize="@dimen/level_three_heading_font"
             android:layout_marginBottom="10dp"/>
 
         <View

@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.apache.commons.io.FilenameUtils;
@@ -60,7 +61,8 @@ public class DataModelUtil {
                 model.cloudId.set(Long.valueOf(metadata.getCloudId()));
             }
             model.id.set(metadata.getId());
-            model.title.set(metadata.getName());
+            model.title.set(StringUtils.isNotBlank(metadata.getName()) ? metadata.getName() :
+                    FileUtils.getBaseName(metadata.getNativeAbsolutePath()));
             model.author.set(StringUtils.isNullOrEmpty(metadata.getAuthors()) ? "" : metadata.getAuthors());
             model.format.set(StringUtils.isNotBlank(metadata.getType()) ? metadata.getType().toUpperCase() : "");
             model.size.set(metadata.getSize());

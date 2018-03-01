@@ -36,7 +36,7 @@
     <string name="wifi_disabled_password_failure">身份驗證出現問題</string>
     <string name="wifi_disabled_generic">已停用</string>
     <string name="wifi_disabled_network_failure">已停用狀況不佳的互聯網連接</string>
-    <string name="wifi_forget">不保存</string>
+    <string name="wifi_forget">取消保存</string>
     <string name="wifi_connect">連接</string>
     <string name="wifi_connected">已連接</string>
     <string name="closed">關閉</string>

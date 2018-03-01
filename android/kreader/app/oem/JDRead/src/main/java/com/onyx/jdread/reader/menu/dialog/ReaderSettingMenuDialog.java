@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
@@ -21,6 +22,7 @@ import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
+import com.onyx.jdread.reader.common.ReaderPageInfoFormat;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.event.GotoPageEvent;
@@ -97,7 +99,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void initReaderPageInfoBar(){
         binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel(readerDataHolder));
-        new UpdatePageInfoAction(binding,readerDataHolder.getReaderViewInfo()).execute(readerDataHolder,null);
+        new UpdatePageInfoAction(binding,readerDataHolder.getReaderViewInfo(),true).execute(readerDataHolder,null);
         initReaderPageInfoEvent();
     }
 
@@ -115,11 +117,18 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(seekBar.getProgress());
+                updateProgress(seekBar.getProgress());
                 GotoPageEvent event = new GotoPageEvent(seekBar.getProgress());
                 readerDataHolder.getEventBus().post(event);
             }
         });
+    }
+
+    private void updateProgress(int readProgress){
+        binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(readProgress);
+        float total = binding.readerSettingPageInfoBar.readerPageInfoMenuReadProgress.getMax();
+        float progress = (readProgress / total) * 100.0f;
+        binding.readerSettingPageInfoBar.getReaderPageInfoModel().setReadProgress((Math.round(progress * 100)) / 100 + "%");
     }
 
     private void initSystemBar() {
@@ -188,6 +197,11 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         functionBarAdapter.setRowAndCol(functionBarAdapter.getRowCount(), show ? col : col - 1);
         functionBarRecycler.setAdapter(functionBarAdapter);
         updateFunctionBar();
+    }
+
+    @Override
+    public void setFunction() {
+        setFunctionAdapter(getFunctionBarRecycler());
     }
 
     private void updateFunctionBar() {

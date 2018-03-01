@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
 
 import com.evernote.client.android.EvernoteSession;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -15,7 +14,6 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.LibraryDataBundle;
@@ -69,7 +67,7 @@ public class JDReadApplication extends MultiDexApplication {
     }
 
     public void lockScreen() {
-        String passWord = PreferenceManager.getStringValue(instance, R.string.password_key, "");
+        String passWord = JDPreferenceManager.getStringValue(R.string.password_key, "");
         if (StringUtils.isNotBlank(passWord)) {
             ManagerActivityUtils.lockScreen(instance);
         }

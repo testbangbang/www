@@ -29,7 +29,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:background="@drawable/imagebtn_bg"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
@@ -152,7 +151,8 @@
                         android:layout_centerVertical="true"
                         android:text="@{dialogSearchModel.pageIndicator}"
                         android:textColor="@color/normal_black"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:visibility="@{dialogSearchModel.totalPageShow?View.VISIBLE:View.GONE}"/>
 
                 </RelativeLayout>
             </LinearLayout>
@@ -231,7 +231,7 @@
                     android:gravity="center"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:text="@string/searching"
+                    android:text="@string/reader_searching"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/dialog_loading_text_size" />
 
@@ -353,6 +353,29 @@
                         android:layout_weight="1" />
                 </LinearLayout>
             </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/book_info_content_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="@{dialogSearchModel.isEmpty?View.VISIBLE:View.GONE}">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:src="@mipmap/ic_none" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/search_result_none"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:layout_marginBottom="50dp"/>
+            </LinearLayout>
         </FrameLayout>
 
     </LinearLayout>

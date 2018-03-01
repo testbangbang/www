@@ -152,6 +152,7 @@ public class JEBReaderWrapper {
         updateFontFace(style.getFontFace());
         updateFontSize(style.getFontSize().getValue());
         updateLineSpacing(style.getLineSpacing());
+        updateParagraphSpacing(style.getParagraphSpacing());
         updatePageMargins(style.getPageMargin().getLeftMargin(),
                 style.getPageMargin().getTopMargin(),
                 style.getPageMargin().getRightMargin(),
@@ -160,6 +161,10 @@ public class JEBReaderWrapper {
         textStyle = style;
 
         resetScreenState();
+    }
+
+    public void updateParagraphSpacing(final ReaderTextStyle.Percentage paragraphSpacing) {
+        profile.paragraphSpacing = (int)(100 * paragraphSpacing.getPercent() / (float)100);
     }
 
     public void setChineseConvertType(ReaderChineseConvertType convertType) {
@@ -579,6 +584,9 @@ public class JEBReaderWrapper {
         }
 
         String ch = getCharAtPos(screenText, pos);
+        if(StringUtils.isNullOrEmpty(ch)){
+            return null;
+        }
         if (!AlUnicode.isChineze(ch.charAt(0))) {
             // simplifying latter work
             return selectTextOnScreen(point, point);

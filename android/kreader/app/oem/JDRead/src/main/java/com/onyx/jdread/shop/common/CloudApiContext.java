@@ -43,15 +43,18 @@ public class CloudApiContext {
         public static final String SIGN = "sign";
         public static final String READING_VOUCHER = "reading/voucher";
         public static final String USER_GIFT = "gift";
+        public static final String CHECK_GIFT = "check_gift";
         public static final String RECOMMEND_USER = "recommend/user";
         public static final String BOUGHT_UNLIMITED_BOOKS = "order/my_ebooks";
         public static final String PERSONAL_NOTES = "my_notes";
+        public static final String READING_DATA = "reading_data";
+        public static final String EXPORT_NOTE = "export_note";
     }
 
     public static class ReadBean {
         public static final String RECHARGE_PACKAGE = "recharge/package";
         public static final String RECHARGE = "recharge";
-        public static final String RECHARGE_STATUS = "recharge/staus";
+        public static final String RECHARGE_STATUS = "recharge/status";
         public static final String CONSUME_RECORD = "yuedou/consum";
         public static final String READ_BEAN_RECORD = "yuedou/recharge";
         public static final String PAY_BY_READ_BEAN = "order/yuedou/done";
@@ -139,6 +142,7 @@ public class CloudApiContext {
         public static final String CART = "cart";
         public static final String CART_DETAIL = "cart/detail";
         public static final String ORDER_STEPONE = "order/stepone";
+        public static final String ORDER_STATUS = "order/status";
     }
 
     public static String getJDBooxBaseUrl() {

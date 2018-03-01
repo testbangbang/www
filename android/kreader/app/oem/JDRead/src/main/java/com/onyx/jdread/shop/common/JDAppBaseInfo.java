@@ -3,7 +3,9 @@ package com.onyx.jdread.shop.common;
 import android.os.Build;
 
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.AppInformationUtils;
 import com.onyx.jdread.main.common.Constants;
 
@@ -59,6 +61,10 @@ public class JDAppBaseInfo {
     private String nt = "";
     public static final String SP_KEY = "sp";
     private String sp = "";
+    public static final String SN_KEY = "sn";
+    private String sn = "";
+    public static final String MAC_KEY = "mac";
+    private String mac = "";
 
     public static final String BODY_KEY = "body";
     public static final String CLIENT_KEY_DEFAULT_VALUE = "android";
@@ -85,6 +91,8 @@ public class JDAppBaseInfo {
         enc = ENC_DEFAULT_VALUE;
         nt = NET_DEFAULT_VALUE;
         sp = SP_DEFAULT_VALUE;
+        sn = Build.SERIAL;
+        mac = NetworkUtil.getMacAddress(JDReadApplication.getInstance());
         time = String.valueOf(System.currentTimeMillis());
         requestParamsMap = new HashMap<>();
         requestParamsMap.put(BUILD_KEY, build);
@@ -103,6 +111,11 @@ public class JDAppBaseInfo {
         requestParamsMap.put(APP_KEY, app);
         requestParamsMap.put(NET_KEY, nt);
         requestParamsMap.put(SP_KEY, sp);
+    }
+
+    public JDAppBaseInfo(Map<String, String> extraAddMap) {
+        this();
+        addRequestParams(extraAddMap);
     }
 
     public String getBuild() {
@@ -198,6 +211,14 @@ public class JDAppBaseInfo {
 
     public void removeEnc() {
         requestParamsMap.remove(ENC_KEY);
+    }
+
+    public void setSn() {
+        requestParamsMap.put(SN_KEY, sn);
+    }
+
+    public void setMac() {
+        requestParamsMap.put(MAC_KEY, mac);
     }
 
     public String getRequestParams() {

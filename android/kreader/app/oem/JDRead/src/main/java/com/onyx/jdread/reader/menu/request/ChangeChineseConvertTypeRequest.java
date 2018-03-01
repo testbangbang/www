@@ -28,7 +28,8 @@ public class ChangeChineseConvertTypeRequest extends ReaderBaseRequest {
         reader.getReaderHelper().getBitmapCache().clear();
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(reader);
-        saveReaderOptions(reader,settingInfo);
+        saveReaderOptions(reader);
+        saveStyleOptions(reader,settingInfo);
         return this;
     }
 }

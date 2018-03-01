@@ -61,7 +61,7 @@ public class ReaderDocumentCoverAction extends BaseReaderAction {
     }
 
     private void closeDocument(ReaderDataHolder readerDataHolder) {
-        CloseDocumentAction closeDocumentAction = new CloseDocumentAction();
+        CloseDocumentAction closeDocumentAction = new CloseDocumentAction(false);
         closeDocumentAction.execute(readerDataHolder, null);
     }
 

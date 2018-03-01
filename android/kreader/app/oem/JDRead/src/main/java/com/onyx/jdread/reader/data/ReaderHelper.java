@@ -426,7 +426,7 @@ public class ReaderHelper {
     /**
      * collect all options from reader components to BaseOptions.
      */
-    public void saveOptions(final SettingInfo settingInfo) {
+    public void saveOptions() {
         if (!isReaderLayoutManagerCreated()) {
             return;
         }
@@ -440,12 +440,14 @@ public class ReaderHelper {
             getDocumentOptions().setViewport(layoutManager.getViewportRect());
             getDocumentOptions().setNavigationArgs(layoutManager.getCurrentLayoutProvider().getNavigationArgs());
             getDocumentOptions().setReflowOptions(getImageReflowManager().getSettings().jsonString());
-
-            final ReaderTextStyle style = layoutManager.getTextStyleManager().getStyle();
-            saveReaderTextStyle(style,settingInfo);
         } catch (Exception e) {
 
         }
+    }
+
+    public void saveStyle(final SettingInfo settingInfo) {
+        final ReaderTextStyle style = getTextStyleManager().getStyle();
+        saveReaderTextStyle(style,settingInfo);
     }
 
     private void saveReaderTextStyle(final ReaderTextStyle style,final SettingInfo settingInfo) {

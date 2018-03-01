@@ -1,6 +1,8 @@
 package com.onyx.jdread.reader.menu.request;
 
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.data.ChangeLayoutParameter;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
@@ -38,7 +40,8 @@ public class ChangeLayoutRequest extends ReaderBaseRequest {
     public void updateDefaultSettingValue(Reader reader) {
         if (settings != null) {
             settings.dev_width = reader.getReaderViewHelper().getContentWidth();
-            settings.dev_height = reader.getReaderViewHelper().getContentHeight();
+            int readerBottomStateBarHeight = ResManager.getDimens(R.dimen.reader_content_view_bottom_state_bar_height);
+            settings.dev_height = reader.getReaderViewHelper().getContentHeight() - readerBottomStateBarHeight;
             settings.justification = 3;
             reader.getReaderHelper().getImageReflowManager().updateSettings(settings);
             reader.getReaderHelper().getImageReflowManager().notifySettingsUpdated();

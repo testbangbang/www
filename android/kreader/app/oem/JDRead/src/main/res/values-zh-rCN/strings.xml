@@ -19,7 +19,7 @@
     <string name="device_setting_never">永不</string>
     <string name="refresh_tips">刷新页面可以保证墨水屏的清晰，减少页面残影，请根据您的需要进行设置。</string>
     <string name="refresh_mode">极速刷新模式</string>
-    <string name="refresh_mode_tips">大幅提高翻页速度，残影较明显</string>
+    <string name="refresh_mode_tips">大幅提高翻页速度，残影较明显。</string>
     <string name="view_history_version">查看历史版本</string>
     <string name="updatable_version">可更新版本：</string>
     <string name="current_version">当前版本：</string>
@@ -257,7 +257,7 @@
     <string name="reset">恢复出厂设置</string>
     <string name="points_for_tips">兑换%1$sJoyRead将扣除%2$s，是否进行兑换？</string>
     <string name="current_points">当前积分：%1$d</string>
-    <string name="receive_gift_package_tips">是否使用当前登录账号领取%1$s？</string>
+    <string name="receive_gift_package_tips">是否使用当前登录账号领取礼包？</string>
     <string name="sign_in_vouchers">签到(+5代金券)</string>
     <string name="read_thirty">阅读30分钟(+10代金券)</string>
     <string name="add_ten_vouchers">+%d代金券 领取成功</string>
@@ -408,12 +408,15 @@
     <string name="group_names_do_not_support_special_characters">分组名不支持特殊字符</string>
     <string name="first_chapter">已是首章</string>
     <string name="last_chapter">已是尾章</string>
+    <string name="first_page">已是首页</string>
+    <string name="last_page">已是尾页</string>
     <string name="no_chapters">本文不含章节信息</string>
     <string name="enter_hint">请输入关键词</string>
     <string name="total_page" formatted="false">全部搜索结果（%d）</string>
     <string name="close_history">关闭历史记录</string>
     <string name="delete_history">删除历史记录</string>
     <string name="searching" formatted="false">正在搜索 %d/%d</string>
+    <string name="reader_searching">搜索中，请等待...</string>
     <string name="no_more_search_results">没有更多的搜索结果</string>
     <string name="page" formatted="false">页码 %d</string>
     <string name="search_end">完成搜索</string>
@@ -471,4 +474,14 @@
     <string name="password_unlock_current_times_format">密码输入错误，您还剩%d次输入机会</string>
     <string name="reader_note">笔记：</string>
     <string name="intelligent_recommend">智能推荐</string>
+    <string name="bookmark_none">您还未添加书签</string>
+    <string name="note_none">您还未添加笔记</string>
+    <string name="catalog_none">目录为空</string>
+    <string name="search_result_none">书内无相关信息</string>
+    <string name="new_user_package">新用户会员礼包</string>
+    <string name="new_user_package_detail">为新用户准备的365天会员，领取后即绑定到登录本机的账号上。</string>
+    <string name="receive_success">领取成功</string>
+    <string name="receive_fail">领取失败</string>
+    <string name="low_power_reminder">电量过低,请及时充电</string>
+    <string name="input_error">搜索关键字中不能包含标点符号</string>
 </resources>

@@ -19,10 +19,18 @@ public class UpdateViewPageRequest extends ReaderBaseRequest {
         reader.getReaderSelectionHelper().clear();
         updatePageView();
         updateSetting(reader);
+        reloadAnnotation();
         return this;
     }
 
     public void updatePageView() {
-        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo(),null);
+        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(),getReaderViewInfo());
+    }
+
+    private void reloadAnnotation(){
+        String displayName = reader.getReaderHelper().getPlugin().displayName();
+        String md5 = reader.getReaderHelper().getDocumentMd5();
+
+        getReaderUserDataInfo().loadDocumentAnnotations(reader.getReaderHelper().getContext(), displayName, md5);
     }
 }

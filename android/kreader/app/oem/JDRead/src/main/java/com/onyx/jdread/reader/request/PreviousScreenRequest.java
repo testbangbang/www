@@ -18,6 +18,7 @@ public class PreviousScreenRequest extends ReaderBaseRequest {
         reader.getReaderHelper().previousScreen();
         updateSetting(reader);
         reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
+        saveReaderOptions(reader);
         return this;
     }
 

@@ -26,7 +26,7 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <EditText
+            <com.onyx.jdread.setting.view.SpaceEditText
                 android:id="@+id/feedback_desc_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -44,14 +44,14 @@
 
             <View style="@style/DottedLineStyle" />
 
-            <EditText
+            <com.onyx.jdread.setting.view.SpaceEditText
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/feedback_phone_edit_height"
                 android:layout_marginLeft="@dimen/fragment_content_padding"
                 android:layout_marginRight="@dimen/fragment_content_padding"
                 android:background="@null"
                 android:hint="@string/input_number_for_contact"
-                android:inputType="phone"
+                android:inputType="number"
                 android:singleLine="true"
                 android:text="@={feedbackModel.phone}"
                 android:textSize="@dimen/level_two_heading_font" />

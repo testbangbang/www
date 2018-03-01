@@ -2,9 +2,13 @@ package com.onyx.jdread.reader.menu.event;
 
 import android.util.Log;
 
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
+import com.onyx.jdread.main.event.ShowBackTabEvent;
+import com.onyx.jdread.main.event.TabLongClickedEvent;
 import com.onyx.jdread.reader.actions.GotoPageAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
@@ -31,6 +35,7 @@ import com.onyx.jdread.reader.menu.common.BookmarkHandle;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingViewBack;
 import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -215,6 +220,23 @@ public class ReaderSettingMenuDialogHandler {
     }
 
     public void updatePageInfo(){
-        new UpdatePageInfoAction(binding, readerDataHolder.getReaderViewInfo()).execute(readerDataHolder,null);
+        new UpdatePageInfoAction(binding, readerDataHolder.getReaderViewInfo(),false).execute(readerDataHolder,null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTabLongClickedEvent(TabLongClickedEvent event) {
+        if (ViewConfig.FunctionModule.isBackModule(event.functionItem.getFunctionModule())) {
+            EventBus.getDefault().post(new ShowBackTabEvent(false));
+        }
+    }
+
+    @Subscribe
+    public void onShowBackTabEvent(ShowBackTabEvent event) {
+        isShowBackTab(event.isShow());
+    }
+
+    private void isShowBackTab(boolean show) {
+        PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
+        readerSettingViewBack.setFunction();
     }
 }

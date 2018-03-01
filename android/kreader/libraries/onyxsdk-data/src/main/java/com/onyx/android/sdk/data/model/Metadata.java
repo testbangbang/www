@@ -423,7 +423,7 @@ public class Metadata extends BaseData {
     }
 
     public static void getBasicMetadataFromFile(final Metadata data, File file) {
-        data.setName(file.getName());
+        data.setName(FileUtils.getBaseName(file.getName()));
         data.setIdString(file.getAbsolutePath());
         data.setLocation(file.getAbsolutePath());
         data.setNativeAbsolutePath(file.getAbsolutePath());

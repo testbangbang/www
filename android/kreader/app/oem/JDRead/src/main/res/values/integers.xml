@@ -113,7 +113,7 @@
     <item name="login_dialog_width_rate" type="integer" format="float">0.8</item>
     <item name="login_dialog_height_rate" type="integer" format="float">0.5</item>
     <integer name="book_info_dialog_mark_row">5</integer>
-    <integer name="book_info_dialog_catalog_row">12</integer>
+    <integer name="book_info_dialog_catalog_row">8</integer>
     <integer name="book_info_dialog_note_row">5</integer>
     <integer name="dialog_associated_width">600</integer>
     <integer name="reader_cross_screen_touch_region_min_width">60</integer>
@@ -156,6 +156,7 @@
     <integer name="library_menu_offset_x">175</integer>
     <integer name="search_word_key_max_length">100</integer>
     <integer name="group_name_max_length">20</integer>
+    <integer name="reader_group_name_max_length">100</integer>
     <integer name="toast_offset_y">-250</integer>
     <integer name="flow_layout_item_width">305</integer>
     <integer name="history_limit">8</integer>
@@ -175,8 +176,14 @@
     <integer name="empty_library_prompt_clickable_end">13</integer>
     <integer name="refresh_count">4</integer>
     <integer name="delay_pay_success_close_pay_dialog">2</integer>
-
     <integer name="password_unlock_fail_count">5</integer>
     <integer name="password_unlock_fail_expired">86400000</integer>
+    <integer name="low_power_battery_value">15</integer>
+    <integer name="default_refresh_value">10</integer>
 
+    <integer name="pay_by_cash_total_time">300000</integer>
+    <integer name="pay_by_cash_first_delay_time">30000</integer>
+    <integer name="pay_by_cash_second_period_time">4000</integer>
+    <integer name="pay_by_cash_second_total_time">180000</integer>
+    <integer name="pay_by_cash_third_period_time">30000</integer>
 </resources>

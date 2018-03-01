@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.request;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
@@ -27,9 +28,11 @@ public class ReaderDocumentCoverRequest extends ReaderBaseRequest {
     @Override
     public ReaderDocumentCoverRequest call() throws Exception {
         cover = ReaderBitmapImpl.create(width, height, Bitmap.Config.ARGB_8888);
-        reader.getReaderHelper().getDocument().readCover(cover.getBitmap());
+        boolean readCover = reader.getReaderHelper().getDocument().readCover(cover.getBitmap());
         String documentPath = reader.getDocumentInfo().getBookPath();
-        ThumbnailUtils.insertThumbnail(getAppContext(), ContentSdkDataUtils.getDataProvider(), documentPath, documentPath, cover.getBitmap());
+        if (readCover) {
+            ThumbnailUtils.insertThumbnail(getAppContext(), ContentSdkDataUtils.getDataProvider(), documentPath, reader.getReaderHelper().getDocumentMd5(), cover.getBitmap());
+        }
         return this;
     }
 

@@ -13,7 +13,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
 import com.onyx.android.sdk.utils.Debug;
@@ -47,6 +46,8 @@ public class HTMLReaderWebView extends WebView
     private int heightForSaveView = 50;
     private int pageTurnThreshold = 300;
     private int marginTop = 10;
+
+    private boolean callParentPageFinishedMethod = true;
 
     public void setPageTurnType(int pageTurnType)
     {
@@ -102,6 +103,10 @@ public class HTMLReaderWebView extends WebView
         this.loadCssStyle = loadCssStyle;
     }
 
+    public void setCallParentPageFinishedMethod(boolean call) {
+        this.callParentPageFinishedMethod = call;
+    }
+
     public void setScroll(int l, int t)
     {
         mInternalScrollX = l;
@@ -155,7 +160,9 @@ public class HTMLReaderWebView extends WebView
             {
                 setScroll(0, 0);
                 mCurrentPage = 0;
-                super.onPageFinished(view, url);
+                if (callParentPageFinishedMethod) {
+                    super.onPageFinished(view, url);
+                }
 
                  final HTMLReaderWebView myWebView = (HTMLReaderWebView) view;
 

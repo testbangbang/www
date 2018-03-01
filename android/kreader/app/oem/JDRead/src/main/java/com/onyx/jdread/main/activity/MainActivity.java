@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -24,7 +25,6 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityMainBinding;
-import com.onyx.jdread.library.action.RxFileSystemScanAction;
 import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
@@ -34,7 +34,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
-import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
+import com.onyx.jdread.main.event.KeyCodeEnterEvent;
 import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
@@ -136,6 +136,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFunctionAdapter(PageRecyclerView functionBarRecycler) {
+        if(functionBarRecycler == null){
+            return;
+        }
         boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
         PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
         int col = getResources().getInteger(R.integer.function_bar_col);
@@ -168,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private PageRecyclerView getFunctionBarRecycler() {
+        if(binding == null){
+            return null;
+        }
         return binding.mainFunctionBar.functionBarRecycler;
     }
 
@@ -302,11 +308,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         DeviceUtils.setFullScreenOnResume(this, true);
+        setFunctionAdapter(getFunctionBarRecycler());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+            LibraryDataBundle.getInstance().getEventBus().post(new KeyCodeEnterEvent());
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -328,6 +343,10 @@ public class MainActivity extends AppCompatActivity {
             String childClassName = functionBarItem.getStackList().popChildView();
             switchCurrentFragment(childClassName);
         }
+
+        if (currentFragment != null && currentFragment.getClass().getName().equals(LibraryFragment.class.getName())) {
+            LibraryDataBundle.getInstance().getEventBus().post(new BackToRootFragment());
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -347,13 +366,6 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onUsbDisconnectedEvent(UsbDisconnectedEvent event) {
         JDReadApplication.getInstance().dealWithMtpBuffer();
-        RxFileSystemScanAction scanAction = new RxFileSystemScanAction(RxFileSystemScanAction.MMC_STORAGE_ID, true);
-        scanAction.execute(LibraryDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                LibraryDataBundle.getInstance().getEventBus().post(new ModifyLibraryDataEvent());
-            }
-        });
     }
 
     @Subscribe
@@ -367,6 +379,7 @@ public class MainActivity extends AppCompatActivity {
             systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
         } else {
             systemBarPopupWindowModel.brightnessModel.updateLight();
+            systemBarPopupWindowModel.updateRefreshMode();
         }
         SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(this, systemBarPopupWindowModel);
         systemBarPopupWindow.show(binding.mainSystemBar.getRoot());

@@ -9,12 +9,20 @@ import com.onyx.jdread.reader.request.CloseDocumentRequest;
  */
 
 public class CloseDocumentAction extends BaseReaderAction {
+    private boolean saveOption = true;
+
+    public CloseDocumentAction(boolean saveOption) {
+        this.saveOption = saveOption;
+    }
+
+    public CloseDocumentAction() {
+    }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         readerDataHolder.setDocumentInitState();
 
-        final CloseDocumentRequest request = new CloseDocumentRequest(readerDataHolder.getReader(),readerDataHolder.getSettingInfo());
+        final CloseDocumentRequest request = new CloseDocumentRequest(readerDataHolder.getReader(), saveOption);
         request.execute(baseCallback);
     }
 }

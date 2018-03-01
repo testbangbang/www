@@ -155,8 +155,7 @@ public class LibraryFragment extends BaseFragment {
     private void quitEmptyChildLibrary() {
         if (libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() > 0 && libraryDataBundle.getLibraryViewDataModel().items.size() == 0) {
             processBackRequest();
-        }
-        if (libraryDataBundle.getLibraryViewDataModel().count.get() == 0 && isMultiSelectionMode()) {
+        } else if (libraryDataBundle.getLibraryViewDataModel().count.get() == 0 && isMultiSelectionMode()) {
             quitMultiSelectionMode();
         }
     }
@@ -431,7 +430,7 @@ public class LibraryFragment extends BaseFragment {
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {
-            LoginHelper.showUserLoginDialog(PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel());
+            LoginHelper.showUserLoginDialog(PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel(), getActivity());
             return;
         }
         if (StringUtils.isNotBlank(name)) {

@@ -19,7 +19,7 @@
     <string name="device_setting_never">Never</string>
     <string name="refresh_tips">Refresh the page to ensure that the ink screen is clear, to reduce the page damage, please set it according to your needs.</string>
     <string name="refresh_mode">Speed refresh mode</string>
-    <string name="refresh_mode_tips">Greatly improved the page speed, but the shadow was more obvious</string>
+    <string name="refresh_mode_tips">Greatly improved the page speed, but the shadow was more obvious.</string>
     <string name="view_history_version">View history version</string>
     <string name="updatable_version">Updatable version: </string>
     <string name="current_version">Current version: </string>
@@ -267,7 +267,7 @@
     <string name="reset">Reset</string>
     <string name="points_for_tips">For %1$s, the VIP will deduct %2$s, will it be converted?</string>
     <string name="current_points">Current integral:%1$d</string>
-    <string name="receive_gift_package_tips">Are you using current account to receive %1$s?</string>
+    <string name="receive_gift_package_tips">Are you using current account to receive package?</string>
     <string name="sign_in_vouchers">Sign in (+ 5 vouchers)</string>
     <string name="read_thirty">Read for 30 minutes(+10 vouchers)</string>
     <string name="add_ten_vouchers">+%d vouchers receive success</string>
@@ -429,12 +429,15 @@
     <string name="group_names_do_not_support_special_characters">Group names do not_support special characters</string>
     <string name="first_chapter">Is the first chapter</string>
     <string name="last_chapter">Is the last chapter</string>
+    <string name="first_page">First page</string>
+    <string name="last_page">Last page</string>
     <string name="no_chapters">This article does not contain section information</string>
     <string name="enter_hint">Please enter your search word</string>
     <string name="total_page" formatted="false">Total（%d）</string>
     <string name="close_history">Close History</string>
     <string name="delete_history">Delete History</string>
     <string name="searching" formatted="false">Searching %d/%d</string>
+    <string name="reader_searching">Please Waiting...</string>
     <string name="no_more_search_results">No more search results</string>
     <string name="page" formatted="false">page %d</string>
     <string name="search_end">Have finished searching</string>
@@ -500,5 +503,15 @@
     <string name="password_unlock_current_times_format">The password was entered incorrectly, you have %d more chances to try</string>
     <string name="reader_note">Note:</string>
     <string name="intelligent_recommend">Intelligent recommendation</string>
+    <string name="bookmark_none">There is no bookmark</string>
+    <string name="note_none">No notes</string>
+    <string name="catalog_none">The catalog is empty</string>
+    <string name="search_result_none">Search result empty</string>
+    <string name="new_user_package">New user membership package</string>
+    <string name="new_user_package_detail">The 365 days membership for the new user is bound to the login account.</string>
+    <string name="receive_success">Receive success</string>
+    <string name="receive_fail">Receive failed</string>
+    <string name="low_power_reminder">Low battery, please charge in time</string>
+    <string name="input_error">The search key can not contain punctuation</string>
     <string name="banner">Banner</string>
 </resources>

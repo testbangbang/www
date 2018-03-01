@@ -8,4 +8,5 @@ import android.app.Dialog;
 
 public interface ReaderSettingViewBack {
     Dialog getContent();
+    void setFunction();
 }

@@ -17,6 +17,8 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.RefreshBinding;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.setting.adapter.RefreshAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.event.SpeedRefreshChangeEvent;
@@ -68,16 +70,16 @@ public class RefreshFragment extends BaseFragment {
         binding.refreshTitleBar.setTitleModel(titleModel);
 
         settingRefreshModel = SettingBundle.getInstance().getSettingRefreshModel();
-        String currentRefreshPage = settingRefreshModel.getCurrentRefreshPage();
+        int currentRefreshPage = settingRefreshModel.getCurrentRefreshPage();
         settingRefreshModel.setCurrentPageRefreshPage(currentRefreshPage);
         refreshAdapter.setCurrentPage(currentRefreshPage);
-        refreshAdapter.setData(settingRefreshModel.getRefreshPages());
+        refreshAdapter.setData(settingRefreshModel.getRefreshPages(), settingRefreshModel.getRefreshValues());
         binding.refreshCheckBox.setChecked(settingRefreshModel.isSpeedRefresh());
     }
 
     private void initView() {
         binding.refreshRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
+        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
         binding.refreshRecycler.addItemDecoration(dividerItemDecoration);
         refreshAdapter = new RefreshAdapter();
         binding.refreshRecycler.setAdapter(refreshAdapter);
@@ -88,13 +90,14 @@ public class RefreshFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 JDPreferenceManager.setBooleanValue(R.string.speed_refresh_key, isChecked);
+                ToastUtil.showToast(isChecked ? ResManager.getString(R.string.speed_refresh_is_opened) : ResManager.getString(R.string.speed_refresh_is_closed));
             }
         });
 
         refreshAdapter.setOnItemClickListener(new PageRecyclerView.PageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                settingRefreshModel.setCurrentPageRefreshPage(settingRefreshModel.getRefreshPages()[position]);
+                settingRefreshModel.setCurrentPageRefreshPage(settingRefreshModel.getRefreshValues()[position]);
             }
         });
     }

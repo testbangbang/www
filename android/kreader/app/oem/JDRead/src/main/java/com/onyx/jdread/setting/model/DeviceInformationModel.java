@@ -33,7 +33,7 @@ public class DeviceInformationModel extends Observable {
     public DeviceInformationModel(EventBus eventBus) {
         titleBarModel.title.set(ResManager.getString(R.string.device_information));
         titleBarModel.backEvent.set(new BackToDeviceConfigFragment());
-        list.add(createItemModel(eventBus, R.string.device_model_format, new String[]{Build.MODEL}, new DeviceModelEvent(), false));
+        list.add(createItemModel(eventBus, R.string.device_model_format, new String[]{String.format(ResManager.getString(R.string.setting_device_model_format), Build.MODEL)}, new DeviceModelEvent(), false));
         list.add(createItemModel(eventBus, R.string.device_version_format, new String[]{Build.DISPLAY}, null, false));
         list.add(createItemModel(eventBus, R.string.device_serial_format, new String[]{Build.SERIAL}, null, false));
         list.add(createItemModel(eventBus, R.string.device_mac_address_format,
