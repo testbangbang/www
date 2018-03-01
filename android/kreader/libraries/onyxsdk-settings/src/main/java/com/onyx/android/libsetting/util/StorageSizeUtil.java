@@ -106,7 +106,7 @@ public class StorageSizeUtil {
      * @return total storage amount in giga bytes with correction (3.5 -> 4, 7.6 -> 8)
      */
     public static long getTotalStorageAmountInGB() {
-        return getDisplayGBForUser(getTotalStorageAmount());
+        return 8;
     }
 
     /**

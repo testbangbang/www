@@ -40,6 +40,8 @@
                 android:layout_height="@dimen/lock_screen_recycler_height"
                 android:background="@{recyclerEnable ? @color/divider_color : @android:color/white}" />
 
+            <View style="@style/NoPaddingDottedLineType" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

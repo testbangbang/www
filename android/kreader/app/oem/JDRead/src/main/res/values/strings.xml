@@ -19,7 +19,7 @@
     <string name="device_setting_never">Never</string>
     <string name="refresh_tips">Refresh the page to ensure that the ink screen is clear, to reduce the page damage, please set it according to your needs.</string>
     <string name="refresh_mode">Speed refresh mode</string>
-    <string name="refresh_mode_tips">Greatly improved the page speed, but the shadow was more obvious</string>
+    <string name="refresh_mode_tips">Greatly improved the page speed, but the shadow was more obvious.</string>
     <string name="view_history_version">View history version</string>
     <string name="updatable_version">Updatable version: </string>
     <string name="current_version">Current version: </string>
@@ -429,6 +429,8 @@
     <string name="group_names_do_not_support_special_characters">Group names do not_support special characters</string>
     <string name="first_chapter">Is the first chapter</string>
     <string name="last_chapter">Is the last chapter</string>
+    <string name="first_page">First page</string>
+    <string name="last_page">Last page</string>
     <string name="no_chapters">This article does not contain section information</string>
     <string name="enter_hint">Please enter your search word</string>
     <string name="total_page" formatted="false">Total（%d）</string>
@@ -510,4 +512,5 @@
     <string name="receive_success">Receive success</string>
     <string name="receive_fail">Receive failed</string>
     <string name="low_power_reminder">Low battery, please charge in time</string>
+    <string name="input_error">The search key can not contain punctuation</string>
 </resources>

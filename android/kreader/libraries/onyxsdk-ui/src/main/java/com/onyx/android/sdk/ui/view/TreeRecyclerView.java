@@ -2,6 +2,7 @@ package com.onyx.android.sdk.ui.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.dialog.DialogChoose;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -217,6 +219,7 @@ public class TreeRecyclerView extends PageRecyclerView {
         private TextView textViewTitle;
         private TextView textViewDescription;
         private View splitLine;
+        private View currentChapter;
 
         public TreeNodeViewHolder(View itemView, Callback callback) {
             super(itemView);
@@ -225,6 +228,7 @@ public class TreeRecyclerView extends PageRecyclerView {
 
             imageViewIndicator = (ImageView)itemView.findViewById(R.id.image_view_indicator);
             textViewTitle = (TextView)itemView.findViewById(R.id.text_view_title);
+            currentChapter = itemView.findViewById(R.id.current_chapter);
             textViewDescription = (TextView)itemView.findViewById(R.id.text_view_description);
             splitLine = itemView.findViewById(R.id.split_line);
         }
@@ -243,9 +247,13 @@ public class TreeRecyclerView extends PageRecyclerView {
             lineParams.leftMargin = (int)(imageSize + marginRight);
             splitLine.setLayoutParams(lineParams);
 
-            textViewTitle.setText(node.title);
+            textViewTitle.setText(trim(node.title));
             textViewDescription.setText(node.description);
-            textViewTitle.getPaint().setUnderlineText(currentNode.equals(node));
+            if(currentNode.equals(node)){
+                currentChapter.setBackgroundColor(Color.BLACK);
+            }else{
+                currentChapter.setBackgroundColor(Color.WHITE);
+            }
             splitLine.setVisibility(VISIBLE);
 
             if (!node.hasChildren()) {
@@ -308,6 +316,17 @@ public class TreeRecyclerView extends PageRecyclerView {
 
         }
 
+    }
+
+    public static String trim(String input) {
+        if (StringUtils.isNotBlank(input)) {
+            input = input.trim();
+            input = input.replace("\u0032", "");
+            input = input.replace("\\u0032", "");
+            input = input.replaceAll("\\u0032", ""); // removes NUL chars
+            input = input.replaceAll("\\\\u0032", ""); // removes backslash+u0000
+        }
+        return input;
     }
 
     private static class TreeAdapter extends PageRecyclerView.PageAdapter<TreeNodeViewHolder> {

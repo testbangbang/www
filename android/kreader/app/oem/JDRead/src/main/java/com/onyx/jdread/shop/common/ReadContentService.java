@@ -4,6 +4,7 @@ import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtAndUnlimitedBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.CheckGiftBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderStatusBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargeStatusBean;
@@ -29,11 +30,14 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateCartBean;
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -165,6 +169,15 @@ public interface ReadContentService {
     @POST(CloudApiContext.ReadBean.PAY_BY_READ_BEAN)
     Call<String> payByReadBean(@QueryMap Map<String, String> baseInfoMap);
 
-    @GET(CloudApiContext.ReadBean.PAY_BY_CASH)
-    Call<String> payByCash(@QueryMap Map<String, String> baseInfoMap);
+    @GET(CloudApiContext.GotoOrder.ORDER_STATUS)
+    Call<GetOrderStatusBean<Boolean>> payByCash(@QueryMap Map<String, String> baseInfoMap);
+
+    @POST(CloudApiContext.User.READING_DATA)
+    Call<String> syncReadingData(@QueryMap Map<String, String> map,
+                                 @Body RequestBody body);
+
+    @Multipart
+    @POST(CloudApiContext.User.EXPORT_NOTE)
+    Call<String> exportNote(@QueryMap Map<String, String> map,
+                            @Part MultipartBody.Part file);
 }

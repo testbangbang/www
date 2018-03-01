@@ -25,6 +25,13 @@
         <item>@string/device_setting_never</item>
     </string-array>
 
+    <integer-array name="device_setting_refresh_values">
+        <item>10</item>
+        <item>20</item>
+        <item>40</item>
+        <item>0x7fffffff</item>
+    </integer-array>
+
     <string-array name="device_configs">
         <item>@string/hour_format</item>
         <item>@string/screen_saver</item>

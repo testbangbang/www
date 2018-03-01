@@ -215,7 +215,6 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:gravity="top"
-                android:padding="10dp"
                 android:text="@={noteViewModel.srcNote}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font"

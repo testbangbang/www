@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -56,15 +57,14 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
         if (file.exists()) {
             Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
             if (metadata == null || !metadata.hasValidId()) {
-                metadata = Metadata.createFromFile(file, false);
+                metadata = Metadata.createFromFile(file, true);
                 metadata.setName(FileUtils.getBaseName(file.getAbsolutePath()));
-                metadata.setHashTag(file.getAbsolutePath());
                 getDataProvider().saveMetadata(getAppContext(), metadata);
             }
         } else {
             Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
             getDataProvider().removeMetadata(getAppContext(), metadata);
-            getDataProvider().deleteMetadataCollectionByDocId(getAppContext(), metadata.getAssociationId());
+            getDataProvider().deleteMetadataCollectionByDocId(getAppContext(), metadata.getIdString());
         }
     }
 }

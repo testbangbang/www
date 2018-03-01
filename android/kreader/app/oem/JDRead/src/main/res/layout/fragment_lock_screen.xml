@@ -20,6 +20,10 @@
             android:id="@+id/lock_screen_recycler"
             android:layout_width="match_parent"
             android:layout_height="@dimen/lock_screen_recycler_height"
-            android:padding="@dimen/lock_screen_recycler_padding" />
+            android:paddingRight="@dimen/lock_screen_recycler_padding"
+            android:paddingLeft="@dimen/lock_screen_recycler_padding"
+            android:paddingTop="@dimen/lock_screen_recycler_padding" />
+
+        <View style="@style/DottedLineStyle" />
     </LinearLayout>
 </layout>

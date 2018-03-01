@@ -33,6 +33,7 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargeStatusBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.event.GetRechargePollEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.personal.request.cloud.RxGetPayResultByCashRequest;
 import com.onyx.jdread.shop.action.PayByReadBeanAction;
 import com.onyx.jdread.shop.cloud.entity.BaseShopRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
@@ -40,6 +41,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.event.BuyBookSuccessEvent;
+import com.onyx.jdread.shop.event.PayByCashSuccessEvent;
 import com.onyx.jdread.shop.event.ConfirmPayClickEvent;
 import com.onyx.jdread.shop.model.PayOrderViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -71,6 +73,7 @@ public class TopUpDialog extends DialogFragment {
     private GetRechargePollEvent getRechargePollEvent;
     private static final int DEFAULT_POLL_TIME = 300;
     private Disposable countDownDisposable;
+    private RxGetPayResultByCashRequest payByCashRequest;
 
     @Nullable
     @Override
@@ -188,6 +191,7 @@ public class TopUpDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode.getVisibility() == View.VISIBLE) {
+                    abortPayByCashRequest();
                     setVisible(R.id.dialog_top_up_detail_layout);
                 } else {
                     dismiss();
@@ -266,6 +270,15 @@ public class TopUpDialog extends DialogFragment {
                 R.dimen.top_up_qr_code_height), ResManager.getDimens(R.dimen.top_up_qr_code_height));
         setVisible(R.id.dialog_top_up_qr_code_layout);
         binding.dialogTopUpQrCodeLayout.topUpQrCode.setImageBitmap(qrImage);
+        payByCashRequest = new RxGetPayResultByCashRequest(getPayOrderViewModel().getOrderInfo().token);
+        payByCashRequest.execute(new RxCallback<RxGetPayResultByCashRequest>() {
+            @Override
+            public void onNext(RxGetPayResultByCashRequest request) {
+                if (!request.getAbort() && request.checkResult(request.getOrderStatusBean())) {
+                    dismissDialog(new PayByCashSuccessEvent());
+                }
+            }
+        });
     }
 
     private String getPayByCashUrl() {
@@ -310,6 +323,10 @@ public class TopUpDialog extends DialogFragment {
         getPayOrderViewModel().confirmButtonText.set(ResManager.getString(R.string.pay_success));
         binding.payOrder.confirmPay.setBackgroundDrawable(null);
         binding.payOrder.confirmPay.setEnabled(false);
+        dismissDialog(new BuyBookSuccessEvent(""));
+    }
+
+    private void dismissDialog(final Object event) {
         int delayTime = ResManager.getInteger(R.integer.delay_pay_success_close_pay_dialog);
         Observable<Long> timer = Observable.timer(delayTime, TimeUnit.SECONDS);
         countDownDisposable = timer.subscribeOn(Schedulers.newThread())
@@ -317,7 +334,7 @@ public class TopUpDialog extends DialogFragment {
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
-                        getPayOrderViewModel().getEventBus().post(new BuyBookSuccessEvent(""));
+                        getPayOrderViewModel().getEventBus().post(event);
                         dismiss();
                     }
                 });
@@ -328,6 +345,14 @@ public class TopUpDialog extends DialogFragment {
         super.onDismiss(dialog);
         if (countDownDisposable != null) {
             countDownDisposable.dispose();
+        }
+        abortPayByCashRequest();
+    }
+
+    private void abortPayByCashRequest() {
+        if (payByCashRequest != null) {
+            payByCashRequest.setAbort(true);
+            payByCashRequest = null;
         }
     }
 }

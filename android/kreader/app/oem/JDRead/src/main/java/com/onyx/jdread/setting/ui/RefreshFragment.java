@@ -70,16 +70,16 @@ public class RefreshFragment extends BaseFragment {
         binding.refreshTitleBar.setTitleModel(titleModel);
 
         settingRefreshModel = SettingBundle.getInstance().getSettingRefreshModel();
-        String currentRefreshPage = settingRefreshModel.getCurrentRefreshPage();
+        int currentRefreshPage = settingRefreshModel.getCurrentRefreshPage();
         settingRefreshModel.setCurrentPageRefreshPage(currentRefreshPage);
         refreshAdapter.setCurrentPage(currentRefreshPage);
-        refreshAdapter.setData(settingRefreshModel.getRefreshPages());
+        refreshAdapter.setData(settingRefreshModel.getRefreshPages(), settingRefreshModel.getRefreshValues());
         binding.refreshCheckBox.setChecked(settingRefreshModel.isSpeedRefresh());
     }
 
     private void initView() {
         binding.refreshRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
+        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
         binding.refreshRecycler.addItemDecoration(dividerItemDecoration);
         refreshAdapter = new RefreshAdapter();
         binding.refreshRecycler.setAdapter(refreshAdapter);
@@ -97,7 +97,7 @@ public class RefreshFragment extends BaseFragment {
         refreshAdapter.setOnItemClickListener(new PageRecyclerView.PageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                settingRefreshModel.setCurrentPageRefreshPage(settingRefreshModel.getRefreshPages()[position]);
+                settingRefreshModel.setCurrentPageRefreshPage(settingRefreshModel.getRefreshValues()[position]);
             }
         });
     }
