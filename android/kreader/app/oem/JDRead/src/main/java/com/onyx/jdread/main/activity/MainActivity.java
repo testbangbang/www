@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -26,6 +27,7 @@ import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
+import com.onyx.jdread.main.action.BaseAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFunctionAdapter(PageRecyclerView functionBarRecycler) {
-        if(functionBarRecycler == null){
+        if (functionBarRecycler == null) {
             return;
         }
         boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
@@ -165,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private PageRecyclerView getFunctionBarRecycler() {
-        if(binding == null){
+        if (binding == null) {
             return null;
         }
         return binding.mainFunctionBar.functionBarRecycler;
@@ -316,6 +318,14 @@ public class MainActivity extends AppCompatActivity {
             LibraryDataBundle.getInstance().getEventBus().post(new KeyCodeEnterEvent());
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
+            event.setAction(MotionEvent.ACTION_CANCEL);
+        }
+        return super.dispatchTouchEvent(event);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
