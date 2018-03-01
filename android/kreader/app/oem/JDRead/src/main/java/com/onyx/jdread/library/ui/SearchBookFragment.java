@@ -149,7 +149,7 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                queryTextSubmit(query);
+                queryTextSubmit(getSearchQueryOrHint(query));
                 return true;
             }
 
@@ -185,6 +185,7 @@ public class SearchBookFragment extends BaseFragment {
     private void queryTextSubmit(String query) {
         if (StringUtils.isNullOrEmpty(query)) {
             ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
+            return;
         }
         if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
             ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
@@ -202,6 +203,25 @@ public class SearchBookFragment extends BaseFragment {
                 loadSearchHistory();
             }
         });
+    }
+
+    private String getSearchQueryOrHint(CharSequence query) {
+        if (TextUtils.isEmpty(query)) {
+            CharSequence hint = binding.searchView.getQueryHint();
+            if (hint != null && !ResManager.getString(R.string.search_view_hint).equals(hint.toString())) {
+                query = hint.toString();
+            }
+        }
+        return query == null ? null : query.toString();
+    }
+
+    private void doSearchQueryOrHint(CharSequence query) {
+        query = getSearchQueryOrHint(query);
+        if (TextUtils.isEmpty(query)) {
+            ToastUtil.showToast(R.string.empty_search_key_prompt);
+            return;
+        }
+        binding.searchView.setQuery(query, true);
     }
 
     private void searchBook(final boolean submit, final RxCallback callback) {
@@ -335,24 +355,17 @@ public class SearchBookFragment extends BaseFragment {
 
     @Subscribe
     public void onSearchBookKeyEvent(SearchBookKeyEvent event) {
-        binding.searchView.setQuery(event.getSearchKey(), true);
+        doSearchQueryOrHint(event.getSearchKey());
     }
 
     @Subscribe
     public void onKeyCodeEnterEvent(KeyCodeEnterEvent event) {
-        if (StringUtils.isNullOrEmpty(binding.searchView.getQuery().toString())) {
-            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
-        }
+        doSearchQueryOrHint(binding.searchView.getQuery());
     }
 
     @Subscribe
     public void onSubmitSearchBookEvent(SubmitSearchBookEvent event) {
-        CharSequence query = binding.searchView.getQuery();
-        if (!TextUtils.isEmpty(query)) {
-            binding.searchView.setQuery(query, true);
-        } else {
-            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
-        }
+        doSearchQueryOrHint(binding.searchView.getQuery());
     }
 
     @Subscribe
