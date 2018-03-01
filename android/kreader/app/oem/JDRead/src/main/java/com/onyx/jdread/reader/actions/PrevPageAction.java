@@ -20,7 +20,7 @@ import com.onyx.jdread.reader.request.PreviousScreenRequest;
 public class PrevPageAction extends BaseReaderAction {
 
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
         if(!readerDataHolder.getReaderViewInfo().canPrevScreen){
             ToastUtil.showToast(readerDataHolder.getAppContext(), R.string.first_page);
             return;
@@ -32,6 +32,9 @@ public class PrevPageAction extends BaseReaderAction {
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
                 PreloadPreviousScreenRequest preloadPreviousScreenRequest = new PreloadPreviousScreenRequest(readerDataHolder.getReader());
                 preloadPreviousScreenRequest.execute(null);
+                if(baseCallback != null){
+                    baseCallback.onNext(o);
+                }
             }
 
             @Override
