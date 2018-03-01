@@ -347,7 +347,7 @@ public class ReaderViewHelper {
             return;
         }
         for (ReaderSelection sel : searchResults) {
-            drawReaderSelection(reader.getReaderHelper().getContext(),canvas, paint, bitmap, readerViewInfo, sel,false);
+            drawReaderSelection(reader.getReaderHelper().getContext(),canvas, paint, bitmap, readerViewInfo, sel,true);
         }
     }
 
