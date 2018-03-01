@@ -4,6 +4,7 @@ import android.databinding.BaseObservable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
@@ -13,6 +14,7 @@ import com.onyx.jdread.shop.event.SubjectListSortKeyChangeEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +27,7 @@ public class CategoryBookListViewModel extends BaseObservable {
     private TitleBarViewModel titleBarViewModel;
     public final ObservableInt currentPosition = new ObservableInt();
     public final ObservableInt totalPage = new ObservableInt();
-    public List<ResultBookBean> bookList;
+    public List<ResultBookBean> bookList = new ArrayList<>();
     public final ObservableBoolean sortButtonIsOpen =new ObservableBoolean();
     public final ObservableBoolean allCatIsOpen =new ObservableBoolean();
     public final ObservableBoolean isFree =new ObservableBoolean();
@@ -33,6 +35,7 @@ public class CategoryBookListViewModel extends BaseObservable {
     public final ObservableBoolean sortKeyHotSelected =new ObservableBoolean(true);
     public final ObservableBoolean sortKeyNewestSelected =new ObservableBoolean();
     public final ObservableBoolean sortKeyPriceSelected =new ObservableBoolean();
+    public final ObservableInt contentPage = new ObservableInt(0);
 
     public CategoryBookListViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -46,6 +49,14 @@ public class CategoryBookListViewModel extends BaseObservable {
 
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    public int getContentPage() {
+        return contentPage.get();
+    }
+
+    public void setContentPage(int page) {
+        contentPage.set(page);
     }
 
     public int getCurrentPage() {
@@ -70,8 +81,25 @@ public class CategoryBookListViewModel extends BaseObservable {
         return bookList;
     }
 
+    public List<ResultBookBean> getEnsureBookList() {
+        if (bookList == null) {
+            bookList = new ArrayList<>();
+        }
+        return bookList;
+    }
+
     public void setBookList(List<ResultBookBean> bookList) {
         this.bookList = bookList;
+        notifyChange();
+    }
+
+    public void addBookList(List<ResultBookBean> list, boolean clear) {
+        if (clear) {
+            getEnsureBookList().clear();
+        }
+        if (!CollectionUtils.isNullOrEmpty(list)) {
+            getEnsureBookList().addAll(list);
+        }
         notifyChange();
     }
 
@@ -85,26 +113,51 @@ public class CategoryBookListViewModel extends BaseObservable {
     }
 
     public void onSortKeyHotClick(){
-        getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_SALES));
-        changeSortKeySelected(CloudApiContext.SearchBook.SORT_KEY_SALES);
-        titleBarViewModel.rightText3 = ResManager.getString(R.string.subject_list_sort_type_hot);
+        onSortKeyClick(CloudApiContext.SearchBook.SORT_KEY_SALES);
     }
 
     public void onSortKeyNewestClick(){
-        getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_TIME));
-        changeSortKeySelected(CloudApiContext.SearchBook.SORT_KEY_TIME);
-        titleBarViewModel.rightText3 = ResManager.getString(R.string.subject_list_sort_type_newest);
+        onSortKeyClick(CloudApiContext.SearchBook.SORT_KEY_TIME);
     }
 
     public void onSortKeyPriceClick(){
-        getEventBus().post(new SubjectListSortKeyChangeEvent(CloudApiContext.SearchBook.SORT_KEY_PRICE));
-        changeSortKeySelected(CloudApiContext.SearchBook.SORT_KEY_PRICE);
-        titleBarViewModel.rightText3 = ResManager.getString(R.string.subject_list_sort_type_price);
+        onSortKeyClick(CloudApiContext.SearchBook.SORT_KEY_PRICE);
+    }
+
+    private void onSortKeyClick(int sortKey) {
+        getEventBus().post(new SubjectListSortKeyChangeEvent(sortKey));
+        updateSortKeyInfo(sortKey);
     }
 
     private void changeSortKeySelected(int sortKey){
         sortKeyHotSelected.set(sortKey == CloudApiContext.SearchBook.SORT_KEY_SALES);
         sortKeyNewestSelected.set(sortKey == CloudApiContext.SearchBook.SORT_KEY_TIME);
         sortKeyPriceSelected.set(sortKey == CloudApiContext.SearchBook.SORT_KEY_PRICE);
+    }
+
+    private void changeSortKeyTitleShow(int sortKey) {
+        int resId = R.string.subject_list_sort_type_hot;
+        switch (sortKey) {
+            case CloudApiContext.SearchBook.SORT_KEY_SALES:
+                break;
+            case CloudApiContext.SearchBook.SORT_KEY_TIME:
+                resId = R.string.subject_list_sort_type_newest;
+                break;
+            case CloudApiContext.SearchBook.SORT_KEY_PRICE:
+                resId = R.string.subject_list_sort_type_price;
+                break;
+        }
+        titleBarViewModel.rightText3 = ResManager.getString(resId);
+    }
+
+    public void updateSortKeyInfo(int sortKey) {
+        changeSortKeySelected(sortKey);
+        changeSortKeyTitleShow(sortKey);
+    }
+
+    public int getSortKeySelected() {
+        return sortKeyHotSelected.get() ? CloudApiContext.SearchBook.SORT_KEY_SALES : (
+                sortKeyNewestSelected.get() ? CloudApiContext.SearchBook.SORT_KEY_TIME :
+                        CloudApiContext.SearchBook.SORT_KEY_PRICE);
     }
 }
