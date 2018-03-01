@@ -12,6 +12,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookVipReadBinding;
+import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
@@ -26,6 +27,7 @@ import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
+import com.onyx.jdread.shop.event.TopRightTitleEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.event.VipButtonClickEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -94,7 +96,9 @@ public class BookVIPReadFragment extends BaseFragment {
     private void initView() {
         setRecycleView();
         bookVipReadBinding.setViewModel(getVipReadViewModel());
+        bookVipReadBinding.layoutTitleBar.titleBarRightIcon.setImageResource(R.mipmap.ic_shelf_search);
         getVipReadViewModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.read_vip);
+        getVipReadViewModel().getTitleBarViewModel().showRightText = true;
     }
 
     private void setRecycleView() {
@@ -203,6 +207,11 @@ public class BookVIPReadFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
         getBookConfigData();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTopRightTitleEvent(TopRightTitleEvent event) {
+        getViewEventCallBack().gotoView(SearchBookFragment.class.getName());
     }
 
     @Override
