@@ -13,12 +13,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.onyx.jdread.reader.ui.view.HTMLReaderWebView
+        <com.onyx.jdread.reader.ui.view.PageTextView
             android:id="@+id/translate_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:maxLines="9"
             android:layout_weight="9"
-            android:layout_margin="20dp" />
+            android:clickable="true"
+            android:textSize="@dimen/level_two_heading_font"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
 
         <TextView
             android:layout_width="wrap_content"
