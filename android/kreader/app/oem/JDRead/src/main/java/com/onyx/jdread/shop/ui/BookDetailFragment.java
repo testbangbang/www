@@ -149,7 +149,7 @@ public class BookDetailFragment extends BaseFragment {
             public void onNext(MetadataQueryAction queryAction) {
                 Metadata metadata = queryAction.getMetadataResult();
                 if (metadata != null) {
-                    String extraInfoStr = metadata.getExtraAttributes();
+                    String extraInfoStr = metadata.getDownloadInfo();
                     BookExtraInfoBean extraInfoBean = JSONObjectParseUtils.toBean(extraInfoStr, BookExtraInfoBean.class);
                     localPath = metadata.getNativeAbsolutePath();
                     if (extraInfoBean.localPath != null) {
@@ -240,8 +240,7 @@ public class BookDetailFragment extends BaseFragment {
                         bookDetailBinding.bookDetailInfo.spaceTwo.setVisibility(View.GONE);
                     }
                     if (!StringUtils.isNullOrEmpty(bookDetailBean.author) && !getString(R.string.content_empty).equals(bookDetailBean.author)) {
-                        String author = CommonUtils.removeSymbol(bookDetailBean.author);
-                        getAuthorBooksData(author);
+                        getAuthorBooksData(bookDetailBean.author);
                     } else {
                         bookDetailBean.setAuthor(getString(R.string.error_content_author_unknown));
                     }
@@ -463,7 +462,6 @@ public class BookDetailFragment extends BaseFragment {
         bookDetailBean.bookExtraInfoBean.localPath = localPath;
         bookDetailBean.bookExtraInfoBean.progress = task.getSmallFileSoFarBytes();
         bookDetailBean.bookExtraInfoBean.totalSize = task.getSmallFileTotalBytes();
-        bookDetailBean.file_size = task.getSmallFileTotalBytes();
         if (DownLoadHelper.canInsertBookDetail(downloadTaskState)) {
             insertBookDetail(bookDetailBean, localPath);
         }
@@ -647,6 +645,7 @@ public class BookDetailFragment extends BaseFragment {
             isWholeBookDownLoad = extraInfoBean.isWholeBookDownLoad;
             if (bookDetailBean != null) {
                 bookDetailBean.bookExtraInfoBean = extraInfoBean;
+                bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = isWholeBookDownLoad;
             }
             if (isWholeBookDownLoad && fileIsExists(localPath)) {
                 hideNowReadButton();

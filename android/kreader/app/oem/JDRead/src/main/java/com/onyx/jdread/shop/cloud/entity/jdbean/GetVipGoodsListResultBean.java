@@ -18,7 +18,7 @@ public class GetVipGoodsListResultBean {
         public String service_desc;
         public int sku_id;
         public int seq;
-        public float promotion_price;
+        public float jd_price;
         public boolean can_buy;
     }
 }
