@@ -20,6 +20,7 @@ import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.TitleBarViewModel;
 import com.onyx.jdread.shop.utils.WebViewInteraction;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -50,15 +51,13 @@ public class BannerWebFragment extends BaseFragment {
     }
 
     private void initLibrary() {
-        if (!getEventBus().isRegistered(this)) {
-            getEventBus().register(this);
-        }
+        Utils.ensureRegister(getEventBus(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getEventBus().unregister(this);
+        Utils.ensureUnregister(getEventBus(), this);
     }
 
     private EventBus getEventBus() {

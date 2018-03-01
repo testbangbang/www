@@ -231,8 +231,8 @@ public class JDAppBaseInfo {
             if (!requestParamsMap.containsKey(APP_KEY)) {
                 try {
                     String[] entry = s.split("=");
-                    String key = entry[0];
-                    if (entry.length > 1) {
+                    if (entry != null && entry.length > 1) {
+                        String key = entry[0];
                         String value = entry[1];
                         value = URLEncoder.encode(value,"UTF-8");
                         s = key + "=" +value;
