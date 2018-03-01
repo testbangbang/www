@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -113,6 +114,7 @@ public class BookDetailFragment extends BaseFragment {
     private boolean isWholeBookDownLoad;
     private BookInfoDialog infoDialog;
     private boolean hasAddToCart = false;
+    private boolean shouldRefresh;
 
     @Nullable
     @Override
@@ -228,14 +230,23 @@ public class BookDetailFragment extends BaseFragment {
                     if (bookDetailResultBean.result_code != Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
                         return;
                     }
-                    bookDetailBean = bookDetailResultBean.data;
-                    //TODO set NowReadButton show or hide with free and set buyBookButton text;
+
+                    if (bookDetailBean == null || bookDetailBean.ebook_id != bookDetailResultBean.data.ebook_id) {
+                        bookDetailBean = bookDetailResultBean.data;
+                    }
+
+                    if (shouldRefresh) {
+                        bookDetailBean = bookDetailResultBean.data;
+                        shouldRefresh = false;
+                    }
 
                     if (!ViewHelper.isCanNowRead(bookDetailBean)) {
                         hideNowReadButton();
                     }
                     if (!bookDetailBean.can_buy) {
-                        hideNowReadButton();
+                        if (!isWholeBookDownLoad && !fileIsExists(localPath) && !ViewHelper.isCanNowRead(bookDetailBean)) {
+                            hideNowReadButton();
+                        }
                         bookDetailBinding.bookDetailInfo.shopCartContainer.setVisibility(View.GONE);
                         bookDetailBinding.bookDetailInfo.spaceTwo.setVisibility(View.GONE);
                     }
@@ -424,6 +435,7 @@ public class BookDetailFragment extends BaseFragment {
             isWholeBookDownLoad = bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad;
             if (isWholeBookDownLoad) {
                 nowReadButton.setEnabled(true);
+                hideNowReadButton();
                 upDataButtonDown(buyBookButton, true, bookDetailBean.bookExtraInfoBean);
             } else {
                 buyBookButton.setEnabled(true);
@@ -440,6 +452,7 @@ public class BookDetailFragment extends BaseFragment {
             handlerDownloadResult(task);
             isWholeBookDownLoad = bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad;
             if (isWholeBookDownLoad) {
+                hideNowReadButton();
                 upDataButtonDown(buyBookButton, false, bookDetailBean.bookExtraInfoBean);
             } else {
                 upDataButtonDown(nowReadButton, false, bookDetailBean.bookExtraInfoBean);
@@ -493,20 +506,6 @@ public class BookDetailFragment extends BaseFragment {
             openBook(localPath, bookDetailBean);
             return;
         }
-
-        String path = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.name + Constants.BOOK_FORMAT;
-        if (path.equals(localPath)) {
-            if (bookDetailBean != null && DownLoadHelper.isDownloading(downloadTaskState)) {
-                ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_downloading));
-                return;
-            }
-            if (bookDetailBean != null && DownLoadHelper.isPause(downloadTaskState)) {
-                downLoadWholeBook();
-                ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_download_go_on));
-                return;
-            }
-        }
-
         if (PersonalDataBundle.getInstance().isUserVip()) {
             if (bookDetailBean.can_read) {
                 bookDetailBean.downLoadType = CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ;
@@ -656,7 +655,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private boolean fileIsExists(String localPath) {
         if (localPath != null) {
-            return new File(localPath).exists();
+            return FileUtils.fileExist(localPath);
         } else {
             return false;
         }
@@ -747,6 +746,7 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
         if (JDReadApplication.getInstance().getString(R.string.login_success).equals(event.getMessage())) {
+            shouldRefresh = true;
             getBookDetailData();
         }
     }
@@ -835,7 +835,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void dismissInfoDialog() {
-        if (infoDialog != null && infoDialog.isShowing()) {
+        if (infoDialog != null) {
             infoDialog.dismiss();
         }
     }
