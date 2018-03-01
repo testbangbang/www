@@ -15,6 +15,7 @@ import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.event.NoteBackEvent;
 import com.onyx.jdread.reader.event.AddNoteEvent;
 import com.onyx.jdread.reader.event.UpdateNoteEvent;
+import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,7 +26,9 @@ import org.greenrobot.eventbus.EventBus;
 
 public class NoteViewModel {
     private ObservableField<String> srcNote = new ObservableField<>();
+    private ObservableField<String> srcPageNumber = new ObservableField<>();
     private ObservableField<String> newNote = new ObservableField<>();
+    private ObservableField<String> newPageNumber = new ObservableField<>();
     private ObservableField<String> createNoteDate = new ObservableField<>();
     private ObservableBoolean isSrcNoteModify = new ObservableBoolean(false);
     private ObservableField<String> title = new ObservableField<>();
@@ -37,8 +40,30 @@ public class NoteViewModel {
     private Annotation annotation;
     private ActivityNoteBinding binding;
 
+    public ObservableField<String> getSrcPageNumber() {
+        return srcPageNumber;
+    }
+
+    public void setSrcPageNumber(String srcPageNumber) {
+        this.srcPageNumber.set(srcPageNumber);
+    }
+
+    public ObservableField<String> getNewPageNumber() {
+        return newPageNumber;
+    }
+
+    public void setNewPageNumber(String newPageNumber) {
+        this.newPageNumber.set(newPageNumber);
+    }
+
     public NoteViewModel(ActivityNoteBinding binding) {
         this.binding = binding;
+        this.binding.tvSrcNote.setOnPagingListener(new PageTextView.OnPagingListener() {
+            @Override
+            public void onPageChange(int currentPage, int totalPage) {
+                setSrcPageNumber(currentPage + "/" + totalPage);
+            }
+        });
     }
 
     public void setReaderDataHolder(EventBus eventBus) {
