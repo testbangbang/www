@@ -180,4 +180,10 @@
     <integer name="password_unlock_fail_expired">86400000</integer>
     <integer name="low_power_battery_value">15</integer>
     <integer name="default_refresh_value">10</integer>
+
+    <integer name="pay_by_cash_total_time">300000</integer>
+    <integer name="pay_by_cash_first_delay_time">30000</integer>
+    <integer name="pay_by_cash_second_period_time">4000</integer>
+    <integer name="pay_by_cash_second_total_time">180000</integer>
+    <integer name="pay_by_cash_third_period_time">30000</integer>
 </resources>

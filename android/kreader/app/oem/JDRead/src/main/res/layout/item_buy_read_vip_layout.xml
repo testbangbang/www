@@ -32,7 +32,7 @@
             android:background="@drawable/rectangle_stroke_corners"
             android:gravity="center"
             android:padding="@dimen/item_points_for_points_padding"
-            android:text="@{@string/format_rmb(ViewHelper.formatRMB(data.promotion_price))}"
+            android:text="@{@string/format_rmb(ViewHelper.formatRMB(data.jd_price))}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_one_heading_font" />
     </LinearLayout>
