@@ -106,6 +106,10 @@ public class GiftCenterFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceivePackageEvent(ReceivePackageEvent event) {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+            return;
+        }
         LibraryDeleteDialog.DialogModel model = new LibraryDeleteDialog.DialogModel();
         final LibraryDeleteDialog dialog = new LibraryDeleteDialog.Builder(JDReadApplication.getInstance(), model).create();
         String tips = ResManager.getString(R.string.receive_gift_package_tips);

@@ -36,10 +36,10 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/pay_way"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/top_up_qr_code_margin_bottom"
-            android:text="@string/way_to_pay"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
     </LinearLayout>

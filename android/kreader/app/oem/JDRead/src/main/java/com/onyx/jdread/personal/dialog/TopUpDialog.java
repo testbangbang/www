@@ -4,9 +4,13 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +45,8 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.event.BuyBookSuccessEvent;
-import com.onyx.jdread.shop.event.PayByCashSuccessEvent;
 import com.onyx.jdread.shop.event.ConfirmPayClickEvent;
+import com.onyx.jdread.shop.event.PayByCashSuccessEvent;
 import com.onyx.jdread.shop.model.PayOrderViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.ViewHelper;
@@ -115,6 +119,12 @@ public class TopUpDialog extends DialogFragment {
         binding.dialogTopUpDetailLayout.dialogTopUpRecycler.addItemDecoration(decoration);
         topUpAdapter = new TopUpAdapter();
         binding.dialogTopUpDetailLayout.dialogTopUpRecycler.setAdapter(topUpAdapter);
+        SpannableString ss = new SpannableString(ResManager.getString(R.string.way_to_pay));
+        StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
+        StyleSpan styleSpan2 = new StyleSpan(Typeface.BOLD);
+        ss.setSpan(styleSpan, 2, 5, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        ss.setSpan(styleSpan2, 8, 12, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        binding.dialogTopUpQrCodeLayout.payWay.setText(ss);
     }
 
     private void initData() {

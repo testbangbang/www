@@ -95,6 +95,7 @@ public class PersonalExperienceFragment extends BaseFragment {
         binding.experienceRecycler.addItemDecoration(decoration);
         adapter = new PersonalExperienceAdapter();
         binding.experienceRecycler.setAdapter(adapter);
+        binding.experienceRecycler.setCanTouchPageTurning(false);
         binding.experienceRecycler.setPageTurningCycled(true);
     }
 
