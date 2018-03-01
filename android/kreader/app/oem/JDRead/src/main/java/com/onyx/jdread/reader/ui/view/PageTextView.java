@@ -50,7 +50,6 @@ public class PageTextView extends AppCompatTextView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         resize();
-        isFirstPage = true;
         onPageChange(0);
     }
 
