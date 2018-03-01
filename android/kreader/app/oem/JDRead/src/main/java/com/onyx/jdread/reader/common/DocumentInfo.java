@@ -23,13 +23,17 @@ public class DocumentInfo {
         this.securityInfo = securityInfo;
     }
 
+    public SecurityInfo getSecurityInfo() {
+        return securityInfo;
+    }
+
     public static class SecurityInfo {
         public static final String KEY = "key";
         public static final String RANDOM = "random";
         public static final String UU_ID = "uuId";
-        private String key;
-        private String random;
-        private String uuId;
+        private String key = "";
+        private String random = "";
+        private String uuId = "";
 
         public String getKey() {
             return key;
