@@ -67,14 +67,14 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         ParserOpenDocumentInfoAction parserOpenDocumentInfoAction = new ParserOpenDocumentInfoAction(getIntent());
         parserOpenDocumentInfoAction.execute(readerViewModel.getReaderDataHolder(),null);
         if (binding.getReadViewModel().setDocumentInfo(parserOpenDocumentInfoAction.getDocumentInfo())) {
-            isShowLoadingMessage();
+            updateLoadingState();
             readerViewModel.setReaderPageView(binding.readerPageView);
             OpenDocumentAction openDocumentAction = new OpenDocumentAction();
             openDocumentAction.execute(readerViewModel.getReaderDataHolder(),null);
         }
     }
 
-    private void isShowLoadingMessage(){
+    private void updateLoadingState(){
         if(readerViewModel.getReaderDataHolder().isPreload()){
             readerViewModel.setTipMessage(ResManager.getString(R.string.preload_loading));
             readerViewModel.setIsShowTipMessage(true);
