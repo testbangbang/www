@@ -22,17 +22,14 @@
             android:text="pen" />
 
         <TextView
-            android:onClick="@{model.onPenWidth1}"
+            android:onClick="@{model::onPenWidth1}"
             style="@style/note_menu_text"
             android:text="width1" />
 
         <TextView
-            android:onClick="@{model.onPenWidth2}"
+            android:onClick="@{model::onPenWidth2}"
             style="@style/note_menu_text"
             android:text="width2" />
-
-        <TextView
-            style="@style/note_menu_text"
-            android:text="erase" />
+        
     </LinearLayout>
 </layout>
