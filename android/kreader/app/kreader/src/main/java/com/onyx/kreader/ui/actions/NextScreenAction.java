@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.actions;
 import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.host.request.NextScreenRequest;
@@ -16,7 +17,8 @@ import com.onyx.kreader.ui.events.PageChangedEvent;
 public class NextScreenAction extends BaseAction {
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        if (!readerDataHolder.getReaderViewInfo().canNextScreen) {
+        ReaderViewInfo readerViewInfo = readerDataHolder.getReaderViewInfo();
+        if (readerViewInfo != null && !readerViewInfo.canNextScreen) {
             ReaderDeviceManager.disableRegal();
             ToastUtils.showToast(readerDataHolder.getContext().getApplicationContext(), R.string.max_page_toast);
             return;
