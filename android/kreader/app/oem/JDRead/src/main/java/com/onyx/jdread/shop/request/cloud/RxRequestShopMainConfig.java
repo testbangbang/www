@@ -88,7 +88,7 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                 if (modulesBean.module_type == Constants.MODULE_TYPE_ADV_FIX_TWO) {// banner subject
                     List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
                     BannerViewModel viewModel = new BannerViewModel(shopDataBundle.getEventBus());
-                    viewModel.setBannerList(getbannerSubItems(dataBean, items));
+                    viewModel.setBannerList(getbannerSubItems(dataBean, items, modulesBean));
                     mainConfigSubjectList.add(viewModel);
                 } else if (modulesBean.module_type == Constants.MODULE_TYPE_RECOMMEND) {
                     if (modulesBean.show_type == 1) {// cover subject
@@ -117,11 +117,12 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
         }
     }
 
-    private List<BookModelConfigResultBean.DataBean.AdvBean> getbannerSubItems(BookModelConfigResultBean.DataBean dataBean, List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items) {
+    private List<BookModelConfigResultBean.DataBean.AdvBean> getbannerSubItems(BookModelConfigResultBean.DataBean dataBean, List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items, BookModelConfigResultBean.DataBean.ModulesBean modulesBean) {
         List<BookModelConfigResultBean.DataBean.AdvBean> bannerItemList = new ArrayList<>();
         for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
             if (Constants.MAIN_CONFIG_TYPE_ADV.equals(itemsBean.type)) {
                 BookModelConfigResultBean.DataBean.AdvBean advBean = dataBean.adv.get(itemsBean.id);
+                advBean.f_type = modulesBean.f_type;
                 bannerItemList.add(advBean);
             }
         }

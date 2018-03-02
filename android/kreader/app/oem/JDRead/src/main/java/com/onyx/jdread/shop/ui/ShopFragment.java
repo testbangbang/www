@@ -222,7 +222,12 @@ public class ShopFragment extends BaseFragment {
                     getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
                 }
             } else if (advBean.relate_type == Constants.RELATE_TYPE_LINK) {
-                //TODO GO webview
+                if (getViewEventCallBack() != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.BANNER_URL,advBean.relate_link);
+                    setBundle(bundle);
+                    getViewEventCallBack().gotoView(BannerWebFragment.class.getName());
+                }
             } else if (advBean.relate_type == Constants.RELATE_TYPE_BOOK_DETAIL) {
                 gotoBookDetailPage(Long.valueOf(advBean.relate_link));
             }

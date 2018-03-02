@@ -72,14 +72,14 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         metadata.setCloudId(String.valueOf(detailBean.ebook_id));
         metadata.setLocation(StringUtils.isNullOrEmpty(detailBean.downLoadUrl) ? detailBean.try_url : detailBean.downLoadUrl);
         metadata.setCoverUrl(detailBean.large_image_url);
-        metadata.setSize((long) detailBean.file_size);
         metadata.setHashTag(localPath);
         metadata.setType(FileUtils.getFileExtension(metadata.getNativeAbsolutePath()));
         BookExtraInfoBean extraInfo = detailBean.bookExtraInfoBean;
         if (extraInfo != null) {
             extraInfo.key = detailBean.key;
             extraInfo.random = detailBean.random;
-            metadata.setExtraAttributes(JSONObjectParseUtils.toJson(extraInfo));
+            metadata.setSize((long) extraInfo.totalSize);
+            metadata.setDownloadInfo(JSONObjectParseUtils.toJson(extraInfo));
         }
         metadata.setIdString(localPath);
         return metadata;

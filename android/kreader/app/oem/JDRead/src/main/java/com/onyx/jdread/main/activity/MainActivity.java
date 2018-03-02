@@ -14,7 +14,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -61,6 +63,10 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
+import com.onyx.jdread.shop.action.UpdateDownloadInfoAction;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
+import com.onyx.jdread.shop.event.DownloadFinishEvent;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -454,5 +460,28 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideSoftWindowEvent(HideSoftWindowEvent event) {
         Utils.hideSoftWindow(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadFinishEvent(DownloadFinishEvent event) {
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
+        if (task != null) {
+            BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
+            extraInfoBean.downLoadState = task.getStatus();
+            extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
+            extraInfoBean.progress = task.getSmallFileSoFarBytes();
+            extraInfoBean.totalSize = task.getSmallFileTotalBytes();
+            updateDownloadInfo(extraInfoBean, task.getPath());
+        }
+    }
+
+    private void updateDownloadInfo(BookExtraInfoBean extraInfo, String localPath) {
+        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfo, localPath);
+        action.execute(ShopDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
     }
 }
