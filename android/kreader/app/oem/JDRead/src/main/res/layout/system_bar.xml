@@ -63,7 +63,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/system_bar_icon_space"
-                    android:onClick="@{()->systemBarModel.toggleWifi()}"
                     android:src="@{systemBarModel.wifiImageRes}"
                     android:visibility="@{systemBarModel.wifiImageRes == 0?View.GONE:View.VISIBLE}" />
 
