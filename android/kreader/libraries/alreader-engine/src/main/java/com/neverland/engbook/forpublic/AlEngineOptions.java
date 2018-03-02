@@ -13,6 +13,28 @@ public class AlEngineOptions {
 	public static final int AL_USEAUTO_PAGESIZE  = 	-1;
 	public static final int AL_USEDEF_PAGESIZE	 = 	0;
 
+	public static final int CSS_SUPPORT_ALL = 0x0fffffff;
+
+	// always use
+	// visibility hyphens decoratio-line decoration page-break-before page-break-after vertical-align font-style font-weight white-space
+
+	// font-size
+	public static final int CSS_SUPPORT_FONT_SIZE = 				0x00000002;
+	// font-family [monospace, fantasy, all other]
+	public static final int CSS_SUPPORT_FONT_FAMILY = 				0x00000004;
+	// margin-top margi-bottom margin
+    public static final int CSS_SUPPORT_VERTICAL_MARGINS = 			0x00000100;
+	// margin-right margin-left margin
+	public static final int CSS_SUPPORT_HORIZONTAL_MARGINS = 		0x00000200;
+	// text-indent
+	public static final int CSS_SUPPORT_TEXT_INDENT = 				0x00000400;
+	// align alreader-align-poem
+	public static final int CSS_SUPPORT_JUSTIFY = 					0x00001000;
+	// text-shadow letter-spacing
+	public static final int CSS_SUPPORT_ANY_JUNK = 					0x00100000;
+
+
+
 	public int									magic = 0x1812;
 	/**
 	 * способ подсчета количества страниц
@@ -46,7 +68,7 @@ public class AlEngineOptions {
 	/**
 	 * некоторые ньюансы форматирования текста на странице - устанавливать в TRUE только если локаль устройства - китайская
 	 */
-	public boolean								chinezeFormatting = true;
+	public boolean								chinezeSpecial = false;
 	/**
 	 * используемый размер странцы в случае если useScreenPages равно TAL_SCREEN_PAGES_COUNT_BY_SIZE
 	 pageSize4Use = AL_USEAUTO_PAGESIZE - вариант автоматического подсчета размера страницы
@@ -80,4 +102,6 @@ public class AlEngineOptions {
 	public String								defaultMOBI = null;
 	public String								defaultEPUB = null;
 
+	public int									cssSupportLevel = CSS_SUPPORT_ALL;
+	public String								defaultAllCSS = null;
 }

@@ -1,17 +1,15 @@
 package com.neverland.engbook.allstyles;
 
+import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level1.AlRandomAccessFile;
 import com.neverland.engbook.level2.AlFormat;
-import com.neverland.engbook.level2.AlFormatTag;
 import com.neverland.engbook.util.AlOneXMLAttrClass;
 import com.neverland.engbook.util.AlStyleStack;
-import com.neverland.engbook.util.AlStyles;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public abstract class AlCSSStyles {
 
@@ -322,6 +320,8 @@ public abstract class AlCSSStyles {
         lastUsedSet = num;
     }
 
+
+
     public boolean apply1ClassX(int tag, AlOneXMLAttrClass cls, AlStyleStack stack) {
         if (cls.count == 0x00) {
             return apply1OneClassX(tag, 0x00, stack);
@@ -333,37 +333,23 @@ public abstract class AlCSSStyles {
         }
     };
 
-    public boolean apply1OneClassX(int tag, long clsX, AlStyleStack stack) {
-        /*long mKey = tag;
-        if (clsX != 0)
-            mKey = (long)tag ^ clsX;
+    public boolean apply1OneClassX4CSSDefault(int tag, long clsX, DefCSSPar defPar) {
+        internalPair.clear();
 
-        AlOneCSSPair m = css_map.get(mKey);
-        if (m != null) {
-            if (m.m0 == 0 && m.m1 == 0)
-                return false;
-            AlSetCSS.applyValue(m, stack);
-            return true;
-        }
-
-        ////////////////////////////
-        m = new AlOneCSSPair();
-        long res = allSets.get(0).apply1(tag, clsX, m);
+        long res = allSets.get(0).apply1(tag, clsX, internalPair);
         for (int i = 0; i < currentSet.s.size(); i++) {
-            res |= allSets.get(currentSet.s.get(i)).apply1(tag, clsX, m);
+            res |= allSets.get(currentSet.s.get(i)).apply1(tag, clsX, internalPair);
         }
-
-        css_map.put(mKey, m);
 
         if (res != 0) {
-            AlSetCSS.applyValue(m, stack);
+            AlSetCSS.applyValue4CSSDefault(internalPair, defPar);
             return true;
         }
 
         return false;
-*/
+    };
 
-        ////////////////////////////
+    public boolean apply1OneClassX(int tag, long clsX, AlStyleStack stack) {
         internalPair.clear();
         long res = allSets.get(0).apply1(tag, clsX, internalPair);
         for (int i = 0; i < currentSet.s.size(); i++) {
@@ -384,9 +370,10 @@ public abstract class AlCSSStyles {
     //public HashMap<Long, AlOneCSSPair> css_map = new HashMap<>();
 
     public boolean				enable = false;
-    public boolean				supportFontSize = false;
+    //public boolean				supportFontSize = false;
 
     public boolean		        disableExternal = false;
+    public int		            supportLevel = AlEngineOptions.CSS_SUPPORT_ALL;
 
     protected AlFormat			format = null;
     protected int               cp4f = TAL_CODE_PAGES.CP65001;
@@ -396,6 +383,6 @@ public abstract class AlCSSStyles {
     protected AlOneWorkSet		currentSet = new AlOneWorkSet();
     protected ArrayList<AlOneWorkSet>collection = new ArrayList<>();
 
-    public abstract void init(AlFormat f, int cp4files, int useSet);
+    public abstract void init(AlFormat f, int cp4files, int useSet, int sLevel);
     protected abstract AlOneCSSPair		parse(int usesets, byte[] data, int len, int state, int cp, String cFile, int setNum);
 }

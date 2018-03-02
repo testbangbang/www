@@ -13,12 +13,11 @@ import com.onyx.jdread.reader.exception.FileFormatErrorException;
  */
 
 public class OpenDocumentRequest extends ReaderBaseRequest {
-    private Reader reader;
     private ReaderPluginOptions pluginOptions;
     private BaseOptions srcOptions;
 
     public OpenDocumentRequest(Reader reader,BaseOptions baseOptions) {
-        this.reader = reader;
+        super(reader);
         this.srcOptions = baseOptions;
     }
 
@@ -41,16 +40,16 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
     }
 
     private boolean openDocument() throws Exception {
-        ReaderDocument document = reader.getReaderHelper().openDocument(reader.getDocumentInfo().getBookPath(), srcOptions, pluginOptions);
+        ReaderDocument document = getReader().getReaderHelper().openDocument(getReader().getDocumentInfo().getBookPath(), srcOptions, pluginOptions);
         if(document != null) {
-            reader.getReaderHelper().saveReaderDocument(document,reader.getDocumentInfo());
+            getReader().getReaderHelper().saveReaderDocument(document,getReader().getDocumentInfo());
             return true;
         }
         return false;
     }
 
     private boolean selectPlugin() {
-        if (!reader.getReaderHelper().selectPlugin(getAppContext(), reader.getDocumentInfo(), pluginOptions)) {
+        if (!getReader().getReaderHelper().selectPlugin(getAppContext(), getReader().getDocumentInfo(), pluginOptions)) {
             return false;
         }
         return true;

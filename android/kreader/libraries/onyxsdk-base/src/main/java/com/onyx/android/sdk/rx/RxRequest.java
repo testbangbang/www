@@ -86,7 +86,7 @@ public abstract class RxRequest<T extends RxRequest> implements Callable<T> {
         RxRequest.appContext = appContext.getApplicationContext();
     }
 
-    public Context getAppContext() {
+    public static Context getAppContext() {
         return appContext;
     }
 

@@ -1,10 +1,7 @@
 package com.neverland.engbook.level2;
 
 
-import android.util.Log;
-
 import com.neverland.engbook.allstyles.AlCSSHtml;
-import com.neverland.engbook.allstyles.AlOneCSS;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFileZipEntry;
@@ -15,7 +12,6 @@ import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 import com.neverland.engbook.util.InternalFunc;
 
 import java.util.ArrayList;
@@ -43,20 +39,16 @@ public class AlFormatCHM extends AlFormatBaseHTML {
     private char[] dataForEntity = null;
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
+
         xml_mode = false;
         ident = "CHM";
-
-        aFiles = myParent;
 
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
             needUnpackAfterAllRead = true;
 
-        preference = pref;
-        styles = stl;
-
         noUseCover = bookOptions.noUseCover;
-        size = 0;
 
         autoCodePage = true;
         defCP = ((AlFilesCHM)aFiles).chmCodePage;
@@ -66,7 +58,7 @@ public class AlFormatCHM extends AlFormatBaseHTML {
         allState.state_parser = STATE_XML_SKIP;
         allState.clearSkipped();
 
-        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_HTML);
+        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_HTML, pref.cssSupportLevel);
         if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
             cssStyles.disableExternal = true;
         customSize = 0;

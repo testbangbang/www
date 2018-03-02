@@ -16,7 +16,6 @@ import com.neverland.engbook.util.AlOneLink;
 import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 import com.neverland.engbook.util.InternalFunc;
 
 import java.util.HashMap;
@@ -51,19 +50,15 @@ public class AlFormatRTF extends AlFormat {
 
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
+
         ident = "RTF";
 
         fnt_charset_mode.clear();
 
-        aFiles = myParent;
-        preference = pref;
-        styles = stl;
-
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
             aFiles.needUnpackData();
-
-        size = 0;
 
         switch (bookOptions.codePageDefault) {
             case TAL_CODE_PAGES.CP1200:
@@ -1099,6 +1094,10 @@ public class AlFormatRTF extends AlFormat {
 
 
         for (i = start_pos; i < stop_posRequest;) {
+            if (isAborted()) {
+                return;
+            }
+
             buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
             if (i + buf_cnt > stop_posRequest) {
                 buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, stop_posRequest - i + 2);
@@ -1111,6 +1110,10 @@ public class AlFormatRTF extends AlFormat {
 
             label_get_next_char:
             for (j = 0; j < buf_cnt;) {
+                if (isAborted()) {
+                    return;
+                }
+                
                 allState.start_position = i + j;
                 ch = (char)parser_inBuff[j++];
                 ch &= 0xff;
@@ -1173,7 +1176,11 @@ public class AlFormatRTF extends AlFormat {
                 /////////////////// Begin Real Parser
 
                 label_repeat_letter:
-                while (true)
+                while (true) {
+                    if (isAborted()) {
+                        return;
+                    }
+
                     switch (allState.state_parser & 0x0f) {
                         case STATE_RTF0_SKIP_COUNTBYTES:
                             allState.skipped_flag--;
@@ -1288,6 +1295,7 @@ public class AlFormatRTF extends AlFormat {
                             allState.state_parser = (allState.state_parser & 0xf0) | STATE_RTF0_TEXT;
                             continue label_get_next_char;
                     }
+                }
 
                 /////////////////// End Real Parser
                 // this code must be in any parser without change!!!

@@ -1,13 +1,11 @@
 package com.neverland.engbook.level2;
 
 import com.neverland.engbook.forpublic.AlBookOptions;
+import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
-
-import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 
 public class AlFormatNativeImages extends AlFormat {
     public static boolean isImage(AlFiles a, String ext) {
@@ -70,21 +68,20 @@ public class AlFormatNativeImages extends AlFormat {
     }
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
+
         ident = "IMAGE";
 
         isTextFormat = false;
-        aFiles = myParent;
-
-        preference = pref;
-        styles = stl;
 
         autoCodePage = true;
         use_cpR0 = TAL_CODE_PAGES.AUTO;
         allState.state_parser = 0;
         allState.clearSkipped();
 
-        size = 0;
+        parser(0, aFiles.getSize());
+        newParagraph();
     }
 
     @Override

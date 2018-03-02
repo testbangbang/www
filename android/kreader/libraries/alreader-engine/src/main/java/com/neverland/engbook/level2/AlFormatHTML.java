@@ -2,14 +2,12 @@ package com.neverland.engbook.level2;
 
 import com.neverland.engbook.allstyles.AlCSSHtml;
 import com.neverland.engbook.forpublic.AlBookOptions;
-import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 
 import static com.neverland.engbook.forpublic.EngBookMyType.AL_ROOT_RIGHTPATH_STR;
 
@@ -61,19 +59,14 @@ public class AlFormatHTML extends AlFormatBaseHTML {
     }
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
+
         xml_mode = false;
         ident = "HTML";
 
-        aFiles = myParent;
-
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
             aFiles.needUnpackData();
-
-        preference = pref;
-        styles = stl;
-
-        size = 0;
 
         autoCodePage = bookOptions.codePage == TAL_CODE_PAGES.AUTO;
         if (autoCodePage) {
@@ -88,7 +81,7 @@ public class AlFormatHTML extends AlFormatBaseHTML {
 
         currentFile = aFiles.fileName;
 
-        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_HTML);
+        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_HTML, pref.cssSupportLevel);
         if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
             cssStyles.disableExternal = true;
 

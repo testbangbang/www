@@ -1,14 +1,12 @@
 package com.neverland.engbook.level1;
 
-import android.util.SparseIntArray;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_RESULT;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public abstract class AlFiles {

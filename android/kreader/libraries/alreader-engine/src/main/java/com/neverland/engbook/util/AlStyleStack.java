@@ -25,7 +25,12 @@ public class AlStyleStack {
         //activeParagraph = &buffer[0].paragraph;
         //activeProp = &buffer[0].prop;
         buffer[0].paragraph = AlStyles.SL_SIZE_NORMAL;
-        buffer[0].prop = AlParProperty.SL2_INDENT_DEFAULT/* | AlParProperty.SL2_INTER_FONT*/;
+        buffer[0].prop = 0/* | AlParProperty.SL2_INTER_FONT*/;
+    }
+
+    public void init(long def_par, long def_prop) {
+        buffer[0].paragraph = AlStyles.SL_SIZE_NORMAL;
+        buffer[0].prop = def_prop;
     }
 
     /*@Override
@@ -89,6 +94,10 @@ public class AlStyleStack {
         if (sz > 511)
             sz = 511;
         return sz;
+    }
+
+    public void setActualSize(int ns) {
+        buffer[position].fontSize0  = ns;
     }
 
     public long getActualParagraph() {
@@ -167,6 +176,11 @@ public class AlStyleStack {
         res |= ((long)mrEm << AlParProperty.SL2_MARGR_EM_SHIFT);
 
         return res;
+    }
+
+    public void clearTo(int level) {
+        for (int i = position; i > level; i--)
+            pop(buffer[i].tag);
     }
 
     public void pop(int tag) {
