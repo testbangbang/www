@@ -213,7 +213,7 @@
     <string name="reader_traditional">繁体</string>
     <string name="reader_simplified">简体</string>
     <string name="reader_font_size">字号</string>
-    <string name="reader_format">版式</string>
+    <string name="reader_format">设置</string>
     <string name="reader_adaptive">自适应</string>
     <string name="reader_customize">自定义</string>
     <string name="reader_line_spacing">行间距</string>
@@ -373,7 +373,7 @@
     <string name="reader_edit">编辑</string>
     <string name="reader_save">完成</string>
     <string name="reader_original">原文</string>
-    <string name="reader_changes">有修改</string>
+    <string name="reader_changes">已编辑</string>
     <string name="source_language">源语言:</string>
     <string name="simplified_chinese">简体中文</string>
     <string name="reader_target_language">目标语言:</string>

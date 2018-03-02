@@ -65,7 +65,7 @@ public class ReaderPageInfoModel {
     }
 
     public void setBookName(String bookName) {
-        this.bookName.set(bookName);
+        this.bookName.set(bookName.trim());
     }
 
     public ObservableField<String> getReadProgress() {
