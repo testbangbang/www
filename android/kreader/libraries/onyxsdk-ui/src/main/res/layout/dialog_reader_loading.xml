@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <com.onyx.android.sdk.ui.OnyxProgressBar
+        <com.onyx.android.sdk.ui.view.OnyxProgressBar
             android:id="@+id/imageview_loading"
             android:layout_width="@dimen/dialog_loading_progressbar_width"
             android:layout_height="@dimen/dialog_loading_progressbar_width"
@@ -27,6 +27,18 @@
             android:padding="15dp"
             android:textColor="@android:color/black"
             android:textSize="@dimen/dialog_loading_text_size" />
+
+        <ImageView
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/textview_message"
+            android:layout_alignTop="@id/imageview_loading"
+            android:layout_alignBottom="@id/imageview_loading"
+            android:src="@drawable/ic_dialog_loading_close"
+            android:scaleType="centerInside"
+            android:background="@drawable/image_button_bg"
+            android:id="@+id/button_cancel" />
     </RelativeLayout>
 
 
