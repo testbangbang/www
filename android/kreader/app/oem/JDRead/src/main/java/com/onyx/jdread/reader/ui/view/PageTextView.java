@@ -50,7 +50,6 @@ public class PageTextView extends AppCompatTextView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         resize();
-        onPageChange(0);
     }
 
     public int resize() {
@@ -62,6 +61,11 @@ public class PageTextView extends AppCompatTextView {
         CharSequence newContent = oldContent.subSequence(0, getCharNum());
         setText(newContent);
         return oldContent.length() - newContent.length();
+    }
+
+    public void reset(String srcContent){
+        getPage();
+        this.srcContent = srcContent;
     }
 
     public int getCharNum() {
@@ -157,6 +161,7 @@ public class PageTextView extends AppCompatTextView {
         for (int i = 0; i < totalPageNumber - 1; i++) {
             page[i + 1] = getLayout().getLineEnd((i + 1) * pCount - 1);
         }
+        onPageChange(0);
         return page;
     }
 
