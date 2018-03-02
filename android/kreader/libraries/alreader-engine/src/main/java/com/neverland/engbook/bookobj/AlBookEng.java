@@ -3042,7 +3042,7 @@ public class AlBookEng{
 	private void saveLastBookPosition(){
 		if (format != null && format instanceof AlFormatEPUB) {
 			int num_par = format.getNumParagraphByPoint(bookPosition);
-			if (!format.canGetFileSize(num_par)) {
+			if (num_par < 0 || !format.canGetFileSize(num_par)) {
 				return;
 			}
 			int lastBlock = format.getFileSize(num_par);
