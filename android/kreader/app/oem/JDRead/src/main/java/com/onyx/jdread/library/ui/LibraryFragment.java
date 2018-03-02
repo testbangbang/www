@@ -467,7 +467,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onLibraryRenameEvent(LibraryRenameEvent event) {
-        LibraryRenameAction renameAction = new LibraryRenameAction(JDReadApplication.getInstance(), event.getDataModel());
+        LibraryRenameAction renameAction = new LibraryRenameAction(getActivity(), event.getDataModel());
         renameAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -552,7 +552,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onMoveToLibraryEvent(MoveToLibraryEvent event) {
-        LibraryMoveToAction moveToAction = new LibraryMoveToAction(JDReadApplication.getInstance());
+        LibraryMoveToAction moveToAction = new LibraryMoveToAction(getActivity());
         moveToAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
