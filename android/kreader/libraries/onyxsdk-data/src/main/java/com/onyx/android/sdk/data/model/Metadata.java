@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data.model;
 
+import android.support.annotation.NonNull;
+
 import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -386,10 +388,22 @@ public class Metadata extends BaseData {
 
     @JSONField(deserialize = false, serialize = false)
     public String getBookLocation(String key) {
-        if (CollectionUtils.isNullOrEmpty(bookLocations)) {
+        if (!containsBookLocation(key)) {
             return null;
         }
         return bookLocations.get(key).getLocation();
+    }
+
+    public boolean containsBookLocation(@NonNull String... keys) {
+        if (CollectionUtils.isNullOrEmpty(bookLocations)) {
+            return false;
+        }
+        for (String key : keys) {
+            if (bookLocations.containsKey(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Metadata createFromFile(String path) {
