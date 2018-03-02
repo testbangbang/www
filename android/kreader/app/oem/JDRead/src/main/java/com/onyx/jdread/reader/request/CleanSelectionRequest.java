@@ -10,6 +10,7 @@ public class CleanSelectionRequest extends ReaderBaseRequest {
     private Reader reader;
 
     public CleanSelectionRequest(Reader reader) {
+        super(reader);
         this.reader = reader;
     }
 

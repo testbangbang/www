@@ -3,7 +3,6 @@ package com.onyx.jdread.reader.request;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.jdread.reader.data.Reader;
-import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 
 /**
  * Created by huxiaomao on 2018/1/9.
@@ -14,6 +13,7 @@ public class DeleteBookmarkRequest extends ReaderBaseRequest {
     private Reader reader;
 
     public DeleteBookmarkRequest(Reader reader, Bookmark bookmark) {
+        super(reader);
         this.bookmark = bookmark;
         this.reader = reader;
     }

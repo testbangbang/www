@@ -29,6 +29,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
     private PageInfo pageInfo;
 
     public PreviousPageSelectTextRequest(Reader reader, ReaderTextStyle style) {
+        super(reader);
         this.reader = reader;
         this.style = style;
     }

@@ -18,6 +18,7 @@ public class ChangeLayoutRequest extends ReaderBaseRequest {
     private String pageName;
 
     public ChangeLayoutRequest(Reader reader, ChangeLayoutParameter parameter, ImageReflowSettings settings,String pageName) {
+        super(reader);
         this.reader = reader;
         this.parameter = parameter;
         this.settings = settings;

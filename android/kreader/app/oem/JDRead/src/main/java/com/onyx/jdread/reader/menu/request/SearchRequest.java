@@ -20,6 +20,7 @@ public class SearchRequest extends ReaderBaseRequest {
     private Reader reader;
 
     public SearchRequest(final String currentPage, final String text, boolean caseSensitive, boolean match, int contentLength, Reader reader) {
+        super(reader);
         searchOptions = new ReaderSearchOptionsImpl(currentPage, text, caseSensitive, match);
         searchOptions.setContextLength(contentLength);
         this.currentPage = currentPage;

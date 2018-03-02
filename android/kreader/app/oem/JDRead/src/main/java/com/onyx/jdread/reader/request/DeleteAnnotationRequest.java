@@ -13,6 +13,7 @@ public class DeleteAnnotationRequest extends ReaderBaseRequest {
     private Annotation annotation;
 
     public DeleteAnnotationRequest(Reader reader, Annotation annotation) {
+        super(reader);
         this.reader = reader;
         this.annotation = annotation;
     }

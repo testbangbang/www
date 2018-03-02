@@ -18,12 +18,21 @@ import io.reactivex.Scheduler;
 
 public abstract class ReaderBaseRequest extends RxRequest {
     private static final String TAG = ReaderBaseRequest.class.getSimpleName();
+    private Reader reader;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
     private ReaderSelectionInfo selectionInfoManager;
     private ReaderTextStyle style;
     private ImageReflowSettings settings;
     public boolean isSuccess = true;
+
+    public ReaderBaseRequest(Reader reader) {
+        this.reader = reader;
+    }
+
+    public Reader getReader() {
+        return reader;
+    }
 
     public final ReaderUserDataInfo getReaderUserDataInfo() {
         if (readerUserDataInfo == null) {

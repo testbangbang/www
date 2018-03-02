@@ -12,6 +12,7 @@ public class PreloadPreviousScreenRequest extends ReaderBaseRequest {
     private Reader reader;
 
     public PreloadPreviousScreenRequest(Reader reader) {
+        super(reader);
         this.reader = reader;
     }
 

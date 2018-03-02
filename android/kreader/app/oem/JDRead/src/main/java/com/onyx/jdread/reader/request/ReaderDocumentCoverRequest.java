@@ -1,7 +1,6 @@
 package com.onyx.jdread.reader.request;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
@@ -20,6 +19,7 @@ public class ReaderDocumentCoverRequest extends ReaderBaseRequest {
     private int height;
 
     public ReaderDocumentCoverRequest(Reader reader, int width, int height) {
+        super(reader);
         this.reader = reader;
         this.width = width;
         this.height = height;

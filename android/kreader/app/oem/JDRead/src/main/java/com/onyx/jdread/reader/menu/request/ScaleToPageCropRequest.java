@@ -4,7 +4,6 @@ import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
 import com.onyx.jdread.reader.data.Reader;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 /**
@@ -16,6 +15,7 @@ public class ScaleToPageCropRequest extends ReaderBaseRequest {
     private ReaderViewInfo readerViewInfo;
 
     public ScaleToPageCropRequest(Reader reader, ReaderViewInfo readerViewInfo) {
+        super(reader);
         this.readerViewInfo = readerViewInfo;
         this.reader = reader;
     }

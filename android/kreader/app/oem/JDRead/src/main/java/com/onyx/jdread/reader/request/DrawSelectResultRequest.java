@@ -12,6 +12,7 @@ public class DrawSelectResultRequest extends ReaderBaseRequest {
     private Reader reader;
 
     public DrawSelectResultRequest(Reader reader) {
+        super(reader);
         this.reader = reader;
     }
 

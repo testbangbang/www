@@ -18,6 +18,7 @@ public class GammaCorrectionRequest extends ReaderBaseRequest {
     private SettingInfo settingInfo;
 
     public GammaCorrectionRequest(final Reader reader, GammaInfo gammaInfo,final SettingInfo settingInfo) {
+        super(reader);
         this.gammaInfo = gammaInfo;
         this.reader = reader;
         this.settingInfo = settingInfo;

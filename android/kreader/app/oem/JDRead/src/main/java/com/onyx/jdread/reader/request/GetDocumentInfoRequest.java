@@ -11,6 +11,7 @@ public class GetDocumentInfoRequest extends ReaderBaseRequest {
     private Reader reader;
 
     public GetDocumentInfoRequest(Reader reader) {
+        super(reader);
         this.reader = reader;
     }
 

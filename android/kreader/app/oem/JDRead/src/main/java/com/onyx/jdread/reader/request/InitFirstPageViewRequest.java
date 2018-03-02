@@ -28,6 +28,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private SettingInfo settingInfo;
 
     public InitFirstPageViewRequest(Reader reader) {
+        super(reader);
         this.reader = reader;
     }
 

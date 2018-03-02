@@ -18,6 +18,7 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
     private BaseOptions srcOptions;
 
     public OpenDocumentRequest(Reader reader,BaseOptions baseOptions) {
+        super(reader);
         this.reader = reader;
         this.srcOptions = baseOptions;
     }

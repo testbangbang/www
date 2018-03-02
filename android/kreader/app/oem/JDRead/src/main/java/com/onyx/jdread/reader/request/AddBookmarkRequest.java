@@ -6,8 +6,6 @@ import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.reader.data.Reader;
-import com.onyx.jdread.reader.data.ReaderViewHelper;
-import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 
 /**
  * Created by huxiaomao on 2018/1/9.
@@ -18,6 +16,7 @@ public class AddBookmarkRequest extends ReaderBaseRequest {
     private Reader reader;
 
     public AddBookmarkRequest(Reader reader,PageInfo pageInfo) {
+        super(reader);
         this.pageInfo = pageInfo;
         this.reader = reader;
     }

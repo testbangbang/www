@@ -4,7 +4,6 @@ import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.reader.data.Reader;
-import com.onyx.jdread.reader.data.SettingInfo;
 
 /**
  * Created by huxiaomao on 2018/1/30.
@@ -18,22 +17,26 @@ public class GotoPositionRequest extends ReaderBaseRequest {
     private boolean autoOffset = false;
 
     public GotoPositionRequest(Reader reader, int page, boolean isDrawPage) {
+        super(reader);
         this.reader = reader;
         this.page = page;
         this.isDrawPage = isDrawPage;
     }
 
     public GotoPositionRequest(Reader reader, int page) {
+        super(reader);
         this.reader = reader;
         this.page = page;
     }
 
     public GotoPositionRequest(Reader reader, String persistentPosition) {
+        super(reader);
         this.reader = reader;
         this.persistentPosition = persistentPosition;
     }
 
     public GotoPositionRequest(Reader reader, String persistentPosition, boolean isDrawPage,boolean autoOffset) {
+        super(reader);
         this.reader = reader;
         this.persistentPosition = persistentPosition;
         this.isDrawPage = isDrawPage;

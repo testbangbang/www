@@ -19,6 +19,7 @@ public class GetTableOfContentRequest extends ReaderBaseRequest {
     private List<ChapterInfo> readTocChapterNodeList;
 
     public GetTableOfContentRequest(Reader reader) {
+        super(reader);
         this.reader = reader;
     }
 

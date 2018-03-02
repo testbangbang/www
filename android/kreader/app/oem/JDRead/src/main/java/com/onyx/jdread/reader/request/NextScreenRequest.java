@@ -10,6 +10,7 @@ public class NextScreenRequest extends ReaderBaseRequest {
     private Reader reader;
 
     public NextScreenRequest(Reader reader) {
+        super(reader);
         this.reader = reader;
     }
 

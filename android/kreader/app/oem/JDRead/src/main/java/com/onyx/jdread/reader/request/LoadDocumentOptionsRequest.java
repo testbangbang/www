@@ -19,6 +19,7 @@ public class LoadDocumentOptionsRequest extends ReaderBaseRequest {
     private String md5;
 
     public LoadDocumentOptionsRequest(Reader reader) {
+        super(reader);
         this.reader = reader;
     }
 

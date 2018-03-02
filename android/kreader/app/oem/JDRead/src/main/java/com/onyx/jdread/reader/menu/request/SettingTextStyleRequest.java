@@ -2,9 +2,7 @@ package com.onyx.jdread.reader.menu.request;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.jdread.reader.data.Reader;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.data.SettingInfo;
-import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 /**
@@ -17,6 +15,7 @@ public class SettingTextStyleRequest extends ReaderBaseRequest {
     private SettingInfo settingInfo;
 
     public SettingTextStyleRequest(Reader reader,ReaderTextStyle inputStyle,SettingInfo settingInfo) {
+        super(reader);
         this.reader = reader;
         this.inputStyle = inputStyle;
         this.settingInfo = settingInfo;

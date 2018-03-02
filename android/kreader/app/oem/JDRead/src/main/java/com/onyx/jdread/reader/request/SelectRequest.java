@@ -1,7 +1,6 @@
 package com.onyx.jdread.reader.request;
 
 import android.graphics.PointF;
-import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
@@ -32,6 +31,7 @@ public class SelectRequest extends ReaderBaseRequest {
 
     public SelectRequest(Reader reader, final String pagePosition, final PointF startPoint, final PointF endPoint, final PointF touchPoint,
                          final ReaderHitTestOptions hitTestOptions,PageInfo pageInfo) {
+        super(reader);
         start.set(startPoint.x, startPoint.y);
         end.set(endPoint.x, endPoint.y);
         this.touchPoint.set(touchPoint.x, touchPoint.y);
