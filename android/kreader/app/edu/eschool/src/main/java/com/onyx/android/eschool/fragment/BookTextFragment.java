@@ -88,6 +88,10 @@ public class BookTextFragment extends Fragment {
     public static final String LIBRARY_ID_ARGS = "libraryIdArgs";
     public static final String FRAGMENT_NAME = "fragmentName";
 
+    public static final String PDF_FILE_TYPE = "pdf";
+    public static final String CFA_TAG = "cfa";
+    public static final String CFA_PDF_FILE_TYPE = CFA_TAG + "-" + PDF_FILE_TYPE;
+
     @Bind(R.id.content_pageView)
     SinglePageRecyclerView contentPageView;
     @Bind(R.id.parent_library_ref)
@@ -326,8 +330,16 @@ public class BookTextFragment extends Fragment {
         });
     }
 
+    private String getType(Metadata book) {
+        if (CollectionUtils.isNullOrEmpty(book.getBookLocations())) {
+            return book.getType();
+        }
+        boolean contains = book.containsBookLocation(CFA_TAG, PDF_FILE_TYPE);
+        return contains ? PDF_FILE_TYPE : book.getType();
+    }
+
     private int getImageResource(Metadata book) {
-        String type = book.getType();
+        String type = getType(book);
         if (StringUtils.isNullOrEmpty(type)) {
             return R.drawable.cloud_default_cover;
         }
@@ -647,7 +659,7 @@ public class BookTextFragment extends Fragment {
         if (checkBookMetadataPathValid(book)) {
             return book.getNativeAbsolutePath();
         }
-        String fileName = FileUtils.fixNotAllowFileName(book.getName() + "." + book.getType());
+        String fileName = FileUtils.fixNotAllowFileName(book.getName() + "." + getType(book));
         if (StringUtils.isBlank(fileName)) {
             return null;
         }
@@ -703,14 +715,18 @@ public class BookTextFragment extends Fragment {
     }
 
     private String getDownloadUrl(Metadata metadata) {
-        if (isColorDevice) {
+        if (CollectionUtils.isNullOrEmpty(metadata.getBookLocations())) {
             return metadata.getLocation();
         }
-        String url = metadata.getBookLocation(metadata.getType());
-        if (StringUtils.isNullOrEmpty(url)) {
-            url = metadata.getLocation();
+        String url;
+        if (isColorDevice) {
+            url = metadata.getBookLocation(CFA_PDF_FILE_TYPE);
+            if (StringUtils.isNotBlank(url)) {
+                return url;
+            }
         }
-        return url;
+        url = metadata.getBookLocation(getType(metadata));
+        return StringUtils.isNotBlank(url) ? url : metadata.getLocation();
     }
 
     private void startDownload(final Metadata eBook) {
