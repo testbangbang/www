@@ -112,6 +112,8 @@ public class AlBookEng{
 	private static final int AL_TIMESCALC_MAX_FORSCREEN = 24000;
 	private static final int AL_FILESIZEMIN_FOR_AUTOCALC = (65536 << 1);
 
+	private boolean isAborted = false;
+
 	private int bookPosition;
 
 	private final AlIntHolder shtamp = new AlIntHolder(0);
@@ -3000,11 +3002,24 @@ public class AlBookEng{
 		openState.decState();
 	}
 
+	public boolean isAborted() {
+		return isAborted;
+	}
+
+	public void setAborted(boolean abort) {
+		isAborted = abort;
+		if (abort && format != null) {
+			format.setAborted(true);
+		}
+	}
+
     /**
      * Закрытие книги
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public int closeBook() {
+		setAborted(true);
+
 		saveLastBookPosition();
 		while (threadData.getObjOpen()) ;
 
@@ -3024,10 +3039,13 @@ public class AlBookEng{
 	}
 
 	private void saveLastBookPosition(){
-		if(format != null && format instanceof AlFormatEPUB){
+		if (format != null && format instanceof AlFormatEPUB) {
 			int num_par = format.getNumParagraphByPoint(bookPosition);
+			if (!format.canGetFileSize(num_par)) {
+				return;
+			}
 			int lastBlock = format.getFileSize(num_par);
-			FileBlockInfo.saveLastBlockInfo(lastBlock,format);
+			FileBlockInfo.saveLastBlockInfo(lastBlock, format);
 		}
 	}
 
@@ -3036,7 +3054,9 @@ public class AlBookEng{
      * @return null или AlBookProperties
      */
     public synchronized AlBookProperties getBookProperties(boolean needCalcPage4Content) {
-
+		if (isAborted) {
+			return null;
+		}
 
         if (!isBookOpened())
             return null;
@@ -3089,6 +3109,10 @@ public class AlBookEng{
      * @return null если ничего не было найдено или сам список
      */
 	public synchronized ArrayList<AlOneSearchResult> getFindTextResult() {
+		if (isAborted) {
+			return null;
+		}
+
         if (preferences.isASRoll)
             return null;
 
@@ -3117,6 +3141,10 @@ public class AlBookEng{
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public synchronized int findText(String find) {
+		if (isAborted) {
+			return TAL_RESULT.ERROR;
+		}
+
         if (preferences.isASRoll)
             return TAL_RESULT.ERROR;
 
@@ -3162,6 +3190,9 @@ public class AlBookEng{
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public synchronized int setNewScreenSize(int width, int height) {
+		if (isAborted) {
+			return TAL_RESULT.ERROR;
+		}
 
 		if (screenWidth == width && screenHeight == height)
 			return TAL_RESULT.OK;
@@ -5508,6 +5539,10 @@ public class AlBookEng{
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public synchronized int	getPageCount(AlCurrentPosition position) {
+		if (isAborted) {
+			return TAL_RESULT.ERROR;
+		}
+
 		position.noNeedSave = true;
 
 		if (isBookOpened()) {
@@ -5653,6 +5688,10 @@ public class AlBookEng{
 	}
 
 	public synchronized int getPageOfPosition(int pos) {
+		if (isAborted) {
+			return -1;
+		}
+
 		if (openState.getState() == AlBookState.OPEN) {
 			switch (preferences.calcPagesModeUsed) {
 			case SCREEN:
@@ -5668,6 +5707,10 @@ public class AlBookEng{
 	}
 
 	public synchronized int getPositionOfPage(int pageNum) {
+		if (isAborted) {
+			return -1;
+		}
+
 		if (preferences.isASRoll)
 			return -1;
 
@@ -5825,6 +5868,10 @@ public class AlBookEng{
     }
 
 	public synchronized int gotoPage(int pageNum) {
+		if (isAborted) {
+			return TAL_RESULT.ERROR;
+		}
+
 		if (preferences.isASRoll)
 			return TAL_RESULT.ERROR;
 
@@ -5861,6 +5908,9 @@ public class AlBookEng{
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public synchronized int	gotoPosition(TAL_GOTOCOMMAND mode, int pos) {
+		if (isAborted)
+			return TAL_RESULT.ERROR;
+
         if (preferences.isASRoll)
             return TAL_RESULT.ERROR;
 
@@ -6019,6 +6069,10 @@ public class AlBookEng{
      * @return AlTapInfo
      */
     public synchronized AlTapInfo getInfoByTap(int x, int y, TAL_SCREEN_SELECTION_MODE initialSelectMode) {
+		if (isAborted) {
+			return null;
+		}
+
     	tapInfo.clearInfo();
 
         if (preferences.isASRoll)
@@ -6483,6 +6537,10 @@ public class AlBookEng{
 
 	public synchronized AlTextOnScreen getTextOnScreen() {
 		textOnScreen.clear();
+
+		if (isAborted) {
+			return textOnScreen;
+		}
 
 		if (openState.getState() == AlBookState.OPEN) {
 			fillTextOnScreenOnePage(mpage[0][0], screen_parameters.marginL);
@@ -7125,6 +7183,10 @@ public class AlBookEng{
      * @return - текущий режим выделения. В случае успешного вызова - должен быть равен newMode
      */
 	public synchronized EngBookMyType.TAL_SCREEN_SELECTION_MODE setSelectionMode(EngBookMyType.TAL_SCREEN_SELECTION_MODE newMode) {
+		if (isAborted) {
+			return TAL_SCREEN_SELECTION_MODE.NONE;
+		}
+
         if (preferences.isASRoll)
             return getSelectionMode();
 

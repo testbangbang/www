@@ -686,9 +686,12 @@ public abstract class AlAXML extends AlFormat {
 		char 	ch, ch1;
 
 		for (i = start_pos; i < stop_posUsed;) {
-			
+				if (isAborted()) {
+				    return;
+				}
+
 				//Log.e("xml read pos ", Integer.toString(i));
-							
+
 				buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
 				if (i + buf_cnt > stop_posUsed) {
 					buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, stop_posUsed - i + 2);
@@ -702,6 +705,10 @@ public abstract class AlAXML extends AlFormat {
 
 				label_get_next_char:
 				for (j = 0; j < buf_cnt;) {
+					if (isAborted()) {
+						return;
+					}
+
 					allState.start_position = i + j;	
 
 					/*jVal.value = j;
@@ -833,6 +840,10 @@ public abstract class AlAXML extends AlFormat {
 
 					label_repeat_letter:
 					while (true) {
+						if (isAborted()) {
+							return;
+						}
+
 						switch (allState.state_parser) {
 							case STATE_XML_TEXT:
 								allState.start_position_par = allState.start_position;

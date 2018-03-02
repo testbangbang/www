@@ -310,6 +310,10 @@ public class AlFormatDOC extends AlFormat {
         char 	ch, ch1;
 
         for (int i = start_pos, j; i < stop_pos;) {
+            if (isAborted()) {
+                return;
+            }
+
             buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
             if (i + buf_cnt > stop_pos) {
                 buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, stop_pos - i + 2);
@@ -321,6 +325,10 @@ public class AlFormatDOC extends AlFormat {
             }
 
             for (j = 0; j < buf_cnt;) {
+                if (isAborted()) {
+                    return;
+                }
+
                 allState.start_position = i + j;
 
                 ch = (char)parser_inBuff[j++];

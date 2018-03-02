@@ -53,6 +53,8 @@ public abstract class AlFormat {
     public static final int LEVEL2_FRM_ADDON_SPECIALTEXT = 0x40000000;
     public static final int LEVEL2_MASK_FOR_LEVEL = 0xffff;
 
+    private boolean isAborted = false;
+
     public long lastPageCount;
     public long lastCalcTime;
     public boolean softHyphenPresent;
@@ -155,6 +157,14 @@ public abstract class AlFormat {
 
         haveProblem = false;
         autoCodePage = true;
+    }
+
+    public boolean isAborted() {
+        return isAborted;
+    }
+
+    public void setAborted(boolean abort) {
+        isAborted = abort;
     }
 
     @Override
@@ -2125,6 +2135,10 @@ public abstract class AlFormat {
         return par0.get(num).length;
     }
 
+    public boolean canGetFileSize(int num) {
+         return par0.size() > num;
+    }
+
     public int getFileSize(int num){
          return par0.get(num).blockSize;
     }
@@ -2970,4 +2984,5 @@ public abstract class AlFormat {
     public FileBlockInfo.CacheHeadInfo loadCacheHeadInfo(){
         return null;
     }
+
 }
