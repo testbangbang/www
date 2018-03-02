@@ -11,23 +11,21 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  */
 
 public class ScaleToPageCropRequest extends ReaderBaseRequest {
-    private Reader reader;
     private ReaderViewInfo readerViewInfo;
 
     public ScaleToPageCropRequest(Reader reader, ReaderViewInfo readerViewInfo) {
         super(reader);
         this.readerViewInfo = readerViewInfo;
-        this.reader = reader;
     }
 
     @Override
     public ScaleToPageCropRequest call() throws Exception {
         String pageName = readerViewInfo.getFirstVisiblePage().getName();
-        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
-        reader.getReaderHelper().getReaderLayoutManager().setCurrentLayout(PageConstants.SINGLE_PAGE, new NavigationArgs());
-        reader.getReaderHelper().getReaderLayoutManager().scaleToPageContent(pageName);
-        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
-        updateSetting(reader);
+        getReader().getReaderHelper().getReaderLayoutManager().setSavePosition(true);
+        getReader().getReaderHelper().getReaderLayoutManager().setCurrentLayout(PageConstants.SINGLE_PAGE, new NavigationArgs());
+        getReader().getReaderHelper().getReaderLayoutManager().scaleToPageContent(pageName);
+        getReader().getReaderViewHelper().updatePageView(getReader(), getReaderUserDataInfo(), getReaderViewInfo());
+        updateSetting(getReader());
         return this;
     }
 }

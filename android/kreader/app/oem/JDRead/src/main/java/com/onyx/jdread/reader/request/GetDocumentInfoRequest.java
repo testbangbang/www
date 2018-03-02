@@ -8,22 +8,20 @@ import com.onyx.jdread.reader.data.Reader;
  */
 
 public class GetDocumentInfoRequest extends ReaderBaseRequest {
-    private Reader reader;
 
     public GetDocumentInfoRequest(Reader reader) {
         super(reader);
-        this.reader = reader;
     }
 
     @Override
     public GetDocumentInfoRequest call() throws Exception {
-        ReaderDocument document = reader.getReaderHelper().getDocument();
-        String displayName = reader.getReaderHelper().getPlugin().displayName();
-        String md5 = reader.getReaderHelper().getDocumentMd5();
+        ReaderDocument document = getReader().getReaderHelper().getDocument();
+        String displayName = getReader().getReaderHelper().getPlugin().displayName();
+        String md5 = getReader().getReaderHelper().getDocumentMd5();
 
-        getReaderUserDataInfo().loadDocumentTableOfContent(reader.getReaderHelper().getContext(), document);
-        getReaderUserDataInfo().loadDocumentAnnotations(reader.getReaderHelper().getContext(), displayName, md5);
-        getReaderUserDataInfo().loadDocumentBookmarks(reader.getReaderHelper().getContext(), displayName, md5);
+        getReaderUserDataInfo().loadDocumentTableOfContent(getReader().getReaderHelper().getContext(), document);
+        getReaderUserDataInfo().loadDocumentAnnotations(getReader().getReaderHelper().getContext(), displayName, md5);
+        getReaderUserDataInfo().loadDocumentBookmarks(getReader().getReaderHelper().getContext(), displayName, md5);
         return this;
     }
 }

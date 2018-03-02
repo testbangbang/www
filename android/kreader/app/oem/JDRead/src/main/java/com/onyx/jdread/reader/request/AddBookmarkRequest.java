@@ -13,29 +13,27 @@ import com.onyx.jdread.reader.data.Reader;
 
 public class AddBookmarkRequest extends ReaderBaseRequest {
     private PageInfo pageInfo;
-    private Reader reader;
 
     public AddBookmarkRequest(Reader reader,PageInfo pageInfo) {
         super(reader);
         this.pageInfo = pageInfo;
-        this.reader = reader;
     }
 
     @Override
     public AddBookmarkRequest call() throws Exception {
         ContentSdkDataUtils.getDataProvider().addBookmark(createBookmark());
-        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
-        updateSetting(reader);
+        getReader().getReaderViewHelper().updatePageView(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
+        updateSetting(getReader());
         return this;
     }
 
     private Bookmark createBookmark() {
         Bookmark bookmark = new Bookmark();
-        bookmark.setIdString(reader.getReaderHelper().getDocumentMd5());
-        bookmark.setApplication(reader.getReaderHelper().getPlugin().displayName());
+        bookmark.setIdString(getReader().getReaderHelper().getDocumentMd5());
+        bookmark.setApplication(getReader().getReaderHelper().getPlugin().displayName());
         bookmark.setPosition(pageInfo.getPosition());
         bookmark.setPageNumber(PagePositionUtils.getPageNumber(pageInfo.getName()));
-        bookmark.setQuote(getQuote(reader.getReaderHelper().getDocument().getPageText(pageInfo.getPosition())));
+        bookmark.setQuote(getQuote(getReader().getReaderHelper().getDocument().getPageText(pageInfo.getPosition())));
         return bookmark;
     }
 

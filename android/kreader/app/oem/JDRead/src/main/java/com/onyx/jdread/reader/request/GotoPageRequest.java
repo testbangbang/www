@@ -8,24 +8,22 @@ import com.onyx.jdread.reader.data.Reader;
  */
 
 public class GotoPageRequest extends ReaderBaseRequest {
-    private Reader reader;
     private int page;
 
     public GotoPageRequest(Reader reader,int page) {
         super(reader);
-        this.reader = reader;
         this.page = page;
     }
 
     @Override
     public GotoPageRequest call() throws Exception {
-        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
-        if (!reader.getReaderHelper().getReaderLayoutManager().gotoPage(page)) {
+        getReader().getReaderHelper().getReaderLayoutManager().setSavePosition(true);
+        if (!getReader().getReaderHelper().getReaderLayoutManager().gotoPage(page)) {
             throw ReaderException.outOfRange();
         }
-        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
-        updateSetting(reader);
-        saveReaderOptions(reader);
+        getReader().getReaderViewHelper().updatePageView(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
+        updateSetting(getReader());
+        saveReaderOptions(getReader());
         return this;
     }
 }

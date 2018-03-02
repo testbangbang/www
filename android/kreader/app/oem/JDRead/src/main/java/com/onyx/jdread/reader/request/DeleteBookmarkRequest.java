@@ -10,12 +10,10 @@ import com.onyx.jdread.reader.data.Reader;
 
 public class DeleteBookmarkRequest extends ReaderBaseRequest {
     private Bookmark bookmark;
-    private Reader reader;
 
     public DeleteBookmarkRequest(Reader reader, Bookmark bookmark) {
         super(reader);
         this.bookmark = bookmark;
-        this.reader = reader;
     }
 
     @Override
@@ -23,8 +21,8 @@ public class DeleteBookmarkRequest extends ReaderBaseRequest {
         if (bookmark != null) {
             ContentSdkDataUtils.getDataProvider().deleteBookmark(bookmark);
         }
-        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
-        updateSetting(reader);
+        getReader().getReaderViewHelper().updatePageView(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
+        updateSetting(getReader());
         return this;
     }
 }

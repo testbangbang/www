@@ -18,13 +18,11 @@ import java.util.Map;
  */
 
 public class AddAnnotationRequest extends ReaderBaseRequest {
-    private Reader reader;
     private Map<String, SelectionInfo> readerSelectionInfos;
     private String note;
 
     public AddAnnotationRequest(Reader reader, Map<String, SelectionInfo> readerSelectionInfos,String note) {
         super(reader);
-        this.reader = reader;
         this.readerSelectionInfos = readerSelectionInfos;
         this.note = note;
     }
@@ -32,23 +30,23 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
     @Override
     public AddAnnotationRequest call() throws Exception {
         saveAnnotation();
-        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
-        updateSetting(reader);
+        getReader().getReaderViewHelper().updatePageView(getReader(), getReaderUserDataInfo(), getReaderViewInfo());
+        updateSetting(getReader());
         reloadAnnotation();
         return this;
     }
 
     private void reloadAnnotation(){
-        String displayName = reader.getReaderHelper().getPlugin().displayName();
-        String md5 = reader.getReaderHelper().getDocumentMd5();
+        String displayName = getReader().getReaderHelper().getPlugin().displayName();
+        String md5 = getReader().getReaderHelper().getDocumentMd5();
 
-        getReaderUserDataInfo().loadDocumentAnnotations(reader.getReaderHelper().getContext(), displayName, md5);
+        getReaderUserDataInfo().loadDocumentAnnotations(getReader().getReaderHelper().getContext(), displayName, md5);
     }
 
     private void saveAnnotation() {
         for (SelectionInfo readerSelectionInfo : readerSelectionInfos.values()) {
             ReaderSelection selection = readerSelectionInfo.getCurrentSelection();
-            Annotation annotation = createAnnotation(reader,readerSelectionInfo.pageInfo,
+            Annotation annotation = createAnnotation(getReader(),readerSelectionInfo.pageInfo,
                     selection.getStartPosition(), selection.getEndPosition(),
                     selection.getRectangles(), selection.getText(), note,readerSelectionInfo.pageInfo.getChapterName());
 

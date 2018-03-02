@@ -7,24 +7,22 @@ import com.onyx.jdread.reader.data.Reader;
  */
 
 public class CloseDocumentRequest extends ReaderBaseRequest {
-    private Reader reader;
     private boolean saveOption;
 
     public CloseDocumentRequest(Reader reader, boolean saveOption) {
         super(reader);
-        this.reader = reader;
         this.saveOption = saveOption;
     }
 
     @Override
     public CloseDocumentRequest call() throws Exception {
-        if (reader == null || reader.getReaderHelper().getDocument() == null) {
+        if (getReader() == null || getReader().getReaderHelper().getDocument() == null) {
             return this;
         }
         if (saveOption) {
-            saveReaderOptions(reader);
+            saveReaderOptions(getReader());
         }
-        reader.getReaderHelper().closeDocument();
+        getReader().getReaderHelper().closeDocument();
         return this;
     }
 }

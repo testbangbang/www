@@ -10,13 +10,11 @@ import com.onyx.jdread.reader.data.Reader;
  */
 
 public class UpdateAnnotationRequest extends ReaderBaseRequest {
-    private Reader reader;
     private Annotation annotation;
     private NoteInfo noteInfo;
 
     public UpdateAnnotationRequest(Reader reader, Annotation annotation, NoteInfo noteInfo) {
         super(reader);
-        this.reader = reader;
         this.annotation = annotation;
         this.noteInfo = noteInfo;
     }
@@ -26,15 +24,15 @@ public class UpdateAnnotationRequest extends ReaderBaseRequest {
         annotation.setNote(noteInfo.newNote);
         annotation.setQuote(noteInfo.srcNote);
         ContentSdkDataUtils.getDataProvider().updateAnnotation(annotation);
-        updateSetting(reader);
+        updateSetting(getReader());
         reloadAnnotation();
         return this;
     }
 
     private void reloadAnnotation(){
-        String displayName = reader.getReaderHelper().getPlugin().displayName();
-        String md5 = reader.getReaderHelper().getDocumentMd5();
+        String displayName = getReader().getReaderHelper().getPlugin().displayName();
+        String md5 = getReader().getReaderHelper().getDocumentMd5();
 
-        getReaderUserDataInfo().loadDocumentAnnotations(reader.getReaderHelper().getContext(), displayName, md5);
+        getReaderUserDataInfo().loadDocumentAnnotations(getReader().getReaderHelper().getContext(), displayName, md5);
     }
 }

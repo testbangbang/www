@@ -25,7 +25,6 @@ public class SelectRequest extends ReaderBaseRequest {
     private ReaderSelection selection;
     private String pagePosition;
     private ReaderHitTestOptions hitTestOptions;
-    private Reader reader;
     private ReaderSelectionHelper readerSelectionManager;
     private PageInfo pageInfo;
 
@@ -37,7 +36,6 @@ public class SelectRequest extends ReaderBaseRequest {
         this.touchPoint.set(touchPoint.x, touchPoint.y);
         this.pagePosition = pagePosition;
         this.hitTestOptions = hitTestOptions;
-        this.reader = reader;
         this.pageInfo = pageInfo;
     }
 
@@ -51,17 +49,17 @@ public class SelectRequest extends ReaderBaseRequest {
 
     @Override
     public SelectRequest call() throws Exception {
-        if (!reader.getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().canHitTest()) {
-            LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
+        if (!getReader().getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().canHitTest()) {
+            LayoutProviderUtils.updateReaderViewInfo(getReader(), getReaderViewInfo(), getReader().getReaderHelper().getReaderLayoutManager());
             return this;
         }
-        readerSelectionManager = reader.getReaderSelectionHelper();
-        ReaderHitTestManager hitTestManager = reader.getReaderHelper().getHitTestManager();
+        readerSelectionManager = getReader().getReaderSelectionHelper();
+        ReaderHitTestManager hitTestManager = getReader().getReaderHelper().getHitTestManager();
         ReaderHitTestArgs argsStart = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, start);
         ReaderHitTestArgs argsEnd = new ReaderHitTestArgs(pagePosition, pageInfo.getDisplayRect(), 0, end);
         selection = hitTestManager.selectOnScreen(argsStart, argsEnd, hitTestOptions);
         getReaderViewInfo().setLoadToc(false);
-        LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
+        LayoutProviderUtils.updateReaderViewInfo(getReader(), getReaderViewInfo(), getReader().getReaderHelper().getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
             getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
             getReaderUserDataInfo().setTouchPoint(touchPoint);
@@ -74,11 +72,11 @@ public class SelectRequest extends ReaderBaseRequest {
     }
 
     private void updateReaderSelectInfo(String pagePosition,PageInfo pageInfo) {
-        readerSelectionManager.update(pagePosition, reader.getReaderHelper().getContext(),
+        readerSelectionManager.update(pagePosition, getReader().getReaderHelper().getContext(),
                 getReaderUserDataInfo().getHighlightResult(),
                 getReaderUserDataInfo().getTouchPoint(),
                 pageInfo,
-                reader.getReaderHelper().getReaderLayoutManager().getTextStyleManager().getStyle());
+                getReader().getReaderHelper().getReaderLayoutManager().getTextStyleManager().getStyle());
         readerSelectionManager.updateDisplayPosition(pagePosition);
         readerSelectionManager.setEnable(pagePosition, true);
     }

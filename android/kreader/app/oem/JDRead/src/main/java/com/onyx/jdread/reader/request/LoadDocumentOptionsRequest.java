@@ -14,23 +14,21 @@ import java.io.File;
  */
 
 public class LoadDocumentOptionsRequest extends ReaderBaseRequest {
-    private Reader reader;
     private Metadata document;
     private String md5;
 
     public LoadDocumentOptionsRequest(Reader reader) {
         super(reader);
-        this.reader = reader;
     }
 
     @Override
     public LoadDocumentOptionsRequest call() throws Exception {
-        md5 = reader.getReaderHelper().getDocumentMd5();
+        md5 = getReader().getReaderHelper().getDocumentMd5();
         if (StringUtils.isNullOrEmpty(md5)) {
-            md5 = FileUtils.computeMD5(new File(reader.getDocumentInfo().getBookPath()));
+            md5 = FileUtils.computeMD5(new File(getReader().getDocumentInfo().getBookPath()));
         }
-        document = ContentSdkDataUtils.getDataProvider().findMetadataByHashTag(reader.getReaderHelper().getContext(),
-                reader.getDocumentInfo().getBookPath(),
+        document = ContentSdkDataUtils.getDataProvider().findMetadataByHashTag(getReader().getReaderHelper().getContext(),
+                getReader().getDocumentInfo().getBookPath(),
                 md5);
         document.setIdString(md5);
         return this;
