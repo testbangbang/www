@@ -99,6 +99,7 @@ import com.neverland.engbook.util.InternalFunc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * основной класс библиотеки.
@@ -112,7 +113,7 @@ public class AlBookEng{
 	private static final int AL_TIMESCALC_MAX_FORSCREEN = 24000;
 	private static final int AL_FILESIZEMIN_FOR_AUTOCALC = (65536 << 1);
 
-	private boolean isAborted = false;
+	private AtomicBoolean isAborted = new AtomicBoolean(false);
 
 	private int bookPosition;
 
@@ -3003,11 +3004,11 @@ public class AlBookEng{
 	}
 
 	public boolean isAborted() {
-		return isAborted;
+		return isAborted.get();
 	}
 
 	public void setAborted(boolean abort) {
-		isAborted = abort;
+		isAborted.set(abort);
 		if (abort && format != null) {
 			format.setAborted(true);
 		}
@@ -3054,7 +3055,7 @@ public class AlBookEng{
      * @return null или AlBookProperties
      */
     public synchronized AlBookProperties getBookProperties(boolean needCalcPage4Content) {
-		if (isAborted) {
+		if (isAborted()) {
 			return null;
 		}
 
@@ -3109,7 +3110,7 @@ public class AlBookEng{
      * @return null если ничего не было найдено или сам список
      */
 	public synchronized ArrayList<AlOneSearchResult> getFindTextResult() {
-		if (isAborted) {
+		if (isAborted()) {
 			return null;
 		}
 
@@ -3141,7 +3142,7 @@ public class AlBookEng{
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public synchronized int findText(String find) {
-		if (isAborted) {
+		if (isAborted()) {
 			return TAL_RESULT.ERROR;
 		}
 
@@ -3190,7 +3191,7 @@ public class AlBookEng{
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public synchronized int setNewScreenSize(int width, int height) {
-		if (isAborted) {
+		if (isAborted()) {
 			return TAL_RESULT.ERROR;
 		}
 
@@ -5539,7 +5540,7 @@ public class AlBookEng{
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public synchronized int	getPageCount(AlCurrentPosition position) {
-		if (isAborted) {
+		if (isAborted()) {
 			return TAL_RESULT.ERROR;
 		}
 
@@ -5688,7 +5689,7 @@ public class AlBookEng{
 	}
 
 	public synchronized int getPageOfPosition(int pos) {
-		if (isAborted) {
+		if (isAborted()) {
 			return -1;
 		}
 
@@ -5707,7 +5708,7 @@ public class AlBookEng{
 	}
 
 	public synchronized int getPositionOfPage(int pageNum) {
-		if (isAborted) {
+		if (isAborted()) {
 			return -1;
 		}
 
@@ -5868,7 +5869,7 @@ public class AlBookEng{
     }
 
 	public synchronized int gotoPage(int pageNum) {
-		if (isAborted) {
+		if (isAborted()) {
 			return TAL_RESULT.ERROR;
 		}
 
@@ -5908,7 +5909,7 @@ public class AlBookEng{
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public synchronized int	gotoPosition(TAL_GOTOCOMMAND mode, int pos) {
-		if (isAborted)
+		if (isAborted())
 			return TAL_RESULT.ERROR;
 
         if (preferences.isASRoll)
@@ -6069,7 +6070,7 @@ public class AlBookEng{
      * @return AlTapInfo
      */
     public synchronized AlTapInfo getInfoByTap(int x, int y, TAL_SCREEN_SELECTION_MODE initialSelectMode) {
-		if (isAborted) {
+		if (isAborted()) {
 			return null;
 		}
 
@@ -6538,7 +6539,7 @@ public class AlBookEng{
 	public synchronized AlTextOnScreen getTextOnScreen() {
 		textOnScreen.clear();
 
-		if (isAborted) {
+		if (isAborted()) {
 			return textOnScreen;
 		}
 
@@ -7183,7 +7184,7 @@ public class AlBookEng{
      * @return - текущий режим выделения. В случае успешного вызова - должен быть равен newMode
      */
 	public synchronized EngBookMyType.TAL_SCREEN_SELECTION_MODE setSelectionMode(EngBookMyType.TAL_SCREEN_SELECTION_MODE newMode) {
-		if (isAborted) {
+		if (isAborted()) {
 			return TAL_SCREEN_SELECTION_MODE.NONE;
 		}
 

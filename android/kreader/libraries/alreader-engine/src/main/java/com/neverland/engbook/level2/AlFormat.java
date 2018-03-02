@@ -35,6 +35,7 @@ import org.mozilla.universalchardet.UniversalDetector;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AlFormat {
 
@@ -53,7 +54,7 @@ public abstract class AlFormat {
     public static final int LEVEL2_FRM_ADDON_SPECIALTEXT = 0x40000000;
     public static final int LEVEL2_MASK_FOR_LEVEL = 0xffff;
 
-    private boolean isAborted = false;
+    private AtomicBoolean isAborted = new AtomicBoolean(false);
 
     public long lastPageCount;
     public long lastCalcTime;
@@ -160,11 +161,11 @@ public abstract class AlFormat {
     }
 
     public boolean isAborted() {
-        return isAborted;
+        return isAborted.get();
     }
 
     public void setAborted(boolean abort) {
-        isAborted = abort;
+        isAborted.set(abort);
     }
 
     @Override
