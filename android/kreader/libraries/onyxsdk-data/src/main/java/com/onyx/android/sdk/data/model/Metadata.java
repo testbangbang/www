@@ -119,8 +119,19 @@ public class Metadata extends BaseData {
     @Column
     private int ordinal;
 
+    @Column
+    private String downloadInfo;
+
     @ColumnIgnore
     private Map<String, String> bookCovers = new HashMap<>();
+
+    public String getDownloadInfo() {
+        return downloadInfo;
+    }
+
+    public void setDownloadInfo(String downloadInfo) {
+        this.downloadInfo = downloadInfo;
+    }
 
     public void setFetchSource(int fetchSource) {
         this.fetchSource = fetchSource;

@@ -1,14 +1,11 @@
 package com.onyx.jdread.library.view;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -17,6 +14,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.adapter.PopMenuAdapter;
 import com.onyx.jdread.library.model.PopMenuModel;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.util.Utils;
 
@@ -34,6 +32,7 @@ public class MenuPopupWindow extends PopupWindow {
     private final int screenWidth;
     private PopMenuAdapter popMenuAdapter;
     private boolean showItemDecoration;
+    private long lastTime = 0;
 
     public void setShowItemDecoration(boolean showItemDecoration) {
         this.showItemDecoration = showItemDecoration;
@@ -80,10 +79,21 @@ public class MenuPopupWindow extends PopupWindow {
         popMenuAdapter.setItemListener(new PopMenuAdapter.ItemClickListener() {
             @Override
             public void onItemClicked(Object event) {
+                long current = System.currentTimeMillis();
+                if (lastTime != 0 && current - lastTime < Constants.LIMIT_TIME) {
+                    return;
+                }
+                lastTime = current;
                 eventBus.post(event);
                 dismiss();
             }
         });
         pageRecyclerView.setAdapter(popMenuAdapter);
+    }
+
+    @Override
+    public void dismiss() {
+        lastTime = 0;
+        super.dismiss();
     }
 }

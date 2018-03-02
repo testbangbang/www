@@ -123,15 +123,6 @@ public class CustomRecycleView extends RecyclerView {
         SubjectCommonAdapter adapter = getAdapter();
         if (adapter != null) {
             if (curPageIndex <= 0) {
-                if (isPageTurningCycled()) {
-                    List<BaseSubjectViewModel> datas = adapter.getDatas();
-                    if (datas != null) {
-                        int lastPosition = datas.size() - 1;
-                        curPageIndex = getTotalPages() - 1;
-                        pageIndexMap.put(curPageIndex, lastPosition);
-                        scrollToPosition(lastPosition);
-                    }
-                }
                 return;
             }
             if (curPageIndex > 0) {

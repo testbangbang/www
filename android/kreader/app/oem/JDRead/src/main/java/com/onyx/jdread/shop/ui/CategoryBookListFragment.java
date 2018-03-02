@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentCategoryBookListBinding;
@@ -23,6 +24,7 @@ import com.onyx.jdread.shop.adapter.CategoryBookListAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryItemClickEvent;
@@ -86,12 +88,12 @@ public class CategoryBookListFragment extends BaseFragment {
         catTwoId = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
         currentCatName = JDPreferenceManager.getStringValue(Constants.SP_KEY_CATEGORY_NAME, "");
         typeFree = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_CATEGORY_ISFREE, false);
-        initDefaultParams();
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
         getCategoryBookListViewModel().getTitleBarViewModel().showRightText2 = true;
         getCategoryBookListViewModel().getTitleBarViewModel().showRightText3 = true;
         getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_filter);
         getCategoryBookListViewModel().getTitleBarViewModel().rightText3 = getString(R.string.subject_list_sort_type_hot);
+        initDefaultParams();
         setSortButtonIsOpen(false);
         setAllCatIsOpen(false);
         setRightText2Icon();
@@ -101,11 +103,8 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void initDefaultParams() {
-        getCategoryBookListViewModel().sortKeyHotSelected.set(true);
-        getCategoryBookListViewModel().sortKeyNewestSelected.set(false);
-        getCategoryBookListViewModel().sortKeyPriceSelected.set(false);
-        sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
         sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
+        getCategoryBookListViewModel().updateSortKeyInfo(getCategoryBookListViewModel().getSortKeySelected());
     }
 
     private String getFinalCatId() {
@@ -115,12 +114,16 @@ public class CategoryBookListFragment extends BaseFragment {
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType) {
         boolean justShowVip = categoryBookListBinding.subjectListShowVip.isChecked();
         int filter = justShowVip ? CloudApiContext.SearchBook.FILTER_VIP : CloudApiContext.SearchBook.FILTER_DEFAULT;
-        SearchBookListAction booksAction = new SearchBookListAction(catid, currentPage, sortKey, sortType, "", filter);
+        final SearchBookListAction booksAction = new SearchBookListAction(catid, currentPage, sortKey, sortType, "", filter);
         booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
             @Override
             public void onNext(SearchBookListAction action) {
-                setBooksData(action.getBooksResultBean());
-                updateContentView();
+            }
+
+            @Override
+            public void onComplete() {
+                updateContentView(booksAction.getBooksResultBean());
+                gotoPage(getValidContentPage());
             }
         });
     }
@@ -129,15 +132,6 @@ public class CategoryBookListFragment extends BaseFragment {
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
         getCategoryBookListViewModel().setCategoryItems(allCategoryItems);
         getCategoryBookListViewModel().isFree.set(typeFree);
-    }
-
-    private void setBooksData(BookModelBooksResultBean booksResultBean) {
-        if (booksResultBean != null) {
-            if (booksResultBean.data != null) {
-                getCategoryBookListViewModel().setBookList(booksResultBean.data.items);
-            }
-        }
-        recyclerView.gotoPage(0);
     }
 
     private void initView() {
@@ -170,13 +164,16 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void initPageIndicator() {
-        int size = 0;
-        if (getCategoryBookListViewModel().getBookList() != null) {
-            size = getCategoryBookListViewModel().getBookList().size();
-        }
+        int size = CollectionUtils.getSize(getCategoryBookListViewModel().getBookList());
         paginator.resize(row, col, size);
         getCategoryBookListViewModel().setTotalPage(paginator.pages());
         setCurrentPage(paginator.getCurrentPage());
+    }
+
+    private void updateContentView(BookModelBooksResultBean result) {
+        List<ResultBookBean> list = result == null ? null : result.data.items;
+        getCategoryBookListViewModel().addBookList(list, true);
+        updateContentView();
     }
 
     private void updateContentView() {
@@ -185,6 +182,13 @@ public class CategoryBookListFragment extends BaseFragment {
         }
         recyclerView.getAdapter().notifyDataSetChanged();
         initPageIndicator();
+    }
+
+    private void gotoPage(int page) {
+        if (recyclerView == null) {
+            return;
+        }
+        recyclerView.gotoPage(page);
     }
 
     private void setCurrentPage(int currentPage) {
@@ -234,6 +238,7 @@ public class CategoryBookListFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTopBackEvent(TopBackEvent event) {
         if (getViewEventCallBack() != null) {
+            unsetContentPage();
             getViewEventCallBack().viewBack();
         }
     }
@@ -245,6 +250,7 @@ public class CategoryBookListFragment extends BaseFragment {
         }
         JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
+            saveContentPage();
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
     }
@@ -259,6 +265,7 @@ public class CategoryBookListFragment extends BaseFragment {
         if (categoryBean == null || currentCatName == null) {
             return;
         }
+        unsetContentPage();
         this.catTwoId = categoryBean.id;
         this.currentCatName = categoryBean.name;
         this.currentPage = 1;
@@ -325,6 +332,7 @@ public class CategoryBookListFragment extends BaseFragment {
             sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
             sortkey = event.sortKey;
         }
+        unsetContentPage();
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
     }
 
@@ -344,5 +352,20 @@ public class CategoryBookListFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
+    }
+
+    private void saveContentPage() {
+        getCategoryBookListViewModel().setContentPage(paginator.getCurrentPage());
+    }
+
+    private int getValidContentPage() {
+        if (getCategoryBookListViewModel().getContentPage() >= paginator.pages()) {
+            getCategoryBookListViewModel().setContentPage(0);
+        }
+        return getCategoryBookListViewModel().getContentPage();
+    }
+
+    private void unsetContentPage() {
+        getCategoryBookListViewModel().setContentPage(0);
     }
 }

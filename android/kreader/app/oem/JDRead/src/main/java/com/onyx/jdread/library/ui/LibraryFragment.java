@@ -445,7 +445,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onLoadingDialogEvent(LoadingDialogEvent event) {
-        if (loadingDialog == null) {
+        if (loadingDialog == null || dialogModel == null) {
             dialogModel = new LoadingDialog.DialogModel();
             dialogModel.setLoadingText(event.getMessage());
             LoadingDialog.Builder builder = new LoadingDialog.Builder(JDReadApplication.getInstance(), dialogModel);
@@ -460,6 +460,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
         if (loadingDialog != null && loadingDialog.isShowing()) {
+            dialogModel = null;
             loadingDialog.dismiss();
         }
     }
