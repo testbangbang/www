@@ -12,6 +12,7 @@ import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestGetBookCommentList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,10 +39,10 @@ public class BookCommentListAction extends BaseAction<ShopDataBundle> {
     @Override
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
-        BookCommentsRequestBean bookCommentsRequestBean = new BookCommentsRequestBean();
+        final BookCommentsRequestBean bookCommentsRequestBean = new BookCommentsRequestBean();
         bookCommentsRequestBean.bookId = bookID;
         JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
-        Map<String, String> queryArgs = new HashMap();
+        Map<String, String> queryArgs = new HashMap<>();
         queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, Constants.BOOK_PAGE_SIZE);
         queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, String.valueOf(currentPage));
         appBaseInfo.addRequestParams(queryArgs);
@@ -54,43 +55,37 @@ public class BookCommentListAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void onSubscribe() {
-                super.onSubscribe();
                 showLoadingDialog(shopDataBundle, R.string.loading);
+                invokeSubscribe(rxCallback);
             }
 
             @Override
             public void onFinally() {
-                super.onFinally();
                 hideLoadingDialog(shopDataBundle);
+                invokeFinally(rxCallback);
             }
 
             @Override
             public void onNext(RxRequestGetBookCommentList request) {
                 BookCommentsResultBean bookCommentsResultBean = request.getBookCommentsResultBean();
+                List<CommentEntity> list = new ArrayList<>();
                 if (bookCommentsResultBean != null && bookCommentsResultBean.data != null) {
                     commentsData = bookCommentsResultBean.data;
-                    List<CommentEntity> commentItems = commentsData.comments;
-                    bookDetailViewModel.setCommentItems(commentItems);
+                    list = commentsData.comments;
                 }
-                if (rxCallback != null) {
-                    rxCallback.onNext(BookCommentListAction.this);
-                }
+                bookDetailViewModel.setCommentItems(list);
+                invokeNext(rxCallback, BookCommentListAction.this);
             }
 
             @Override
             public void onError(Throwable throwable) {
-                super.onError(throwable);
-                if (rxCallback != null) {
-                    rxCallback.onError(throwable);
-                }
+                bookDetailViewModel.setCommentItems(new ArrayList<CommentEntity>());
+                invokeError(rxCallback, throwable);
             }
 
             @Override
             public void onComplete() {
-                super.onComplete();
-                if (rxCallback != null) {
-                    rxCallback.onComplete();
-                }
+                invokeComplete(rxCallback);
             }
         });
     }
