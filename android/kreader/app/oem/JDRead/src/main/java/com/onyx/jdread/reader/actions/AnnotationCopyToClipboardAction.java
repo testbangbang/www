@@ -27,5 +27,8 @@ public class AnnotationCopyToClipboardAction extends BaseReaderAction {
         ClipboardManager clipboardManager = (ClipboardManager) readerDataHolder.getAppContext().getSystemService(Context.CLIPBOARD_SERVICE);
         clipboardManager.setText(text);
         ToastMessage.showMessageCenter(readerDataHolder.getAppContext(),readerDataHolder.getAppContext().getString(R.string.reader_copy_success));
+        if(baseCallback != null){
+            baseCallback.onNext(0);
+        }
     }
 }
