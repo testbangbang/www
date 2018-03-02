@@ -126,7 +126,7 @@ public class AlReaderWrapper {
 
     public Bitmap readCover() {
         AlBookProperties bookProperties = bookEng.getBookProperties(false);
-        if (bookProperties.coverImageData == null) {
+        if (bookProperties == null || bookProperties.coverImageData == null) {
             return null;
         }
         try {
@@ -139,6 +139,9 @@ public class AlReaderWrapper {
 
     public String metadataString(final String tag) {
         AlBookProperties bookProperties = bookEng.getBookProperties(false);
+        if (bookProperties == null) {
+            return "";
+        }
         if ("Title".compareTo(tag) == 0) {
             return bookProperties.title;
         } else if ("Author".compareTo(tag) == 0) {
@@ -489,7 +492,7 @@ public class AlReaderWrapper {
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         AlBookProperties properties = bookEng.getBookProperties(true);
-        if (properties.content == null) {
+        if (properties == null || properties.content == null) {
             return false;
         }
         buildTableOfContentTree(toc.getRootEntry(), 0, properties.content, 0);
