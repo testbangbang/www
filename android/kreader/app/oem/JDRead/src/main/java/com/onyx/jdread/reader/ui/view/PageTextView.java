@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Layout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -168,7 +169,12 @@ public class PageTextView extends AppCompatTextView {
     private int getPageLineCount(TextView view) {
         int h = view.getBottom() - view.getTop() - view.getPaddingTop();
         int firstH = getLineHeight(0, view);
-        int otherH = getLineHeight(1, view);
+        int otherH = 0;
+        if(getLineCount() > 1) {
+            otherH = getLineHeight(1, view);
+        }else{
+            otherH = 1;
+        }
         return (h - firstH) / otherH;
     }
 

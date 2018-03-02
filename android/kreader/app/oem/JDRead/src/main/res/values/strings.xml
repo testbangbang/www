@@ -513,4 +513,5 @@
     <string name="receive_fail">Receive failed</string>
     <string name="low_power_reminder">Low battery, please charge in time</string>
     <string name="input_error">The search key can not contain punctuation</string>
+    <string name="preload_loading">Loading...</string>
 </resources>
