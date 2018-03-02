@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.utils;
 
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.CommonUtils;
@@ -73,6 +74,9 @@ public class BookDownloadUtils {
             return;
         }
         String localPath = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.name + Constants.BOOK_FORMAT;
+        if (FileUtils.fileExist(localPath)) {
+            FileUtils.deleteFile(localPath);
+        }
         DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.downLoadUrl, localPath, bookDetailBean.name);
         downloadAction.setBookDetailBean(bookDetailBean);
         downloadAction.execute(dataBundle, new RxCallback() {

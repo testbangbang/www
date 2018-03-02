@@ -329,7 +329,7 @@
     <dimen name="dialog_button_height">55dp</dimen>
     <dimen name="dialog_build_edit_height">60dp</dimen>
     <dimen name="dialog_build_edit_width">250dp</dimen>
-    <dimen name="ratingbar_light_settings_margin">30dp</dimen>
+    <dimen name="ratingbar_light_settings_margin">15dp</dimen>
     <dimen name="brightness_rating_ba_margin_top">140dp</dimen>
     <dimen name="library_list_dialog_recycler_padding">20dp</dimen>
     <dimen name="library_list_dialog_item_padding">25dp</dimen>
@@ -534,4 +534,8 @@
     <dimen name="fragment_find_button_padding">12dp</dimen>
     <dimen name="fragment_find_button_margin_top">40dp</dimen>
     <dimen name="vip_user_info_item_login_immediately_width">268dp</dimen>
+    <dimen name="dialog_single_manage_title_width">243dp</dimen>
+    <dimen name="brightness_button_width">54dp</dimen>
+    <dimen name="brightness_button_height">27dp</dimen>
+    <dimen name="reader_brightness_bar_padding">25dp</dimen>
 </resources>

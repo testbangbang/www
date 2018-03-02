@@ -79,4 +79,12 @@ public class CommonUtils {
         }
         return result;
     }
+
+    public static String removeSymbol(String content) {
+        String result = "";
+        if (content != null) {
+            result = content.replaceAll("[\\p{P}\\p{Punct}]", "");
+        }
+        return result;
+    }
 }

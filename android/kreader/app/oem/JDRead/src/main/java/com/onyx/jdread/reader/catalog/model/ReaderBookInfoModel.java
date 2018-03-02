@@ -15,6 +15,8 @@ import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.reader.catalog.adapter.BookmarkAdapter;
+import com.onyx.jdread.reader.catalog.adapter.NoteAdapter;
 import com.onyx.jdread.reader.catalog.event.TabBookmarkClickEvent;
 import com.onyx.jdread.reader.catalog.event.TabCatalogClickEvent;
 import com.onyx.jdread.reader.catalog.event.TabNoteClickEvent;
@@ -41,6 +43,30 @@ public class ReaderBookInfoModel {
     public ObservableBoolean isEmpty = new ObservableBoolean(false);
     public ArrayList<TreeRecyclerView.TreeNode> rootNodes;
     private EventBus eventBus;
+    private int bookmarksTotalPage = 0;
+    private int notesTotalPage = 0;
+
+    public int getBookmarksTotalPage() {
+        return bookmarksTotalPage;
+    }
+
+    public void setBookmarksTotalPage(int totalPage) {
+        this.bookmarksTotalPage = totalPage / BookmarkAdapter.row;
+        if(totalPage % NoteAdapter.row != 0){
+            this.bookmarksTotalPage += 1;
+        }
+    }
+
+    public int getNotesTotalPage() {
+        return notesTotalPage;
+    }
+
+    public void setNotesTotalPage(int totalPage) {
+        this.notesTotalPage = totalPage / NoteAdapter.row;
+        if(totalPage % NoteAdapter.row != 0){
+            this.notesTotalPage += 1;
+        }
+    }
 
     public ReaderBookInfoModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -103,6 +129,7 @@ public class ReaderBookInfoModel {
         for (Bookmark bookmark : bookmarks) {
             this.bookmarks.add(BookmarkModel.convertObject(readerDocumentTableOfContent, bookmark, totalPage));
         }
+        setBookmarksTotalPage(this.bookmarks.size());
     }
 
     public void setNotes(List<Annotation> annotationList) {
@@ -124,6 +151,7 @@ public class ReaderBookInfoModel {
             noteModel.setData(DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_2));
             this.notes.add(noteModel);
         }
+        setNotesTotalPage(this.notes.size());
     }
 
     public void onTabCatalogClick() {

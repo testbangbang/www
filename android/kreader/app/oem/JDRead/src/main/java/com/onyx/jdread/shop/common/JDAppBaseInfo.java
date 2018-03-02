@@ -228,6 +228,19 @@ public class JDAppBaseInfo {
         for (int i = 0; i < list.size(); i++) {
             Map.Entry<String, String> stringStringEntry = list.get(i);
             String s = stringStringEntry.toString();
+            if (!requestParamsMap.containsKey(APP_KEY)) {
+                try {
+                    String[] entry = s.split("=");
+                    if (entry != null && entry.length > 1) {
+                        String key = entry[0];
+                        String value = entry[1];
+                        value = URLEncoder.encode(value,"UTF-8");
+                        s = key + "=" +value;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             sb.append(s + "&");
         }
         String queryString = sb.deleteCharAt(sb.length() - 1).toString();

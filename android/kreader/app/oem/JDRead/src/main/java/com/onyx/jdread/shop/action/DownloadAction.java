@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
@@ -16,6 +17,9 @@ import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.model.ProgressInfoModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+
+import java.io.IOException;
+import java.net.ConnectException;
 
 /**
  * Created by jackdeng on 2017/12/21.
@@ -93,7 +97,11 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
                 }
                 if (rxCallback != null) {
                     if (e != null) {
-                        ToastUtil.showToast(context, R.string.download_fail);
+                        if (e instanceof ConnectException || e instanceof IOException) {
+                            ToastUtil.showToast(ResManager.getString(R.string.network_exception));
+                        } else {
+                            ToastUtil.showToast(R.string.download_fail);
+                        }
                         rxCallback.onError(e);
                     } else {
                         ToastUtil.showToast(context, R.string.download_finished);

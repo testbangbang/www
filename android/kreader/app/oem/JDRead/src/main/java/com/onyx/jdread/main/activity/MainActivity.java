@@ -12,8 +12,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -26,6 +29,7 @@ import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
+import com.onyx.jdread.main.action.BaseAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -59,6 +63,10 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
+import com.onyx.jdread.shop.action.UpdateDownloadInfoAction;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
+import com.onyx.jdread.shop.event.DownloadFinishEvent;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -130,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFunctionAdapter(PageRecyclerView functionBarRecycler) {
-        if(functionBarRecycler == null){
+        if (functionBarRecycler == null) {
             return;
         }
         boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
@@ -165,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private PageRecyclerView getFunctionBarRecycler() {
-        if(binding == null){
+        if (binding == null) {
             return null;
         }
         return binding.mainFunctionBar.functionBarRecycler;
@@ -318,6 +326,14 @@ public class MainActivity extends AppCompatActivity {
         return super.dispatchKeyEvent(event);
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
+            event.setAction(MotionEvent.ACTION_CANCEL);
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
         switchCurrentFragment(event.childClassName);
@@ -444,5 +460,28 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideSoftWindowEvent(HideSoftWindowEvent event) {
         Utils.hideSoftWindow(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadFinishEvent(DownloadFinishEvent event) {
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
+        if (task != null) {
+            BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
+            extraInfoBean.downLoadState = task.getStatus();
+            extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
+            extraInfoBean.progress = task.getSmallFileSoFarBytes();
+            extraInfoBean.totalSize = task.getSmallFileTotalBytes();
+            updateDownloadInfo(extraInfoBean, task.getPath());
+        }
+    }
+
+    private void updateDownloadInfo(BookExtraInfoBean extraInfo, String localPath) {
+        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfo, localPath);
+        action.execute(ShopDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
     }
 }

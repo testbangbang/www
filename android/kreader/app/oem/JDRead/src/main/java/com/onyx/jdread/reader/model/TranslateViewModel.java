@@ -9,6 +9,7 @@ import com.onyx.jdread.databinding.ActivityTranslateBinding;
 import com.onyx.jdread.reader.dialog.ViewCallBack;
 import com.onyx.jdread.reader.event.TextTranslateResultEvent;
 import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
+import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.setting.action.TranslateAction;
 import com.onyx.jdread.setting.model.SettingBundle;
 
@@ -76,10 +77,11 @@ public class TranslateViewModel {
 
     public void setBinding(ActivityTranslateBinding binding) {
         this.binding = binding;
-        binding.translateView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
+
+        binding.translateView.setOnPagingListener(new PageTextView.OnPagingListener() {
             @Override
-            public void onPageChanged(int totalPage, int curPage) {
-                updatePageNumber(totalPage, curPage);
+            public void onPageChange(int currentPage, int totalPage) {
+                updatePageNumber(totalPage, currentPage);
             }
         });
     }
@@ -104,6 +106,6 @@ public class TranslateViewModel {
     }
 
     public void updateTranslateResult(String result) {
-        binding.translateView.loadData(result, "text/html; charset=UTF-8", null);
+        binding.translateView.setText(result);
     }
 }

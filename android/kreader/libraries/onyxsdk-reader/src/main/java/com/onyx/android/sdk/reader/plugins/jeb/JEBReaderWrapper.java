@@ -23,6 +23,7 @@ import com.neverland.engbook.forpublic.AlTextOnScreen;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
+import com.neverland.engbook.level1.JEBFilesZIP;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.EngBitmap;
@@ -99,6 +100,9 @@ public class JEBReaderWrapper {
         bookOpt.formatOptions = 0;
         bookOpt.readPosition = 0;
         bookOpt.password = documentOptions.getDocumentPassword();
+        JEBFilesZIP.key = documentOptions.getDocumentKey();
+        JEBFilesZIP.deviceUUID = documentOptions.getDocumentDeviceUUID();
+        JEBFilesZIP.random = documentOptions.getDocumentRandom();
         if (bookEng.openBook(path, bookOpt) != TAL_RESULT.OK) {
             return ERROR_FILE_INVALID;
         }
