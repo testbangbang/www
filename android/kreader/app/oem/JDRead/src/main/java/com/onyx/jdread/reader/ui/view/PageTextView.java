@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Layout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -50,7 +51,6 @@ public class PageTextView extends AppCompatTextView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         resize();
-        onPageChange(0);
     }
 
     public int resize() {
@@ -62,6 +62,11 @@ public class PageTextView extends AppCompatTextView {
         CharSequence newContent = oldContent.subSequence(0, getCharNum());
         setText(newContent);
         return oldContent.length() - newContent.length();
+    }
+
+    public void reset(String srcContent){
+        getPage();
+        this.srcContent = srcContent;
     }
 
     public int getCharNum() {
@@ -157,13 +162,19 @@ public class PageTextView extends AppCompatTextView {
         for (int i = 0; i < totalPageNumber - 1; i++) {
             page[i + 1] = getLayout().getLineEnd((i + 1) * pCount - 1);
         }
+        onPageChange(0);
         return page;
     }
 
     private int getPageLineCount(TextView view) {
         int h = view.getBottom() - view.getTop() - view.getPaddingTop();
         int firstH = getLineHeight(0, view);
-        int otherH = getLineHeight(1, view);
+        int otherH = 0;
+        if(getLineCount() > 1) {
+            otherH = getLineHeight(1, view);
+        }else{
+            otherH = 1;
+        }
         return (h - firstH) / otherH;
     }
 

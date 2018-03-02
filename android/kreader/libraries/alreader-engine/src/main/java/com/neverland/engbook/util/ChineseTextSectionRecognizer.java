@@ -82,10 +82,14 @@ public class ChineseTextSectionRecognizer {
         }
         textBuffer[textCount++] = ch;
 
-        succeed = false;
         switch (state) {
             case SECTION_START:
                 succeed = handleSectionStart(ch);
+                if(ch == '\r' || ch == '\n') {
+                    succeed = false;
+                }else{
+                    succeed = true;
+                }
                 break;
             case SECTION_NUMBER:
                 succeed = handleSectionNumber(ch);
