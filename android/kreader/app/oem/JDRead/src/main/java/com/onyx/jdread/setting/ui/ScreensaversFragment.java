@@ -89,7 +89,7 @@ public class ScreensaversFragment extends BaseFragment {
 
     @Subscribe
     public void onCheckPicToScreenSaversEvent(CheckPicToScreenSaversEvent event) {
-        SaveBootPicAction saveBootPicAction = new SaveBootPicAction(event.getPath());
+        SaveBootPicAction saveBootPicAction = new SaveBootPicAction(event.getDisplay(), event.getPics());
         saveBootPicAction.execute(SettingBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {

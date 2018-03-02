@@ -1,12 +1,10 @@
 package com.onyx.jdread.setting.action;
 
-import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.setting.model.ScreenSaversModel;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.request.RxLoadPicByPathRequest;
-
-import java.io.File;
+import com.onyx.jdread.setting.utils.Constants;
 
 /**
  * Created by hehai on 18-1-1.
@@ -21,7 +19,7 @@ public class LoadScreenSaversPicAction extends BaseAction<SettingBundle> {
 
     @Override
     public void execute(SettingBundle bundle, final RxCallback callback) {
-        RxLoadPicByPathRequest request = new RxLoadPicByPathRequest(bundle.getDataManager(), Device.currentDevice.getExternalStorageDirectory() + File.separator + "DCIM");
+        RxLoadPicByPathRequest request = new RxLoadPicByPathRequest(bundle.getDataManager(), Constants.SYSTEM_MEADIA);
         request.execute(new RxCallback<RxLoadPicByPathRequest>() {
             @Override
             public void onNext(RxLoadPicByPathRequest picByPathRequest) {

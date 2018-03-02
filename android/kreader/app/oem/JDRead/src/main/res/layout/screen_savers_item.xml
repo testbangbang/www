@@ -5,6 +5,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
         <variable
             name="itemModel"
             type="com.onyx.jdread.setting.model.ScreenSaversModel.ItemModel" />
@@ -14,7 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:onClick="@{()->itemModel.onClick()}">
+        android:onClick="@{()->itemModel.onClick()}"
+        android:visibility="@{StringUtils.isNullOrEmpty(itemModel.picPath)?View.GONE:View.VISIBLE}">
 
         <ImageView
             android:id="@+id/screen_saver_image"

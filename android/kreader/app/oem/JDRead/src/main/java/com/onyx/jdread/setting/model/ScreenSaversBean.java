@@ -1,20 +1,23 @@
 package com.onyx.jdread.setting.model;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * Created by hehai on 18-1-6.
  */
 
-public class ScreenSaversBean {
-    private String path;
-    private boolean checked;
+public class ScreenSaversBean implements Serializable {
     private String display;
+    private boolean checked;
+    private List<String> pics;
 
-    public String getPath() {
-        return path;
+    public String getDisplay() {
+        return display;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setDisplay(String display) {
+        this.display = display;
     }
 
     public boolean isChecked() {
@@ -25,11 +28,11 @@ public class ScreenSaversBean {
         this.checked = checked;
     }
 
-    public String getDisplay() {
-        return display;
+    public List<String> getPics() {
+        return pics;
     }
 
-    public void setDisplay(String display) {
-        this.display = display;
+    public void setPics(List<String> pics) {
+        this.pics = pics;
     }
 }
