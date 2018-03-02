@@ -191,6 +191,7 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public void abortCurrentJob() {
+        getPluginImpl().abortCurrentJob();
     }
 
     public void clearAbortFlag() {

@@ -82,6 +82,10 @@ public class AlReaderWrapper {
         initDefaultTextStyle();
     }
 
+    public void abortCurrentJob() {
+        bookEng.setAborted(true);
+    }
+
     private void initDefaultTextStyle() {
         ReaderTextStyle style = ReaderTextStyle.defaultStyle();
         setStyle(style);
