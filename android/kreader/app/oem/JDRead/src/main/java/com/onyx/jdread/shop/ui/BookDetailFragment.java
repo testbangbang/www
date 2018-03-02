@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.ui;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.widget.TextView;
 
+import com.jingdong.app.reader.data.DrmTools;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -140,7 +142,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void getBookDetail() {
         queryMetadata();
-        getBookDetailData();
+        getBookDetailData(false);
         getRecommendData();
     }
 
@@ -220,7 +222,7 @@ public class BookDetailFragment extends BaseFragment {
         return getShopDataBundle().getEventBus();
     }
 
-    private void getBookDetailData() {
+    private void getBookDetailData(final boolean shouldDownloadWholeBook) {
         BookDetailAction bookDetailAction = new BookDetailAction(ebookId, JDReadApplication.getInstance().getLogin());
         bookDetailAction.execute(getShopDataBundle(), new RxCallback<BookDetailAction>() {
             @Override
@@ -247,17 +249,25 @@ public class BookDetailFragment extends BaseFragment {
                         if (!isWholeBookDownLoad && !fileIsExists(localPath) && !ViewHelper.isCanNowRead(bookDetailBean)) {
                             hideNowReadButton();
                         }
-                        bookDetailBinding.bookDetailInfo.shopCartContainer.setVisibility(View.GONE);
-                        bookDetailBinding.bookDetailInfo.spaceTwo.setVisibility(View.GONE);
+                        showShopCartView(false);
                     }
                     if (!StringUtils.isNullOrEmpty(bookDetailBean.author) && !getString(R.string.content_empty).equals(bookDetailBean.author)) {
                         getAuthorBooksData(bookDetailBean.author);
                     } else {
                         bookDetailBean.setAuthor(getString(R.string.error_content_author_unknown));
                     }
+
+                    if (shouldDownloadWholeBook) {
+                        smoothDownload();
+                    }
                 }
             }
         });
+    }
+
+    private void showShopCartView(boolean show) {
+        bookDetailBinding.bookDetailInfo.shopCartContainer.setVisibility(show ? View.VISIBLE : View.GONE);
+        bookDetailBinding.bookDetailInfo.spaceTwo.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void hideNowReadButton() {
@@ -305,8 +315,7 @@ public class BookDetailFragment extends BaseFragment {
     private void initButton() {
         resetNowReadButton();
         resetBuyBookButton();
-        bookDetailBinding.bookDetailInfo.shopCartContainer.setVisibility(View.VISIBLE);
-        bookDetailBinding.bookDetailInfo.spaceTwo.setVisibility(View.VISIBLE);
+        showShopCartView(true);
     }
 
     private void resetBuyBookButton() {
@@ -527,6 +536,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void downLoadWholeBook() {
         nowReadButton.setEnabled(false);
+        showShopCartView(false);
         BookDownloadUtils.download(bookDetailBean, getShopDataBundle());
     }
 
@@ -535,6 +545,7 @@ public class BookDetailFragment extends BaseFragment {
         DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
         securityInfo.setKey(detailBean.key);
         securityInfo.setRandom(detailBean.random);
+        securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
         documentInfo.setBookName(detailBean.name);
@@ -747,7 +758,7 @@ public class BookDetailFragment extends BaseFragment {
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
         if (JDReadApplication.getInstance().getString(R.string.login_success).equals(event.getMessage())) {
             shouldRefresh = true;
-            getBookDetailData();
+            getBookDetailData(true);
         }
     }
 
