@@ -307,7 +307,16 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         int currentMode = binding.getReaderBookInfoModel().getCurrentTab().get();
         PageRecyclerView pageRecyclerView = viewList.get(currentMode);
         if (pageRecyclerView != null) {
-            int totalPage = Math.max(pageRecyclerView.getPaginator().pages(), 1);
+            int totalPage = 0;
+            if(currentMode == ReaderBookInfoDialogConfig.BOOKMARK_MODE){
+                totalPage = binding.getReaderBookInfoModel().getBookmarksTotalPage();
+            }
+            if(currentMode == ReaderBookInfoDialogConfig.NOTE_MODE){
+                totalPage = binding.getReaderBookInfoModel().getNotesTotalPage();
+            }
+            if(currentMode == ReaderBookInfoDialogConfig.CATALOG_MODE) {
+                totalPage = Math.max(pageRecyclerView.getPaginator().pages(), 1);
+            }
             int currentPage = Math.max(pageRecyclerView.getPaginator().getCurrentPage() + 1, 1);
             String format = String.format("%d/%d", currentPage, totalPage);
             binding.getReaderBookInfoModel().setPageInfo(format);

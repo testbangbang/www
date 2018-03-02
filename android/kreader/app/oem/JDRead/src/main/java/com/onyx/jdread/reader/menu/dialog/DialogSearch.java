@@ -333,7 +333,6 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         public void OnNext(final List<ReaderSelection> results, int page) {
             updateSearchingText(page);
             if (results == null || results.size() < 1) {
-                binding.getDialogSearchModel().setIsEmpty(true);
                 return;
             }
             binding.getDialogSearchModel().setIsEmpty(false);
@@ -354,6 +353,11 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
             hideLoadingLayout();
             ReaderEpdHelper.applyGCUpdate(binding.searchRecyclerView);
             finishSearchTips();
+            if(searchList.size() <= 0){
+                binding.getDialogSearchModel().setIsEmpty(true);
+            }else{
+                binding.getDialogSearchModel().setIsEmpty(false);
+            }
         }
     };
 

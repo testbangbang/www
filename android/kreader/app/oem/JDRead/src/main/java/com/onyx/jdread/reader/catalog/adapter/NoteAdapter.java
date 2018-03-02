@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 public class NoteAdapter extends PageAdapter<PageRecyclerView.ViewHolder, NoteModel, NoteModel> {
-    private static final int row = JDReadApplication.getInstance().getApplicationContext().getResources().getInteger(R.integer.book_info_dialog_note_row);
+    public static final int row = JDReadApplication.getInstance().getApplicationContext().getResources().getInteger(R.integer.book_info_dialog_note_row);
     private View.OnClickListener onClickListener;
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
