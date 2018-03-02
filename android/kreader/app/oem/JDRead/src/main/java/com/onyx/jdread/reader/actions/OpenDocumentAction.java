@@ -50,27 +50,11 @@ public class OpenDocumentAction extends BaseReaderAction {
         });
     }
 
-    private void openDocument(final ReaderDataHolder readerDataHolder, LoadDocumentOptionsRequest request) {
+    private void openDocument(final ReaderDataHolder readerDataHolder, final LoadDocumentOptionsRequest request) {
         final OpenDocumentRequest openDocumentRequest = new OpenDocumentRequest(readerDataHolder.getReader(),request.getDocumentOptions());
         OpenDocumentRequest.setAppContext(readerDataHolder.getAppContext());
         readerDataHolder.setDocumentOpeningState();
-        openDocumentRequest.execute(new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                if (dlgLoading != null) {
-                    dlgLoading.dismiss();
-                }
-                onDocumentOpened();
-            }
 
-            @Override
-            public void onError(Throwable throwable) {
-                if (dlgLoading != null) {
-                    dlgLoading.dismiss();
-                }
-                onDocumentFailed(readerDataHolder,throwable);
-            }
-        });
         dlgLoading = new DialogReaderLoading(activity, readerDataHolder.getBookName());
         dlgLoading.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -80,10 +64,30 @@ public class OpenDocumentAction extends BaseReaderAction {
             }
         });
         dlgLoading.show();
+
+        openDocumentRequest.execute(new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                if (openDocumentRequest.getAbort()) {
+                    dlgLoading.dismiss();
+                    return;
+                }
+                onDocumentOpened();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                dlgLoading.dismiss();
+                if (openDocumentRequest.getAbort()) {
+                    return;
+                }
+                onDocumentFailed(readerDataHolder,throwable);
+            }
+        });
     }
 
     private void onDocumentOpened() {
-        InitPageViewAction createPageViewAction = new InitPageViewAction();
+        InitPageViewAction createPageViewAction = new InitPageViewAction(dlgLoading);
         createPageViewAction.execute(readerDataHolder,null);
     }
 
