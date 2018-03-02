@@ -748,7 +748,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
     private void removeScribble(final PageInfo page, final int position) {
         PageInfo pageInfo = pageInfoMap.get(page);
         if (pageInfo != null) {
-            new ClearPageAction(Arrays.asList(new PageInfo[] { pageInfo })).execute(readerDataHolder, new BaseCallback() {
+            new ClearPageAction(Arrays.asList(new PageInfo[] { pageInfo }), false).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     getPageAdapter(currentTab).notifyItemRemoved(position);

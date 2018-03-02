@@ -825,7 +825,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (new Date().getTime() - lastActivated < 5000) {
             renderNoteShapes();
         } else {
-            new RenderStashShapesInBackgroundAction(getReaderDataHolder().getVisiblePages()).execute(getReaderDataHolder(), null);
+            new RenderStashShapesInBackgroundAction(getReaderDataHolder().getVisibleNotePages()).execute(getReaderDataHolder(), null);
         }
     }
 
