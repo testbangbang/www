@@ -8,6 +8,7 @@ import com.onyx.android.note.event.data.UpdateNoteDrawingArgsEvent;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.ResumeRawDrawingEvent;
 import com.onyx.android.sdk.note.request.CreateDocumentRequest;
+import com.onyx.android.sdk.pen.TouchHelper;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.scribble.data.DocumentOptionArgs;
 

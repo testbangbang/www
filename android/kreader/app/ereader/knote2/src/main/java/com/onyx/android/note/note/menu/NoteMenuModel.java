@@ -6,7 +6,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.note.NoteDataBundle;
+import com.onyx.android.note.action.ClearAllFreeShapesAction;
 import com.onyx.android.note.action.PenWidthChangeAction;
+import com.onyx.android.note.action.RedoAction;
+import com.onyx.android.note.action.UndoAction;
 import com.onyx.android.note.action.menu.ToggleTopMenuAction;
 import com.onyx.android.note.common.StrokeWidth;
 import com.onyx.android.note.common.base.BaseViewModel;
@@ -42,17 +45,27 @@ public class NoteMenuModel extends BaseViewModel {
     }
 
     public void onPenWidth1(View view) {
-        Log.d(TAG, "onPenWidth1: ");
         new PenWidthChangeAction(getNoteManager())
                 .setPenWidth(StrokeWidth.LIGHT.getWidth())
                 .execute(null);
     }
 
     public void onPenWidth2(View view) {
-        Log.d(TAG, "onPenWidth2: ");
         new PenWidthChangeAction(getNoteManager())
                 .setPenWidth(StrokeWidth.ULTRA_BOLD.getWidth())
                 .execute(null);
+    }
+
+    public void onRedo(View view) {
+        new RedoAction(getNoteManager(), false).execute(null);
+    }
+
+    public void onUndo(View view) {
+        new UndoAction(getNoteManager(), false).execute(null);
+    }
+
+    public void onErase(View view) {
+        new ClearAllFreeShapesAction(getNoteManager()).execute(null);
     }
 
     private NoteManager getNoteManager() {

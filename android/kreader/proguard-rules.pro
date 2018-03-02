@@ -24,6 +24,8 @@
 -dontnote com.fasterxml.**
 -dontnote com.google.**
 -dontnote javassist.**
+-dontnote io.reactivex.**
+-dontnote com.raizlabs.**
 -dontwarn javassist.**
 -dontnote org.nustaq.**
 -dontwarn org.nustaq.**

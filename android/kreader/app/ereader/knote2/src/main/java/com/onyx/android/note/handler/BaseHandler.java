@@ -6,7 +6,11 @@ import android.support.annotation.NonNull;
 import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.BeginRawDrawEvent;
+import com.onyx.android.sdk.note.event.BeginRawErasingEvent;
+import com.onyx.android.sdk.note.event.EndRawErasingEvent;
 import com.onyx.android.sdk.note.event.RawDrawingPointsReceivedEvent;
+import com.onyx.android.sdk.note.event.RawErasingPointMoveEvent;
+import com.onyx.android.sdk.note.event.RawErasingPointsReceived;
 import com.onyx.android.sdk.pen.data.TouchPoint;
 import com.onyx.android.sdk.pen.data.TouchPointList;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
@@ -50,14 +54,35 @@ public class BaseHandler {
     }
 
     @Subscribe
-    public void onBeginRawDraw(BeginRawDrawEvent event) {
+    public void beginRawDraw(BeginRawDrawEvent event) {
         onBeginRawDraw(event.shortcutDrawing, event.point);
     }
 
     @Subscribe
-    public void onRawDrawingPointsReceived(RawDrawingPointsReceivedEvent event) {
+    public void rawDrawingPointsReceived(RawDrawingPointsReceivedEvent event) {
         onRawDrawingPointsReceived(event.touchPointList);
     }
+
+    @Subscribe
+    public void beginRawErasing(BeginRawErasingEvent event) {
+        onBeginRawErasing(event.shortcutErasing, event.point);
+    }
+
+    @Subscribe
+    public void rawErasingPointMove(RawErasingPointMoveEvent event) {
+        onRawErasingPointMove(event.touchPoint);
+    }
+
+    @Subscribe
+    public void endRawErasing(EndRawErasingEvent event) {
+        onEndRawErasing(event.outLimitRegion, event.point);
+    }
+
+    @Subscribe
+    public void rawErasingPointsReceived(RawErasingPointsReceived event) {
+        onRawErasingPointsReceived(event.touchPointList);
+    }
+
 
     protected Shape createNewShape(int layoutType) {
         NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawDataHolder().getDrawingArgs();
@@ -71,4 +96,12 @@ public class BaseHandler {
     public void onBeginRawDraw(boolean shortcutDrawing, TouchPoint point) {}
 
     public void onRawDrawingPointsReceived(TouchPointList pointList) {}
+
+    public void onBeginRawErasing(boolean shortcutErasing, TouchPoint point) {}
+
+    public void onRawErasingPointMove(TouchPoint touchPoint) {}
+
+    public void onEndRawErasing(boolean outLimitRegion, TouchPoint point) {}
+
+    public void onRawErasingPointsReceived(TouchPointList pointList) {}
 }

@@ -18,6 +18,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:background="@android:color/white"
             android:onClick="@{model::onToggle}"
             style="@style/note_menu_text"
             android:id="@+id/expand"

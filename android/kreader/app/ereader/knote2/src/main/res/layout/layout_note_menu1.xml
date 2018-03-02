@@ -30,6 +30,10 @@
             android:onClick="@{model::onPenWidth2}"
             style="@style/note_menu_text"
             android:text="width2" />
-        
+
+        <TextView
+            android:onClick="@{model::onErase}"
+            style="@style/note_menu_text"
+            android:text="erase" />
     </LinearLayout>
 </layout>
