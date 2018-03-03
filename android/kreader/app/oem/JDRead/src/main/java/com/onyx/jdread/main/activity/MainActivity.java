@@ -219,8 +219,7 @@ public class MainActivity extends AppCompatActivity {
         if (currentFragment != null) {
             baseFragment.setBundle(currentFragment.getBundle());
         }
-        transaction.commitAllowingStateLoss();
-        transaction.replace(R.id.main_content_view, baseFragment);
+        transaction.replace(R.id.main_content_view, baseFragment).commitNowAllowingStateLoss();
         if (tabCheckedCount >= ResManager.getInteger(R.integer.refresh_count)) {
             EpdController.appliGcOnce();
             tabCheckedCount = 0;
