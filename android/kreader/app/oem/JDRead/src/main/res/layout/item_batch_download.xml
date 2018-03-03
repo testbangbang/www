@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data class="BatchDownloadItemBinding">
+
+        <variable
+            name="listBean"
+            type="com.onyx.jdread.shop.cloud.entity.jdbean.BatchDownloadResultBean.DataBean.ListBean" />
+
+        <import type="com.onyx.jdread.shop.utils.ViewHelper" />
+
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/item_batch_download_padding_bottom">
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rectangle_stroke_round"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{listBean.chapterCount}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_17" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_batch_download_price_margin_top"
+                android:text="@{@string/book_detail_yuedou_price(ViewHelper.getYueDouPrice(listBean.jd_price))}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
+
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+</layout>
