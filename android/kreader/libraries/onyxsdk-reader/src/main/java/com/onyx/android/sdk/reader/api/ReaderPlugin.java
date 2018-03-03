@@ -42,4 +42,9 @@ public interface ReaderPlugin {
      */
     public void clearAbortFlag();
 
+    /**
+     * special abort method to stop book loading
+     */
+    public void abortBookLoadingJob();
+
 }

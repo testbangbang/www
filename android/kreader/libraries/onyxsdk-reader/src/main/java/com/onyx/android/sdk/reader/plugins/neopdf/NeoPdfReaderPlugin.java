@@ -179,6 +179,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public void abortBookLoadingJob() {
+
+    }
+
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         return getPluginImpl().getTableOfContent(toc.getRootEntry());
     }
