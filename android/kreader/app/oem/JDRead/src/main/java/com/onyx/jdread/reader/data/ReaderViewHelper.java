@@ -337,7 +337,7 @@ public class ReaderViewHelper {
         }
         RectF end = rectangles.get(rectangles.size() - 1);
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_read_note);
-        canvas.drawBitmap(bitmap, end.right - ReaderConfig.SIGN_RIGHT_MARGIN, (end.top - bitmap.getHeight() / 2), null);
+        canvas.drawBitmap(bitmap, end.right - ReaderConfig.SIGN_RIGHT_MARGIN, (end.bottom - ReaderConfig.SIGN_BOTTOM_MARGIN), null);
     }
 
 

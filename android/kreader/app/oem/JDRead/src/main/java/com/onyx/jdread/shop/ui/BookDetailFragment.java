@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.ui;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.widget.TextView;
 
+import com.jingdong.app.reader.data.DrmTools;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -535,6 +537,7 @@ public class BookDetailFragment extends BaseFragment {
         DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
         securityInfo.setKey(detailBean.key);
         securityInfo.setRandom(detailBean.random);
+        securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
         documentInfo.setBookName(detailBean.name);
