@@ -2,6 +2,8 @@ package com.onyx.jdread.shop.cloud.entity.jdbean;
 
 import android.databinding.BaseObservable;
 
+import com.onyx.jdread.main.common.Constants;
+
 import java.util.List;
 
 /**
@@ -11,6 +13,7 @@ import java.util.List;
 public class BatchDownloadResultBean {
 
     public int result_code;
+    public String message;
     public DataBean data;
 
     public static class DataBean {
@@ -28,5 +31,9 @@ public class BatchDownloadResultBean {
             public float old_price;
             public List<String> ids;
         }
+    }
+
+    public boolean isSucceed() {
+        return result_code == Integer.valueOf(Constants.RESULT_CODE_SUCCESS);
     }
 }

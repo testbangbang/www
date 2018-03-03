@@ -49,11 +49,13 @@ import com.onyx.jdread.shop.action.BookDetailAction;
 import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.action.BookshelfInsertAction;
 import com.onyx.jdread.shop.action.DownloadAction;
+import com.onyx.jdread.shop.action.GetChapterGroupInfoAction;
 import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.MetadataQueryAction;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.BatchDownloadChaptersAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BatchDownloadResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
@@ -123,6 +125,7 @@ public class BookDetailFragment extends BaseFragment {
     private boolean hasAddToCart = false;
     private boolean shouldRefresh;
     private BookInfoDialog batchDownloadDialog;
+    private BookBatchDownloadViewModel batchDownloadViewModel;
 
     @Nullable
     @Override
@@ -530,7 +533,7 @@ public class BookDetailFragment extends BaseFragment {
     private void smoothDownload() {
 
         if (isaNetBook()) {
-            showBatchDownload();
+            getChapterGroupInfo();
             return;
         }
 
@@ -555,6 +558,27 @@ public class BookDetailFragment extends BaseFragment {
             showPayDialog(bookDetailBean.ebook_id);
             return;
         }
+    }
+
+    private void getChapterGroupInfo() {
+        GetChapterGroupInfoAction action = new GetChapterGroupInfoAction(ebookId, "");
+        action.setViewModel(getBookBatchDownloadViewModel());
+        action.execute(getShopDataBundle(), new RxCallback<GetChapterGroupInfoAction>() {
+            @Override
+            public void onNext(GetChapterGroupInfoAction action) {
+                BatchDownloadResultBean.DataBean data= getBookBatchDownloadViewModel().getDataBean();
+                if (data != null && data.list != null) {
+                    showBatchDownload();
+                }
+            }
+        });
+    }
+
+    private BookBatchDownloadViewModel getBookBatchDownloadViewModel() {
+        if (batchDownloadViewModel == null) {
+            batchDownloadViewModel = new BookBatchDownloadViewModel(getEventBus());
+        }
+        return batchDownloadViewModel;
     }
 
     private void downLoadWholeBook() {
@@ -704,8 +728,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
         LayoutBookBatchDownloadBinding batchDownloadBinding = LayoutBookBatchDownloadBinding.inflate(LayoutInflater.from(getActivity()), null, false);
-        BookBatchDownloadViewModel bookBatchDownloadViewModel = new BookBatchDownloadViewModel(getEventBus());
-        batchDownloadBinding.setViewModel(bookBatchDownloadViewModel);
+        batchDownloadBinding.setViewModel(getBookBatchDownloadViewModel());
         if (batchDownloadDialog == null) {
             batchDownloadDialog = new BookInfoDialog(JDReadApplication.getInstance());
             batchDownloadDialog.setView(batchDownloadBinding.getRoot());

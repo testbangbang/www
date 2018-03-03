@@ -517,4 +517,6 @@
     <string name="batch_download">batch download</string>
     <string name="book_batch_download_tip">1.The bulk purchase section automatically filters out the free chapters and the chapters you have purchased.\n2.After purchase, the system will automatically download all the chapters.</string>
     <string name="book_batch_download_buy_chapter">Chapter to buy</string>
+    <string name="book_batch_download_item_current_chapter">Current Chapter</string>
+    <string name="book_batch_download_item_after_chapter">After %d chapters</string>
 </resources>
