@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
     private ScreenStateReceive screenStateReceive;
     private int tabCheckedCount = 0;
     private boolean inSystemBar = false;
-    private boolean onPause = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -311,15 +310,11 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         DeviceUtils.setFullScreenOnResume(this, true);
         setFunctionAdapter(getFunctionBarRecycler());
-        onPause = false;
-        Log.e(TAG, "onResume: ============================");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        onPause = true;
-        Log.e(TAG, "onPause: ==================================");
     }
 
     @Override
