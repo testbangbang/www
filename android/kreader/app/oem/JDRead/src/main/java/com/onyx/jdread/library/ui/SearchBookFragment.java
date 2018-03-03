@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
@@ -322,7 +323,9 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void updateHotSearchView(List<String> hotWords, String defaultKeyword) {
-        hotSearchAdapter.setSearchHotWords(hotWords);
+        if (!CollectionUtils.isNullOrEmpty(hotWords)) {
+            hotSearchAdapter.setSearchHotWords(hotWords);
+        }
         if (!TextUtils.isEmpty(defaultKeyword)) {
             binding.searchView.setQueryHint(defaultKeyword);
         }
