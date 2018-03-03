@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
     private ScreenStateReceive screenStateReceive;
     private int tabCheckedCount = 0;
-    private boolean isSystemDown = false;
+    private boolean inSystemBar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -329,10 +329,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN && event.getY() < binding.mainSystemBar.getRoot().getHeight()) {
-            isSystemDown = true;
+            inSystemBar = true;
         }
 
-        if (event.getAction() == MotionEvent.ACTION_MOVE && isSystemDown) {
+        if (event.getAction() == MotionEvent.ACTION_MOVE && inSystemBar) {
             event.setAction(MotionEvent.ACTION_UP);
         }
         
