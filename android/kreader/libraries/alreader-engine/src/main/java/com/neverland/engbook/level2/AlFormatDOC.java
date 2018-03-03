@@ -325,7 +325,7 @@ public class AlFormatDOC extends AlFormat {
         char 	ch, ch1;
 
         for (int i = start_pos, j; i < stop_pos;) {
-            if (isAborted()) {
+            if (isBookLoadingAborted()) {
                 return;
             }
 
@@ -340,7 +340,7 @@ public class AlFormatDOC extends AlFormat {
             }
 
             for (j = 0; j < buf_cnt;) {
-                if (isAborted()) {
+                if (isBookLoadingAborted()) {
                     return;
                 }
 

@@ -55,6 +55,7 @@ public abstract class AlFormat {
     public static final int LEVEL2_MASK_FOR_LEVEL = 0xffff;
 
     private AtomicBoolean isAborted = new AtomicBoolean(false);
+    private AtomicBoolean isBookLoadingAborted = new AtomicBoolean(false);
 
     public long lastPageCount;
     public long lastCalcTime;
@@ -167,6 +168,14 @@ public abstract class AlFormat {
 
     public void setAborted(boolean abort) {
         isAborted.set(abort);
+    }
+
+    public boolean isBookLoadingAborted() {
+        return isBookLoadingAborted.get();
+    }
+
+    public void abortBookLoading() {
+        isBookLoadingAborted.set(true);
     }
 
     @Override
