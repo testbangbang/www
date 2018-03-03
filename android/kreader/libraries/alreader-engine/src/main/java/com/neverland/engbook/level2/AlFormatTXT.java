@@ -1,7 +1,5 @@
 package com.neverland.engbook.level2;
 
-import android.util.Log;
-
 import com.neverland.engbook.bookobj.FileBlockInfo;
 import com.neverland.engbook.bookobj.TxtParserHelp;
 import com.neverland.engbook.forpublic.AlBookOptions;
@@ -252,7 +250,7 @@ public class AlFormatTXT extends AlFormat {
 		//AlIntHolder jVal = new AlIntHolder(0);
 		
 		for (int i = start_pos; i < stop_posRequest;) {
-			if (isAborted()) {
+			if (isBookLoadingAborted()) {
 				return;
 			}
 
@@ -270,7 +268,7 @@ public class AlFormatTXT extends AlFormat {
 			}
 			
 			for (j = 0; j < buf_cnt;) {
-				if (isAborted()) {
+				if (isBookLoadingAborted()) {
 					return;
 				}
 
