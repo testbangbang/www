@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 public class BookmarkAdapter extends PageAdapter<PageRecyclerView.ViewHolder, BookmarkModel, BookmarkModel> {
-    private static final int row = JDReadApplication.getInstance().getApplicationContext().getResources().getInteger(R.integer.book_info_dialog_mark_row);
+    public static final int row = JDReadApplication.getInstance().getApplicationContext().getResources().getInteger(R.integer.book_info_dialog_mark_row);
     private View.OnClickListener onClickListener;
 
     public void setOnClickListener(View.OnClickListener onClickListener) {

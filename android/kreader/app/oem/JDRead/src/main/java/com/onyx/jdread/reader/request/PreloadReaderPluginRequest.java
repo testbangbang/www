@@ -3,12 +3,9 @@ package com.onyx.jdread.reader.request;
 import android.content.Context;
 import android.content.res.AssetManager;
 
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
-import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
-import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.data.Reader;
@@ -25,23 +22,26 @@ public class PreloadReaderPluginRequest extends ReaderBaseRequest {
     private static final String PRELOAD_BOOK_DIRECTORY = "/sdcard/.preload/";
     private static final String PRELOAD_BOOK_PATH = PRELOAD_BOOK_DIRECTORY + PRELOAD_BOOK_NAME;
 
+    public PreloadReaderPluginRequest() {
+        super(new Reader(null, getAppContext()));
+    }
+
     @Override
     public PreloadReaderPluginRequest call() throws Exception {
         final String path = ensureFileExist();
 
-        Reader reader = new Reader(null, getAppContext());
         final DocumentInfo documentInfo = new DocumentInfo();
         documentInfo.setBookPath(path);
 
         final BaseOptions options = new BaseOptions();
         final ReaderPluginOptionsImpl pluginOptions = new ReaderPluginOptionsImpl();
         pluginOptions.setSyncLoading(true);
-        reader.getReaderHelper().selectPlugin(getAppContext(), documentInfo, pluginOptions);
-        ReaderDocument document  = reader.getReaderHelper().openDocument(path, options, pluginOptions);
-        reader.getReaderHelper().saveReaderDocument(document, documentInfo);
-        reader.getReaderHelper().updateViewportSize(500, 500);
-        reader.getReaderHelper().gotoPosition(String.valueOf(0));
-        reader.getReaderHelper().closeDocument();
+        getReader().getReaderHelper().selectPlugin(getAppContext(), documentInfo, pluginOptions);
+        ReaderDocument document  = getReader().getReaderHelper().openDocument(path, options, pluginOptions);
+        getReader().getReaderHelper().saveReaderDocument(document, documentInfo);
+        getReader().getReaderHelper().updateViewportSize(500, 500);
+        getReader().getReaderHelper().gotoPosition(String.valueOf(0));
+        getReader().getReaderHelper().closeDocument();
         cleanup(path);
         return this;
     }

@@ -12,6 +12,8 @@ import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.event.CheckPicToScreenSaversEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -31,10 +33,11 @@ public class ScreenSaversModel extends Observable {
         public final ObservableField<String> picPath = new ObservableField<>();
         public final ObservableField<String> name = new ObservableField<>();
         public final ObservableBoolean isChecked = new ObservableBoolean(false);
+        public List<String> pics = new ArrayList<>();
 
-        public void onClick(){
-            if (!isChecked.get()){
-                SettingBundle.getInstance().getEventBus().post(new CheckPicToScreenSaversEvent(picPath.get()));
+        public void onClick() {
+            if (!isChecked.get()) {
+                SettingBundle.getInstance().getEventBus().post(new CheckPicToScreenSaversEvent(name.get(), pics));
             }
         }
     }

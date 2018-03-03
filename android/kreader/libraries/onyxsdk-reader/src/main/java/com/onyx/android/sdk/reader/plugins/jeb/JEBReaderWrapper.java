@@ -193,7 +193,7 @@ public class JEBReaderWrapper {
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
-        engineOptions.chinezeFormatting = true;
+        engineOptions.chinezeSpecial = true;
         engineOptions.drawLinkInternal = false;
         engineOptions.externalBitmap = new AlBitmap();
 
@@ -470,7 +470,7 @@ public class JEBReaderWrapper {
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         AlBookProperties properties = bookEng.getBookProperties(true);
-        if (properties.content == null) {
+        if (properties == null || properties.content == null) {
             return false;
         }
         buildTableOfContentTree(toc.getRootEntry(), 0, properties.content, 0);

@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookAllCategoryBinding;
@@ -76,7 +77,7 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     private void initData() {
-        currentType = TYPE_INDEX_ZERO;
+        changeCategorySelection(getCurCategoryLevelOneIndex());
         getCategoryData();
     }
 
@@ -90,13 +91,13 @@ public class AllCategoryFragment extends BaseFragment {
                 getAllCategoryViewModel().titleOne.set(titleList.get(Constants.SHOP_MAIN_INDEX_ZERO));
                 getAllCategoryViewModel().titleTwo.set(titleList.get(Constants.SHOP_MAIN_INDEX_ONE));
                 getAllCategoryViewModel().titleThree.set(titleList.get(Constants.SHOP_MAIN_INDEX_TWO));
-                changeData(Constants.SHOP_MAIN_INDEX_ZERO);
+                changeCategorySelection(getCurCategoryLevelOneIndex());
             }
         });
     }
 
     private void changeData(int index) {
-        if (categoryBeanLevelOneList.size() > index) {
+        if (CollectionUtils.getSize(categoryBeanLevelOneList) > index) {
             List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> categoryBeanLevelTwoList = categoryBeanLevelOneList.get(index).sub_category;
             setCategoryData(categoryBeanLevelTwoList);
         }
@@ -111,7 +112,7 @@ public class AllCategoryFragment extends BaseFragment {
                 getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems.subList(Constants.SHOP_MAIN_INDEX_ZERO, topCol));
             }
             updateContentView(getAllCategoryViewModel().getAllCategoryItems());
-            recyclerView.gotoPage(0);
+            gotoPage(getValidContentPage());
         }
     }
 
@@ -144,20 +145,21 @@ public class AllCategoryFragment extends BaseFragment {
                 }
             }
         });
-
-        AllCategoryTopAdapter topAdapter = new AllCategoryTopAdapter(getEventBus());
         topRecyclerView = allCategoryBinding.recyclerViewCategoryTop;
         topRecyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        topRecyclerView.setAdapter(topAdapter);
+        topRecyclerView.setAdapter(new AllCategoryTopAdapter(getEventBus()));
         allCategoryBinding.setCategoryViewModel(getAllCategoryViewModel());
+        initPageIndicator(getAllCategoryViewModel().getAllCategoryItems());
     }
 
     private void initPageIndicator(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> resultBean) {
-        int size = 0;
-        if (resultBean != null) {
-            size = resultBean.size();
-        }
-        paginator.resize(row, col, size);
+        paginator.resize(row, col, CollectionUtils.getSize(resultBean));
+        paginator.setCurrentPage(getValidContentPage());
+        getAllCategoryViewModel().setTotalPage(paginator.pages());
+    }
+
+    private void updatePageIndicator(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> resultBean) {
+        paginator.resize(row, col, CollectionUtils.getSize(resultBean));
         getAllCategoryViewModel().setTotalPage(paginator.pages());
         setCurrentPage(paginator.getCurrentPage());
     }
@@ -167,11 +169,26 @@ public class AllCategoryFragment extends BaseFragment {
             return;
         }
         recyclerView.getAdapter().notifyDataSetChanged();
-        initPageIndicator(resultBean);
+        updatePageIndicator(resultBean);
+    }
+
+    private void gotoPage(int page) {
+        if (recyclerView == null) {
+            return;
+        }
+        recyclerView.gotoPage(page);
     }
 
     private void setCurrentPage(int currentPage) {
         getAllCategoryViewModel().setCurrentPage(currentPage + Constants.PAGE_STEP);
+    }
+
+    private int getCurrentPage() {
+        int page = getAllCategoryViewModel().getCurrentPage() - Constants.PAGE_STEP;
+        if (page < 0) {
+            page = 0;
+        }
+        return page;
     }
 
     private ShopDataBundle getShopDataBundle() {
@@ -211,29 +228,47 @@ public class AllCategoryFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryTitleOneClick(CategoryTitleOneClick event) {
-        if (currentType != TYPE_INDEX_ZERO) {
-            currentType = TYPE_INDEX_ZERO;
-            changeData(Constants.SHOP_MAIN_INDEX_ZERO);
-            changeCategoryButtonState();
-        }
+        onCategoryTitleClick(TYPE_INDEX_ZERO);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryTitleTwoClick(CategoryTitleTwoClick event) {
-        if (currentType != TYPE_INDEX_ONE) {
-            currentType = TYPE_INDEX_ONE;
-            changeData(Constants.SHOP_MAIN_INDEX_ONE);
-            changeCategoryButtonState();
-        }
+        onCategoryTitleClick(TYPE_INDEX_ONE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryTitleThreeClick(CategoryTitleThreeClick event) {
-        if (currentType != TYPE_INDEX_TWO) {
-            currentType = TYPE_INDEX_TWO;
-            changeData(Constants.SHOP_MAIN_INDEX_TWO);
-            changeCategoryButtonState();
+        onCategoryTitleClick(TYPE_INDEX_TWO);
+    }
+
+    private void onCategoryTitleClick(int typeIndex) {
+        if (currentType != typeIndex) {
+            resetCurrentPage();
+            changeCategorySelection(typeIndex);
         }
+    }
+
+    private void changeCategorySelection(int typeIndex) {
+        currentType = typeIndex;
+        changeCategoryButtonState();
+        changeData(getShopMainIndex(typeIndex));
+    }
+
+    private int getShopMainIndex(int typeIndex) {
+        switch (typeIndex) {
+            case TYPE_INDEX_ZERO:
+                return Constants.SHOP_MAIN_INDEX_ZERO;
+            case TYPE_INDEX_ONE:
+                return Constants.SHOP_MAIN_INDEX_ONE;
+            case TYPE_INDEX_TWO:
+                return Constants.SHOP_MAIN_INDEX_TWO;
+        }
+        return Constants.SHOP_MAIN_INDEX_ZERO;
+    }
+
+    private void resetCurrentPage() {
+        getAllCategoryViewModel().setCurrentPage(0);
+        paginator.setCurrentPage(0);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -248,6 +283,19 @@ public class AllCategoryFragment extends BaseFragment {
             JDPreferenceManager.setStringValue(Constants.SP_KEY_CATEGORY_NAME, categoryBean.name);
             getViewEventCallBack().gotoView(CategoryBookListFragment.class.getName());
         }
+    }
+
+    private int getCurCategoryLevelOneIndex() {
+        if (CollectionUtils.isNullOrEmpty(categoryBeanLevelOneList)) {
+            return 0;
+        }
+        int catId = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, 0);
+        for (int i = 0; i < categoryBeanLevelOneList.size(); i++) {
+            if (catId == categoryBeanLevelOneList.get(i).id) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public void saveCurCategoryLevelOneCateId(int index) {
@@ -280,5 +328,13 @@ public class AllCategoryFragment extends BaseFragment {
     public void onDetach() {
         super.onDetach();
         hideLoadingDialog();
+    }
+
+    private int getValidContentPage() {
+        int page = getCurrentPage();
+        if (page >= paginator.pages()) {
+            return 0;
+        }
+        return page;
     }
 }

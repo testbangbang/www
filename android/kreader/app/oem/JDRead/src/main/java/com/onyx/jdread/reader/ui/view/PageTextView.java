@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Layout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -22,12 +23,9 @@ public class PageTextView extends AppCompatTextView {
     private boolean canTouchPageTurning = true;
     private int currentPageNumber = 0;
     private CharSequence srcContent = null;
-    private int pageNum;
     private int totalPageNumber = 0;
     private int page[];
     private OnPagingListener onPagingListener;
-    private boolean isLastPage = false;
-    private boolean isFirstPage = false;
 
     public interface OnPagingListener {
         void onPageChange(int currentPage, int totalPage);
@@ -53,8 +51,6 @@ public class PageTextView extends AppCompatTextView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         resize();
-        isFirstPage = true;
-        onPageChange(0);
     }
 
     public int resize() {
@@ -66,6 +62,11 @@ public class PageTextView extends AppCompatTextView {
         CharSequence newContent = oldContent.subSequence(0, getCharNum());
         setText(newContent);
         return oldContent.length() - newContent.length();
+    }
+
+    public void reset(String srcContent){
+        getPage();
+        this.srcContent = srcContent;
     }
 
     public int getCharNum() {
@@ -106,51 +107,29 @@ public class PageTextView extends AppCompatTextView {
     }
 
     public void prevPage() {
-        if (isFirstPage) {
-            currentPageNumber = pageNum;
-            isFirstPage = false;
-            isLastPage = true;
+        currentPageNumber--;
+        if(currentPageNumber < 0){
+            currentPageNumber = totalPageNumber - 1;
         }
-        int start = 0;
-        if (currentPageNumber - 1 >= 0) {
-            currentPageNumber--;
-            start = page[currentPageNumber];
-            setText(srcContent.subSequence(start, srcContent.length()));
-            onPageChange(currentPageNumber);
-        } else {
-            start = 0;
-            gotoFirstPage(start);
-        }
+
+        int start = page[currentPageNumber];
+        setText(srcContent.subSequence(start, srcContent.length()));
+        onPageChange(currentPageNumber);
     }
 
     private void gotoFirstPage(int start) {
-        isFirstPage = true;
         setText(srcContent.subSequence(start, srcContent.length()));
         onPageChange(0);
     }
 
     public void nextPage() {
-        if (isLastPage) {
+        currentPageNumber++;
+        if(currentPageNumber >= totalPageNumber){
             currentPageNumber = 0;
-            isFirstPage = true;
-            isLastPage = false;
-            gotoFirstPage(0);
-            return;
         }
-        int start = 0;
-        if (currentPageNumber + 1 < pageNum) {
-            currentPageNumber++;
-            start = page[currentPageNumber];
-            setText(srcContent.subSequence(start, srcContent.length()));
-            onPageChange(currentPageNumber);
-        } else {
-            isLastPage = true;
-            start = page[pageNum - 1];
-            if (start < srcContent.length()) {
-                setText(srcContent.subSequence(start, srcContent.length()));
-            }
-            onPageChange(pageNum);
-        }
+        int start = page[currentPageNumber];
+        setText(srcContent.subSequence(start, srcContent.length()));
+        onPageChange(currentPageNumber);
     }
 
     public int getCurrentPageNumber() {
@@ -174,21 +153,28 @@ public class PageTextView extends AppCompatTextView {
     public int[] getPage() {
         int count = getLineCount();
         int pCount = getPageLineCount(this);
-        totalPageNumber = pageNum = count / pCount;
+        totalPageNumber = count / pCount;
         if (count % pCount != 0) {
             totalPageNumber += 1;
         }
-        page = new int[pageNum];
-        for (int i = 0; i < pageNum; i++) {
-            page[i] = getLayout().getLineEnd((i + 1) * pCount - 1);
+        page = new int[totalPageNumber];
+        page[0] = 0;
+        for (int i = 0; i < totalPageNumber - 1; i++) {
+            page[i + 1] = getLayout().getLineEnd((i + 1) * pCount - 1);
         }
+        onPageChange(0);
         return page;
     }
 
     private int getPageLineCount(TextView view) {
         int h = view.getBottom() - view.getTop() - view.getPaddingTop();
         int firstH = getLineHeight(0, view);
-        int otherH = getLineHeight(1, view);
+        int otherH = 0;
+        if(getLineCount() > 1) {
+            otherH = getLineHeight(1, view);
+        }else{
+            otherH = 1;
+        }
         return (h - firstH) / otherH;
     }
 

@@ -213,7 +213,7 @@
     <string name="reader_traditional">繁体</string>
     <string name="reader_simplified">简体</string>
     <string name="reader_font_size">字号</string>
-    <string name="reader_format">版式</string>
+    <string name="reader_format">设置</string>
     <string name="reader_adaptive">自适应</string>
     <string name="reader_customize">自定义</string>
     <string name="reader_line_spacing">行间距</string>
@@ -373,7 +373,7 @@
     <string name="reader_edit">编辑</string>
     <string name="reader_save">完成</string>
     <string name="reader_original">原文</string>
-    <string name="reader_changes">有修改</string>
+    <string name="reader_changes">已编辑</string>
     <string name="source_language">源语言:</string>
     <string name="simplified_chinese">简体中文</string>
     <string name="reader_target_language">目标语言:</string>
@@ -454,7 +454,7 @@
     <string name="quit_wifi_pass_book">已退出WiFi传书</string>
     <string name="wifi_pass_book_failed">传书失败</string>
     <string name="wifi_pass_book_failed_network_exception">网络异常,传书失败</string>
-    <string name="empty_library_prompt">暂无图书, 请去 我的书店 下载</string>
+    <string name="empty_library_prompt">暂无图书, 请去 我的图书 下载</string>
     <string name="forgot_psw">忘记密码</string>
     <string name="dialog_pay_order_book_price">价格: %1$d阅豆</string>
     <string name="dialog_pay_order_cur_balance">当前余额: %1$d阅豆/%2$d代金券</string>
@@ -484,6 +484,9 @@
     <string name="receive_fail">领取失败</string>
     <string name="low_power_reminder">电量过低,请及时充电</string>
     <string name="input_error">搜索关键字中不能包含标点符号</string>
+    <string name="dialog_password_text_password">密码</string>
+    <string name="show_password">显示密码</string>
+    <string name="preload_loading">正在初始化主界面请稍等...</string>
     <string name="batch_download">批量下载</string>
     <string name="book_batch_download_tip">1.批量购买章节时会自动过滤掉免费章节和您已经购买的章节。\n2.购买后系统会自动下载所购全部章节。</string>
     <string name="book_batch_download_buy_chapter">章节购买</string>

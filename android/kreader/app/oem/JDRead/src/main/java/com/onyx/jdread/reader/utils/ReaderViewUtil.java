@@ -69,10 +69,6 @@ public class ReaderViewUtil {
     public static String trim(String input) {
         if (StringUtils.isNotBlank(input)) {
             input = input.trim();
-            input = input.replace("\u0032", "");
-            input = input.replace("\\u0032", "");
-            input = input.replaceAll("\\u0032", ""); // removes NUL chars
-            input = input.replaceAll("\\\\u0032", ""); // removes backslash+u0000
         }
         return input;
     }

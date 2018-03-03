@@ -333,7 +333,6 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         public void OnNext(final List<ReaderSelection> results, int page) {
             updateSearchingText(page);
             if (results == null || results.size() < 1) {
-                binding.getDialogSearchModel().setIsEmpty(true);
                 return;
             }
             binding.getDialogSearchModel().setIsEmpty(false);
@@ -354,6 +353,11 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
             hideLoadingLayout();
             ReaderEpdHelper.applyGCUpdate(binding.searchRecyclerView);
             finishSearchTips();
+            if(searchList.size() <= 0){
+                binding.getDialogSearchModel().setIsEmpty(true);
+            }else{
+                binding.getDialogSearchModel().setIsEmpty(false);
+            }
         }
     };
 
@@ -370,16 +374,14 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
 
     private void mergeSearchList() {
         int maxCount = nextRequestPage * searchRows;
+        if (!readerDataHolder.supportSearchByPage()) {
+            // if doc not support search by page, then we have to show all search results
+            maxCount = searchList.size();
+        }
         if (showSearchList.size() < searchList.size()) {
             for (int i = showSearchList.size(); i < maxCount && i < searchList.size(); i++) {
                 showSearchList.add(searchList.get(i));
             }
-        }
-    }
-
-    private void stopSearch() {
-        if (searchContentAction != null) {
-            searchContentAction.stopSearch();
         }
     }
 
@@ -594,6 +596,14 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         }
 
         return content;
+    }
+
+    @Override
+    public void stopSearch() {
+        if (searchContentAction != null) {
+            searchContentAction.stopSearch();
+        }
+        hideLoadingLayout();
     }
 
     @Override

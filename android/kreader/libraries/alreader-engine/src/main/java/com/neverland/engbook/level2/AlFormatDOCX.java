@@ -7,12 +7,10 @@ import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level1.AlFilesDocx;
 import com.neverland.engbook.level1.AlOneZIPRecord;
-import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 import com.neverland.engbook.util.InternalFunc;
 
 import java.util.HashMap;
@@ -65,21 +63,18 @@ public class AlFormatDOCX extends AlAXML {
     }
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
+
         xml_mode = true;
         ident = "DOCX";
 
-        aFiles = myParent;
 
         docx_type = isDOCX_XML(aFiles);
 
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
             aFiles.needUnpackData();
 
-        preference = pref;
-        styles = stl;
-
-        size = 0;
         active_file = UNKNOWN_FILE_SOURCE_NUM;
         active_type = AlOneZIPRecord.SPECIAL_UNKNOWN;
 
@@ -89,7 +84,7 @@ public class AlFormatDOCX extends AlAXML {
         allState.state_parser = STATE_XML_SKIP;
         allState.incSkipped();
 
-        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_DOCX);
+        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_DOCX, pref.cssSupportLevel);
         //if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
             cssStyles.disableExternal = true;
 

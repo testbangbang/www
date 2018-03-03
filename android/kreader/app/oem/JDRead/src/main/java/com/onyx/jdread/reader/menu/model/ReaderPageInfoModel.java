@@ -18,6 +18,7 @@ import com.onyx.jdread.reader.menu.actions.GetTableOfContentAction;
 import com.onyx.jdread.reader.menu.event.GotoPageEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemNextChapterEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuItemPreviousChapterEvent;
+import com.onyx.jdread.reader.menu.event.UpdateProgressEvent;
 import com.onyx.jdread.reader.menu.request.GetTableOfContentRequest;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
@@ -64,7 +65,7 @@ public class ReaderPageInfoModel {
     }
 
     public void setBookName(String bookName) {
-        this.bookName.set(bookName);
+        this.bookName.set(bookName.trim());
     }
 
     public ObservableField<String> getReadProgress() {
@@ -228,6 +229,11 @@ public class ReaderPageInfoModel {
             return;
         }
         int page = (int) object;
-        new GotoPositionAction(page).execute(readerDataHolder, null);
+        new GotoPositionAction(page).execute(readerDataHolder, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                readerDataHolder.getEventBus().post(new UpdateProgressEvent());
+            }
+        });
     }
 }

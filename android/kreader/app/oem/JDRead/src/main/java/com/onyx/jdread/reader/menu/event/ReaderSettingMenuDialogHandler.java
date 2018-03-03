@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.menu.event;
 
 import android.util.Log;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -87,12 +88,27 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingMenuItemNextChapterEvent(ReaderSettingMenuItemNextChapterEvent event) {
-        new NextPageAction().execute(readerDataHolder,null);
+        new NextPageAction().execute(readerDataHolder, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                readerDataHolder.getEventBus().post(new UpdateProgressEvent());
+            }
+        });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateProgressEvent(UpdateProgressEvent event){
+        new UpdatePageInfoAction(binding, readerDataHolder.getReaderViewInfo(),true).execute(readerDataHolder,null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingMenuItemPreviousChapterEvent(ReaderSettingMenuItemPreviousChapterEvent event) {
-        new PrevPageAction().execute(readerDataHolder,null);
+        new PrevPageAction().execute(readerDataHolder, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                readerDataHolder.getEventBus().post(new UpdateProgressEvent());
+            }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

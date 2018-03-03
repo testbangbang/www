@@ -21,14 +21,19 @@ import com.onyx.jdread.reader.menu.common.ReaderConfig;
  */
 
 public class InitFirstPageViewRequest extends ReaderBaseRequest {
-    private Reader reader;
     private int width;
     private int height;
     private GammaInfo gammaInfo;
     private SettingInfo settingInfo;
 
     public InitFirstPageViewRequest(Reader reader) {
-        this.reader = reader;
+        super(reader);
+    }
+
+    @Override
+    public void setAbort(boolean abort) {
+        super.setAbort(abort);
+        getReader().getReaderHelper().getPlugin().abortBookLoadingJob();
     }
 
     @Override
@@ -36,8 +41,8 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         updateView();
         initPosition();
         restoreReaderTextStyle();
-        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
-        updateSetting(reader);
+        getReader().getReaderViewHelper().updatePageView(getReader(), getReaderUserDataInfo(), getReaderViewInfo());
+        updateSetting(getReader());
         return this;
     }
 
@@ -76,14 +81,14 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private void updateView() throws Exception {
-        width = reader.getReaderViewHelper().getContentWidth();
-        height = reader.getReaderViewHelper().getContentHeight();
-        reader.getReaderHelper().updateViewportSize(width, height);
+        width = getReader().getReaderViewHelper().getContentWidth();
+        height = getReader().getReaderViewHelper().getContentHeight();
+        getReader().getReaderHelper().updateViewportSize(width, height);
     }
 
     private void initPosition() throws Exception {
-        String bookPath = reader.getDocumentInfo().getBookPath();
-        String position = reader.getReaderHelper().getDocumentOptions().getCurrentPage();
+        String bookPath = getReader().getDocumentInfo().getBookPath();
+        String position = getReader().getReaderHelper().getDocumentOptions().getCurrentPage();
         if(StringUtils.isNotBlank(position)){
             int pagePosition = PagePositionUtils.getPosition(position);
             if(pagePosition < 0){
@@ -91,14 +96,14 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
             }
         }
         if (StringUtils.isNullOrEmpty(position)) {
-            position = reader.getReaderHelper().getNavigator().getInitPosition();
+            position = getReader().getReaderHelper().getNavigator().getInitPosition();
         }
-        reader.getReaderHelper().gotoPosition(position);
-        restoreScale(reader, position);
+        getReader().getReaderHelper().gotoPosition(position);
+        restoreScale(getReader(), position);
     }
 
     private void restoreReaderTextStyle() throws ReaderException {
-        BaseOptions baseOptions = reader.getReaderHelper().getDocumentOptions();
+        BaseOptions baseOptions = getReader().getReaderHelper().getDocumentOptions();
         settingInfo = new SettingInfo();
         String fontFace = getFontFace();
         settingInfo.settingType = ReaderConfig.getSettingType();
@@ -128,13 +133,13 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
             style = customStyle;
         }
 
-        reader.getReaderHelper().getReaderLayoutManager().setStyle(style);
+        getReader().getReaderHelper().getReaderLayoutManager().setStyle(style);
         restoreContrast();
         setChineseConvertType();
     }
 
     private void restoreReaderTextStyleTest() throws ReaderException {
-        BaseOptions baseOptions = reader.getReaderHelper().getDocumentOptions();
+        BaseOptions baseOptions = getReader().getReaderHelper().getDocumentOptions();
 
         String stringStyle = FileUtils.readContentOfFile("/sdcard/style.txt");
         JSONObject styleObj = JSON.parseObject(stringStyle);
@@ -153,7 +158,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         ReaderTextStyle.Percentage BottomMarin = ReaderTextStyle.Percentage.create(styleObj.getInteger("margin_bottom"));
 
         ReaderTextStyle style = ReaderTextStyle.create(fontFace, spUnit, lineSpacing, leftMargin, topMargin, rightMarin, BottomMarin, paragraphSpacing);
-        reader.getReaderHelper().getReaderLayoutManager().setStyle(style);
+        getReader().getReaderHelper().getReaderLayoutManager().setStyle(style);
         restoreContrast();
         setChineseConvertType();
     }
@@ -169,13 +174,13 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private void restoreContrast() {
         gammaInfo = new GammaInfo();
         gammaInfo.setEmboldenLevel(JDPreferenceManager.getIntValue(ReaderConfig.READER_EMBOLDENLEVEL_KEY, 0));
-        reader.getReaderHelper().getDocumentOptions().setEmboldenLevel(gammaInfo.getEmboldenLevel());
+        getReader().getReaderHelper().getDocumentOptions().setEmboldenLevel(gammaInfo.getEmboldenLevel());
     }
 
     private void setChineseConvertType() {
         ReaderChineseConvertType convertType = ReaderConfig.getReaderChineseConvertType();
-        reader.getReaderHelper().getDocumentOptions().setChineseConvertType(convertType);
-        reader.getReaderHelper().getRenderer().setChineseConvertType(convertType);
+        getReader().getReaderHelper().getDocumentOptions().setChineseConvertType(convertType);
+        getReader().getReaderHelper().getRenderer().setChineseConvertType(convertType);
     }
 
     public GammaInfo getGammaInfo() {

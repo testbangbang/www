@@ -28,7 +28,8 @@ public class AlParProperty {
 	public static final long			SL2_INDENT_MASK =			0x0003fc0000000000L;
 	public static final long			SL2_INDENT_SHIFT =			42L;
 	public static final long			SL2_INDENT_EM =				0x0002000000000000L;
-	public static final long			SL2_INDENT_DEFAULT =		SL2_INDENT_MASK;
+	//public static final long			SL2_INDENT_DEFAULT =		SL2_INDENT_MASK;
+	public static final long			SL2_INDENT_DEFAULTEM =		SL2_INDENT_EM | 0x0000100000000000L;
 
 	public static final long 			SL2_JUST_NONE =				0x0000000000000000L;
 	public static final long			SL2_JUST_LEFT =				0x0004000000000000L;

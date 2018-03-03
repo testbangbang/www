@@ -1,5 +1,6 @@
 package com.onyx.jdread.library.action;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.onyx.android.sdk.data.model.DataModel;
@@ -21,10 +22,10 @@ import java.util.Map;
 
 public class LibraryMoveToAction extends BaseAction<LibraryDataBundle> {
 
-    private Context context;
+    private Activity context;
     private Map<String, List<Metadata>> chosenItemsMap;
 
-    public LibraryMoveToAction(Context context) {
+    public LibraryMoveToAction(Activity context) {
         this.context = context;
     }
 

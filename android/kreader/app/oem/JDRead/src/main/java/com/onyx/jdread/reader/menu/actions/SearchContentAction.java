@@ -15,6 +15,7 @@ import java.util.List;
 
 public class SearchContentAction extends BaseReaderAction {
     private String query;
+    private SearchRequest request;
     private OnSearchContentCallBack onSearchContentCallBack;
     private boolean stopSearch = false;
     private int contentLength;
@@ -47,11 +48,12 @@ public class SearchContentAction extends BaseReaderAction {
 
     private void requestSearchBySequence(final ReaderDataHolder readerDataHolder, final int page, final String query) {
         if (page >= readerDataHolder.getPageCount() || stopSearch || currentCount >= searchCount) {
+            resetSearchRequest();
             onSearchContentCallBack.OnFinishedSearch(page);
             return;
         }
 
-        final SearchRequest request = new SearchRequest(PagePositionUtils.fromPageNumber(page), query, false, false, contentLength, readerDataHolder.getReader());
+        request = new SearchRequest(PagePositionUtils.fromPageNumber(page), query, false, false, contentLength, readerDataHolder.getReader());
 
         request.execute(new RxCallback() {
             @Override
@@ -65,6 +67,7 @@ public class SearchContentAction extends BaseReaderAction {
                 }
                 int next = page + 1;
                 if (!readerDataHolder.supportSearchByPage()) {
+                    resetSearchRequest();
                     onSearchContentCallBack.OnFinishedSearch(page);
                 } else {
                     requestSearchBySequence(readerDataHolder, next, query);
@@ -81,5 +84,15 @@ public class SearchContentAction extends BaseReaderAction {
     public void stopSearch() {
         currentCount = 0;
         stopSearch = true;
+        if (request != null) {
+            request.setAbort(true);
+        }
+    }
+
+    private void resetSearchRequest() {
+        if (request != null) {
+            request.setAbort(false);
+            request = null;
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.onyx.jdread.shop.ui;
 
-import android.content.DialogInterface;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -75,6 +76,7 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void initData() {
+        resetCurrentPage();
         ebookId = JDPreferenceManager.getLongValue(Constants.SP_KEY_BOOK_ID, 0);
         getBookComments();
     }
@@ -107,11 +109,26 @@ public class CommentFragment extends BaseFragment {
                 }
             }
         });
-
     }
 
     private void setCurrentPage(int currentPage) {
         getBookDetailViewModel().setCurrentPage(currentPage + PAGE_STEP);
+    }
+
+    private int getCurrentPage() {
+        return getBookDetailViewModel().getCurrentPage() - PAGE_STEP;
+    }
+
+    private void resetCurrentPage() {
+        getBookDetailViewModel().setCurrentPage(0);
+    }
+
+    private int getValidContentPage() {
+        int page = getCurrentPage();
+        if (page >= paginator.pages()) {
+            return 0;
+        }
+        return page;
     }
 
     private void initDividerItemDecoration() {
@@ -139,23 +156,36 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void getCommentsData() {
-        BookCommentListAction commnetListAction = new BookCommentListAction(ebookId, currentPage);
-        commnetListAction.execute(getShopDataBundle(), new RxCallback<BookCommentListAction>() {
+        BookCommentListAction commentListAction = new BookCommentListAction(ebookId, currentPage);
+        commentListAction.execute(getShopDataBundle(), new RxCallback<BookCommentListAction>() {
             @Override
             public void onNext(BookCommentListAction action) {
-                BookCommentsResultBean.DataBean dataBean = action.getbookCommentsBean();
-                if (dataBean != null && dataBean.comments != null) {
-                    initPageIndicator(dataBean);
-                }
+                updateContentView(action.getbookCommentsBean());
             }
         });
     }
 
+    private void updateContentView(BookCommentsResultBean.DataBean resultBean) {
+        if (recyclerViewComments == null) {
+            return;
+        }
+        initPageIndicator(resultBean);
+        gotoPage(getValidContentPage());
+    }
+
     private void initPageIndicator(BookCommentsResultBean.DataBean resultBean) {
-        int size = resultBean.comments.size();
-        recyclerViewComments.resize(recyclerViewComments.getPageAdapter().getRowCount(), recyclerViewComments.getPageAdapter().getColumnCount(), size);
+        int size = resultBean == null ? 0 : CollectionUtils.getSize(resultBean.comments);
+        recyclerViewComments.resize(recyclerViewComments.getPageAdapter().getRowCount(),
+                recyclerViewComments.getPageAdapter().getColumnCount(), size);
         getBookDetailViewModel().setTotalPage(paginator.pages());
         setCurrentPage(paginator.getCurrentPage());
+    }
+
+    private void gotoPage(int page) {
+        if (recyclerViewComments == null) {
+            return;
+        }
+        recyclerViewComments.gotoPage(page);
     }
 
     public ShopDataBundle getShopDataBundle() {
@@ -164,6 +194,9 @@ public class CommentFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailTopBackEvent(TopBackEvent event) {
+        if (isInfoDialogShowing()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
@@ -230,14 +263,23 @@ public class CommentFragment extends BaseFragment {
                 dismissInfoDialog();
             }
         });
-        if (infoDialog != null && !infoDialog.isShowing()) {
-            infoDialog.show();
-        }
+        showInfoDialog(infoDialog);
     }
 
     private void dismissInfoDialog() {
         if (infoDialog != null && infoDialog.isShowing()) {
             infoDialog.dismiss();
+            infoDialog = null;
         }
+    }
+
+    private void showInfoDialog(Dialog dialog) {
+        if (dialog != null && !dialog.isShowing()) {
+            dialog.show();
+        }
+    }
+
+    private boolean isInfoDialogShowing() {
+        return infoDialog != null && infoDialog.isShowing();
     }
 }

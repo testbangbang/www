@@ -2,21 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dialog_loading_layout"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/border"
-    android:minHeight="@dimen/dialog_loading_min_height" >
+    android:layout_height="@dimen/dialog_loading_min_height"
+    android:background="@drawable/border">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <com.onyx.android.sdk.ui.OnyxProgressBar
+        <com.onyx.android.sdk.ui.view.OnyxProgressBar
             android:id="@+id/imageview_loading"
             android:layout_width="@dimen/dialog_loading_progressbar_width"
             android:layout_height="@dimen/dialog_loading_progressbar_width"
             android:layout_marginLeft="@dimen/dialog_loading_progressbar_padding_left"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/textview_message"
@@ -27,6 +27,22 @@
             android:padding="15dp"
             android:textColor="@android:color/black"
             android:textSize="@dimen/dialog_loading_text_size" />
+
+        <View
+            android:id="@+id/divider_line"
+            style="@style/single_line_Y_axis_View"
+            android:layout_width="1dp"
+            android:layout_toRightOf="@id/textview_message"/>
+
+        <ImageView
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/divider_line"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_dialog_loading_close"
+            android:background="@drawable/image_button_bg"
+            android:id="@+id/button_cancel" />
     </RelativeLayout>
 
 

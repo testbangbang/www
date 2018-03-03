@@ -4,7 +4,6 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
-import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -19,12 +18,11 @@ import java.util.Map;
  */
 
 public class AddAnnotationRequest extends ReaderBaseRequest {
-    private Reader reader;
     private Map<String, SelectionInfo> readerSelectionInfos;
     private String note;
 
     public AddAnnotationRequest(Reader reader, Map<String, SelectionInfo> readerSelectionInfos,String note) {
-        this.reader = reader;
+        super(reader);
         this.readerSelectionInfos = readerSelectionInfos;
         this.note = note;
     }
@@ -32,23 +30,23 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
     @Override
     public AddAnnotationRequest call() throws Exception {
         saveAnnotation();
-        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo());
-        updateSetting(reader);
+        getReader().getReaderViewHelper().updatePageView(getReader(), getReaderUserDataInfo(), getReaderViewInfo());
+        updateSetting(getReader());
         reloadAnnotation();
         return this;
     }
 
     private void reloadAnnotation(){
-        String displayName = reader.getReaderHelper().getPlugin().displayName();
-        String md5 = reader.getReaderHelper().getDocumentMd5();
+        String displayName = getReader().getReaderHelper().getPlugin().displayName();
+        String md5 = getReader().getReaderHelper().getDocumentMd5();
 
-        getReaderUserDataInfo().loadDocumentAnnotations(reader.getReaderHelper().getContext(), displayName, md5);
+        getReaderUserDataInfo().loadDocumentAnnotations(getReader().getReaderHelper().getContext(), displayName, md5);
     }
 
     private void saveAnnotation() {
         for (SelectionInfo readerSelectionInfo : readerSelectionInfos.values()) {
             ReaderSelection selection = readerSelectionInfo.getCurrentSelection();
-            Annotation annotation = createAnnotation(reader,readerSelectionInfo.pageInfo,
+            Annotation annotation = createAnnotation(getReader(),readerSelectionInfo.pageInfo,
                     selection.getStartPosition(), selection.getEndPosition(),
                     selection.getRectangles(), selection.getText(), note,readerSelectionInfo.pageInfo.getChapterName());
 

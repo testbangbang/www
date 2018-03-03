@@ -161,7 +161,10 @@ public abstract class AlAXML extends AlFormat {
             // kindle specific
             if (cssStyles != null && cssStyles.isKindle && !tag.ended && !tag.special) {
                 switch (tag.tag) {
-                    case AlFormatTag.TAG_P:
+					// don't insert nbsp characters for paragraph indentation,
+					// as we'll handle the indentation uniformly latter
+					// joy@onyx
+                    //case AlFormatTag.TAG_P:
                     case AlFormatTag.TAG_BLOCKQUOTE:
                     case AlFormatTag.TAG_DIV:
                     case AlFormatTag.TAG_SPAN:
@@ -686,9 +689,12 @@ public abstract class AlAXML extends AlFormat {
 		char 	ch, ch1;
 
 		for (i = start_pos; i < stop_posUsed;) {
-			
+				if (isBookLoadingAborted()) {
+				    return;
+				}
+
 				//Log.e("xml read pos ", Integer.toString(i));
-							
+
 				buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
 				if (i + buf_cnt > stop_posUsed) {
 					buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, stop_posUsed - i + 2);
@@ -702,6 +708,10 @@ public abstract class AlAXML extends AlFormat {
 
 				label_get_next_char:
 				for (j = 0; j < buf_cnt;) {
+					if (isBookLoadingAborted()) {
+						return;
+					}
+
 					allState.start_position = i + j;	
 
 					/*jVal.value = j;
@@ -833,6 +843,10 @@ public abstract class AlAXML extends AlFormat {
 
 					label_repeat_letter:
 					while (true) {
+						if (isBookLoadingAborted()) {
+							return;
+						}
+
 						switch (allState.state_parser) {
 							case STATE_XML_TEXT:
 								allState.start_position_par = allState.start_position;

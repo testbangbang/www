@@ -126,21 +126,16 @@ public class JEBFormatEPUB extends AlFormatBaseHTML {
     }
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
         xml_mode = true;
         ident = "JEB";
-
-        aFiles = myParent;
 
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
             needUnpackAfterAllRead = true;
 
-        preference = pref;
-        styles = stl;
-
         noUseCover = bookOptions.noUseCover;
         aFiles.applicationDirectory = bookOptions.applicationDirectory;
-        size = 0;
 
         autoCodePage = true;
         setCP(TAL_CODE_PAGES.CP65001);
@@ -154,7 +149,7 @@ public class JEBFormatEPUB extends AlFormatBaseHTML {
         toc_point = null;
         toc_section = -1;
 
-        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_EPUB);
+        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_EPUB, pref.cssSupportLevel);
         if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
             cssStyles.disableExternal = true;
 
@@ -304,6 +299,10 @@ public class JEBFormatEPUB extends AlFormatBaseHTML {
             if (specialBuff.isAuthor) {
                 bookAuthors.add(specialBuff.buff.toString().trim());
                 specialBuff.isAuthor = false;
+            } else
+            if (specialBuff.isLang) {
+                bookLang = specialBuff.buff.toString().trim().toLowerCase();
+                specialBuff.isLang = false;
             } else
             if (specialBuff.isGenre) {
                 bookGenres.add(specialBuff.buff.toString().trim());
@@ -721,6 +720,7 @@ public class JEBFormatEPUB extends AlFormatBaseHTML {
                     }
                 }
                 return true;
+            case AlFormatTag.TAG_LANGUAGE:
             case AlFormatTag.TAG_CREATOR:
             case AlFormatTag.TAG_TITLE:
                 if (tag.closed) {
@@ -729,6 +729,7 @@ public class JEBFormatEPUB extends AlFormatBaseHTML {
                     }
                 } else if (!tag.ended) {
                     if ((allState.description & AlStateLevel2.PAR_DESCRIPTION2) != 0) {
+                        specialBuff.isLang = tag.tag == AlFormatTag.TAG_LANGUAGE;
                         specialBuff.isBookTitle = tag.tag == AlFormatTag.TAG_TITLE;
                         specialBuff.isAuthor = tag.tag == AlFormatTag.TAG_CREATOR;
                         setSpecialText(true);

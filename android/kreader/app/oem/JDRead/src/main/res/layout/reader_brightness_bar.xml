@@ -25,19 +25,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/reader_brightness_bar_padding"
+            android:paddingTop="@dimen/reader_brightness_bar_padding">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/imagebtn_bg"
+                android:layout_width="@dimen/brightness_button_width"
+                android:layout_height="@dimen/brightness_button_height"
+                android:background="@drawable/rectangle_stroke_round"
+                android:gravity="center"
                 android:onClick="@{()->brightnessModel.closeBrightness()}"
-                android:padding="10dp"
                 android:text="@string/closed"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:textStyle="bold" />
 
             <RatingBar
                 android:id="@+id/ratingbar_light_settings"
@@ -50,18 +52,19 @@
                 android:max="@{brightnessModel.maxLight}"
                 android:numStars="@{brightnessModel.numStar}"
                 android:progress="@{brightnessModel.progress}"
-                android:progressDrawable="@drawable/light_bar_big_step"
+                android:progressDrawable="@drawable/light_bar_step"
                 android:stepSize="1.0" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/imagebtn_bg"
+                android:layout_width="@dimen/brightness_button_width"
+                android:layout_height="@dimen/brightness_button_height"
+                android:background="@drawable/rectangle_stroke_round"
+                android:gravity="center"
                 android:onClick="@{()->brightnessModel.maxBrightness()}"
-                android:padding="10dp"
                 android:text="@string/brightest_brightness"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </LinearLayout>

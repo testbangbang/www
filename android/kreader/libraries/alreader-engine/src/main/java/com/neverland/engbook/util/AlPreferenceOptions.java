@@ -1,5 +1,6 @@
 package com.neverland.engbook.util;
 
+import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_TABLEMODE;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_PAGES_COUNT;
 
@@ -12,7 +13,8 @@ public class AlPreferenceOptions {
 	public boolean		sectionNewScreen;
 	//public boolean		styleSumm;
 	public int			u301mode;	
-	public boolean		chinezeFormatting;	
+	public boolean		chinezeSpecial;
+	public boolean		useChinezeSpecial;
 	public boolean		picture_need_tune;
 	//public int			picture_need_tuneK;
 	public boolean		justify;
@@ -34,4 +36,6 @@ public class AlPreferenceOptions {
 	public int			value2CalcMargins = 0;
 	public boolean 		onlyPopupFootnote = false;
 	public TAL_TABLEMODE tableMode;
+	public int			cssSupportLevel = AlEngineOptions.CSS_SUPPORT_ALL;
+	public final AlDeafultTextParameters defTextPar = new AlDeafultTextParameters();
 }

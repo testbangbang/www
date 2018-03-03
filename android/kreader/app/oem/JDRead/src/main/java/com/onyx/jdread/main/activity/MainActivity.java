@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
     private ScreenStateReceive screenStateReceive;
     private int tabCheckedCount = 0;
+    private boolean inSystemBar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFunctionAdapter(PageRecyclerView functionBarRecycler) {
-        if(functionBarRecycler == null){
+        if (functionBarRecycler == null) {
             return;
         }
         boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
@@ -171,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private PageRecyclerView getFunctionBarRecycler() {
-        if(binding == null){
+        if (binding == null) {
             return null;
         }
         return binding.mainFunctionBar.functionBarRecycler;
@@ -217,8 +219,7 @@ public class MainActivity extends AppCompatActivity {
         if (currentFragment != null) {
             baseFragment.setBundle(currentFragment.getBundle());
         }
-        transaction.commitAllowingStateLoss();
-        transaction.replace(R.id.main_content_view, baseFragment);
+        transaction.replace(R.id.main_content_view, baseFragment).commitNowAllowingStateLoss();
         if (tabCheckedCount >= ResManager.getInteger(R.integer.refresh_count)) {
             EpdController.appliGcOnce();
             tabCheckedCount = 0;
@@ -324,6 +325,22 @@ public class MainActivity extends AppCompatActivity {
         return super.dispatchKeyEvent(event);
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            inSystemBar = event.getY() < binding.mainSystemBar.getRoot().getHeight();
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_MOVE && inSystemBar) {
+            event.setAction(MotionEvent.ACTION_UP);
+        }
+
+        if (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
+            event.setAction(MotionEvent.ACTION_CANCEL);
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
         switchCurrentFragment(event.childClassName);
@@ -391,6 +408,9 @@ public class MainActivity extends AppCompatActivity {
             JDReadApplication.getInstance().setLogin(true);
             clearInput();
             LoginHelper.dismissUserLoginDialog();
+            if (StringUtils.isNotBlank(event.getTargetView())) {
+                childViewEventCallBack.gotoView(event.getTargetView());
+            }
         } else {
             ToastUtil.showToast(this, event.getMessage());
         }

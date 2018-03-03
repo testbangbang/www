@@ -482,7 +482,7 @@
     <dimen name="search_button_margin">5dp</dimen>
     <dimen name="dialog_search_list_item_text_size">18sp</dimen>
     <dimen name="dialog_search_list_item_page_text_size">20sp</dimen>
-    <dimen name="book_comment_contetn_margin_top">8dp</dimen>
+    <dimen name="book_comment_content_margin_top">8dp</dimen>
     <dimen name="title_bar_title_max_width">180dp</dimen>
     <dimen name="search_history_recycler_height">120dp</dimen>
     <dimen name="search_history_item_padding_left">23dp</dimen>
@@ -537,6 +537,8 @@
     <dimen name="dialog_single_manage_title_width">243dp</dimen>
     <dimen name="brightness_button_width">54dp</dimen>
     <dimen name="brightness_button_height">27dp</dimen>
+    <dimen name="reader_brightness_bar_padding">25dp</dimen>
+    <dimen name="search_line_width">2px</dimen>
     <dimen name="book_batch_download_recycle_view_height">260dp</dimen>
     <dimen name="book_batch_download_recycle_view_margin_top">40dp</dimen>
     <dimen name="book_batch_download_tip_margin_top">0dp</dimen>

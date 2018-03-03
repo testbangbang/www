@@ -82,6 +82,14 @@ public class AlReaderWrapper {
         initDefaultTextStyle();
     }
 
+    public void setAborted(boolean abort) {
+        bookEng.setAborted(abort);
+    }
+
+    public void abortBookLoading() {
+        bookEng.abortBookLoading();
+    }
+
     private void initDefaultTextStyle() {
         ReaderTextStyle style = ReaderTextStyle.defaultStyle();
         setStyle(style);
@@ -126,7 +134,7 @@ public class AlReaderWrapper {
 
     public Bitmap readCover() {
         AlBookProperties bookProperties = bookEng.getBookProperties(false);
-        if (bookProperties.coverImageData == null) {
+        if (bookProperties == null || bookProperties.coverImageData == null) {
             return null;
         }
         try {
@@ -139,6 +147,9 @@ public class AlReaderWrapper {
 
     public String metadataString(final String tag) {
         AlBookProperties bookProperties = bookEng.getBookProperties(false);
+        if (bookProperties == null) {
+            return "";
+        }
         if ("Title".compareTo(tag) == 0) {
             return bookProperties.title;
         } else if ("Author".compareTo(tag) == 0) {
@@ -196,7 +207,7 @@ public class AlReaderWrapper {
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
-        engineOptions.chinezeFormatting = true;
+        engineOptions.chinezeSpecial = true;
         engineOptions.drawLinkInternal = false;
         engineOptions.externalBitmap = new AlBitmap();
 
@@ -489,7 +500,7 @@ public class AlReaderWrapper {
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         AlBookProperties properties = bookEng.getBookProperties(true);
-        if (properties.content == null) {
+        if (properties == null || properties.content == null) {
             return false;
         }
         buildTableOfContentTree(toc.getRootEntry(), 0, properties.content, 0);
