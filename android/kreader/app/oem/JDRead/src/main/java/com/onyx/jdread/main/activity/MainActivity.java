@@ -29,7 +29,6 @@ import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
-import com.onyx.jdread.main.action.BaseAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -90,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
     private ScreenStateReceive screenStateReceive;
     private int tabCheckedCount = 0;
+    private boolean inSystemBar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,8 +219,7 @@ public class MainActivity extends AppCompatActivity {
         if (currentFragment != null) {
             baseFragment.setBundle(currentFragment.getBundle());
         }
-        transaction.commitAllowingStateLoss();
-        transaction.replace(R.id.main_content_view, baseFragment);
+        transaction.replace(R.id.main_content_view, baseFragment).commitNowAllowingStateLoss();
         if (tabCheckedCount >= ResManager.getInteger(R.integer.refresh_count)) {
             EpdController.appliGcOnce();
             tabCheckedCount = 0;
@@ -328,6 +327,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN && event.getY() < binding.mainSystemBar.getRoot().getHeight()) {
+            inSystemBar = true;
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_MOVE && inSystemBar) {
+            event.setAction(MotionEvent.ACTION_UP);
+        }
+
         if (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
             event.setAction(MotionEvent.ACTION_CANCEL);
         }
@@ -401,6 +408,9 @@ public class MainActivity extends AppCompatActivity {
             JDReadApplication.getInstance().setLogin(true);
             clearInput();
             LoginHelper.dismissUserLoginDialog();
+            if (StringUtils.isNotBlank(event.getTargetView())) {
+                childViewEventCallBack.gotoView(event.getTargetView());
+            }
         } else {
             ToastUtil.showToast(this, event.getMessage());
         }

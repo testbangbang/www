@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentViewAllBinding;
@@ -22,7 +23,7 @@ import com.onyx.jdread.shop.action.BookModelAction;
 import com.onyx.jdread.shop.action.BookRankListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
@@ -34,6 +35,8 @@ import com.onyx.jdread.shop.model.ViewAllViewModel;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 /**
  * Created by jackdeng on 2017/12/30.
@@ -67,8 +70,7 @@ public class ViewAllBooksFragment extends BaseFragment {
     }
 
     private void initData() {
-        String title = JDPreferenceManager.getStringValue(Constants.SP_KEY_SUBJECT_NAME, "");
-        getTitleBarViewModel().leftText = title;
+        getTitleBarViewModel().leftText = JDPreferenceManager.getStringValue(Constants.SP_KEY_SUBJECT_NAME, "");
         int bookListType = JDPreferenceManager.getIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, -1);
         if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_MODEL) {
             modelId = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
@@ -86,8 +88,7 @@ public class ViewAllBooksFragment extends BaseFragment {
             @Override
             public void onNext(BookModelAction booksAction) {
                 BookModelBooksResultBean bookModelResultBean = booksAction.getBookModelResultBean();
-                getViewAllViewModel().setBookList(bookModelResultBean.data.items);
-                updateContentView();
+                updateContentView(bookModelResultBean.data.items);
             }
         });
     }
@@ -97,9 +98,7 @@ public class ViewAllBooksFragment extends BaseFragment {
         booksAction.execute(getShopDataBundle(), new RxCallback<BookRankListAction>() {
             @Override
             public void onNext(BookRankListAction booksAction) {
-                RecommendListResultBean bookModelResultBean = booksAction.getBookModelResultBean();
-                getViewAllViewModel().setBookList(bookModelResultBean.data);
-                updateContentView();
+                updateContentView(booksAction.getBookModelResultBean().data);
             }
         });
     }
@@ -117,34 +116,57 @@ public class ViewAllBooksFragment extends BaseFragment {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
                 if (paginator != null) {
-                    int curPage = paginator.getCurrentPage();
-                    setCurrentPage(curPage);
+                    setCurrentPage(paginator.getCurrentPage());
                 }
             }
         });
         viewAllBinding.setViewModel(getViewAllViewModel());
+        initPageIndicator();
     }
 
     private void initPageIndicator() {
-        int size = 0;
-        if (getViewAllViewModel().getBookList() != null) {
-            size = getViewAllViewModel().getBookList().size();
-        }
-        paginator.resize(row, col, size);
+        paginator.resize(row, col, CollectionUtils.getSize(getViewAllViewModel().getBookList()));
         getViewAllViewModel().setTotalPage(paginator.pages());
-        setCurrentPage(paginator.getCurrentPage());
+        setCurrentPage(getValidContentPage());
     }
 
-    private void updateContentView() {
+    private void updatePageIndicator(int itemSize, int currentPage) {
+        paginator.resize(row, col, itemSize);
+        getViewAllViewModel().setTotalPage(paginator.pages());
+        setCurrentPage(currentPage);
+    }
+
+    private void gotoPage(int page) {
         if (recyclerView == null) {
             return;
         }
+        recyclerView.gotoPage(page);
+    }
+
+    private void updateContentView(List<ResultBookBean> bookList) {
+        if (recyclerView == null) {
+            return;
+        }
+        getViewAllViewModel().setBookList(bookList);
         recyclerView.getAdapter().notifyDataSetChanged();
-        initPageIndicator();
+        updatePageIndicator(CollectionUtils.getSize(bookList), getValidContentPage());
+        gotoPage(getValidContentPage());
     }
 
     private void setCurrentPage(int currentPage) {
         getViewAllViewModel().setCurrentPage(currentPage + Constants.PAGE_STEP);
+    }
+
+    private int getCurrentPage() {
+        return getViewAllViewModel().getCurrentPage() - Constants.PAGE_STEP;
+    }
+
+    private int getValidContentPage() {
+        int page = getCurrentPage();
+        if (page >= paginator.pages()) {
+            return 0;
+        }
+        return page;
     }
 
     private ShopDataBundle getShopDataBundle() {

@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.actions;
 import android.content.Intent;
 import android.os.Build;
 
+import com.jingdong.app.reader.data.DrmTools;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -73,9 +74,9 @@ public class ParserOpenDocumentInfoAction extends BaseReaderAction {
         if(intent.hasExtra(DocumentInfo.SecurityInfo.RANDOM)){
             documentInfo.getSecurityInfo().setRandom(intent.getStringExtra(DocumentInfo.SecurityInfo.RANDOM));
         }
-
-        documentInfo.getSecurityInfo().setUuId(Build.SERIAL);
-
+        if(intent.hasExtra(DocumentInfo.SecurityInfo.UU_ID)){
+            documentInfo.getSecurityInfo().setUuId(intent.getStringExtra(DocumentInfo.SecurityInfo.UU_ID));
+        }
     }
 
     public DocumentInfo getDocumentInfo() {

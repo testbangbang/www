@@ -23,9 +23,9 @@ public class AllCategoryViewModel extends BaseObservable{
     private TitleBarViewModel titleBarViewModel;
     public final ObservableInt currentPosition = new ObservableInt();
     public final ObservableInt totalPage = new ObservableInt();
-    public final ObservableField<String> titleOne = new ObservableField();
-    public final ObservableField<String> titleTwo = new ObservableField();
-    public final ObservableField<String> titleThree = new ObservableField();
+    public final ObservableField<String> titleOne = new ObservableField<>();
+    public final ObservableField<String> titleTwo = new ObservableField<>();
+    public final ObservableField<String> titleThree = new ObservableField<>();
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems;
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> topCategoryItems;
     public CategoryBookListViewModel categoryBookListViewModel;
@@ -88,14 +88,18 @@ public class AllCategoryViewModel extends BaseObservable{
     }
 
     public void onTitleOneClick(){
-        getEventBus().post(new CategoryTitleOneClick());
+        postEvent(new CategoryTitleOneClick());
     }
 
     public void onTitleTwoClick(){
-        getEventBus().post(new CategoryTitleTwoClick());
+        postEvent(new CategoryTitleTwoClick());
     }
 
     public void onTitleThreeClick(){
-        getEventBus().post(new CategoryTitleThreeClick());
+        postEvent(new CategoryTitleThreeClick());
+    }
+
+    private void postEvent(Object event) {
+        getEventBus().post(event);
     }
 }

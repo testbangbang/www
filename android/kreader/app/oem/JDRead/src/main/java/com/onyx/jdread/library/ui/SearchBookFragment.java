@@ -57,6 +57,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * Created by hehai on 18-1-17.
@@ -291,6 +292,7 @@ public class SearchBookFragment extends BaseFragment {
         loadHotSearchKey();
         loadSearchHistory();
         checkView();
+        updateHotSearchView(searchBookModel.getHotWords(), searchBookModel.getDefaultHotWord());
     }
 
     private void loadSearchHistory() {
@@ -308,13 +310,22 @@ public class SearchBookFragment extends BaseFragment {
         searchHotWordAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                hotSearchAdapter.setSearchHotWords(searchHotWordAction.getHotWords());
-                String defaultKeyWord = searchHotWordAction.getDefaultKeyWord();
-                if (!TextUtils.isEmpty(defaultKeyWord)) {
-                    binding.searchView.setQueryHint(defaultKeyWord);
-                }
+                updateHotSearchResult(searchHotWordAction.getHotWords(), searchHotWordAction.getDefaultKeyWord());
             }
         });
+    }
+
+    private void updateHotSearchResult(List<String> hotWords, String defaultKeyword) {
+        searchBookModel.reAddHotWords(hotWords);
+        searchBookModel.setDefaultHotWord(defaultKeyword);
+        updateHotSearchView(hotWords, defaultKeyword);
+    }
+
+    private void updateHotSearchView(List<String> hotWords, String defaultKeyword) {
+        hotSearchAdapter.setSearchHotWords(hotWords);
+        if (!TextUtils.isEmpty(defaultKeyword)) {
+            binding.searchView.setQueryHint(defaultKeyword);
+        }
     }
 
     @Override

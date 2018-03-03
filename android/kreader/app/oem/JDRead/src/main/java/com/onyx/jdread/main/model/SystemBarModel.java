@@ -142,11 +142,11 @@ public class SystemBarModel extends Observable {
         public void onReceive(Context context, Intent intent) {
             if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 if (NetworkUtil.isWifiEnabled(context)) {
-                    wifiImageRes.set(NetworkUtil.isWiFiConnected(context) ? WIFI_SIGNAL_STRENGTH[level] : R.drawable.ic_qs_wifi);
+                    wifiImageRes.set(NetworkUtil.isWiFiConnected(context) ? WIFI_SIGNAL_STRENGTH[level] : 0);
                 }
             } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 if (NetworkUtil.isWifiEnabled(context)) {
-                    wifiImageRes.set(NetworkUtil.isWiFiConnected(context) ? WIFI_SIGNAL_STRENGTH[level] : R.drawable.ic_qs_wifi);
+                    wifiImageRes.set(NetworkUtil.isWiFiConnected(context) ? WIFI_SIGNAL_STRENGTH[level] : 0);
                 } else {
                     wifiImageRes.set(0);
                 }

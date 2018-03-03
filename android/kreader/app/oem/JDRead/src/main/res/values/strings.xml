@@ -513,7 +513,9 @@
     <string name="receive_fail">Receive failed</string>
     <string name="low_power_reminder">Low battery, please charge in time</string>
     <string name="input_error">The search key can not contain punctuation</string>
+    <string name="preload_loading">Loading...</string>
     <string name="banner">Banner</string>
     <string name="dialog_password_text_password">Password</string>
     <string name="show_password">Show the password</string>
+    <string name="standby_name_format">standby-%s.png</string>
 </resources>

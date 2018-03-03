@@ -25,6 +25,7 @@ import com.onyx.jdread.reader.event.WordTranslateResultEvent;
 import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.HighlightCursor;
 import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
+import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.setting.action.TranslateAction;
 import com.onyx.jdread.setting.model.SettingBundle;
 
@@ -89,10 +90,10 @@ public class SelectMenuModel {
         this.eventBus = eventBuss;
         this.binding = binding;
         this.selectMenuRootView = binding.getRoot();
-        this.binding.translateContentView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
+        this.binding.translateContentView.setOnPagingListener(new PageTextView.OnPagingListener() {
             @Override
-            public void onPageChanged(int totalPage, int curPage) {
-                updatePageNumber(totalPage,curPage);
+            public void onPageChange(int currentPage, int totalPage) {
+                updatePageNumber(totalPage,currentPage);
             }
         });
     }
@@ -259,7 +260,8 @@ public class SelectMenuModel {
     }
 
     public void updateTranslateResult(String result){
-        binding.translateContentView.loadData(result, "text/html; charset=UTF-8", null);
+        binding.translateContentView.setText(result);
+        binding.translateContentView.reset(result);
     }
 
     public float getLastX() {

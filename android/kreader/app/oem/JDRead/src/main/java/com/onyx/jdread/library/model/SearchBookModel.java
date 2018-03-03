@@ -8,6 +8,7 @@ import android.databinding.ObservableList;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.library.action.ClearSearchHistoryAction;
 import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
@@ -16,6 +17,8 @@ import com.onyx.jdread.library.event.SubmitSearchBookEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -29,6 +32,8 @@ public class SearchBookModel extends Observable {
     public final ObservableList<DataModel> searchHint = new ObservableArrayList<>();
     public final ObservableList<DataModel> searchResult = new ObservableArrayList<>();
     public final ObservableBoolean isInputting = new ObservableBoolean(false);
+    public final ObservableList<String> hotWords = new ObservableArrayList<>();
+    public final ObservableField<String> defaultHotWord = new ObservableField<>();
     public EventBus eventBus;
 
     public SearchBookModel(EventBus eventBus) {
@@ -54,5 +59,28 @@ public class SearchBookModel extends Observable {
 
     public boolean showResult() {
         return !isInputting.get() && StringUtils.isNotBlank(searchKey.get());
+    }
+
+    public void reAddHotWords(List<String> list) {
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            return;
+        }
+        hotWords.clear();
+        hotWords.addAll(list);
+    }
+
+    public List<String> getHotWords() {
+        if (hotWords.size() <= 0) {
+            return new ArrayList<>();
+        }
+        return hotWords.subList(0, hotWords.size());
+    }
+
+    public String getDefaultHotWord() {
+        return defaultHotWord.get();
+    }
+
+    public void setDefaultHotWord(String word) {
+        defaultHotWord.set(word);
     }
 }

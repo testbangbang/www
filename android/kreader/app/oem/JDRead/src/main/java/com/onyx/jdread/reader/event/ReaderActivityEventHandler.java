@@ -186,7 +186,17 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupLineationClickEvent(PopupLineationClickEvent event) {
-        new AddAnnotationAction("").execute(readerViewModel.getReaderDataHolder(), null);
+        new AddAnnotationAction("").execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                updatePageView();
+            }
+        });
+    }
+
+    private void updatePageView(){
+        UpdateViewPageAction action =new UpdateViewPageAction();
+        action.execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -235,7 +245,12 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAnnotationCopyEvent(AnnotationCopyEvent event) {
-        new AnnotationCopyToClipboardAction(event.getAnnotation()).execute(readerViewModel.getReaderDataHolder(), null);
+        new AnnotationCopyToClipboardAction(event.getAnnotation()).execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                updatePageView();
+            }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
