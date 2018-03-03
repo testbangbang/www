@@ -161,6 +161,13 @@ public class CategoryBookListFragment extends BaseFragment {
         recyclerViewCategoryList.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewCategoryList.setAdapter(categoryBookListAdapter);
         recyclerViewCategoryList.addItemDecoration(itemDecoration);
+        categoryBookListBinding.subjectListShowVip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
+                showOrCloseAllCatButton();
+            }
+        });
     }
 
     private void initPageIndicator() {
