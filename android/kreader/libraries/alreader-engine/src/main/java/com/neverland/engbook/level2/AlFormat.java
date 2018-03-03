@@ -55,6 +55,7 @@ public abstract class AlFormat {
     public static final int LEVEL2_MASK_FOR_LEVEL = 0xffff;
 
     private AtomicBoolean isAborted = new AtomicBoolean(false);
+    private AtomicBoolean isBookLoadingAborted = new AtomicBoolean(false);
 
     public long lastPageCount;
     public long lastCalcTime;
@@ -167,6 +168,14 @@ public abstract class AlFormat {
 
     public void setAborted(boolean abort) {
         isAborted.set(abort);
+    }
+
+    public boolean isBookLoadingAborted() {
+        return isBookLoadingAborted.get();
+    }
+
+    public void abortBookLoading() {
+        isBookLoadingAborted.set(true);
     }
 
     @Override
@@ -1859,6 +1868,10 @@ public abstract class AlFormat {
 
         int i, correct = 0;
         for (i = 0; i < sFind.length(); i++) {
+            if (isAborted()) {
+                return TAL_NOTIFY_RESULT.ERROR;
+            }
+
             char ch = sFind.charAt(i);
 
             if (ch == '?') {
@@ -1895,6 +1908,10 @@ public abstract class AlFormat {
         getParagraph(ap);
         j = pos - ap.start;
         for (i = 0; i < j; i++) {
+            if (isAborted()) {
+                return TAL_NOTIFY_RESULT.ERROR;
+            }
+
             if (stored_par.data[i] < 0x20) {
                 switch (stored_par.data[i]) {
                     case AlStyles.CHAR_ROWS_S:
@@ -1912,6 +1929,10 @@ public abstract class AlFormat {
         }
 
         while (true) {
+            if (isAborted()) {
+                return TAL_NOTIFY_RESULT.ERROR;
+            }
+
             if (i == 0) {
                 if (Character.getType(stackChar[(fPos - 1) & InternalConst.FIND_MASK]) != Character.SPACE_SEPARATOR) {
                     stackChar[fPos & InternalConst.FIND_MASK] = ' ';
@@ -1920,6 +1941,10 @@ public abstract class AlFormat {
                 }
             }
             for (; i < stored_par.length; i++) {
+                if (isAborted()) {
+                    return TAL_NOTIFY_RESULT.ERROR;
+                }
+
                 ch = stored_par.data[i];
 
                 if (ch < 0x20) {
@@ -1972,6 +1997,10 @@ public abstract class AlFormat {
 
                 if (ch == lastChar) {
                     for (j = 0; j <= fLen; j++) {
+                        if (isAborted()) {
+                            return TAL_NOTIFY_RESULT.ERROR;
+                        }
+
                         if (stackChar[(fPos - j) & InternalConst.FIND_MASK] != sFind.charAt(fLen - j) && sFind.charAt(fLen - j) != AlStyles.CHAR_ANYCHAR) {
                             break;
                         } else if (j == fLen) {

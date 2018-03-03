@@ -37,7 +37,11 @@ public abstract class ReaderBaseRequest extends RxRequest {
     @Override
     public void setAbort(boolean abort) {
         super.setAbort(abort);
-        reader.getReaderHelper().getPlugin().abortCurrentJob();
+        if (abort) {
+            reader.getReaderHelper().getPlugin().abortCurrentJob();
+        } else {
+            reader.getReaderHelper().getPlugin().clearAbortFlag();
+        }
     }
 
     public final ReaderUserDataInfo getReaderUserDataInfo() {

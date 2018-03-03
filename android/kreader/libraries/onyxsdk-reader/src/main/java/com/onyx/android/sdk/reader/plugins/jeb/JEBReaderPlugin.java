@@ -189,6 +189,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
     public void clearAbortFlag() {
     }
 
+    @Override
+    public void abortBookLoadingJob() {
+
+    }
+
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         return getPluginImpl().readTableOfContent(toc);
     }

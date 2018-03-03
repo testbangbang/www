@@ -689,7 +689,7 @@ public abstract class AlAXML extends AlFormat {
 		char 	ch, ch1;
 
 		for (i = start_pos; i < stop_posUsed;) {
-				if (isAborted()) {
+				if (isBookLoadingAborted()) {
 				    return;
 				}
 
@@ -708,7 +708,7 @@ public abstract class AlAXML extends AlFormat {
 
 				label_get_next_char:
 				for (j = 0; j < buf_cnt;) {
-					if (isAborted()) {
+					if (isBookLoadingAborted()) {
 						return;
 					}
 
@@ -843,7 +843,7 @@ public abstract class AlAXML extends AlFormat {
 
 					label_repeat_letter:
 					while (true) {
-						if (isAborted()) {
+						if (isBookLoadingAborted()) {
 							return;
 						}
 
