@@ -56,7 +56,7 @@ public class DialogSearchHandler {
 
     @Subscribe
     public void onCloseSearchClickEvent(CloseSearchClickEvent event){
-//        stopSearch();
+        viewCallBack.stopSearch();
     }
 
     @Subscribe

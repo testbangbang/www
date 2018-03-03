@@ -15,6 +15,7 @@ import java.util.List;
 
 public class SearchContentAction extends BaseReaderAction {
     private String query;
+    private SearchRequest request;
     private OnSearchContentCallBack onSearchContentCallBack;
     private boolean stopSearch = false;
     private int contentLength;
@@ -51,7 +52,7 @@ public class SearchContentAction extends BaseReaderAction {
             return;
         }
 
-        final SearchRequest request = new SearchRequest(PagePositionUtils.fromPageNumber(page), query, false, false, contentLength, readerDataHolder.getReader());
+        request = new SearchRequest(PagePositionUtils.fromPageNumber(page), query, false, false, contentLength, readerDataHolder.getReader());
 
         request.execute(new RxCallback() {
             @Override
@@ -81,5 +82,8 @@ public class SearchContentAction extends BaseReaderAction {
     public void stopSearch() {
         currentCount = 0;
         stopSearch = true;
+        if (request != null) {
+            request.setAbort(true);
+        }
     }
 }
