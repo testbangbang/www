@@ -460,6 +460,8 @@
     <dimen name="item_experience_image_height">120dp</dimen>
     <dimen name="reader_select_menu_width">475dp</dimen>
     <dimen name="reader_select_menu_translate_height">320dp</dimen>
+    <dimen name="reader_single_line_dialog_height">65dp</dimen>
+    <dimen name="reader_multi_line_dialog_height">320dp</dimen>
     <dimen name="shop_search_book_edit_text_view_bg_height">6dp</dimen>
     <dimen name="layout_title_bar_title_margin_left">15dp</dimen>
     <dimen name="book_info_line_space">4dp</dimen>
@@ -538,4 +540,5 @@
     <dimen name="brightness_button_width">54dp</dimen>
     <dimen name="brightness_button_height">27dp</dimen>
     <dimen name="reader_brightness_bar_padding">25dp</dimen>
+    <dimen name="single_dialog_margin_left">20dp</dimen>
 </resources>

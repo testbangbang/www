@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.data.PageInfo;
@@ -30,12 +31,18 @@ import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewConfig;
+import com.onyx.jdread.reader.common.SignNoteInfo;
 import com.onyx.jdread.reader.epd.ReaderEpdHelper;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.util.TimeUtils;
 
 import java.util.List;
+
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.SIGN_INFLATE_BOTTOM;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.SIGN_INFLATE_LEFT;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.SIGN_INFLATE_RIGHT;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.SIGN_INFLATE_TOP;
 
 /**
  * Created by huxiaomao on 2017/12/22.
@@ -298,6 +305,8 @@ public class ReaderViewHelper {
         if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
             updateAnnotationRectangles(reader,readerViewInfo,readerUserDataInfo);
         }
+
+        readerUserDataInfo.cleanNoteRects();
         for (PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
             if (readerUserDataInfo.hasPageAnnotations(pageInfo)) {
                 List<PageAnnotation> annotations = readerUserDataInfo.getPageAnnotations(pageInfo);
@@ -305,7 +314,8 @@ public class ReaderViewHelper {
                     drawHighlightRectangles(reader.getReaderHelper().getContext(), canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
                     String note = annotation.getAnnotation().getNote();
                     if (!StringUtils.isNullOrEmpty(note)){
-                        drawHighLightSign(reader.getReaderHelper().getContext(), canvas, paint, annotation.getRectangles());
+                        drawHighLightSign(reader.getReaderHelper().getContext(), canvas, paint, annotation.getRectangles(),
+                                readerUserDataInfo,note);
                     }
                 }
             }
@@ -331,13 +341,25 @@ public class ReaderViewHelper {
         }
     }
 
-    private void drawHighLightSign(Context context, Canvas canvas, Paint paint, List<RectF> rectangles){
+    private void drawHighLightSign(Context context, Canvas canvas, Paint paint, List<RectF> rectangles,ReaderUserDataInfo readerUserDataInfo,
+                                   String note){
         if (rectangles == null || rectangles.size() < 1) {
             return;
         }
-        RectF end = rectangles.get(rectangles.size() - 1);
+        RectF end = new RectF(rectangles.get(rectangles.size() - 1));
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_read_note);
-        canvas.drawBitmap(bitmap, end.right - ReaderConfig.SIGN_RIGHT_MARGIN, (end.bottom - ReaderConfig.SIGN_BOTTOM_MARGIN), null);
+        end.right -= ReaderConfig.SIGN_RIGHT_MARGIN;
+        end.bottom -= ReaderConfig.SIGN_BOTTOM_MARGIN;
+        canvas.drawBitmap(bitmap, end.right, end.bottom, null);
+
+        end.left = end.right;
+        end.right = end.left + bitmap.getWidth();
+        RectUtils.inflateRect(end,SIGN_INFLATE_LEFT,SIGN_INFLATE_TOP,SIGN_INFLATE_RIGHT,SIGN_INFLATE_BOTTOM);
+        SignNoteInfo signNoteInfo = new SignNoteInfo();
+        signNoteInfo.note = note;
+        signNoteInfo.rect = end;
+
+        readerUserDataInfo.addNoteRect(signNoteInfo);
     }
 
 

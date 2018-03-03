@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.handler;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -18,9 +19,11 @@ import com.onyx.jdread.reader.actions.CleanSelectionAction;
 import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
+import com.onyx.jdread.reader.common.SignNoteInfo;
 import com.onyx.jdread.reader.data.PageTurningDetector;
 import com.onyx.jdread.reader.data.PageTurningDirection;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.ShowSignMessageEvent;
 
 import java.util.List;
 import java.util.Map;
@@ -321,6 +324,9 @@ public class BaseHandler {
     }
 
     public boolean tryHitTest(float x, float y) {
+        if(trySign(readerDataHolder,x,y)){
+            return true;
+        }
         if (tryAnnotation(readerDataHolder,x, y)) {
             return true;
         }
@@ -349,6 +355,16 @@ public class BaseHandler {
         return false;
     }
 
+    public boolean trySign(ReaderDataHolder readerDataHolder,final float x,final float y){
+        for(SignNoteInfo signNoteInfo : readerDataHolder.getReaderUserDataInfo().getNoteRects()){
+            if(signNoteInfo.rect.contains(x,y)){
+                showSignMessage(signNoteInfo);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean tryPageLink(ReaderDataHolder readerDataHolder, final float x, final float y) {
         for (PageInfo pageInfo : readerDataHolder.getReaderViewInfo().getVisiblePages()) {
             if (!readerDataHolder.getReaderUserDataInfo().hasPageLinks(pageInfo)) {
@@ -365,6 +381,10 @@ public class BaseHandler {
             }
         }
         return false;
+    }
+
+    public void showSignMessage(SignNoteInfo signNoteInfo){
+        readerDataHolder.getEventBus().post(new ShowSignMessageEvent(signNoteInfo));
     }
 
     private void showEditAnnotationMenu(PageAnnotation annotations) {
