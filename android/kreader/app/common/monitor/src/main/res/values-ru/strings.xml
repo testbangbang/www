@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Монитор</string>
+    <string name="exit_confirm">Выйти из режима монитора?</string>
+    <string name="connect_error">Соединение не удалось. Проверьте кабель HDMI, пожалуйста!</string>
+    <string name="full_refresh_interval_time">Интервал полного обновления экрана(мин.)</string>
+    <string name="charge_remind_message">В режиме монитора потребляется больше энергии. Рекомендуется использовать зарядное устройство 5V/2A</string>
+</resources>
+
+
+

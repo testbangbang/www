@@ -259,17 +259,7 @@
         <activity android:name=".ui.settings.ScribbleBarSettingsActivity" android:excludeFromRecents="true"/>
         <activity android:name=".ui.settings.ControlSettingsActivity" android:excludeFromRecents="true"/>
         <activity android:name=".ui.settings.StatusBarSettingsActivity" android:excludeFromRecents="true"/>
-        <activity
-            android:exported="true"
-            android:label="@string/statistics_shortcut_name"
-            android:icon="@drawable/statistics_icon"
-            android:name=".ui.statistics.StatisticsActivity"
-            android:excludeFromRecents="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".ui.statistics.StatisticsActivity" android:excludeFromRecents="true"/>
 
         <service android:name="com.onyx.kreader.ui.ReaderMetadataService"
                  android:process=":metadataservice"
