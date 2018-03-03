@@ -385,12 +385,6 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         }
     }
 
-    private void stopSearch() {
-        if (searchContentAction != null) {
-            searchContentAction.stopSearch();
-        }
-    }
-
     private void hideSoftInputWindow() {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(binding.editViewSearch.getWindowToken(), 0);
@@ -602,6 +596,14 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         }
 
         return content;
+    }
+
+    @Override
+    public void stopSearch() {
+        if (searchContentAction != null) {
+            searchContentAction.stopSearch();
+        }
+        hideLoadingLayout();
     }
 
     @Override

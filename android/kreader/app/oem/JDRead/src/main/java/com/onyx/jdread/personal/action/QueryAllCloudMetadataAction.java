@@ -1,8 +1,7 @@
 package com.onyx.jdread.personal.action;
 
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalBookBean;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.local.RxRequestAllCloudMetadataQuery;
@@ -14,7 +13,7 @@ import java.util.List;
  */
 
 public class QueryAllCloudMetadataAction extends BaseAction {
-    private List<Metadata> metadatas;
+    private List<PersonalBookBean> books;
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
@@ -22,7 +21,7 @@ public class QueryAllCloudMetadataAction extends BaseAction {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                metadatas = rq.getMetadatas();
+                books = rq.getDatas();
                 RxCallback.invokeNext(rxCallback, QueryAllCloudMetadataAction.this);
             }
 
@@ -34,7 +33,7 @@ public class QueryAllCloudMetadataAction extends BaseAction {
         });
     }
 
-    public List<Metadata> getMetadatas() {
-        return metadatas;
+    public List<PersonalBookBean> getBooks() {
+        return books;
     }
 }

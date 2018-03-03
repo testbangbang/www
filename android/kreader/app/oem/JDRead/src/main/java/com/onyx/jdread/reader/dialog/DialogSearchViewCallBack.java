@@ -8,6 +8,7 @@ import android.app.Dialog;
 
 public interface DialogSearchViewCallBack {
     Dialog getContent();
+    void stopSearch();
     void nextSearchResult();
     void preSearchResult();
     void searchBack();

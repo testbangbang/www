@@ -22,12 +22,12 @@
     <dimen name="wifi_view_item_margin_left">10dp</dimen>
     <dimen name="wifi_view_item_margin_top">5dp</dimen>
     <dimen name="wifi_view_item_margin_right">10dp</dimen>
-    <dimen name="setting_device_detail_height">189dp</dimen>
+    <dimen name="setting_device_detail_height">208dp</dimen>
     <dimen name="setting_device_detail_margin_left">100dp</dimen>
     <dimen name="setting_device_detail_describe_margin_left">31dp</dimen>
     <dimen name="setting_device_detail_describe_margin_top">22dp</dimen>
     <dimen name="setting_device_detail_describe_height">90dp</dimen>
-    <dimen name="setting_device_detail_setting_height">360dp</dimen>
+    <dimen name="setting_device_detail_setting_height">340dp</dimen>
     <dimen name="setting_title_bar_padding">20dp</dimen>
     <dimen name="setting_title_bar_padding_left">10dp</dimen>
     <dimen name="setting_title_bar_switch_margin_right">46dp</dimen>
@@ -454,7 +454,7 @@
     <dimen name="top_menu_brightness_layout_height">90dp</dimen>
     <dimen name="top_menu_setting_layout_height">90dp</dimen>
     <dimen name="top_menu_drawable_padding">10dp</dimen>
-    <dimen name="item_setting_name_margin_top">5dp</dimen>
+    <dimen name="item_setting_name_margin_top">8dp</dimen>
     <dimen name="item_personal_margin_top">8dp</dimen>
     <dimen name="item_experience_image_width">100dp</dimen>
     <dimen name="item_experience_image_height">120dp</dimen>
@@ -484,7 +484,7 @@
     <dimen name="search_button_margin">5dp</dimen>
     <dimen name="dialog_search_list_item_text_size">18sp</dimen>
     <dimen name="dialog_search_list_item_page_text_size">20sp</dimen>
-    <dimen name="book_comment_contetn_margin_top">8dp</dimen>
+    <dimen name="book_comment_content_margin_top">8dp</dimen>
     <dimen name="title_bar_title_max_width">180dp</dimen>
     <dimen name="search_history_recycler_height">120dp</dimen>
     <dimen name="search_history_item_padding_left">23dp</dimen>

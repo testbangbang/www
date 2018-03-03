@@ -169,6 +169,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public void abortBookLoadingJob() {
+
+    }
+
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         return false;
     }

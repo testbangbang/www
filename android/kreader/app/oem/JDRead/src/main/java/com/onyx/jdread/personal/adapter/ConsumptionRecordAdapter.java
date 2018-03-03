@@ -19,7 +19,12 @@ import java.util.List;
  */
 
 public class ConsumptionRecordAdapter extends PageRecyclerView.PageAdapter {
+    private boolean isTopUpRecord;
     private List<ConsumeRecordBean.DataBean> data;
+
+    public ConsumptionRecordAdapter(boolean isTopUpRecord) {
+        this.isTopUpRecord = isTopUpRecord;
+    }
 
     @Override
     public int getRowCount() {
@@ -45,7 +50,7 @@ public class ConsumptionRecordAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ConsumptionRecordViewHolder viewHolder = (ConsumptionRecordViewHolder) holder;
-        viewHolder.bindTo(data.get(position));
+        viewHolder.bindTo(data.get(position), isTopUpRecord);
     }
 
     public void setData(List<ConsumeRecordBean.DataBean> data) {
@@ -65,8 +70,9 @@ public class ConsumptionRecordAdapter extends PageRecyclerView.PageAdapter {
             return bind;
         }
 
-        public void bindTo(ConsumeRecordBean.DataBean bean) {
+        public void bindTo(ConsumeRecordBean.DataBean bean, boolean isTopUpRecord) {
             bind.setBean(bean);
+            bind.setIsTopUpRecord(isTopUpRecord);
             bind.executePendingBindings();
         }
     }

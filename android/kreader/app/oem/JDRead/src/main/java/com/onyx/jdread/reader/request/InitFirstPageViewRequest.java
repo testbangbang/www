@@ -31,6 +31,12 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     @Override
+    public void setAbort(boolean abort) {
+        super.setAbort(abort);
+        getReader().getReaderHelper().getPlugin().abortBookLoadingJob();
+    }
+
+    @Override
     public InitFirstPageViewRequest call() throws Exception {
         updateView();
         initPosition();

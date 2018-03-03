@@ -225,4 +225,11 @@ public class StringUtils {
         }
         return false;
     }
+
+    public static String getHtmlFormatString(String content) {
+        if (content == null) {
+            return null;
+        }
+        return content.replaceAll("\\<.*?>|\\n", "");
+    }
 }
