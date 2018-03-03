@@ -33,6 +33,9 @@ public class BaseFragment extends Fragment {
     }
 
     public void hideWindow() {
+        if (getActivity() == null) {
+            return;
+        }
         Utils.hideSoftWindow(getActivity());
     }
 
