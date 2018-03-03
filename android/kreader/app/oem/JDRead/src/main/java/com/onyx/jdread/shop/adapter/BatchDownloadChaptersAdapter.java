@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
-import com.onyx.jdread.databinding.BannerSubjectModelItemBinding;
+import com.onyx.jdread.databinding.BatchDownloadItemBinding;
 import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
-import com.onyx.jdread.shop.event.BannerItemClickEvent;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BatchDownloadResultBean;
+import com.onyx.jdread.shop.event.ChapterGroupItemClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -21,13 +21,13 @@ import java.util.List;
  * Created by jackdeng on 2017/12/12.
  */
 
-public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, BookModelConfigResultBean.DataBean.AdvBean , BookModelConfigResultBean.DataBean.AdvBean > {
+public class BatchDownloadChaptersAdapter extends PageAdapter<PageRecyclerView.ViewHolder, BatchDownloadResultBean.DataBean.ListBean, BatchDownloadResultBean.DataBean.ListBean> {
 
     private EventBus eventBus;
-    private int row = ResManager.getInteger(R.integer.shop_banner_recycle_view_row);
-    private int col = ResManager.getInteger(R.integer.shop_banner_recycle_view_col);
+    private int row = ResManager.getInteger(R.integer.batch_download_recycle_view_row);
+    private int col = ResManager.getInteger(R.integer.batch_download_recycle_view_col);
 
-    public BannerSubjectAdapter(EventBus eventBus) {
+    public BatchDownloadChaptersAdapter(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 
@@ -53,12 +53,12 @@ public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolde
 
     @Override
     public PageRecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subject_banner_model, null));
+        return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_batch_download, null));
     }
 
     @Override
     public void onPageBindViewHolder(PageRecyclerView.ViewHolder holder, int position) {
-        final BookModelConfigResultBean.DataBean.AdvBean  bookBean = getItemVMList().get(position);
+        final BatchDownloadResultBean.DataBean.ListBean bookBean = getItemVMList().get(position);
         ModelViewHolder viewHolder = (ModelViewHolder) holder;
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
@@ -66,7 +66,7 @@ public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolde
     }
 
     @Override
-    public void setRawData(List<BookModelConfigResultBean.DataBean.AdvBean > rawData, Context context) {
+    public void setRawData(List<BatchDownloadResultBean.DataBean.ListBean> rawData, Context context) {
         super.setRawData(rawData, context);
         setItemVMList(rawData);
         notifyDataSetChanged();
@@ -80,25 +80,25 @@ public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolde
         }
         int position = (int) tag;
         if (eventBus != null && getItemVMList() != null) {
-            eventBus.post(new BannerItemClickEvent(getItemVMList().get(position)));
+            eventBus.post(new ChapterGroupItemClickEvent(getItemVMList().get(position)));
         }
     }
 
     static class ModelViewHolder extends PageRecyclerView.ViewHolder {
 
-        private final BannerSubjectModelItemBinding bind;
+        private final BatchDownloadItemBinding bind;
 
         public ModelViewHolder(View view) {
             super(view);
             bind = DataBindingUtil.bind(view);
         }
 
-        public BannerSubjectModelItemBinding getBind() {
+        public BatchDownloadItemBinding getBind() {
             return bind;
         }
 
-        public void bindTo(BookModelConfigResultBean.DataBean.AdvBean  bookBean) {
-            bind.setAdvBean(bookBean);
+        public void bindTo(BatchDownloadResultBean.DataBean.ListBean bookBean) {
+            bind.setListBean(bookBean);
             bind.executePendingBindings();
         }
     }

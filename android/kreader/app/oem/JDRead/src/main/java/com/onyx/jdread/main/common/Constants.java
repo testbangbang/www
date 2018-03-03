@@ -132,4 +132,6 @@ public class Constants {
     public static final String ORDER_INFO = "order_info";
     public static final String BANNER_URL = "banner_url";
     public static final long LIMIT_TIME = 500;
+    public static final int BOOK_DETAIL_TYPE_NET = 1;
+    public static final int BOOK_DETAIL_TYPE_PUBLISH = 0;
 }

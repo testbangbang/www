@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogBookInfoBinding;
 import com.onyx.jdread.databinding.FragmentBookDetailBinding;
+import com.onyx.jdread.databinding.LayoutBookBatchDownloadBinding;
 import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
@@ -50,6 +52,7 @@ import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.MetadataQueryAction;
 import com.onyx.jdread.shop.action.SearchBookListAction;
+import com.onyx.jdread.shop.adapter.BatchDownloadChaptersAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
@@ -78,6 +81,7 @@ import com.onyx.jdread.shop.event.RecommendItemClickEvent;
 import com.onyx.jdread.shop.event.RecommendNextPageEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewCommentEvent;
+import com.onyx.jdread.shop.model.BookBatchDownloadViewModel;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -85,6 +89,7 @@ import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.BookInfoDialog;
+import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.shop.view.SubjectBookItemSpaceItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -117,6 +122,7 @@ public class BookDetailFragment extends BaseFragment {
     private BookInfoDialog infoDialog;
     private boolean hasAddToCart = false;
     private boolean shouldRefresh;
+    private BookInfoDialog batchDownloadDialog;
 
     @Nullable
     @Override
@@ -257,12 +263,21 @@ public class BookDetailFragment extends BaseFragment {
                         bookDetailBean.setAuthor(getString(R.string.error_content_author_unknown));
                     }
 
+                    if (isaNetBook()) {
+                        buyBookButton.setText(ResManager.getString(R.string.batch_download));
+                        showShopCartView(false);
+                    }
+
                     if (shouldDownloadWholeBook) {
                         smoothDownload();
                     }
                 }
             }
         });
+    }
+
+    private boolean isaNetBook() {
+        return bookDetailBean.book_type == Constants.BOOK_DETAIL_TYPE_NET;
     }
 
     private void showShopCartView(boolean show) {
@@ -445,6 +460,7 @@ public class BookDetailFragment extends BaseFragment {
             if (isWholeBookDownLoad) {
                 nowReadButton.setEnabled(true);
                 hideNowReadButton();
+                showShopCartView(false);
                 upDataButtonDown(buyBookButton, true, bookDetailBean.bookExtraInfoBean);
             } else {
                 buyBookButton.setEnabled(true);
@@ -462,6 +478,7 @@ public class BookDetailFragment extends BaseFragment {
             isWholeBookDownLoad = bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad;
             if (isWholeBookDownLoad) {
                 hideNowReadButton();
+                showShopCartView(false);
                 upDataButtonDown(buyBookButton, false, bookDetailBean.bookExtraInfoBean);
             } else {
                 upDataButtonDown(nowReadButton, false, bookDetailBean.bookExtraInfoBean);
@@ -511,6 +528,12 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void smoothDownload() {
+
+        if (isaNetBook()) {
+            showBatchDownload();
+            return;
+        }
+
         if (isWholeBookDownLoad &&  fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean);
             return;
@@ -676,6 +699,35 @@ public class BookDetailFragment extends BaseFragment {
         return JDReadApplication.getInstance().getApplicationContext();
     }
 
+    private void showBatchDownload() {
+        if (infoDialog != null && infoDialog.isShowing()) {
+            return;
+        }
+        LayoutBookBatchDownloadBinding batchDownloadBinding = LayoutBookBatchDownloadBinding.inflate(LayoutInflater.from(getActivity()), null, false);
+        BookBatchDownloadViewModel bookBatchDownloadViewModel = new BookBatchDownloadViewModel(getEventBus());
+        batchDownloadBinding.setViewModel(bookBatchDownloadViewModel);
+        if (batchDownloadDialog == null) {
+            batchDownloadDialog = new BookInfoDialog(JDReadApplication.getInstance());
+            batchDownloadDialog.setView(batchDownloadBinding.getRoot());
+            batchDownloadBinding.closeDialog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismissBatchDownloadDialog();
+                }
+            });
+            PageRecyclerView batchDownloadRecyclerView = batchDownloadBinding.batchDownloadRecyclerView;
+            batchDownloadRecyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+            DividerItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST);
+            decoration.setSpace(ResManager.getInteger(R.integer.book_batch_download_recycle_view_item_space));
+            batchDownloadRecyclerView.addItemDecoration(decoration);
+            RecyclerView.Adapter adapter = new BatchDownloadChaptersAdapter(getEventBus());
+            batchDownloadRecyclerView.setAdapter(adapter);
+        }
+        if (batchDownloadDialog != null && !batchDownloadDialog.isShowing()) {
+            batchDownloadDialog.show();
+        }
+    }
+
     private void showCopyRightDialog() {
         if (infoDialog != null && infoDialog.isShowing()) {
             return;
@@ -694,6 +746,12 @@ public class BookDetailFragment extends BaseFragment {
     private void dismissCopyRightDialog() {
         if (copyRightDialog != null && copyRightDialog.isShowing()) {
             copyRightDialog.dismiss();
+        }
+    }
+
+    private void dismissBatchDownloadDialog() {
+        if (batchDownloadDialog != null) {
+            batchDownloadDialog.dismiss();
         }
     }
 

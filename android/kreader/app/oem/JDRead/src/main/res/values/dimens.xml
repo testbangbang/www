@@ -537,4 +537,10 @@
     <dimen name="dialog_single_manage_title_width">243dp</dimen>
     <dimen name="brightness_button_width">54dp</dimen>
     <dimen name="brightness_button_height">27dp</dimen>
+    <dimen name="book_batch_download_recycle_view_height">260dp</dimen>
+    <dimen name="book_batch_download_recycle_view_margin_top">40dp</dimen>
+    <dimen name="book_batch_download_tip_margin_top">0dp</dimen>
+    <dimen name="item_batch_download_price_margin_top">15dp</dimen>
+    <dimen name="item_batch_download_padding_bottom">40dp</dimen>
+    <dimen name="book_batch_download_tip_margin_bottom">110dp</dimen>
 </resources>

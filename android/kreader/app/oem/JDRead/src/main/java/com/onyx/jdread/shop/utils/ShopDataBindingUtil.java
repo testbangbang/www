@@ -12,6 +12,7 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
+import com.onyx.jdread.shop.adapter.BatchDownloadChaptersAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
@@ -176,6 +177,14 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"goodList"})
     public static void setVipGoodList(RecyclerView recyclerView, List items) {
         BuyReadVipAdapter adapter = (BuyReadVipAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"chaptersItems"})
+    public static void setChaptersItems(RecyclerView recyclerView, List items) {
+        BatchDownloadChaptersAdapter adapter = (BatchDownloadChaptersAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }
