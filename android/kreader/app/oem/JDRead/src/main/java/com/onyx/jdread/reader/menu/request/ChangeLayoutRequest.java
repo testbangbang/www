@@ -12,13 +12,12 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  */
 
 public class ChangeLayoutRequest extends ReaderBaseRequest {
-    private Reader reader;
     private ChangeLayoutParameter parameter;
     private ImageReflowSettings settings;
     private String pageName;
 
     public ChangeLayoutRequest(Reader reader, ChangeLayoutParameter parameter, ImageReflowSettings settings,String pageName) {
-        this.reader = reader;
+        super(reader);
         this.parameter = parameter;
         this.settings = settings;
         this.pageName = pageName;
@@ -26,14 +25,14 @@ public class ChangeLayoutRequest extends ReaderBaseRequest {
 
     @Override
     public ChangeLayoutRequest call() throws Exception {
-        updateDefaultSettingValue(reader);
-        reader.getReaderHelper().getBitmapCache().clear();
-        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(true);
-        reader.getReaderHelper().getReaderLayoutManager().setCurrentLayout(parameter.getLayout(), parameter.getNavigationArgs());
-        reader.getReaderHelper().getReaderLayoutManager().scaleToPage(pageName);
-        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
+        updateDefaultSettingValue(getReader());
+        getReader().getReaderHelper().getBitmapCache().clear();
+        getReader().getReaderHelper().getReaderLayoutManager().setSavePosition(true);
+        getReader().getReaderHelper().getReaderLayoutManager().setCurrentLayout(parameter.getLayout(), parameter.getNavigationArgs());
+        getReader().getReaderHelper().getReaderLayoutManager().scaleToPage(pageName);
+        getReader().getReaderViewHelper().updatePageView(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
 
-        updateSetting(reader);
+        updateSetting(getReader());
         return this;
     }
 

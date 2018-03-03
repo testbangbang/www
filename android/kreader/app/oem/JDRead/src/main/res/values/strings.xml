@@ -120,7 +120,7 @@
     <string name="search_view_hint">Please input what you want to search</string>
     <string name="book_detail_yuedou_price">%1$s Read Bean</string>
     <string name="book_detail_button_now_read">Now Read</string>
-    <string name="book_detail_button_buy_whole_book">Buy the whole book</string>
+    <string name="book_detail_button_buy_whole_book">download the whole book</string>
     <string name="cart">Cart</string>
     <string name="book_detail_text_view_content_introduce">Introduce</string>
     <string name="book_comment_detail">Comment Detail</string>
@@ -429,6 +429,8 @@
     <string name="group_names_do_not_support_special_characters">Group names do not_support special characters</string>
     <string name="first_chapter">Is the first chapter</string>
     <string name="last_chapter">Is the last chapter</string>
+    <string name="first_page">First page</string>
+    <string name="last_page">Last page</string>
     <string name="no_chapters">This article does not contain section information</string>
     <string name="enter_hint">Please enter your search word</string>
     <string name="total_page" formatted="false">Total（%d）</string>
@@ -462,7 +464,7 @@
     <string name="not_login">not login</string>
     <string name="open_vip_read">Open Vip</string>
     <string name="renew_vip_read">Renew Vip</string>
-    <string name="vip_read_days">The remaining days of the Vip：%s days</string>
+    <string name="vip_read_days">The remaining days of the JoyRead Vip %s days</string>
     <string name="vip_read_notice">Vip Notice</string>
     <string name="not_open_vip_read">Do not open Vip</string>
     <string name="format_rmb">¥%s</string>
@@ -511,4 +513,10 @@
     <string name="receive_fail">Receive failed</string>
     <string name="low_power_reminder">Low battery, please charge in time</string>
     <string name="membership_expired">The membership has expired, please renew it as soon as possible</string>
+    <string name="input_error">The search key can not contain punctuation</string>
+    <string name="preload_loading">Loading...</string>
+    <string name="banner">Banner</string>
+    <string name="dialog_password_text_password">Password</string>
+    <string name="show_password">Show the password</string>
+    <string name="standby_name_format">standby-%s.png</string>
 </resources>

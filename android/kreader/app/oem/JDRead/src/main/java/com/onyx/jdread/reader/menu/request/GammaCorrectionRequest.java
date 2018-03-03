@@ -13,32 +13,31 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  * redraw request
  */
 public class GammaCorrectionRequest extends ReaderBaseRequest {
-    private Reader reader;
     private GammaInfo gammaInfo;
     private SettingInfo settingInfo;
 
     public GammaCorrectionRequest(final Reader reader, GammaInfo gammaInfo,final SettingInfo settingInfo) {
+        super(reader);
         this.gammaInfo = gammaInfo;
-        this.reader = reader;
         this.settingInfo = settingInfo;
     }
 
     @Override
     public GammaCorrectionRequest call() throws Exception {
-        reader.getReaderHelper().getDocumentOptions().setEmboldenLevel(gammaInfo.getEmboldenLevel());
-        reader.getReaderHelper().getDocumentOptions().setGamma(gammaInfo.getImageGamma());
-        reader.getReaderHelper().getDocumentOptions().setTextGamma(gammaInfo.getTextGamma());
+        getReader().getReaderHelper().getDocumentOptions().setEmboldenLevel(gammaInfo.getEmboldenLevel());
+        getReader().getReaderHelper().getDocumentOptions().setGamma(gammaInfo.getImageGamma());
+        getReader().getReaderHelper().getDocumentOptions().setTextGamma(gammaInfo.getTextGamma());
         if (gammaInfo.getEmboldenLevel() >= BaseOptions.minEmboldenLevel()) {
-            reader.getReaderHelper().getDocumentOptions().setEmboldenLevel(gammaInfo.getEmboldenLevel());
+            getReader().getReaderHelper().getDocumentOptions().setEmboldenLevel(gammaInfo.getEmboldenLevel());
         }
-        if (reader.getReaderHelper().getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
+        if (getReader().getReaderHelper().getRenderer().getRendererFeatures().supportFontGammaAdjustment()) {
             float gamma = ImageUtils.getGammaCorrectionBySelection(gammaInfo.getTextGamma());
-            reader.getReaderHelper().getRenderer().setTextGamma(gamma);
+            getReader().getReaderHelper().getRenderer().setTextGamma(gamma);
         }
-        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
-        updateSetting(reader);
-        saveReaderOptions(reader);
-        saveStyleOptions(reader,settingInfo);
+        getReader().getReaderViewHelper().updatePageView(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
+        updateSetting(getReader());
+        saveReaderOptions(getReader());
+        saveStyleOptions(getReader(),settingInfo);
         return this;
     }
 }

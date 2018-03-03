@@ -5,6 +5,7 @@ import android.graphics.Rect;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
@@ -17,7 +18,11 @@ import com.onyx.jdread.reader.request.PreloadNextScreenRequest;
 
 public class NextPageAction extends BaseReaderAction {
     @Override
-    public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
+    public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
+        if(!readerDataHolder.getReaderViewInfo().canNextScreen){
+            ToastUtil.showToast(readerDataHolder.getAppContext(), R.string.last_page);
+            return;
+        }
         final NextScreenRequest request = new NextScreenRequest(readerDataHolder.getReader());
         request.execute(new RxCallback() {
             @Override
@@ -25,6 +30,9 @@ public class NextPageAction extends BaseReaderAction {
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
                 PreloadNextScreenRequest preloadNextScreenRequest = new PreloadNextScreenRequest(readerDataHolder.getReader());
                 preloadNextScreenRequest.execute(null);
+                if(baseCallback != null){
+                    baseCallback.onNext(o);
+                }
             }
 
             @Override

@@ -44,6 +44,8 @@ public class DataModel extends BaseObservable {
     public final ObservableField<FileModel> fileModel = new ObservableField<>();
     public final ObservableBoolean isDocument = new ObservableBoolean(false);
     public final ObservableField<String> childCount = new ObservableField<>();
+    public final ObservableField<String> key = new ObservableField<>();
+    public final ObservableField<String> random = new ObservableField<>();
     public final ObservableField<String> selectedCount = new ObservableField<>();
     public final ObservableList<DataModel> childList = new ObservableArrayList<>();
     private EventBus eventBus;

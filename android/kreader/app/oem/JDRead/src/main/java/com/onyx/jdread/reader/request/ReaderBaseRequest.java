@@ -1,15 +1,9 @@
 package com.onyx.jdread.reader.request;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
-import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
-import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.rx.RxRequest;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.Reader;
@@ -24,12 +18,27 @@ import io.reactivex.Scheduler;
 
 public abstract class ReaderBaseRequest extends RxRequest {
     private static final String TAG = ReaderBaseRequest.class.getSimpleName();
+    private Reader reader;
     private ReaderViewInfo readerViewInfo;
     private ReaderUserDataInfo readerUserDataInfo;
     private ReaderSelectionInfo selectionInfoManager;
     private ReaderTextStyle style;
     private ImageReflowSettings settings;
     public boolean isSuccess = true;
+
+    public ReaderBaseRequest(Reader reader) {
+        this.reader = reader;
+    }
+
+    public Reader getReader() {
+        return reader;
+    }
+
+    @Override
+    public void setAbort(boolean abort) {
+        super.setAbort(abort);
+        reader.getReaderHelper().getPlugin().abortCurrentJob();
+    }
 
     public final ReaderUserDataInfo getReaderUserDataInfo() {
         if (readerUserDataInfo == null) {

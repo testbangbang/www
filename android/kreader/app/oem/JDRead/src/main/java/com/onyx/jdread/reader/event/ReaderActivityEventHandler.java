@@ -24,7 +24,7 @@ import com.onyx.jdread.reader.catalog.event.AnnotationItemClickEvent;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
-import com.onyx.jdread.reader.dialog.DialogDict;
+import com.onyx.jdread.reader.dialog.DialogBaiduBaiKe;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
@@ -186,7 +186,17 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupLineationClickEvent(PopupLineationClickEvent event) {
-        new AddAnnotationAction("").execute(readerViewModel.getReaderDataHolder(), null);
+        new AddAnnotationAction("").execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                updatePageView();
+            }
+        });
+    }
+
+    private void updatePageView(){
+        UpdateViewPageAction action =new UpdateViewPageAction();
+        action.execute(readerViewModel.getReaderDataHolder(),null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -235,7 +245,12 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAnnotationCopyEvent(AnnotationCopyEvent event) {
-        new AnnotationCopyToClipboardAction(event.getAnnotation()).execute(readerViewModel.getReaderDataHolder(), null);
+        new AnnotationCopyToClipboardAction(event.getAnnotation()).execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                updatePageView();
+            }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -284,7 +299,7 @@ public class ReaderActivityEventHandler {
             ToastUtil.showToast(R.string.reader_check_network);
             return;
         }
-        DialogDict dialogDict = new DialogDict(activity, text,readerViewModel.getEventBus());
+        DialogBaiduBaiKe dialogDict = new DialogBaiduBaiKe(activity, text,readerViewModel.getEventBus());
         dialogDict.show();
     }
 

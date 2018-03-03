@@ -17,30 +17,29 @@ import java.util.List;
 public class SearchRequest extends ReaderBaseRequest {
     private ReaderSearchOptionsImpl searchOptions;
     private String currentPage;
-    private Reader reader;
 
     public SearchRequest(final String currentPage, final String text, boolean caseSensitive, boolean match, int contentLength, Reader reader) {
+        super(reader);
         searchOptions = new ReaderSearchOptionsImpl(currentPage, text, caseSensitive, match);
         searchOptions.setContextLength(contentLength);
         this.currentPage = currentPage;
-        this.reader = reader;
     }
 
     @Override
     public SearchRequest call() throws Exception {
         getReaderViewInfo();
-        reader.getReaderHelper().getReaderLayoutManager().getPageManager().collectVisiblePages();
-        reader.getReaderHelper().getSearchManager().searchInPage(PagePositionUtils.getPageNumber(currentPage), searchOptions, true);
-        if (reader.getReaderHelper().getSearchManager().searchResults().size() > 0) {
-            LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
+        getReader().getReaderHelper().getReaderLayoutManager().getPageManager().collectVisiblePages();
+        getReader().getReaderHelper().getSearchManager().searchInPage(PagePositionUtils.getPageNumber(currentPage), searchOptions, true);
+        if (getReader().getReaderHelper().getSearchManager().searchResults().size() > 0) {
+            LayoutProviderUtils.updateReaderViewInfo(getReader(), getReaderViewInfo(), getReader().getReaderHelper().getReaderLayoutManager());
             setSearchResultChapterName();
-            getReaderUserDataInfo().saveSearchResults(reader.getReaderHelper().getSearchManager().searchResults());
+            getReaderUserDataInfo().saveSearchResults(getReader().getReaderHelper().getSearchManager().searchResults());
         }
         return this;
     }
 
     private void setSearchResultChapterName() {
-        List<ReaderSelection> selections = reader.getReaderHelper().getSearchManager().searchResults();
+        List<ReaderSelection> selections = getReader().getReaderHelper().getSearchManager().searchResults();
         for (ReaderSelection selection : selections) {
             String startPosition = selection.getStartPosition();
             int position = PagePositionUtils.getPosition(startPosition);
@@ -48,7 +47,7 @@ public class SearchRequest extends ReaderBaseRequest {
             if (chapterInfo != null) {
                 selection.chapterName = chapterInfo.getTitle();
             } else {
-                selection.chapterName = reader.getDocumentInfo().getBookName();
+                selection.chapterName = getReader().getDocumentInfo().getBookName();
             }
         }
     }

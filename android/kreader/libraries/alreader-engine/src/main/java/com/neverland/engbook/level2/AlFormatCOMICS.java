@@ -8,7 +8,6 @@ import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 
 public class AlFormatCOMICS extends AlAXML {
 
@@ -51,20 +50,15 @@ public class AlFormatCOMICS extends AlAXML {
     }
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
+
         isTextFormat = false;
         xml_mode = true;
         ident = "COMICS";
 
-        aFiles = myParent;
-
         if ((bookOptions.formatOptions & AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG) != 0)
             aFiles.needUnpackData();
-
-        preference = pref;
-        styles = stl;
-
-        size = 0;
 
         autoCodePage = false;
         setCP(TAL_CODE_PAGES.CP65001);
@@ -74,7 +68,7 @@ public class AlFormatCOMICS extends AlAXML {
         numPage = 0;
 
 
-        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_EMPTY);
+        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_EMPTY, pref.cssSupportLevel);
         //if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
             cssStyles.disableExternal = true;
         customSize = 0;

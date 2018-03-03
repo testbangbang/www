@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -26,6 +27,7 @@ import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.common.PageTagConstants;
 import com.onyx.jdread.shop.event.BookDetailViewInfoEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
@@ -40,6 +42,8 @@ import com.onyx.jdread.shop.view.BookInfoDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 
 import static com.onyx.jdread.main.common.Constants.PAGE_STEP;
 
@@ -57,7 +61,6 @@ public class CommentFragment extends BaseFragment {
     private int currentPage = 1;
     private GPaginator paginator;
     private BookInfoDialog infoDialog;
-    private boolean hasClick;
 
     @Nullable
     @Override
@@ -76,6 +79,7 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void initData() {
+        resetCurrentPage();
         ebookId = JDPreferenceManager.getLongValue(Constants.SP_KEY_BOOK_ID, 0);
         getBookComments();
     }
@@ -108,11 +112,26 @@ public class CommentFragment extends BaseFragment {
                 }
             }
         });
-
     }
 
     private void setCurrentPage(int currentPage) {
         getBookDetailViewModel().setCurrentPage(currentPage + PAGE_STEP);
+    }
+
+    private int getCurrentPage() {
+        return getBookDetailViewModel().getCurrentPage() - PAGE_STEP;
+    }
+
+    private void resetCurrentPage() {
+        getBookDetailViewModel().setCurrentPage(0);
+    }
+
+    private int getValidContentPage() {
+        int page = getCurrentPage();
+        if (page >= paginator.pages()) {
+            return 0;
+        }
+        return page;
     }
 
     private void initDividerItemDecoration() {
@@ -140,23 +159,36 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void getCommentsData() {
-        BookCommentListAction commnetListAction = new BookCommentListAction(ebookId, currentPage);
-        commnetListAction.execute(getShopDataBundle(), new RxCallback<BookCommentListAction>() {
+        BookCommentListAction commentListAction = new BookCommentListAction(ebookId, currentPage);
+        commentListAction.execute(getShopDataBundle(), new RxCallback<BookCommentListAction>() {
             @Override
             public void onNext(BookCommentListAction action) {
-                BookCommentsResultBean.DataBean dataBean = action.getbookCommentsBean();
-                if (dataBean != null && dataBean.comments != null) {
-                    initPageIndicator(dataBean);
-                }
+                updateContentView(action.getbookCommentsBean());
             }
         });
     }
 
+    private void updateContentView(BookCommentsResultBean.DataBean resultBean) {
+        if (recyclerViewComments == null) {
+            return;
+        }
+        initPageIndicator(resultBean);
+        gotoPage(getValidContentPage());
+    }
+
     private void initPageIndicator(BookCommentsResultBean.DataBean resultBean) {
-        int size = resultBean.comments.size();
-        recyclerViewComments.resize(recyclerViewComments.getPageAdapter().getRowCount(), recyclerViewComments.getPageAdapter().getColumnCount(), size);
+        int size = resultBean == null ? 0 : CollectionUtils.getSize(resultBean.comments);
+        recyclerViewComments.resize(recyclerViewComments.getPageAdapter().getRowCount(),
+                recyclerViewComments.getPageAdapter().getColumnCount(), size);
         getBookDetailViewModel().setTotalPage(paginator.pages());
         setCurrentPage(paginator.getCurrentPage());
+    }
+
+    private void gotoPage(int page) {
+        if (recyclerViewComments == null) {
+            return;
+        }
+        recyclerViewComments.gotoPage(page);
     }
 
     public ShopDataBundle getShopDataBundle() {
@@ -200,12 +232,10 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void showInfoDialog(String content) {
-        if (hasClick) {
+        if (infoDialog != null && infoDialog.isShowing()) {
             return;
         }
-        hasClick = true;
         if (StringUtils.isNullOrEmpty(content)) {
-            hasClick = false;
             return;
         }
         DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getActivity()), null, false);
@@ -216,12 +246,6 @@ public class CommentFragment extends BaseFragment {
         infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
         infoDialog.setView(infoBinding.getRoot());
         infoDialog.setCancelable(false);
-        infoDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                hasClick = false;
-            }
-        });
         HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);

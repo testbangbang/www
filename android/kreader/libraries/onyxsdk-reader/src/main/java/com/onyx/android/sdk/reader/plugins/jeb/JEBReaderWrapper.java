@@ -23,6 +23,7 @@ import com.neverland.engbook.forpublic.AlTextOnScreen;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.forpublic.TAL_RESULT;
+import com.neverland.engbook.level1.JEBFilesZIP;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.EngBitmap;
@@ -99,6 +100,9 @@ public class JEBReaderWrapper {
         bookOpt.formatOptions = 0;
         bookOpt.readPosition = 0;
         bookOpt.password = documentOptions.getDocumentPassword();
+        JEBFilesZIP.key = documentOptions.getDocumentKey();
+        JEBFilesZIP.deviceUUID = documentOptions.getDocumentDeviceUUID();
+        JEBFilesZIP.random = documentOptions.getDocumentRandom();
         if (bookEng.openBook(path, bookOpt) != TAL_RESULT.OK) {
             return ERROR_FILE_INVALID;
         }
@@ -152,6 +156,7 @@ public class JEBReaderWrapper {
         updateFontFace(style.getFontFace());
         updateFontSize(style.getFontSize().getValue());
         updateLineSpacing(style.getLineSpacing());
+        updateParagraphSpacing(style.getParagraphSpacing());
         updatePageMargins(style.getPageMargin().getLeftMargin(),
                 style.getPageMargin().getTopMargin(),
                 style.getPageMargin().getRightMargin(),
@@ -160,6 +165,10 @@ public class JEBReaderWrapper {
         textStyle = style;
 
         resetScreenState();
+    }
+
+    public void updateParagraphSpacing(final ReaderTextStyle.Percentage paragraphSpacing) {
+        profile.paragraphSpacing = (int)(100 * paragraphSpacing.getPercent() / (float)100);
     }
 
     public void setChineseConvertType(ReaderChineseConvertType convertType) {
@@ -184,7 +193,7 @@ public class JEBReaderWrapper {
         engineOptions.hyph_lang = EngBookMyType.TAL_HYPH_LANG.ENGRUS;
         engineOptions.useScreenPages = EngBookMyType.TAL_SCREEN_PAGES_COUNT.SIZE;
         engineOptions.pageSize4Use = AlEngineOptions.AL_USEAUTO_PAGESIZE;
-        engineOptions.chinezeFormatting = true;
+        engineOptions.chinezeSpecial = true;
         engineOptions.drawLinkInternal = false;
         engineOptions.externalBitmap = new AlBitmap();
 
@@ -461,7 +470,7 @@ public class JEBReaderWrapper {
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         AlBookProperties properties = bookEng.getBookProperties(true);
-        if (properties.content == null) {
+        if (properties == null || properties.content == null) {
             return false;
         }
         buildTableOfContentTree(toc.getRootEntry(), 0, properties.content, 0);
@@ -579,6 +588,9 @@ public class JEBReaderWrapper {
         }
 
         String ch = getCharAtPos(screenText, pos);
+        if(StringUtils.isNullOrEmpty(ch)){
+            return null;
+        }
         if (!AlUnicode.isChineze(ch.charAt(0))) {
             // simplifying latter work
             return selectTextOnScreen(point, point);

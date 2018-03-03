@@ -2,9 +2,7 @@ package com.onyx.jdread.reader.menu.request;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.jdread.reader.data.Reader;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.data.SettingInfo;
-import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 
 /**
@@ -12,12 +10,11 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  */
 
 public class SettingTextStyleRequest extends ReaderBaseRequest {
-    private Reader reader;
     private ReaderTextStyle inputStyle;
     private SettingInfo settingInfo;
 
     public SettingTextStyleRequest(Reader reader,ReaderTextStyle inputStyle,SettingInfo settingInfo) {
-        this.reader = reader;
+        super(reader);
         this.inputStyle = inputStyle;
         this.settingInfo = settingInfo;
     }
@@ -25,13 +22,13 @@ public class SettingTextStyleRequest extends ReaderBaseRequest {
     @Override
     public SettingTextStyleRequest call() throws Exception {
 
-        reader.getReaderHelper().getTextStyleManager().setStyle(inputStyle);
-        reader.getReaderHelper().getBitmapCache().clear();
-        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
+        getReader().getReaderHelper().getTextStyleManager().setStyle(inputStyle);
+        getReader().getReaderHelper().getBitmapCache().clear();
+        getReader().getReaderViewHelper().updatePageView(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
 
-        updateSetting(reader);
-        saveReaderOptions(reader);
-        saveStyleOptions(reader,settingInfo);
+        updateSetting(getReader());
+        saveReaderOptions(getReader());
+        saveStyleOptions(getReader(),settingInfo);
         return this;
     }
 }

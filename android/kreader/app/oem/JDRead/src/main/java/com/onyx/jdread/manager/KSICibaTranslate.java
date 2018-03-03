@@ -18,7 +18,7 @@ public class KSICibaTranslate {
     private static KSCibaEngine mKsCibaEngine = null;
     static long mCompanyID = 65892187L;
     private static int mSearchType = 2;
-    public static final String BR = "<br>";
+    public static final String BR = "\r\n";
     public static final String DICT_PATH = "dicts";
 
     private static String seachKeyWords;

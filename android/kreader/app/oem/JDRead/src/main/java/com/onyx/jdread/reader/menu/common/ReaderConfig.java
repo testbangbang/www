@@ -34,7 +34,8 @@ public class ReaderConfig {
         public static final int DEFAULT_COLOR_DEPTH = LEVEL_ONE;
     }
 
-    public static final int SIGN_RIGHT_MARGIN = 10;
+    public static final int SIGN_RIGHT_MARGIN = 1;
+    public static final int SIGN_BOTTOM_MARGIN = 1;
 
     public static final String READER_FONTFACE_KEY = "FontFace";
     public static final String READER_CHINESE_CONVERT_TYPE_KEY = "ChineseConvertType";
@@ -178,8 +179,8 @@ public class ReaderConfig {
     static {
         customFiveTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 11));
         customFiveTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(8, 13));
-        customFiveTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(12, 17));
-        customFiveTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(18, 20));
+        customFiveTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(14, 17));
+        customFiveTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(21, 20));
         customFiveTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(25, 23));
         customFiveTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(30, 26));
     }

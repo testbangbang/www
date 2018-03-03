@@ -14,18 +14,17 @@ import java.util.List;
  */
 
 public class GetTableOfContentRequest extends ReaderBaseRequest {
-    private Reader reader;
     private boolean hasToc;
     private List<ChapterInfo> readTocChapterNodeList;
 
     public GetTableOfContentRequest(Reader reader) {
-        this.reader = reader;
+        super(reader);
     }
 
     @Override
     public GetTableOfContentRequest call() throws Exception {
-        LayoutProviderUtils.updateReaderViewInfo(reader,getReaderViewInfo(),reader.getReaderHelper().getReaderLayoutManager());
-        getReaderUserDataInfo().loadDocumentTableOfContent(reader.getReaderHelper().getContext(), reader.getReaderHelper().getDocument());
+        LayoutProviderUtils.updateReaderViewInfo(getReader(),getReaderViewInfo(),getReader().getReaderHelper().getReaderLayoutManager());
+        getReaderUserDataInfo().loadDocumentTableOfContent(getReader().getReaderHelper().getContext(), getReader().getReaderHelper().getDocument());
 
         ReaderDocumentTableOfContent toc = getReaderUserDataInfo().getTableOfContent();
         hasToc = toc != null && !toc.isEmpty();
@@ -33,7 +32,7 @@ public class GetTableOfContentRequest extends ReaderBaseRequest {
             return this;
         }
         readTocChapterNodeList = TocUtils.buildChapterNodeList(toc);
-        updateSetting(reader);
+        updateSetting(getReader());
         return this;
     }
 

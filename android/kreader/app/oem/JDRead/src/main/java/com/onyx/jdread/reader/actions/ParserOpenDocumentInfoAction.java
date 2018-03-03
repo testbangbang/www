@@ -1,7 +1,9 @@
 package com.onyx.jdread.reader.actions;
 
 import android.content.Intent;
+import android.os.Build;
 
+import com.jingdong.app.reader.data.DrmTools;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -53,11 +55,12 @@ public class ParserOpenDocumentInfoAction extends BaseReaderAction {
         documentInfo.setBookPath(bookPath);
         if(intent.hasExtra(DocumentInfo.BOOK_NAME)){
             documentInfo.setBookName(intent.getStringExtra(DocumentInfo.BOOK_NAME));
-        }
-        if(intent.hasExtra(DocumentInfo.PASSWORD)){
-            documentInfo.setBookName(intent.getStringExtra(DocumentInfo.PASSWORD));
         }else{
             documentInfo.setBookName(FileUtils.getFileName(documentInfo.getBookPath()));
+        }
+
+        if(intent.hasExtra(DocumentInfo.PASSWORD)){
+            documentInfo.setBookName(intent.getStringExtra(DocumentInfo.PASSWORD));
         }
     }
 
@@ -66,13 +69,13 @@ public class ParserOpenDocumentInfoAction extends BaseReaderAction {
             return;
         }
         if(intent.hasExtra(DocumentInfo.SecurityInfo.KEY)){
-            documentInfo.setBookName(intent.getStringExtra(DocumentInfo.SecurityInfo.KEY));
+            documentInfo.getSecurityInfo().setKey(intent.getStringExtra(DocumentInfo.SecurityInfo.KEY));
         }
         if(intent.hasExtra(DocumentInfo.SecurityInfo.RANDOM)){
-            documentInfo.setBookName(intent.getStringExtra(DocumentInfo.SecurityInfo.RANDOM));
+            documentInfo.getSecurityInfo().setRandom(intent.getStringExtra(DocumentInfo.SecurityInfo.RANDOM));
         }
         if(intent.hasExtra(DocumentInfo.SecurityInfo.UU_ID)){
-            documentInfo.setBookName(intent.getStringExtra(DocumentInfo.SecurityInfo.UU_ID));
+            documentInfo.getSecurityInfo().setUuId(intent.getStringExtra(DocumentInfo.SecurityInfo.UU_ID));
         }
     }
 

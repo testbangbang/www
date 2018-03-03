@@ -14,14 +14,12 @@ import org.greenrobot.eventbus.EventBus;
 
 public class Reader {
     private ReaderHelper readerHelper;
-    private DocumentInfo documentInfo;
     private ReaderViewHelper readerViewHelper;
     private ReaderSelectionHelper readerSelectionHelper;
     private ReaderEpdHelper readerEpdHelper;
 
     public Reader(DocumentInfo documentInfo,Context context) {
-        this.documentInfo = documentInfo;
-        this.readerHelper = new ReaderHelper(context);
+        this.readerHelper = new ReaderHelper(context,documentInfo);
         this.readerViewHelper = new ReaderViewHelper(context);
         this.readerEpdHelper = new ReaderEpdHelper(context);
     }
@@ -31,7 +29,7 @@ public class Reader {
     }
 
     public DocumentInfo getDocumentInfo() {
-        return documentInfo;
+        return readerHelper.getDocumentInfo();
     }
 
     public ReaderViewHelper getReaderViewHelper() {

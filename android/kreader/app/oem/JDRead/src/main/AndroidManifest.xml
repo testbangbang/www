@@ -31,7 +31,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".main.activity.MainActivity"
+            android:name=".reader.ui.PreloadActivity"
             android:windowSoftInputMode="adjustNothing"
             android:theme="@style/ActivityFullscreen">
             <intent-filter>
@@ -42,7 +42,7 @@
         </activity>
 
         <activity
-            android:name=".reader.ui.PreloadActivity"
+            android:name=".main.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing"
             android:theme="@style/ActivityFullscreen"></activity>
 

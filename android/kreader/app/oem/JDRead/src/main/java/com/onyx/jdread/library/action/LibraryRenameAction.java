@@ -1,5 +1,6 @@
 package com.onyx.jdread.library.action;
 
+import android.app.Activity;
 import android.content.Context;
 import android.databinding.ObservableList;
 
@@ -26,11 +27,11 @@ import java.util.List;
  */
 
 public class LibraryRenameAction extends BaseAction<LibraryDataBundle> {
-    private Context context;
+    private Activity context;
     private DataModel dataModel;
     private List<DataModel> libraryList = new ArrayList<>();
 
-    public LibraryRenameAction(Context context, DataModel dataModel) {
+    public LibraryRenameAction(Activity context, DataModel dataModel) {
         this.context = context;
         this.dataModel = dataModel;
     }

@@ -3,7 +3,9 @@ package com.onyx.android.sdk.ui.dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.PowerManager;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,6 +50,13 @@ public class DialogReaderLoading extends OnyxBaseDialog {
         mTextViewMessage.setText(msg);
         setCanceledOnTouchOutside(false);
 
+        findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogReaderLoading.this.cancel();
+            }
+        });
+
         this.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -90,7 +99,6 @@ public class DialogReaderLoading extends OnyxBaseDialog {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             this.cancel();
-            mOnFinishReaderListener.onFinishReader();
             return true;
         }
         return super.onKeyDown(keyCode, event);

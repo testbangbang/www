@@ -15,6 +15,9 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
     private int codePageFallback;
     private String language;
     private int readPosition;
+    public String key = "";
+    public String deviceUUID;
+    public String random;
     private ReaderChineseConvertType chineseConvertType = ReaderChineseConvertType.NONE;
     private boolean customFormEnabled;
 
@@ -116,5 +119,32 @@ public class ReaderDocumentOptionsImpl implements ReaderDocumentOptions {
 
     public void setReadPosition(int readPosition) {
         this.readPosition = readPosition;
+    }
+
+    @Override
+    public String getDocumentKey() {
+        return key;
+    }
+
+    public void setDocumentKey(String key) {
+        this.key = key;
+    }
+
+    @Override
+    public String getDocumentDeviceUUID() {
+        return deviceUUID;
+    }
+
+    public void setDocumentDeviceUUID(String deviceUUID) {
+        this.deviceUUID = deviceUUID;
+    }
+
+    @Override
+    public String getDocumentRandom() {
+        return random;
+    }
+
+    public void setDocumentRandom(String random) {
+        this.random = random;
     }
 }

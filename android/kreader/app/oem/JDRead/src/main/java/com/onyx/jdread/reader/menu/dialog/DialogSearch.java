@@ -56,6 +56,8 @@ import com.onyx.jdread.util.InputUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
@@ -200,7 +202,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
                 selectionStart = binding.editViewSearch.getSelectionStart();
                 selectionEnd = binding.editViewSearch.getSelectionEnd();
                 if (InputUtils.getByteCount(temp.toString()) > ResManager.getInteger(R.integer.reader_group_name_max_length)) {
-                    ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.toast_offset_y));
+                    ToastMessage.showMessageCenter(readerDataHolder.getAppContext(),ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
                     s.delete(selectionStart - 1, selectionEnd);
                     int tempSelection = selectionStart;
                     binding.editViewSearch.setText(s);
@@ -301,6 +303,13 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
             ToastMessage.showMessageCenter(readerDataHolder.getAppContext(), ResManager.getString(R.string.search_view_hint));
             return;
         }
+        Pattern patPunc =
+                Pattern.compile("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]");
+        Matcher matcher = patPunc.matcher(searchText);
+        if(matcher.find()){
+            ToastMessage.showMessageCenter(readerDataHolder.getAppContext(),ResManager.getString(R.string.input_error));
+            return;
+        }
         dialogSearchModel.setSearchHistory(false);
         dialogSearchModel.setSearchContent(true);
         dialogSearchModel.setTotalPageShow(false);
@@ -324,7 +333,6 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         public void OnNext(final List<ReaderSelection> results, int page) {
             updateSearchingText(page);
             if (results == null || results.size() < 1) {
-                binding.getDialogSearchModel().setIsEmpty(true);
                 return;
             }
             binding.getDialogSearchModel().setIsEmpty(false);
@@ -345,6 +353,11 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
             hideLoadingLayout();
             ReaderEpdHelper.applyGCUpdate(binding.searchRecyclerView);
             finishSearchTips();
+            if(searchList.size() <= 0){
+                binding.getDialogSearchModel().setIsEmpty(true);
+            }else{
+                binding.getDialogSearchModel().setIsEmpty(false);
+            }
         }
     };
 

@@ -35,6 +35,7 @@ import org.mozilla.universalchardet.UniversalDetector;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AlFormat {
 
@@ -52,6 +53,8 @@ public abstract class AlFormat {
     public static final int LEVEL2_FRM_ADDON_CODETEXT = 0x20000000;
     public static final int LEVEL2_FRM_ADDON_SPECIALTEXT = 0x40000000;
     public static final int LEVEL2_MASK_FOR_LEVEL = 0xffff;
+
+    private AtomicBoolean isAborted = new AtomicBoolean(false);
 
     public long lastPageCount;
     public long lastCalcTime;
@@ -86,6 +89,7 @@ public abstract class AlFormat {
     public final ArrayList<String> bookSeries = new ArrayList<>(0);
     public String fullPath = null;
     public String bookCRC = null;
+    public String bookLang = null;
     public String bookTitle = null;
     public AlFiles aFiles = null;
     public final ArrayList<AlOneSearchResult> resfind = new ArrayList<>(0);
@@ -155,6 +159,14 @@ public abstract class AlFormat {
 
         haveProblem = false;
         autoCodePage = true;
+    }
+
+    public boolean isAborted() {
+        return isAborted.get();
+    }
+
+    public void setAborted(boolean abort) {
+        isAborted.set(abort);
     }
 
     @Override
@@ -1241,7 +1253,7 @@ public abstract class AlFormat {
         boolean extfl_pstart = true;//(PrefManager.getInt(R.string.keyoptuser_custom) & (1 << 0)) != 0;
         boolean extfl_pend = true;//extfl_pstart && (PrefManager.getInt(R.string.keyoptuser_custom) & (1 << 1)) != 0;
         boolean extfl_dialog = true;//(PrefManager.getInt(R.string.keyoptuser_custom) & (1 << 2)) != 0;
-        long extfl_mask = 0x03;//(PrefManager.getInt(R.string.keyoptuser_custom) & (1 << 4)) != 0 ? 0x03 : 0x00;
+        //long extfl_mask = 0x03;//(PrefManager.getInt(R.string.keyoptuser_custom) & (1 << 4)) != 0 ? 0x03 : 0x00;
 
         int i, j, k;
         AlOneParagraph ap;
@@ -1328,25 +1340,25 @@ public abstract class AlFormat {
                         ((ch > 0x20) || (ch == AlStyles.CHAR_IMAGE_E) || (ch == AlStyles.CHAR_ROWS_E))
                         ) {
 
-                    if ((ap.paragraph & (AlStyles.MASK_FOR_FLETTER - AlStyles.SL_FIRSTP - extfl_mask)) == 0 &&
-                            (style_par & (AlStyles.STYLE_MASK - extfl_mask)) == 0) {
+                    if ((ap.paragraph & (AlStyles.MASK_FOR_FLETTER - AlStyles.SL_FIRSTP)) == 0 &&
+                            (style_par & AlStyles.STYLE_MASK) == 0) {
 
                         switch (profileType) {
                             case 0x02:
-                                if ((ap.paragraph & (AlStyles.MASK_FOR_FLETTER - extfl_mask)) != AlStyles.SL_FIRSTP)
+                                if ((ap.paragraph & AlStyles.MASK_FOR_FLETTER) != AlStyles.SL_FIRSTP)
                                     break;
                             case 0x03:
                             case 0x01:
                                 if (Character.isUpperCase(ch) &&
                                         (i == stored_par.cpos - 1 || !Character.isUpperCase(stored_par.data[i + 1]))) {
                                     if (extfl_pend)
-                                        fletter_cnt = isValidFLet(InternalConst.FLET_MODE_LETTER, i + 1, extfl_pend, extfl_mask != 0);
+                                        fletter_cnt = isValidFLet(InternalConst.FLET_MODE_LETTER, i + 1, extfl_pend, false);
                                 } else if (extfl_pstart && AlUnicode.isDigit(ch)) {
-                                    fletter_cnt = isValidFLet(InternalConst.FLET_MODE_LETTER, i + 1, extfl_pend, extfl_mask != 0);
+                                    fletter_cnt = isValidFLet(InternalConst.FLET_MODE_LETTER, i + 1, extfl_pend, false);
                                 } else if (extfl_pstart && AlUnicode.isCSSFirstLetter(ch)) {
-                                    fletter_cnt = isValidFLet(InternalConst.FLET_MODE_START, i + 1, extfl_pend, extfl_mask != 0);
+                                    fletter_cnt = isValidFLet(InternalConst.FLET_MODE_START, i + 1, extfl_pend, false);
                                 } else if (extfl_dialog && AlUnicode.isDashPunctuation(ch)) {
-                                    fletter_cnt = isValidFLet(InternalConst.FLET_MODE_DIALOG, i + 1, extfl_pend, extfl_mask != 0);
+                                    fletter_cnt = isValidFLet(InternalConst.FLET_MODE_DIALOG, i + 1, extfl_pend, false);
                                 }
                                 break;
                         }
@@ -1466,12 +1478,12 @@ public abstract class AlFormat {
                         (!isInvisible) && (slot_t[j] != 0x00) &&
                         ((ch > 0x20) || (ch == AlStyles.CHAR_IMAGE_E) || (ch == AlStyles.CHAR_ROWS_E))) {
 
-                    if ((ap.paragraph & (AlStyles.MASK_FOR_FLETTER - AlStyles.SL_FIRSTP - extfl_mask)) == 0 &&
-                            (style_par & (AlStyles.STYLE_MASK - extfl_mask)) == 0) {
+                    if ((ap.paragraph & (AlStyles.MASK_FOR_FLETTER - AlStyles.SL_FIRSTP)) == 0 &&
+                            (style_par & AlStyles.STYLE_MASK) == 0) {
 
                         switch (profileType) {
                             case 0x02:
-                                if ((ap.paragraph & (AlStyles.MASK_FOR_FLETTER - extfl_mask)) != AlStyles.SL_FIRSTP)
+                                if ((ap.paragraph & AlStyles.MASK_FOR_FLETTER) != AlStyles.SL_FIRSTP)
                                     break;
                             case 0x03:
                             case 0x01:
@@ -1480,15 +1492,15 @@ public abstract class AlFormat {
                                     slot_s[j] |= AlStyles.SL_MARKFIRTSTLETTER0;
                                     slot_s[j] &= AlStyles.SL_MASKSTYLESOVER;
                                     if (extfl_pend)
-                                        fletter_cnt = isValidFLet(InternalConst.FLET_MODE_LETTER, i + 1, extfl_pend, extfl_mask != 0);
+                                        fletter_cnt = isValidFLet(InternalConst.FLET_MODE_LETTER, i + 1, extfl_pend, false);
                                 } else if (extfl_pstart && AlUnicode.isDigit(ch)) {
                                     slot_s[j] |= AlStyles.SL_MARKFIRTSTLETTER0;
-                                    fletter_cnt = isValidFLet(InternalConst.FLET_MODE_LETTER, i + 1, extfl_pend, extfl_mask != 0);
+                                    fletter_cnt = isValidFLet(InternalConst.FLET_MODE_LETTER, i + 1, extfl_pend, false);
                                 } else if (extfl_pstart && AlUnicode.isCSSFirstLetter(ch)) {
-                                    if ((fletter_cnt = isValidFLet(InternalConst.FLET_MODE_START, i + 1, extfl_pend, extfl_mask != 0)) > 0)
+                                    if ((fletter_cnt = isValidFLet(InternalConst.FLET_MODE_START, i + 1, extfl_pend, false)) > 0)
                                         slot_s[j] |= AlStyles.SL_MARKFIRTSTLETTER0;
                                 } else if (extfl_dialog && AlUnicode.isDashPunctuation(ch)) {
-                                    if ((fletter_cnt = isValidFLet(InternalConst.FLET_MODE_DIALOG, i + 1, extfl_pend, extfl_mask != 0)) > 0)
+                                    if ((fletter_cnt = isValidFLet(InternalConst.FLET_MODE_DIALOG, i + 1, extfl_pend, false)) > 0)
                                         slot_s[j] |= AlStyles.SL_MARKFIRTSTLETTER0;
                                 }
                                 break;
@@ -2125,6 +2137,10 @@ public abstract class AlFormat {
         return par0.get(num).length;
     }
 
+    public boolean canGetFileSize(int num) {
+         return par0.size() > num;
+    }
+
     public int getFileSize(int num){
          return par0.get(num).blockSize;
     }
@@ -2440,6 +2456,16 @@ public abstract class AlFormat {
                 df.write(bb);
             }
 
+            if (bookLang != null) {
+                ustr = "\n\rLang: \"" + bookLang + "\"";
+                try {
+                    bb = ustr.getBytes("UTF-8");
+                } catch (UnsupportedEncodingException e1) {
+                    e1.printStackTrace();
+                }
+                df.write(bb);
+            }
+
             if (bookSeries.size() > 0) {
                 ustr = "\n\rSeries: ";
                 for (int i = 0; i < bookSeries.size(); i++) {
@@ -2623,8 +2649,13 @@ public abstract class AlFormat {
 
     }
 
-    abstract public void initState(AlBookOptions bookOptions, AlFiles myParent,
-                                   AlPreferenceOptions pref, AlStylesOptions stl);
+    public void initState(AlBookOptions bookOptions, AlFiles myParent,
+                                   AlPreferenceOptions pref) {
+        aFiles = myParent;
+        preference = pref;
+        styleStack.init(pref.defTextPar.p_par, pref.defTextPar.p_prop);
+        size = 0;
+    };
 
     public String getTableSource(int address) {
         if (ta == null)
@@ -2970,4 +3001,5 @@ public abstract class AlFormat {
     public FileBlockInfo.CacheHeadInfo loadCacheHeadInfo(){
         return null;
     }
+
 }

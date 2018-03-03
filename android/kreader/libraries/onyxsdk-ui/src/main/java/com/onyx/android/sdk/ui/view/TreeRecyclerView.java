@@ -2,6 +2,7 @@ package com.onyx.android.sdk.ui.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.dialog.DialogChoose;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -245,12 +247,12 @@ public class TreeRecyclerView extends PageRecyclerView {
             lineParams.leftMargin = (int)(imageSize + marginRight);
             splitLine.setLayoutParams(lineParams);
 
-            textViewTitle.setText(node.title);
+            textViewTitle.setText(trim(node.title));
             textViewDescription.setText(node.description);
             if(currentNode.equals(node)){
-                currentChapter.setVisibility(VISIBLE);
+                currentChapter.setBackgroundColor(Color.BLACK);
             }else{
-                currentChapter.setVisibility(GONE);
+                currentChapter.setBackgroundColor(Color.WHITE);
             }
             splitLine.setVisibility(VISIBLE);
 
@@ -314,6 +316,13 @@ public class TreeRecyclerView extends PageRecyclerView {
 
         }
 
+    }
+
+    public static String trim(String input) {
+        if (StringUtils.isNotBlank(input)) {
+            input = input.trim();
+        }
+        return input;
     }
 
     private static class TreeAdapter extends PageRecyclerView.PageAdapter<TreeNodeViewHolder> {

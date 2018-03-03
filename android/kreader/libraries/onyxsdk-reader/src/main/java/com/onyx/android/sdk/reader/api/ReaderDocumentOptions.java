@@ -22,4 +22,9 @@ public interface ReaderDocumentOptions {
 
     int getReadPosition();
 
+    String getDocumentKey();
+
+    String getDocumentDeviceUUID();
+
+    String getDocumentRandom();
 }

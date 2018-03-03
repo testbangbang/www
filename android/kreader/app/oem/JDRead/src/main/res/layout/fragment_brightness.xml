@@ -29,12 +29,15 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/imagebtn_bg"
+                android:layout_width="@dimen/brightness_button_width"
+                android:layout_height="@dimen/brightness_button_height"
+                android:background="@drawable/rectangle_stroke_round"
+                android:gravity="center"
                 android:onClick="@{()->brightnessModel.closeBrightness()}"
                 android:text="@string/closed"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textColor="@color/normal_black"
+                android:textSize="@dimen/level_three_heading_font"
+                android:textStyle="bold" />
 
             <RatingBar
                 android:id="@+id/ratingbar_light_settings"
@@ -51,13 +54,15 @@
                 android:stepSize="1.0" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/imagebtn_bg"
+                android:layout_width="@dimen/brightness_button_width"
+                android:layout_height="@dimen/brightness_button_height"
+                android:background="@drawable/rectangle_stroke_round"
+                android:gravity="center"
                 android:onClick="@{()->brightnessModel.maxBrightness()}"
                 android:text="@string/brightest_brightness"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>
 </layout>

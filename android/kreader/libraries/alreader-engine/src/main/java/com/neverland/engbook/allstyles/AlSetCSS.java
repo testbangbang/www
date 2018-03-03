@@ -1,6 +1,5 @@
 package com.neverland.engbook.allstyles;
 
-import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.util.AlStyleStack;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.InternalFunc;
@@ -243,7 +242,32 @@ public class AlSetCSS {
 
         return true;
     }
-    
+
+    public final static boolean applyValue4CSSDefault(AlOneCSSPair val, DefCSSPar defPar) {
+        if (val.m0 != 0) {
+            defPar.paragraph &= ~val.m0;
+            defPar.paragraph |= val.v0;
+            defPar.paragraph &= ~AlStyles.SL3_NUMBER_MASK;
+
+            if ((val.m0 &  AlOneCSS.FONTSIZE_MASK_ALL) != 0) {
+                if ((val.v0 &  AlOneCSS.FONTSIZE_ABSOLUTE) != 0) {
+                    defPar.fontSize0 = ((val.v0 & AlOneCSS.FONTSIZE_MASK_SIZE) >> AlOneCSS.FONTSIZE_VALUE_SHIFT) / 100.0f + 0.5f;
+                } else {
+                    float d = ((float)((val.v0 & AlOneCSS.FONTSIZE_MASK_SIZE) >> AlOneCSS.FONTSIZE_VALUE_SHIFT)) / 10000;
+                    defPar.fontSize0 = 100 * d;
+                }
+            }
+        }
+
+        if (val.m1 != 0) {
+            defPar.prop &= ~val.m1;
+            defPar.prop |= val.v1;
+
+        }
+
+        return true;
+    }
+
     public final static boolean applyValue(AlOneCSSPair val, AlStyleStack stack) {
         if (val.m0 != 0) {
 			stack.buffer[stack.position].paragraph &= ~val.m0;

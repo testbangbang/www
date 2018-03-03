@@ -81,6 +81,11 @@ public class LoginHelper {
     }
 
     public static void showUserLoginDialog(final UserLoginViewModel userLoginViewModel, final Activity context) {
+        showUserLoginDialog(userLoginViewModel, context, null);
+    }
+
+    public static void showUserLoginDialog(final UserLoginViewModel userLoginViewModel, final Activity context, String targetView) {
+        PersonalDataBundle.getInstance().setTargetView(targetView);
         final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(JDReadApplication.getInstance()), null, false);
         userLoginBinding.setLoginViewModel(userLoginViewModel);
         userLoginViewModel.isShowPassword.set(false);

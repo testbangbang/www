@@ -7,18 +7,17 @@ import com.onyx.jdread.reader.data.Reader;
  */
 
 public class NextScreenRequest extends ReaderBaseRequest {
-    private Reader reader;
 
     public NextScreenRequest(Reader reader) {
-        this.reader = reader;
+        super(reader);
     }
 
     @Override
     public NextScreenRequest call() throws Exception {
-        reader.getReaderHelper().nextScreen();
-        updateSetting(reader);
-        reader.getReaderViewHelper().updatePageView(reader,getReaderUserDataInfo(),getReaderViewInfo());
-        saveReaderOptions(reader);
+        getReader().getReaderHelper().nextScreen();
+        updateSetting(getReader());
+        getReader().getReaderViewHelper().updatePageView(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
+        saveReaderOptions(getReader());
         return this;
     }
 }

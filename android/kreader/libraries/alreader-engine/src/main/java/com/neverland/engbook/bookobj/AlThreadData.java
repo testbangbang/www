@@ -278,6 +278,11 @@ class AlThreadData {
 						startThread(param, TAL_THREAD_TASK.PARSER_AFTER_DATA, syncLoading);
 					}
 				}
+			} else
+			if (res == TAL_NOTIFY_RESULT.ERROR) {
+				this.clearObjOpen();
+				this.clearWork0();
+				this.clearWork1();
 			} else {
 				this.clearWork0();
 			}

@@ -1,6 +1,7 @@
 package com.onyx.jdread.library.ui;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
@@ -9,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jingdong.app.reader.data.DrmTools;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.event.ItemClickEvent;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
@@ -57,6 +60,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * Created by hehai on 18-1-17.
@@ -149,7 +153,7 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                queryTextSubmit(query);
+                queryTextSubmit(getSearchQueryOrHint(query));
                 return true;
             }
 
@@ -185,6 +189,7 @@ public class SearchBookFragment extends BaseFragment {
     private void queryTextSubmit(String query) {
         if (StringUtils.isNullOrEmpty(query)) {
             ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
+            return;
         }
         if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
             ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
@@ -202,6 +207,25 @@ public class SearchBookFragment extends BaseFragment {
                 loadSearchHistory();
             }
         });
+    }
+
+    private String getSearchQueryOrHint(CharSequence query) {
+        if (TextUtils.isEmpty(query)) {
+            CharSequence hint = binding.searchView.getQueryHint();
+            if (hint != null && !ResManager.getString(R.string.search_view_hint).equals(hint.toString())) {
+                query = hint.toString();
+            }
+        }
+        return query == null ? null : query.toString();
+    }
+
+    private void doSearchQueryOrHint(CharSequence query) {
+        query = getSearchQueryOrHint(query);
+        if (TextUtils.isEmpty(query)) {
+            ToastUtil.showToast(R.string.empty_search_key_prompt);
+            return;
+        }
+        binding.searchView.setQuery(query, true);
     }
 
     private void searchBook(final boolean submit, final RxCallback callback) {
@@ -271,6 +295,7 @@ public class SearchBookFragment extends BaseFragment {
         loadHotSearchKey();
         loadSearchHistory();
         checkView();
+        updateHotSearchView(searchBookModel.getHotWords(), searchBookModel.getDefaultHotWord());
     }
 
     private void loadSearchHistory() {
@@ -288,13 +313,24 @@ public class SearchBookFragment extends BaseFragment {
         searchHotWordAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                hotSearchAdapter.setSearchHotWords(searchHotWordAction.getHotWords());
-                String defaultKeyWord = searchHotWordAction.getDefaultKeyWord();
-                if (!TextUtils.isEmpty(defaultKeyWord)) {
-                    binding.searchView.setQueryHint(defaultKeyWord);
-                }
+                updateHotSearchResult(searchHotWordAction.getHotWords(), searchHotWordAction.getDefaultKeyWord());
             }
         });
+    }
+
+    private void updateHotSearchResult(List<String> hotWords, String defaultKeyword) {
+        searchBookModel.reAddHotWords(hotWords);
+        searchBookModel.setDefaultHotWord(defaultKeyword);
+        updateHotSearchView(hotWords, defaultKeyword);
+    }
+
+    private void updateHotSearchView(List<String> hotWords, String defaultKeyword) {
+        if (!CollectionUtils.isNullOrEmpty(hotWords)) {
+            hotSearchAdapter.setSearchHotWords(hotWords);
+        }
+        if (!TextUtils.isEmpty(defaultKeyword)) {
+            binding.searchView.setQueryHint(defaultKeyword);
+        }
     }
 
     @Override
@@ -335,24 +371,17 @@ public class SearchBookFragment extends BaseFragment {
 
     @Subscribe
     public void onSearchBookKeyEvent(SearchBookKeyEvent event) {
-        binding.searchView.setQuery(event.getSearchKey(), true);
+        doSearchQueryOrHint(event.getSearchKey());
     }
 
     @Subscribe
     public void onKeyCodeEnterEvent(KeyCodeEnterEvent event) {
-        if (StringUtils.isNullOrEmpty(binding.searchView.getQuery().toString())) {
-            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
-        }
+        doSearchQueryOrHint(binding.searchView.getQuery());
     }
 
     @Subscribe
     public void onSubmitSearchBookEvent(SubmitSearchBookEvent event) {
-        CharSequence query = binding.searchView.getQuery();
-        if (!TextUtils.isEmpty(query)) {
-            binding.searchView.setQuery(query, true);
-        } else {
-            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
-        }
+        doSearchQueryOrHint(binding.searchView.getQuery());
     }
 
     @Subscribe
@@ -397,6 +426,11 @@ public class SearchBookFragment extends BaseFragment {
         }
         DocumentInfo documentInfo = new DocumentInfo();
         documentInfo.setBookPath(filePath);
+        DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
+        securityInfo.setKey(model.key.get());
+        securityInfo.setRandom(model.random.get());
+        securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
+        documentInfo.setSecurityInfo(securityInfo);
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 

@@ -9,21 +9,20 @@ import com.onyx.jdread.reader.data.Reader;
  */
 
 public class PreloadPreviousScreenRequest extends ReaderBaseRequest {
-    private Reader reader;
 
     public PreloadPreviousScreenRequest(Reader reader) {
-        this.reader = reader;
+        super(reader);
     }
 
     @Override
     public PreloadPreviousScreenRequest call() throws Exception {
-        reader.getReaderHelper().getReaderLayoutManager().setSavePosition(false);
-        final PositionSnapshot snapshot = reader.getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
-        if (reader.getReaderHelper().previousScreen()) {
+        getReader().getReaderHelper().getReaderLayoutManager().setSavePosition(false);
+        final PositionSnapshot snapshot = getReader().getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().saveSnapshot();
+        if (getReader().getReaderHelper().previousScreen()) {
             ReaderDrawContext context = ReaderDrawContext.create(false);
-            reader.getReaderHelper().getReaderLayoutManager().drawVisiblePages(reader, context, getReaderViewInfo());
-            reader.getReaderHelper().addToCache(context.renderingBitmap);
-            reader.getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().restoreBySnapshot(snapshot);
+            getReader().getReaderHelper().getReaderLayoutManager().drawVisiblePages(getReader(), context, getReaderViewInfo());
+            getReader().getReaderHelper().addToCache(context.renderingBitmap);
+            getReader().getReaderHelper().getReaderLayoutManager().getCurrentLayoutProvider().restoreBySnapshot(snapshot);
         }
         return this;
     }

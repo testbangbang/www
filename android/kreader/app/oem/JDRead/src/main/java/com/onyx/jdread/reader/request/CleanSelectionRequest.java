@@ -7,16 +7,15 @@ import com.onyx.jdread.reader.data.Reader;
  */
 
 public class CleanSelectionRequest extends ReaderBaseRequest {
-    private Reader reader;
 
     public CleanSelectionRequest(Reader reader) {
-        this.reader = reader;
+        super(reader);
     }
 
     @Override
     public CleanSelectionRequest call() throws Exception {
-        reader.getReaderSelectionHelper().clear();
-        updateSetting(reader);
+        getReader().getReaderSelectionHelper().clear();
+        updateSetting(getReader());
         return this;
     }
 }

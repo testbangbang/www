@@ -37,14 +37,16 @@ public class RxLoadPicByPathRequest extends RxBaseFSRequest {
         File config = new File(dir, "config.txt");
         if (config.exists()) {
             String checkedPath = JDPreferenceManager.getStringValue(R.string.screen_saver_key, null);
-            List<ScreenSaversBean> beans = JSONObject.parseArray(FileUtils.readContentOfFile(config), ScreenSaversBean.class);
+            String s = FileUtils.readContentOfFile(config);
+            List<ScreenSaversBean> beans = JSONObject.parseArray(s, ScreenSaversBean.class);
             for (ScreenSaversBean bean : beans) {
                 ScreenSaversModel.ItemModel itemModel = new ScreenSaversModel.ItemModel();
-                String path = dir + File.separator + bean.getPath();
+                String path = dir + File.separator + bean.getPics().get(0);
                 if (FileUtils.fileExist(path)) {
                     itemModel.picPath.set(path);
+                    itemModel.pics.addAll(bean.getPics());
                     itemModel.name.set(bean.getDisplay());
-                    itemModel.isChecked.set(StringUtils.isNotBlank(checkedPath) ? checkedPath.equals(path) : bean.isChecked());
+                    itemModel.isChecked.set(StringUtils.isNotBlank(checkedPath) ? checkedPath.equals(bean.getDisplay()) : bean.isChecked());
                     pics.add(itemModel);
                 }
             }

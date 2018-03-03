@@ -1,5 +1,6 @@
 package com.onyx.jdread.library.action;
 
+import android.app.Activity;
 import android.content.Context;
 import android.databinding.ObservableList;
 
@@ -35,9 +36,9 @@ public class LibrarySelectionAction extends BaseAction<LibraryDataBundle> {
     private Map<String, List<Metadata>> chosenItemsMap;
     private List<DataModel> libraryList = new ArrayList<>();
     private DataModel librarySelected;
-    private Context context;
+    private Activity context;
 
-    public LibrarySelectionAction(Map<String, List<Metadata>> chosenItemsMap, Context context) {
+    public LibrarySelectionAction(Map<String, List<Metadata>> chosenItemsMap, Activity context) {
         this.context = context;
         this.chosenItemsMap = chosenItemsMap;
     }

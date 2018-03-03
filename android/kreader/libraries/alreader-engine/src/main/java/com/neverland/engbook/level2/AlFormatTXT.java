@@ -16,7 +16,6 @@ import com.neverland.engbook.unicode.CP949;
 import com.neverland.engbook.unicode.CP950;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 import com.neverland.engbook.util.ChineseTextSectionRecognizer;
 
 public class AlFormatTXT extends AlFormat {
@@ -62,16 +61,13 @@ public class AlFormatTXT extends AlFormat {
 		return aFiles.getFileMD5();
 	}
 
+	@Override
 	public void initState(AlBookOptions bookOptions, AlFiles myParent, 
-			AlPreferenceOptions pref, AlStylesOptions stl) {
+			AlPreferenceOptions pref) {
+		super.initState(bookOptions, myParent, pref);
+
 		ident = "TEXT";
 
-		aFiles = myParent;
-		preference = pref;
-		styles = stl;
-
-		size = 0;
-				
 		autoCodePage = bookOptions.codePage == TAL_CODE_PAGES.AUTO;
 		aFiles.applicationDirectory = bookOptions.applicationDirectory;
 		
@@ -256,6 +252,10 @@ public class AlFormatTXT extends AlFormat {
 		//AlIntHolder jVal = new AlIntHolder(0);
 		
 		for (int i = start_pos; i < stop_posRequest;) {
+			if (isAborted()) {
+				return;
+			}
+
 			if(isStopParser){
 				return;
 			}
@@ -270,6 +270,10 @@ public class AlFormatTXT extends AlFormat {
 			}
 			
 			for (j = 0; j < buf_cnt;) {
+				if (isAborted()) {
+					return;
+				}
+
 				if(isStopParser){
 					return;
 				}

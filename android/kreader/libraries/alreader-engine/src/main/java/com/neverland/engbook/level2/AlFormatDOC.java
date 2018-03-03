@@ -1,11 +1,15 @@
 package com.neverland.engbook.level2;
 
+import com.neverland.engbook.allstyles.AlCSSHtml;
+import com.neverland.engbook.allstyles.AlCSSStyles;
+import com.neverland.engbook.allstyles.AlOneCSS;
 import com.neverland.engbook.forpublic.AlBookOptions;
+import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
-import com.neverland.engbook.level1.AlFileDoc;
 import com.neverland.engbook.level1.AlFiles;
+import com.neverland.engbook.level1.AlFilesDOC;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.unicode.CP932;
 import com.neverland.engbook.unicode.CP936;
@@ -13,10 +17,10 @@ import com.neverland.engbook.unicode.CP949;
 import com.neverland.engbook.unicode.CP950;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlOneLink;
+import com.neverland.engbook.util.AlOneXMLAttrClass;
 import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
-import com.neverland.engbook.util.AlStylesOptions;
 
 @SuppressWarnings("ConstantConditions")
 public class AlFormatDOC extends AlFormat {
@@ -30,7 +34,7 @@ public class AlFormatDOC extends AlFormat {
         return false;
     }
 
-    AlFileDoc aDoc = null;
+    AlFilesDOC aDoc = null;
     private final StringBuilder			titles = new StringBuilder();
     private int 					section_count = 0;
     private boolean is_hidden = false;
@@ -39,17 +43,19 @@ public class AlFormatDOC extends AlFormat {
     private static final int STATE_LINK13 = 1;
     private static final int STATE_LINK14 = 2;
 
+    AlCSSStyles			cssStyles = null;
+    public AlFormatDOC() {
+        cssStyles = new AlCSSHtml();
+    }
 
     @Override
-    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl)  {
+    public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref)  {
+
+        super.initState(bookOptions, myParent, pref);
+
         ident = "DOC";
 
-        aDoc = (AlFileDoc)myParent;
-        aFiles = myParent;
-        preference = pref;
-        styles = stl;
-
-        size = 0;
+        aDoc = (AlFilesDOC)myParent;
 
         if (aDoc.isUnicode()) {
             autoCodePage = false;
@@ -69,6 +75,10 @@ public class AlFormatDOC extends AlFormat {
                 setCP(bookOptions.codePage);
             }
         }
+
+        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_EMPTY, pref.cssSupportLevel/*-AlEngineOptions.CSS_SUPPORT_FONT_SIZE*/);
+        if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
+            cssStyles.disableExternal = true;
 
         titles.setLength(0);
         is_hidden = false;
@@ -302,6 +312,11 @@ public class AlFormatDOC extends AlFormat {
         }
     }
 
+    private boolean prev_tag_special = false;
+    private int prev_format_special = 0;
+    private int prev_font_size = 0;
+    private final AlOneXMLAttrClass cls = new AlOneXMLAttrClass();
+
 
     @Override
     protected void parser(int start_pos, int stop_pos) {
@@ -310,6 +325,10 @@ public class AlFormatDOC extends AlFormat {
         char 	ch, ch1;
 
         for (int i = start_pos, j; i < stop_pos;) {
+            if (isAborted()) {
+                return;
+            }
+
             buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
             if (i + buf_cnt > stop_pos) {
                 buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, stop_pos - i + 2);
@@ -321,6 +340,10 @@ public class AlFormatDOC extends AlFormat {
             }
 
             for (j = 0; j < buf_cnt;) {
+                if (isAborted()) {
+                    return;
+                }
+
                 allState.start_position = i + j;
 
                 ch = (char)parser_inBuff[j++];
@@ -432,13 +455,19 @@ public class AlFormatDOC extends AlFormat {
                         allState.start_position < aDoc.format.start ||
                                 allState.start_position >= aDoc.format.limit) {
 
-                    aDoc.getFormat(allState.start_position == 0 ? 0 : allState.start_position - (aDoc.isUnicode() ? 2 : 1));
-                    int prev_special = aDoc.format.special();
-                    aDoc.getFormat(allState.start_position);
-                    int real_format = aDoc.format.value;
-                    int real_special = aDoc.format.special();
 
-                    if ((real_format & AlFileDoc.Format.STYLE_NEWPAR) != 0) {
+
+                    //aDoc.getFormat(allState.start_position == 0 ? 0 : allState.start_position - (aDoc.isUnicode() ? 2 : 1));
+                    //int prev_special = aDoc.format.getSpecial();
+                    aDoc.getFormat(allState.start_position);
+                    int real_format = aDoc.format.getFormat();
+                    int real_special = aDoc.format.getSpecial();
+
+                    styleStack.clearTo(1);
+
+                    if ((real_format & AlFilesDOC.Format.STYLE_NEWPAR) != 0) {
+                        styleStack.clearTo(0);
+
                         allState.start_position_par = allState.start_position;
                         if (parText.length > 0) {
                             newParagraph();
@@ -446,64 +475,103 @@ public class AlFormatDOC extends AlFormat {
                             newEmptyTextParagraph();
                         }
 
-                        long old_paragraph = styleStack.buffer[styleStack.position].paragraph;
-                        long old_prop = styleStack.buffer[styleStack.position].prop;
-
-                        clearParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH);
-                        clearPropStyle(AlParProperty.SL2_JUST_MASK);
-                        clearPropStyle(AlParProperty.SL2_INDENT_MASK);
-                        clearPropStyle(AlParProperty.SL2_MARGL_EM_MASK);
-                        clearPropStyle(AlParProperty.SL2_MARGR_EM_MASK);
-
-                        switch (aDoc.format.level()) {
+                        cls.clear();
+                        switch (aDoc.format.getLevel()) {
                             case 1:
                             case 2:
+                                prev_tag_special = true;
+                                styleStack.push(AlFormatTag.TAG_TITLE, cls);
+                                cssStyles.apply1ClassX(AlFormatTag.TAG_TITLE, cls, styleStack);
                                 newEmptyTextParagraph();
                                 setParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH);
-                                setPropStyle(AlParProperty.SL2_JUST_CENTER);
-                                setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGL_EM_SHIFT);
-                                setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGR_EM_SHIFT);
+
+                                if ((cssStyles.supportLevel & AlEngineOptions.CSS_SUPPORT_JUSTIFY) != 0) {
+                                    clearPropStyle(AlParProperty.SL2_JUST_MASK);
+                                    switch (aDoc.format.getAlign()) {
+                                        case AlFilesDOC.Format.LEFT:
+                                            setPropStyle(AlParProperty.SL2_JUST_LEFT);
+                                            break;
+                                        case AlFilesDOC.Format.RIGHT:
+                                            setPropStyle(AlParProperty.SL2_JUST_RIGHT);
+                                            break;
+                                        case AlFilesDOC.Format.CENTER:
+                                            setPropStyle(AlParProperty.SL2_JUST_CENTER);
+                                            break;
+                                    }
+                                }
                                 break;
                             case 3:
+                                prev_tag_special = true;
+                                styleStack.push(AlFormatTag.TAG_SUBTITLE, cls);
+                                cssStyles.apply1ClassX(AlFormatTag.TAG_SUBTITLE, cls, styleStack);
+
                                 newEmptyTextParagraph();
                                 setParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH);
-                                setPropStyle(AlParProperty.SL2_JUST_CENTER);
-                                setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGL_EM_SHIFT);
-                                setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGR_EM_SHIFT);
+
+                                if ((cssStyles.supportLevel & AlEngineOptions.CSS_SUPPORT_JUSTIFY) != 0) {
+                                    clearPropStyle(AlParProperty.SL2_JUST_MASK);
+                                    switch (aDoc.format.getAlign()) {
+                                        case AlFilesDOC.Format.LEFT:
+                                            setPropStyle(AlParProperty.SL2_JUST_LEFT);
+                                            break;
+                                        case AlFilesDOC.Format.RIGHT:
+                                            setPropStyle(AlParProperty.SL2_JUST_RIGHT);
+                                            break;
+                                        case AlFilesDOC.Format.CENTER:
+                                            setPropStyle(AlParProperty.SL2_JUST_CENTER);
+                                            break;
+                                    }
+                                }
                                 break;
                             default:
-                                if ((old_paragraph & AlStyles.SL_SPECIAL_PARAGRAPGH) != 0)
+                                if (prev_tag_special)
                                     newEmptyTextParagraph();
+                                prev_tag_special = false;
 
-                                switch (aDoc.format.align()) {
-                                    case AlFileDoc.Format.LEFT:
-                                        setPropStyle(AlParProperty.SL2_JUST_LEFT);
-                                        setPropStyle(AlParProperty.SL2_INDENT_DEFAULT);
+                                switch (aDoc.format.getAlign()) {
+                                    case AlFilesDOC.Format.LEFT:
+                                        cls.addClass(AlFormatTag.TAG_LEFT);
                                         break;
-                                    case AlFileDoc.Format.RIGHT:
-                                        setPropStyle(AlParProperty.SL2_JUST_RIGHT);
-                                        setPropStyle(AlParProperty.SL2_INDENT_DEFAULT);
+                                    case AlFilesDOC.Format.RIGHT:
+                                        cls.addClass(AlFormatTag.TAG_RIGHT);
                                         break;
-                                    case AlFileDoc.Format.CENTER:
-                                        setPropStyle(AlParProperty.SL2_JUST_CENTER);
-                                        setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGL_EM_SHIFT);
-                                        setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGR_EM_SHIFT);
+                                    case AlFilesDOC.Format.CENTER:
+                                        cls.addClass(AlFormatTag.TAG_CENTER);
                                         break;
                                     default:
-                                        setPropStyle(AlParProperty.SL2_INDENT_DEFAULT);
                                         break;
                                 }
+
+                                styleStack.push(AlFormatTag.TAG_P, cls);
+                                cssStyles.apply1ClassX(AlFormatTag.TAG_P, cls, styleStack);
                         }
+
+                        if (aDoc.format.getPageBreakBefore())
+                            setPropStyle(AlParProperty.SL2_BREAK_BEFORE);
+                        if ((cssStyles.supportLevel & AlEngineOptions.CSS_SUPPORT_TEXT_INDENT) != 0)
+                            setTextIndent(aDoc.format.getIndFirst());
+                        if ((cssStyles.supportLevel & AlEngineOptions.CSS_SUPPORT_HORIZONTAL_MARGINS) != 0) {
+                            setLMargin(aDoc.format.getIndLeft());
+                            setRMargin(aDoc.format.getIndRight());
+                        }
+                        if ((cssStyles.supportLevel & AlEngineOptions.CSS_SUPPORT_VERTICAL_MARGINS) != 0) {
+                            setTMargin(aDoc.format.getIndBefore());
+                            setBMargin(aDoc.format.getIndAfter());
+                        }
+
                     }
 
-                    is_hidden = (real_format & AlFileDoc.Format.STYLE_HIDDEN) != 0;
+                    cls.clear();
+                    styleStack.push(AlFormatTag.TAG_NOVALUE, cls);
+
+                    is_hidden = (real_format & AlFilesDOC.Format.STYLE_HIDDEN) != 0;
 
                     int new_setstyle = real_format & DOCSTYLEMASK;
                     clearTextStyle((~new_setstyle) & DOCSTYLEMASK);
                     setTextStyle(new_setstyle);
 
                     int old_section_count = section_count;
-                    section_count = aDoc.format.level();
+                    section_count = aDoc.format.getLevel();
 
                     if (allState.state_code_flag && old_section_count != section_count && old_section_count > 0)
                         insertTitle(old_section_count);
@@ -513,8 +581,20 @@ public class AlFormatDOC extends AlFormat {
                         titles.setLength(0);
                     }
 
-                    if (prev_special != real_special) {
-                        switch (prev_special) {
+                    //
+                    //clearParagraphStyle(AlStyles.SL_SIZE_MASK);
+                    int new_size = aDoc.format.getFontSize() * 5;
+                    //
+                    if ((cssStyles.supportLevel & AlEngineOptions.CSS_SUPPORT_FONT_SIZE) != 0)
+                        styleStack.setActualSize(new_size);
+                    //
+                    if (parText.length != 0 && prev_font_size != new_size)
+                        doTextChar(getTextSize(), false);
+                    prev_font_size = new_size;
+                    //
+
+                    if (prev_format_special != real_special) {
+                        switch (prev_format_special) {
                             case 0x02: // FOOTREF
                             case 0x04: // ENDREF
                                 clearTextStyle(AlStyles.STYLE_LINK);
@@ -556,6 +636,7 @@ public class AlFormatDOC extends AlFormat {
                                 break;
                         }
 
+                        prev_format_special = real_special;
                     }
                 }
 
@@ -575,9 +656,9 @@ public class AlFormatDOC extends AlFormat {
                             prepareLink(ch);
                             break;
                         case 0x01:
-                            if (allState.skipped_flag == 0 && aDoc.format.special() == 0x01) {
+                            if (allState.skipped_flag == 0 && aDoc.format.getSpecial() == 0x01) {
                                 addCharFromTag((char) AlStyles.CHAR_IMAGE_S, false);
-                                addTextFromTag(String.format("%d_%d", aDoc.format.xdata, aDoc.format.value), false);
+                                addTextFromTag(String.format("%d_%d", aDoc.format.xdata, aDoc.format.getFormat()), false);
                                 addCharFromTag((char)AlStyles.CHAR_IMAGE_E, false);
                             }
                             break;
@@ -619,6 +700,62 @@ public class AlFormatDOC extends AlFormat {
         newParagraph();
         // end must be cod
     }
+
+    private void setTextIndent(int val) {
+        val /= 20/* form 1440 to 72 */ * 6 /* pt to half em */;
+        if (val < 0)
+            val = 0;
+        if (val > AlOneCSS.MARG_MAX_VALUE)
+            val = (int) AlOneCSS.MARG_MAX_VALUE;
+        clearPropStyle(AlParProperty.SL2_INDENT_MASK);
+        if (val > 0)
+            setPropStyle(AlParProperty.SL2_INDENT_EM | (((long)val) << AlParProperty.SL2_INDENT_SHIFT));
+    }
+
+    private void setLMargin(int val) {
+        val /= 20/* form 1440 to 72 */ * 6 /* pt to half em */;
+        if (val < 0)
+            val = 0;
+        if (val > AlOneCSS.MARG_MAX_VALUE)
+            val = (int) AlOneCSS.MARG_MAX_VALUE;
+        clearPropStyle(AlParProperty.SL2_MARGL_EM_MASK);
+        if (val > 0)
+            setPropStyle(((long)val) << AlParProperty.SL2_MARGL_EM_SHIFT);
+    }
+
+    private void setRMargin(int val) {
+        val /= 20/* form 1440 to 72 */ * 6 /* pt to half em */;
+        if (val < 0)
+            val = 0;
+        if (val > AlOneCSS.MARG_MAX_VALUE)
+            val = (int) AlOneCSS.MARG_MAX_VALUE;
+        clearPropStyle(AlParProperty.SL2_MARGR_EM_MASK);
+        if (val > 0)
+            setPropStyle(((long)val) << AlParProperty.SL2_MARGR_EM_SHIFT);
+    }
+
+    private void setTMargin(int val) {
+        val /= 20/* form 1440 to 72 */ * 6 /* pt to half em */;
+        if (val < 0)
+            val = 0;
+        if (val > AlOneCSS.MARG_MAX_VALUE)
+            val = (int) AlOneCSS.MARG_MAX_VALUE;
+        clearPropStyle(AlParProperty.SL2_MARGT_MASK);
+        if (val > 0)
+            setPropStyle(((long)val) << AlParProperty.SL2_MARGT_SHIFT);
+    }
+
+    private void setBMargin(int val) {
+        val /= 20/* form 1440 to 72 */ * 6 /* pt to half em */;
+        if (val < 0)
+            val = 0;
+        if (val > AlOneCSS.MARG_MAX_VALUE)
+            val = (int) AlOneCSS.MARG_MAX_VALUE;
+        clearPropStyle(AlParProperty.SL2_MARGB_MASK);
+        if (val > 0)
+            setPropStyle(((long)val) << AlParProperty.SL2_MARGB_SHIFT);
+    }
+
 
     @Override
     public AlOneImage getImageByName(String name) {

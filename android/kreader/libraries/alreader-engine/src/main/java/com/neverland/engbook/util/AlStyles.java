@@ -70,6 +70,7 @@ public final class AlStyles {
 	public static final long			SL_FONT_IMASK =				~SL_FONT_MASK;
 	public static final long			SL_FONT_SHIFT =				26L;
 
+
 	public static final long			SL_COLOR_TEXT =				0x0000000000000000L; // 
 	//public static final long			SL_COLOR_BACK =				0x0000000010000000L; //
 	public static final long			SL_COLOR_NOVISIBLE =		0x0000000010000000L; // 
@@ -83,8 +84,21 @@ public final class AlStyles {
 	public static final long			SL_COLOR_MASK =				0x0000000070000000L;
 	public static final long			SL_COLOR_IMASK =			~SL_COLOR_MASK;
 	public static final long			SL_COLOR_SHIFT =			28L;
-	// !!! special case - replace color value!!!
-	public static final long			SL_IMAGE_OK =				SL_COLOR_LINK;
+
+	// !!! special case - image properties!!!
+	public static final long			SL_SCALE_MASK =				SL_COLOR_MASK;
+	public static final long			SL_SCALE_IMASK =			SL_COLOR_IMASK;
+	public static final long			SL_SCALE_SHIFT =			SL_COLOR_SHIFT;
+	public static final long			SL_SCALE_MAX =				7L;
+	public static final long			SL_IMAGE_IMASK =			SL_FONT_IMASK;
+	public static final long			SL_IMAGE_OK =				SL_FONT_CODE;
+	/*public static final long			SL_SCALE_MASK =				SL_FONT_MASK;
+	public static final long			SL_SCALE_IMASK =			SL_FONT_IMASK;
+	public static final long			SL_SCALE_SHIFT =			SL_FONT_SHIFT;
+	public static final long			SL_SCALE_MAX =				3;
+	public static final long			SL_IMAGE_IMASK =			SL_COLOR_IMASK;
+	public static final long			SL_IMAGE_OK =				SL_COLOR_LINK;*/
+	///////////////////////////////////////////
 	public static final long			LMASK_SPECIALHYHP =			~(SL_COLOR_MASK | SL_PAR);
 
 	public static final long			SL_SHADOW =					0x0000000080000000L;	
@@ -117,7 +131,7 @@ public final class AlStyles {
 	
 	
 	public static final long			SL_MASKSTYLESOVER =			0xFFFFFFFFFFFFFFFCL;	
-	public static final long			MASK_FOR_FLETTER = SL_COVER | SL_SPECIAL_PARAGRAPGH | STYLE_MASK;
+	public static final long			MASK_FOR_FLETTER = SL_COVER | SL_FIRSTP | SL_SPECIAL_PARAGRAPGH | STYLE_MASK;
 	
 	public static final long 			LMASK_REAL_FONT = STYLE_CODE | STYLE_ITALIC | STYLE_BOLD | SL_FONT_MASK | STYLE_STRIKE | SL_MARKFIRTSTLETTER0 |
 			STYLE_SUP | STYLE_SUB | SL_SIZE_MASK | SL_FONT_MASK;

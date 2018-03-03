@@ -18,7 +18,6 @@ import java.util.List;
 
 public class GotoSearchLocationRequest extends GotoPositionRequest {
     private List<ReaderSelection> searchResults;
-    private Reader reader;
 
     public GotoSearchLocationRequest(List<ReaderSelection> results, Reader reader, String position) {
         super(reader, position, false,true);
@@ -26,14 +25,13 @@ public class GotoSearchLocationRequest extends GotoPositionRequest {
         for (ReaderSelection searchResult : results) {
             this.searchResults.add(searchResult.clone());
         }
-        this.reader = reader;
     }
 
     @Override
     public GotoSearchLocationRequest call() throws Exception {
         super.call();
-        LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderHelper().getReaderLayoutManager());
-        reader.getReaderViewHelper().updatePageView(reader, getReaderUserDataInfo(), getReaderViewInfo(), null, searchResults);
+        LayoutProviderUtils.updateReaderViewInfo(getReader(), getReaderViewInfo(), getReader().getReaderHelper().getReaderLayoutManager());
+        getReader().getReaderViewHelper().updatePageView(getReader(), getReaderUserDataInfo(), getReaderViewInfo(), null, searchResults);
         return this;
     }
 }

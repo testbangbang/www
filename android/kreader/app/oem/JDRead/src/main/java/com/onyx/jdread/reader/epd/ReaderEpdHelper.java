@@ -57,7 +57,7 @@ public class ReaderEpdHelper {
     public void prepareInitialUpdate(final Context context) {
         // read init value from context.
         gcInterval = JDPreferenceManager.getIntValue(SettingRefreshModel.REFRESH_RATE,DEFAULT_GC_INTERVAL);
-        refreshCount = gcInterval;
+        refreshCount = 0;
     }
 
     public boolean isUseDefaultUpdate() {

@@ -65,15 +65,20 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_menu_brightness_layout_height"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/fragment_content_padding"
+            android:paddingRight="@dimen/fragment_content_padding">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/brightness_button_width"
+                android:layout_height="@dimen/brightness_button_height"
+                android:background="@drawable/rectangle_stroke_round"
+                android:gravity="center"
                 android:onClick="@{()->systemBarPopModel.brightnessModel.closeBrightness()}"
                 android:text="@string/closed"
                 android:textColor="@color/normal_black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:textStyle="bold" />
 
             <RatingBar
                 android:id="@+id/ratingbar_light_settings"
@@ -90,12 +95,15 @@
                 android:stepSize="1.0" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/brightness_button_width"
+                android:layout_height="@dimen/brightness_button_height"
+                android:background="@drawable/rectangle_stroke_round"
+                android:gravity="center"
                 android:onClick="@{()->systemBarPopModel.brightnessModel.maxBrightness()}"
                 android:text="@string/brightest_brightness"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <View
