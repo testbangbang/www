@@ -2,8 +2,11 @@ package com.onyx.jdread.personal.request.cloud;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtAndUnlimitedBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtAndUnlimitedItemBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalBookBean;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -23,13 +26,13 @@ import retrofit2.Response;
 public class RxGetBoughtAndUnlimitedRequest extends RxBaseCloudRequest {
     private JDAppBaseInfo baseInfo;
     private BoughtAndUnlimitedBean resultBean;
-    private List<Metadata> boughtBooks = new ArrayList<>();
+    private List<PersonalBookBean> boughtBooks = new ArrayList<>();
 
     public BoughtAndUnlimitedBean getResultBean() {
         return resultBean;
     }
 
-    public List<Metadata> getBooks() {
+    public List<PersonalBookBean> getBooks() {
         return boughtBooks;
     }
 
@@ -66,14 +69,20 @@ public class RxGetBoughtAndUnlimitedRequest extends RxBaseCloudRequest {
             if (data != null) {
                 List<BoughtAndUnlimitedItemBean> items = data.items;
                 for (BoughtAndUnlimitedItemBean bean : items) {
+                    PersonalBookBean bookBean = new PersonalBookBean();
                     Metadata metadata = new Metadata();
+                    String type = baseInfo.getRequestParamsMap().get(Constants.SEARCH_TYPE);
+                    if (StringUtils.isNotBlank(type)) {
+                        metadata.setOrdinal(Constants.TYPE_BOUGHT.equals(type) ? 0 : 1);
+                    }
                     metadata.setName(bean.name);
                     metadata.setAuthors(bean.author);
                     metadata.setCloudId(String.valueOf(bean.ebook_id));
                     metadata.setCoverUrl(bean.large_image_url);
-                    //metadata.setSize((long) (bean.size * 1000 * 1000));
+                    metadata.setSize((long) (bean.file_size * 1000 * 1000));
                     metadata.setIdString(String.valueOf(bean.ebook_id));
-                    boughtBooks.add(metadata);
+                    bookBean.metadata = metadata;
+                    boughtBooks.add(bookBean);
                 }
             }
         }
