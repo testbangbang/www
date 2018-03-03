@@ -8,14 +8,19 @@ import android.graphics.Rect;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.reader.highlight.SelectionInfo;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 public class ReaderViewUtil {
     private static final String TAG = ReaderViewUtil.class.getSimpleName();
@@ -97,5 +102,9 @@ public class ReaderViewUtil {
         }
 
         return bRet;
+    }
+
+    static public String getListKey(final Map<String, SelectionInfo> list) {
+        return FileUtils.computeMD5(JSON.toJSONString(list));
     }
 }

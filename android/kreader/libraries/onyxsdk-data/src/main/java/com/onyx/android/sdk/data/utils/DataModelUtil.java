@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.utils;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
+import com.onyx.android.sdk.data.model.BookExtraInfoBean;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.FileModel;
 import com.onyx.android.sdk.data.model.Library;
@@ -69,6 +70,12 @@ public class DataModelUtil {
             model.progress.set(StringUtils.isNullOrEmpty(metadata.getProgress()) ? "" : metadata.getProgress());
             model.desc.set(metadata.getDescription());
             model.absolutePath.set(metadata.getNativeAbsolutePath());
+            String extraInfoStr = metadata.getDownloadInfo();
+            BookExtraInfoBean extraInfoBean = JSONObjectParseUtils.toBean(extraInfoStr, BookExtraInfoBean.class);
+            if (extraInfoBean != null) {
+                model.key.set(extraInfoBean.key);
+                model.random.set(extraInfoBean.random);
+            }
             CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());
             if (bitmap != null) {
                 model.coverBitmap.set(bitmap);

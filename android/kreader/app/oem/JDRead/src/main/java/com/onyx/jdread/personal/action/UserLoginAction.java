@@ -123,7 +123,7 @@ public class UserLoginAction extends BaseAction {
         if (Constants.RESULT_CODE_SUCCESS.equals(code)) {
             LoginHelper.getUserInfo(dataBundle);
             autoSign();
-            dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success)));
+            dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success), dataBundle.getTargetView()));
             if (rxCallback != null) {
                 rxCallback.onNext(UserLoginAction.class);
             }

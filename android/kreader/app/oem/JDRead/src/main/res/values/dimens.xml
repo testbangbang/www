@@ -541,4 +541,5 @@
     <dimen name="brightness_button_height">27dp</dimen>
     <dimen name="reader_brightness_bar_padding">25dp</dimen>
     <dimen name="single_dialog_margin_left">20dp</dimen>
+    <dimen name="search_line_width">2px</dimen>
 </resources>
