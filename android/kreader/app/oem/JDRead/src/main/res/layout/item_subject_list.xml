@@ -33,9 +33,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
-                android:ellipsize="end"
+                android:ellipsize="middle"
                 android:gravity="center_vertical"
-                android:lines="1"
+                android:singleLine="true"
+                android:maxLines="1"
                 android:text="@{bookBean.name}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_size_17" />
@@ -46,7 +47,8 @@
                 android:layout_weight="2"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
-                android:lines="1"
+                android:singleLine="true"
+                android:maxLines="1"
                 android:text="@{bookBean.author}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_size_13" />
