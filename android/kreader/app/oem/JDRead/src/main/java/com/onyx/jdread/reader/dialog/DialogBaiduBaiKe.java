@@ -16,14 +16,14 @@ import com.onyx.jdread.reader.model.DictViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class DialogDict extends Dialog implements ViewCallBack {
+public class DialogBaiduBaiKe extends Dialog implements ViewCallBack {
     private static final String TAG = ReaderNoteDialog.class.getSimpleName();
     private ActivityDictBinding binding;
     private DictViewModel dictViewModel;
     private String inputWord;
     private EventBus eventBus;
 
-    public DialogDict(@NonNull Activity activity, String inputWord, EventBus eventBus) {
+    public DialogBaiduBaiKe(@NonNull Activity activity, String inputWord, EventBus eventBus) {
         super(activity, android.R.style.Theme_NoTitleBar);
         this.inputWord = inputWord;
         this.eventBus = eventBus;

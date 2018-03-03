@@ -470,7 +470,7 @@ public class JEBReaderWrapper {
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {
         AlBookProperties properties = bookEng.getBookProperties(true);
-        if (properties.content == null) {
+        if (properties == null || properties.content == null) {
             return false;
         }
         buildTableOfContentTree(toc.getRootEntry(), 0, properties.content, 0);
