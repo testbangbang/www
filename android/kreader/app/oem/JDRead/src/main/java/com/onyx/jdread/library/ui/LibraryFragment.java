@@ -432,7 +432,7 @@ public class LibraryFragment extends BaseFragment {
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {
-            LoginHelper.showUserLoginDialog(PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel(), getActivity());
+            LoginHelper.showUserLoginDialog(PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel(), getActivity(), name);
             return;
         }
         if (StringUtils.isNotBlank(name)) {

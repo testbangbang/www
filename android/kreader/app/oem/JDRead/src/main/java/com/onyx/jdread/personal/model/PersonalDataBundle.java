@@ -40,6 +40,7 @@ public class PersonalDataBundle {
     private UserInfo userInfo;
     private boolean signed;
     private boolean isTodaySign;
+    private String targetView;
 
     private PersonalDataBundle() {
 
@@ -221,5 +222,13 @@ public class PersonalDataBundle {
 
     public boolean isTodaySign() {
         return isTodaySign;
+    }
+
+    public String getTargetView() {
+        return targetView;
+    }
+
+    public void setTargetView(String targetView) {
+        this.targetView = targetView;
     }
 }

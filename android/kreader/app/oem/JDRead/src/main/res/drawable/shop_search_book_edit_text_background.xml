@@ -11,9 +11,9 @@
             </item>
 
             <item
-                android:bottom="@dimen/line_width"
-                android:left="@dimen/line_width"
-                android:right="@dimen/line_width">
+                android:bottom="@dimen/search_line_width"
+                android:left="@dimen/search_line_width"
+                android:right="@dimen/search_line_width">
 
                 <shape>
                     <solid android:color="@android:color/white" />
