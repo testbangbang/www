@@ -484,4 +484,6 @@
     <string name="receive_fail">领取失败</string>
     <string name="low_power_reminder">电量过低,请及时充电</string>
     <string name="input_error">搜索关键字中不能包含标点符号</string>
+    <string name="dialog_password_text_password">密码</string>
+    <string name="show_password">显示密码</string>
 </resources>
