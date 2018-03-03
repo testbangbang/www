@@ -48,6 +48,7 @@ public class SearchContentAction extends BaseReaderAction {
 
     private void requestSearchBySequence(final ReaderDataHolder readerDataHolder, final int page, final String query) {
         if (page >= readerDataHolder.getPageCount() || stopSearch || currentCount >= searchCount) {
+            resetSearchRequest();
             onSearchContentCallBack.OnFinishedSearch(page);
             return;
         }
@@ -66,6 +67,7 @@ public class SearchContentAction extends BaseReaderAction {
                 }
                 int next = page + 1;
                 if (!readerDataHolder.supportSearchByPage()) {
+                    resetSearchRequest();
                     onSearchContentCallBack.OnFinishedSearch(page);
                 } else {
                     requestSearchBySequence(readerDataHolder, next, query);
@@ -84,6 +86,13 @@ public class SearchContentAction extends BaseReaderAction {
         stopSearch = true;
         if (request != null) {
             request.setAbort(true);
+        }
+    }
+
+    private void resetSearchRequest() {
+        if (request != null) {
+            request.setAbort(false);
+            request = null;
         }
     }
 }
