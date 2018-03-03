@@ -1,6 +1,6 @@
 package com.onyx.jdread.shop.ui;
 
-import android.content.DialogInterface;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -27,7 +27,6 @@ import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.common.PageTagConstants;
 import com.onyx.jdread.shop.event.BookDetailViewInfoEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
@@ -42,8 +41,6 @@ import com.onyx.jdread.shop.view.BookInfoDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
 
 import static com.onyx.jdread.main.common.Constants.PAGE_STEP;
 
@@ -197,6 +194,9 @@ public class CommentFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailTopBackEvent(TopBackEvent event) {
+        if (isInfoDialogShowing()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
@@ -263,14 +263,23 @@ public class CommentFragment extends BaseFragment {
                 dismissInfoDialog();
             }
         });
-        if (infoDialog != null && !infoDialog.isShowing()) {
-            infoDialog.show();
-        }
+        showInfoDialog(infoDialog);
     }
 
     private void dismissInfoDialog() {
         if (infoDialog != null && infoDialog.isShowing()) {
             infoDialog.dismiss();
+            infoDialog = null;
         }
+    }
+
+    private void showInfoDialog(Dialog dialog) {
+        if (dialog != null && !dialog.isShowing()) {
+            dialog.show();
+        }
+    }
+
+    private boolean isInfoDialogShowing() {
+        return infoDialog != null && infoDialog.isShowing();
     }
 }
