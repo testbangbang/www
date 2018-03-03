@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
+        JDReadApplication.getInstance().automaticLogin();
         binding.setMainViewModel(new MainViewModel());
         initSystemBar();
         initFunctionBar();

@@ -3,6 +3,7 @@ package com.onyx.jdread.personal.action;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalBookBean;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxGetBoughtAndUnlimitedRequest;
@@ -18,7 +19,7 @@ import java.util.Map;
  */
 
 public class GetBoughtAction extends BaseAction {
-    private List<Metadata> boughtBooks;
+    private List<PersonalBookBean> boughtBooks;
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
@@ -46,7 +47,7 @@ public class GetBoughtAction extends BaseAction {
         });
     }
 
-    public List<Metadata> getBoughtBooks() {
+    public List<PersonalBookBean> getBoughtBooks() {
         return boughtBooks;
     }
 }
