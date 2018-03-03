@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
         if (event.getAction() == MotionEvent.ACTION_MOVE && inSystemBar) {
             event.setAction(MotionEvent.ACTION_UP);
         }
-        
+
         if (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
             event.setAction(MotionEvent.ACTION_CANCEL);
         }
@@ -408,6 +408,9 @@ public class MainActivity extends AppCompatActivity {
             JDReadApplication.getInstance().setLogin(true);
             clearInput();
             LoginHelper.dismissUserLoginDialog();
+            if (StringUtils.isNotBlank(event.getTargetView())) {
+                childViewEventCallBack.gotoView(event.getTargetView());
+            }
         } else {
             ToastUtil.showToast(this, event.getMessage());
         }
