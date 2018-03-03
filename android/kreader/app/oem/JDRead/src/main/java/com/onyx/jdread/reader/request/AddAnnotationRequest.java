@@ -9,6 +9,7 @@ import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.highlight.SelectionInfo;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -44,9 +45,10 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
     }
 
     private void saveAnnotation() {
+        String key = ReaderViewUtil.getListKey(readerSelectionInfos);
         for (SelectionInfo readerSelectionInfo : readerSelectionInfos.values()) {
             ReaderSelection selection = readerSelectionInfo.getCurrentSelection();
-            Annotation annotation = createAnnotation(getReader(),readerSelectionInfo.pageInfo,
+            Annotation annotation = createAnnotation(getReader(),key,readerSelectionInfo.pageInfo,
                     selection.getStartPosition(), selection.getEndPosition(),
                     selection.getRectangles(), selection.getText(), note,readerSelectionInfo.pageInfo.getChapterName());
 
@@ -54,7 +56,7 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
         }
     }
 
-    public static Annotation createAnnotation(Reader reader,PageInfo pageInfo, String locationBegin, String locationEnd,
+    public static Annotation createAnnotation(Reader reader,String key,PageInfo pageInfo, String locationBegin, String locationEnd,
                                         List<RectF> rects, String quote, String note,String chapterName) {
         Annotation annotation = new Annotation();
         annotation.setIdString(reader.getReaderHelper().getDocumentMd5());
@@ -67,6 +69,7 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
         annotation.setNote(note);
         annotation.setRectangles(rects);
         annotation.setChapterName(chapterName);
+        annotation.setKey(key);
         return annotation;
     }
 }
