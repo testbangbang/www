@@ -4,6 +4,7 @@ import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.BoughtAndUnlimitedBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.CheckGiftBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderStatusBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
@@ -36,7 +37,9 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -175,10 +178,10 @@ public interface ReadContentService {
     Call<ReadingDataResultBean> syncReadingData(@QueryMap Map<String, String> map,
                                                 @Body RequestBody body);
 
+    @Multipart
     @POST(CloudApiContext.User.EXPORT_NOTE)
-    Call<String> exportNote(@QueryMap Map<String, String> map,
-                            @Body RequestBody body);
-
+    Call<ExportNoteResultBean> exportNote(@QueryMap Map<String, String> map,
+                                          @PartMap Map<String, RequestBody> params);
     @GET("net/{bookId}/order_commit")
     Call<BatchDownloadResultBean> getChapterGroupInfo(@Path(CloudApiContext.BookDownLoad.BOOK_ID) long bookId,
                                                       @QueryMap Map<String, String> baseInfoMap);

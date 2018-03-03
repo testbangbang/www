@@ -30,7 +30,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="@dimen/setting_device_detail_height">
 
             <RelativeLayout
                 android:id="@+id/personal_information"
@@ -102,7 +102,6 @@
             android:id="@+id/personal_recycler"
             android:layout_width="match_parent"
             android:layout_height="@dimen/personal_recycler_height"
-            android:layout_marginTop="@dimen/personal_recycler_margin_top"
             android:background="@drawable/light_rectangle_stroke" />
 
         <View

@@ -2,6 +2,8 @@ package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalBookBean;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxGetBoughtAndUnlimitedRequest;
@@ -17,14 +19,14 @@ import java.util.Map;
  */
 
 public class GetUnlimitedAction extends BaseAction {
-    private List<Metadata> unlimitedBooks;
+    private List<PersonalBookBean> unlimitedBooks;
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
         baseInfo.setDefaultPage();
         Map<String, String> map = new HashMap<>();
-        map.put("search_type", "2");
+        map.put(Constants.SEARCH_TYPE, Constants.TYPE_UNLIMITED);
         baseInfo.addRequestParams(map);
         String signValue = baseInfo.getSignValue(CloudApiContext.User.BOUGHT_UNLIMITED_BOOKS);
         baseInfo.setSign(signValue);
@@ -46,7 +48,7 @@ public class GetUnlimitedAction extends BaseAction {
         });
     }
 
-    public List<Metadata> getUnlimitedBooks() {
+    public List<PersonalBookBean> getUnlimitedBooks() {
         return unlimitedBooks;
     }
 }

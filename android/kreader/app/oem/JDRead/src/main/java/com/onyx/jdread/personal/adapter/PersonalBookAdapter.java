@@ -11,6 +11,8 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemPersonalBookBinding;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalBookBean;
+import com.onyx.jdread.shop.common.ManageImageCache;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ import java.util.List;
  */
 
 public class PersonalBookAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
-    private List<Metadata> data;
+    private List<PersonalBookBean> data;
 
     @Override
     public int getRowCount() {
@@ -45,13 +47,19 @@ public class PersonalBookAdapter extends PageRecyclerView.PageAdapter implements
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PersonalBookViewHolder viewHolder = (PersonalBookViewHolder) holder;
-        Metadata metadata = data.get(position);
+        PersonalBookBean personalBookBean = data.get(position);
+        if (personalBookBean.bitmap != null) {
+            viewHolder.getBinding().personalBookImage.setImageBitmap(personalBookBean.bitmap.get());
+        } else {
+            ManageImageCache.loadUrl(personalBookBean.metadata.getCoverUrl(), viewHolder.getBinding()
+                    .personalBookImage, R.mipmap.ic_shelf_cover);
+        }
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
-        viewHolder.bindTo(metadata);
+        viewHolder.bindTo(personalBookBean.metadata);
     }
 
-    public void setData(List<Metadata> data) {
+    public void setData(List<PersonalBookBean> data) {
         this.data = data;
         notifyDataSetChanged();
     }
@@ -68,7 +76,7 @@ public class PersonalBookAdapter extends PageRecyclerView.PageAdapter implements
         }
     }
 
-    public List<Metadata> getData() {
+    public List<PersonalBookBean> getData() {
         return data;
     }
 

@@ -84,7 +84,7 @@ public class TopUpRecordFragment extends BaseFragment {
         binding.consumptionRecordRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         DashLineItemDivider decoration = new DashLineItemDivider();
         binding.consumptionRecordRecycler.addItemDecoration(decoration);
-        adapter = new ConsumptionRecordAdapter();
+        adapter = new ConsumptionRecordAdapter(true);
         binding.consumptionRecordRecycler.setAdapter(adapter);
         paginator = binding.consumptionRecordRecycler.getPaginator();
     }

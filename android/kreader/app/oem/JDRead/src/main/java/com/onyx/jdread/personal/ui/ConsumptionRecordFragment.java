@@ -74,6 +74,7 @@ public class ConsumptionRecordFragment extends BaseFragment {
                 if (data != null) {
                     adapter.setData(data);
                     binding.consumptionRecordRecycler.resize(adapter.getRowCount(), adapter.getColumnCount(), data.size());
+                    setPageSize();
                 }
             }
         });
@@ -83,7 +84,7 @@ public class ConsumptionRecordFragment extends BaseFragment {
         binding.consumptionRecordRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         DashLineItemDivider decoration = new DashLineItemDivider();
         binding.consumptionRecordRecycler.addItemDecoration(decoration);
-        adapter = new ConsumptionRecordAdapter();
+        adapter = new ConsumptionRecordAdapter(false);
         binding.consumptionRecordRecycler.setAdapter(adapter);
         paginator = binding.consumptionRecordRecycler.getPaginator();
         binding.consumptionRecordRecycler.setPageTurningCycled(true);
