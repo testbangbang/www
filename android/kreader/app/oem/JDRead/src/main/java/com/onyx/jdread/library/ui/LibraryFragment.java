@@ -212,7 +212,7 @@ public class LibraryFragment extends BaseFragment {
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                viewEventCallBack.gotoView(ShopFragment.class.getName());
+                checkLogin(PersonalBookFragment.class.getName());
             }
         }, ResManager.getInteger(R.integer.empty_library_prompt_clickable_start), ResManager.getInteger(R.integer.empty_library_prompt_clickable_end), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         libraryBinding.emptyLibraryPrompt.setText(spannableString);
