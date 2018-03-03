@@ -3,6 +3,7 @@ package com.onyx.jdread.personal.ui;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableList;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.common.references.CloseableReference;
+import com.jingdong.app.reader.data.DrmTools;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.GPaginator;
@@ -54,6 +56,8 @@ import com.onyx.jdread.personal.event.FilterReadVipEvent;
 import com.onyx.jdread.personal.event.FilterSelfImportEvent;
 import com.onyx.jdread.personal.model.PersonalBookModel;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.reader.common.DocumentInfo;
+import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.shop.action.BookshelfInsertAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
@@ -163,19 +167,15 @@ public class PersonalBookFragment extends BaseFragment {
         personalBookAdapter.setOnItemClickListener(new PageRecyclerView.PageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                if (ResManager.getString(R.string.self_import).equals(binding.getFilterName())) {
-                    // TODO: 2018/1/8 open book
-                    return;
-                }
-
                 UserInfo userInfo = PersonalDataBundle.getInstance().getUserInfo();
                 List<PersonalBookBean> data = personalBookAdapter.getData();
                 Metadata metadata = data.get(position).metadata;
 
                 BookDetailResultBean.DetailBean detail = covert(metadata);
                 BookExtraInfoBean infoBean = detail.bookExtraInfoBean;
-                if (infoBean.percentage == DownLoadHelper.DOWNLOAD_PERCENT_FINISH) {
-                    // TODO: 2018/1/8 open book
+
+                if (ResManager.getString(R.string.self_import).equals(binding.getFilterName()) || infoBean.percentage == DownLoadHelper.DOWNLOAD_PERCENT_FINISH) {
+                    openBook(metadata.getNativeAbsolutePath(), detail);
                     return;
                 }
                 if (metadata.getOrdinal() != 0 && userInfo != null && userInfo.vip_remain_days <= 0) {
@@ -199,6 +199,18 @@ public class PersonalBookFragment extends BaseFragment {
                 binding.setPage(paginator.getProgressText());
             }
         });
+    }
+
+    private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean) {
+        DocumentInfo documentInfo = new DocumentInfo();
+        DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
+        securityInfo.setKey(detailBean.key);
+        securityInfo.setRandom(detailBean.random);
+        documentInfo.setBookName(detailBean.name);
+        securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
+        documentInfo.setSecurityInfo(securityInfo);
+        documentInfo.setBookPath(localPath);
+        OpenBookHelper.openBook(super.getContext(), documentInfo);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
