@@ -374,6 +374,10 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
 
     private void mergeSearchList() {
         int maxCount = nextRequestPage * searchRows;
+        if (!readerDataHolder.supportSearchByPage()) {
+            // if doc not support search by page, then we have to show all search results
+            maxCount = searchList.size();
+        }
         if (showSearchList.size() < searchList.size()) {
             for (int i = showSearchList.size(); i < maxCount && i < searchList.size(); i++) {
                 showSearchList.add(searchList.get(i));
