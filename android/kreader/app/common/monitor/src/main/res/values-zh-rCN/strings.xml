@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources >
     <string name="app_name">显示器</string>
     <string name="exit_confirm">退出显示器?</string>
     <string name="full_refresh_interval_time">全刷间隔时间(分钟)</string>

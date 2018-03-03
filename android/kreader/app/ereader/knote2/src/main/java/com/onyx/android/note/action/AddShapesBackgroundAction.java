@@ -2,6 +2,7 @@ package com.onyx.android.note.action;
 
 import com.onyx.android.note.common.base.BaseNoteAction;
 import com.onyx.android.sdk.note.NoteManager;
+import com.onyx.android.sdk.note.request.AddShapesBackgroundRequest;
 import com.onyx.android.sdk.note.request.RenderToBitmapRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -14,20 +15,20 @@ import java.util.List;
  * Created by lxm on 2018/2/25.
  */
 
-public class RenderToBitmapAction extends BaseNoteAction {
+public class AddShapesBackgroundAction extends BaseNoteAction {
 
     private List<Shape> shapes;
 
-    public RenderToBitmapAction(NoteManager noteManager) {
+    public AddShapesBackgroundAction(NoteManager noteManager) {
         super(noteManager);
     }
 
-    public RenderToBitmapAction setShapes(List<Shape> shapes) {
+    public AddShapesBackgroundAction setShapes(List<Shape> shapes) {
         this.shapes = shapes;
         return this;
     }
 
-    public RenderToBitmapAction setShape(Shape shape) {
+    public AddShapesBackgroundAction setShape(Shape shape) {
         if (CollectionUtils.isNullOrEmpty(shapes)) {
             shapes = new ArrayList<>();
         }
@@ -37,7 +38,7 @@ public class RenderToBitmapAction extends BaseNoteAction {
 
     @Override
     public void execute(RxCallback rxCallback) {
-        RenderToBitmapRequest request = new RenderToBitmapRequest(getNoteManager(), shapes, false);
+        AddShapesBackgroundRequest request = new AddShapesBackgroundRequest(getNoteManager(), shapes);
         getNoteManager().getRxManager().enqueue(request, rxCallback);
     }
 }

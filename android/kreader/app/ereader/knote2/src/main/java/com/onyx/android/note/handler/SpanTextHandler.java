@@ -2,7 +2,6 @@ package com.onyx.android.note.handler;
 
 import android.support.annotation.NonNull;
 
-import com.onyx.android.note.action.RenderToBitmapAction;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.pen.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;

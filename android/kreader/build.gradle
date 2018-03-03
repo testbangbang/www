@@ -107,7 +107,7 @@ ext {
     fragmentationVersion='1.2.5'
 
     //onyx
-    onyxSdkBaseVersion='1.4.0'
+    onyxSdkBaseVersion='1.4.1'
     onyxSdkNoteVersion='1.0.0'
     onyxSdkNoteDataVersion='1.0.0'
 }

@@ -1,12 +1,18 @@
 package com.onyx.android.note.note;
 
+import android.util.Log;
+
+import com.onyx.android.note.event.ClearAllFreeShapesEvent;
 import com.onyx.android.note.event.OpenDocumentEvent;
+import com.onyx.android.note.event.RefreshDrawScreenEvent;
 import com.onyx.android.note.event.menu.PenWidthChangeEvent;
 import com.onyx.android.note.event.menu.TopMenuChangeEvent;
+import com.onyx.android.note.event.menu.UndoRedoEvent;
 import com.onyx.android.sdk.note.event.ResumeRawDrawingEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by lxm on 2018/2/28.
@@ -52,7 +58,22 @@ public class PenManager {
     }
 
     @Subscribe
+    public void onClearAllFreeShapes(ClearAllFreeShapesEvent event) {
+        resumeRawDrawing(event.isResumePen());
+    }
+
+    @Subscribe
     public void onOpenDocument(OpenDocumentEvent event) {
+        resumeRawDrawing(event.isResumePen());
+    }
+
+    @Subscribe
+    public void onUndoRedo(UndoRedoEvent event) {
+        resumeRawDrawing(event.isResumePen());
+    }
+
+    @Subscribe
+    public void onRefreshDrawScreen(RefreshDrawScreenEvent event) {
         resumeRawDrawing(event.isResumePen());
     }
 
