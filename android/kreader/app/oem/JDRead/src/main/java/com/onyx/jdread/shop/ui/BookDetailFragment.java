@@ -42,7 +42,7 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
-import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
+import com.onyx.jdread.reader.ui.view.AutoPagedWebView;
 import com.onyx.jdread.setting.ui.WifiFragment;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.BookDetailAction;
@@ -904,14 +904,14 @@ public class BookDetailFragment extends BaseFragment {
         infoBinding.setViewModel(dialogBookInfoViewModel);
         infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
         infoDialog.setView(infoBinding.getRoot());
-        HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
+        AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);
         settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
-        pagedWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
+        pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
             @Override
-            public void onPageChanged(int totalPage, int curPage) {
-                dialogBookInfoViewModel.currentPage.set(curPage);
+            public void onPageChanged(int currentPage, int totalPage) {
+                dialogBookInfoViewModel.currentPage.set(currentPage);
                 dialogBookInfoViewModel.totalPage.set(totalPage);
             }
         });

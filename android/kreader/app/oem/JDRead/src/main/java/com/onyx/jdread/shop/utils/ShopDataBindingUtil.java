@@ -9,7 +9,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
+import com.onyx.jdread.reader.ui.view.AutoPagedWebView;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BatchDownloadChaptersAdapter;
@@ -128,7 +128,7 @@ public class ShopDataBindingUtil {
     }
 
     @BindingAdapter({"bookInfoWebView"})
-    public static void setBookInfoDialog(HTMLReaderWebView webView, String content) {
+    public static void setBookInfoDialog(AutoPagedWebView webView, String content) {
         if (!StringUtils.isNullOrEmpty(content)) {
             webView.loadData(content, "text/html; charset=UTF-8", null);
         }
