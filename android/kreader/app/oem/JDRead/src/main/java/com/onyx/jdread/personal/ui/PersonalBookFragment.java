@@ -34,12 +34,15 @@ import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.CompareLocalMetadataAction;
 import com.onyx.jdread.personal.action.GetBoughtAction;
 import com.onyx.jdread.personal.action.GetUnlimitedAction;
 import com.onyx.jdread.personal.action.QueryAllCloudMetadataAction;
 import com.onyx.jdread.personal.adapter.PersonalBookAdapter;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.event.FilterAllEvent;
 import com.onyx.jdread.personal.event.FilterHaveBoughtEvent;
 import com.onyx.jdread.personal.event.FilterReadVipEvent;
@@ -61,9 +64,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
 
 /**
  * Created by li on 2018/1/4.
@@ -156,19 +157,25 @@ public class PersonalBookFragment extends BaseFragment {
         personalBookAdapter.setOnItemClickListener(new PageRecyclerView.PageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                if (JDReadApplication.getInstance().getResources().getString(R.string.all).equals(binding.getFilterName()) ||
-                        JDReadApplication.getInstance().getResources().getString(R.string.self_import).equals(binding.getFilterName())) {
+                if (ResManager.getString(R.string.self_import).equals(binding.getFilterName())) {
                     // TODO: 2018/1/8 open book
                     return;
                 }
-                if (JDReadApplication.getInstance().getResources().getString(R.string.read_vip).equals(binding.getFilterName())) {
-                    // TODO: 2018/1/9 judge vip
-                }
 
+                UserInfo userInfo = PersonalDataBundle.getInstance().getUserInfo();
                 List<Metadata> data = personalBookAdapter.getData();
                 Metadata metadata = data.get(position);
+
                 BookDetailResultBean.DetailBean detail = covert(metadata);
                 BookExtraInfoBean infoBean = detail.bookExtraInfoBean;
+                if (infoBean.percentage == DownLoadHelper.DOWNLOAD_PERCENT_FINISH) {
+                    // TODO: 2018/1/8 open book
+                    return;
+                }
+                if (metadata.getOrdinal() != 0 && userInfo != null && userInfo.vip_remain_days <= 0) {
+                    ToastUtil.showToast(ResManager.getString(R.string.membership_expired));
+                    return;
+                }
                 if (DownLoadHelper.isDownloading(infoBean.downLoadState)) {
                     DownLoadHelper.stopDownloadingTask(metadata.getTags());
                     infoBean.downLoadState = DownLoadHelper.getPausedState();
@@ -176,10 +183,6 @@ public class PersonalBookFragment extends BaseFragment {
                     return;
                 }
 
-                if (infoBean.percentage == DownLoadHelper.DOWNLOAD_PERCENT_FINISH) {
-                    // TODO: 2018/1/8 open book
-                    return;
-                }
                 BookDownloadUtils.download(detail, ShopDataBundle.getInstance());
             }
         });
@@ -372,15 +375,26 @@ public class PersonalBookFragment extends BaseFragment {
     }
 
     private List<Metadata> deleteRepeat(List<Metadata> list) {
-        HashSet<Metadata> set = new HashSet<>(list);
+        List<Metadata> data = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            Metadata metadata = list.get(i);
+            if (ids.contains(metadata.getCloudId())) {
+                continue;
+            }
+            ids.add(metadata.getCloudId());
+            data.add(metadata);
+        }
         list.clear();
-        list.addAll(set);
+        list.addAll(data);
         return list;
     }
 
     private void setAdapterData(List<Metadata> metadatas) {
         if (personalBookAdapter != null) {
             personalBookAdapter.setData(metadatas);
+            binding.personalBookRecycler.scrollToPosition(0);
+            paginator.setCurrentPage(0);
             binding.personalBookRecycler.resize(personalBookAdapter.getRowCount(), personalBookAdapter.getColumnCount(), metadatas.size());
             String progressText = paginator.getProgressText();
             binding.setPage(progressText);

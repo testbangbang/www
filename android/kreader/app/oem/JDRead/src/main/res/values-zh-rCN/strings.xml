@@ -481,4 +481,5 @@
     <string name="receive_success">领取成功</string>
     <string name="receive_fail">领取失败</string>
     <string name="low_power_reminder">电量过低,请及时充电</string>
+    <string name="membership_expired">会员已到期，请尽快续费</string>
 </resources>

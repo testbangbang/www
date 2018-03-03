@@ -196,6 +196,11 @@ public class JDReadApplication extends MultiDexApplication {
         autoLoginAction.execute(PersonalDataBundle.getInstance(), null);
     }
 
+    public boolean canSignForRead() {
+        // TODO: 2018/3/2
+        return false;
+    }
+
     private List<Class<? extends DatabaseHolder>> databaseHolderList() {
         List<Class<? extends DatabaseHolder>> dataHolderList = new ArrayList<>();
         dataHolderList.add(JDReadGeneratedDatabaseHolder.class);

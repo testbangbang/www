@@ -45,6 +45,13 @@ public class PersonalDatabingUtil {
         }
     }
 
+    @BindingAdapter({"personalBookImage"})
+    public static void setBookImage(ImageView view, String url) {
+        if (view != null) {
+            ManageImageCache.loadUrl(url, view, R.mipmap.ic_shelf_cover);
+        }
+    }
+
     @BindingAdapter({"recommendImage"})
     public static void setRecommendImage(ImageView view, String url) {
         if (view != null) {
