@@ -4,6 +4,8 @@
 
     <data class="CommentItemBinding">
 
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
         <variable
             name="commentEntity"
             type="com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity" />
@@ -43,10 +45,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/book_comment_contetn_margin_top"
+            android:layout_marginTop="@dimen/book_comment_content_margin_top"
             android:ellipsize="end"
             android:lines="2"
-            android:text="@{commentEntity.contents}"
+            android:text="@{StringUtils.getHtmlFormatString(commentEntity.contents)}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/font_size_17" />
 

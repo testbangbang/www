@@ -482,7 +482,7 @@
     <dimen name="search_button_margin">5dp</dimen>
     <dimen name="dialog_search_list_item_text_size">18sp</dimen>
     <dimen name="dialog_search_list_item_page_text_size">20sp</dimen>
-    <dimen name="book_comment_contetn_margin_top">8dp</dimen>
+    <dimen name="book_comment_content_margin_top">8dp</dimen>
     <dimen name="title_bar_title_max_width">180dp</dimen>
     <dimen name="search_history_recycler_height">120dp</dimen>
     <dimen name="search_history_item_padding_left">23dp</dimen>
