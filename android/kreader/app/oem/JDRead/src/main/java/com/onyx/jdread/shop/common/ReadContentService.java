@@ -19,6 +19,7 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.SignForVoucherBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
 import com.onyx.jdread.reader.data.ReadingDataResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BatchDownloadResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
@@ -181,4 +182,7 @@ public interface ReadContentService {
     @POST(CloudApiContext.User.EXPORT_NOTE)
     Call<ExportNoteResultBean> exportNote(@QueryMap Map<String, String> map,
                                           @PartMap Map<String, RequestBody> params);
+    @GET("net/{bookId}/order_commit")
+    Call<BatchDownloadResultBean> getChapterGroupInfo(@Path(CloudApiContext.BookDownLoad.BOOK_ID) long bookId,
+                                                      @QueryMap Map<String, String> baseInfoMap);
 }

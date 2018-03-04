@@ -542,4 +542,10 @@
     <dimen name="reader_brightness_bar_padding">25dp</dimen>
     <dimen name="single_dialog_margin_left">20dp</dimen>
     <dimen name="search_line_width">2px</dimen>
+    <dimen name="book_batch_download_recycle_view_height">260dp</dimen>
+    <dimen name="book_batch_download_recycle_view_margin_top">40dp</dimen>
+    <dimen name="book_batch_download_tip_margin_top">0dp</dimen>
+    <dimen name="item_batch_download_price_margin_top">15dp</dimen>
+    <dimen name="item_batch_download_padding_bottom">40dp</dimen>
+    <dimen name="book_batch_download_tip_margin_bottom">110dp</dimen>
 </resources>

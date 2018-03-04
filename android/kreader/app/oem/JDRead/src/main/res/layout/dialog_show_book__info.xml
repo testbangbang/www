@@ -48,7 +48,7 @@
 
         <include layout="@layout/layout_gray_line" />
 
-        <com.onyx.jdread.reader.ui.view.HTMLReaderWebView
+        <com.onyx.jdread.reader.ui.view.AutoPagedWebView
             android:id="@+id/book_info_web_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/shop_dialog_content_height"

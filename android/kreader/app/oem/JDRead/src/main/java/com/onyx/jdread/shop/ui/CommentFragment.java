@@ -23,7 +23,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
+import com.onyx.jdread.reader.ui.view.AutoPagedWebView;
 import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
@@ -246,14 +246,14 @@ public class CommentFragment extends BaseFragment {
         infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
         infoDialog.setView(infoBinding.getRoot());
         infoDialog.setCancelable(false);
-        HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
+        AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
         WebSettings settings = pagedWebView.getSettings();
         settings.setSupportZoom(true);
         settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
-        pagedWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
+        pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
             @Override
-            public void onPageChanged(int totalPage, int curPage) {
-                dialogBookInfoViewModel.currentPage.set(curPage);
+            public void onPageChanged(int currentPage, int totalPage) {
+                dialogBookInfoViewModel.currentPage.set(currentPage);
                 dialogBookInfoViewModel.totalPage.set(totalPage);
             }
         });
