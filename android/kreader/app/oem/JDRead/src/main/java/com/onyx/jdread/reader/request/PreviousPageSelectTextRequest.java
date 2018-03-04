@@ -112,7 +112,13 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
         PointF end = new PointF(width, height);
         SelectionInfo newReaderSelectionInfo = HitTestTextHelper.hitTestTextRegion(start, end, ReaderConfig.HIT_TEST_TEXT_STEP, getReader(), getReaderUserDataInfo(), true, currentPagePosition);
         if (newReaderSelectionInfo != null) {
-            readerSelectionInfo.setHighLightBeginTop(newReaderSelectionInfo.getHighLightBeginTop());
+            start = readerSelectionInfo.getHighLightBeginTop();
+            end = readerSelectionInfo.getHighLightEndBottom();
+            if(start.x <= end.x || start.y <= end.y) {
+                readerSelectionInfo.setHighLightBeginTop(newReaderSelectionInfo.getHighLightBeginTop());
+            }else{
+                readerSelectionInfo.setHighLightEndBottom(newReaderSelectionInfo.getHighLightBeginTop());
+            }
 
             start = readerSelectionInfo.getHighLightBeginTop();
             end = readerSelectionInfo.getHighLightEndBottom();

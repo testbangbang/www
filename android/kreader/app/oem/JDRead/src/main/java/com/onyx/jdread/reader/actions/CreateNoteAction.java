@@ -6,6 +6,7 @@ import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.highlight.SelectionInfo;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.util.TimeUtils;
 
 import java.util.Date;
@@ -28,22 +29,22 @@ public class CreateNoteAction extends BaseReaderAction {
             getEditNoteInfo(readerDataHolder);
         }else {
             String pagePosition = readerDataHolder.getCurrentPagePosition();
-            SelectionInfo readerSelectionInfo = readerDataHolder.getReaderSelectionInfo().getReaderSelectionInfo(pagePosition);
-            getNoteInfo(readerSelectionInfo, pagePosition, readerDataHolder.getBookName(), readerDataHolder.getReaderViewInfo().chapterName);
+            String srcNote = readerDataHolder.getReaderSelectionInfo().getSelectText();
+            getNoteInfo(srcNote, pagePosition, readerDataHolder.getBookName(), readerDataHolder.getReaderViewInfo().chapterName);
         }
         if (baseCallback != null) {
             baseCallback.onNext(null);
         }
     }
 
-    private NoteInfo getNoteInfo(SelectionInfo readerSelectionInfo, String pagePosition, String bookName,String chapterName) {
+    private NoteInfo getNoteInfo(String srcNote, String pagePosition, String bookName,String chapterName) {
         noteInfo = new NoteInfo();
         noteInfo.isCreate = true;
         noteInfo.isSrcNoteModify = false;
         noteInfo.updateDate = TimeUtils.getCurrentDataInString();
         noteInfo.pagePosition = pagePosition;
         noteInfo.newNote = "";
-        noteInfo.srcNote = readerSelectionInfo.getCurrentSelection().getText();
+        noteInfo.srcNote = srcNote;
         noteInfo.chapterName = chapterName;
         noteInfo.bookName = bookName;
         return noteInfo;
@@ -52,7 +53,7 @@ public class CreateNoteAction extends BaseReaderAction {
     private NoteInfo getEditNoteInfo(ReaderDataHolder readerDataHolder) {
         noteInfo = new NoteInfo();
         noteInfo.isCreate = false;
-        noteInfo.isSrcNoteModify = true;
+        noteInfo.isSrcNoteModify = annotation.getQuoteState() == ReaderConfig.QUOTE_STATE_MODIFY?true:false;
         Date date = new Date(annotation.getUpdatedAt().getTime());
         noteInfo.updateDate = DateTimeUtil.formatDate(date, DateTimeUtil.DATE_FORMAT_YYYYMMDD_2);
         noteInfo.pagePosition = annotation.getPosition();
