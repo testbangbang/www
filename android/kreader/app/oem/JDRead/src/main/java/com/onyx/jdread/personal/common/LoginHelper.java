@@ -85,6 +85,9 @@ public class LoginHelper {
     }
 
     public static void showUserLoginDialog(final UserLoginViewModel userLoginViewModel, final Activity context, String targetView) {
+        if (loginDialog != null && loginDialog.isShowing()) {
+            return;
+        }
         PersonalDataBundle.getInstance().setTargetView(targetView);
         final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(JDReadApplication.getInstance()), null, false);
         userLoginBinding.setLoginViewModel(userLoginViewModel);
@@ -105,7 +108,7 @@ public class LoginHelper {
                 dismissUserLoginDialog();
             }
         });
-        if (loginDialog != null) {
+        if (loginDialog != null && !loginDialog.isShowing()) {
             loginDialog.show();
         }
     }
