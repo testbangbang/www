@@ -43,6 +43,7 @@ import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.reader.ui.view.AutoPagedWebView;
+import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.setting.ui.WifiFragment;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.BookDetailAction;
@@ -683,7 +684,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
         String localPath = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.name + Constants.BOOK_FORMAT;
-        DownloadAction downloadAction = new DownloadAction(getContext(), tryDownLoadUrl, localPath, bookDetailBean.name);
+        DownloadAction downloadAction = new DownloadAction(getContext(), tryDownLoadUrl, localPath, bookDetailBean.ebook_id + "");
         downloadAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -911,13 +912,10 @@ public class BookDetailFragment extends BaseFragment {
         infoBinding.setViewModel(dialogBookInfoViewModel);
         infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
         infoDialog.setView(infoBinding.getRoot());
-        AutoPagedWebView pagedWebView = infoBinding.bookInfoWebView;
-        WebSettings settings = pagedWebView.getSettings();
-        settings.setSupportZoom(true);
-        settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
-        pagedWebView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
+        PageTextView pagedWebView = infoBinding.bookInfoWebView;
+        pagedWebView.setOnPagingListener(new PageTextView.OnPagingListener() {
             @Override
-            public void onPageChanged(int currentPage, int totalPage) {
+            public void onPageChange(int currentPage, int totalPage) {
                 dialogBookInfoViewModel.currentPage.set(currentPage);
                 dialogBookInfoViewModel.totalPage.set(totalPage);
             }

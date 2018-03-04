@@ -15,6 +15,7 @@ import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.actions.CleanSelectionAction;
 import com.onyx.jdread.reader.actions.DrawSelectResultAction;
 import com.onyx.jdread.reader.actions.NextPageSelectTextAction;
@@ -64,9 +65,9 @@ public class WordSelectionHandler extends BaseHandler {
 
     public WordSelectionHandler(ReaderDataHolder readerDataHolder) {
         super(readerDataHolder);
-        movePointOffsetHeight = readerDataHolder.getAppContext().getResources().getDimension(R.dimen.move_point_offset_height);
-        crossScreenTouchRegionMinWidth = readerDataHolder.getAppContext().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_width);
-        crossScreenTouchRegionMinHeight = readerDataHolder.getAppContext().getResources().getInteger(R.integer.reader_cross_screen_touch_region_min_height);
+        movePointOffsetHeight = ResManager.getDimens(R.dimen.move_point_offset_height);
+        crossScreenTouchRegionMinWidth = ResManager.getInteger(R.integer.reader_cross_screen_touch_region_min_width);
+        crossScreenTouchRegionMinHeight = ResManager.getInteger(R.integer.reader_cross_screen_touch_region_min_height);
     }
 
     public int getOffsetY() {
