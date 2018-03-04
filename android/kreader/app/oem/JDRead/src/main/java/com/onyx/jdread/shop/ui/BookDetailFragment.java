@@ -757,6 +757,9 @@ public class BookDetailFragment extends BaseFragment {
         if (infoDialog != null && infoDialog.isShowing()) {
             return;
         }
+        if (copyRightDialog != null && copyRightDialog.isShowing()) {
+            return;
+        }
         LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         copyrightBinding.setBookDetailViewModel(getBookDetailViewModel());
         if (copyRightDialog == null) {
@@ -893,6 +896,9 @@ public class BookDetailFragment extends BaseFragment {
 
     private void showInfoDialog(String content) {
         if (copyRightDialog != null && copyRightDialog.isShowing()) {
+            return;
+        }
+        if (infoDialog != null && infoDialog.isShowing()) {
             return;
         }
         if (StringUtils.isNullOrEmpty(content)) {

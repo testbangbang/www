@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -81,8 +82,11 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
 
     public List<String> getTitleList() {
         List<String> titleList = new ArrayList<>();
-        for (CategoryListResultBean.CategoryBeanLevelOne categoryOne : getCategoryBeanLevelOneList()) {
-            titleList.add(categoryOne.name);
+        String[] names = ResManager.getStringArray(R.array.all_category_level_one_name);
+        if (names != null) {
+            for (int i = 0; i < names.length; i++) {
+                titleList.add(names[i]);
+            }
         }
         return titleList;
     }
