@@ -26,6 +26,7 @@ import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogBaiduBaiKe;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
+import com.onyx.jdread.reader.dialog.SingleLineDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import com.onyx.jdread.reader.menu.dialog.CloseDocumentDialog;
@@ -358,5 +359,24 @@ public class ReaderActivityEventHandler {
     public void onUpdateViewPageEvent(UpdateViewPageEvent event){
         UpdateViewPageAction action = new UpdateViewPageAction();
         action.execute(readerViewModel.getReaderDataHolder(),null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowSignMessageEvent(ShowSignMessageEvent event){
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+
+        showSingleLineDialog(event,activity);
+    }
+
+    private void showSingleLineDialog(ShowSignMessageEvent event,Activity activity){
+        SingleLineDialog singleLineDialog = new SingleLineDialog(activity, event.signNoteInfo.note,
+                readerViewModel.getEventBus(),event.signNoteInfo.rect,
+                readerViewModel.getReaderDataHolder().getReaderTouchHelper().getContentHeight(),
+                readerViewModel.getReaderDataHolder().getReaderTouchHelper().getContentWidth());
+        singleLineDialog.show();
+        singleLineDialog.setCanceledOnTouchOutside(true);
     }
 }
