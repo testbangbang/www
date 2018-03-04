@@ -115,4 +115,8 @@ public class LoginHelper {
             loginDialog.dismiss();
         }
     }
+
+    public static boolean loginDialogIsShowing() {
+        return loginDialog != null && loginDialog.isShowing();
+    }
 }
