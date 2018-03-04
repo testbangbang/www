@@ -311,6 +311,7 @@
     <string name="subject_list_just_vip">JoyRead会员</string>
     <string name="downloading_progress">下载中 %d</string>
     <string name="paused">已暂停 %d</string>
+    <string name="started">开始下载</string>
     <string name="total_book">共%d本书</string>
     <string name="password_setting_hint">请输入4-12位数字密码</string>
     <string name="password_setting_phone_hint">请输入手机号</string>

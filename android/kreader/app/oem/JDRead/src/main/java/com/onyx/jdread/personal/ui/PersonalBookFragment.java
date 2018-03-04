@@ -2,7 +2,6 @@ package com.onyx.jdread.personal.ui;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableList;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,10 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.common.references.CloseableReference;
 import com.jingdong.app.reader.data.DrmTools;
 import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.QueryArgs;
@@ -74,7 +71,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by li on 2018/1/4.
@@ -182,13 +178,14 @@ public class PersonalBookFragment extends BaseFragment {
                     ToastUtil.showToast(ResManager.getString(R.string.membership_expired));
                     return;
                 }
-                if (DownLoadHelper.isDownloading(infoBean.downLoadState)) {
+                if (DownLoadHelper.isDownloading(infoBean.downLoadState) ||
+                        DownLoadHelper.isStarted(infoBean.downLoadState) ||
+                        DownLoadHelper.isConnected(infoBean.downLoadState)) {
                     DownLoadHelper.stopDownloadingTask(metadata.getTags());
                     infoBean.downLoadState = DownLoadHelper.getPausedState();
-                    updateProgress(detail);
+                    updateProgress(infoBean, metadata.getTags());
                     return;
                 }
-
                 BookDownloadUtils.download(detail, ShopDataBundle.getInstance());
             }
         });
@@ -217,12 +214,11 @@ public class PersonalBookFragment extends BaseFragment {
     public synchronized void onDownloadingEvent(DownloadingEvent event) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (task != null) {
-            BookDetailResultBean.DetailBean bookDetail = ShopDataBundle.getInstance().getBookDetail();
-            bookDetail.bookExtraInfoBean.downLoadState = task.getStatus();
-            bookDetail.bookExtraInfoBean.localPath = task.getPath();
-            bookDetail.tag = event.tag;
-            bookDetail.bookExtraInfoBean.percentage = (int) (event.progressInfoModel.progress * 100);
-            updateProgress(bookDetail);
+            BookExtraInfoBean infoBean = new BookExtraInfoBean();
+            infoBean.downLoadState = task.getStatus();
+            infoBean.localPath = task.getPath();
+            infoBean.percentage = (int) (event.progressInfoModel.progress * 100);
+            updateProgress(infoBean, String.valueOf(event.tag));
         }
     }
 
@@ -230,28 +226,29 @@ public class PersonalBookFragment extends BaseFragment {
     public synchronized void onDownloadFinishEvent(DownloadFinishEvent event) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (task != null) {
-            BookDetailResultBean.DetailBean bookDetail = ShopDataBundle.getInstance().getBookDetail();
-            bookDetail.bookExtraInfoBean.downLoadState = task.getStatus();
-            bookDetail.bookExtraInfoBean.localPath = task.getPath();
-            bookDetail.bookExtraInfoBean.percentage = DownLoadHelper.DOWNLOAD_PERCENT_FINISH;
-            updateProgress(bookDetail);
+            BookExtraInfoBean infoBean = new BookExtraInfoBean();
+            infoBean.downLoadState = task.getStatus();
+            infoBean.localPath = task.getPath();
+            infoBean.percentage = DownLoadHelper.DOWNLOAD_PERCENT_FINISH;
+            updateProgress(infoBean, String.valueOf(event.tag));
         }
     }
 
-    private synchronized void updateProgress(BookDetailResultBean.DetailBean detail) {
+    private synchronized void updateProgress(BookExtraInfoBean info, String tag) {
         if (personalBookAdapter == null) {
             return;
         }
         List<PersonalBookBean> data = personalBookAdapter.getData();
         for (int i = 0; i < data.size(); i++) {
             Metadata metadata = data.get(i).metadata;
-            if (String.valueOf(detail.ebook_id).equals(metadata.getCloudId())) {
-                String infoBean = JSONObjectParseUtils.toJson(detail.bookExtraInfoBean);
+            if (tag.equals(metadata.getName())) {
+                String infoBean = JSONObjectParseUtils.toJson(info);
                 metadata.setDownloadInfo(infoBean);
-                metadata.setTags((String) detail.tag);
-                personalBookAdapter.notifyDataSetChanged();
-                if (DownLoadHelper.canInsertBookDetail(detail.bookExtraInfoBean.downLoadState)) {
-                    BookshelfInsertAction action = new BookshelfInsertAction(detail, detail.bookExtraInfoBean.localPath);
+                metadata.setTags(tag);
+                personalBookAdapter.notifyItem(i);
+                if (DownLoadHelper.canInsertBookDetail(info.downLoadState)) {
+                    BookDetailResultBean.DetailBean detail = covert(metadata);
+                    BookshelfInsertAction action = new BookshelfInsertAction(detail, info.localPath);
                     action.execute(ShopDataBundle.getInstance(), null);
                 }
             }
@@ -435,6 +432,8 @@ public class PersonalBookFragment extends BaseFragment {
             infoBean = new BookExtraInfoBean();
         } else {
             infoBean = JSONObjectParseUtils.toBean(downloadInfo, BookExtraInfoBean.class);
+            detail.key = infoBean.key;
+            detail.random = infoBean.random;
         }
         if (StringUtils.isNotBlank(metadata.getTags())) {
             detail.tag = metadata.getTags();
