@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.request;
 
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.ReaderViewHelper;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 
@@ -18,6 +19,7 @@ public class DrawSelectResultRequest extends ReaderBaseRequest {
     public DrawSelectResultRequest call() throws Exception {
         ReaderSelectionHelper readerSelectionHelper = getReader().getReaderSelectionHelper();
         LayoutProviderUtils.updateReaderViewInfo(getReader(), getReaderViewInfo(), getReader().getReaderHelper().getReaderLayoutManager());
+        ReaderViewHelper.loadUserData(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
         getReader().getReaderEpdHelper().setUseDefaultUpdate(true);
         getReader().getReaderViewHelper().renderAll(getReader(),
                 getReader().getReaderHelper().getCurrentPageBitmap().getBitmap(), getReaderUserDataInfo(), getReaderViewInfo(),

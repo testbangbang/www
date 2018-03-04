@@ -151,7 +151,7 @@ public class ReaderViewHelper {
         return list;
     }
 
-    public void loadUserData(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
+    public static void loadUserData(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
         readerUserDataInfo.setDocumentPath(reader.getDocumentInfo().getBookPath());
         readerUserDataInfo.setDocumentCategory(reader.getReaderHelper().getDocumentOptions().getDocumentCategory());
         readerUserDataInfo.setDocumentCodePage(reader.getReaderHelper().getDocumentOptions().getCodePage());
