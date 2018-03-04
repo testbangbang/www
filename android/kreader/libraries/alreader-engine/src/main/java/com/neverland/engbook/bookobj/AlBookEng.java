@@ -116,6 +116,7 @@ public class AlBookEng{
 	private static final int AL_FILESIZEMIN_FOR_AUTOCALC = (65536 << 1);
 
 	private AtomicBoolean isAborted = new AtomicBoolean(false);
+	private AtomicBoolean isBookLoadingAborted = new AtomicBoolean(false);
 
 	private int bookPosition;
 
@@ -3015,14 +3016,26 @@ public class AlBookEng{
 	}
 
 	public boolean isAborted() {
-		return isAborted.get();
+		return isAborted.get() || isBookLoadingAborted.get();
 	}
 
 	public void setAborted(boolean abort) {
 		isAborted.set(abort);
-		if (abort && format != null) {
-			format.setAborted(true);
+		if (format != null) {
+			format.setAborted(abort);
 		}
+    }
+
+	public void abortBookLoading() {
+		isBookLoadingAborted.set(true);
+		if (format != null) {
+			format.abortBookLoading();
+		}
+	}
+
+	public void abortAll() {
+		setAborted(true);
+		abortBookLoading();
 	}
 
     /**
@@ -3030,7 +3043,7 @@ public class AlBookEng{
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public int closeBook() {
-		setAborted(true);
+		abortAll();
 
 		saveLastBookPosition();
 		while (threadData.getObjOpen()) ;

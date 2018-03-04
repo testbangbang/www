@@ -404,6 +404,8 @@
     <string name="speed_refresh">Speed refresh</string>
     <string name="item_consume_record_read_bean">-%d read bean</string>
     <string name="item_consume_record_voucher">-%d voucher</string>
+    <string name="item_top_up_record_read_bean">+% read bean</string>
+    <string name="item_top_up_record_voucher">+%d voucher</string>
     <string name="down_book_resutl_no_read_vip">no read vip</string>
     <string name="down_book_can_not_read">ebook is not can read</string>
     <string name="down_book_book_not_found">the book not found</string>
@@ -512,10 +514,16 @@
     <string name="receive_success">Receive success</string>
     <string name="receive_fail">Receive failed</string>
     <string name="low_power_reminder">Low battery, please charge in time</string>
+    <string name="membership_expired">The membership has expired, please renew it as soon as possible</string>
     <string name="input_error">The search key can not contain punctuation</string>
     <string name="preload_loading">Loading...</string>
     <string name="banner">Banner</string>
     <string name="dialog_password_text_password">Password</string>
     <string name="show_password">Show the password</string>
     <string name="standby_name_format">standby-%s.png</string>
+    <string name="batch_download">batch download</string>
+    <string name="book_batch_download_tip">1.The bulk purchase section automatically filters out the free chapters and the chapters you have purchased.\n2.After purchase, the system will automatically download all the chapters.</string>
+    <string name="book_batch_download_buy_chapter">Chapter to buy</string>
+    <string name="book_batch_download_item_current_chapter">Current Chapter</string>
+    <string name="book_batch_download_item_after_chapter">After %d chapters</string>
 </resources>

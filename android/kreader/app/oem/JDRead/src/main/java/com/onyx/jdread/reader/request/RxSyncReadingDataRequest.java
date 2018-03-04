@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.request;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.reader.data.ReadingData;
 import com.onyx.jdread.reader.data.ReadingDataResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -39,7 +40,7 @@ public class RxSyncReadingDataRequest extends RxBaseCloudRequest {
 
     private void getRequestBody() {
         String s = JSON.toJSONString(list);
-        MediaType mediaType = MediaType.parse("application/octet-stream");
+        MediaType mediaType = MediaType.parse(Constants.PARSE_JSON_TYPE);
         requestBody = RequestBody.create(mediaType, s);
     }
 

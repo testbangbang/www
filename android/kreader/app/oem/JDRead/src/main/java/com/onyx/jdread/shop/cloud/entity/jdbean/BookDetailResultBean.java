@@ -41,6 +41,8 @@ public class BookDetailResultBean {
         public String promotion;
         public String catalog;
         public boolean add_cart;
+        public int book_type;
+        public int netStatus;
         public String downLoadUrl;
         public BookExtraInfoBean bookExtraInfoBean;
         public String key;

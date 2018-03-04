@@ -4,7 +4,9 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxBaseDBRequest;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalBookBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ import java.util.List;
  */
 
 public class RxRequestAllCloudMetadataQuery extends RxBaseDBRequest {
-    private List<Metadata> metadatas;
+    private List<PersonalBookBean> datas = new ArrayList<>();
 
     public RxRequestAllCloudMetadataQuery(DataManager dm) {
         super(dm);
@@ -21,11 +23,17 @@ public class RxRequestAllCloudMetadataQuery extends RxBaseDBRequest {
     @Override
     public Object call() throws Exception {
         LocalDataProvider localDataProvider = (LocalDataProvider) getDataProvider();
-        metadatas = localDataProvider.findCloudMetadata();
+        List<Metadata> metadatas = localDataProvider.findCloudMetadata();
+        for (int i = 0; i < metadatas.size(); i++) {
+            Metadata metadata = metadatas.get(i);
+            PersonalBookBean bookBean = new PersonalBookBean();
+            bookBean.metadata = metadata;
+            datas.add(bookBean);
+        }
         return this;
     }
 
-    public List<Metadata> getMetadatas() {
-        return metadatas;
+    public List<PersonalBookBean> getDatas() {
+        return datas;
     }
 }

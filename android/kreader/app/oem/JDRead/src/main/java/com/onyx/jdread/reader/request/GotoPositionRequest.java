@@ -75,13 +75,14 @@ public class GotoPositionRequest extends ReaderBaseRequest {
         ReaderNavigator navigator = getReader().getReaderHelper().getNavigator();
         String screenBegin = navigator.getScreenStartPosition();
 
-        if (navigator.comparePosition(persistentPosition, screenBegin) < 0) {
+        while (page > 0 && navigator.comparePosition(persistentPosition, screenBegin) < 0) {
             // in some special cases, position of page may be larger than persistentPosition,
             // so we try to go previous page
             page--;
             if (!getReader().getReaderHelper().getReaderLayoutManager().gotoPage(page)) {
                 return false;
             }
+            screenBegin = navigator.getScreenStartPosition();
         }
 
         String screenEnd;

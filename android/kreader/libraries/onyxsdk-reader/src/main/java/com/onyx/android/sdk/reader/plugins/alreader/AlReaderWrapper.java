@@ -82,8 +82,12 @@ public class AlReaderWrapper {
         initDefaultTextStyle();
     }
 
-    public void abortCurrentJob() {
-        bookEng.setAborted(true);
+    public void setAborted(boolean abort) {
+        bookEng.setAborted(abort);
+    }
+
+    public void abortBookLoading() {
+        bookEng.abortBookLoading();
     }
 
     private void initDefaultTextStyle() {

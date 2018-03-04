@@ -1,37 +1,38 @@
 package com.onyx.jdread.personal.action;
 
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteResultBean;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-import com.onyx.jdread.personal.request.cloud.RxGetBoughtAndUnlimitedRequest;
+import com.onyx.jdread.personal.request.cloud.RxExportNoteRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
-import java.util.List;
-
 /**
- * Created by li on 2018/1/29.
+ * Created by li on 2018/3/3.
  */
 
-public class GetBoughtAndUnlimitedAction extends BaseAction {
-    private List<Metadata> books;
+public class ExportNoteAction extends BaseAction {
+    private ExportNoteBean noteBean;
+    private ExportNoteResultBean resultBean;
+
+    public ExportNoteAction(ExportNoteBean noteBean) {
+        this.noteBean = noteBean;
+    }
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setDefaultPage();
-        String signValue = baseInfo.getSignValue(CloudApiContext.User.BOUGHT_UNLIMITED_BOOKS);
+        String signValue = baseInfo.getSignValue(CloudApiContext.User.EXPORT_NOTE);
         baseInfo.setSign(signValue);
-        final RxGetBoughtAndUnlimitedRequest rq = new RxGetBoughtAndUnlimitedRequest();
-        rq.setBaseInfo(baseInfo);
+
+        final RxExportNoteRequest rq = new RxExportNoteRequest(noteBean, baseInfo);
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                books = rq.getBooks();
-                if (rxCallback != null) {
-                    rxCallback.onNext(GetBoughtAndUnlimitedAction.class);
-                }
+                resultBean = rq.getResultBean();
+                RxCallback.invokeNext(rxCallback, ExportNoteAction.this);
             }
 
             @Override
@@ -40,9 +41,5 @@ public class GetBoughtAndUnlimitedAction extends BaseAction {
                 PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), dataBundle.getEventBus());
             }
         });
-    }
-
-    public List<Metadata> getBooks() {
-        return books;
     }
 }

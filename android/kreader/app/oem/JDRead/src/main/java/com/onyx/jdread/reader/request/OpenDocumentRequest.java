@@ -22,6 +22,12 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
     }
 
     @Override
+    public void setAbort(boolean abort) {
+        super.setAbort(abort);
+        getReader().getReaderHelper().getPlugin().abortBookLoadingJob();
+    }
+
+    @Override
     public OpenDocumentRequest call() throws Exception {
         initOptions();
         if (!selectPlugin()) {
