@@ -26,6 +26,7 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
@@ -231,6 +232,15 @@ public class ReaderViewHelper {
 
         paint.setColor(oldColor);
         paint.setStyle(oldStyle);
+    }
+
+    public void showSelectRegion(Canvas canvas,Context context){
+        int crossScreenTouchRegionMinWidth = ResManager.getInteger(R.integer.reader_cross_screen_touch_region_min_width);
+        int crossScreenTouchRegionMinHeight = ResManager.getInteger(R.integer.reader_cross_screen_touch_region_min_height);
+
+        canvas.drawRect(new Rect(0,0,crossScreenTouchRegionMinWidth,crossScreenTouchRegionMinWidth),paint);
+        canvas.drawRect(new Rect(getContentWidth() - crossScreenTouchRegionMinWidth,
+                getContentHeight() - crossScreenTouchRegionMinWidth,getContentWidth(),getContentHeight()),paint);
     }
 
     private void drawPageLinks(Canvas canvas, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
