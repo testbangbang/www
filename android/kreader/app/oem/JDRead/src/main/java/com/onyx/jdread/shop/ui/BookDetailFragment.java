@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.widget.TextView;
 
 import com.jingdong.app.reader.data.DrmTools;
@@ -42,7 +41,6 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
-import com.onyx.jdread.reader.ui.view.AutoPagedWebView;
 import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.setting.ui.WifiFragment;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
@@ -727,7 +725,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void showBatchDownload() {
-        if (infoDialog != null && infoDialog.isShowing()) {
+        if (ViewHelper.dialogIsShowing(batchDownloadDialog)) {
             return;
         }
         LayoutBookBatchDownloadBinding batchDownloadBinding = LayoutBookBatchDownloadBinding.inflate(LayoutInflater.from(getActivity()), null, false);
@@ -749,16 +747,13 @@ public class BookDetailFragment extends BaseFragment {
             RecyclerView.Adapter adapter = new BatchDownloadChaptersAdapter(getEventBus());
             batchDownloadRecyclerView.setAdapter(adapter);
         }
-        if (batchDownloadDialog != null && !batchDownloadDialog.isShowing()) {
+        if (!ViewHelper.dialogIsShowing(batchDownloadDialog)) {
             batchDownloadDialog.show();
         }
     }
 
     private void showCopyRightDialog() {
-        if (infoDialog != null && infoDialog.isShowing()) {
-            return;
-        }
-        if (copyRightDialog != null && copyRightDialog.isShowing()) {
+        if (ViewHelper.dialogIsShowing(copyRightDialog)) {
             return;
         }
         LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
@@ -767,7 +762,7 @@ public class BookDetailFragment extends BaseFragment {
             copyRightDialog = new BookInfoDialog(JDReadApplication.getInstance());
             copyRightDialog.setView(copyrightBinding.getRoot());
         }
-        if (copyRightDialog != null && !copyRightDialog.isShowing()) {
+        if (!ViewHelper.dialogIsShowing(copyRightDialog)) {
             copyRightDialog.show();
         }
     }
@@ -896,10 +891,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void showInfoDialog(String content) {
-        if (copyRightDialog != null && copyRightDialog.isShowing()) {
-            return;
-        }
-        if (infoDialog != null && infoDialog.isShowing()) {
+        if (ViewHelper.dialogIsShowing(infoDialog)) {
             return;
         }
         if (StringUtils.isNullOrEmpty(content)) {
@@ -926,7 +918,7 @@ public class BookDetailFragment extends BaseFragment {
                 dismissInfoDialog();
             }
         });
-        if (infoDialog != null && !infoDialog.isShowing()) {
+        if (!ViewHelper.dialogIsShowing(infoDialog)) {
             infoDialog.show();
         }
     }
