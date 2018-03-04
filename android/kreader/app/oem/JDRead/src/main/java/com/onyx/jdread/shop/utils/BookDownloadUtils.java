@@ -77,7 +77,7 @@ public class BookDownloadUtils {
         if (FileUtils.fileExist(localPath)) {
             FileUtils.deleteFile(localPath);
         }
-        DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.downLoadUrl, localPath, bookDetailBean.name);
+        DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.downLoadUrl, localPath, bookDetailBean.ebook_id + "");
         downloadAction.setBookDetailBean(bookDetailBean);
         downloadAction.execute(dataBundle, new RxCallback() {
             @Override
