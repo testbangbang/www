@@ -78,6 +78,7 @@ public class UserLoginAction extends BaseAction {
 
             @Override
             public void onError(String errorJson) {
+                RxCallback.invokeFinally(rxCallback);
                 try {
                     UserLoginResultErrorBean resultErrorBean = JSONObjectParseUtils.parseObject(errorJson, UserLoginResultErrorBean.class);
                     if (resultErrorBean != null) {
@@ -90,11 +91,13 @@ public class UserLoginAction extends BaseAction {
 
             @Override
             public void onFail(FailResult failResult, PicDataInfo picDataInfo) {
+                RxCallback.invokeFinally(rxCallback);
                 dataBundle.getEventBus().post(new UserLoginResultEvent(failResult.getMessage()));
             }
 
             @Override
             public void onFail(FailResult failResult, JumpResult jumpResult, PicDataInfo picDataInfo) {
+                RxCallback.invokeFinally(rxCallback);
                 dataBundle.getEventBus().post(new UserLoginResultEvent(failResult.getMessage()));
             }
         });
@@ -114,6 +117,12 @@ public class UserLoginAction extends BaseAction {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                invokeFinally(rxCallback);
             }
         });
     }

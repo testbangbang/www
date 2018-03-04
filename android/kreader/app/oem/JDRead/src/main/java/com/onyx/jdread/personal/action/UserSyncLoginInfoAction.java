@@ -1,7 +1,6 @@
 package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxRequestSyncLoginInfo;
@@ -37,6 +36,12 @@ public class UserSyncLoginInfoAction extends BaseAction {
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
                 }
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                invokeFinally(rxCallback);
             }
         });
 
