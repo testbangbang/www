@@ -22,7 +22,6 @@ import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CategoryViewClick;
 import com.onyx.jdread.shop.event.EnjoyReadViewClick;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
-import com.onyx.jdread.shop.event.MainConfigDataChangeEvent;
 import com.onyx.jdread.shop.event.NewBookViewClick;
 import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.SaleViewClick;
@@ -78,9 +77,15 @@ public class ShopFragment extends BaseFragment {
         recyclerView.setOnPagingListener(new CustomRecycleView.OnPagingListener() {
             @Override
             public void onPageChange(int curIndex) {
-                bookShopBinding.scrollBar.setFocusPosition(curIndex);
+                setScrollbarFocusPosition(curIndex);
             }
         });
+    }
+
+    private void setScrollbarFocusPosition(int curIndex) {
+        if (bookShopBinding.scrollBar != null) {
+            bookShopBinding.scrollBar.setFocusPosition(curIndex);
+        }
     }
 
     @Override
@@ -109,6 +114,7 @@ public class ShopFragment extends BaseFragment {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
                 bookShopBinding.scrollBar.setTotal(getBookShopViewModel().getTotalPages());
+                scrollToTop();
             }
 
             @Override
@@ -116,11 +122,6 @@ public class ShopFragment extends BaseFragment {
                 super.onError(throwable);
             }
         });
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMainConfigDataChangeEvent(MainConfigDataChangeEvent event) {
-        scrollToTop();
     }
 
     private void scrollToTop() {

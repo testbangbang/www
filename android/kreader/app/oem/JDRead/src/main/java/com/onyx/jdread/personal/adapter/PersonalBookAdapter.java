@@ -64,6 +64,10 @@ public class PersonalBookAdapter extends PageRecyclerView.PageAdapter implements
         notifyDataSetChanged();
     }
 
+    public void notifyItem(int position) {
+        notifyItemChanged(position);
+    }
+
     @Override
     public void onClick(View v) {
         Object tag = v.getTag();

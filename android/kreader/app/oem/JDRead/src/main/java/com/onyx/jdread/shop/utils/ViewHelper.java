@@ -1,5 +1,7 @@
 package com.onyx.jdread.shop.utils;
 
+import android.app.Dialog;
+
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
@@ -105,5 +107,13 @@ public class ViewHelper {
             url += sb.toString();
         }
         return url;
+    }
+
+    public static boolean dialogIsShowing(Dialog dialog) {
+        boolean isShowing = false;
+        if (dialog != null && dialog.isShowing()) {
+            isShowing = true;
+        }
+        return isShowing;
     }
 }

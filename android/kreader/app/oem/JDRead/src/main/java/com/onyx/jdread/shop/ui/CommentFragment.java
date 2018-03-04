@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -23,7 +22,6 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.reader.ui.view.AutoPagedWebView;
 import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
@@ -37,6 +35,7 @@ import com.onyx.jdread.shop.event.TopRightTitleEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.BookInfoDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -233,7 +232,7 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void showInfoDialog(String content) {
-        if (infoDialog != null && infoDialog.isShowing()) {
+        if (ViewHelper.dialogIsShowing(infoDialog)) {
             return;
         }
         if (StringUtils.isNullOrEmpty(content)) {
@@ -261,19 +260,15 @@ public class CommentFragment extends BaseFragment {
                 dismissInfoDialog();
             }
         });
-        showInfoDialog(infoDialog);
+        if (!ViewHelper.dialogIsShowing(infoDialog)) {
+            infoDialog.show();
+        }
     }
 
     private void dismissInfoDialog() {
         if (infoDialog != null && infoDialog.isShowing()) {
             infoDialog.dismiss();
             infoDialog = null;
-        }
-    }
-
-    private void showInfoDialog(Dialog dialog) {
-        if (dialog != null && !dialog.isShowing()) {
-            dialog.show();
         }
     }
 

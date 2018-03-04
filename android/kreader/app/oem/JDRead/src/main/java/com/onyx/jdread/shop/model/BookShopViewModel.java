@@ -1,7 +1,6 @@
 package com.onyx.jdread.shop.model;
 
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
-import com.onyx.jdread.shop.event.MainConfigDataChangeEvent;
 import com.onyx.jdread.shop.event.SearchViewClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,7 +35,6 @@ public class BookShopViewModel extends BaseSubjectViewModel {
 
     public void setMainConfigSubjcet(List<BaseSubjectViewModel> mainConfigSubjcet) {
         this.mainConfigSubjcet = mainConfigSubjcet;
-        getEventBus().post(new MainConfigDataChangeEvent());
         notifyChange();
     }
 
