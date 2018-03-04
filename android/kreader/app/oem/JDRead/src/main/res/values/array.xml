@@ -102,4 +102,10 @@
         <item>@string/fifty</item>
         <item>@string/ninety</item>
     </string-array>
+
+    <string-array name="all_category_level_one_name">
+        <item>@string/category_publish</item>
+        <item>@string/category_boy</item>
+        <item>@string/category_girl</item>
+    </string-array>
 </resources>
