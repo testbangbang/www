@@ -181,9 +181,9 @@ public class PersonalBookFragment extends BaseFragment {
                 if (DownLoadHelper.isDownloading(infoBean.downLoadState) ||
                         DownLoadHelper.isStarted(infoBean.downLoadState) ||
                         DownLoadHelper.isConnected(infoBean.downLoadState)) {
-                    DownLoadHelper.stopDownloadingTask(metadata.getTags());
+                    DownLoadHelper.stopDownloadingTask(metadata.getCloudId());
                     infoBean.downLoadState = DownLoadHelper.getPausedState();
-                    updateProgress(infoBean, metadata.getTags());
+                    updateProgress(infoBean, metadata.getCloudId());
                     return;
                 }
                 BookDownloadUtils.download(detail, ShopDataBundle.getInstance());
@@ -241,8 +241,22 @@ public class PersonalBookFragment extends BaseFragment {
         List<PersonalBookBean> data = personalBookAdapter.getData();
         for (int i = 0; i < data.size(); i++) {
             Metadata metadata = data.get(i).metadata;
-            if (tag.equals(metadata.getName())) {
-                String infoBean = JSONObjectParseUtils.toJson(info);
+            if (tag.equals(metadata.getCloudId())) {
+                BookDetailResultBean.DetailBean bookDetail = ShopDataBundle.getInstance().getBookDetail();
+                BookExtraInfoBean bean = null;
+                String downloadInfo = metadata.getDownloadInfo();
+                if (StringUtils.isNotBlank(downloadInfo)) {
+                    bean = JSONObjectParseUtils.toBean(downloadInfo, BookExtraInfoBean.class);
+                    bean.downLoadState = info.downLoadState;
+                    bean.localPath = info.localPath;
+                    bean.percentage = info.percentage;
+                    if (bookDetail.ebook_id == Integer.parseInt(metadata.getCloudId())) {
+                        bean.key = bookDetail.key;
+                        bean.random = bookDetail.random;
+                    }
+                }
+
+                String infoBean = JSONObjectParseUtils.toJson(bean == null ? info : bean);
                 metadata.setDownloadInfo(infoBean);
                 metadata.setTags(tag);
                 personalBookAdapter.notifyItem(i);
