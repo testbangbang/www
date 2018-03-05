@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -220,11 +221,13 @@ public class TreeRecyclerView extends PageRecyclerView {
         private TextView textViewDescription;
         private View splitLine;
         private View currentChapter;
+        private boolean hasChildren;
 
-        public TreeNodeViewHolder(View itemView, Callback callback) {
+        public TreeNodeViewHolder(View itemView, Callback callback,boolean hasChildren) {
             super(itemView);
 
             this.callback = callback;
+            this.hasChildren = hasChildren;
 
             imageViewIndicator = (ImageView)itemView.findViewById(R.id.image_view_indicator);
             textViewTitle = (TextView)itemView.findViewById(R.id.text_view_title);
@@ -236,19 +239,23 @@ public class TreeRecyclerView extends PageRecyclerView {
         public void bindView(final FlattenTreeNodeDataList list, final int position, int rowCount, final ViewGroup parent, TreeNode currentNode) {
             final TreeNode node = list.get(position);
 
-            final RelativeLayout.LayoutParams imageParams = (RelativeLayout.LayoutParams)imageViewIndicator.getLayoutParams();
+            final LinearLayout.LayoutParams imageParams = (LinearLayout.LayoutParams)imageViewIndicator.getLayoutParams();
             final RelativeLayout.LayoutParams lineParams= (RelativeLayout.LayoutParams)splitLine.getLayoutParams();
             Resources res = parent.getContext().getResources();
             float imageSize = res.getDimension(R.dimen.image_view_indicator_size);
             float marginRight = res.getDimension(R.dimen.image_view_indicator_margin_right);
             int paddingLeftPx = (int)(imageSize + marginRight);
-            imageParams.leftMargin = paddingLeftPx * node.treeDepth;
-            imageViewIndicator.setLayoutParams(imageParams);
-            lineParams.leftMargin = (int)(imageSize + marginRight);
-            splitLine.setLayoutParams(lineParams);
+            if(hasChildren) {
+                imageParams.leftMargin = paddingLeftPx * node.treeDepth;
+                imageViewIndicator.setLayoutParams(imageParams);
+            }else{
+                imageParams.leftMargin = 0;
+                imageViewIndicator.setLayoutParams(imageParams);
+            }
 
             textViewTitle.setText(trim(node.title));
             textViewDescription.setText(node.description);
+            textViewDescription.setVisibility(View.GONE);
             if(currentNode.equals(node)){
                 currentChapter.setBackgroundColor(Color.BLACK);
             }else{
@@ -257,7 +264,11 @@ public class TreeRecyclerView extends PageRecyclerView {
             splitLine.setVisibility(VISIBLE);
 
             if (!node.hasChildren()) {
-                imageViewIndicator.setVisibility(INVISIBLE);
+                if(hasChildren) {
+                    imageViewIndicator.setVisibility(INVISIBLE);
+                }else{
+                    imageViewIndicator.setVisibility(GONE);
+                }
             } else {
                 imageViewIndicator.setVisibility(VISIBLE);
             }
@@ -331,8 +342,9 @@ public class TreeRecyclerView extends PageRecyclerView {
         private Callback callback;
         private int mRowCount;
         private TreeNode currentNode;
+        private boolean hasChildren;
 
-        public TreeAdapter(FlattenTreeNodeDataList list, final Callback callback, int rowCount) {
+        public TreeAdapter(FlattenTreeNodeDataList list, final Callback callback, int rowCount,boolean hasChildren) {
             this.list = list;
             this.callback = callback;
             this.mRowCount = rowCount;
@@ -378,7 +390,7 @@ public class TreeRecyclerView extends PageRecyclerView {
         @Override
         public TreeNodeViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tree_recycler_item_view, parent, false);
-            return new TreeNodeViewHolder(view, callback);
+            return new TreeNodeViewHolder(view, callback,hasChildren);
         }
 
         @Override
@@ -403,9 +415,9 @@ public class TreeRecyclerView extends PageRecyclerView {
         super(context, attrs, defStyle);
     }
 
-    public void bindTree(Collection<TreeNode> rootNodes, Callback callback,int row) {
+    public void bindTree(Collection<TreeNode> rootNodes, Callback callback,int row,boolean hasChildren) {
         list.init(rootNodes);
-        adapter = new TreeAdapter(list, callback,row);
+        adapter = new TreeAdapter(list, callback,row,hasChildren);
         this.setAdapter(adapter);
     }
 
