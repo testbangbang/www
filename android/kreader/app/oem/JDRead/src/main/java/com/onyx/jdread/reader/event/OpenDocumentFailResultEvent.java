@@ -6,6 +6,7 @@ package com.onyx.jdread.reader.event;
 
 public class OpenDocumentFailResultEvent {
     private String message;
+    private Throwable throwable;
 
     public String getMessage() {
         return message;
@@ -13,5 +14,13 @@ public class OpenDocumentFailResultEvent {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
+
+    public void setThrowable(Throwable throwable) {
+        this.throwable = throwable;
     }
 }

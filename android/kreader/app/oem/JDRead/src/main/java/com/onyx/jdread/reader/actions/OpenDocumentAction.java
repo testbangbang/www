@@ -139,6 +139,7 @@ public class OpenDocumentAction extends BaseReaderAction {
             message = readerDataHolder.getAppContext().getString(R.string.open_book_fail);
         }
         event.setMessage(message);
+        event.setThrowable(throwable);
         readerDataHolder.getEventBus().post(event);
     }
 }
