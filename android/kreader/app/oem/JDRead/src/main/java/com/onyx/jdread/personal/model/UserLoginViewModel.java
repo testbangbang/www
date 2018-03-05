@@ -1,18 +1,14 @@
 package com.onyx.jdread.personal.model;
 
-import android.app.Activity;
 import android.databinding.ObservableField;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.event.ForgetPasswordEvent;
 import com.onyx.jdread.personal.event.HideSoftWindowEvent;
 import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.event.UserRegisterJDAccountEvent;
-import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -40,18 +36,13 @@ public class UserLoginViewModel {
     }
 
     public void onLoginViewClick() {
+        loginButtonEnabled.set(false);
         getEventBus().post(new HideSoftWindowEvent());
         UserLoginAction userLoginAction = new UserLoginAction(JDReadApplication.getInstance(), account.get(), password.get(), false);
         userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 getEventBus().post(new UserLoginEvent(account.get(),password.get()));
-            }
-
-            @Override
-            public void onSubscribe() {
-                super.onSubscribe();
-                loginButtonEnabled.set(false);
             }
 
             @Override

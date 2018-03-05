@@ -9,9 +9,11 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
+import com.onyx.jdread.reader.ui.view.AutoPagedWebView;
+import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
+import com.onyx.jdread.shop.adapter.BatchDownloadChaptersAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.adapter.BookRankAdapter;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
@@ -127,9 +129,9 @@ public class ShopDataBindingUtil {
     }
 
     @BindingAdapter({"bookInfoWebView"})
-    public static void setBookInfoDialog(HTMLReaderWebView webView, String content) {
+    public static void setBookInfoDialog(PageTextView webView, String content) {
         if (!StringUtils.isNullOrEmpty(content)) {
-            webView.loadData(content, "text/html; charset=UTF-8", null);
+            webView.setText(content);
         }
     }
 
@@ -176,6 +178,14 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"goodList"})
     public static void setVipGoodList(RecyclerView recyclerView, List items) {
         BuyReadVipAdapter adapter = (BuyReadVipAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"chaptersItems"})
+    public static void setChaptersItems(RecyclerView recyclerView, List items) {
+        BatchDownloadChaptersAdapter adapter = (BatchDownloadChaptersAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }

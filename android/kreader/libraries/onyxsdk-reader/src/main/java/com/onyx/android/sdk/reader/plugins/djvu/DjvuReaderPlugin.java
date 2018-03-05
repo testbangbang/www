@@ -336,6 +336,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public void abortBookLoadingJob() {
+
+    }
+
+    @Override
     public ReaderRendererFeatures getRendererFeatures() {
         return this;
     }

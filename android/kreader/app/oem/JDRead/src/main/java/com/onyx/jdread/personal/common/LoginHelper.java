@@ -21,6 +21,7 @@ import com.onyx.jdread.personal.event.UserInfoEvent;
 import com.onyx.jdread.personal.event.VerifySignEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
+import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.util.Utils;
 
 /**
@@ -85,6 +86,9 @@ public class LoginHelper {
     }
 
     public static void showUserLoginDialog(final UserLoginViewModel userLoginViewModel, final Activity context, String targetView) {
+        if (loginDialogIsShowing()) {
+            return;
+        }
         PersonalDataBundle.getInstance().setTargetView(targetView);
         final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(JDReadApplication.getInstance()), null, false);
         userLoginBinding.setLoginViewModel(userLoginViewModel);
@@ -105,14 +109,16 @@ public class LoginHelper {
                 dismissUserLoginDialog();
             }
         });
-        if (loginDialog != null) {
-            loginDialog.show();
-        }
+        loginDialog.show();
     }
 
     public static void dismissUserLoginDialog() {
-        if (loginDialog != null && loginDialog.isShowing()) {
+        if (loginDialogIsShowing()) {
             loginDialog.dismiss();
         }
+    }
+
+    public static boolean loginDialogIsShowing() {
+        return ViewHelper.dialogIsShowing(loginDialog);
     }
 }

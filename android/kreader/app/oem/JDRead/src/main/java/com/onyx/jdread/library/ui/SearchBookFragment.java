@@ -206,6 +206,13 @@ public class SearchBookFragment extends BaseFragment {
                 updatePageIndicator();
                 loadSearchHistory();
             }
+
+            @Override
+            public void onFinally() {
+                if (CollectionUtils.isNullOrEmpty(LibraryDataBundle.getInstance().getSearchBookModel().searchResult)) {
+                    ToastUtil.showToast(R.string.no_search_results);
+                }
+            }
         });
     }
 
@@ -271,6 +278,11 @@ public class SearchBookFragment extends BaseFragment {
                 }
                 RxCallback.invokeNext(callback, action);
             }
+
+            @Override
+            public void onFinally() {
+                invokeFinally(callback);
+            }
         });
     }
 
@@ -320,7 +332,9 @@ public class SearchBookFragment extends BaseFragment {
 
     private void updateHotSearchResult(List<String> hotWords, String defaultKeyword) {
         searchBookModel.reAddHotWords(hotWords);
-        searchBookModel.setDefaultHotWord(defaultKeyword);
+        if (StringUtils.isNotBlank(defaultKeyword)) {
+            searchBookModel.setDefaultHotWord(defaultKeyword);
+        }
         updateHotSearchView(hotWords, defaultKeyword);
     }
 

@@ -86,8 +86,8 @@
     <integer name="personal_task_col">1</integer>
     <integer name="add_wifi_dialog_width">800</integer>
     <integer name="add_wifi_dialog_height">800</integer>
-    <integer name="personal_book_filter_x">100</integer>
-    <integer name="personal_book_filter_y">10</integer>
+    <integer name="personal_book_filter_x">175</integer>
+    <integer name="personal_book_filter_y">20</integer>
     <integer name="personal_book_row">5</integer>
     <integer name="personal_book_col">1</integer>
     <integer name="shop_cart_row">4</integer>
@@ -116,8 +116,8 @@
     <integer name="book_info_dialog_catalog_row">8</integer>
     <integer name="book_info_dialog_note_row">5</integer>
     <integer name="dialog_associated_width">600</integer>
-    <integer name="reader_cross_screen_touch_region_min_width">60</integer>
-    <integer name="reader_cross_screen_touch_region_min_height">60</integer>
+    <integer name="reader_cross_screen_touch_region_min_width">120</integer>
+    <integer name="reader_cross_screen_touch_region_min_height">120</integer>
     <integer name="search_reader_adapter_col">1</integer>
     <integer name="search_reader_adapter_row">6</integer>
     <integer name="buy_read_vip_adapter_col">1</integer>
@@ -186,4 +186,7 @@
     <integer name="pay_by_cash_second_period_time">4000</integer>
     <integer name="pay_by_cash_second_total_time">180000</integer>
     <integer name="pay_by_cash_third_period_time">30000</integer>
+    <integer name="batch_download_recycle_view_row">2</integer>
+    <integer name="batch_download_recycle_view_col">2</integer>
+    <integer name="book_batch_download_recycle_view_item_space">20</integer>
 </resources>

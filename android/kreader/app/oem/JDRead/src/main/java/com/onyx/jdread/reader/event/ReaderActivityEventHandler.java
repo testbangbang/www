@@ -1,9 +1,11 @@
 package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.ui.dialog.DialogMessage;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.common.ToastUtil;
@@ -26,6 +28,7 @@ import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogBaiduBaiKe;
 import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
+import com.onyx.jdread.reader.dialog.SingleLineDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import com.onyx.jdread.reader.menu.dialog.CloseDocumentDialog;
@@ -75,7 +78,14 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenDocumentFailResultEvent(OpenDocumentFailResultEvent event) {
-        readerViewModel.setTipMessage(event.getMessage());
+        DialogMessage dlg = new DialogMessage(readerViewBack.getContext(), event.getMessage());
+        dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                readerViewBack.getContext().finish();
+            }
+        });
+        dlg.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -358,5 +368,24 @@ public class ReaderActivityEventHandler {
     public void onUpdateViewPageEvent(UpdateViewPageEvent event){
         UpdateViewPageAction action = new UpdateViewPageAction();
         action.execute(readerViewModel.getReaderDataHolder(),null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowSignMessageEvent(ShowSignMessageEvent event){
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+
+        showSingleLineDialog(event,activity);
+    }
+
+    private void showSingleLineDialog(ShowSignMessageEvent event,Activity activity){
+        SingleLineDialog singleLineDialog = new SingleLineDialog(activity, event.signNoteInfo.note,
+                readerViewModel.getEventBus(),event.signNoteInfo.rect,
+                readerViewModel.getReaderDataHolder().getReaderTouchHelper().getContentHeight(),
+                readerViewModel.getReaderDataHolder().getReaderTouchHelper().getContentWidth());
+        singleLineDialog.show();
+        singleLineDialog.setCanceledOnTouchOutside(true);
     }
 }

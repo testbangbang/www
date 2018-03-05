@@ -191,10 +191,16 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     public void abortCurrentJob() {
-        getPluginImpl().abortCurrentJob();
+        getPluginImpl().setAborted(true);
     }
 
     public void clearAbortFlag() {
+        getPluginImpl().setAborted(false);
+    }
+
+    @Override
+    public void abortBookLoadingJob() {
+        getPluginImpl().abortBookLoading();
     }
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {

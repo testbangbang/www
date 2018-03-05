@@ -460,6 +460,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
 
     }
 
+    @Override
+    public void abortBookLoadingJob() {
+
+    }
+
     /**
      * Get renderer features.
      *

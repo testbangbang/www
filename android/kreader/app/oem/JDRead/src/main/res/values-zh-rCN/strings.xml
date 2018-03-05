@@ -311,6 +311,7 @@
     <string name="subject_list_just_vip">JoyRead会员</string>
     <string name="downloading_progress">下载中 %d</string>
     <string name="paused">已暂停 %d</string>
+    <string name="started">开始下载</string>
     <string name="total_book">共%d本书</string>
     <string name="password_setting_hint">请输入4-12位数字密码</string>
     <string name="password_setting_phone_hint">请输入手机号</string>
@@ -384,6 +385,8 @@
     <string name="speed_refresh">极速翻页</string>
     <string name="item_consume_record_read_bean">-%d阅豆</string>
     <string name="item_consume_record_voucher">-%d代金券</string>
+    <string name="item_top_up_record_read_bean">+%d阅豆</string>
+    <string name="item_top_up_record_voucher">+%d代金券</string>
     <string name="down_book_resutl_no_read_vip">没有vip会员权限</string>
     <string name="down_book_can_not_read">改电子书不支持会员畅读</string>
     <string name="down_book_book_not_found">电子书不存在</string>
@@ -418,6 +421,7 @@
     <string name="searching" formatted="false">正在搜索 %d/%d</string>
     <string name="reader_searching">搜索中，请等待...</string>
     <string name="no_more_search_results">没有更多的搜索结果</string>
+    <string name="no_search_results">没有搜索结果</string>
     <string name="page" formatted="false">页码 %d</string>
     <string name="search_end">完成搜索</string>
     <string name="delete_library_prompt">是否删除该分组(组内图书重新放入书架)</string>
@@ -483,6 +487,7 @@
     <string name="receive_success">领取成功</string>
     <string name="receive_fail">领取失败</string>
     <string name="low_power_reminder">电量过低,请及时充电</string>
+    <string name="membership_expired">会员已到期，请尽快续费</string>
     <string name="input_error">搜索关键字中不能包含标点符号</string>
     <string name="dialog_password_text_password">密码</string>
     <string name="show_password">显示密码</string>
@@ -490,4 +495,9 @@
     <string name="download_paused">已暂停</string>
     <string name="wait_download">待下载</string>
     <string name="is_downloading">下载中</string>
+    <string name="batch_download">批量下载</string>
+    <string name="book_batch_download_tip">1.批量购买章节时会自动过滤掉免费章节和您已经购买的章节。\n2.购买后系统会自动下载所购全部章节。</string>
+    <string name="book_batch_download_buy_chapter">章节购买</string>
+    <string name="book_batch_download_item_current_chapter">本章</string>
+    <string name="book_batch_download_item_after_chapter">后%d章</string>
 </resources>

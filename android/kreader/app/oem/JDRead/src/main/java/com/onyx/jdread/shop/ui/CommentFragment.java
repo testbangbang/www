@@ -1,12 +1,11 @@
 package com.onyx.jdread.shop.ui;
 
-import android.content.DialogInterface;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -23,11 +22,10 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
+import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.common.PageTagConstants;
 import com.onyx.jdread.shop.event.BookDetailViewInfoEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
@@ -37,13 +35,12 @@ import com.onyx.jdread.shop.event.TopRightTitleEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.BookInfoDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
 
 import static com.onyx.jdread.main.common.Constants.PAGE_STEP;
 
@@ -197,6 +194,9 @@ public class CommentFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailTopBackEvent(TopBackEvent event) {
+        if (isInfoDialogShowing()) {
+            return;
+        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
@@ -232,7 +232,7 @@ public class CommentFragment extends BaseFragment {
     }
 
     private void showInfoDialog(String content) {
-        if (infoDialog != null && infoDialog.isShowing()) {
+        if (ViewHelper.dialogIsShowing(infoDialog)) {
             return;
         }
         if (StringUtils.isNullOrEmpty(content)) {
@@ -246,14 +246,11 @@ public class CommentFragment extends BaseFragment {
         infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
         infoDialog.setView(infoBinding.getRoot());
         infoDialog.setCancelable(false);
-        HTMLReaderWebView pagedWebView = infoBinding.bookInfoWebView;
-        WebSettings settings = pagedWebView.getSettings();
-        settings.setSupportZoom(true);
-        settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
-        pagedWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
+        PageTextView pagedWebView = infoBinding.bookInfoWebView;
+        pagedWebView.setOnPagingListener(new PageTextView.OnPagingListener() {
             @Override
-            public void onPageChanged(int totalPage, int curPage) {
-                dialogBookInfoViewModel.currentPage.set(curPage);
+            public void onPageChange(int currentPage, int totalPage) {
+                dialogBookInfoViewModel.currentPage.set(currentPage);
                 dialogBookInfoViewModel.totalPage.set(totalPage);
             }
         });
@@ -263,7 +260,7 @@ public class CommentFragment extends BaseFragment {
                 dismissInfoDialog();
             }
         });
-        if (infoDialog != null && !infoDialog.isShowing()) {
+        if (!ViewHelper.dialogIsShowing(infoDialog)) {
             infoDialog.show();
         }
     }
@@ -271,6 +268,11 @@ public class CommentFragment extends BaseFragment {
     private void dismissInfoDialog() {
         if (infoDialog != null && infoDialog.isShowing()) {
             infoDialog.dismiss();
+            infoDialog = null;
         }
+    }
+
+    private boolean isInfoDialogShowing() {
+        return infoDialog != null && infoDialog.isShowing();
     }
 }

@@ -1094,7 +1094,7 @@ public class AlFormatRTF extends AlFormat {
 
 
         for (i = start_pos; i < stop_posRequest;) {
-            if (isAborted()) {
+            if (isBookLoadingAborted()) {
                 return;
             }
 
@@ -1110,7 +1110,7 @@ public class AlFormatRTF extends AlFormat {
 
             label_get_next_char:
             for (j = 0; j < buf_cnt;) {
-                if (isAborted()) {
+                if (isBookLoadingAborted()) {
                     return;
                 }
                 
@@ -1177,7 +1177,7 @@ public class AlFormatRTF extends AlFormat {
 
                 label_repeat_letter:
                 while (true) {
-                    if (isAborted()) {
+                    if (isBookLoadingAborted()) {
                         return;
                     }
 

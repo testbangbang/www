@@ -1,5 +1,6 @@
 package com.onyx.jdread.personal.model;
 
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.util.TimeUtils;
@@ -27,9 +28,11 @@ public class PersonalTaskModel {
         bean.setTaskName(ResManager.getString(R.string.read_thirty));
         if (TimeUtils.getCurrentDataInString().equals(PersonalDataBundle.getInstance().getReceiveReadVoucherTime())) {
             bean.setTaskStatus(ResManager.getString(R.string.have_receive));
+        } else if (JDReadApplication.getInstance().canSignForRead()) {
+            bean.setTaskStatus(ResManager.getString(R.string.allow_get));
+        } else {
+            bean.setTaskStatus(ResManager.getString(R.string.cannot_get));
         }
-        // TODO: 2018/1/30 judge read time
-        bean.setTaskStatus("");
         list.add(bean);
     }
 

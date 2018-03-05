@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.data.PageInfo;
@@ -25,17 +26,24 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewConfig;
+import com.onyx.jdread.reader.common.SignNoteInfo;
 import com.onyx.jdread.reader.epd.ReaderEpdHelper;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.util.TimeUtils;
 
 import java.util.List;
+
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.SIGN_INFLATE_BOTTOM;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.SIGN_INFLATE_LEFT;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.SIGN_INFLATE_RIGHT;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.SIGN_INFLATE_TOP;
 
 /**
  * Created by huxiaomao on 2017/12/22.
@@ -226,6 +234,15 @@ public class ReaderViewHelper {
         paint.setStyle(oldStyle);
     }
 
+    public void showSelectRegion(Canvas canvas,Context context){
+        int crossScreenTouchRegionMinWidth = ResManager.getInteger(R.integer.reader_cross_screen_touch_region_min_width);
+        int crossScreenTouchRegionMinHeight = ResManager.getInteger(R.integer.reader_cross_screen_touch_region_min_height);
+
+        canvas.drawRect(new Rect(0,0,crossScreenTouchRegionMinWidth,crossScreenTouchRegionMinWidth),paint);
+        canvas.drawRect(new Rect(getContentWidth() - crossScreenTouchRegionMinWidth,
+                getContentHeight() - crossScreenTouchRegionMinWidth,getContentWidth(),getContentHeight()),paint);
+    }
+
     private void drawPageLinks(Canvas canvas, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
         for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
             if (!userDataInfo.hasPageLinks(pageInfo)) {
@@ -244,15 +261,15 @@ public class ReaderViewHelper {
             String pagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
             ReaderSelection readerSelection = readerSelectionManager.getCurrentSelection(pagePosition);
             if (readerViewInfo != null && readerSelection != null) {
-                drawReaderSelection(context, canvas, paint, bitmap, readerViewInfo, readerSelection,false);
+                drawReaderSelection(context, canvas, paint, bitmap, readerViewInfo, readerSelection,false, false);
                 drawSelectionCursor(canvas, paint, readerSelectionManager, pagePosition);
             }
         }
     }
 
-    private void drawReaderSelection(Context context, Canvas canvas, Paint paint, Bitmap bitmap, final ReaderViewInfo viewInfo, ReaderSelection selection, boolean annotationHighlightStyle) {
+    private void drawReaderSelection(Context context, Canvas canvas, Paint paint, Bitmap bitmap, final ReaderViewInfo viewInfo, ReaderSelection selection, boolean annotationHighlightStyle, boolean grayHighlightFillBackground) {
         if(annotationHighlightStyle){
-            drawFillHighlightRectangles(canvas, bitmap, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
+            drawFillHighlightRectangles(canvas, bitmap, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()), grayHighlightFillBackground);
         }else {
             drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
         }
@@ -271,18 +288,54 @@ public class ReaderViewHelper {
         drawUnderLineHighlightRectangles(canvas, paint, rectangles);
     }
 
-    private void drawFillHighlightRectangles(Canvas canvas, Bitmap bitmap, List<RectF> rectangles){
+    private void drawFillHighlightRectangles(Canvas canvas, Bitmap bitmap, List<RectF> rectangles, boolean grayBackground){
         Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColorFilter(new ColorMatrixColorFilter(getColorMatrix()));
         int size = rectangles.size();
         Rect rect = new Rect();
         for (int i = 0; i < size; ++i) {
             rectangles.get(i).round(rect);
-            canvas.drawBitmap(bitmap, rect, rect, paint);
+            drawFillHighlightRectangle(canvas, bitmap, paint, rect, grayBackground);
         }
         paint.setColorFilter(null);
+    }
+
+    private void drawFillHighlightRectangle(Canvas canvas, Bitmap bitmap, Paint paint, Rect rect, boolean grayBackground) {
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColorFilter(new ColorMatrixColorFilter(getColorMatrix()));
+
+        if (!grayBackground) {
+            canvas.drawBitmap(bitmap, rect, rect, paint);
+            return;
+        }
+
+        // draw gray background for highlighted texts, required by JD
+        // warning! this method only works for normal white background && black foreground texts
+        Bitmap subBitmap = Bitmap.createBitmap(rect.width(), rect.height(), Bitmap.Config.ARGB_8888);
+        Canvas subCanvas = new Canvas(subBitmap);
+        subCanvas.drawBitmap(bitmap, rect, new Rect(0, 0, rect.width(), rect.height()), paint);
+
+        int[] pixels = new int[rect.width() * rect.height()];
+        subBitmap.getPixels(pixels, 0, subBitmap.getWidth(), 0, 0, subBitmap.getWidth(), subBitmap.getHeight());
+
+        int background = Color.rgb(0x80, 0x80, 0x80);
+        for (int y = 0; y < rect.height(); y++) {
+            int offset = y * rect.width();
+            for (int x = 0; x < rect.width(); x++) {
+                if (pixels[offset + x] < Color.DKGRAY) {
+                    pixels[offset + x] = background;
+                }
+            }
+        }
+        subBitmap.setPixels(pixels, 0, subBitmap.getWidth(), 0, 0, subBitmap.getWidth(), subBitmap.getHeight());
+
+        canvas.drawBitmap(subBitmap, null, rect, null);
+
+        subBitmap.recycle();
+    }
+
+    private void drawGrayHighlightRectangle() {
+
     }
 
     private void drawUnderLineHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
@@ -298,6 +351,8 @@ public class ReaderViewHelper {
         if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
             updateAnnotationRectangles(reader,readerViewInfo,readerUserDataInfo);
         }
+
+        readerUserDataInfo.cleanNoteRects();
         for (PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
             if (readerUserDataInfo.hasPageAnnotations(pageInfo)) {
                 List<PageAnnotation> annotations = readerUserDataInfo.getPageAnnotations(pageInfo);
@@ -305,7 +360,8 @@ public class ReaderViewHelper {
                     drawHighlightRectangles(reader.getReaderHelper().getContext(), canvas, RectUtils.mergeRectanglesByBaseLine(annotation.getRectangles()));
                     String note = annotation.getAnnotation().getNote();
                     if (!StringUtils.isNullOrEmpty(note)){
-                        drawHighLightSign(reader.getReaderHelper().getContext(), canvas, paint, annotation.getRectangles());
+                        drawHighLightSign(reader.getReaderHelper().getContext(), canvas, paint, annotation.getRectangles(),
+                                readerUserDataInfo,note);
                     }
                 }
             }
@@ -331,13 +387,25 @@ public class ReaderViewHelper {
         }
     }
 
-    private void drawHighLightSign(Context context, Canvas canvas, Paint paint, List<RectF> rectangles){
+    private void drawHighLightSign(Context context, Canvas canvas, Paint paint, List<RectF> rectangles,ReaderUserDataInfo readerUserDataInfo,
+                                   String note){
         if (rectangles == null || rectangles.size() < 1) {
             return;
         }
-        RectF end = rectangles.get(rectangles.size() - 1);
+        RectF end = new RectF(rectangles.get(rectangles.size() - 1));
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_read_note);
-        canvas.drawBitmap(bitmap, end.right - ReaderConfig.SIGN_RIGHT_MARGIN, (end.bottom - ReaderConfig.SIGN_BOTTOM_MARGIN), null);
+        end.right -= ReaderConfig.SIGN_RIGHT_MARGIN;
+        end.bottom -= ReaderConfig.SIGN_BOTTOM_MARGIN;
+        canvas.drawBitmap(bitmap, end.right, end.bottom, null);
+
+        end.left = end.right;
+        end.right = end.left + bitmap.getWidth();
+        RectUtils.inflateRect(end,SIGN_INFLATE_LEFT,SIGN_INFLATE_TOP,SIGN_INFLATE_RIGHT,SIGN_INFLATE_BOTTOM);
+        SignNoteInfo signNoteInfo = new SignNoteInfo();
+        signNoteInfo.note = note;
+        signNoteInfo.rect = end;
+
+        readerUserDataInfo.addNoteRect(signNoteInfo);
     }
 
 
@@ -347,7 +415,7 @@ public class ReaderViewHelper {
             return;
         }
         for (ReaderSelection sel : searchResults) {
-            drawReaderSelection(reader.getReaderHelper().getContext(),canvas, paint, bitmap, readerViewInfo, sel,true);
+            drawReaderSelection(reader.getReaderHelper().getContext(),canvas, paint, bitmap, readerViewInfo, sel,true, true);
         }
     }
 

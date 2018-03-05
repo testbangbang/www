@@ -82,9 +82,6 @@ public class TranslateFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToReadingToolsEvent(BackToReadingToolsEvent event) {
-        if (processBackEvent()) {
-            return;
-        }
         viewEventCallBack.viewBack();
     }
 

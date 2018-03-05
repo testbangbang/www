@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.common;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.model.*;
@@ -65,6 +66,19 @@ public class ReaderUserDataInfo {
     private Map<String, List<ReaderSelection>> pageLinkMap = new HashMap<>();
     private Map<String, List<ReaderImage>> pageImageMap = new HashMap<>();
     private Map<String, List<ReaderFormField>> formFieldMap = new HashMap<>();
+    private List<SignNoteInfo> noteRects = new ArrayList<>();
+
+    public void cleanNoteRects(){
+        noteRects.clear();
+    }
+
+    public void addNoteRect(SignNoteInfo signNoteInfo){
+        noteRects.add(signNoteInfo);
+    }
+
+    public List<SignNoteInfo> getNoteRects() {
+        return noteRects;
+    }
 
     public void setDocumentPath(final String path) {
         documentPath = path;

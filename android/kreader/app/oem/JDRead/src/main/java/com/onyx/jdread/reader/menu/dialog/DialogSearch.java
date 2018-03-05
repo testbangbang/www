@@ -374,16 +374,14 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
 
     private void mergeSearchList() {
         int maxCount = nextRequestPage * searchRows;
+        if (!readerDataHolder.supportSearchByPage()) {
+            // if doc not support search by page, then we have to show all search results
+            maxCount = searchList.size();
+        }
         if (showSearchList.size() < searchList.size()) {
             for (int i = showSearchList.size(); i < maxCount && i < searchList.size(); i++) {
                 showSearchList.add(searchList.get(i));
             }
-        }
-    }
-
-    private void stopSearch() {
-        if (searchContentAction != null) {
-            searchContentAction.stopSearch();
         }
     }
 
@@ -447,7 +445,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
                 return;
             }
             int length = search.length();
-            style.setSpan(new BackgroundColorSpan(Color.BLACK), start, start + length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            style.setSpan(new BackgroundColorSpan(Color.rgb(0x80, 0x80, 0x80)), start, start + length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             style.setSpan(new ForegroundColorSpan(Color.WHITE), start, start + length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             contentTextView.setText(style);
             title.setText(selection.chapterName);
@@ -598,6 +596,14 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         }
 
         return content;
+    }
+
+    @Override
+    public void stopSearch() {
+        if (searchContentAction != null) {
+            searchContentAction.stopSearch();
+        }
+        hideLoadingLayout();
     }
 
     @Override

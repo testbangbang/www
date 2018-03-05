@@ -2,12 +2,14 @@ package com.onyx.jdread.personal.ui;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableList;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jingdong.app.reader.data.DrmTools;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
@@ -17,6 +19,7 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.Metadata_Table;
+import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -34,18 +37,24 @@ import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.CompareLocalMetadataAction;
 import com.onyx.jdread.personal.action.GetBoughtAction;
 import com.onyx.jdread.personal.action.GetUnlimitedAction;
 import com.onyx.jdread.personal.action.QueryAllCloudMetadataAction;
 import com.onyx.jdread.personal.adapter.PersonalBookAdapter;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalBookBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.event.FilterAllEvent;
 import com.onyx.jdread.personal.event.FilterHaveBoughtEvent;
 import com.onyx.jdread.personal.event.FilterReadVipEvent;
 import com.onyx.jdread.personal.event.FilterSelfImportEvent;
 import com.onyx.jdread.personal.model.PersonalBookModel;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.reader.common.DocumentInfo;
+import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.shop.action.BookshelfInsertAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
@@ -61,9 +70,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
 
 /**
  * Created by li on 2018/1/4.
@@ -74,10 +81,10 @@ public class PersonalBookFragment extends BaseFragment {
     private PersonalBookAdapter personalBookAdapter;
     private PersonalBookModel personalBookModel;
     private GPaginator paginator;
-    private List<Metadata> allBook = new ArrayList<>();
-    private List<Metadata> importBooks = new ArrayList<>();
-    private List<Metadata> boughtBooks;
-    private List<Metadata> unlimitedBooks;
+    private List<PersonalBookBean> allBook = new ArrayList<>();
+    private List<PersonalBookBean> importBooks = new ArrayList<>();
+    private List<PersonalBookBean> boughtBooks;
+    private List<PersonalBookBean> unlimitedBooks;
 
     @Nullable
     @Override
@@ -156,28 +163,27 @@ public class PersonalBookFragment extends BaseFragment {
         personalBookAdapter.setOnItemClickListener(new PageRecyclerView.PageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                if (JDReadApplication.getInstance().getResources().getString(R.string.all).equals(binding.getFilterName()) ||
-                        JDReadApplication.getInstance().getResources().getString(R.string.self_import).equals(binding.getFilterName())) {
-                    // TODO: 2018/1/8 open book
-                    return;
-                }
-                if (JDReadApplication.getInstance().getResources().getString(R.string.read_vip).equals(binding.getFilterName())) {
-                    // TODO: 2018/1/9 judge vip
-                }
+                UserInfo userInfo = PersonalDataBundle.getInstance().getUserInfo();
+                List<PersonalBookBean> data = personalBookAdapter.getData();
+                Metadata metadata = data.get(position).metadata;
 
-                List<Metadata> data = personalBookAdapter.getData();
-                Metadata metadata = data.get(position);
                 BookDetailResultBean.DetailBean detail = covert(metadata);
                 BookExtraInfoBean infoBean = detail.bookExtraInfoBean;
-                if (DownLoadHelper.isDownloading(infoBean.downLoadState)) {
-                    DownLoadHelper.stopDownloadingTask(metadata.getTags());
-                    infoBean.downLoadState = DownLoadHelper.getPausedState();
-                    updateProgress(detail);
+
+                if (ResManager.getString(R.string.self_import).equals(binding.getFilterName()) || infoBean.percentage == DownLoadHelper.DOWNLOAD_PERCENT_FINISH) {
+                    openBook(metadata.getNativeAbsolutePath(), detail);
                     return;
                 }
-
-                if (infoBean.percentage == DownLoadHelper.DOWNLOAD_PERCENT_FINISH) {
-                    // TODO: 2018/1/8 open book
+                if (metadata.getOrdinal() != 0 && userInfo != null && userInfo.vip_remain_days <= 0) {
+                    ToastUtil.showToast(ResManager.getString(R.string.membership_expired));
+                    return;
+                }
+                if (DownLoadHelper.isDownloading(infoBean.downLoadState) ||
+                        DownLoadHelper.isStarted(infoBean.downLoadState) ||
+                        DownLoadHelper.isConnected(infoBean.downLoadState)) {
+                    DownLoadHelper.stopDownloadingTask(metadata.getCloudId());
+                    infoBean.downLoadState = DownLoadHelper.getPausedState();
+                    updateProgress(infoBean, metadata.getCloudId());
                     return;
                 }
                 BookDownloadUtils.download(detail, ShopDataBundle.getInstance());
@@ -192,16 +198,27 @@ public class PersonalBookFragment extends BaseFragment {
         });
     }
 
+    private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean) {
+        DocumentInfo documentInfo = new DocumentInfo();
+        DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
+        securityInfo.setKey(detailBean.key);
+        securityInfo.setRandom(detailBean.random);
+        documentInfo.setBookName(detailBean.name);
+        securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
+        documentInfo.setSecurityInfo(securityInfo);
+        documentInfo.setBookPath(localPath);
+        OpenBookHelper.openBook(super.getContext(), documentInfo);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public synchronized void onDownloadingEvent(DownloadingEvent event) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (task != null) {
-            BookDetailResultBean.DetailBean bookDetail = ShopDataBundle.getInstance().getBookDetail();
-            bookDetail.bookExtraInfoBean.downLoadState = task.getStatus();
-            bookDetail.bookExtraInfoBean.localPath = task.getPath();
-            bookDetail.tag = event.tag;
-            bookDetail.bookExtraInfoBean.percentage = (int) (event.progressInfoModel.progress * 100);
-            updateProgress(bookDetail);
+            BookExtraInfoBean infoBean = new BookExtraInfoBean();
+            infoBean.downLoadState = task.getStatus();
+            infoBean.localPath = task.getPath();
+            infoBean.percentage = (int) (event.progressInfoModel.progress * 100);
+            updateProgress(infoBean, String.valueOf(event.tag));
         }
     }
 
@@ -209,28 +226,43 @@ public class PersonalBookFragment extends BaseFragment {
     public synchronized void onDownloadFinishEvent(DownloadFinishEvent event) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (task != null) {
-            BookDetailResultBean.DetailBean bookDetail = ShopDataBundle.getInstance().getBookDetail();
-            bookDetail.bookExtraInfoBean.downLoadState = task.getStatus();
-            bookDetail.bookExtraInfoBean.localPath = task.getPath();
-            bookDetail.bookExtraInfoBean.percentage = DownLoadHelper.DOWNLOAD_PERCENT_FINISH;
-            updateProgress(bookDetail);
+            BookExtraInfoBean infoBean = new BookExtraInfoBean();
+            infoBean.downLoadState = task.getStatus();
+            infoBean.localPath = task.getPath();
+            infoBean.percentage = DownLoadHelper.DOWNLOAD_PERCENT_FINISH;
+            updateProgress(infoBean, String.valueOf(event.tag));
         }
     }
 
-    private synchronized void updateProgress(BookDetailResultBean.DetailBean detail) {
+    private synchronized void updateProgress(BookExtraInfoBean info, String tag) {
         if (personalBookAdapter == null) {
             return;
         }
-        List<Metadata> data = personalBookAdapter.getData();
+        List<PersonalBookBean> data = personalBookAdapter.getData();
         for (int i = 0; i < data.size(); i++) {
-            Metadata metadata = data.get(i);
-            if (String.valueOf(detail.ebook_id).equals(metadata.getCloudId())) {
-                String infoBean = JSONObjectParseUtils.toJson(detail.bookExtraInfoBean);
-                metadata.setExtraAttributes(infoBean);
-                metadata.setTags((String) detail.tag);
-                personalBookAdapter.notifyDataSetChanged();
-                if (DownLoadHelper.canInsertBookDetail(detail.bookExtraInfoBean.downLoadState)) {
-                    BookshelfInsertAction action = new BookshelfInsertAction(detail, detail.bookExtraInfoBean.localPath);
+            Metadata metadata = data.get(i).metadata;
+            if (tag.equals(metadata.getCloudId())) {
+                BookDetailResultBean.DetailBean bookDetail = ShopDataBundle.getInstance().getBookDetail();
+                BookExtraInfoBean bean = null;
+                String downloadInfo = metadata.getDownloadInfo();
+                if (StringUtils.isNotBlank(downloadInfo)) {
+                    bean = JSONObjectParseUtils.toBean(downloadInfo, BookExtraInfoBean.class);
+                    bean.downLoadState = info.downLoadState;
+                    bean.localPath = info.localPath;
+                    bean.percentage = info.percentage;
+                    if (bookDetail.ebook_id == Integer.parseInt(metadata.getCloudId())) {
+                        bean.key = bookDetail.key;
+                        bean.random = bookDetail.random;
+                    }
+                }
+
+                String infoBean = JSONObjectParseUtils.toJson(bean == null ? info : bean);
+                metadata.setDownloadInfo(infoBean);
+                metadata.setTags(tag);
+                personalBookAdapter.notifyItem(i);
+                if (DownLoadHelper.canInsertBookDetail(info.downLoadState)) {
+                    BookDetailResultBean.DetailBean detail = covert(metadata);
+                    BookshelfInsertAction action = new BookshelfInsertAction(detail, info.localPath);
                     action.execute(ShopDataBundle.getInstance(), null);
                 }
             }
@@ -266,19 +298,19 @@ public class PersonalBookFragment extends BaseFragment {
     private void setFilter(int id) {
         switch (id) {
             case R.string.all:
-                binding.setFilterName(JDReadApplication.getInstance().getResources().getString(R.string.all));
+                binding.setFilterName(ResManager.getString(R.string.all));
                 queryAllCloud();
                 break;
             case R.string.have_bought:
-                binding.setFilterName(JDReadApplication.getInstance().getResources().getString(R.string.have_bought));
+                binding.setFilterName(ResManager.getString(R.string.have_bought));
                 getBoughtBooks();
                 break;
             case R.string.read_vip:
-                binding.setFilterName(JDReadApplication.getInstance().getResources().getString(R.string.read_vip));
+                binding.setFilterName(ResManager.getString(R.string.read_vip));
                 getUnlimitedBooks();
                 break;
             case R.string.self_import:
-                binding.setFilterName(JDReadApplication.getInstance().getResources().getString(R.string.self_import));
+                binding.setFilterName(ResManager.getString(R.string.self_import));
                 getSelfImportBooks();
                 break;
         }
@@ -293,9 +325,9 @@ public class PersonalBookFragment extends BaseFragment {
             public void onNext(Object o) {
                 LibraryViewDataModel libraryViewDataModel = LibraryDataBundle.getInstance().getLibraryViewDataModel();
                 ObservableList<DataModel> items = libraryViewDataModel.items;
-                List<Metadata> metadatas = convertToMetadata(items);
-                if (metadatas != null) {
-                    setAdapterData(metadatas);
+                List<PersonalBookBean> datas = convertToMetadata(items);
+                if (datas != null) {
+                    setAdapterData(datas);
                 }
             }
         });
@@ -345,46 +377,57 @@ public class PersonalBookFragment extends BaseFragment {
         queryAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                List<Metadata> metadatas = queryAction.getMetadatas();
-                if (metadatas != null && metadatas.size() > 0) {
-                    allBook.addAll(metadatas);
+                List<PersonalBookBean> books = queryAction.getBooks();
+                if (books != null && books.size() > 0) {
+                    allBook.addAll(books);
                 }
                 getBoughtBooks();
             }
         });
     }
 
-    private void compareLocalMetadata(List<Metadata> list, final boolean isAll) {
+    private void compareLocalMetadata(List<PersonalBookBean> list, final boolean isAll) {
         final CompareLocalMetadataAction action = new CompareLocalMetadataAction(list);
         action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                List<Metadata> metadataList = action.getMetadataList();
+                List<PersonalBookBean> metadataList = action.getMetadataList();
                 if (metadataList != null) {
                     allBook.addAll(metadataList);
                 }
                 if (isAll) {
-                    List<Metadata> list = deleteRepeat(allBook);
+                    List<PersonalBookBean> list = deleteRepeat(allBook);
                     setAdapterData(list);
                 }
             }
         });
     }
 
-    private List<Metadata> deleteRepeat(List<Metadata> list) {
-        HashSet<Metadata> set = new HashSet<>(list);
+    private List<PersonalBookBean> deleteRepeat(List<PersonalBookBean> list) {
+        List<PersonalBookBean> data = new ArrayList<>();
+        List<String> ids = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            PersonalBookBean bookBean = list.get(i);
+            if (ids.contains(bookBean.metadata.getCloudId())) {
+                continue;
+            }
+            ids.add(bookBean.metadata.getCloudId());
+            data.add(bookBean);
+        }
         list.clear();
-        list.addAll(set);
+        list.addAll(data);
         return list;
     }
 
-    private void setAdapterData(List<Metadata> metadatas) {
+    private void setAdapterData(List<PersonalBookBean> datas) {
         if (personalBookAdapter != null) {
-            personalBookAdapter.setData(metadatas);
-            binding.personalBookRecycler.resize(personalBookAdapter.getRowCount(), personalBookAdapter.getColumnCount(), metadatas.size());
+            personalBookAdapter.setData(datas);
+            binding.personalBookRecycler.scrollToPosition(0);
+            paginator.setCurrentPage(0);
+            binding.personalBookRecycler.resize(personalBookAdapter.getRowCount(), personalBookAdapter.getColumnCount(), datas.size());
             String progressText = paginator.getProgressText();
             binding.setPage(progressText);
-            binding.setBooks(metadatas.size());
+            binding.setBooks(datas.size());
         }
     }
 
@@ -396,13 +439,15 @@ public class PersonalBookFragment extends BaseFragment {
         detail.image_url = metadata.getCoverUrl();
         detail.file_size = metadata.getSize();
         detail.downLoadUrl = StringUtils.isNotBlank(metadata.getLocation()) ? metadata.getLocation() : null;
-        String extraAttributes = metadata.getExtraAttributes();
+        String downloadInfo = metadata.getDownloadInfo();
 
         BookExtraInfoBean infoBean = null;
-        if (StringUtils.isNullOrEmpty(extraAttributes)) {
+        if (StringUtils.isNullOrEmpty(downloadInfo)) {
             infoBean = new BookExtraInfoBean();
         } else {
-            infoBean = JSONObjectParseUtils.toBean(extraAttributes, BookExtraInfoBean.class);
+            infoBean = JSONObjectParseUtils.toBean(downloadInfo, BookExtraInfoBean.class);
+            detail.key = infoBean.key;
+            detail.random = infoBean.random;
         }
         if (StringUtils.isNotBlank(metadata.getTags())) {
             detail.tag = metadata.getTags();
@@ -411,13 +456,17 @@ public class PersonalBookFragment extends BaseFragment {
         return detail;
     }
 
-    private List<Metadata> convertToMetadata(ObservableList<DataModel> items) {
+    private List<PersonalBookBean> convertToMetadata(ObservableList<DataModel> items) {
         if (importBooks != null && importBooks.size() > 0) {
             importBooks.clear();
         }
         if (items != null && items.size() > 0) {
             for (int i = 0; i < items.size(); i++) {
                 DataModel dataModel = items.get(i);
+                if (ModelType.TYPE_LIBRARY.ordinal() == dataModel.type.get().ordinal()) {
+                    continue;
+                }
+                PersonalBookBean bookBean = new PersonalBookBean();
                 Metadata metadata = new Metadata();
                 metadata.setName(dataModel.title.get());
                 metadata.setParentId(dataModel.parentId.get());
@@ -430,10 +479,13 @@ public class PersonalBookFragment extends BaseFragment {
                 metadata.setProgress(dataModel.progress.get());
                 metadata.setDescription(dataModel.desc.get());
                 metadata.setNativeAbsolutePath(dataModel.absolutePath.get());
+
                 BookExtraInfoBean bean = new BookExtraInfoBean();
                 bean.percentage = 100;
-                metadata.setExtraAttributes(JSONObjectParseUtils.toJson(bean));
-                importBooks.add(metadata);
+                metadata.setDownloadInfo(JSONObjectParseUtils.toJson(bean));
+                bookBean.metadata = metadata;
+                bookBean.bitmap = dataModel.coverBitmap.get();
+                importBooks.add(bookBean);
             }
         }
         return importBooks;
