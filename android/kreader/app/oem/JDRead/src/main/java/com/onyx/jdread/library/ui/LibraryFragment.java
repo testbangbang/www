@@ -2,17 +2,22 @@ package com.onyx.jdread.library.ui;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.jingdong.app.reader.data.DrmTools;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.SortBy;
@@ -71,12 +76,16 @@ import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.ui.PersonalBookFragment;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
+import com.onyx.jdread.shop.event.DownloadFinishEvent;
+import com.onyx.jdread.shop.event.DownloadingEvent;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
-import com.onyx.jdread.shop.ui.ShopFragment;
+import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 
@@ -113,8 +122,8 @@ public class LibraryFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadData(libraryBuildQueryArgs(), false, true);
         getEventBus().register(this);
+        ShopDataBundle.getInstance().getEventBus().register(this);
     }
 
     private EventBus getEventBus() {
@@ -125,6 +134,7 @@ public class LibraryFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         getEventBus().unregister(this);
+        ShopDataBundle.getInstance().getEventBus().unregister(this);
     }
 
     private void initData() {
@@ -143,11 +153,12 @@ public class LibraryFragment extends BaseFragment {
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(queryArgs);
         loadAction.setLoadFromCache(loadFromCache);
         loadAction.setLoadMetadata(isLoadMetadata());
-        loadAction.setClearLibraryCache(clearMetadataCache);
+        loadAction.setClearLibraryCache(clearMetadataCache || JDReadApplication.getInstance().isNotifyLibraryData());
         loadAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updateContentView();
+                JDReadApplication.getInstance().setNotifyLibraryData(false);
                 quitEmptyChildLibrary();
             }
         });
@@ -255,6 +266,7 @@ public class LibraryFragment extends BaseFragment {
         }
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(queryArgs, false);
         loadAction.setLoadFromCache(true);
+        loadAction.setClearLibraryCache(JDReadApplication.getInstance().isNotifyLibraryData());
         loadAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -289,6 +301,7 @@ public class LibraryFragment extends BaseFragment {
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(queryArgs, false);
         loadAction.setLoadFromCache(true);
         loadAction.setLoadMetadata(isLoadMetadata());
+        loadAction.setClearLibraryCache(JDReadApplication.getInstance().isNotifyLibraryData());
         loadAction.execute(libraryDataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -566,6 +579,59 @@ public class LibraryFragment extends BaseFragment {
         });
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadingEvent(DownloadingEvent event) {
+        for (DataModel item : libraryDataBundle.getLibraryViewDataModel().items) {
+            if (item.title.get().equals(event.tag)) {
+                float progress = event.progressInfoModel.progress * 100;
+                item.downloadProgress.set((int) progress);
+                BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
+                item.downloadStatus.set(task.getStatus());
+                item.bookStatus.set(DownLoadHelper.getBookStatus(task.getStatus()));
+                item.showDownloadProgress.set(DownLoadHelper.isPause(task.getStatus()) || DownLoadHelper.isDownloading(task.getStatus()));
+            }
+        }
+    }
+
+    public void onDownloadError(DataModel item) {
+        item.bookStatus.set(ResManager.getString(R.string.download_fail));
+        item.showDownloadProgress.set(false);
+        final DataModel dataModel = item;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dataModel.downloadStatus.set(FileDownloadStatus.error);
+                dataModel.bookStatus.set(DownLoadHelper.getBookStatus(FileDownloadStatus.error));
+            }
+        }, 1000);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadFinishEvent(DownloadFinishEvent event) {
+        for (DataModel item : libraryDataBundle.getLibraryViewDataModel().items) {
+            if (item.title.get().equals(event.tag)) {
+                final DataModel dataModel = item;
+                if (event.getThrowable() == null) {
+                    onDownloadFinish(dataModel);
+                } else {
+                    onDownloadError(dataModel);
+                }
+            }
+        }
+        JDReadApplication.getInstance().setNotifyLibraryData(true);
+    }
+
+    private void onDownloadFinish(final DataModel dataModel) {
+        dataModel.bookStatus.set(ResManager.getString(R.string.download_finished));
+        dataModel.showDownloadProgress.set(false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dataModel.downloadStatus.set(FileDownloadStatus.completed);
+            }
+        }, 1000);
+    }
+
     private void deleteBook() {
         MetadataDeleteAction metadataDeleteAction = new MetadataDeleteAction(JDReadApplication.getInstance());
         metadataDeleteAction.execute(libraryDataBundle, new RxCallback() {
@@ -614,6 +680,10 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void processBookItemOpen(DataModel dataModel) {
+        if (dataModel.cloudId.get() != -1 && !DownLoadHelper.isDownloaded(dataModel.downloadStatus.get())) {
+            download(dataModel);
+            return;
+        }
         String filePath = dataModel.absolutePath.get();
         if (StringUtils.isNullOrEmpty(filePath)) {
             return;
@@ -630,6 +700,19 @@ public class LibraryFragment extends BaseFragment {
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
         OpenBookHelper.openBook(getContext(), documentInfo);
+    }
+
+    private void download(DataModel dataModel) {
+        if (DownLoadHelper.isDownloading(dataModel.downloadStatus.get())) {
+            DownLoadHelper.stopDownloadingTask(dataModel.title.get());
+        } else {
+            reDownload(dataModel);
+        }
+    }
+
+    private void reDownload(DataModel dataModel) {
+        dataModel.bookStatus.set(ResManager.getString(R.string.is_downloading));
+        DownLoadHelper.startDownloadingTask(dataModel.downloadUrl.get(), dataModel.absolutePath.get(), dataModel.title.get());
     }
 
     private void processMultiModeItemClick(DataModel dataModel, boolean layoutClicked) {

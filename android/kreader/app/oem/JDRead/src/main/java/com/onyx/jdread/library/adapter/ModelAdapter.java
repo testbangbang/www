@@ -16,6 +16,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ModelItemBinding;
 import com.onyx.jdread.main.common.PageAdapter;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.shop.utils.DownLoadHelper;
 
 import java.util.List;
 
@@ -68,6 +69,7 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
             viewHolder.bind.childCount.setText(
                     Integer.valueOf(dataModel.childCount.get()) > ResManager.getInteger(R.integer.child_over_limit) ? ResManager.getString(R.string.child_over_limit_display) : dataModel.childCount.get());
         }
+        dataModel.bookStatus.set(DownLoadHelper.getBookStatus(dataModel.downloadStatus.get()));
         viewHolder.bindTo(dataModel);
     }
 

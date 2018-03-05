@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.utils;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
+import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.sdk.data.model.BookExtraInfoBean;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.FileModel;
@@ -75,7 +76,13 @@ public class DataModelUtil {
             if (extraInfoBean != null) {
                 model.key.set(extraInfoBean.key);
                 model.random.set(extraInfoBean.random);
+                model.downloadStatus.set(extraInfoBean.downLoadState);
+                model.downloadUrl.set(extraInfoBean.downloadUrl);
+                float progress = extraInfoBean.progress * 100 / extraInfoBean.totalSize;
+                model.downloadProgress.set((int) progress);
+                model.showDownloadProgress.set(extraInfoBean.downLoadState == FileDownloadStatus.paused || extraInfoBean.downLoadState == FileDownloadStatus.progress);
             }
+
             CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());
             if (bitmap != null) {
                 model.coverBitmap.set(bitmap);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.evernote.client.android.EvernoteSession;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -51,6 +52,7 @@ public class JDReadApplication extends MultiDexApplication {
     private AppBaseInfo appBaseInfo;
     private JDAppBaseInfo jdAppBaseInfo;
     private EvernoteSession evernoteSession;
+    private boolean notifyLibraryData;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -204,5 +206,13 @@ public class JDReadApplication extends MultiDexApplication {
         List<Class<? extends DatabaseHolder>> dataHolderList = new ArrayList<>();
         dataHolderList.add(JDReadGeneratedDatabaseHolder.class);
         return dataHolderList;
+    }
+
+    public boolean isNotifyLibraryData() {
+        return notifyLibraryData;
+    }
+
+    public void setNotifyLibraryData(boolean notifyLibraryData) {
+        this.notifyLibraryData = notifyLibraryData;
     }
 }

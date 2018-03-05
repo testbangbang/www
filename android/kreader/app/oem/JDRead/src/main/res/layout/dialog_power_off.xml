@@ -35,12 +35,22 @@
                 android:textSize="@dimen/level_two_heading_font" />
 
             <TextView
+                android:id="@+id/reboot_device"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/reboot"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <TextView
                 android:id="@+id/confirm_power_off"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/yes"
+                android:text="@string/shutdown"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
         </LinearLayout>

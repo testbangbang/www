@@ -3,12 +3,15 @@ package com.onyx.jdread.main.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.os.PowerManager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.onyx.android.libsetting.util.PowerUtil;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogPowerOffBinding;
 
@@ -39,6 +42,13 @@ public class PowerOffDialog extends Dialog {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
+                }
+            });
+            bind.rebootDevice.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PowerManager powerManager = (PowerManager) JDReadApplication.getInstance().getSystemService(Context.POWER_SERVICE);
+                    powerManager.reboot("");
                 }
             });
             bind.confirmPowerOff.setOnClickListener(new View.OnClickListener() {

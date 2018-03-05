@@ -14,4 +14,5 @@ public class BookExtraInfoBean {
     public float progress;
     public String key;
     public String random;
+    public String downloadUrl;
 }

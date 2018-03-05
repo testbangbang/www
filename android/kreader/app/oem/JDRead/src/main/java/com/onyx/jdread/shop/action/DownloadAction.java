@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.action;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -12,6 +13,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
+import com.onyx.jdread.shop.event.DownloadErrorEvent;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
 import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
@@ -91,9 +93,14 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dataBundle.getEventBus().post(new DownloadFinishEvent(tag));
+                DownloadFinishEvent downloadFinishEvent = new DownloadFinishEvent(tag);
+                downloadFinishEvent.setThrowable(e);
+                dataBundle.getEventBus().post(downloadFinishEvent);
                 if (downLoadCallback != null) {
                     downLoadCallback.done(tag);
+                }
+                if (e != null) {
+                    dataBundle.getEventBus().post(new DownloadErrorEvent(tag));
                 }
                 if (rxCallback != null) {
                     if (e != null) {
@@ -139,7 +146,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
     public interface DownLoadCallback {
         void start(Object tag);
 
-        void progress(Object tag,ProgressInfoModel progressInfoModel);
+        void progress(Object tag, ProgressInfoModel progressInfoModel);
 
         void done(Object tag);
     }

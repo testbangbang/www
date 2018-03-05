@@ -3,6 +3,12 @@ package com.onyx.jdread.shop.utils;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
+import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.shop.action.DownloadAction;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 
 /**
  * Created by jackdeng on 2017/12/21.
@@ -46,10 +52,29 @@ public class DownLoadHelper {
 
     public static void stopDownloadingTask(Object tag) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(tag);
-        removeDownloadingTask(tag);
         if (task != null) {
             task.pause();
         }
+    }
+
+    public static void startDownloadingTask(String downloadUrl, String path, Object tag) {
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(tag);
+        if (task != null) {
+            OnyxDownloadManager.getInstance().removeTask(tag);
+        }
+        OnyxDownloadManager.getInstance().removeTask(tag);
+        DownloadAction downloadAction = new DownloadAction(JDReadApplication.getInstance(), downloadUrl, path, tag);
+        downloadAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+        });
     }
 
     public static void removeDownloadingTask(Object tag) {
@@ -62,5 +87,25 @@ public class DownLoadHelper {
             return true;
         }
         return false;
+    }
+
+
+    public static String getBookStatus(int downLoadState) {
+        String bookStatus = "";
+        switch (downLoadState) {
+            case FileDownloadStatus.paused:
+                bookStatus = ResManager.getString(R.string.download_paused);
+                break;
+            case FileDownloadStatus.error:
+                bookStatus = ResManager.getString(R.string.wait_download);
+                break;
+            case FileDownloadStatus.progress:
+                bookStatus = ResManager.getString(R.string.is_downloading);
+                break;
+            case FileDownloadStatus.completed:
+            default:
+                bookStatus = "";
+        }
+        return bookStatus;
     }
 }
