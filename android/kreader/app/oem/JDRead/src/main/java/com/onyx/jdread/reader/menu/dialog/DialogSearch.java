@@ -303,11 +303,13 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
             ToastMessage.showMessageCenter(readerDataHolder.getAppContext(), ResManager.getString(R.string.search_view_hint));
             return;
         }
+
         Pattern patPunc =
-                Pattern.compile("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]");
+                Pattern.compile("[℃±×÷•°©£€®℉_™’\\+√\\-\\-\"%`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]");
         Matcher matcher = patPunc.matcher(searchText);
-        if(matcher.find()){
-            ToastMessage.showMessageCenter(readerDataHolder.getAppContext(),ResManager.getString(R.string.input_error));
+        searchText = matcher.replaceAll("");
+        if (StringUtils.isNullOrEmpty(searchText)) {
+            ToastMessage.showMessageCenter(readerDataHolder.getAppContext(), ResManager.getString(R.string.search_view_hint));
             return;
         }
         dialogSearchModel.setSearchHistory(false);
