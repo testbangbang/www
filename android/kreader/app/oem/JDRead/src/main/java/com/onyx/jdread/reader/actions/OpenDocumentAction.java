@@ -6,9 +6,7 @@ import android.content.DialogInterface;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sdk.ui.dialog.DialogReaderLoading;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -58,7 +56,7 @@ public class OpenDocumentAction extends BaseReaderAction {
     }
 
     private void openDocument(final ReaderDataHolder readerDataHolder, final BaseOptions options) {
-        final OpenDocumentRequest openDocumentRequest = new OpenDocumentRequest(readerDataHolder.getReader(),options);
+        final OpenDocumentRequest openDocumentRequest = new OpenDocumentRequest(readerDataHolder.getReader(),options,readerDataHolder.getEventBus());
         OpenDocumentRequest.setAppContext(readerDataHolder.getAppContext());
         readerDataHolder.setDocumentOpeningState();
 
