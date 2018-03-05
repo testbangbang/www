@@ -1,9 +1,11 @@
 package com.onyx.jdread.reader.event;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.ui.dialog.DialogMessage;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.common.ToastUtil;
@@ -76,7 +78,14 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenDocumentFailResultEvent(OpenDocumentFailResultEvent event) {
-        readerViewModel.setTipMessage(event.getMessage());
+        DialogMessage dlg = new DialogMessage(readerViewBack.getContext(), event.getMessage());
+        dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                readerViewBack.getContext().finish();
+            }
+        });
+        dlg.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
