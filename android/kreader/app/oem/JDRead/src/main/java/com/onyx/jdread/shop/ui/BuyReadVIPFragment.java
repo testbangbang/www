@@ -20,6 +20,7 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.UserInfoAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.dialog.TopUpDialog;
@@ -29,6 +30,7 @@ import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.GetVipGoodListAction;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
 import com.onyx.jdread.shop.event.PayByCashSuccessEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
@@ -208,9 +210,16 @@ public class BuyReadVIPFragment extends BaseFragment {
         }
     }
 
+    private boolean checkVipGoodCanBuy(GetVipGoodsListResultBean.DataBean dataBean) {
+        return dataBean != null && dataBean.can_buy;
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipGoodItemClickEvent(VipGoodItemClickEvent event) {
-        if (event.dataBean == null || !event.dataBean.can_buy) {
+        if (checkWfiDisConnected()) {
+            return;
+        }
+        if (!checkVipGoodCanBuy(event.dataBean)) {
             return;
         }
         if (ViewHelper.dialogIsShowing(topUpDialog) || isVipBuying()) {
@@ -227,6 +236,11 @@ public class BuyReadVIPFragment extends BaseFragment {
                 @Override
                 public void onNext(GetOrderInfoAction getOrderInfoAction) {
                     showTopUpDialog(getOrderInfoAction.getDataBean());
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    ToastUtil.showToast(R.string.network_exception);
                 }
 
                 @Override
