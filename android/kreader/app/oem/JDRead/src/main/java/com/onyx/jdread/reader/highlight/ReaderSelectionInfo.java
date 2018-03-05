@@ -1,8 +1,15 @@
 package com.onyx.jdread.reader.highlight;
 
-import com.onyx.android.sdk.reader.api.ReaderSelection;
+import android.util.Log;
 
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.jdread.reader.utils.MapKeyComparator;
+import com.onyx.jdread.shop.common.RequestKeyComparator;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,6 +17,7 @@ import java.util.Map;
  */
 
 public class ReaderSelectionInfo {
+    private static final String TAG = ReaderSelectionInfo.class.getSimpleName();
     private Map<String, SelectionInfo> readerSelectionInfos = new HashMap<>();
     private int moveSelectCount = 0;
 
@@ -39,10 +47,14 @@ public class ReaderSelectionInfo {
 
     public String getSelectText(){
         String result = "";
-        for(SelectionInfo readerSelectionInfo : readerSelectionInfos.values()){
-            if(readerSelectionInfo.getCurrentSelection() != null){
-                result += readerSelectionInfo.getCurrentSelection().getText();
-            }
+        List<Map.Entry<String, SelectionInfo>> list = new ArrayList<Map.Entry<String, SelectionInfo>>(readerSelectionInfos.entrySet());
+        Collections.sort(list, new MapKeyComparator());
+        Log.i(TAG,"getSelectText:");
+        for (int i = 0; i < list.size(); i++) {
+            Map.Entry<String, SelectionInfo> stringStringEntry = list.get(i);
+            SelectionInfo readerSelectionInfo = stringStringEntry.getValue();
+            Log.i(TAG,"pagePosition:" + readerSelectionInfo.pagePosition + ",text:" + readerSelectionInfo.getCurrentSelection().getText());
+            result += readerSelectionInfo.getCurrentSelection().getText();
         }
         return result;
     }

@@ -14,18 +14,22 @@ import com.onyx.jdread.reader.request.UpdateAnnotationRequest;
  */
 
 public class UpdateAnnotationAction extends BaseReaderAction {
-    private NoteInfo noteInfo;
     private Annotation annotation;
+    public String newNote;
+    public String srcNote;
+    public int srcNoteState;
 
-    public UpdateAnnotationAction(NoteInfo noteInfo,Annotation annotation) {
-        this.noteInfo = noteInfo;
+    public UpdateAnnotationAction(Annotation annotation, String newNote, String srcNote, int srcNoteState) {
         this.annotation = annotation;
+        this.newNote = newNote;
+        this.srcNote = srcNote;
+        this.srcNoteState = srcNoteState;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
 
-        final UpdateAnnotationRequest request = new UpdateAnnotationRequest(readerDataHolder.getReader(), annotation, noteInfo);
+        final UpdateAnnotationRequest request = new UpdateAnnotationRequest(readerDataHolder.getReader(), annotation, newNote,srcNote,srcNoteState);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

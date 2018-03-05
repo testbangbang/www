@@ -187,6 +187,13 @@ public class ReaderUserDataInfo {
         return true;
     }
 
+    public List<Annotation> loadDocumentKeyAnnotations(final Context context, final String displayName,final String key) {
+        return ContentSdkDataUtils.getDataProvider().loadKeyAnnotations(
+                displayName,
+                key,
+                OrderBy.fromProperty(Annotation_Table.updatedAt).descending());
+    }
+
     public boolean hasPageAnnotations(final PageInfo pageInfo) {
         List<PageAnnotation> list = getPageAnnotations(pageInfo);
         return list != null && list.size() > 0;
@@ -194,6 +201,10 @@ public class ReaderUserDataInfo {
 
     public List<PageAnnotation> getPageAnnotations(final PageInfo pageInfo) {
         return pageAnnotationMap.get(pageInfo.getName());
+    }
+
+    public List<PageAnnotation> getPageAnnotations(final String pageName) {
+        return pageAnnotationMap.get(pageName);
     }
 
     public boolean loadPageAnnotations(final Context context,final boolean isSupportScale, final String displayName,final String md5, final ReaderNavigator navigator,final List<PageInfo> visiblePages) {
@@ -302,7 +313,7 @@ public class ReaderUserDataInfo {
         List<Bookmark> bookmarks = ContentSdkDataUtils.getDataProvider().loadBookmarks(
                 displayName,
                 md5,
-                OrderBy.fromProperty(Bookmark_Table.createdAt).descending());
+                OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
         String startPos = navigator.getScreenStartPosition();
         String endPos = navigator.getScreenEndPosition();
         if (bookmarks != null) {

@@ -13,10 +13,12 @@ import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
+import com.onyx.jdread.reader.utils.MapKeyComparator;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_LARGE;
 import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_MEDIUM;
@@ -208,8 +210,8 @@ public class ReaderSelectionHelper {
     private SelectionInfo addPageSelection(String pagePosition, ReaderSelection readerSelection, PageInfo pageInfo) {
         SelectionInfo readerSelectionInfo = new SelectionInfo();
         readerSelectionInfo.setCurrentSelection(readerSelection, pageInfo);
+        readerSelectionInfo.setPagePosition(pagePosition);
         readerSelectionInfos.put(pagePosition, readerSelectionInfo);
-
         return readerSelectionInfo;
     }
 

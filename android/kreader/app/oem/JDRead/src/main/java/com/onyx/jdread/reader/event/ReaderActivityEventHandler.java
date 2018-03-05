@@ -31,6 +31,7 @@ import com.onyx.jdread.reader.dialog.ReaderNoteDialog;
 import com.onyx.jdread.reader.dialog.SingleLineDialog;
 import com.onyx.jdread.reader.dialog.TranslateDialog;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.dialog.CloseDocumentDialog;
 import com.onyx.jdread.reader.menu.dialog.DialogSearch;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
@@ -200,7 +201,11 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupLineationClickEvent(PopupLineationClickEvent event) {
-        new AddAnnotationAction("").execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+        AddAnnotation();
+    }
+
+    private void AddAnnotation(){
+        new AddAnnotationAction("","", ReaderConfig.QUOTE_STATE_NOT_CHANGED).execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updatePageView();

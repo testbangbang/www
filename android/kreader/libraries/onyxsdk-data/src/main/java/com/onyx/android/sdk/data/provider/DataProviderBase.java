@@ -50,6 +50,8 @@ public interface DataProviderBase {
 
     List<Annotation> loadAnnotations(final String application, final String associationId, final OrderBy orderBy);
 
+    List<Annotation> loadKeyAnnotations(final String application, final String key, final OrderBy orderBy);
+
     void addAnnotation(final Annotation annotation);
 
     void updateAnnotation(final Annotation annotation);
