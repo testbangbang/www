@@ -43,6 +43,7 @@ public class BookDetailResultBean {
         public boolean add_cart;
         public int book_type;
         public int netStatus;
+        public boolean free;
         public String downLoadUrl;
         public BookExtraInfoBean bookExtraInfoBean;
         public String key;

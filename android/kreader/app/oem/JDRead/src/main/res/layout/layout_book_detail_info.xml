@@ -141,7 +141,7 @@
                             android:paddingLeft="@dimen/book_detail_discount_padding_left_and_right"
                             android:paddingRight="@dimen/book_detail_discount_padding_left_and_right"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.promotion}"
-                            android:textColor="@android:color/darker_gray"
+                            android:textColor="@android:color/black"
                             android:textSize="@dimen/font_size_15"
                             android:visibility="gone" />
 

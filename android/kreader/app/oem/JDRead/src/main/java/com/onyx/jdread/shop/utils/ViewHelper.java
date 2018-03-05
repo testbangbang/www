@@ -31,7 +31,11 @@ public class ViewHelper {
     }
 
     public static String getYueDouPrice(float price) {
-        return String.valueOf(new DecimalFormat("0").format(price * 100));
+        if (price > 0) {
+            return String.valueOf(new DecimalFormat("0").format(price));
+        } else {
+            return "0";
+        }
     }
 
     public static String formatRMB(float price) {

@@ -26,6 +26,7 @@ public class Constants {
     public static final String SP_KEY_SHOW_PASSWORD = "show_password";
     public static final String SP_KEY_CATEGORY_LEVEL_ONE_ID = "category_level_one_id";
     public static final String SP_KEY_CATEGORY_LEVEL_TWO_ID = "category_level_two_id";
+    public static final String SP_KEY_CATEGORY_LEVEL_VALUE = "category_level_value";
     public static final String SP_KEY_CATEGORY_NAME = "category_name";
     public static final String SP_KEY_CATEGORY_ISFREE = "category_isfree";
     public static final String SP_KEY_SUBJECT_NAME = "subject_name";

@@ -261,8 +261,17 @@ public class BookDetailFragment extends BaseFragment {
                         bookDetailBean.setAuthor(ResManager.getString(R.string.error_content_author_unknown));
                     }
 
+                    if (bookDetailBean.free) {
+                        bookDetailBinding.bookDetailInfo.bookDetailYuedouPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                        bookDetailBinding.bookDetailInfo.bookDetailYuedouPriceOld.setTextColor(ResManager.getColor(R.color.text_gray_color));
+                        bookDetailBinding.bookDetailInfo.bookDetailDiscount.setVisibility(View.VISIBLE);
+                        bookDetailBean.promotion = ResManager.getString(R.string.free_for_a_limited_time);
+                        hideNowReadButton();
+                    }
+
                     if (isaNetBook()) {
                         buyBookButton.setText(ResManager.getString(R.string.batch_download));
+                        resetNowReadButton();
                         showShopCartView(false);
                     }
 
@@ -342,6 +351,7 @@ public class BookDetailFragment extends BaseFragment {
         nowReadButton.setVisibility(View.VISIBLE);
         nowReadButton.setEnabled(true);
         nowReadButton.setText(ResManager.getString(R.string.book_detail_button_now_read));
+        bookDetailBinding.bookDetailInfo.spaceOne.setVisibility(View.VISIBLE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -768,7 +778,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void dismissCopyRightDialog() {
-        if (copyRightDialog != null && copyRightDialog.isShowing()) {
+        if (copyRightDialog != null) {
             copyRightDialog.dismiss();
         }
     }
