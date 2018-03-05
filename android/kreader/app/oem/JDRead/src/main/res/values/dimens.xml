@@ -518,6 +518,7 @@
     <dimen name="personal_sign_width">100dp</dimen>
     <dimen name="keyboard_custom_text_size">21sp</dimen>
     <dimen name="book_detail_info_margin_top">8dp</dimen>
+    <dimen name="book_detail_button_layout_min_height">56dp</dimen>
     <dimen name="book_detail_cart_button_margin_right">20dp</dimen>
     <dimen name="book_detail_buy_book_button_cart_button_space">44dp</dimen>
     <dimen name="book_detail_buy_book_button_now_read_button_space">20dp</dimen>
