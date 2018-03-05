@@ -41,6 +41,7 @@ import com.onyx.jdread.reader.menu.event.ToggleBookmarkSuccessEvent;
 import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
+import com.onyx.jdread.util.BroadcastHelper;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -78,6 +79,9 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenDocumentFailResultEvent(OpenDocumentFailResultEvent event) {
+        if (event.getThrowable() != null) {
+            BroadcastHelper.sendFeedbackBroadcast(readerViewBack.getContext(), event.getThrowable());
+        }
         DialogMessage dlg = new DialogMessage(readerViewBack.getContext(), event.getMessage());
         dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override

@@ -5,6 +5,9 @@ import android.content.Intent;
 
 import com.onyx.android.sdk.data.Constant;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Map;
 
 /**
@@ -13,6 +16,13 @@ import java.util.Map;
 public class BroadcastHelper {
     public static final String ACTION_FEEDBACK = "com.onyx.action.LOG_FEEDBACK";
     public static final String ACTION_FEEDBACK_UPLOAD = "com.onyx.action.LOG_FEEDBACK_UPLOAD";
+
+    public static void sendFeedbackBroadcast(Context context, Throwable throwable) {
+        Writer result = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(result));
+
+        sendFeedbackBroadcast(context, result.toString());
+    }
 
     public static void sendFeedbackBroadcast(Context context, String data) {
         Intent intent = intentWith(ACTION_FEEDBACK, Constant.ARGS_TAG, data);
