@@ -421,6 +421,7 @@
     <string name="searching" formatted="false">正在搜索 %d/%d</string>
     <string name="reader_searching">搜索中，请等待...</string>
     <string name="no_more_search_results">没有更多的搜索结果</string>
+    <string name="no_search_results">没有搜索结果</string>
     <string name="page" formatted="false">页码 %d</string>
     <string name="search_end">完成搜索</string>
     <string name="delete_library_prompt">是否删除该分组(组内图书重新放入书架)</string>

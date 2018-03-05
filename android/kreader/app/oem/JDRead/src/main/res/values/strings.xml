@@ -442,6 +442,7 @@
     <string name="searching" formatted="false">Searching %d/%d</string>
     <string name="reader_searching">Please Waiting...</string>
     <string name="no_more_search_results">No more search results</string>
+    <string name="no_search_results">No search results</string>
     <string name="page" formatted="false">page %d</string>
     <string name="search_end">Have finished searching</string>
     <string name="click_to_translate">Click to translate</string>
