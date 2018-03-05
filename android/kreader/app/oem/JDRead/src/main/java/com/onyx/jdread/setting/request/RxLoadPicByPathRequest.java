@@ -34,7 +34,7 @@ public class RxLoadPicByPathRequest extends RxBaseFSRequest {
         if (StringUtils.isNullOrEmpty(dir) || !file.exists() || file.isFile()) {
             return this;
         }
-        File config = new File(dir, "config.txt");
+        File config = new File(dir, "config.png");
         if (config.exists()) {
             String checkedPath = JDPreferenceManager.getStringValue(R.string.screen_saver_key, null);
             String s = FileUtils.readContentOfFile(config);

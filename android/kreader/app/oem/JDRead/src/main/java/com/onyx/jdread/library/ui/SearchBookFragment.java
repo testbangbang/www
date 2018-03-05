@@ -480,7 +480,7 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void gotoBookDetail(DataModel model) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, model.cloudId.get());
+        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, Long.valueOf(model.cloudId.get()));
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
