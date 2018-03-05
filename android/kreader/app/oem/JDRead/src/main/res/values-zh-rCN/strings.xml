@@ -487,4 +487,7 @@
     <string name="dialog_password_text_password">密码</string>
     <string name="show_password">显示密码</string>
     <string name="preload_loading">正在初始化主界面请稍等...</string>
+    <string name="download_paused">已暂停</string>
+    <string name="wait_download">待下载</string>
+    <string name="is_downloading">下载中</string>
 </resources>

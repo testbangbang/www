@@ -539,4 +539,7 @@
     <dimen name="brightness_button_height">27dp</dimen>
     <dimen name="reader_brightness_bar_padding">25dp</dimen>
     <dimen name="search_line_width">2px</dimen>
+    <dimen name="book_status_height">30dp</dimen>
+    <dimen name="book_status_padding">10dp</dimen>
+    <dimen name="download_progress_height">5dp</dimen>
 </resources>
