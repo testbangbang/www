@@ -41,6 +41,9 @@ public class Annotation extends BaseData {
     @Column
     String key;
 
+    @Column
+    int quoteState;
+
     @Column(typeConverter = DBFlowTypeConverters.RectangleListConverter.class)
     private List rectangles = new ArrayList();
 
@@ -122,6 +125,14 @@ public class Annotation extends BaseData {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public int getQuoteState() {
+        return quoteState;
+    }
+
+    public void setQuoteState(int quoteState) {
+        this.quoteState = quoteState;
     }
 }
 

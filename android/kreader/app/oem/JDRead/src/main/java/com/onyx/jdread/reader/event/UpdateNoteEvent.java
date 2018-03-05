@@ -7,13 +7,15 @@ import com.onyx.android.sdk.data.model.Annotation;
  */
 
 public class UpdateNoteEvent {
-    private Annotation annotation;
+    public Annotation annotation;
+    public String newNote;
+    public String srcNote;
+    public int srcNoteState;
 
-    public UpdateNoteEvent(Annotation annotation) {
+    public UpdateNoteEvent(Annotation annotation, String newNote, String srcNote, int srcNoteState) {
         this.annotation = annotation;
-    }
-
-    public Annotation getAnnotation() {
-        return annotation;
+        this.newNote = newNote;
+        this.srcNote = srcNote;
+        this.srcNoteState = srcNoteState;
     }
 }

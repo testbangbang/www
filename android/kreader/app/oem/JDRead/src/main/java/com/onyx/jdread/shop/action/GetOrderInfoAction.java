@@ -35,12 +35,14 @@ public class GetOrderInfoAction extends BaseAction {
             public void onSubscribe() {
                 super.onSubscribe();
                 showLoadingDialog(dataBundle, R.string.loading);
+                invokeSubscribe(rxCallback);
             }
 
             @Override
             public void onFinally() {
                 super.onFinally();
                 hideLoadingDialog(dataBundle);
+                invokeFinally(rxCallback);
             }
 
             @Override

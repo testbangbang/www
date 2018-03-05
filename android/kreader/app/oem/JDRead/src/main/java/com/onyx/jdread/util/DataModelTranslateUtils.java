@@ -23,7 +23,7 @@ public class DataModelTranslateUtils {
             dataModel.title.set(item.name);
             dataModel.author.set(item.author);
             dataModel.id.set(item.ebook_id);
-            dataModel.cloudId.set(item.ebook_id);
+            dataModel.cloudId.set(String.valueOf(item.ebook_id));
             dataModel.size.set(item.file_size);
             dataModel.format.set(item.bookType);
             dataModel.desc.set(item.info);

@@ -19,6 +19,7 @@ public class SelectionInfo implements Cloneable {
     private PointF highLightEndBottom;
     private PointF touchPoint;
     public PageInfo pageInfo;
+    public String pagePosition;
 
     @Override
     public SelectionInfo clone() {
@@ -29,6 +30,7 @@ public class SelectionInfo implements Cloneable {
         copy.highLightEndBottom = new PointF(highLightEndBottom.x, highLightEndBottom.y);
         copy.touchPoint = new PointF(touchPoint.x, touchPoint.y);
         copy.pageInfo = new PageInfo(pageInfo);
+        copy.pagePosition = pagePosition;
         return copy;
     }
 
@@ -72,5 +74,13 @@ public class SelectionInfo implements Cloneable {
 
     public void setHighLightEndBottom(PointF highLightEndBottom) {
         this.highLightEndBottom = highLightEndBottom;
+    }
+
+    public String getPagePosition() {
+        return pagePosition;
+    }
+
+    public void setPagePosition(String pagePosition) {
+        this.pagePosition = pagePosition;
     }
 }

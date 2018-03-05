@@ -20,10 +20,14 @@ import java.util.Map;
  */
 
 public class AddAnnotationAction extends BaseReaderAction {
-    private String note;
+    private String newNote;
+    private String srcNote;
+    private int srcNoteState;
 
-    public AddAnnotationAction(String note) {
-        this.note = note;
+    public AddAnnotationAction(String newNote, String srcNote, int srcNoteState) {
+        this.newNote = newNote;
+        this.srcNote = srcNote;
+        this.srcNoteState = srcNoteState;
     }
 
     @Override
@@ -35,7 +39,7 @@ public class AddAnnotationAction extends BaseReaderAction {
             readerSelectionInfos.put(entry.getKey(), copy);
         }
 
-        final AddAnnotationRequest request = new AddAnnotationRequest(readerDataHolder.getReader(),readerSelectionInfos,note);
+        final AddAnnotationRequest request = new AddAnnotationRequest(readerDataHolder.getReader(),readerSelectionInfos,newNote,srcNote,srcNoteState);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

@@ -6,8 +6,17 @@ package com.onyx.jdread.shop.event;
  */
 
 public class DownloadFinishEvent {
+    public Throwable throwable;
     public Object tag;
     public DownloadFinishEvent(Object tag) {
         this.tag = tag;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
+
+    public void setThrowable(Throwable throwable) {
+        this.throwable = throwable;
     }
 }

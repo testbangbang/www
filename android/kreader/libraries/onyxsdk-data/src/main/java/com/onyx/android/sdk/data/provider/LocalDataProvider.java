@@ -171,6 +171,13 @@ public class LocalDataProvider implements DataProviderBase {
                 .queryList();
     }
 
+    public final List<Annotation> loadKeyAnnotations(final String application, final String key, final OrderBy orderBy) {
+        return new Select().from(Annotation.class).where(Annotation_Table.key.eq(key))
+                .and(Annotation_Table.application.eq(application))
+                .orderBy(orderBy)
+                .queryList();
+    }
+
     public void addAnnotation(final Annotation annotation) {
         annotation.save();
     }

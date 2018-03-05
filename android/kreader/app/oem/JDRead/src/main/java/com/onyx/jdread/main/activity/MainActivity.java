@@ -65,7 +65,9 @@ import com.onyx.jdread.setting.ui.SystemUpdateFragment;
 import com.onyx.jdread.shop.action.UpdateDownloadInfoAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
+import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -477,17 +479,27 @@ public class MainActivity extends AppCompatActivity {
     public void onDownloadFinishEvent(DownloadFinishEvent event) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (task != null) {
-            BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-            extraInfoBean.downLoadState = task.getStatus();
-            extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
-            extraInfoBean.progress = task.getSmallFileSoFarBytes();
-            extraInfoBean.totalSize = task.getSmallFileTotalBytes();
-            updateDownloadInfo(extraInfoBean, task.getPath());
+            updateDownloadInfo(task, task.getPath());
         }
     }
 
-    private void updateDownloadInfo(BookExtraInfoBean extraInfo, String localPath) {
-        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfo, localPath);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadingEvent(DownloadingEvent event) {
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
+        if (DownLoadHelper.isPause(task.getStatus())) {
+            updateDownloadInfo(task, task.getPath());
+        }
+    }
+
+    private void updateDownloadInfo(BaseDownloadTask task, String localPath) {
+        JDReadApplication.getInstance().setNotifyLibraryData(true);
+        BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
+        extraInfoBean.downLoadState = task.getStatus();
+        extraInfoBean.downloadUrl = task.getUrl();
+        extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
+        extraInfoBean.progress = task.getSmallFileSoFarBytes();
+        extraInfoBean.totalSize = task.getSmallFileTotalBytes();
+        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean, localPath);
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {

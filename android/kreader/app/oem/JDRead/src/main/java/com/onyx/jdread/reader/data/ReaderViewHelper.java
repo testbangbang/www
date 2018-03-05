@@ -152,7 +152,7 @@ public class ReaderViewHelper {
         return list;
     }
 
-    public void loadUserData(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
+    public static void loadUserData(Reader reader, ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo) {
         readerUserDataInfo.setDocumentPath(reader.getDocumentInfo().getBookPath());
         readerUserDataInfo.setDocumentCategory(reader.getReaderHelper().getDocumentOptions().getDocumentCategory());
         readerUserDataInfo.setDocumentCodePage(reader.getReaderHelper().getDocumentOptions().getCodePage());
@@ -261,15 +261,15 @@ public class ReaderViewHelper {
             String pagePosition = reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
             ReaderSelection readerSelection = readerSelectionManager.getCurrentSelection(pagePosition);
             if (readerViewInfo != null && readerSelection != null) {
-                drawReaderSelection(context, canvas, paint, bitmap, readerViewInfo, readerSelection,false);
+                drawReaderSelection(context, canvas, paint, bitmap, readerViewInfo, readerSelection,false, false);
                 drawSelectionCursor(canvas, paint, readerSelectionManager, pagePosition);
             }
         }
     }
 
-    private void drawReaderSelection(Context context, Canvas canvas, Paint paint, Bitmap bitmap, final ReaderViewInfo viewInfo, ReaderSelection selection, boolean annotationHighlightStyle) {
+    private void drawReaderSelection(Context context, Canvas canvas, Paint paint, Bitmap bitmap, final ReaderViewInfo viewInfo, ReaderSelection selection, boolean annotationHighlightStyle, boolean grayHighlightFillBackground) {
         if(annotationHighlightStyle){
-            drawFillHighlightRectangles(canvas, bitmap, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
+            drawFillHighlightRectangles(canvas, bitmap, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()), grayHighlightFillBackground);
         }else {
             drawHighlightRectangles(context, canvas, RectUtils.mergeRectanglesByBaseLine(selection.getRectangles()));
         }
@@ -288,18 +288,54 @@ public class ReaderViewHelper {
         drawUnderLineHighlightRectangles(canvas, paint, rectangles);
     }
 
-    private void drawFillHighlightRectangles(Canvas canvas, Bitmap bitmap, List<RectF> rectangles){
+    private void drawFillHighlightRectangles(Canvas canvas, Bitmap bitmap, List<RectF> rectangles, boolean grayBackground){
         Paint paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColorFilter(new ColorMatrixColorFilter(getColorMatrix()));
         int size = rectangles.size();
         Rect rect = new Rect();
         for (int i = 0; i < size; ++i) {
             rectangles.get(i).round(rect);
-            canvas.drawBitmap(bitmap, rect, rect, paint);
+            drawFillHighlightRectangle(canvas, bitmap, paint, rect, grayBackground);
         }
         paint.setColorFilter(null);
+    }
+
+    private void drawFillHighlightRectangle(Canvas canvas, Bitmap bitmap, Paint paint, Rect rect, boolean grayBackground) {
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColorFilter(new ColorMatrixColorFilter(getColorMatrix()));
+
+        if (!grayBackground) {
+            canvas.drawBitmap(bitmap, rect, rect, paint);
+            return;
+        }
+
+        // draw gray background for highlighted texts, required by JD
+        // warning! this method only works for normal white background && black foreground texts
+        Bitmap subBitmap = Bitmap.createBitmap(rect.width(), rect.height(), Bitmap.Config.ARGB_8888);
+        Canvas subCanvas = new Canvas(subBitmap);
+        subCanvas.drawBitmap(bitmap, rect, new Rect(0, 0, rect.width(), rect.height()), paint);
+
+        int[] pixels = new int[rect.width() * rect.height()];
+        subBitmap.getPixels(pixels, 0, subBitmap.getWidth(), 0, 0, subBitmap.getWidth(), subBitmap.getHeight());
+
+        int background = Color.rgb(0x80, 0x80, 0x80);
+        for (int y = 0; y < rect.height(); y++) {
+            int offset = y * rect.width();
+            for (int x = 0; x < rect.width(); x++) {
+                if (pixels[offset + x] < Color.DKGRAY) {
+                    pixels[offset + x] = background;
+                }
+            }
+        }
+        subBitmap.setPixels(pixels, 0, subBitmap.getWidth(), 0, 0, subBitmap.getWidth(), subBitmap.getHeight());
+
+        canvas.drawBitmap(subBitmap, null, rect, null);
+
+        subBitmap.recycle();
+    }
+
+    private void drawGrayHighlightRectangle() {
+
     }
 
     private void drawUnderLineHighlightRectangles(Canvas canvas, Paint paint, List<RectF> rectangles) {
@@ -379,7 +415,7 @@ public class ReaderViewHelper {
             return;
         }
         for (ReaderSelection sel : searchResults) {
-            drawReaderSelection(reader.getReaderHelper().getContext(),canvas, paint, bitmap, readerViewInfo, sel,true);
+            drawReaderSelection(reader.getReaderHelper().getContext(),canvas, paint, bitmap, readerViewInfo, sel,true, true);
         }
     }
 

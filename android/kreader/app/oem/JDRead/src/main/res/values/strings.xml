@@ -442,6 +442,7 @@
     <string name="searching" formatted="false">Searching %d/%d</string>
     <string name="reader_searching">Please Waiting...</string>
     <string name="no_more_search_results">No more search results</string>
+    <string name="no_search_results">No search results</string>
     <string name="page" formatted="false">page %d</string>
     <string name="search_end">Have finished searching</string>
     <string name="click_to_translate">Click to translate</string>
@@ -522,11 +523,16 @@
     <string name="dialog_password_text_password">Password</string>
     <string name="show_password">Show the password</string>
     <string name="standby_name_format">standby-%s.png</string>
+    <string name="download_paused">Paused</string>
+    <string name="wait_download">Wait</string>
+    <string name="is_downloading">Downloading</string>
     <string name="batch_download">batch download</string>
     <string name="book_batch_download_tip">1.The bulk purchase section automatically filters out the free chapters and the chapters you have purchased.\n2.After purchase, the system will automatically download all the chapters.</string>
     <string name="book_batch_download_buy_chapter">Chapter to buy</string>
     <string name="book_batch_download_item_current_chapter">Current Chapter</string>
     <string name="book_batch_download_item_after_chapter">After %d chapters</string>
+    <string name="reboot">Reboot</string>
+    <string name="shutdown">Shutdown</string>
     <string name="please_check_wifi">Please check the wireless network and try again.</string>
     <string name="free_for_a_limited_time">free for a limited time</string>
 </resources>

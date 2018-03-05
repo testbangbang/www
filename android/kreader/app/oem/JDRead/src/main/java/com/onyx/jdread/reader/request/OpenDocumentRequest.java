@@ -1,12 +1,16 @@
 package com.onyx.jdread.reader.request;
 
+import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.event.DocumentLoadSuccessEvent;
 import com.onyx.jdread.reader.exception.FileFormatErrorException;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2017/12/20.
@@ -15,10 +19,12 @@ import com.onyx.jdread.reader.exception.FileFormatErrorException;
 public class OpenDocumentRequest extends ReaderBaseRequest {
     private ReaderPluginOptions pluginOptions;
     private BaseOptions srcOptions;
+    private EventBus eventBus;
 
-    public OpenDocumentRequest(Reader reader,BaseOptions baseOptions) {
+    public OpenDocumentRequest(Reader reader, BaseOptions baseOptions, EventBus eventBus) {
         super(reader);
         this.srcOptions = baseOptions;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -46,6 +52,15 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
     }
 
     private boolean openDocument() throws Exception {
+        getReader().getReaderHelper().getPlugin().setReaderCallback(new ReaderCallback() {
+            @Override
+            public void onDocumentLoadSuccess() {
+                if (eventBus != null) {
+                    eventBus.post(new DocumentLoadSuccessEvent());
+                }
+            }
+        });
+
         ReaderDocument document = getReader().getReaderHelper().openDocument(getReader().getDocumentInfo().getBookPath(), srcOptions, pluginOptions);
         if(document != null) {
             getReader().getReaderHelper().saveReaderDocument(document,getReader().getDocumentInfo());

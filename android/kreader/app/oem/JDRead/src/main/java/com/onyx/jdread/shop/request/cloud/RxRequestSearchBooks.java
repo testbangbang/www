@@ -120,7 +120,6 @@ public class RxRequestSearchBooks extends RxBaseCloudRequest {
             CloseableReference<Bitmap> refBitmap = CloseableReference.of(loadCoverBitmap(item.image_url), new ResourceReleaser<Bitmap>() {
                 @Override
                 public void release(Bitmap value) {
-                    value.recycle();
                 }
             });
             if (refBitmap != null) {

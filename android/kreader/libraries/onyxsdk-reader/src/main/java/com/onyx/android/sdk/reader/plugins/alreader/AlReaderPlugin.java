@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormManager;
@@ -83,6 +84,11 @@ public class AlReaderPlugin implements ReaderPlugin,
 
     public String displayName() {
         return TAG;
+    }
+
+    @Override
+    public void setReaderCallback(ReaderCallback callback) {
+        getPluginImpl().setBookCallback(callback);
     }
 
     static public Set<String> getExtensionFilters() {

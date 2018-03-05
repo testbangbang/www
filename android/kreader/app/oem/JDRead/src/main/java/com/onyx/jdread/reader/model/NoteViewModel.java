@@ -15,6 +15,7 @@ import com.onyx.jdread.reader.data.NoteInfo;
 import com.onyx.jdread.reader.event.NoteBackEvent;
 import com.onyx.jdread.reader.event.AddNoteEvent;
 import com.onyx.jdread.reader.event.UpdateNoteEvent;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
@@ -39,6 +40,7 @@ public class NoteViewModel {
     private boolean isCreateNote = false;
     private Annotation annotation;
     private ActivityNoteBinding binding;
+    private NoteInfo noteInfo;
 
     public ObservableField<String> getSrcPageNumber() {
         return srcPageNumber;
@@ -102,6 +104,7 @@ public class NoteViewModel {
         setTitle(noteInfo.bookName);
         setIsSrcNoteModify(noteInfo.isSrcNoteModify);
         setPagePosition(noteInfo.pagePosition);
+        this.noteInfo = noteInfo;
     }
 
     public ObservableField<String> getChapterName() {
@@ -161,10 +164,18 @@ public class NoteViewModel {
 
     public void saveClick() {
         if (isCreateNote) {
-            getEventBus().post(new AddNoteEvent(newNote.get()));
+            getEventBus().post(new AddNoteEvent(newNote.get(),srcNote.get(),getSrcNoteSate()));
         } else {
-            getEventBus().post(new UpdateNoteEvent(annotation));
+            getEventBus().post(new UpdateNoteEvent(annotation,newNote.get(),srcNote.get(),getSrcNoteSate()));
         }
+    }
+
+    public int getSrcNoteSate(){
+        String note = srcNote.get();
+        if(noteInfo.srcNote.equals(note)){
+            return ReaderConfig.QUOTE_STATE_NOT_CHANGED;
+        }
+        return ReaderConfig.QUOTE_STATE_MODIFY;
     }
 
     public void editClick() {

@@ -513,6 +513,7 @@ public class BookDetailFragment extends BaseFragment {
         }
         bookDetailBean.bookExtraInfoBean.percentage = percentage;
         bookDetailBean.bookExtraInfoBean.localPath = localPath;
+        bookDetailBean.bookExtraInfoBean.downloadUrl = task.getUrl();
         bookDetailBean.bookExtraInfoBean.progress = task.getSmallFileSoFarBytes();
         bookDetailBean.bookExtraInfoBean.totalSize = task.getSmallFileTotalBytes();
         if (DownLoadHelper.canInsertBookDetail(downloadTaskState)) {

@@ -3,6 +3,8 @@ package com.onyx.android.sdk.reader.plugins.djvu;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+
+import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormManager;
@@ -305,6 +307,11 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     @Override
     public String displayName() {
         return DjvuReaderPlugin.class.getSimpleName();
+    }
+
+    @Override
+    public void setReaderCallback(ReaderCallback callback) {
+
     }
 
     @Override
