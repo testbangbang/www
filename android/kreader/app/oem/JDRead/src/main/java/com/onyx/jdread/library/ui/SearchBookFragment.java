@@ -60,6 +60,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,6 +77,8 @@ public class SearchBookFragment extends BaseFragment {
     private PageIndicatorModel pageIndicatorModel;
     private GPaginator pagination;
     private SearchHistoryAdapter searchHistoryAdapter;
+
+    private boolean isBookSearching = false;
 
     @Nullable
     @Override
@@ -191,6 +194,9 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void queryTextSubmit(String query) {
+        if (isBookSearching()) {
+            return;
+        }
         if (StringUtils.isNullOrEmpty(query)) {
             ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
             return;
@@ -204,11 +210,13 @@ public class SearchBookFragment extends BaseFragment {
         searchBookModel.isInputting.set(false);
         searchBookModel.searchKey.set(query);
         checkView();
+        setBookSearching(true);
         searchBook(true, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updatePageIndicator();
                 loadSearchHistory();
+                gotoPage(pagination.getCurrentPage());
             }
 
             @Override
@@ -219,6 +227,7 @@ public class SearchBookFragment extends BaseFragment {
                     }
                     ToastUtil.showToast(R.string.no_search_results);
                 }
+                setBookSearching(false);
             }
         });
     }
@@ -291,6 +300,21 @@ public class SearchBookFragment extends BaseFragment {
                 invokeFinally(callback);
             }
         });
+    }
+
+    private boolean isBookSearching() {
+        return isBookSearching;
+    }
+
+    private void setBookSearching(boolean searching) {
+        this.isBookSearching = searching;
+    }
+
+    private void gotoPage(int page) {
+        if (binding == null || binding.searchResultRecycler == null) {
+            return;
+        }
+        binding.searchResultRecycler.gotoPage(page);
     }
 
     private void updatePageIndicator() {
