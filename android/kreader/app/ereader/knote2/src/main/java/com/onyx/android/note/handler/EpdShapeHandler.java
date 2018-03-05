@@ -3,8 +3,7 @@ package com.onyx.android.note.handler;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.note.action.AddShapesBackgroundAction;
-import com.onyx.android.note.action.RefreshDrawScreenAction;
-import com.onyx.android.note.action.SyncEraseAction;
+import com.onyx.android.note.action.EraseAction;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.pen.data.TouchPoint;
 import com.onyx.android.sdk.pen.data.TouchPointList;
@@ -119,7 +118,7 @@ public class EpdShapeHandler extends BaseHandler {
         if (erasePoints == null || CollectionUtils.isNullOrEmpty(erasePoints.getPoints())) {
             return;
         }
-        new SyncEraseAction(getNoteManager(), touchPointList)
+        new EraseAction(getNoteManager(), touchPointList)
                 .setFixShape(true)
                 .execute(null);
     }
