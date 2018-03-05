@@ -126,6 +126,8 @@ public class PersonalTaskFragment extends BaseFragment {
                     PersonalTaskData personalTaskData = tasks.get(position);
                     personalTaskData.setTaskStatus(ResManager.getString(R.string.have_receive));
                     PersonalDataBundle.getInstance().setReceiveReadVoucherTime(TimeUtils.getCurrentDataInString());
+                } else {
+                    ToastUtil.showToast(ResManager.getString(R.string.receive_fail));
                 }
             }
         });

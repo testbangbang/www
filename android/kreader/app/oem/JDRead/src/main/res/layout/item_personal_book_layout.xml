@@ -20,12 +20,13 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/personal_book_image"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="@dimen/personal_book_image_padding"
             android:scaleType="centerCrop"
-            bind:personalImage="@{metadata.coverUrl}" />
+            android:src="@mipmap/ic_shelf_cover" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -77,17 +78,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@mipmap/ic_cloud_download"
-                android:visibility="@{Utils.hasDownload(metadata.extraAttributes) ? View.GONE : View.VISIBLE}" />
+                android:src="@mipmap/ic_shelf_download"
+                android:visibility="@{Utils.hasDownload(metadata.downloadInfo) ? View.GONE : View.VISIBLE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@{Utils.updateState(metadata.extraAttributes)}"
+                android:text="@{Utils.updateState(metadata.downloadInfo)}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font"
-                android:visibility="@{Utils.hasDownload(metadata.extraAttributes) ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{Utils.hasDownload(metadata.downloadInfo) ? View.VISIBLE : View.GONE}" />
         </FrameLayout>
     </LinearLayout>
 </layout>

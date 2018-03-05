@@ -127,6 +127,7 @@ public class JEBFormatEPUB extends AlFormatBaseHTML {
 
     @Override
     public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref) {
+        super.initState(bookOptions, myParent, pref);
         xml_mode = true;
         ident = "JEB";
 

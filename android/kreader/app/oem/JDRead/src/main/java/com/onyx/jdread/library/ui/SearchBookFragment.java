@@ -1,6 +1,7 @@
 package com.onyx.jdread.library.ui;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
@@ -9,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jingdong.app.reader.data.DrmTools;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.event.ItemClickEvent;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
@@ -322,7 +325,9 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void updateHotSearchView(List<String> hotWords, String defaultKeyword) {
-        hotSearchAdapter.setSearchHotWords(hotWords);
+        if (!CollectionUtils.isNullOrEmpty(hotWords)) {
+            hotSearchAdapter.setSearchHotWords(hotWords);
+        }
         if (!TextUtils.isEmpty(defaultKeyword)) {
             binding.searchView.setQueryHint(defaultKeyword);
         }
@@ -421,6 +426,11 @@ public class SearchBookFragment extends BaseFragment {
         }
         DocumentInfo documentInfo = new DocumentInfo();
         documentInfo.setBookPath(filePath);
+        DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
+        securityInfo.setKey(model.key.get());
+        securityInfo.setRandom(model.random.get());
+        securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
+        documentInfo.setSecurityInfo(securityInfo);
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 

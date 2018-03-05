@@ -3,11 +3,10 @@ package com.onyx.jdread;
 import android.test.ApplicationTestCase;
 
 import com.alibaba.fastjson.JSON;
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.CheckGiftBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetReadPreferenceBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalBookBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.PersonalNoteBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendUserBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SetReadPreferenceBean;
@@ -270,7 +269,7 @@ public class PersonalTest extends ApplicationTestCase<JDReadApplication> {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                List<Metadata> books = rq.getBooks();
+                List<PersonalBookBean> books = rq.getBooks();
                 assertNotNull(books);
                 countDownLatch.countDown();
             }

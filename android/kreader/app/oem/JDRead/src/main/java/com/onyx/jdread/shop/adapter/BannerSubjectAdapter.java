@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.BannerSubjectModelItemBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BannerItemClickEvent;
 
@@ -24,8 +24,8 @@ import java.util.List;
 public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, BookModelConfigResultBean.DataBean.AdvBean , BookModelConfigResultBean.DataBean.AdvBean > {
 
     private EventBus eventBus;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_banner_recycle_view_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_banner_recycle_view_col);
+    private int row = ResManager.getInteger(R.integer.shop_banner_recycle_view_row);
+    private int col = ResManager.getInteger(R.integer.shop_banner_recycle_view_col);
 
     public BannerSubjectAdapter(EventBus eventBus) {
         this.eventBus = eventBus;

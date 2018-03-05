@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
+        JDReadApplication.getInstance().automaticLogin();
         binding.setMainViewModel(new MainViewModel());
         initSystemBar();
         initFunctionBar();
@@ -327,8 +328,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN && event.getY() < binding.mainSystemBar.getRoot().getHeight()) {
-            inSystemBar = true;
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            inSystemBar = event.getY() < binding.mainSystemBar.getRoot().getHeight();
         }
 
         if (event.getAction() == MotionEvent.ACTION_MOVE && inSystemBar) {

@@ -34,7 +34,12 @@ public class ReaderConfig {
         public static final int DEFAULT_COLOR_DEPTH = LEVEL_ONE;
     }
 
-    public static final int SIGN_RIGHT_MARGIN = 10;
+    public static final int SIGN_RIGHT_MARGIN = 1;
+    public static final int SIGN_BOTTOM_MARGIN = 1;
+    public static final int SIGN_INFLATE_LEFT = 30;
+    public static final int SIGN_INFLATE_TOP = 30;
+    public static final int SIGN_INFLATE_RIGHT = 30;
+    public static final int SIGN_INFLATE_BOTTOM = 30;
 
     public static final String READER_FONTFACE_KEY = "FontFace";
     public static final String READER_CHINESE_CONVERT_TYPE_KEY = "ChineseConvertType";

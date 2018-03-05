@@ -175,7 +175,11 @@ public class PageTextView extends AppCompatTextView {
         }else{
             otherH = 1;
         }
-        return (h - firstH) / otherH;
+        int count = (h - firstH) / otherH;
+        if(count <= 0){
+            count = 1;
+        }
+        return count;
     }
 
     private int getLineHeight(int line, TextView view) {

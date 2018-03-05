@@ -70,7 +70,9 @@ public class OpenDocumentAction extends BaseReaderAction {
                 readerDataHolder.getEventBus().post(new CloseDocumentEvent());
             }
         });
-        dlgLoading.show();
+        if (!readerDataHolder.isPreload()) {
+            dlgLoading.show();
+        }
 
         openDocumentRequest.execute(new RxCallback() {
             @Override

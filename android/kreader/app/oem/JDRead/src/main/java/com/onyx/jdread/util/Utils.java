@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 
 import org.greenrobot.eventbus.EventBus;
@@ -85,8 +86,7 @@ public class Utils {
         if (StringUtils.isNullOrEmpty(extraAttributes)) {
             return false;
         }
-        BookExtraInfoBean bean = JSONObjectParseUtils.toBean(extraAttributes, BookExtraInfoBean.class);
-        return bean.percentage != 0;
+        return true;
     }
 
     public static String updateState(String extraAttributes) {
@@ -100,10 +100,14 @@ public class Utils {
                 state = "";
                 break;
             case FileDownloadStatus.paused:
-                state = String.format(JDReadApplication.getInstance().getResources().getString(R.string.paused), bean.percentage) + "%";
+                state = String.format(ResManager.getString(R.string.paused), bean.percentage) + "%";
                 break;
             case FileDownloadStatus.progress:
-                state = String.format(JDReadApplication.getInstance().getResources().getString(R.string.downloading_progress), bean.percentage) + "%";
+                state = String.format(ResManager.getString(R.string.downloading_progress), bean.percentage) + "%";
+                break;
+            case FileDownloadStatus.started:
+            case FileDownloadStatus.connected:
+                state = ResManager.getString(R.string.started);
                 break;
             default:
                 state = "";

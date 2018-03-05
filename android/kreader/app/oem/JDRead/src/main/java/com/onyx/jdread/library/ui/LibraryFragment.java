@@ -1,5 +1,6 @@
 package com.onyx.jdread.library.ui;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jingdong.app.reader.data.DrmTools;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
@@ -210,7 +212,7 @@ public class LibraryFragment extends BaseFragment {
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                viewEventCallBack.gotoView(ShopFragment.class.getName());
+                checkLogin(PersonalBookFragment.class.getName());
             }
         }, ResManager.getInteger(R.integer.empty_library_prompt_clickable_start), ResManager.getInteger(R.integer.empty_library_prompt_clickable_end), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         libraryBinding.emptyLibraryPrompt.setText(spannableString);
@@ -622,6 +624,11 @@ public class LibraryFragment extends BaseFragment {
         }
         DocumentInfo documentInfo = new DocumentInfo();
         documentInfo.setBookPath(filePath);
+        DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
+        securityInfo.setKey(dataModel.key.get());
+        securityInfo.setRandom(dataModel.random.get());
+        securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
+        documentInfo.setSecurityInfo(securityInfo);
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 
