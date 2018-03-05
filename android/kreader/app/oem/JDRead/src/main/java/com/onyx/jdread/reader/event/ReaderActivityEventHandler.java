@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.event;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.DialogMessage;
@@ -96,6 +97,11 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenDocumentSuccessResultEvent(OpenDocumentSuccessResultEvent event) {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDocumentLoadSuccessResultEvent(DocumentLoadSuccessEvent event) {
+        Log.d(getClass().getSimpleName(), "onDocumentLoadSuccessResultEvent");
     }
 
     @Subscribe

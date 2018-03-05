@@ -6,6 +6,7 @@ import android.graphics.RectF;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
@@ -87,6 +88,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     public String displayName() {
         return NeoPdfReaderPlugin.class.getSimpleName();
+    }
+
+    @Override
+    public void setReaderCallback(ReaderCallback callback) {
+
     }
 
     static public boolean accept(final String path) {

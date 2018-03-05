@@ -27,7 +27,7 @@ public class ReaderDocumentCoverAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
         BaseOptions options = new BaseOptions();
-        OpenDocumentRequest request = new OpenDocumentRequest(readerDataHolder.getReader(), options);
+        OpenDocumentRequest request = new OpenDocumentRequest(readerDataHolder.getReader(), options, readerDataHolder.getEventBus());
         OpenDocumentRequest.setAppContext(readerDataHolder.getAppContext());
         readerDataHolder.setDocumentOpeningState();
         request.execute(new RxCallback() {
