@@ -1,5 +1,6 @@
 package com.onyx.jdread.shop.ui;
 
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,6 +38,7 @@ import com.onyx.jdread.shop.event.VipGoodItemClickEvent;
 import com.onyx.jdread.shop.model.BuyReadVipModel;
 import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.BookInfoDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -50,6 +52,10 @@ import org.greenrobot.eventbus.ThreadMode;
 public class BuyReadVIPFragment extends BaseFragment {
     private BuyReadVipBinding binding;
     private BuyReadVipAdapter adapter;
+
+    private BookInfoDialog vipNoticeDialog;
+    private TopUpDialog topUpDialog;
+    private boolean isVipBuying = false;
 
     @Nullable
     @Override
@@ -139,12 +145,15 @@ public class BuyReadVIPFragment extends BaseFragment {
     }
 
     private void showVipNoticeDialog() {
+        if (ViewHelper.dialogIsShowing(vipNoticeDialog)) {
+            return;
+        }
         final DialogVipNoticeBinding infoBinding = DialogVipNoticeBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         final DialogBookInfoViewModel infoViewModel = new DialogBookInfoViewModel();
         infoViewModel.title.set(ResManager.getString(R.string.read_vip_instructions));
         infoBinding.setViewModel(infoViewModel);
-        final BookInfoDialog infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
-        infoDialog.setView(infoBinding.getRoot());
+        vipNoticeDialog = new BookInfoDialog(JDReadApplication.getInstance());
+        vipNoticeDialog.setView(infoBinding.getRoot());
         HTMLReaderWebView pagedWebView = infoBinding.infoWebView;
         pagedWebView.setCallParentPageFinishedMethod(false);
         pagedWebView.loadUrl(ResManager.getUriOfRawName("joyread_notice.html"));
@@ -161,10 +170,11 @@ public class BuyReadVIPFragment extends BaseFragment {
         infoBinding.setListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                infoDialog.dismiss();
+                ViewHelper.dismissDialog(vipNoticeDialog);
+                vipNoticeDialog = null;
             }
         });
-        infoDialog.show();
+        vipNoticeDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -203,35 +213,58 @@ public class BuyReadVIPFragment extends BaseFragment {
         if (event.dataBean == null || !event.dataBean.can_buy) {
             return;
         }
+        if (ViewHelper.dialogIsShowing(topUpDialog) || isVipBuying()) {
+            return;
+        }
         getOrderInfo(new String[]{String.valueOf(event.dataBean.sku_id)});
     }
 
     private void getOrderInfo(String[] ids) {
         if (ids != null) {
+            setVipBuying(true);
             GetOrderInfoAction action = new GetOrderInfoAction(ids);
             action.execute(getShopDataBundle(), new RxCallback<GetOrderInfoAction>() {
                 @Override
                 public void onNext(GetOrderInfoAction getOrderInfoAction) {
                     showTopUpDialog(getOrderInfoAction.getDataBean());
                 }
+
+                @Override
+                public void onFinally() {
+                    setVipBuying(false);
+                }
             });
         }
     }
 
     private void showTopUpDialog(GetOrderInfoResultBean.DataBean orderData) {
-        if (orderData != null) {
-            TopUpDialog dialog = new TopUpDialog();
+        if (orderData != null && !ViewHelper.dialogIsShowing(topUpDialog)) {
+            topUpDialog = new TopUpDialog();
             Bundle bundle = new Bundle();
             bundle.putInt(Constants.PAY_DIALOG_TYPE, Constants.PAY_DIALOG_TYPE_PAY_ORDER);
             bundle.putSerializable(Constants.ORDER_INFO, orderData);
-            dialog.setArguments(bundle);
-            dialog.show(getActivity().getFragmentManager(), "");
+            topUpDialog.setArguments(bundle);
+            topUpDialog.show(getActivity().getFragmentManager(), "");
         }
+    }
+
+    private void setVipBuying(boolean buying) {
+        isVipBuying = buying;
+    }
+
+    private boolean isVipBuying() {
+        return isVipBuying;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        hideAllDialog();
+    }
+
+    private void hideAllDialog() {
         hideLoadingDialog();
+        ViewHelper.dismissDialog(vipNoticeDialog);
+        ViewHelper.dismissDialog(topUpDialog);
     }
 }
