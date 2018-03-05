@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.utils;
 
 import android.app.Dialog;
+import android.app.DialogFragment;
 
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
@@ -110,10 +111,25 @@ public class ViewHelper {
     }
 
     public static boolean dialogIsShowing(Dialog dialog) {
-        boolean isShowing = false;
-        if (dialog != null && dialog.isShowing()) {
-            isShowing = true;
+        return dialog != null && dialog.isShowing();
+    }
+
+    public static boolean dialogIsShowing(DialogFragment dialogFragment) {
+        if (dialogFragment == null || dialogFragment.getDialog() == null) {
+            return false;
         }
-        return isShowing;
+        return dialogIsShowing(dialogFragment.getDialog());
+    }
+
+    public static void dismissDialog(Dialog dialog) {
+        if (dialogIsShowing(dialog)) {
+            dialog.dismiss();
+        }
+    }
+
+    public static void dismissDialog(DialogFragment dialog) {
+        if (dialogIsShowing(dialog)) {
+            dialog.dismiss();
+        }
     }
 }
