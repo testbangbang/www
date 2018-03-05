@@ -81,6 +81,9 @@
 <p class="upload-title"><input type="file" name="file" class="upload-title" value="上传文件" onchange="handleFiles(this.files)">上传文件</p>
 
 <script type="text/javascript">
+
+			var format = ['TXT', 'EPUB', 'PDF', 'MOBI', 'JPEG', 'DOC', 'DOCX', 'PNG'];
+
 			function upload(file) {
 				var xhr = new XMLHttpRequest();
 				xhr.open('post', '/api/upload');
@@ -114,9 +117,31 @@
 				upload(file);
 			}
 
+			function checkExists(file) {
+				var xhr = new XMLHttpRequest();
+				xhr.open('get', '/checkExists?filename=' + file.name);
+				xhr.onload = function() {
+					if (xhr.responseText == 'true') {
+						alert("文件已存在");
+						return;
+					}
+					addFileToList(file);
+				}
+				xhr.send();
+			}
+
+			function isAcceptFormat(file) {
+				var ext = file.name.split('.').pop();
+				return format.includes(ext.toUpperCase());
+			}
+
 			function handleFiles(files) {
 				for (var i = 0; i < files.length; i++) {
-					addFileToList(files[i]);
+					if (isAcceptFormat(files[i])) {
+            			checkExists(files[i]);
+            		} else {
+            			alert("文件格式不支持");
+            		}
 				}
 			}
 
