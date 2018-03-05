@@ -172,6 +172,10 @@ public class SearchBookFragment extends BaseFragment {
         });
     }
 
+    private boolean isEmptySearchResults() {
+        return CollectionUtils.isNullOrEmpty(LibraryDataBundle.getInstance().getSearchBookModel().searchResult);
+    }
+
     private void queryTextChange(String newText) {
         searchBookModel.searchHint.clear();
         searchHintAdapter.notifyDataSetChanged();
@@ -209,7 +213,10 @@ public class SearchBookFragment extends BaseFragment {
 
             @Override
             public void onFinally() {
-                if (CollectionUtils.isNullOrEmpty(LibraryDataBundle.getInstance().getSearchBookModel().searchResult)) {
+                if (isEmptySearchResults()) {
+                    if (checkWfiDisConnected()) {
+                        return;
+                    }
                     ToastUtil.showToast(R.string.no_search_results);
                 }
             }
