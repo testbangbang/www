@@ -402,6 +402,11 @@ public class ComicReaderPlugin implements ReaderPlugin,
         return ComicReaderPlugin.class.getSimpleName();
     }
 
+    @Override
+    public void setReaderCallback(ReaderCallback callback) {
+
+    }
+
     /**
      * Try to open the document specified by the path.
      *
