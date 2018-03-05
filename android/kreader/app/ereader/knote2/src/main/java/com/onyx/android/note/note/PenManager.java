@@ -5,6 +5,7 @@ import android.util.Log;
 import com.onyx.android.note.event.ClearAllFreeShapesEvent;
 import com.onyx.android.note.event.OpenDocumentEvent;
 import com.onyx.android.note.event.RefreshDrawScreenEvent;
+import com.onyx.android.note.event.menu.BackgroundChangeEvent;
 import com.onyx.android.note.event.menu.PenWidthChangeEvent;
 import com.onyx.android.note.event.menu.TopMenuChangeEvent;
 import com.onyx.android.note.event.menu.UndoRedoEvent;
@@ -54,6 +55,11 @@ public class PenManager {
 
     @Subscribe
     public void onPenWidthChange(PenWidthChangeEvent event) {
+        resumeRawDrawing(event.isResumePen());
+    }
+
+    @Subscribe
+    public void onBackgroundChange(BackgroundChangeEvent event) {
         resumeRawDrawing(event.isResumePen());
     }
 

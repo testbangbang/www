@@ -1,5 +1,6 @@
 package com.onyx.android.note.handler;
 
+import android.graphics.Color;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 

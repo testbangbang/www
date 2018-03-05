@@ -35,5 +35,20 @@
             android:onClick="@{model::onErase}"
             style="@style/note_menu_text"
             android:text="erase" />
+
+        <TextView
+            android:onClick="@{model::onEmptyBackground}"
+            style="@style/note_menu_text"
+            android:text="empty" />
+
+        <TextView
+            android:onClick="@{model::onGridBackground}"
+            style="@style/note_menu_text"
+            android:text="grid" />
+
+        <TextView
+            android:onClick="@{model::onOverrideErase}"
+            style="@style/note_menu_text"
+            android:text="override" />
     </LinearLayout>
 </layout>

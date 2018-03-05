@@ -1,6 +1,7 @@
 package com.onyx.android.note.note.menu;
 
 import android.databinding.ObservableField;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -10,10 +11,14 @@ import com.onyx.android.note.action.ClearAllFreeShapesAction;
 import com.onyx.android.note.action.PenWidthChangeAction;
 import com.onyx.android.note.action.RedoAction;
 import com.onyx.android.note.action.UndoAction;
+import com.onyx.android.note.action.menu.BackgroundChangeAction;
 import com.onyx.android.note.action.menu.ToggleTopMenuAction;
 import com.onyx.android.note.common.StrokeWidth;
 import com.onyx.android.note.common.base.BaseViewModel;
 import com.onyx.android.sdk.note.NoteManager;
+import com.onyx.android.sdk.pen.EpdPenManager;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -54,6 +59,22 @@ public class NoteMenuModel extends BaseViewModel {
         new PenWidthChangeAction(getNoteManager())
                 .setPenWidth(StrokeWidth.ULTRA_BOLD.getWidth())
                 .execute(null);
+    }
+
+    public void onEmptyBackground(View view) {
+        new BackgroundChangeAction(getNoteManager())
+                .setBackground(NoteBackgroundType.EMPTY)
+                .execute(null);
+    }
+
+    public void onGridBackground(View view) {
+        new BackgroundChangeAction(getNoteManager())
+                .setBackground(NoteBackgroundType.GRID)
+                .execute(null);
+    }
+
+    public void onOverrideErase(View view) {
+
     }
 
     public void onRedo(View view) {

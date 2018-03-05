@@ -1,6 +1,8 @@
 package com.onyx.android.note.note.scribble;
 
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,6 +27,7 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.PauseRawDrawingEvent;
+import com.onyx.android.sdk.pen.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.DocumentOptionArgs;
 
 import java.util.UUID;

@@ -1,5 +1,6 @@
 package com.onyx.android.note;
 
+import com.onyx.android.note.data.NoteBackgroundRes;
 import com.onyx.android.note.handler.HandlerManager;
 import com.onyx.android.note.note.DrawDataHolder;
 import com.onyx.android.note.note.PenManager;
@@ -50,6 +51,7 @@ public class NoteDataBundle {
     public NoteManager getNoteManager() {
         if (noteManager == null) {
             noteManager = new NoteManager(NoteApp.instance, getEventBus());
+            noteManager.setBackgroundRes(new NoteBackgroundRes());
         }
         return noteManager;
     }
