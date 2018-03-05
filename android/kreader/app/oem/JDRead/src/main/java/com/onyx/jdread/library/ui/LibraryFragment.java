@@ -8,7 +8,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,8 +121,9 @@ public class LibraryFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getEventBus().register(this);
-        ShopDataBundle.getInstance().getEventBus().register(this);
+        loadData(libraryBuildQueryArgs(), false, false);
+        Utils.ensureRegister(getEventBus(), this);
+        Utils.ensureRegister(ShopDataBundle.getInstance().getEventBus(), this);
     }
 
     private EventBus getEventBus() {
@@ -133,8 +133,8 @@ public class LibraryFragment extends BaseFragment {
     @Override
     public void onStop() {
         super.onStop();
-        getEventBus().unregister(this);
-        ShopDataBundle.getInstance().getEventBus().unregister(this);
+        Utils.ensureUnregister(getEventBus(), this);
+        Utils.ensureUnregister(ShopDataBundle.getInstance().getEventBus(), this);
     }
 
     private void initData() {
@@ -557,8 +557,8 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onBookDetailEvent(BookDetailEvent event) {
-        if (event.getDataModel().cloudId.get() != -1) {
-            PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getDataModel().cloudId.get());
+        if (StringUtils.isNotBlank(event.getDataModel().cloudId.get())) {
+            PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, Long.valueOf(event.getDataModel().cloudId.get()));
             if (getViewEventCallBack() != null) {
                 getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
             }
@@ -582,7 +582,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadingEvent(DownloadingEvent event) {
         for (DataModel item : libraryDataBundle.getLibraryViewDataModel().items) {
-            if (item.title.get().equals(event.tag)) {
+            if (event.tag.equals(item.downLoadTaskTag)) {
                 float progress = event.progressInfoModel.progress * 100;
                 item.downloadProgress.set((int) progress);
                 BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
@@ -609,7 +609,7 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadFinishEvent(DownloadFinishEvent event) {
         for (DataModel item : libraryDataBundle.getLibraryViewDataModel().items) {
-            if (item.title.get().equals(event.tag)) {
+            if (event.tag.equals(item.downLoadTaskTag)) {
                 final DataModel dataModel = item;
                 if (event.getThrowable() == null) {
                     onDownloadFinish(dataModel);
@@ -680,7 +680,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void processBookItemOpen(DataModel dataModel) {
-        if (dataModel.cloudId.get() != -1 && !DownLoadHelper.isDownloaded(dataModel.downloadStatus.get())) {
+        if (StringUtils.isNotBlank(dataModel.cloudId.get()) && !DownLoadHelper.isDownloaded(dataModel.downloadStatus.get())) {
             download(dataModel);
             return;
         }
@@ -704,7 +704,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void download(DataModel dataModel) {
         if (DownLoadHelper.isDownloading(dataModel.downloadStatus.get())) {
-            DownLoadHelper.stopDownloadingTask(dataModel.title.get());
+            DownLoadHelper.stopDownloadingTask(dataModel.downLoadTaskTag);
         } else {
             reDownload(dataModel);
         }
@@ -712,7 +712,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void reDownload(DataModel dataModel) {
         dataModel.bookStatus.set(ResManager.getString(R.string.is_downloading));
-        DownLoadHelper.startDownloadingTask(dataModel.downloadUrl.get(), dataModel.absolutePath.get(), dataModel.title.get());
+        DownLoadHelper.startDownloadingTask(dataModel.downloadUrl.get(), dataModel.absolutePath.get(), dataModel.downLoadTaskTag);
     }
 
     private void processMultiModeItemClick(DataModel dataModel, boolean layoutClicked) {

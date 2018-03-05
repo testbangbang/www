@@ -60,7 +60,7 @@ public class DataModelUtil {
             model.type.set(ModelType.TYPE_METADATA);
             model.idString.set(metadata.getIdString());
             if (StringUtils.isNotBlank(metadata.getCloudId())) {
-                model.cloudId.set(Long.valueOf(metadata.getCloudId()));
+                model.cloudId.set(metadata.getCloudId());
             }
             model.id.set(metadata.getId());
             model.title.set(StringUtils.isNotBlank(metadata.getName()) ? metadata.getName() :
@@ -78,6 +78,7 @@ public class DataModelUtil {
                 model.random.set(extraInfoBean.random);
                 model.downloadStatus.set(extraInfoBean.downLoadState);
                 model.downloadUrl.set(extraInfoBean.downloadUrl);
+                model.downLoadTaskTag = extraInfoBean.downLoadTaskTag;
                 float progress = extraInfoBean.progress * 100 / extraInfoBean.totalSize;
                 model.downloadProgress.set((int) progress);
                 model.showDownloadProgress.set(extraInfoBean.downLoadState == FileDownloadStatus.paused || extraInfoBean.downLoadState == FileDownloadStatus.progress);
