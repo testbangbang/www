@@ -34,6 +34,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
     }
 
     private ComicArchiveWrapper impl;
+    private ReaderCallback readerCallback;
 
     public ComicReaderPlugin(Context context, ReaderPluginOptions pluginOptions) {
 
@@ -404,7 +405,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
 
     @Override
     public void setReaderCallback(ReaderCallback callback) {
-
+        readerCallback = callback;
     }
 
     /**
@@ -427,6 +428,9 @@ public class ComicReaderPlugin implements ReaderPlugin,
         }
         if (getPluginImpl().getPageCount() <= 0) {
             throw ReaderException.cannotOpen();
+        }
+        if (readerCallback != null) {
+            readerCallback.onDocumentLoadSuccess();
         }
         return this;
     }

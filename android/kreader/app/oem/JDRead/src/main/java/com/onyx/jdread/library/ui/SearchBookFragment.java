@@ -60,7 +60,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -221,15 +220,19 @@ public class SearchBookFragment extends BaseFragment {
 
             @Override
             public void onFinally() {
-                if (isEmptySearchResults()) {
-                    if (checkWfiDisConnected()) {
-                        return;
-                    }
-                    ToastUtil.showToast(R.string.no_search_results);
-                }
                 setBookSearching(false);
+                checkSearchResult();
             }
         });
+    }
+
+    private void checkSearchResult() {
+        if (isEmptySearchResults()) {
+            if (checkWfiDisConnected()) {
+                return;
+            }
+            ToastUtil.showToast(R.string.no_search_results);
+        }
     }
 
     private String getSearchQueryOrHint(CharSequence query) {

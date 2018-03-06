@@ -1,22 +1,26 @@
 package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
+import android.support.annotation.NonNull;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartItemBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.PromotionalEntityBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SimplifiedDetail;
 
+import java.lang.reflect.Field;
+
 /**
  * Created by li on 2018/1/5.
  */
 
-public class ShopCartItemData extends BaseObservable {
+public class ShopCartItemData extends BaseObservable implements Comparable<ShopCartItemData>{
     public SimplifiedDetail detail;
     public boolean checked;
     public boolean hasPromotion;
     public PromotionalEntityBean promotionalEntity;
     public double reAmount;
     public int shopNum;
+    public int sort;
 
     public SimplifiedDetail getDetail() {
         return detail;
@@ -70,5 +74,18 @@ public class ShopCartItemData extends BaseObservable {
     public void setShopNum(int shopNum) {
         this.shopNum = shopNum;
         notifyChange();
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
+
+    @Override
+    public int compareTo(@NonNull ShopCartItemData o) {
+        return this.sort - o.getSort();
     }
 }

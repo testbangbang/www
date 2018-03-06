@@ -66,6 +66,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     private Benchmark benchmark = new Benchmark();
 
     private ImagesWrapper impl;
+    private ReaderCallback readerCallback;
     private String documentPath;
     private List<String> pageList = new ArrayList<String>();
     static private Set<String> extensionFilters = new HashSet<String>();
@@ -86,7 +87,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     @Override
     public void setReaderCallback(ReaderCallback callback) {
-
+        readerCallback = callback;
     }
 
     static public Set<String> getExtensionFilters() {
@@ -119,6 +120,9 @@ public class ImagesReaderPlugin implements ReaderPlugin,
                     return ComparatorUtils.stringComparator(lhs, rhs, SortOrder.Asc);
                 }
             });
+        }
+        if (readerCallback != null) {
+            readerCallback.onDocumentLoadSuccess();
         }
         return this;
     }

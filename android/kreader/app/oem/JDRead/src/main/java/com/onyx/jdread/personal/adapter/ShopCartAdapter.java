@@ -12,7 +12,10 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemShopCartBinding;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.shop.event.CartBookItemClickEvent;
 import com.onyx.jdread.shop.model.ShopCartItemData;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +49,16 @@ public class ShopCartAdapter extends PageRecyclerView.PageAdapter implements Vie
     }
 
     @Override
-    public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onPageBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ShopCartViewHolder viewHolder = (ShopCartViewHolder) holder;
         ShopCartItemData itemData = data.get(position);
         viewHolder.itemView.setTag(position);
-        viewHolder.itemView.setOnClickListener(this);
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventBus.getDefault().post(new CartBookItemClickEvent(data.get(position)));
+            }
+        });
         viewHolder.getBind().itemShopCartCheck.setTag(position);
         viewHolder.getBind().itemShopCartCheck.setOnClickListener(this);
         viewHolder.bindTo(itemData);

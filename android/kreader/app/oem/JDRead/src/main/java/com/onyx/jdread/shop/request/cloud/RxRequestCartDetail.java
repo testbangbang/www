@@ -12,6 +12,7 @@ import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,49 +47,30 @@ public class RxRequestCartDetail extends RxBaseCloudRequest {
     }
 
     private void handleResult(CartDetailResultBean.DataBean data) {
-        List<SignalProductListBean> signalProductList = data.signal_product_list;
-        if (signalProductList != null && signalProductList.size() > 0) {
-            for (int i = 0; i < signalProductList.size(); i++) {
-                ShopCartItemData itemData = new ShopCartItemData();
-                SignalProductListBean signalProductListBean = signalProductList.get(i);
-                itemData.checked = true;
-                SimplifiedDetail simplifiedDetail = new SimplifiedDetail();
-                simplifiedDetail.logo = signalProductListBean.img_url;
-                simplifiedDetail.bookName = signalProductListBean.shop_name;
-                simplifiedDetail.jdPrice = signalProductListBean.shop_price;
-                simplifiedDetail.bookId = signalProductListBean.shop_id;
-                itemData.detail = simplifiedDetail;
-                itemData.reAmount = signalProductListBean.re_amount;
-                list.add(itemData);
-            }
-        }
+        List<SuitEntityListBean> suitList = data.suit_list;
+        if (suitList != null && suitList.size() > 0) {
+            for (int i = 0; i < suitList.size(); i++) {
+                for(int j=0;j<suitList.get(i).product_list.size();j++){
+                    ShopCartItemData itemData = new ShopCartItemData();
+                    itemData.checked = true;
+                    itemData.hasPromotion=suitList.get(i).is_suit_promotion;
+                    itemData.promotionalEntity = suitList.get(i).promotion;
 
-        List<SuitEntityListBean> suitEntityList = data.suit_entity_list;
-        if (suitEntityList != null && suitEntityList.size() > 0) {
-            for (int i = 0; i < suitEntityList.size(); i++) {
-                SuitEntityListBean suitEntityListBean = suitEntityList.get(i);
-                List<SignalProductListBean> productEntityList = suitEntityListBean.product_entity_list;
-                PromotionalEntityBean promotionalEntity = suitEntityListBean.promotional_entity;
+                    SignalProductListBean signalProductListBean = suitList.get(i).product_list.get(j);
+                    SimplifiedDetail simplifiedDetail = new SimplifiedDetail();
+                    simplifiedDetail.logo = signalProductListBean.img_url;
+                    simplifiedDetail.bookName = signalProductListBean.product_name;
+                    simplifiedDetail.jdPrice = signalProductListBean.price;
+                    simplifiedDetail.bookId = signalProductListBean.product_id;
 
-                if (productEntityList != null && productEntityList.size() > 0) {
-                    for (int j = 0; j < productEntityList.size(); j++) {
-                        SignalProductListBean signalProductListBean = productEntityList.get(j);
-                        ShopCartItemData itemData = new ShopCartItemData();
-                        itemData.checked = true;
-                        SimplifiedDetail simplifiedDetail = new SimplifiedDetail();
-                        simplifiedDetail.logo = signalProductListBean.img_url;
-                        simplifiedDetail.bookName = signalProductListBean.shop_name;
-                        simplifiedDetail.jdPrice = signalProductListBean.shop_price;
-                        simplifiedDetail.bookId = signalProductListBean.shop_id;
-                        itemData.detail = simplifiedDetail;
-                        itemData.reAmount = signalProductListBean.re_amount;
-                        itemData.promotionalEntity = promotionalEntity;
-                        list.add(itemData);
-                    }
+                    itemData.sort=signalProductListBean.sort;
+                    itemData.detail = simplifiedDetail;
+
+                    list.add(itemData);
                 }
             }
+            Collections.sort(list);
         }
-
     }
 
     private Call<CartDetailResultBean> getCall(ReadContentService service) {

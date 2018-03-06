@@ -67,6 +67,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     private Benchmark benchmark = new Benchmark();
 
     private NeoPdfJniWrapper impl;
+    private ReaderCallback readerCallback;
     private String documentPath;
 
     List<ReaderSelection> searchResults = new ArrayList<>();
@@ -92,7 +93,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     @Override
     public void setReaderCallback(ReaderCallback callback) {
-
+        readerCallback = callback;
     }
 
     static public boolean accept(final String path) {
@@ -117,6 +118,9 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
             if (documentOptions != null) {
                 customFormEnabled = documentOptions.isCustomFormEnabled();
                 getPluginImpl().setRenderFormFields(!customFormEnabled);
+            }
+            if (readerCallback != null) {
+                readerCallback.onDocumentLoadSuccess();
             }
             return this;
         }
