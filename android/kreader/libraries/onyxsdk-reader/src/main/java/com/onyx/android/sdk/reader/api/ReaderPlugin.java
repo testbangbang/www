@@ -11,6 +11,8 @@ public interface ReaderPlugin {
      */
     public String displayName();
 
+    public void setReaderCallback(ReaderCallback callback);
+
     /**
      * Try to open the document specified by the path.
      * @param path The path in local file system.

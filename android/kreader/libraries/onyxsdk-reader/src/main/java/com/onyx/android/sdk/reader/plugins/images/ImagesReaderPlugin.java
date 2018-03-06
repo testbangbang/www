@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -81,6 +82,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     public String displayName() {
         return ImagesReaderPlugin.class.getSimpleName();
+    }
+
+    @Override
+    public void setReaderCallback(ReaderCallback callback) {
+
     }
 
     static public Set<String> getExtensionFilters() {
