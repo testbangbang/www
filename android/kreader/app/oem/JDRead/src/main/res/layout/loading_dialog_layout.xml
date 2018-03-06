@@ -10,7 +10,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:minHeight="@dimen/loading_dialog_small_min_height"
+        android:minWidth="@dimen/loading_dialog_small_min_width">
 
         <TextView
             android:layout_width="wrap_content"

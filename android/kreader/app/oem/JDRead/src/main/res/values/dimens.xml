@@ -74,6 +74,7 @@
     <dimen name="personal_sign_in_padding_right">20dp</dimen>
     <dimen name="personal_sign_in_padding_top">5dp</dimen>
     <dimen name="personal_sign_in_padding_bottom">5dp</dimen>
+    <dimen name="personal_sign_in_font">14sp</dimen>
     <dimen name="personal_recycler_margin_top">20dp</dimen>
     <dimen name="personal_recycler_height">340dp</dimen>
     <dimen name="personal_log_out_margin">20dp</dimen>
@@ -86,9 +87,10 @@
     <dimen name="manual_qr_code_margin_top">95dp</dimen>
     <dimen name="feedback_commit_text_width">383dp</dimen>
     <dimen name="feedback_commit_text_height">34dp</dimen>
+    <dimen name="feedback_commit_margin_top">32dp</dimen>
     <dimen name="feedback_content_height">200dp</dimen>
-    <dimen name="feedback_content_min_height">150dp</dimen>
-    <dimen name="feedback_phone_edit_height">32dp</dimen>
+    <dimen name="feedback_content_min_height">180dp</dimen>
+    <dimen name="feedback_phone_edit_height">60dp</dimen>
     <dimen name="button_padding">10dp</dimen>
     <dimen name="title_bar_drawable_padding">10dp</dimen>
     <dimen name="reader_title_bar_drawable_padding">1dp</dimen>
@@ -417,6 +419,7 @@
     <dimen name="fragment_search_width_space">24dp</dimen>
     <dimen name="hot_search_item_num_width">20dp</dimen>
     <dimen name="hot_search_recycler_height">180dp</dimen>
+    <dimen name="search_hint_recycler_height">200dp</dimen>
     <dimen name="search_result_book_cover_width">64dp</dimen>
     <dimen name="search_result_book_cover_height">93dp</dimen>
     <dimen name="search_result_item_text_margin_left">20dp</dimen>
@@ -515,7 +518,8 @@
     <dimen name="shop_dialog_title_height">55dp</dimen>
     <dimen name="shop_dialog_content_height">290dp</dimen>
     <dimen name="personal_book_image_padding">10dp</dimen>
-    <dimen name="personal_sign_width">100dp</dimen>
+    <dimen name="personal_sign_width">77dp</dimen>
+    <dimen name="personal_sign_height">25dp</dimen>
     <dimen name="keyboard_custom_text_size">21sp</dimen>
     <dimen name="book_detail_info_margin_top">8dp</dimen>
     <dimen name="book_detail_button_layout_min_height">56dp</dimen>
@@ -552,4 +556,6 @@
     <dimen name="item_batch_download_price_margin_top">15dp</dimen>
     <dimen name="item_batch_download_padding_bottom">40dp</dimen>
     <dimen name="book_batch_download_tip_margin_bottom">110dp</dimen>
+    <dimen name="loading_dialog_small_min_height">75dp</dimen>
+    <dimen name="loading_dialog_small_min_width">125dp</dimen>
 </resources>
