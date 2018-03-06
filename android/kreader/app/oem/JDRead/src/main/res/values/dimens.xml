@@ -552,4 +552,6 @@
     <dimen name="item_batch_download_price_margin_top">15dp</dimen>
     <dimen name="item_batch_download_padding_bottom">40dp</dimen>
     <dimen name="book_batch_download_tip_margin_bottom">110dp</dimen>
+    <dimen name="loading_dialog_small_min_height">75dp</dimen>
+    <dimen name="loading_dialog_small_min_width">125dp</dimen>
 </resources>
