@@ -306,4 +306,8 @@ public abstract class EpdController
         return Device.currentDevice().inSystemFastMode();
     }
 
+    public static void enableCapacitanceTp(boolean enable) {
+        Device.currentDevice().enableCapacitanceTp(enable);
+    }
+
 }
