@@ -11,6 +11,8 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -28,7 +30,9 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.PauseRawDrawingEvent;
 import com.onyx.android.sdk.pen.EpdPenManager;
+import com.onyx.android.sdk.scribble.data.Background;
 import com.onyx.android.sdk.scribble.data.DocumentOptionArgs;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 
 import java.util.UUID;
 
@@ -80,6 +84,7 @@ public class ScribbleFragment extends BaseFragment {
                 public void surfaceCreated(SurfaceHolder holder) {
                     clearSurfaceView();
                     getNoteBundle().getNoteManager().start(binding.surfaceView);
+                    setBackgroundMap();
                     createTestDocument();
                 }
 
@@ -95,6 +100,12 @@ public class ScribbleFragment extends BaseFragment {
             };
         }
         binding.surfaceView.getHolder().addCallback(surfaceCallback);
+    }
+
+    private void setBackgroundMap() {
+        SparseArray<Background> map = new SparseArray<>();
+        map.put(NoteBackgroundType.GRID, new Background(R.drawable.scribble_back_ground_grid));
+        getNoteManager().setBackgroundMap(map);
     }
 
     private void clearSurfaceView() {
