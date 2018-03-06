@@ -535,4 +535,10 @@
     <string name="shutdown">Shutdown</string>
     <string name="please_check_wifi">Please check the wireless network and try again.</string>
     <string name="free_for_a_limited_time">free for a limited time</string>
+    <string name="net_book_price_and_status">%1$s Read Bean/K word (%2$s)</string>
+    <string name="net_book_status_down">Finished</string>
+    <string name="net_book_status_update">Updating</string>
+    <string name="net_book_hours_befor_update">(update %d hour ago)</string>
+    <string name="net_book_day_befor_update">(update %s days ago)</string>
+    <string name="greater_than_ninety_nine">99+</string>
 </resources>

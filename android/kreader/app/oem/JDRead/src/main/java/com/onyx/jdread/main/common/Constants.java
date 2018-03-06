@@ -139,4 +139,5 @@ public class Constants {
     public static final int BOOK_DETAIL_TYPE_NET = 1;
     public static final int BOOK_DETAIL_TYPE_PUBLISH = 0;
     public static final String WHOLE_BOOK_DOWNLOAD_TAG = "whole_book";
+    public static final int NET_BOOK_STATUS_DOWN = 1;
 }
