@@ -240,11 +240,11 @@ public class ReaderUserDataInfo {
                 } else {
                     annotation.setPageNumber(navigator.getPageNumberByPosition(annotation.getLocationBegin()));
                 }
-                String pageName = PagePositionUtils.fromPageNumber(annotation.getPageNumber());
-                PageInfo pageInfo = findPageInfo(visiblePages, pageName);
+                PageInfo pageInfo = findPageInfoByPosition(navigator, visiblePages, annotation.getLocationBegin());
                 if (pageInfo == null) {
                     continue;
                 }
+                String pageName = pageInfo.getName();
                 if (pageAnnotationMap.get(pageName) == null) {
                     pageAnnotationMap.put(pageName, new ArrayList<PageAnnotation>());
                 }
@@ -261,6 +261,16 @@ public class ReaderUserDataInfo {
     private PageInfo findPageInfo(final List<PageInfo> visiblePages, String pageName) {
         for (PageInfo page : visiblePages) {
             if (page.getName().equals(pageName)) {
+                return page;
+            }
+        }
+        return null;
+    }
+
+    private PageInfo findPageInfoByPosition(final ReaderNavigator navigator, final List<PageInfo> visiblePages, String position) {
+        for (PageInfo page : visiblePages) {
+            if (navigator.comparePosition(page.getRange().startPosition, position) <= 0 &&
+                    navigator.comparePosition(page.getRange().endPosition, position) >= 0) {
                 return page;
             }
         }
