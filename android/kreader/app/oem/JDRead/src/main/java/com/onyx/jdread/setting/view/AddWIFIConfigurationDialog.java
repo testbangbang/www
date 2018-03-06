@@ -49,6 +49,7 @@ public class AddWIFIConfigurationDialog extends Dialog {
             AddWIFIConfigurationDialog dialog = new AddWIFIConfigurationDialog(context, R.style.CustomDialogStyle);
             DialogAddWifiBinding binding = DataBindingUtil.bind(View.inflate(context, R.layout.dialog_add_wifi, null));
             binding.setDialogModel(model);
+            model.isShowPwd.set(false);
             binding.securitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -70,6 +71,7 @@ public class AddWIFIConfigurationDialog extends Dialog {
         public final ObservableField<String> ssid = new ObservableField<>();
         public final ObservableInt type = new ObservableInt();
         public final ObservableField<String> password = new ObservableField<>();
+        public final ObservableField<Boolean> isShowPwd = new ObservableField<>();
         private LibraryDeleteDialog.DialogModel.OnClickListener positiveClickLister;
         private LibraryDeleteDialog.DialogModel.OnClickListener negativeClickLister;
 
@@ -100,6 +102,10 @@ public class AddWIFIConfigurationDialog extends Dialog {
 
         public List<Integer> getWifiTypeList() {
             return wifiTypeList;
+        }
+
+        public void onChangePasswordVisibleViewClick() {
+            isShowPwd.set(!isShowPwd.get());
         }
     }
 

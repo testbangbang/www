@@ -87,7 +87,7 @@
     <integer name="add_wifi_dialog_width">800</integer>
     <integer name="add_wifi_dialog_height">800</integer>
     <integer name="personal_book_filter_x">175</integer>
-    <integer name="personal_book_filter_y">20</integer>
+    <integer name="personal_book_filter_y">60</integer>
     <integer name="personal_book_row">5</integer>
     <integer name="personal_book_col">1</integer>
     <integer name="shop_cart_row">4</integer>
