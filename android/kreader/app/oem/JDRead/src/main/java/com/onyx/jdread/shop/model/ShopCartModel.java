@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
+import android.databinding.ObservableField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class ShopCartModel extends BaseObservable {
     private String size;
     private boolean selectedAll;
     private String pageSize;
+    public boolean settlementEnable;
 
     public List<ShopCartItemData> getDatas() {
         return datas;
@@ -79,5 +81,14 @@ public class ShopCartModel extends BaseObservable {
 
     public String getPageSize() {
         return pageSize;
+    }
+
+    public boolean isSettlementEnable() {
+        return settlementEnable;
+    }
+
+    public void setSettlementEnable(boolean settlementEnable) {
+        this.settlementEnable = settlementEnable;
+        notifyChange();
     }
 }

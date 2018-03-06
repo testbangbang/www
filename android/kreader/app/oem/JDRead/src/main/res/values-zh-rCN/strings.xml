@@ -292,9 +292,10 @@
     <string name="size_format" translatable="false">大小： %s</string>
     <string name="read_format" translatable="false">已读： %s</string>
     <string name="braces">(%s)</string>
-    <string name="original_amount">原金额:%s</string>
-    <string name="preferential">优惠:%s</string>
-    <string name="combine">合计:%s</string>
+    <string name="original_amount">原金额:%s阅豆</string>
+    <string name="preferential">优惠:%s阅豆</string>
+    <string name="combine">合计:%s阅豆</string>
+    <string name="item_price">%s阅豆</string>
     <string name="book_total_format">共%s本图书</string>
     <string name="brightness_control">亮度调节</string>
     <string name="security_none">无</string>
