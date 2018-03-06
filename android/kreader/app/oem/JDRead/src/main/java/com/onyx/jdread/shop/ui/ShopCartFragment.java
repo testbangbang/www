@@ -77,6 +77,12 @@ public class ShopCartFragment extends BaseFragment {
 
     private void initData() {
         shopCartModel = ShopDataBundle.getInstance().getShopCartModel();
+        shopCartModel.setSettlementEnable(false);
+        shopCartModel.setTotalAmount("0");
+        shopCartModel.setOriginalPrice("0");
+        shopCartModel.setCashBack("0");
+        shopCartModel.setSize("0");
+        binding.setModel(shopCartModel);
         final AddOrDeleteCartAction getShopCartIdsAction = new AddOrDeleteCartAction(null, Constants.CART_TYPE_GET);
         getShopCartIdsAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
@@ -95,13 +101,13 @@ public class ShopCartFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
+        Utils.ensureRegister(EventBus.getDefault(), this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+        Utils.ensureUnregister(EventBus.getDefault(), this);
     }
 
     private void getCartItems(List<BookCartBean> ebooks) {
@@ -113,7 +119,6 @@ public class ShopCartFragment extends BaseFragment {
                 if (datas != null) {
                     shopCartModel.setSize(datas.size() + "");
                     shopCartModel.setSelectedAll(true);
-                    binding.setModel(shopCartModel);
                     shopCartAdapter.setData(datas);
                     binding.shopCartRecycler.resize(shopCartAdapter.getRowCount(), shopCartAdapter.getColumnCount(), datas.size());
 

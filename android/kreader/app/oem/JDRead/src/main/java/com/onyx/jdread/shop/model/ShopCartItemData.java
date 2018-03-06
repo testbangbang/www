@@ -86,13 +86,6 @@ public class ShopCartItemData extends BaseObservable implements Comparable<ShopC
 
     @Override
     public int compareTo(@NonNull ShopCartItemData o) {
-        if (this.sort > o.getSort()) {
-            return (this.sort - o.getSort());
-        }
-        if (this.sort < o.getSort()) {
-            return (this.sort - o.getSort());
-        }
-
-        return 0;
+        return this.sort - o.getSort();
     }
 }
