@@ -4,11 +4,13 @@ import android.content.Context;
 import android.util.Log;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.event.WifiPassBookErrorEvent;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.request.RxFileAddToMetadataRequest;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 
@@ -97,6 +99,8 @@ public class FileServer extends NanoHTTPD {
                     ToastUtil.showOffsetToast(String.format(JDReadApplication.getInstance().getString(R.string.pass_succeed), fileName), ResManager.getInteger(R.integer.pass_book_toast_offset_y));
                 }
             });
+        } else if (Method.GET.equals(method) && "/checkExists".equalsIgnoreCase(uri)) {
+            msg = checkFileExists(parameters.get("filename"));
         }
         return newFixedLengthResponse(msg);
     }
@@ -124,5 +128,9 @@ public class FileServer extends NanoHTTPD {
             return "mobile_index.html";
         }
         return "pc_index.html";
+    }
+
+    public String checkFileExists(String filename) {
+        return FileUtils.fileExist(Constants.WIFI_PASS_BOOK_DIR + filename) ? "true" : "false";
     }
 }
