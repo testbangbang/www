@@ -87,9 +87,10 @@
     <dimen name="manual_qr_code_margin_top">95dp</dimen>
     <dimen name="feedback_commit_text_width">383dp</dimen>
     <dimen name="feedback_commit_text_height">34dp</dimen>
+    <dimen name="feedback_commit_margin_top">32dp</dimen>
     <dimen name="feedback_content_height">200dp</dimen>
-    <dimen name="feedback_content_min_height">150dp</dimen>
-    <dimen name="feedback_phone_edit_height">32dp</dimen>
+    <dimen name="feedback_content_min_height">180dp</dimen>
+    <dimen name="feedback_phone_edit_height">60dp</dimen>
     <dimen name="button_padding">10dp</dimen>
     <dimen name="title_bar_drawable_padding">10dp</dimen>
     <dimen name="reader_title_bar_drawable_padding">1dp</dimen>
