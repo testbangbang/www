@@ -560,4 +560,5 @@
     <dimen name="loading_dialog_small_min_width">125dp</dimen>
     <dimen name="search_result_book_format_margin_top">10dp</dimen>
     <dimen name="search_result_book_format_margin_left">8dp</dimen>
+    <dimen name="font_size_14">14sp</dimen>
 </resources>
