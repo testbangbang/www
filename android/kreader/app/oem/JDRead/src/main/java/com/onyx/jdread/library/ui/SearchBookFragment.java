@@ -183,7 +183,7 @@ public class SearchBookFragment extends BaseFragment {
         searchHintAdapter.notifyDataSetChanged();
         if (StringUtils.isNotBlank(newText) && InputUtils.getByteCount(newText) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
             ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
-            binding.searchView.setQuery(InputUtils.getEffectiveString(newText, ResManager.getInteger(R.integer.search_word_key_max_length)),false);
+            binding.searchView.setQuery(InputUtils.getEffectiveString(newText, ResManager.getInteger(R.integer.search_word_key_max_length)), false);
             return;
         }
         searchBookModel.isInputting.set(StringUtils.isNotBlank(newText));
