@@ -107,21 +107,21 @@
                 android:orientation="vertical"
                 android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}">
 
-                <TextView
+                <com.onyx.jdread.library.view.EndEllipsizeTextView
                     android:layout_width="@dimen/dialog_single_manage_title_width"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:lines="1"
+                    android:singleLine="true"
                     android:text="@{dialogModel.dataModel.title}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
 
-                <TextView
+                <com.onyx.jdread.library.view.EndEllipsizeTextView
                     android:layout_width="@dimen/dialog_single_manage_title_width"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dialog_single_info_text_margin_top"
                     android:ellipsize="end"
-                    android:lines="1"
+                    android:singleLine="true"
                     android:text="@{@string/author_format(dialogModel.dataModel.author)}"
                     android:textColor="@{dialogModel.isCloudBook()?@android:color/black:@color/gray}"
                     android:textSize="@dimen/level_two_heading_font" />
