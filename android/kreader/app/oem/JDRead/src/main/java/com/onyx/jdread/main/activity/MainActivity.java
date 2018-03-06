@@ -29,6 +29,7 @@ import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
+import com.onyx.jdread.main.action.ChangeFunctionBarAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -153,6 +154,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateFunctionBar() {
+        if (functionBarModel.itemModels.size() == 0) {
+            initFunctionBarAction();
+        } else {
+            changeFunctionBarAction();
+        }
+    }
+
+    private void changeFunctionBarAction() {
+        ChangeFunctionBarAction changeFunctionBarAction = new ChangeFunctionBarAction(functionBarModel);
+        changeFunctionBarAction.execute(MainBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                updateFunctionBarView();
+            }
+        });
+    }
+
+    private void initFunctionBarAction() {
         InitMainViewFunctionBarAction initFunctionBarAction = new InitMainViewFunctionBarAction(functionBarModel);
         initFunctionBarAction.execute(MainBundle.getInstance(), new RxCallback() {
             @Override

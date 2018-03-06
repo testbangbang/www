@@ -189,4 +189,5 @@
     <integer name="batch_download_recycle_view_row">2</integer>
     <integer name="batch_download_recycle_view_col">2</integer>
     <integer name="book_batch_download_recycle_view_item_space">20</integer>
+    <integer name="back_tab_index">2</integer>
 </resources>
