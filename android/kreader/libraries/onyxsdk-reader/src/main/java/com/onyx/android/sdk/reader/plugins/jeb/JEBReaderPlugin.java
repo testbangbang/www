@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -83,6 +84,11 @@ public class JEBReaderPlugin implements ReaderPlugin,
 
     public String displayName() {
         return TAG;
+    }
+
+    @Override
+    public void setReaderCallback(ReaderCallback callback) {
+        getPluginImpl().setBookCallback(callback);
     }
 
     static public Set<String> getExtensionFilters() {
@@ -184,14 +190,16 @@ public class JEBReaderPlugin implements ReaderPlugin,
     }
 
     public void abortCurrentJob() {
+        getPluginImpl().setAborted(true);
     }
 
     public void clearAbortFlag() {
+        getPluginImpl().setAborted(false);
     }
 
     @Override
     public void abortBookLoadingJob() {
-
+        getPluginImpl().abortBookLoading();
     }
 
     public boolean readTableOfContent(final ReaderDocumentTableOfContent toc) {

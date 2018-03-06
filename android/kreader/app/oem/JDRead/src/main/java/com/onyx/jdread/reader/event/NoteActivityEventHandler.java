@@ -41,7 +41,7 @@ public class NoteActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAddNoteEvent(AddNoteEvent event) {
-        AddAnnotationAction action = new AddAnnotationAction(event.getNote());
+        AddAnnotationAction action = new AddAnnotationAction(event.newNote,event.srcNote,event.srcNoteState);
         action.execute(readerDataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -54,7 +54,7 @@ public class NoteActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateNoteEvent(UpdateNoteEvent event) {
-        UpdateAnnotationAction action = new UpdateAnnotationAction(noteViewModel.getNoteInfo(), event.getAnnotation());
+        UpdateAnnotationAction action = new UpdateAnnotationAction(event.annotation,event.newNote,event.srcNote,event.srcNoteState);
         action.execute(readerDataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {

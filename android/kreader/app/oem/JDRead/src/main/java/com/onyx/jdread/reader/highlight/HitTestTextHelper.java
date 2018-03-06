@@ -90,6 +90,7 @@ public class HitTestTextHelper {
             readerUserDataInfo.saveHighlightResult(SelectRequest.translateToScreen(pageInfo, selection));
             readerUserDataInfo.setTouchPoint(touchPoint);
             SelectionInfo readerSelectionInfo = new SelectionInfo();
+            readerSelectionInfo.setPagePosition(pagePosition);
             readerSelectionInfo.setCurrentSelection(selection,pageInfo);
             return readerSelectionInfo;
         }

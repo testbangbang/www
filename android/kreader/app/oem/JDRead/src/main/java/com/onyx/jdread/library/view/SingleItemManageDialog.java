@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogSingleManageLayoutBinding;
@@ -126,7 +127,7 @@ public class SingleItemManageDialog extends Dialog {
         }
 
         public boolean isCloudBook() {
-            return dataModel.get().cloudId.get() != -1;
+            return StringUtils.isNotBlank(dataModel.get().cloudId.get());
         }
 
         public boolean showBookMenu() {

@@ -3,6 +3,8 @@ package com.onyx.android.sdk.reader.plugins.djvu;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+
+import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormManager;
@@ -60,6 +62,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     private DjvuJniWrapper impl = null;
+    private ReaderCallback readerCallback;
     private Benchmark benchmark = new Benchmark();
 
     public DjvuReaderPlugin(Context context, ReaderPluginOptions pluginOptions) {
@@ -308,9 +311,17 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public void setReaderCallback(ReaderCallback callback) {
+        readerCallback = callback;
+    }
+
+    @Override
     public ReaderDocument open(String path, ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) throws ReaderException {
         if (!getPluginImpl().open(path)) {
             return null;
+        }
+        if (readerCallback != null) {
+            readerCallback.onDocumentLoadSuccess();
         }
         return this;
     }

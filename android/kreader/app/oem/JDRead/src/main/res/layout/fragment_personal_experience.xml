@@ -70,7 +70,7 @@
                         android:layout_marginTop="@dimen/personal_experience_dec_margin_top"
                         android:text="@string/in_number_days"
                         android:textColor="@color/text_gray_color"
-                        android:textSize="@dimen/level_four_heading_font" />
+                        android:textSize="@dimen/level_three_heading_font" />
                 </LinearLayout>
 
                 <View
@@ -98,7 +98,7 @@
                         android:layout_marginTop="@dimen/personal_experience_dec_margin_top"
                         android:text="@string/cumulative_reading"
                         android:textColor="@color/text_gray_color"
-                        android:textSize="@dimen/level_four_heading_font" />
+                        android:textSize="@dimen/level_three_heading_font" />
                 </LinearLayout>
 
                 <View
@@ -126,7 +126,7 @@
                         android:layout_marginTop="@dimen/personal_experience_dec_margin_top"
                         android:text="@string/finish_read"
                         android:textColor="@color/text_gray_color"
-                        android:textSize="@dimen/level_four_heading_font" />
+                        android:textSize="@dimen/level_three_heading_font" />
                 </LinearLayout>
 
                 <View
@@ -154,7 +154,7 @@
                         android:layout_marginTop="@dimen/personal_experience_dec_margin_top"
                         android:text="@string/read_note"
                         android:textColor="@color/text_gray_color"
-                        android:textSize="@dimen/level_four_heading_font" />
+                        android:textSize="@dimen/level_three_heading_font" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -173,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/intelligent_recommend"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
+                    android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -15,6 +15,8 @@ import java.util.Map;
 public class ReaderConfig {
     public static final String TYPEFACE_ROOT_PATH = "/system/fonts/";
     public static final int HIT_TEST_TEXT_STEP = 30;
+    public static final int QUOTE_STATE_MODIFY = 1;
+    public static final int QUOTE_STATE_NOT_CHANGED = 2;
 
     public static class Typeface {
         public static final String TYPEFACE_ONE = TYPEFACE_ROOT_PATH + "FZHei-B01.TTF";
@@ -36,6 +38,10 @@ public class ReaderConfig {
 
     public static final int SIGN_RIGHT_MARGIN = 1;
     public static final int SIGN_BOTTOM_MARGIN = 1;
+    public static final int SIGN_INFLATE_LEFT = 30;
+    public static final int SIGN_INFLATE_TOP = 30;
+    public static final int SIGN_INFLATE_RIGHT = 30;
+    public static final int SIGN_INFLATE_BOTTOM = 30;
 
     public static final String READER_FONTFACE_KEY = "FontFace";
     public static final String READER_CHINESE_CONVERT_TYPE_KEY = "ChineseConvertType";

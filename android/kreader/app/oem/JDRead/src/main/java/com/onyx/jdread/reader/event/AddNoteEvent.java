@@ -5,13 +5,13 @@ package com.onyx.jdread.reader.event;
  */
 
 public class AddNoteEvent {
-    private String note;
+    public String newNote;
+    public String srcNote;
+    public int srcNoteState;
 
-    public AddNoteEvent(String note) {
-        this.note = note;
-    }
-
-    public String getNote() {
-        return note;
+    public AddNoteEvent(String newNote, String srcNote, int srcNoteState) {
+        this.newNote = newNote;
+        this.srcNote = srcNote;
+        this.srcNoteState = srcNoteState;
     }
 }

@@ -505,4 +505,9 @@ public class CloudDataProvider implements DataProviderBase {
     private ContentService getContentService() {
         return ServiceFactory.getContentService(conf.getApiBase());
     }
+
+    @Override
+    public List<Annotation> loadKeyAnnotations(String application, String key, OrderBy orderBy) {
+        return null;
+    }
 }

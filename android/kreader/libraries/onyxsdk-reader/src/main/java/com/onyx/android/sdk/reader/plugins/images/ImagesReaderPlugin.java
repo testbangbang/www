@@ -6,6 +6,7 @@ import android.graphics.RectF;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -65,6 +66,7 @@ public class ImagesReaderPlugin implements ReaderPlugin,
     private Benchmark benchmark = new Benchmark();
 
     private ImagesWrapper impl;
+    private ReaderCallback readerCallback;
     private String documentPath;
     private List<String> pageList = new ArrayList<String>();
     static private Set<String> extensionFilters = new HashSet<String>();
@@ -81,6 +83,11 @@ public class ImagesReaderPlugin implements ReaderPlugin,
 
     public String displayName() {
         return ImagesReaderPlugin.class.getSimpleName();
+    }
+
+    @Override
+    public void setReaderCallback(ReaderCallback callback) {
+        readerCallback = callback;
     }
 
     static public Set<String> getExtensionFilters() {
@@ -113,6 +120,9 @@ public class ImagesReaderPlugin implements ReaderPlugin,
                     return ComparatorUtils.stringComparator(lhs, rhs, SortOrder.Asc);
                 }
             });
+        }
+        if (readerCallback != null) {
+            readerCallback.onDocumentLoadSuccess();
         }
         return this;
     }

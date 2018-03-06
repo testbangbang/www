@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.utils;
 import android.databinding.BindingAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -10,6 +11,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.ui.view.AutoPagedWebView;
+import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BatchDownloadChaptersAdapter;
@@ -128,9 +130,9 @@ public class ShopDataBindingUtil {
     }
 
     @BindingAdapter({"bookInfoWebView"})
-    public static void setBookInfoDialog(AutoPagedWebView webView, String content) {
+    public static void setBookInfoDialog(PageTextView webView, String content) {
         if (!StringUtils.isNullOrEmpty(content)) {
-            webView.loadData(content, "text/html; charset=UTF-8", null);
+            webView.setText(content);
         }
     }
 
@@ -187,6 +189,15 @@ public class ShopDataBindingUtil {
         BatchDownloadChaptersAdapter adapter = (BatchDownloadChaptersAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"settlementEnable"})
+    public static void setSettlementEnable(TextView textView, Boolean settlementEnable) {
+        if (textView != null) {
+            textView.setEnabled(settlementEnable);
+            textView.setTextColor(settlementEnable?ResManager.getColor(android.R.color.black):ResManager.getColor(R.color.cart_shop_settlement_disable));
+            textView.setBackgroundResource(settlementEnable?R.drawable.rectangle_stroke:R.drawable.rectangle_stroke_disable);
         }
     }
 }

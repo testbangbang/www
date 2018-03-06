@@ -2,6 +2,8 @@ package com.onyx.jdread.main.common;
 
 import android.os.Environment;
 
+import com.onyx.android.sdk.device.Device;
+
 /**
  * Created by 12 on 2016/12/6.
  */
@@ -137,4 +139,6 @@ public class Constants {
     public static final String TYPE_BOUGHT = "1";
     public static final int BOOK_DETAIL_TYPE_NET = 1;
     public static final int BOOK_DETAIL_TYPE_PUBLISH = 0;
+    public static final String WHOLE_BOOK_DOWNLOAD_TAG = "whole_book";
+    public static final String WIFI_PASS_BOOK_DIR = Device.currentDevice.getExternalStorageDirectory() + "/WifiTranslate/";
 }

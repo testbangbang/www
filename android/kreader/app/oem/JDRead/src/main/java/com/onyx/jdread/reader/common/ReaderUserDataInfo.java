@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.common;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.model.*;
@@ -65,6 +66,19 @@ public class ReaderUserDataInfo {
     private Map<String, List<ReaderSelection>> pageLinkMap = new HashMap<>();
     private Map<String, List<ReaderImage>> pageImageMap = new HashMap<>();
     private Map<String, List<ReaderFormField>> formFieldMap = new HashMap<>();
+    private List<SignNoteInfo> noteRects = new ArrayList<>();
+
+    public void cleanNoteRects(){
+        noteRects.clear();
+    }
+
+    public void addNoteRect(SignNoteInfo signNoteInfo){
+        noteRects.add(signNoteInfo);
+    }
+
+    public List<SignNoteInfo> getNoteRects() {
+        return noteRects;
+    }
 
     public void setDocumentPath(final String path) {
         documentPath = path;
@@ -173,6 +187,13 @@ public class ReaderUserDataInfo {
         return true;
     }
 
+    public List<Annotation> loadDocumentKeyAnnotations(final Context context, final String displayName,final String key) {
+        return ContentSdkDataUtils.getDataProvider().loadKeyAnnotations(
+                displayName,
+                key,
+                OrderBy.fromProperty(Annotation_Table.updatedAt).descending());
+    }
+
     public boolean hasPageAnnotations(final PageInfo pageInfo) {
         List<PageAnnotation> list = getPageAnnotations(pageInfo);
         return list != null && list.size() > 0;
@@ -180,6 +201,10 @@ public class ReaderUserDataInfo {
 
     public List<PageAnnotation> getPageAnnotations(final PageInfo pageInfo) {
         return pageAnnotationMap.get(pageInfo.getName());
+    }
+
+    public List<PageAnnotation> getPageAnnotations(final String pageName) {
+        return pageAnnotationMap.get(pageName);
     }
 
     public boolean loadPageAnnotations(final Context context,final boolean isSupportScale, final String displayName,final String md5, final ReaderNavigator navigator,final List<PageInfo> visiblePages) {
@@ -226,11 +251,11 @@ public class ReaderUserDataInfo {
                 } else {
                     annotation.setPageNumber(navigator.getPageNumberByPosition(annotation.getLocationBegin()));
                 }
-                String pageName = PagePositionUtils.fromPageNumber(annotation.getPageNumber());
-                PageInfo pageInfo = findPageInfo(visiblePages, pageName);
+                PageInfo pageInfo = findPageInfoByPosition(navigator, visiblePages, annotation.getLocationBegin());
                 if (pageInfo == null) {
                     continue;
                 }
+                String pageName = pageInfo.getName();
                 if (pageAnnotationMap.get(pageName) == null) {
                     pageAnnotationMap.put(pageName, new ArrayList<PageAnnotation>());
                 }
@@ -247,6 +272,16 @@ public class ReaderUserDataInfo {
     private PageInfo findPageInfo(final List<PageInfo> visiblePages, String pageName) {
         for (PageInfo page : visiblePages) {
             if (page.getName().equals(pageName)) {
+                return page;
+            }
+        }
+        return null;
+    }
+
+    private PageInfo findPageInfoByPosition(final ReaderNavigator navigator, final List<PageInfo> visiblePages, String position) {
+        for (PageInfo page : visiblePages) {
+            if (navigator.comparePosition(page.getRange().startPosition, position) <= 0 &&
+                    navigator.comparePosition(page.getRange().endPosition, position) >= 0) {
                 return page;
             }
         }
@@ -288,7 +323,7 @@ public class ReaderUserDataInfo {
         List<Bookmark> bookmarks = ContentSdkDataUtils.getDataProvider().loadBookmarks(
                 displayName,
                 md5,
-                OrderBy.fromProperty(Bookmark_Table.createdAt).descending());
+                OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
         String startPos = navigator.getScreenStartPosition();
         String endPos = navigator.getScreenEndPosition();
         if (bookmarks != null) {

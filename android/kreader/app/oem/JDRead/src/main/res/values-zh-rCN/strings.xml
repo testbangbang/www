@@ -292,9 +292,10 @@
     <string name="size_format" translatable="false">大小： %s</string>
     <string name="read_format" translatable="false">已读： %s</string>
     <string name="braces">(%s)</string>
-    <string name="original_amount">原金额:%s</string>
-    <string name="preferential">优惠:%s</string>
-    <string name="combine">合计:%s</string>
+    <string name="original_amount">原金额:%s阅豆</string>
+    <string name="preferential">优惠:%s阅豆</string>
+    <string name="combine">合计:%s阅豆</string>
+    <string name="item_price">%s阅豆</string>
     <string name="book_total_format">共%s本图书</string>
     <string name="brightness_control">亮度调节</string>
     <string name="security_none">无</string>
@@ -421,6 +422,7 @@
     <string name="searching" formatted="false">正在搜索 %d/%d</string>
     <string name="reader_searching">搜索中，请等待...</string>
     <string name="no_more_search_results">没有更多的搜索结果</string>
+    <string name="no_search_results">没有搜索结果</string>
     <string name="page" formatted="false">页码 %d</string>
     <string name="search_end">完成搜索</string>
     <string name="delete_library_prompt">是否删除该分组(组内图书重新放入书架)</string>
@@ -436,7 +438,7 @@
     <string name="updating_package_model_no_match">系统更新包型号不匹配</string>
     <string name="updating_package_parse_failed">系统更新包解析失败</string>
     <string name="updating_package_install_failed">系统更新包安装失败</string>
-    <string name="power_off_prompt">您确定关闭阅读器吗?</string>
+    <string name="power_off_prompt">是否关闭设备?</string>
     <string name="speed_refresh_is_opened">极速翻页已开启</string>
     <string name="speed_refresh_is_closed">极速翻页已关闭</string>
     <string name="input_translate_content">请输入需要翻译的内容</string>
@@ -491,9 +493,14 @@
     <string name="dialog_password_text_password">密码</string>
     <string name="show_password">显示密码</string>
     <string name="preload_loading">正在初始化主界面请稍等...</string>
+    <string name="download_paused">已暂停</string>
+    <string name="wait_download">待下载</string>
+    <string name="is_downloading">下载中</string>
     <string name="batch_download">批量下载</string>
     <string name="book_batch_download_tip">1.批量购买章节时会自动过滤掉免费章节和您已经购买的章节。\n2.购买后系统会自动下载所购全部章节。</string>
     <string name="book_batch_download_buy_chapter">章节购买</string>
     <string name="book_batch_download_item_current_chapter">本章</string>
     <string name="book_batch_download_item_after_chapter">后%d章</string>
+    <string name="reboot">重启</string>
+    <string name="shutdown">关机</string>
 </resources>

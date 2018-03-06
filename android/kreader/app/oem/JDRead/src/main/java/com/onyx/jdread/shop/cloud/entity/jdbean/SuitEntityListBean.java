@@ -7,6 +7,8 @@ import java.util.List;
  */
 
 public class SuitEntityListBean {
-    public List<SignalProductListBean> product_entity_list;
-    public PromotionalEntityBean promotional_entity;
+    public List<SignalProductListBean> product_list;
+    public PromotionalEntityBean promotion;
+    public boolean is_suit_promotion;
+    public int sort;
 }

@@ -12,6 +12,7 @@ import android.databinding.ObservableLong;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
+import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.sdk.data.event.ItemClickEvent;
 import com.onyx.android.sdk.data.event.ItemLongClickEvent;
 import com.onyx.android.sdk.dataprovider.R;
@@ -28,7 +29,7 @@ public class DataModel extends BaseObservable {
     public final ObservableField<String> parentId = new ObservableField<>();
     public final ObservableLong id = new ObservableLong();
     public final ObservableField<String> idString = new ObservableField<>();
-    public final ObservableLong cloudId = new ObservableLong(-1);
+    public final ObservableField<String> cloudId = new ObservableField<>();
     public final ObservableField<String> title = new ObservableField<>();
     public final ObservableField<String> author = new ObservableField<>();
     public final ObservableField<String> format = new ObservableField<>();
@@ -47,7 +48,13 @@ public class DataModel extends BaseObservable {
     public final ObservableField<String> key = new ObservableField<>();
     public final ObservableField<String> random = new ObservableField<>();
     public final ObservableField<String> selectedCount = new ObservableField<>();
+    public final ObservableField<String> downloadUrl = new ObservableField<>();
+    public final ObservableField<String> bookStatus = new ObservableField<>();
+    public final ObservableInt downloadStatus = new ObservableInt(FileDownloadStatus.completed);
+    public final ObservableInt downloadProgress = new ObservableInt();
+    public final ObservableBoolean showDownloadProgress = new ObservableBoolean(false);
     public final ObservableList<DataModel> childList = new ObservableArrayList<>();
+    public Object downLoadTaskTag;
     private EventBus eventBus;
 
     public DataModel(EventBus eventBus) {

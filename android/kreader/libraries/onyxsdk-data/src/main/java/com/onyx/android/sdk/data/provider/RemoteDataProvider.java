@@ -500,4 +500,9 @@ public class RemoteDataProvider implements DataProviderBase {
         Operator condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentUniqueId);
         return ContentUtils.queryList(OnyxLibraryProvider.CONTENT_URI, Library.class, OperatorGroup.clause().and(condition), null).size();
     }
+
+    @Override
+    public List<Annotation> loadKeyAnnotations(String application, String key, OrderBy orderBy) {
+        return null;
+    }
 }

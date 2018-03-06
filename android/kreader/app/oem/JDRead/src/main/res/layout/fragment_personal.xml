@@ -70,19 +70,15 @@
 
                 <TextView
                     android:layout_width="@dimen/personal_sign_width"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/personal_sign_height"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="@dimen/personal_sign_in_margin_right"
                     android:layout_marginTop="@dimen/personal_sign_in_margin_top"
                     android:background="@drawable/arc_shape_stroke"
                     android:gravity="center"
-                    android:paddingBottom="@dimen/personal_sign_in_padding_bottom"
-                    android:paddingLeft="@dimen/personal_sign_in_padding_left"
-                    android:paddingRight="@dimen/personal_sign_in_padding_right"
-                    android:paddingTop="@dimen/personal_sign_in_padding_top"
                     android:text="@{isSignToday ? @string/signed_in : @string/unsigned_in}"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_two_heading_font" />
+                    android:textSize="@dimen/personal_sign_in_font" />
             </RelativeLayout>
 
             <Button

@@ -71,12 +71,14 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
             public void onSubscribe() {
                 super.onSubscribe();
                 showLoadingDialog(shopDataBundle, R.string.loading);
+                invokeSubscribe(rxCallback);
             }
 
             @Override
             public void onFinally() {
                 super.onFinally();
                 hideLoadingDialog(shopDataBundle);
+                invokeFinally(rxCallback);
             }
 
             @Override

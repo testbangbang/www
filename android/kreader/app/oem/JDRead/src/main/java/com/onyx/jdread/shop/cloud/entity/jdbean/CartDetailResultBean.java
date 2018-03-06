@@ -12,12 +12,9 @@ public class CartDetailResultBean {
     public String message;
 
     public static class DataBean {
-        public double cashback;
-        public double original_price;
-        public String total_costcontent;
-        public String total_costcontent2;
-        public int total_num;
-        public List<SignalProductListBean> signal_product_list;
-        public List<SuitEntityListBean> suit_entity_list;
+        public double re_price;
+        public double origin_price;
+        public String total_price;
+        public List<SuitEntityListBean> suit_list;
     }
 }

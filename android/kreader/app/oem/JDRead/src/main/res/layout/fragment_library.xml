@@ -136,7 +136,7 @@
                 android:onClick="@{()->libraryModel.selectAll()}"
                 android:text="@{libraryModel.isSelectAll?@string/cancel:@string/select_all}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_size_15" />
+                android:textSize="@dimen/font_size_14" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -149,7 +149,7 @@
                 android:onClick="@{()->libraryModel.moveTo()}"
                 android:text="@string/move_to"
                 android:textColor="@{libraryModel.haveSelected?@android:color/black:@color/text_gray_color}"
-                android:textSize="@dimen/font_size_15" />
+                android:textSize="@dimen/font_size_14" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -160,7 +160,7 @@
                 android:onClick="@{()->libraryModel.delete()}"
                 android:text="@string/delete"
                 android:textColor="@{libraryModel.haveSelected?@android:color/black:@color/text_gray_color}"
-                android:textSize="@dimen/font_size_15" />
+                android:textSize="@dimen/font_size_14" />
         </LinearLayout>
     </LinearLayout>
 </layout>

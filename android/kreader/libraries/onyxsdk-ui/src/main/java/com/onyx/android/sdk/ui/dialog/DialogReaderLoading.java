@@ -41,7 +41,7 @@ public class DialogReaderLoading extends OnyxBaseDialog {
     private TextView mTextViewMessage = null;
 
     public DialogReaderLoading(Context context, String msg) {
-        super(context, R.style.dialog_progress);
+        super(context, R.style.dialog_no_title);
         setContentView(R.layout.dialog_reader_loading);
 
         mDialogLoadingLayout = (RelativeLayout) findViewById(R.id.dialog_loading_layout);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data class="ShopCartBinding">
 
@@ -122,12 +123,13 @@
                 android:id="@+id/shop_cart_settlement"
                 android:layout_width="@dimen/shop_cart_settlement_width"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rectangle_stroke"
+                android:background="@drawable/rectangle_stroke_disable"
                 android:gravity="center"
                 android:padding="@dimen/shop_cart_settlement_padding"
                 android:text="@{@string/settlement(model.size)}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textColor="@color/cart_shop_settlement_disable"
+                android:textSize="@dimen/level_one_heading_font"
+                bind:settlementEnable="@{model.settlementEnable}"/>
         </LinearLayout>
     </LinearLayout>
 </layout>
