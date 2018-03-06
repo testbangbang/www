@@ -417,6 +417,7 @@
     <dimen name="fragment_search_width_space">24dp</dimen>
     <dimen name="hot_search_item_num_width">20dp</dimen>
     <dimen name="hot_search_recycler_height">180dp</dimen>
+    <dimen name="search_hint_recycler_height">200dp</dimen>
     <dimen name="search_result_book_cover_width">64dp</dimen>
     <dimen name="search_result_book_cover_height">93dp</dimen>
     <dimen name="search_result_item_text_margin_left">20dp</dimen>
