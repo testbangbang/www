@@ -88,7 +88,7 @@ public class JEBReaderPlugin implements ReaderPlugin,
 
     @Override
     public void setReaderCallback(ReaderCallback callback) {
-
+        getPluginImpl().setBookCallback(callback);
     }
 
     static public Set<String> getExtensionFilters() {

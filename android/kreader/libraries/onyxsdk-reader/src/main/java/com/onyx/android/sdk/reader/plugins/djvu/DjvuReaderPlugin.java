@@ -62,6 +62,7 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     private DjvuJniWrapper impl = null;
+    private ReaderCallback readerCallback;
     private Benchmark benchmark = new Benchmark();
 
     public DjvuReaderPlugin(Context context, ReaderPluginOptions pluginOptions) {
@@ -311,13 +312,16 @@ public class DjvuReaderPlugin implements ReaderPlugin,
 
     @Override
     public void setReaderCallback(ReaderCallback callback) {
-
+        readerCallback = callback;
     }
 
     @Override
     public ReaderDocument open(String path, ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) throws ReaderException {
         if (!getPluginImpl().open(path)) {
             return null;
+        }
+        if (readerCallback != null) {
+            readerCallback.onDocumentLoadSuccess();
         }
         return this;
     }
