@@ -68,7 +68,7 @@
 <div class="upload-file">
 	<h3>JDRead WIFI传书</h3>
 	<p>支持格式：TXT、EPUB、PDF、MOBI、JPEG、DOC、DOCX、PNG
-		<span class="upload-title"><input type="file" name="file" value="上传文件" onchange="handleFiles(this.files)">上传文件</span>
+		<span class="upload-title"><input type="file" name="file" value="上传文件" onchange="handleFiles(this.files)" multiple="multiple">上传文件</span>
 	</p>
 	<table>
 		<thead>
@@ -129,6 +129,9 @@
             	}
             	addFileToList(file);
             }
+            xhr.onerror = function() {
+				location.reload();
+			};
             xhr.send();
         }
 
