@@ -58,12 +58,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/book_format_margin_right"
+                    android:layout_marginLeft="@dimen/book_format_margin_right"
                     android:layout_marginTop="@dimen/book_format_margin_top"
                     android:text="@{dialogModel.dataModel.format}"
-                    android:textColor="@color/gray"
-                    android:textSize="@dimen/level_large_heading_font" />
+                    android:textColor="@color/normal_black"
+                    android:textSize="@dimen/level_medium_heading_font" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -111,20 +110,20 @@
                 <TextView
                     android:layout_width="@dimen/dialog_single_manage_title_width"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
                     android:lines="1"
                     android:text="@{dialogModel.dataModel.title}"
                     android:textColor="@android:color/black"
-                    android:ellipsize="end"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
                     android:layout_width="@dimen/dialog_single_manage_title_width"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dialog_single_info_text_margin_top"
+                    android:ellipsize="end"
                     android:lines="1"
                     android:text="@{@string/author_format(dialogModel.dataModel.author)}"
                     android:textColor="@{dialogModel.isCloudBook()?@android:color/black:@color/gray}"
-                    android:ellipsize="end"
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView

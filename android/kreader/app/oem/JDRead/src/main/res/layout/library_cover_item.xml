@@ -27,11 +27,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/library_cover_child_format_margin_right"
+            android:layout_marginLeft="@dimen/library_cover_child_format_margin_right"
             android:layout_marginTop="@dimen/library_cover_child_format_margin_top"
             android:text="@{model.format}"
-            android:textColor="@color/gray"
+            android:textColor="@color/normal_black"
             android:textSize="@dimen/level_four_heading_font"
             android:visibility="@{model.showFormat()?View.VISIBLE:View.GONE}" />
     </RelativeLayout>
