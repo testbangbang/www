@@ -87,6 +87,14 @@ public class JEBReaderWrapper {
         initDefaultTextStyle();
     }
 
+    public void setAborted(boolean abort) {
+        bookEng.setAborted(abort);
+    }
+
+    public void abortBookLoading() {
+        bookEng.abortBookLoading();
+    }
+
     public void setBookCallback(final ReaderCallback callback) {
         this.callback = callback;
     }
