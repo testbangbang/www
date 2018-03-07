@@ -79,6 +79,7 @@ public class ShopCartFragment extends BaseFragment {
     private void initData() {
         shopCartModel = ShopDataBundle.getInstance().getShopCartModel();
         shopCartModel.setSettlementEnable(false);
+        shopCartModel.setCheckAllEnable(false);
         shopCartModel.setTotalAmount("0");
         shopCartModel.setOriginalPrice("0");
         shopCartModel.setCashBack("0");

@@ -72,6 +72,7 @@ public class GetShopCartItemsAction extends BaseAction {
                     shopCartModel.setCashBack(cashBack);
                     shopCartModel.setTotalAmount(totalAmount);
                     shopCartModel.setSettlementEnable(true);
+                    shopCartModel.setCheckAllEnable(true);
 
                     List<ShopCartItemData> shopCartItems = rq.getShopCartItems();
                     shopCartModel.setDatas(shopCartItems);
@@ -82,6 +83,7 @@ public class GetShopCartItemsAction extends BaseAction {
                     shopCartModel.setTotalAmount(ZERO);
                     shopCartModel.setSize(ZERO);
                     shopCartModel.setSettlementEnable(false);
+                    shopCartModel.setCheckAllEnable(false);
                     List<ShopCartItemData> datas = shopCartModel.getDatas();
                     if (datas != null && datas.size() > 0) {
                         datas.clear();
