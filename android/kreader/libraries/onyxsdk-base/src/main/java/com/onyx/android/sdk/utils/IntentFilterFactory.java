@@ -21,7 +21,11 @@ public class IntentFilterFactory
     public static final String ACTION_GET_APPLICATION_PREFERENCE = "com.onyx.android.sdk.data.IntentFactory.ACTION_GET_APPLICATION_PREFERENCE";
     public static final String ACTION_EXTRACT_METADATA = "com.onyx.android.sdk.data.IntentFactory.ACTION_EXTRACT_METADATA";
     public static final String ACTION_GET_TOC = "com.onyx.android.sdk.data.IntentFactory.ACTION_GET_TOC";
-    
+
+    public static final String TOGGLE_TOUCH_SCREEN_STATE_ACTION = "action.toggle.touch.screen.state";
+    public static final String ENABLE_TOUCH_SCREEN_ACTION = "action.enable.touch.screen";
+    public static final String DISABLE_TOUCH_SCREEN_ACTION = "action.disable.touch.screen";
+
     private static final IntentFilter SDCARD_UNMOUNTED_FILTER;
     private static final IntentFilter MEDIA_MOUNTED_FILTER;
     private static final IntentFilter MEDIA_SCANNED_FILTER;
