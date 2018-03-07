@@ -310,4 +310,12 @@ public abstract class EpdController
         Device.currentDevice().enableCapacitanceTp(enable);
     }
 
+    public static boolean isCapacitanceTpEnable() {
+        return Device.currentDevice().isCapacitanceTpEnable();
+    }
+
+    public static boolean isElectromagneticTpEnable() {
+        return Device.currentDevice().isElectromagneticTpEnable();
+    }
+
 }
