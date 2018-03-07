@@ -26,6 +26,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CartDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetChapterStartIdResult;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.SearchHotWord;
@@ -185,4 +186,8 @@ public interface ReadContentService {
     @GET("net/{bookId}/order_commit")
     Call<BatchDownloadResultBean> getChapterGroupInfo(@Path(CloudApiContext.BookDownLoad.BOOK_ID) long bookId,
                                                       @QueryMap Map<String, String> baseInfoMap);
+
+    @GET("net/startchapter/{ebook_id}")
+    Call<GetChapterStartIdResult> getChapterStartId(@Path(CloudApiContext.BookDownLoad.EBOOK_ID) long bookId,
+                                                    @QueryMap Map<String, String> baseInfoMap);
 }

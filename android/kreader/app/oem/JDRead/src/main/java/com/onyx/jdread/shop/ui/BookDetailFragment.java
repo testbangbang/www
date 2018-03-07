@@ -50,15 +50,18 @@ import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.action.BookshelfInsertAction;
 import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.action.GetChapterGroupInfoAction;
+import com.onyx.jdread.shop.action.GetChapterStartIdAction;
 import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.MetadataQueryAction;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.BatchDownloadChaptersAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BatchDownloadResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetChapterStartIdResult;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateBean;
@@ -273,9 +276,11 @@ public class BookDetailFragment extends BaseFragment {
 
                     if (ViewHelper.isNetBook(bookDetailBean.book_type)) {
                         buyBookButton.setText(ResManager.getString(R.string.batch_download));
-                        getBookDetailViewModel().updateTimeInfo.set(ViewHelper.getNetBookUpdateTimeInfo(bookDetailBean.modified));
                         resetNowReadButton();
                         showShopCartView(false);
+                        if (!StringUtils.isNullOrEmpty(bookDetailBean.modified)) {
+                            getBookDetailViewModel().updateTimeInfo.set(ViewHelper.getNetBookUpdateTimeInfo(bookDetailBean.modified));
+                        }
                     }
 
                     if (shouldDownloadWholeBook) {
@@ -548,7 +553,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
 
-        if (isWholeBookDownLoad &&  fileIsExists(localPath)) {
+        if (isWholeBookDownLoad && fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean);
             return;
         }
@@ -572,14 +577,29 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void getChapterGroupInfo() {
-        GetChapterGroupInfoAction action = new GetChapterGroupInfoAction(ebookId, "");
-        action.setViewModel(getBookBatchDownloadViewModel());
-        action.execute(getShopDataBundle(), new RxCallback<GetChapterGroupInfoAction>() {
+        GetChapterStartIdAction getChapterStartIdAction = new GetChapterStartIdAction(ebookId);
+        getChapterStartIdAction.execute(getShopDataBundle(), new RxCallback<GetChapterStartIdAction>() {
             @Override
-            public void onNext(GetChapterGroupInfoAction action) {
-                BatchDownloadResultBean.DataBean data= getBookBatchDownloadViewModel().getDataBean();
-                if (data != null && data.list != null) {
-                    showBatchDownload();
+            public void onNext(GetChapterStartIdAction getChapterStartIdAction) {
+                GetChapterStartIdResult resultBean = getChapterStartIdAction.getResultBean();
+                if (BaseResultBean.checkSuccess(resultBean)) {
+                    if (resultBean.data != null) {
+                        if (StringUtils.isNullOrEmpty(resultBean.data.start_chapter)) {
+                            ToastUtil.showToast(ResManager.getString(R.string.down_book_server_error));
+                            return;
+                        }
+                        GetChapterGroupInfoAction action = new GetChapterGroupInfoAction(ebookId, resultBean.data.start_chapter);
+                        action.setViewModel(getBookBatchDownloadViewModel());
+                        action.execute(getShopDataBundle(), new RxCallback<GetChapterGroupInfoAction>() {
+                            @Override
+                            public void onNext(GetChapterGroupInfoAction action) {
+                                BatchDownloadResultBean.DataBean data = getBookBatchDownloadViewModel().getDataBean();
+                                if (data != null && data.list != null) {
+                                    showBatchDownload();
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -791,15 +811,11 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void dismissCopyRightDialog() {
-        if (copyRightDialog != null) {
-            copyRightDialog.dismiss();
-        }
+        ViewHelper.dismissDialog(copyRightDialog);
     }
 
     private void dismissBatchDownloadDialog() {
-        if (batchDownloadDialog != null) {
-            batchDownloadDialog.dismiss();
-        }
+        ViewHelper.dismissDialog(batchDownloadDialog);
     }
 
     public void setBookId(long ebookId) {
@@ -828,9 +844,9 @@ public class BookDetailFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        dismissCopyRightDialog();
-        LoginHelper.dismissUserLoginDialog();
         copyRightDialog = null;
+        infoDialog = null;
+        batchDownloadDialog = null;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -913,9 +929,15 @@ public class BookDetailFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        hideAllDialog();
+    }
+
+    private void hideAllDialog() {
         hideLoadingDialog();
         dismissCopyRightDialog();
         dismissInfoDialog();
+        dismissBatchDownloadDialog();
+        LoginHelper.dismissUserLoginDialog();
     }
 
     private void showInfoDialog(String content) {
@@ -952,8 +974,6 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void dismissInfoDialog() {
-        if (infoDialog != null) {
-            infoDialog.dismiss();
-        }
+        ViewHelper.dismissDialog(infoDialog);
     }
 }

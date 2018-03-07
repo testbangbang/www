@@ -9,6 +9,7 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
+import com.onyx.jdread.shop.model.MainConfigEndViewModel;
 import com.onyx.jdread.shop.model.SubjectType;
 import com.onyx.jdread.util.TimeUtils;
 
@@ -76,7 +77,8 @@ public class ViewHelper {
             int itemSpace = ResManager.getInteger(R.integer.custom_recycle_view_space);
             int itemHeight = 0;
             for (int i = 0; i < tempList.size(); i++) {
-                int subjectType = tempList.get(i).getSubjectType();
+                BaseSubjectViewModel subjectViewModel = tempList.get(i);
+                int subjectType = subjectViewModel.getSubjectType();
                 switch (subjectType) {
                     case SubjectType.TYPE_TOP_FUNCTION:
                         itemHeight = itemHeight + Constants.SHOP_VIEW_TOP_FUNCTION_HEIGHT;
@@ -91,7 +93,12 @@ public class ViewHelper {
                         itemHeight = itemHeight + Constants.SHOP_VIEW_SUBJECT_HEIGHT;
                         break;
                     case SubjectType.TYPE_END:
-                        itemHeight = itemHeight + Constants.SHOP_VIEW_END_VIEW_HEIGHT;
+                        MainConfigEndViewModel endViewModel = (MainConfigEndViewModel) subjectViewModel;
+                        if (endViewModel.showEmptyView.get()) {
+                            itemHeight = itemHeight + Constants.SHOP_VIEW_END_VIEW_HIGH_HEIGHT;
+                        } else {
+                            itemHeight = itemHeight + Constants.SHOP_VIEW_END_VIEW_HEIGHT;
+                        }
                         break;
                     case SubjectType.TYPE_VIP_USER:
                         itemHeight = itemHeight + Constants.SHOP_VIEW_VIP_INFO_VIEW_HEIGHT;
@@ -99,7 +106,7 @@ public class ViewHelper {
                 }
                 itemHeight = itemHeight + itemSpace;
                 if (itemHeight > recycleViewHeight) {
-                    tempList.add(i, tempList.get(i));
+                    tempList.add(i, subjectViewModel);
                     itemHeight = 0;
                     totalPage++;
                 }
@@ -143,7 +150,7 @@ public class ViewHelper {
     }
 
     public static void dismissDialog(Dialog dialog) {
-        if (dialogIsShowing(dialog)) {
+        if (dialog != null) {
             dialog.dismiss();
         }
     }

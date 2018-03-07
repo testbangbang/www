@@ -11,6 +11,7 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.action.DownLoadWholeBookAction;
 import com.onyx.jdread.shop.action.DownloadAction;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.DownLoadWholeBookResultBean;
@@ -40,7 +41,7 @@ public class BookDownloadUtils {
                 public void onNext(DownLoadWholeBookAction action) {
                     DownLoadWholeBookResultBean resultBean = action.getResultBean();
                     if (resultBean != null) {
-                        if (resultBean.isSucceed()) {
+                        if (BaseResultBean.checkSuccess(resultBean)) {
                             DownLoadWholeBookResultBean.DataBean data = resultBean.data;
                             bookDetailBean.key = data.key;
                             bookDetailBean.random = data.random;
