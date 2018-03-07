@@ -137,7 +137,7 @@
 
         </RelativeLayout>
 
-        <TextView
+        <com.onyx.jdread.library.view.EndEllipsizeTextView
             android:id="@+id/textView_title"
             android:layout_width="@dimen/model_item_cover_width"
             android:layout_height="wrap_content"
@@ -146,9 +146,9 @@
             android:lineSpacingExtra="5dp"
             android:lines="2"
             android:maxLines="2"
+            android:text="@{model.title}"
             android:onClick="@{()->model.itemClicked()}"
             android:onLongClick="@{()->model.itemLongClick()}"
-            android:text="@{model.title}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
 

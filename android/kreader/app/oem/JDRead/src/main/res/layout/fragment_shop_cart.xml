@@ -46,18 +46,32 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <CheckBox
+                <TextView
                     android:id="@+id/shop_cart_check"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="@={model.selectedAll}" />
+                    android:drawableLeft="@mipmap/ic_shelf_check_all"
+                    android:drawablePadding="@dimen/personal_note_export_drawable_padding"
+                    android:gravity="center_vertical"
+                    android:text="@string/select_all"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_one_heading_font"
+                    bind:setCheckAllEnable="@{model.checkAllEnable}"
+                    bind:setCheckAll="@{model.selectedAll}"/>
 
-                <ImageView
+                <TextView
                     android:id="@+id/shop_cart_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@mipmap/ic_shelf_delete_book"
                     android:layout_marginLeft="@dimen/shop_cart_delete_margin_left"
-                    android:src="@mipmap/ic_close" />
+                    android:drawablePadding="@dimen/personal_note_export_drawable_padding"
+                    android:gravity="center_vertical"
+                    android:text="@string/delete"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_one_heading_font"
+                    bind:setDeleteEnable="@{model.settlementEnable}"/>
+
             </LinearLayout>
         </RelativeLayout>
 

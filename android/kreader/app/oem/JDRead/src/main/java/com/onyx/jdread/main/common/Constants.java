@@ -28,6 +28,7 @@ public class Constants {
     public static final String SP_KEY_SHOW_PASSWORD = "show_password";
     public static final String SP_KEY_CATEGORY_LEVEL_ONE_ID = "category_level_one_id";
     public static final String SP_KEY_CATEGORY_LEVEL_TWO_ID = "category_level_two_id";
+    public static final String SP_KEY_CATEGORY_LEVEL_VALUE = "category_level_value";
     public static final String SP_KEY_CATEGORY_NAME = "category_name";
     public static final String SP_KEY_CATEGORY_ISFREE = "category_isfree";
     public static final String SP_KEY_SUBJECT_NAME = "subject_name";
@@ -142,4 +143,5 @@ public class Constants {
     public static final String WHOLE_BOOK_DOWNLOAD_TAG = "whole_book";
     public static final String WIFI_PASS_BOOK_DIR = Device.currentDevice.getExternalStorageDirectory() + "/WifiTranslate/";
     public static final String MANUAL_FAQ_URL = "https://jdread-api.jd.com/faq";
+    public static final int NET_BOOK_STATUS_DOWN = 1;
 }

@@ -192,7 +192,7 @@ public class PersonalBookFragment extends BaseFragment {
                     updateProgress(infoBean, metadata.getCloudId());
                     return;
                 }
-                BookDownloadUtils.download(detail, ShopDataBundle.getInstance());
+                BookDownloadUtils.download(detail, ShopDataBundle.getInstance(), null);
             }
         });
 

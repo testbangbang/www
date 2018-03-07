@@ -6,6 +6,9 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -47,13 +50,21 @@ public class AddWIFIConfigurationDialog extends Dialog {
 
         public AddWIFIConfigurationDialog create() {
             AddWIFIConfigurationDialog dialog = new AddWIFIConfigurationDialog(context, R.style.CustomDialogStyle);
-            DialogAddWifiBinding binding = DataBindingUtil.bind(View.inflate(context, R.layout.dialog_add_wifi, null));
+            final DialogAddWifiBinding binding = DataBindingUtil.bind(View.inflate(context, R.layout.dialog_add_wifi, null));
             binding.setDialogModel(model);
             model.isShowPwd.set(false);
+            model.sureEnable.set(false);
             binding.securitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     model.type.set(model.getWifiTypeList().get(position));
+                    if (model.type.get() == WifiAdmin.SECURITY_NONE) {
+                        model.sureEnable.set(TextUtils.isEmpty(binding.etSsid.getText().toString()) ? false : true);
+                    } else {
+                        model.sureEnable.set((TextUtils.isEmpty(binding.etSsid.getText().toString())
+                                || TextUtils.isEmpty(binding.etPwd.getText().toString())) ?
+                                false : true);
+                    }
                 }
 
                 @Override
@@ -62,6 +73,29 @@ public class AddWIFIConfigurationDialog extends Dialog {
                 }
             });
             dialog.setContentView(binding.getRoot());
+            TextWatcher textWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (model.type.get() == WifiAdmin.SECURITY_NONE) {
+                        model.sureEnable.set(TextUtils.isEmpty(binding.etSsid.getText().toString()) ? false : true);
+                    } else {
+                        model.sureEnable.set((TextUtils.isEmpty(binding.etSsid.getText().toString())
+                                || TextUtils.isEmpty(binding.etPwd.getText().toString())) ?
+                                false : true);
+                    }
+                }
+            };
+            binding.etSsid.addTextChangedListener(textWatcher);
+            binding.etPwd.addTextChangedListener(textWatcher);
             return dialog;
         }
     }
@@ -72,6 +106,7 @@ public class AddWIFIConfigurationDialog extends Dialog {
         public final ObservableInt type = new ObservableInt();
         public final ObservableField<String> password = new ObservableField<>();
         public final ObservableField<Boolean> isShowPwd = new ObservableField<>();
+        public final ObservableField<Boolean> sureEnable = new ObservableField<>();
         private LibraryDeleteDialog.DialogModel.OnClickListener positiveClickLister;
         private LibraryDeleteDialog.DialogModel.OnClickListener negativeClickLister;
 

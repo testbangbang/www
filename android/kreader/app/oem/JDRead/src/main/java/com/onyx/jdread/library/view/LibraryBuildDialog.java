@@ -98,6 +98,7 @@ public class LibraryBuildDialog extends Dialog {
                     dialog.dismiss();
                 }
             });
+            bind.editName.setLongClickable(false);
             dialog.setContentView(bind.getRoot());
             return dialog;
         }
