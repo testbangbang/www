@@ -26,6 +26,7 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.raizlabs.android.dbflow.annotation.Collate;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Operator;
@@ -109,7 +110,7 @@ public class LocalDataProvider implements DataProviderBase {
             Where<Metadata> where = new Select(queryArgs.propertyList.toArray(new IProperty[0])).from(Metadata.class)
                     .where(queryArgs.conditionGroup);
             for (OrderBy orderBy : queryArgs.orderByList) {
-                where.orderBy(orderBy);
+                where.orderBy(orderBy.collate(Collate.LOCALIZED));
             }
             return where.offset(queryArgs.offset).limit(queryArgs.limit).queryList();
         }
