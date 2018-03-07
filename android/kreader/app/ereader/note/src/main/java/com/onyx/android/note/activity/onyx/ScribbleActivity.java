@@ -112,7 +112,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private SpanTextHandler spanTextHandler;
     private boolean isKeyboardInput = false;
     private boolean isPictureEditMode = false;
-    private boolean handTouchEnable = true;
     private Uri editPictUri;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
 
@@ -325,6 +324,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 setHandTouchEnable(!isHandTouchEnable());
             }
         });
+        updateHandTouchBtnRes();
 
         switchBtn.setVisibility(NoteAppConfig.sharedInstance(this).useLineLayout() ? View.VISIBLE : View.GONE);
         initSpanTextView();
@@ -1111,18 +1111,21 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     public void setHandTouchEnable(final boolean handTouchEnable) {
-        this.handTouchEnable = handTouchEnable;
         EpdController.enableCapacitanceTp(handTouchEnable);
         syncWithCallback(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                handTouch.setImageResource(handTouchEnable ? R.drawable.ic_touch : R.drawable.ic_touch_forbid);
+                updateHandTouchBtnRes();
             }
         });
     }
 
+    private void updateHandTouchBtnRes() {
+        handTouch.setImageResource(isHandTouchEnable() ? R.drawable.ic_touch : R.drawable.ic_touch_forbid);
+    }
+
     public boolean isHandTouchEnable() {
-        return handTouchEnable;
+        return EpdController.isCapacitanceTpEnable();
     }
 
     @Override
