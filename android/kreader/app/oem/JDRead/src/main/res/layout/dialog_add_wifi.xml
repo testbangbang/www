@@ -47,6 +47,7 @@
                 android:textColor="@android:color/black" />
 
             <EditText
+                android:id="@+id/et_ssid"
                 android:layout_width="@dimen/dialog_build_edit_width"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/add_wifi_dialog_edit_margin_left"
@@ -93,6 +94,7 @@
                 android:textColor="@android:color/black" />
 
             <EditText
+                android:id="@+id/et_pwd"
                 android:layout_width="@dimen/dialog_build_edit_width"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/add_wifi_dialog_edit_margin_left"
@@ -139,7 +141,9 @@
                 android:gravity="center"
                 android:onClick="@{()->dialogModel.onPositiveClick()}"
                 android:text="@{dialogModel.positiveText}"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font"
+                bind:sureEnable="@{dialogModel.sureEnable}"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

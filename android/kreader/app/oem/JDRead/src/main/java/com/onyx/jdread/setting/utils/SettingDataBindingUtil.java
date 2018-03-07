@@ -5,11 +5,13 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.PageAdapter;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.common.ManageImageCache;
 
 import java.util.List;
@@ -60,6 +62,14 @@ public class SettingDataBindingUtil {
             if (StringUtils.isNotBlank(s)) {
                 editText.setSelection(s.length());
             }
+        }
+    }
+
+    @BindingAdapter({"sureEnable"})
+    public static void setSureEnable(TextView textView, boolean sureEnable){
+        if(textView!=null){
+            textView.setEnabled(sureEnable);
+            textView.setTextColor(sureEnable? ResManager.getColor(android.R.color.black):ResManager.getColor(R.color.gray));
         }
     }
 }

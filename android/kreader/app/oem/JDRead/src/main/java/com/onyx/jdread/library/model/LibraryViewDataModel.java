@@ -86,6 +86,7 @@ public class LibraryViewDataModel extends Observable {
     public void updateSortBy(SortBy sortBy, SortOrder sortOrder) {
         queryArgs.sortBy = sortBy;
         queryArgs.order = sortOrder;
+        QueryBuilder.generateQueryArgsSortBy(this.queryArgs);
     }
 
     public void setCurrentSortOrder(SortOrder sortOrder) {
