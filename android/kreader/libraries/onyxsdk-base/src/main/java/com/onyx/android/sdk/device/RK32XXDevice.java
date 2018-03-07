@@ -188,6 +188,9 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodEnableCapacitanceTp;
     private static Method sMethodEnableElectromagneticTp;
 
+    private static Method sMethodIsCapacitanceTpEnable;
+    private static Method sMethodIsElectromagneticTpEnable;
+
     private static Method sMethodMergeDisplayUpdate = null;
 
     private RK32XXDevice() {
@@ -816,6 +819,8 @@ public class RK32XXDevice extends BaseDevice {
             sMethodUpdateMetadataDB = ReflectUtil.getMethodSafely(deviceControllerClass, "updateMetadataDB", String.class, String.class);
             sMethodEnableCapacitanceTp = ReflectUtil.getMethodSafely(deviceControllerClass, "enableCapacitanceTp", boolean.class);
             sMethodEnableElectromagneticTp = ReflectUtil.getMethodSafely(deviceControllerClass, "enableElectromagneticTp", boolean.class);
+            sMethodIsCapacitanceTpEnable = ReflectUtil.getMethodSafely(deviceControllerClass, "isCapacitanceTpEnable");
+            sMethodIsElectromagneticTpEnable = ReflectUtil.getMethodSafely(deviceControllerClass, "isElectromagneticTpEnable");
 
             // signature of "public void enableA2()"
             sMethodEnableA2 = ReflectUtil.getMethodSafely(cls, "enableA2");
@@ -1200,5 +1205,17 @@ public class RK32XXDevice extends BaseDevice {
     @Override
     public void mergeDisplayUpdate(int timeout, UpdateMode mode) {
         ReflectUtil.invokeMethodSafely(sMethodMergeDisplayUpdate, null, timeout, getUpdateMode(mode));
+    }
+
+    @Override
+    public boolean isCapacitanceTpEnable() {
+        Boolean value = (Boolean)ReflectUtil.invokeMethodSafely(sMethodIsCapacitanceTpEnable, null);
+        return value == null ? false : value;
+    }
+
+    @Override
+    public boolean isElectromagneticTpEnable() {
+        Boolean value = (Boolean)ReflectUtil.invokeMethodSafely(sMethodIsElectromagneticTpEnable, null);
+        return value == null ? false : value;
     }
 }

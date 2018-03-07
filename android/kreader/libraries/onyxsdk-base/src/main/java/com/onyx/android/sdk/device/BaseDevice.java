@@ -513,4 +513,12 @@ public class BaseDevice {
 
     public void mergeDisplayUpdate(int timeout, UpdateMode mode) {
     }
+
+    public boolean isCapacitanceTpEnable() {
+        return true;
+    }
+
+    public boolean isElectromagneticTpEnable() {
+        return true;
+    }
 }
