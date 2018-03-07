@@ -14,4 +14,4 @@ include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
         ':app:common:tools',
         ':app:oem:JDRead',
         ':app:oem:apkupdate',
-        ':app:common:OnyxPinyinIME'
+        ':app:common:OnyxPinyinIME', ':libraries:evernote-service'
