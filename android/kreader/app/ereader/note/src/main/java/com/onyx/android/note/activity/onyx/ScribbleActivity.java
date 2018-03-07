@@ -151,7 +151,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void enableCapacitanceTp(boolean enable) {
-        EpdController.enableCapacitanceTp(enable);
         String action = enable ? IntentFilterFactory.ENABLE_TOUCH_SCREEN_ACTION :
                 IntentFilterFactory.DISABLE_TOUCH_SCREEN_ACTION;
         sendBroadcast(new Intent(action));

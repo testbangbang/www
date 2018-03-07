@@ -113,7 +113,6 @@ public class NoteApplication extends MultiDexApplication {
                 e.printStackTrace();
                 final View view = getNoteViewHelper().getView();
                 getNoteViewHelper().reset(view);
-                EpdController.enableCapacitanceTp(true);
                 sendBroadcast(new Intent(IntentFilterFactory.ENABLE_TOUCH_SCREEN_ACTION));
                 exit();
             }
