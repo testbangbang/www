@@ -3,6 +3,7 @@ package com.onyx.android.note;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.support.multidex.MultiDexApplication;
 import android.view.View;
 
@@ -19,6 +20,7 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.IntentFilterFactory;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
@@ -112,6 +114,7 @@ public class NoteApplication extends MultiDexApplication {
                 final View view = getNoteViewHelper().getView();
                 getNoteViewHelper().reset(view);
                 EpdController.enableCapacitanceTp(true);
+                sendBroadcast(new Intent(IntentFilterFactory.ENABLE_TOUCH_SCREEN_ACTION));
                 exit();
             }
         });

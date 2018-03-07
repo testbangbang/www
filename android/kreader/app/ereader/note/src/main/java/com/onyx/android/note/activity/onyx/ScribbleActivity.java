@@ -87,6 +87,7 @@ import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.IntentFilterFactory;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.HashMap;
@@ -145,8 +146,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
     @Override
     protected void onDestroy() {
         spanTextView.clear();
-        EpdController.enableCapacitanceTp(true);
+        enableCapacitanceTp(true);
         super.onDestroy();
+    }
+
+    private void enableCapacitanceTp(boolean enable) {
+        EpdController.enableCapacitanceTp(enable);
+        String action = enable ? IntentFilterFactory.ENABLE_TOUCH_SCREEN_ACTION :
+                IntentFilterFactory.DISABLE_TOUCH_SCREEN_ACTION;
+        sendBroadcast(new Intent(action));
     }
 
     private void checkPictureEditMode() {
@@ -1111,7 +1119,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     public void setHandTouchEnable(final boolean handTouchEnable) {
-        EpdController.enableCapacitanceTp(handTouchEnable);
+        enableCapacitanceTp(handTouchEnable);
         syncWithCallback(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
