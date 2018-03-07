@@ -62,7 +62,8 @@
                     android:layout_marginTop="@dimen/book_format_margin_top"
                     android:text="@{dialogModel.dataModel.format}"
                     android:textColor="@color/normal_black"
-                    android:textSize="@dimen/level_medium_heading_font" />
+                    android:textSize="@dimen/level_medium_heading_font"
+                    android:visibility="@{dialogModel.dataModel.showFormat()?View.VISIBLE:View.GONE}" />
             </RelativeLayout>
 
             <RelativeLayout
