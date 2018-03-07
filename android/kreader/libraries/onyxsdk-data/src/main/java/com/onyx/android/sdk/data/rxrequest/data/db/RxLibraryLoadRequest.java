@@ -23,6 +23,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -114,18 +115,27 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
     }
 
     private void loadLibraryCover() {
-        for (Library library : libraryList) {
+        Iterator<Library> iterator = libraryList.iterator();
+        while (iterator.hasNext()) {
+            Library library = iterator.next();
             QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.LastOpenTime, SortOrder.Desc);
             queryArgs.libraryUniqueId = library.getIdString();
             queryArgs.limit = 4;
             QueryBuilder.generateMetadataInQueryArgs(queryArgs);
             List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getAppContext(), getDataManager(),
                     queryArgs, false);
-            List<DataModel> childModels = new ArrayList<>();
-            Map<String, CloseableReference<Bitmap>> map = DataManagerHelper.loadThumbnailBitmapsWithCache(getAppContext(), getDataManager(), metadataList);
-            DataModelUtil.metadataToDataModel(eventBus, childModels, metadataList, map, ThumbnailUtils.defaultThumbnailMapping());
-            libraryChildMap.put(library.getIdString(), childModels);
-            thumbnailMap.putAll(map);
+            if (CollectionUtils.isNullOrEmpty(metadataList)) {
+                getDataProvider().deleteLibrary(library.getIdString());
+                iterator.remove();
+                totalCount--;
+                libraryCount--;
+            } else {
+                List<DataModel> childModels = new ArrayList<>();
+                Map<String, CloseableReference<Bitmap>> map = DataManagerHelper.loadThumbnailBitmapsWithCache(getAppContext(), getDataManager(), metadataList);
+                DataModelUtil.metadataToDataModel(eventBus, childModels, metadataList, map, ThumbnailUtils.defaultThumbnailMapping());
+                libraryChildMap.put(library.getIdString(), childModels);
+                thumbnailMap.putAll(map);
+            }
         }
     }
 
@@ -182,7 +192,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         return libraryCount;
     }
 
-    public int getMetaDataCount(){
+    public int getMetaDataCount() {
         return (int) (getTotalCount() - getLibraryCount());
     }
 }
