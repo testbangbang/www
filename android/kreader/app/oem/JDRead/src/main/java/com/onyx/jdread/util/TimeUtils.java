@@ -1,9 +1,5 @@
 package com.onyx.jdread.util;
 
-import android.util.Log;
-
-import com.onyx.jdread.JDReadApplication;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -141,6 +137,11 @@ public class TimeUtils {
         long timeEnd = cal.getTimeInMillis();
         long between = (timeEnd - timeFirst) / (1000 * 3600 * 24);
         return Integer.parseInt(String.valueOf(between));
+    }
+
+    public static int hoursBetweenInMillis(long firstTimeInMillis, long endTimeInMillis) {
+        long between = (endTimeInMillis - firstTimeInMillis) / (1000 * 3600);
+        return Integer.parseInt(String.valueOf(Math.abs(between)));
     }
 
     public static long getCurrentTimeInMillis() {

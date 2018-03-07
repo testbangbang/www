@@ -104,9 +104,9 @@ public class CloudApiContext {
         public static final int SORT_TYPE_DESC = 1;
         public static final int SORT_TYPE_ASC = 2;
         public static final int SORT_KEY_SALES = 1;
-        public static final int SORT_KEY_PRICE = 2;
+        public static final int SORT_KEY_PRICE = 4;
         public static final int SORT_KEY_PRAISE = 3;
-        public static final int SORT_KEY_TIME = 4;
+        public static final int SORT_KEY_TIME = 2;
         public static final String SEARCH_TYPE_BOOK_SHOP = "1";
         public static final String SEARCH_TYPE_BOOK_COMMUNITY = "2";
         public static final String PAGE_SIZE = "page_size";
@@ -114,8 +114,8 @@ public class CloudApiContext {
         public static final int PAGE_SIZE_COUNT = 20;
         public static final int FILTER_DEFAULT = 0;
         public static final int FILTER_VIP = 1;
-        public static final int FILTER_SALE = 2;
-        public static final int FILTER_FREE = 3;
+        public static final int FILTER_FREE = 2;
+        public static final int FILTER_SALE = 3;
     }
 
     public static class BookDownLoad {
