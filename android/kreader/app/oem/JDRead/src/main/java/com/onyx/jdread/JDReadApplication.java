@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
 
 import com.evernote.client.android.EvernoteSession;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
+import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
@@ -35,10 +35,12 @@ import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.JDReadGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.structure.database.AndroidDatabase;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by hehai on 17-12-6.
@@ -77,6 +79,8 @@ public class JDReadApplication extends MultiDexApplication {
     private void initConfig() {
         instance = this;
         DataManager.init(instance, databaseHolderList());
+        AndroidDatabase androidDatabase = (AndroidDatabase) FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
+        androidDatabase.getDatabase().setLocale(getResources().getConfiguration().locale);
         initContentProvider(this);
         initFrescoLoader();
         JDPreferenceManager.initWithAppContext(instance);
