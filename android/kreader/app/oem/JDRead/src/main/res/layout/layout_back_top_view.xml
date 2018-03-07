@@ -9,6 +9,8 @@
             name="viewModel"
             type="com.onyx.jdread.shop.model.MainConfigEndViewModel" />
 
+        <import type="android.view.View" />
+
     </data>
 
     <LinearLayout
@@ -39,6 +41,12 @@
             android:text="@string/back_to_top"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
+
+        <View
+            android:visibility="@{viewModel.showEmptyView ? View.VISIBLE : View.GONE}"
+            android:background="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/end_view_empty_height"/>
 
     </LinearLayout>
 

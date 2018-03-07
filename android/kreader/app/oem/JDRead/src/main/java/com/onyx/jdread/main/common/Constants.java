@@ -119,8 +119,9 @@ public class Constants {
     public static final int SHOP_VIEW_TOP_FUNCTION_HEIGHT = 106;
     public static final int SHOP_VIEW_BANNER_HEIGHT = 169;
     public static final int SHOP_VIEW_TITLE_HEIGHT = 169;
-    public static final int SHOP_VIEW_SUBJECT_HEIGHT = 424;
-    public static final int SHOP_VIEW_END_VIEW_HEIGHT = 366;
+    public static final int SHOP_VIEW_SUBJECT_HEIGHT = 437;
+    public static final int SHOP_VIEW_END_VIEW_HEIGHT = 327;
+    public static final int SHOP_VIEW_END_VIEW_HIGH_HEIGHT = 552;
     public static final int SHOP_VIEW_VIP_INFO_VIEW_HEIGHT = 214;
     public static final String MTP_EXTRA_TAG_OLD_FILE_PATH = "old_file_path";
     public static final String CATEGORY_MATH_CONTENT = "数字内容";
