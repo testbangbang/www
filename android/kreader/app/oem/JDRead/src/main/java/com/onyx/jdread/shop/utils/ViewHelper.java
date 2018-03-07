@@ -143,7 +143,7 @@ public class ViewHelper {
     }
 
     public static void dismissDialog(Dialog dialog) {
-        if (dialogIsShowing(dialog)) {
+        if (dialog != null) {
             dialog.dismiss();
         }
     }
