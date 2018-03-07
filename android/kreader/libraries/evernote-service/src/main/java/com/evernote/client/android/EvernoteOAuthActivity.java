@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +45,6 @@ public class EvernoteOAuthActivity extends FragmentActivity {
         setResultUri(null);
 
         String url = getIntent().getStringExtra(EvernoteUtil.EXTRA_AUTHORIZATION_URL);
-        Log.d("++++++++++", "onCreate: " + url);
         if (TextUtils.isEmpty(url)) {
             CAT.w("no uri passed, return cancelled");
             finish();
