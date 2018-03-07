@@ -1,5 +1,6 @@
 package com.onyx.jdread.setting.ui;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -7,8 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentManualBinding;
+import com.onyx.jdread.library.utils.QRCodeUtil;
+import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -38,6 +42,9 @@ public class ManualFragment extends BaseFragment {
         titleBarModel.title.set(getString(R.string.manual));
         titleBarModel.backEvent.set(new BackToHelpFragmentEvent());
         manualBinding.manualTitle.setTitleModel(titleBarModel);
+        int width = ResManager.getDimens(R.dimen.manual_qr_code_width);
+        Bitmap bitmap = QRCodeUtil.createQRImage(Constants.MANUAL_FAQ_URL, width, width);
+        manualBinding.productIntroduce.setImageBitmap(bitmap);
     }
 
     @Override
