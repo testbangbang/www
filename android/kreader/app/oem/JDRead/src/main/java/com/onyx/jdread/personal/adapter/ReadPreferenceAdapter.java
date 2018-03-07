@@ -79,6 +79,9 @@ public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implemen
         if (list.size() > 0) {
             list.clear();
         }
+        if (data == null) {
+            return list;
+        }
         for (int i = 0; i < data.size(); i++) {
             CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = data.get(i);
             if (catListBean.isSelect) {
