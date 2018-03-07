@@ -85,6 +85,7 @@
     <dimen name="manual_qr_code_width">140dp</dimen>
     <dimen name="manual_qr_code_margin">35dp</dimen>
     <dimen name="manual_qr_code_margin_top">95dp</dimen>
+    <dimen name="manual_dec_margin_top">130dp</dimen>
     <dimen name="feedback_commit_text_width">383dp</dimen>
     <dimen name="feedback_commit_text_height">34dp</dimen>
     <dimen name="feedback_commit_margin_top">32dp</dimen>

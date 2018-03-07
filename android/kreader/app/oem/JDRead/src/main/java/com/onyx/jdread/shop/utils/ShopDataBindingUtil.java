@@ -209,6 +209,15 @@ public class ShopDataBindingUtil {
             textView.setCompoundDrawablesWithIntrinsicBounds(settlementEnable?R.mipmap.ic_shelf_delete_book:R.mipmap.ic_shelf_delet_book_gray,0,0,0);
         }
     }
+
+    @BindingAdapter({"setCheckAllEnable"})
+    public static void setCheckAllEnable(TextView textView, Boolean checkAllEnable) {
+        if (textView != null) {
+            textView.setEnabled(checkAllEnable);
+            textView.setTextColor(checkAllEnable?ResManager.getColor(android.R.color.black):ResManager.getColor(R.color.cart_shop_settlement_disable));
+        }
+    }
+
     @BindingAdapter({"setCheckAll"})
     public static void setCheckAll(TextView textView, Boolean selectedAll) {
         if (textView != null) {
