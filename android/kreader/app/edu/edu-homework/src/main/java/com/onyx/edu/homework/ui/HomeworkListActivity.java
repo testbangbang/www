@@ -1,10 +1,8 @@
 package com.onyx.edu.homework.ui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
-import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -76,6 +74,7 @@ public class HomeworkListActivity extends BaseActivity {
     private QuestionFragment questionFragment;
     private int currentPage = 0;
     private CountDownTimer timer;
+    private boolean visible;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,6 +85,13 @@ public class HomeworkListActivity extends BaseActivity {
         handleIntent();
         homeworkRequest();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        visible = false;
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -327,7 +333,7 @@ public class HomeworkListActivity extends BaseActivity {
             setEndTimeText();
             boolean reload = type == NotificationType.HOMEWORK_READER_ACTIVE
                     || type == NotificationType.HOMEWORK_END_TIME;
-            if (reload) {
+            if (reload && visible) {
                 reloadQuestionFragment(currentPage);
             }
             if (type == NotificationType.HOMEWORK_END_TIME) {
@@ -508,6 +514,7 @@ public class HomeworkListActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        visible = true;
         EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
         reloadQuestionFragment(currentPage);
     }
