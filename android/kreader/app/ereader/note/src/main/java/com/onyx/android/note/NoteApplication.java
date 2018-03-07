@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.NotePreference;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
@@ -110,6 +111,7 @@ public class NoteApplication extends MultiDexApplication {
                 e.printStackTrace();
                 final View view = getNoteViewHelper().getView();
                 getNoteViewHelper().reset(view);
+                EpdController.enableCapacitanceTp(true);
                 exit();
             }
         });

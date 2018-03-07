@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -436,9 +437,10 @@ public class ReaderActivity extends OnyxBaseActivity {
                         event.getAction() == MotionEvent.ACTION_UP) {
                     ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(ReaderActivity.this, ReaderActivity.this.getClass());
                 }
-
                 getHandlerManager().setTouchStartEvent(event);
-                scaleDetector.onTouchEvent(event);
+                if (event.getButtonState() != MotionEvent.BUTTON_STYLUS_PRIMARY) {
+                    scaleDetector.onTouchEvent(event);
+                }
                 gestureDetector.onTouchEvent(event);
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     getHandlerManager().onActionUp(getReaderDataHolder(), event);
