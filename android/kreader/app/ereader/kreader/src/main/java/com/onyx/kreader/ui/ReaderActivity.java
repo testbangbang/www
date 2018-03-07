@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -45,7 +44,6 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
-import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
 import com.onyx.android.sdk.utils.Debug;
@@ -732,7 +730,6 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         disablePenShortcut();
-        getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
@@ -750,6 +747,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                 }
             });
         }
+        getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
     }
 
     private void enablePost(boolean enable) {
