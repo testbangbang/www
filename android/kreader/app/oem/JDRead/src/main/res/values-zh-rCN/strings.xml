@@ -292,9 +292,10 @@
     <string name="size_format" translatable="false">大小： %s</string>
     <string name="read_format" translatable="false">已读： %s</string>
     <string name="braces">(%s)</string>
-    <string name="original_amount">原金额:%s</string>
-    <string name="preferential">优惠:%s</string>
-    <string name="combine">合计:%s</string>
+    <string name="original_amount">原金额:%s阅豆</string>
+    <string name="preferential">优惠:%s阅豆</string>
+    <string name="combine">合计:%s阅豆</string>
+    <string name="item_price">%s阅豆</string>
     <string name="book_total_format">共%s本图书</string>
     <string name="brightness_control">亮度调节</string>
     <string name="security_none">无</string>
@@ -502,4 +503,12 @@
     <string name="book_batch_download_item_after_chapter">后%d章</string>
     <string name="reboot">重启</string>
     <string name="shutdown">关机</string>
+    <string name="please_check_wifi">请查看无线网络设置后重试</string>
+    <string name="free_for_a_limited_time">限时免费</string>
+    <string name="net_book_price_and_status">%1$s阅豆/千字(%2$s)</string>
+    <string name="net_book_status_down">已完结</string>
+    <string name="net_book_status_update">更新中</string>
+    <string name="net_book_hours_befor_update">(%d小时前更新)</string>
+    <string name="net_book_day_befor_update">(%s天前更新)</string>
+    <string name="delete">删除</string>
 </resources>

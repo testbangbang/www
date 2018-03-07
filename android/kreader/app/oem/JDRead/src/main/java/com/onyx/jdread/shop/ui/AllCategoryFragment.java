@@ -280,6 +280,7 @@ public class AllCategoryFragment extends BaseFragment {
         if (categoryBean != null) {
             categoryBean.isSelect = true;
             JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, categoryBean.id);
+            JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, categoryBean.level);
             JDPreferenceManager.setStringValue(Constants.SP_KEY_CATEGORY_NAME, categoryBean.name);
             getViewEventCallBack().gotoView(CategoryBookListFragment.class.getName());
         }

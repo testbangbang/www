@@ -7,6 +7,7 @@ import com.onyx.jdread.databinding.PersonalBinding;
 import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 
@@ -33,8 +34,7 @@ public class LoginOutAction extends BaseAction {
             public void onSuccess() {
                 binding.setIsLogin(false);
                 JDReadApplication.getInstance().setLogin(false);
-                JDPreferenceManager.setStringValue(Constants.SP_KEY_ACCOUNT, "");
-                JDPreferenceManager.setStringValue(Constants.SP_KEY_PASSWORD, "");
+                LoginHelper.clearUserInfo();
             }
 
             @Override

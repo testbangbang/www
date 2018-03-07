@@ -43,6 +43,9 @@ public class BookDetailResultBean {
         public boolean add_cart;
         public int book_type;
         public int netStatus;
+        public String modified;
+        public String modified_str; //yyyy-MM-dd HH:mm:ss
+        public boolean free;
         public String downLoadUrl;
         public BookExtraInfoBean bookExtraInfoBean;
         public String key;

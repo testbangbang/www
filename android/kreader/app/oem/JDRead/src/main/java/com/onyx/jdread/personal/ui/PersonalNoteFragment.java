@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.evernote.edam.type.Note;
-import com.evernote.edam.type.NoteAttributes;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -177,23 +175,12 @@ public class PersonalNoteFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToImpressionEvent(ExportToImpressionEvent event) {
         if (personalNoteAdapter != null) {
-            List<Note> notes = new ArrayList<>();
             List<NoteBean> data = personalNoteAdapter.getData();
             for (NoteBean bean : data) {
                 if (bean.checked) {
-                    Note note = new Note();
-                    note.setContent(bean.ebook.info);
-                    note.setTitle(bean.ebook.name);
-                    note.setGuid(bean.ebook.ebook_id);
-                    NoteAttributes attributes = new NoteAttributes();
-                    attributes.setAuthor(bean.ebook.author);
-                    attributes.setSourceURL(bean.ebook.large_image_url);
-                    attributes.setCreatorId(Integer.parseInt(bean.ebook.ebook_id));
-                    note.setAttributes(attributes);
-                    notes.add(note);
+                    EvernoteManager.createNote(bean.ebook.name, bean.ebook.info);
                 }
             }
-            EvernoteManager.createNotes(notes);
         }
     }
 }

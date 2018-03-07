@@ -64,22 +64,24 @@ public class GetShopCartItemsAction extends BaseAction {
             public void onNext(Object o) {
                 ShopCartModel shopCartModel = dataBundle.getShopCartModel();
                 CartDetailResultBean.DataBean resultBean = rq.getResultBean();
-                if (resultBean != null) {
-                    String originalPrice = Utils.keepPoints(resultBean.original_price);
-                    String cashBack = Utils.keepPoints(resultBean.cashback);
-                    String totalAmount = resultBean.total_costcontent;
+                if (resultBean != null && resultBean.suit_list != null&&resultBean.suit_list.size()!=0) {
+                    String originalPrice = Utils.keepPoints(resultBean.origin_price);
+                    String cashBack = Utils.keepPoints(resultBean.re_price);
+                    String totalAmount = resultBean.total_price;
                     shopCartModel.setOriginalPrice(originalPrice);
                     shopCartModel.setCashBack(cashBack);
                     shopCartModel.setTotalAmount(totalAmount);
+                    shopCartModel.setSettlementEnable(true);
 
                     List<ShopCartItemData> shopCartItems = rq.getShopCartItems();
-                    if (shopCartItems != null && shopCartItems.size() > 0) {
-                        shopCartModel.setDatas(shopCartItems);
-                    }
+                    shopCartModel.setDatas(shopCartItems);
+                    shopCartModel.setSize(shopCartModel.getDatas().size()+"");
                 } else {
                     shopCartModel.setOriginalPrice(ZERO);
                     shopCartModel.setCashBack(ZERO);
                     shopCartModel.setTotalAmount(ZERO);
+                    shopCartModel.setSize(ZERO);
+                    shopCartModel.setSettlementEnable(false);
                     List<ShopCartItemData> datas = shopCartModel.getDatas();
                     if (datas != null && datas.size() > 0) {
                         datas.clear();

@@ -7,10 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemReadPreferenceBinding;
-import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 
@@ -73,19 +71,16 @@ public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implemen
         }
         int position = (int) tag;
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = data.get(position);
-        if (catListBean.cateLevel == Constants.CATEGORY_LEVEL_TWO) {
-            catListBean.isSelect = !catListBean.isSelect;
-            notifyItemChanged(position);
-            return;
-        }
-        if (onItemClickListener != null) {
-            onItemClickListener.onItemClick(position);
-        }
+        catListBean.isSelect = !catListBean.isSelect;
+        notifyItemChanged(position);
     }
 
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> getSelectedBean() {
         if (list.size() > 0) {
             list.clear();
+        }
+        if (data == null) {
+            return list;
         }
         for (int i = 0; i < data.size(); i++) {
             CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo catListBean = data.get(i);

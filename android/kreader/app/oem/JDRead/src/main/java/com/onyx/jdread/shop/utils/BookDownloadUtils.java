@@ -28,8 +28,7 @@ import static com.liulishuo.filedownloader.util.FileDownloadHelper.getAppContext
 public class BookDownloadUtils {
     private static final String TAG = BookDownloadUtils.class.getSimpleName();
 
-    public static void download(final BookDetailResultBean.DetailBean bookDetailBean, final ShopDataBundle dataBundle) {
-        bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = true;
+    public static void download(final BookDetailResultBean.DetailBean bookDetailBean, final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         if (StringUtils.isNullOrEmpty(bookDetailBean.downLoadUrl)) {
             int downLoadType = CloudApiContext.BookDownLoad.TYPE_ORDER;
             if (bookDetailBean.downLoadType == CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ) {
@@ -50,12 +49,15 @@ public class BookDownloadUtils {
                         } else {
                             ToastUtil.showToastErrorMsgForDownBook(String.valueOf(resultBean.result_code));
                         }
+                    } else {
+                        invokeError(rxCallback, null);
                     }
                 }
 
                 @Override
                 public void onError(Throwable throwable) {
                     super.onError(throwable);
+                    invokeError(rxCallback, throwable);
                 }
             });
         } else {

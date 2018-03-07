@@ -147,7 +147,7 @@
     <dimen name="rating_bar_style_min_height">15dp</dimen>
     <dimen name="rating_bar_style_max_height">15dp</dimen>
     <dimen name="book_detail_discount_margin_left">20dp</dimen>
-    <dimen name="book_detail_common_margin_top">24dp</dimen>
+    <dimen name="book_detail_common_margin_top">21dp</dimen>
     <dimen name="dashed_line_height">2dp</dimen>
     <dimen name="book_detail_margin">10dp</dimen>
     <dimen name="book_detail_recycler_view_recommend_height">120dp</dimen>
