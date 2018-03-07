@@ -541,4 +541,5 @@
     <string name="net_book_hours_befor_update">(update %d hour ago)</string>
     <string name="net_book_day_befor_update">(update %s days ago)</string>
     <string name="greater_than_ninety_nine">99+</string>
+    <string name="delete">Delete</string>
 </resources>
