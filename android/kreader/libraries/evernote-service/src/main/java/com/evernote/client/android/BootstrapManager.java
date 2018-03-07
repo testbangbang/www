@@ -153,7 +153,6 @@ import java.util.Locale;
    * @throws Exception
    */
   BootstrapInfoWrapper getBootstrapInfo() throws Exception {
-    Log.d(LOGTAG, "getBootstrapInfo()");
     BootstrapInfo bsInfo = null;
     try {
       if (mBootstrapServerUsed == null) {
@@ -176,8 +175,6 @@ import java.util.Locale;
    */
   void printBootstrapInfo(BootstrapInfo bsInfo) {
     if (bsInfo == null) return;
-
-    Log.d(LOGTAG, "printBootstrapInfo");
     List<BootstrapProfile> profiles = bsInfo.getProfiles();
     if (profiles != null) {
       for (BootstrapProfile profile : profiles) {
