@@ -200,4 +200,19 @@ public class ShopDataBindingUtil {
             textView.setBackgroundResource(settlementEnable?R.drawable.rectangle_stroke:R.drawable.rectangle_stroke_disable);
         }
     }
+
+    @BindingAdapter({"setDeleteEnable"})
+    public static void setDeleteEnable(TextView textView, Boolean settlementEnable) {
+        if (textView != null) {
+            textView.setEnabled(settlementEnable);
+            textView.setTextColor(settlementEnable?ResManager.getColor(android.R.color.black):ResManager.getColor(R.color.cart_shop_settlement_disable));
+            textView.setCompoundDrawablesWithIntrinsicBounds(settlementEnable?R.mipmap.ic_shelf_delete_book:R.mipmap.ic_shelf_delet_book_gray,0,0,0);
+        }
+    }
+    @BindingAdapter({"setCheckAll"})
+    public static void setCheckAll(TextView textView, Boolean selectedAll) {
+        if (textView != null) {
+            textView.setCompoundDrawablesWithIntrinsicBounds(selectedAll?R.mipmap.ic_shelf_check_all_finish:R.mipmap.ic_shelf_check_all,0,0,0);
+        }
+    }
 }

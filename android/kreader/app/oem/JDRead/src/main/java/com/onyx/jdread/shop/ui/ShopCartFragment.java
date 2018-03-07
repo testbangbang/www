@@ -68,6 +68,7 @@ public class ShopCartFragment extends BaseFragment {
 
     private void initView() {
         binding.shopCartRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        binding.shopCartRecycler.setPageTurningCycled(true);
         OnyxPageDividerItemDecoration decoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
         binding.shopCartRecycler.addItemDecoration(decoration);
         shopCartAdapter = new ShopCartAdapter();
@@ -120,8 +121,7 @@ public class ShopCartFragment extends BaseFragment {
                     shopCartModel.setSize(datas.size() + "");
                     shopCartModel.setSelectedAll(true);
                     shopCartAdapter.setData(datas);
-                    binding.shopCartRecycler.resize(shopCartAdapter.getRowCount(), shopCartAdapter.getColumnCount(), datas.size());
-
+                    binding.shopCartRecycler.notifyDataSetChanged();
                     pages = paginator.pages();
                     shopCartModel.setPageSize(paginator.getProgressText());
                 }
@@ -142,7 +142,8 @@ public class ShopCartFragment extends BaseFragment {
         binding.shopCartCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedAll(binding.shopCartCheck.isChecked());
+                shopCartModel.setSelectedAll(!shopCartModel.isSelectedAll());
+                selectedAll(shopCartModel.isSelectedAll());
             }
         });
 
@@ -263,6 +264,7 @@ public class ShopCartFragment extends BaseFragment {
         shopCartModel.setOriginalPrice(Utils.keepPoints(original));
         shopCartModel.setCashBack(Utils.keepPoints(cashBack));
         shopCartModel.setSelectedAll(selected == data.size());
+        shopCartModel.setSettlementEnable(selected == 0 ? false : true);
     }
 
     private void selectedAll(boolean checked) {
