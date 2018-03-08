@@ -17,14 +17,16 @@ public class CategoryListResultBean {
         public int id;
         public String name;
         public String image_url;
-        public int cateLevel;
+        public int level;
+        public int type;
         public List<CategoryBeanLevelTwo> sub_category;
 
         public static class CategoryBeanLevelTwo extends BaseObservable {
             public int id;
             public String name;
             public String image_url;
-            public int cateLevel;
+            public int level;
+            public int type;
             public boolean isSelect;
             public List<CategoryBeanLevelTwo> sub_category;
         }

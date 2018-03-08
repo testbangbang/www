@@ -370,7 +370,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/search_result_none"
+                    android:text="@{dialogSearchModel.isCanceled?@string/search_result_canceled:@string/search_result_none}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font"
                     android:layout_marginBottom="50dp"/>

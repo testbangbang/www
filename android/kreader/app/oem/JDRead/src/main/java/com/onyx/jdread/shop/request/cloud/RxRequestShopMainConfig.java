@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
@@ -11,6 +12,7 @@ import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.BannerViewModel;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
+import com.onyx.jdread.shop.model.MainConfigEndViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.model.TitleSubjectViewModel;
@@ -102,14 +104,22 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
                     }
                 }
             }
-            TitleSubjectViewModel viewModel = new TitleSubjectViewModel(shopDataBundle.getEventBus());
-            viewModel.setTilteList(subjectTitleList);
-            mainConfigSubjectList.add(viewModel);
+
+            if (!CollectionUtils.isNullOrEmpty(subjectTitleList)) {
+                TitleSubjectViewModel viewModel = new TitleSubjectViewModel(shopDataBundle.getEventBus());
+                viewModel.setTilteList(subjectTitleList);
+                mainConfigSubjectList.add(viewModel);
+            }
+
             if (mainConfigFinalSubjectList != null) {
                 mainConfigFinalSubjectList.clear();
                 mainConfigFinalSubjectList.add(shopDataBundle.getShopViewModel().getTopFunctionViewModel());
                 mainConfigFinalSubjectList.addAll(mainConfigSubjectList);
-                mainConfigFinalSubjectList.add(shopDataBundle.getShopViewModel().getMainConfigEndViewModel());
+                MainConfigEndViewModel mainConfigEndViewModel = shopDataBundle.getShopViewModel().getMainConfigEndViewModel();
+                if (CollectionUtils.isNullOrEmpty(subjectTitleList)) {
+                    mainConfigEndViewModel.showEmptyView.set(true);
+                }
+                mainConfigFinalSubjectList.add(mainConfigEndViewModel);
                 shopDataBundle.getShopViewModel().setMainConfigSubjcet(mainConfigFinalSubjectList);
                 int totalPage = ViewHelper.calculateTotalPages(mainConfigFinalSubjectList, Constants.SHOP_VIEW_RECYCLE_HEIGHT);
                 shopDataBundle.getShopViewModel().setTotalPages(Math.max(totalPage, 1));

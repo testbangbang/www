@@ -16,27 +16,27 @@
             android:id="@+id/manual_title"
             layout="@layout/title_bar" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/manual_qr_code_margin_top"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/manual_qr_code_margin_top">
 
             <ImageView
                 android:id="@+id/product_introduce"
                 android:layout_width="@dimen/manual_qr_code_width"
-                android:layout_height="@dimen/manual_qr_code_width" />
+                android:layout_height="@dimen/manual_qr_code_width"
+                android:layout_centerHorizontal="true"
+                android:background="@android:color/black" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/manual_qr_code_text_margin_top"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/manual_dec_margin_top"
                 android:text="@string/product_introduce"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
-        </LinearLayout>
-
+        </RelativeLayout>
     </LinearLayout>
 </layout>

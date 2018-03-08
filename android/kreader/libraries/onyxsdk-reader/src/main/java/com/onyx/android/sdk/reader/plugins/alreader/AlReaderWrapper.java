@@ -20,6 +20,7 @@ import com.neverland.engbook.forpublic.AlPublicProfileOptions;
 import com.neverland.engbook.forpublic.AlRect;
 import com.neverland.engbook.forpublic.AlTapInfo;
 import com.neverland.engbook.forpublic.AlTextOnScreen;
+import com.neverland.engbook.forpublic.EngBookListener;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.unicode.AlUnicode;
@@ -28,6 +29,7 @@ import com.neverland.engbook.util.EngBitmap;
 import com.neverland.engbook.util.TTFInfo;
 import com.neverland.engbook.util.TTFScan;
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -74,6 +76,8 @@ public class AlReaderWrapper {
 
     private AlTextOnScreen screenText;
 
+    private ReaderCallback callback;
+
     public AlReaderWrapper(final Context context, final ReaderPluginOptions pluginOptions) {
         bookEng = new AlBookEng();
         bookEng.initializeBookEngine(createEngineOptions(context, pluginOptions));
@@ -88,6 +92,10 @@ public class AlReaderWrapper {
 
     public void abortBookLoading() {
         bookEng.abortBookLoading();
+    }
+
+    public void setBookCallback(final ReaderCallback callback) {
+        this.callback = callback;
     }
 
     private void initDefaultTextStyle() {
@@ -219,7 +227,17 @@ public class AlReaderWrapper {
     private AlEngineNotifyForUI getEngineNotifyForUI() {
         AlEngineNotifyForUI engUI = new AlEngineNotifyForUI();
         engUI.appInstance = null;
-        engUI.hWND = null;
+        engUI.hWND = new EngBookListener() {
+            @Override
+            public void engBookGetMessage(EngBookMyType.TAL_NOTIFY_ID id, EngBookMyType.TAL_NOTIFY_RESULT res) {
+                if (callback != null) {
+                    if (id == EngBookMyType.TAL_NOTIFY_ID.PARSER_AFTER &&
+                            res == EngBookMyType.TAL_NOTIFY_RESULT.OK) {
+                        callback.onDocumentLoadSuccess();
+                    }
+                }
+            }
+        };
         return engUI;
     }
 

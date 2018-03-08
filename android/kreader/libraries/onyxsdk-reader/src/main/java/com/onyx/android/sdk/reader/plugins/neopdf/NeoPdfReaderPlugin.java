@@ -6,6 +6,7 @@ import android.graphics.RectF;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
@@ -66,6 +67,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     private Benchmark benchmark = new Benchmark();
 
     private NeoPdfJniWrapper impl;
+    private ReaderCallback readerCallback;
     private String documentPath;
 
     List<ReaderSelection> searchResults = new ArrayList<>();
@@ -87,6 +89,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
 
     public String displayName() {
         return NeoPdfReaderPlugin.class.getSimpleName();
+    }
+
+    @Override
+    public void setReaderCallback(ReaderCallback callback) {
+        readerCallback = callback;
     }
 
     static public boolean accept(final String path) {
@@ -111,6 +118,9 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
             if (documentOptions != null) {
                 customFormEnabled = documentOptions.isCustomFormEnabled();
                 getPluginImpl().setRenderFormFields(!customFormEnabled);
+            }
+            if (readerCallback != null) {
+                readerCallback.onDocumentLoadSuccess();
             }
             return this;
         }

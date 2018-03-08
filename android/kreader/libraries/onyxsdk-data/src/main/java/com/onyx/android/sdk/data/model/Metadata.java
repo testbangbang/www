@@ -31,6 +31,7 @@ public class Metadata extends BaseData {
     public static class FetchSource {
         public static int LOCAL = 0;
         public static int CLOUD = 1;
+        public static int CLOUD_TRY_READ = 2;
     }
 
     public static final String PROGRESS_DIVIDER = "/";

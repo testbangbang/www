@@ -5,6 +5,8 @@
 
         <import type="com.onyx.android.sdk.utils.StringUtils" />
 
+        <import type="android.view.View" />
+
         <variable
             name="dataModel"
             type="com.onyx.android.sdk.data.model.DataModel" />
@@ -17,15 +19,28 @@
         android:onClick="@{()->dataModel.itemClicked()}"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/image_cover"
-            thumbnail="@{dataModel.coverBitmap}"
+        <RelativeLayout
             android:layout_width="@dimen/search_result_book_cover_width"
-            android:layout_height="@dimen/search_result_book_cover_height"
-            android:background="@drawable/rectangle_stroke"
-            android:padding="@dimen/rectangle_stroke_width"
-            android:scaleType="fitXY"
-            android:src="@{dataModel.coverDefault}" />
+            android:layout_height="@dimen/search_result_book_cover_height">
+
+            <ImageView
+                android:id="@+id/image_cover"
+                thumbnail="@{dataModel.coverBitmap}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@{dataModel.coverDefault}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/search_result_book_format_margin_left"
+                android:layout_marginTop="@dimen/search_result_book_format_margin_top"
+                android:text="@{dataModel.format}"
+                android:textColor="@color/normal_black"
+                android:textSize="@dimen/level_four_heading_font"
+                android:visibility="@{dataModel.showFormat()?View.VISIBLE:View.GONE}" />
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="0dp"

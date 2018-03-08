@@ -10,4 +10,5 @@
     <color name="gray_line_color">#d9d9d9</color>
     <color name="gray_background">#d2d2d2</color>
     <color name="reader_text_item_selected">#d9d9d9</color>
+    <color name="cart_shop_settlement_disable">#b3b3b3</color>
 </resources>

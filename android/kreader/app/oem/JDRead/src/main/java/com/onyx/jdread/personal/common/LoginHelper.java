@@ -81,6 +81,13 @@ public class LoginHelper {
         return JDPreferenceManager.getStringValue(Constants.SP_KEY_USER_NAME, "");
     }
 
+    public static void clearUserInfo() {
+        JDPreferenceManager.setStringValue(Constants.SP_KEY_ACCOUNT, "");
+        JDPreferenceManager.setStringValue(Constants.SP_KEY_PASSWORD, "");
+        JDPreferenceManager.setStringValue(Constants.SP_KEY_USER_IMAGE_URL, "");
+        JDPreferenceManager.setStringValue(Constants.SP_KEY_USER_NAME, "");
+    }
+
     public static void showUserLoginDialog(final UserLoginViewModel userLoginViewModel, final Activity context) {
         showUserLoginDialog(userLoginViewModel, context, null);
     }

@@ -5,7 +5,7 @@ package com.onyx.jdread.shop.cloud.entity.jdbean;
  */
 
 public class SimplifiedDetail {
-    public long bookId;
+    public String bookId;
     public double jdPrice;
     public double price;
     public double orgJdPrice;

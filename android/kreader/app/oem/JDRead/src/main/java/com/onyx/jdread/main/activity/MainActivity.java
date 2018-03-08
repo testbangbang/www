@@ -29,6 +29,7 @@ import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
+import com.onyx.jdread.main.action.ChangeFunctionBarAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -60,12 +61,15 @@ import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
+import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
 import com.onyx.jdread.shop.action.UpdateDownloadInfoAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
+import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -151,6 +155,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateFunctionBar() {
+        if (functionBarModel.itemModels.size() == 0) {
+            initFunctionBarAction();
+        } else {
+            changeFunctionBarAction();
+        }
+    }
+
+    private void changeFunctionBarAction() {
+        ChangeFunctionBarAction changeFunctionBarAction = new ChangeFunctionBarAction(functionBarModel);
+        changeFunctionBarAction.execute(MainBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                updateFunctionBarView();
+            }
+        });
+    }
+
+    private void initFunctionBarAction() {
         InitMainViewFunctionBarAction initFunctionBarAction = new InitMainViewFunctionBarAction(functionBarModel);
         initFunctionBarAction.execute(MainBundle.getInstance(), new RxCallback() {
             @Override
@@ -412,6 +434,11 @@ public class MainActivity extends AppCompatActivity {
             if (StringUtils.isNotBlank(event.getTargetView())) {
                 childViewEventCallBack.gotoView(event.getTargetView());
             }
+            if (PersonalFragment.class.getName().equals(currentChildViewName)) {
+                PersonalFragment fragment = (PersonalFragment) currentFragment;
+                fragment.setRefresh();
+            }
+
         } else {
             ToastUtil.showToast(this, event.getMessage());
         }
@@ -477,17 +504,27 @@ public class MainActivity extends AppCompatActivity {
     public void onDownloadFinishEvent(DownloadFinishEvent event) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (task != null) {
-            BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-            extraInfoBean.downLoadState = task.getStatus();
-            extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
-            extraInfoBean.progress = task.getSmallFileSoFarBytes();
-            extraInfoBean.totalSize = task.getSmallFileTotalBytes();
-            updateDownloadInfo(extraInfoBean, task.getPath());
+            updateDownloadInfo(task, task.getPath());
         }
     }
 
-    private void updateDownloadInfo(BookExtraInfoBean extraInfo, String localPath) {
-        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfo, localPath);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadingEvent(DownloadingEvent event) {
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
+        if (DownLoadHelper.isPause(task.getStatus())) {
+            updateDownloadInfo(task, task.getPath());
+        }
+    }
+
+    private void updateDownloadInfo(BaseDownloadTask task, String localPath) {
+        JDReadApplication.getInstance().setNotifyLibraryData(true);
+        BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
+        extraInfoBean.downLoadState = task.getStatus();
+        extraInfoBean.downloadUrl = task.getUrl();
+        extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
+        extraInfoBean.progress = task.getSmallFileSoFarBytes();
+        extraInfoBean.totalSize = task.getSmallFileTotalBytes();
+        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean, localPath);
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {

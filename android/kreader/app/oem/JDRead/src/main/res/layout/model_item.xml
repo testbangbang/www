@@ -7,6 +7,8 @@
 
         <import type="com.onyx.android.sdk.utils.StringUtils" />
 
+        <import type="com.liulishuo.filedownloader.model.FileDownloadStatus" />
+
         <variable
             name="model"
             type="com.onyx.android.sdk.data.model.DataModel" />
@@ -96,17 +98,46 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/book_format_margin_right"
+                android:layout_marginLeft="@dimen/book_format_margin_right"
                 android:layout_marginTop="@dimen/book_format_margin_top"
                 android:text="@{model.format}"
-                android:textColor="@color/gray"
-                android:textSize="@dimen/level_large_heading_font"
+                android:textColor="@color/normal_black"
+                android:textSize="@dimen/level_medium_heading_font"
                 android:visibility="@{model.showFormat()?View.VISIBLE:View.GONE}" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/book_status_height"
+                android:layout_alignParentBottom="true"
+                android:background="@color/normal_black"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/book_status_padding"
+                android:paddingRight="@dimen/book_status_padding"
+                android:visibility="@{FileDownloadStatus.completed==model.downloadStatus?View.GONE:View.VISIBLE}">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{model.bookStatus}"
+                    android:textColor="@android:color/white" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/download_progress_height"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:max="100"
+                    android:progress="@{model.downloadProgress}"
+                    android:progressDrawable="@drawable/download_progress"
+                    android:visibility="@{model.showDownloadProgress?View.VISIBLE:View.GONE}" />
+            </LinearLayout>
 
         </RelativeLayout>
 
-        <TextView
+        <com.onyx.jdread.library.view.EndEllipsizeTextView
             android:id="@+id/textView_title"
             android:layout_width="@dimen/model_item_cover_width"
             android:layout_height="wrap_content"
@@ -115,9 +146,9 @@
             android:lineSpacingExtra="5dp"
             android:lines="2"
             android:maxLines="2"
+            android:text="@{model.title}"
             android:onClick="@{()->model.itemClicked()}"
             android:onLongClick="@{()->model.itemLongClick()}"
-            android:text="@{model.title}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font" />
 

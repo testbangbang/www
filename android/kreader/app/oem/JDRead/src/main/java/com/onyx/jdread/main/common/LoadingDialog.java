@@ -1,9 +1,11 @@
 package com.onyx.jdread.main.common;
 
-import android.app.Dialog;
 import android.content.Context;
+import android.databinding.BaseObservable;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableField;
+import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -13,14 +15,12 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.LoadingDialogLayoutBinding;
 
-import java.util.Observable;
-
 
 /**
  * Created by 12 on 2016/12/14.
  */
 
-public class LoadingDialog extends Dialog {
+public class LoadingDialog extends AlertDialog {
     private LoadingDialog(Context context) {
         super(context);
     }
@@ -39,15 +39,19 @@ public class LoadingDialog extends Dialog {
         }
 
         public LoadingDialog create() {
-            final LoadingDialog dialog = new LoadingDialog(context, R.style.CustomDialogStyle);
-            LoadingDialogLayoutBinding bind = DataBindingUtil.bind(View.inflate(context, R.layout.loading_dialog_layout, null));
-            bind.setLoadingModel(model);
-            dialog.setContentView(bind.getRoot());
-            return dialog;
+            return new LoadingDialog(context, R.style.CustomDialogStyle) {
+                @Override
+                protected void onCreate(Bundle savedInstanceState) {
+                    super.onCreate(savedInstanceState);
+                    LoadingDialogLayoutBinding bind = DataBindingUtil.bind(View.inflate(context, R.layout.loading_dialog_layout, null));
+                    bind.setLoadingModel(model);
+                    setContentView(bind.getRoot());
+                }
+            };
         }
     }
 
-    public static class DialogModel extends Observable {
+    public static class DialogModel extends BaseObservable {
         private final ObservableField<String> loadingText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.loading));
 
         public String getLoadingText() {
@@ -56,6 +60,7 @@ public class LoadingDialog extends Dialog {
 
         public void setLoadingText(String s) {
             loadingText.set(s);
+            notifyChange();
         }
     }
 
@@ -63,10 +68,6 @@ public class LoadingDialog extends Dialog {
     public void show() {
         Window window = getWindow();
         window.setGravity(Gravity.CENTER);
-        WindowManager.LayoutParams attributes = window.getAttributes();
-        attributes.width = getContext().getResources().getInteger(R.integer.loading_dialog_width);
-        attributes.height = getContext().getResources().getInteger(R.integer.loading_dialog_height);
-        window.setAttributes(attributes);
         window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         super.show();
     }

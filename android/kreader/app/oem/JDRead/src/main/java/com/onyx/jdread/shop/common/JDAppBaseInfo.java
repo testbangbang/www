@@ -230,7 +230,7 @@ public class JDAppBaseInfo {
             String s = stringStringEntry.toString();
             if (!requestParamsMap.containsKey(APP_KEY)) {
                 try {
-                    String[] entry = s.split("=");
+                    String[] entry = s.split("=",2);
                     if (entry != null && entry.length > 1) {
                         String key = entry[0];
                         String value = entry[1];

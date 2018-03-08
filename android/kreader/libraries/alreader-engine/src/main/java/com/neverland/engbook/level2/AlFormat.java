@@ -856,7 +856,18 @@ public abstract class AlFormat {
     }
 
     private int findParagraphByPos01(int start, int end, int pos) {
+        if (start >= end) {
+            return end;
+        }
+        
         int tmp = (end + start) >> 1;
+        if (tmp == start) {
+            tmp++; // force tmp to move forward, so we can avoid dead loop in the recursive process
+        }
+        if (tmp == end) {
+            return tmp;
+        }
+
         AlOneParagraph ap = par0.get(tmp);
         if (ap.start > pos) {
             return findParagraphByPos01(start, tmp, pos);

@@ -83,7 +83,7 @@
     <string name="document_path_error">Book path error</string>
     <string name="open_book_parameter_error">There is no book path in opening book information</string>
     <string name="open_book_fail">Open book fail</string>
-    <string name="product_introduce">Product introduce</string>
+    <string name="product_introduce">The product FAQ, please scan the code</string>
     <string name="common_problem">Common problem</string>
     <string name="commit">commit</string>
     <string name="feedback_content_hint">Please enter 5-200 word feedback content</string>
@@ -106,7 +106,7 @@
     <string name="official_email">Email: XXXXXXXX@jd.com</string>
     <string name="device_setting_version_number">Version: %s</string>
     <string name="device_setting_serial_number">Serial: %s</string>
-    <string name="manual">Manual</string>
+    <string name="manual">Common problem</string>
     <string name="feedback">The problem of feedback</string>
     <string name="contact_us">Contact us</string>
     <string name="view_all">View All</string>
@@ -442,6 +442,7 @@
     <string name="searching" formatted="false">Searching %d/%d</string>
     <string name="reader_searching">Please Waiting...</string>
     <string name="no_more_search_results">No more search results</string>
+    <string name="no_search_results">No search results</string>
     <string name="page" formatted="false">page %d</string>
     <string name="search_end">Have finished searching</string>
     <string name="click_to_translate">Click to translate</string>
@@ -510,6 +511,7 @@
     <string name="note_none">No notes</string>
     <string name="catalog_none">The catalog is empty</string>
     <string name="search_result_none">Search result empty</string>
+    <string name="search_result_canceled">Search canceled</string>
     <string name="new_user_package">New user membership package</string>
     <string name="new_user_package_detail">The 365 days membership for the new user is bound to the login account.</string>
     <string name="receive_success">Receive success</string>
@@ -522,10 +524,30 @@
     <string name="dialog_password_text_password">Password</string>
     <string name="show_password">Show the password</string>
     <string name="standby_name_format">standby-%s.png</string>
+    <string name="download_paused">Paused</string>
+    <string name="wait_download">Wait</string>
+    <string name="is_downloading">Downloading</string>
     <string name="batch_download">batch download</string>
     <string name="book_batch_download_tip">1.The bulk purchase section automatically filters out the free chapters and the chapters you have purchased.\n2.After purchase, the system will automatically download all the chapters.</string>
     <string name="book_batch_download_buy_chapter">Chapter to buy</string>
     <string name="book_batch_download_item_current_chapter">Current Chapter</string>
     <string name="book_batch_download_item_after_chapter">After %d chapters</string>
     <string name="annotation_repeat">Cannot be added repeatedly</string>
+    <string name="reboot">Reboot</string>
+    <string name="shutdown">Shutdown</string>
+    <string name="please_check_wifi">Please check the wireless network and try again.</string>
+    <string name="free_for_a_limited_time">free for a limited time</string>
+    <string name="net_book_price_and_status">%1$s Read Bean/K word (%2$s)</string>
+    <string name="net_book_status_down">Finished</string>
+    <string name="net_book_status_update">Updating</string>
+    <string name="net_book_hours_befor_update">(update %d hour ago)</string>
+    <string name="net_book_day_befor_update">(update %s days ago)</string>
+    <string name="greater_than_ninety_nine">99+</string>
+    <string name="delete">Delete</string>
+    <string name="native_export_success">The export is successful, please connect to your PC and view it in /Notes folder</string>
+    <string name="email_export_success">Export successful, please check in the associated mailbox</string>
+    <string name="evernote_export_success">Export success, please check in the associated impression notes</string>
+    <string name="export_failed">Export failed, please check the network and try again</string>
+    <string name="bind_email_success">Associated E-mail success</string>
+    <string name="unbind_email_success">Undo E-mail binding success</string>
 </resources>

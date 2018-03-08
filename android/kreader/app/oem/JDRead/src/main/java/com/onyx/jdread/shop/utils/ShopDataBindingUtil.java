@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.utils;
 import android.databinding.BindingAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -188,6 +189,39 @@ public class ShopDataBindingUtil {
         BatchDownloadChaptersAdapter adapter = (BatchDownloadChaptersAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"settlementEnable"})
+    public static void setSettlementEnable(TextView textView, Boolean settlementEnable) {
+        if (textView != null) {
+            textView.setEnabled(settlementEnable);
+            textView.setTextColor(settlementEnable?ResManager.getColor(android.R.color.black):ResManager.getColor(R.color.cart_shop_settlement_disable));
+            textView.setBackgroundResource(settlementEnable?R.drawable.rectangle_stroke:R.drawable.rectangle_stroke_disable);
+        }
+    }
+
+    @BindingAdapter({"setDeleteEnable"})
+    public static void setDeleteEnable(TextView textView, Boolean settlementEnable) {
+        if (textView != null) {
+            textView.setEnabled(settlementEnable);
+            textView.setTextColor(settlementEnable?ResManager.getColor(android.R.color.black):ResManager.getColor(R.color.cart_shop_settlement_disable));
+            textView.setCompoundDrawablesWithIntrinsicBounds(settlementEnable?R.mipmap.ic_shelf_delete_book:R.mipmap.ic_shelf_delet_book_gray,0,0,0);
+        }
+    }
+
+    @BindingAdapter({"setCheckAllEnable"})
+    public static void setCheckAllEnable(TextView textView, Boolean checkAllEnable) {
+        if (textView != null) {
+            textView.setEnabled(checkAllEnable);
+            textView.setTextColor(checkAllEnable?ResManager.getColor(android.R.color.black):ResManager.getColor(R.color.cart_shop_settlement_disable));
+        }
+    }
+
+    @BindingAdapter({"setCheckAll"})
+    public static void setCheckAll(TextView textView, Boolean selectedAll) {
+        if (textView != null) {
+            textView.setCompoundDrawablesWithIntrinsicBounds(selectedAll?R.mipmap.ic_shelf_check_all_finish:R.mipmap.ic_shelf_check_all,0,0,0);
         }
     }
 }

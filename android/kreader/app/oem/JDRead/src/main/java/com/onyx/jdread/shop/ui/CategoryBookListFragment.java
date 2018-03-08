@@ -64,7 +64,7 @@ public class CategoryBookListFragment extends BaseFragment {
     private int sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
     private int sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
     private boolean typeFree;
-    private int catOneId;
+    private int catLevel;
     private int catTwoId;
 
     @Nullable
@@ -84,7 +84,7 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void initData() {
-        catOneId = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, 0);
+        catLevel = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, 0);
         catTwoId = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
         currentCatName = JDPreferenceManager.getStringValue(Constants.SP_KEY_CATEGORY_NAME, "");
         typeFree = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_CATEGORY_ISFREE, false);
@@ -108,7 +108,7 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private String getFinalCatId() {
-        return catOneId + "_" + catTwoId;
+        return catTwoId + "_" + catLevel;
     }
 
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType) {

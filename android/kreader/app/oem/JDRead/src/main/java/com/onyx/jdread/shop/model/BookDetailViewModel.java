@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
+import android.databinding.ObservableField;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
@@ -34,6 +35,7 @@ public class BookDetailViewModel extends BaseObservable {
     private int totalPage;
     private TitleBarViewModel titleBarViewModel;
     private DialogBookInfoViewModel dialogBookInfoViewModel;
+    public final ObservableField<String> updateTimeInfo = new ObservableField<>();
 
     public DialogBookInfoViewModel getDialogBookInfoViewModel() {
         if (dialogBookInfoViewModel == null) {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -46,6 +47,7 @@
                 android:textColor="@android:color/black" />
 
             <EditText
+                android:id="@+id/et_ssid"
                 android:layout_width="@dimen/dialog_build_edit_width"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/add_wifi_dialog_edit_margin_left"
@@ -92,12 +94,22 @@
                 android:textColor="@android:color/black" />
 
             <EditText
+                android:id="@+id/et_pwd"
                 android:layout_width="@dimen/dialog_build_edit_width"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/add_wifi_dialog_edit_margin_left"
                 android:entries="@array/wifi_access_security"
                 android:inputType="textPassword"
-                android:text="@{dialogModel.password}" />
+                android:text="@{dialogModel.password}"
+                bind:isShowPwd="@{dialogModel.isShowPwd}"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->dialogModel.onChangePasswordVisibleViewClick()}"
+                android:padding="@dimen/user_login_widget_padding"
+                android:src="@mipmap/ic_password_invisible"
+                bind:eyeBackgroundImage="@{dialogModel.isShowPwd}"/>
         </LinearLayout>
 
         <View
@@ -129,7 +141,9 @@
                 android:gravity="center"
                 android:onClick="@{()->dialogModel.onPositiveClick()}"
                 android:text="@{dialogModel.positiveText}"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font"
+                bind:sureEnable="@{dialogModel.sureEnable}"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

@@ -31,6 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/search_layout_margin_top"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -58,8 +60,6 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:onClick="@{()->searchModel.search()}"
                 android:src="@mipmap/ic_shelf_search" />
         </LinearLayout>
@@ -125,7 +125,7 @@
         <LinearLayout
             android:id="@+id/search_hint_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/hot_search_recycler_height"
+            android:layout_height="@dimen/search_hint_recycler_height"
             android:orientation="vertical">
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView

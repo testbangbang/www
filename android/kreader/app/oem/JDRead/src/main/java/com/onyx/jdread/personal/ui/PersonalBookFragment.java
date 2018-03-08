@@ -22,6 +22,7 @@ import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -37,6 +38,7 @@ import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
@@ -106,6 +108,10 @@ public class PersonalBookFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         Utils.ensureUnregister(PersonalDataBundle.getInstance().getEventBus(), this);
+    }
+
+    @Override
+    public void onDestroy() {
         if (boughtBooks != null) {
             boughtBooks.clear();
             boughtBooks = null;
@@ -117,6 +123,7 @@ public class PersonalBookFragment extends BaseFragment {
         if (allBook != null) {
             allBook.clear();
         }
+        super.onDestroy();
     }
 
     private void initView() {
@@ -170,7 +177,7 @@ public class PersonalBookFragment extends BaseFragment {
                 BookDetailResultBean.DetailBean detail = covert(metadata);
                 BookExtraInfoBean infoBean = detail.bookExtraInfoBean;
 
-                if (ResManager.getString(R.string.self_import).equals(binding.getFilterName()) || infoBean.percentage == DownLoadHelper.DOWNLOAD_PERCENT_FINISH) {
+                if (ResManager.getString(R.string.self_import).equals(binding.getFilterName()) || DownLoadHelper.isDownloaded(infoBean.downLoadState)) {
                     openBook(metadata.getNativeAbsolutePath(), detail);
                     return;
                 }
@@ -181,12 +188,12 @@ public class PersonalBookFragment extends BaseFragment {
                 if (DownLoadHelper.isDownloading(infoBean.downLoadState) ||
                         DownLoadHelper.isStarted(infoBean.downLoadState) ||
                         DownLoadHelper.isConnected(infoBean.downLoadState)) {
-                    DownLoadHelper.stopDownloadingTask(metadata.getCloudId());
+                    DownLoadHelper.stopDownloadingTask(metadata.getCloudId() + Constants.WHOLE_BOOK_DOWNLOAD_TAG);
                     infoBean.downLoadState = DownLoadHelper.getPausedState();
                     updateProgress(infoBean, metadata.getCloudId());
                     return;
                 }
-                BookDownloadUtils.download(detail, ShopDataBundle.getInstance());
+                BookDownloadUtils.download(detail, ShopDataBundle.getInstance(), null);
             }
         });
 
@@ -238,6 +245,9 @@ public class PersonalBookFragment extends BaseFragment {
         if (personalBookAdapter == null) {
             return;
         }
+        if (tag.contains(Constants.WHOLE_BOOK_DOWNLOAD_TAG)) {
+            tag = tag.replace(Constants.WHOLE_BOOK_DOWNLOAD_TAG, "");
+        }
         List<PersonalBookBean> data = personalBookAdapter.getData();
         for (int i = 0; i < data.size(); i++) {
             Metadata metadata = data.get(i).metadata;
@@ -245,12 +255,14 @@ public class PersonalBookFragment extends BaseFragment {
                 BookDetailResultBean.DetailBean bookDetail = ShopDataBundle.getInstance().getBookDetail();
                 BookExtraInfoBean bean = null;
                 String downloadInfo = metadata.getDownloadInfo();
+                info.downLoadTaskTag = tag + Constants.WHOLE_BOOK_DOWNLOAD_TAG;
                 if (StringUtils.isNotBlank(downloadInfo)) {
                     bean = JSONObjectParseUtils.toBean(downloadInfo, BookExtraInfoBean.class);
                     bean.downLoadState = info.downLoadState;
                     bean.localPath = info.localPath;
                     bean.percentage = info.percentage;
-                    if (bookDetail.ebook_id == Integer.parseInt(metadata.getCloudId())) {
+                    bean.downLoadTaskTag = info.downLoadTaskTag;
+                    if (bookDetail.ebook_id == PagePositionUtils.getPosition(metadata.getCloudId())) {
                         bean.key = bookDetail.key;
                         bean.random = bookDetail.random;
                     }
@@ -259,6 +271,7 @@ public class PersonalBookFragment extends BaseFragment {
                 String infoBean = JSONObjectParseUtils.toJson(bean == null ? info : bean);
                 metadata.setDownloadInfo(infoBean);
                 metadata.setTags(tag);
+                metadata.setNativeAbsolutePath(info.localPath);
                 personalBookAdapter.notifyItem(i);
                 if (DownLoadHelper.canInsertBookDetail(info.downLoadState)) {
                     BookDetailResultBean.DetailBean detail = covert(metadata);
@@ -319,6 +332,7 @@ public class PersonalBookFragment extends BaseFragment {
     private void getSelfImportBooks() {
         QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.None, SortOrder.Asc);
         queryArgs.conditionGroup.and(Metadata_Table.cloudId.isNull());
+        QueryBuilder.generateMetadataInQueryArgs(queryArgs);
         final RxMetadataLoadAction action = new RxMetadataLoadAction(queryArgs);
         action.execute(LibraryDataBundle.getInstance(), new RxCallback() {
             @Override
@@ -435,10 +449,11 @@ public class PersonalBookFragment extends BaseFragment {
         BookDetailResultBean.DetailBean detail = new BookDetailResultBean.DetailBean();
         detail.name = metadata.getName();
         detail.author = metadata.getAuthors();
-        detail.ebook_id = Integer.parseInt(metadata.getCloudId());
+        detail.ebook_id = PagePositionUtils.getPosition(metadata.getCloudId());
         detail.image_url = metadata.getCoverUrl();
         detail.file_size = metadata.getSize();
         detail.downLoadUrl = StringUtils.isNotBlank(metadata.getLocation()) ? metadata.getLocation() : null;
+        detail.format = metadata.getType();
         String downloadInfo = metadata.getDownloadInfo();
 
         BookExtraInfoBean infoBean = null;
@@ -470,7 +485,7 @@ public class PersonalBookFragment extends BaseFragment {
                 Metadata metadata = new Metadata();
                 metadata.setName(dataModel.title.get());
                 metadata.setParentId(dataModel.parentId.get());
-                metadata.setCloudId(dataModel.cloudId.get() + "");
+                metadata.setCloudId(dataModel.cloudId.get());
                 metadata.setTitle(dataModel.title.get());
                 metadata.setIdString(dataModel.idString.get());
                 metadata.setId(dataModel.id.get());

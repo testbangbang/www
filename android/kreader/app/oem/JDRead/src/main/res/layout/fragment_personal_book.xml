@@ -67,17 +67,18 @@
                 android:id="@+id/personal_book_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:paddingBottom="@dimen/personal_book_recycler_padding"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/personal_book_page_margin_top">
+                android:layout_marginTop="@dimen/personal_book_recycler_padding">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{@string/total_book(books)}"
+                    android:text="@{@string/book_total(books)}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<title></title>
-	<style type="text/css">
+    <meta charset="utf-8"/>
+    <title></title>
+    <style type="text/css">
 			html,body,ul,ol,li,h1,h2,h3,p{
 				margin: 0;
 			    padding: 0;
@@ -43,10 +43,11 @@
 			}
 			.upload-title{
 				width: 100%;
-				line-height: 36px;
+				line-height: 100px;
 				position: fixed;
 				bottom: 0;
-				background: #fff;
+				background: #CCCCCC;
+				font-size: 30px;
 				text-align: center;
 				border: 1px solid #ccc;
 				box-sizing: border-box;
@@ -59,28 +60,34 @@
 				position: absolute;
 				opacity: 0;
 			}
-		</style>
+
+
+    </style>
 </head>
 <body>
 <div class="upload-file">
-	<h3>JDRead WIFI传书</h3>
-	<p>支持格式：TXT、EPUB、PDF、MOBI、JPEG、DOC、DOCX、PNG</p>
-	<table>
-		<thead>
-		<tr>
-			<th width="50" class="td-file-name">文件名称</th>
-			<th width="30%">大小</th>
-			<th width="20%">状态</th>
-		</tr>
-		</thead>
-		<tbody>
+    <h3>JDRead WIFI传书</h3>
+    <p>支持格式：TXT、EPUB、PDF、MOBI、JPEG、DOC、DOCX、PNG</p>
+    <table>
+        <thead>
+        <tr>
+            <th width="50" class="td-file-name">文件名称</th>
+            <th width="30%">大小</th>
+            <th width="20%">状态</th>
+        </tr>
+        </thead>
+        <tbody>
 
-		</tbody>
-	</table>
+        </tbody>
+    </table>
 </div>
-<p class="upload-title"><input type="file" name="file" class="upload-title" value="上传文件" onchange="handleFiles(this.files)">上传文件</p>
+<p class="upload-title"><input type="file" name="file" class="upload-title" value="上传文件"
+                               onchange="handleFiles(this.files)" multiple="multiple">上传文件</p>
 
 <script type="text/javascript">
+
+			var format = ['TXT', 'EPUB', 'PDF', 'MOBI', 'JPEG', 'DOC', 'DOCX', 'PNG'];
+
 			function upload(file) {
 				var xhr = new XMLHttpRequest();
 				xhr.open('post', '/api/upload');
@@ -114,9 +121,34 @@
 				upload(file);
 			}
 
+			function checkExists(file) {
+				var xhr = new XMLHttpRequest();
+				xhr.open('get', '/checkExists?filename=' + file.name);
+				xhr.onload = function() {
+					if (xhr.responseText == 'true') {
+						alert("文件已存在");
+						return;
+					}
+					addFileToList(file);
+				}
+				xhr.onerror = function() {
+				    location.reload();
+				};
+				xhr.send();
+			}
+
+			function isAcceptFormat(file) {
+				var ext = file.name.split('.').pop();
+				return format.includes(ext.toUpperCase());
+			}
+
 			function handleFiles(files) {
 				for (var i = 0; i < files.length; i++) {
-					addFileToList(files[i]);
+					if (isAcceptFormat(files[i])) {
+            			checkExists(files[i]);
+            		} else {
+            			alert("文件格式不支持");
+            		}
 				}
 			}
 
@@ -135,6 +167,8 @@
 				} while (Math.abs(bytes) >= thresh && u < units.length - 1);
 				return bytes.toFixed(1) + ' ' + units[u];
 			}
-		</script>
+
+
+</script>
 </body>
 </html>

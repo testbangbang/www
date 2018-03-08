@@ -38,8 +38,13 @@ public class ExportNoteAction extends BaseAction {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                RxCallback.invokeError(rxCallback, throwable);
                 PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), dataBundle.getEventBus());
             }
         });
+    }
+
+    public ExportNoteResultBean getResultBean() {
+        return resultBean;
     }
 }

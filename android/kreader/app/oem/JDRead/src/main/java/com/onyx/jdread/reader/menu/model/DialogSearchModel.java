@@ -36,6 +36,7 @@ public class DialogSearchModel {
     private ObservableBoolean deleteInputWord = new ObservableBoolean(false);
     private ObservableBoolean totalPageShow = new ObservableBoolean(false);
     public ObservableBoolean isEmpty = new ObservableBoolean(false);
+    public ObservableBoolean isCanceled = new ObservableBoolean(false);
 
     public ObservableBoolean getTotalPageShow() {
         return totalPageShow;
@@ -51,6 +52,14 @@ public class DialogSearchModel {
 
     public void setIsEmpty(boolean isEmpty) {
         this.isEmpty.set(isEmpty);
+    }
+
+    public ObservableBoolean getIsCanceled() {
+        return isCanceled;
+    }
+
+    public void setIsCanceled(boolean isCanceled) {
+        this.isCanceled.set(isCanceled);
     }
 
     public ObservableBoolean getDeleteInputWord() {

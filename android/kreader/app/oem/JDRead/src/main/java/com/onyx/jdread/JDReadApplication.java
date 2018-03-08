@@ -10,6 +10,7 @@ import com.evernote.client.android.EvernoteSession;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
+import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
@@ -24,6 +25,7 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.SupportType;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.manager.CrashExceptionHandler;
+import com.onyx.jdread.manager.EvernoteManager;
 import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.personal.action.AutoLoginAction;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
@@ -34,10 +36,12 @@ import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.JDReadGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.structure.database.AndroidDatabase;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by hehai on 17-12-6.
@@ -51,6 +55,7 @@ public class JDReadApplication extends MultiDexApplication {
     private AppBaseInfo appBaseInfo;
     private JDAppBaseInfo jdAppBaseInfo;
     private EvernoteSession evernoteSession;
+    private boolean notifyLibraryData;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -75,6 +80,8 @@ public class JDReadApplication extends MultiDexApplication {
     private void initConfig() {
         instance = this;
         DataManager.init(instance, databaseHolderList());
+        AndroidDatabase androidDatabase = (AndroidDatabase) FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
+        androidDatabase.getDatabase().setLocale(getResources().getConfiguration().locale);
         initContentProvider(this);
         initFrescoLoader();
         JDPreferenceManager.initWithAppContext(instance);
@@ -82,6 +89,7 @@ public class JDReadApplication extends MultiDexApplication {
         initEventListener();
         initDownloadManager();
         initCrashExceptionHandler();
+        EvernoteManager.getEvernoteSession(this);
     }
 
     private void initDownloadManager() {
@@ -204,5 +212,13 @@ public class JDReadApplication extends MultiDexApplication {
         List<Class<? extends DatabaseHolder>> dataHolderList = new ArrayList<>();
         dataHolderList.add(JDReadGeneratedDatabaseHolder.class);
         return dataHolderList;
+    }
+
+    public boolean isNotifyLibraryData() {
+        return notifyLibraryData;
+    }
+
+    public void setNotifyLibraryData(boolean notifyLibraryData) {
+        this.notifyLibraryData = notifyLibraryData;
     }
 }
