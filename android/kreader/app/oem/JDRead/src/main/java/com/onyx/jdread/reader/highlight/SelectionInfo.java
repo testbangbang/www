@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.highlight;
 
 import android.graphics.PointF;
+import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
@@ -23,16 +24,32 @@ public class SelectionInfo implements Cloneable {
     public String pagePosition;
     private List<PageAnnotation> pageAnnotations = new ArrayList<>();
 
+    public String toString() {
+        String result = "";
+
+        result += currentSelection.getText();
+        result += currentSelection.getStartPosition();
+        result += currentSelection.getEndPosition();
+        result += currentSelection.getLeftText();
+        result += currentSelection.getPageName();
+        result += currentSelection.getPagePosition();
+        result += currentSelection.getRightText();
+        for (RectF rect : currentSelection.getRectangles()) {
+            result += rect.toString();
+        }
+        return result;
+    }
+
     public List<PageAnnotation> getPageAnnotations() {
         return pageAnnotations;
     }
 
     public void setPageAnnotations(List<PageAnnotation> pageAnnotations) {
-        if(pageAnnotations == this.pageAnnotations){
+        if (pageAnnotations == this.pageAnnotations) {
             return;
         }
         this.pageAnnotations.clear();
-        if(pageAnnotations != null) {
+        if (pageAnnotations != null) {
             this.pageAnnotations.addAll(pageAnnotations);
         }
     }
@@ -62,7 +79,7 @@ public class SelectionInfo implements Cloneable {
         return currentSelection;
     }
 
-    public void setCurrentSelection(ReaderSelection currentSelection,PageInfo pageInfo,List<PageAnnotation> pageAnnotations) {
+    public void setCurrentSelection(ReaderSelection currentSelection, PageInfo pageInfo, List<PageAnnotation> pageAnnotations) {
         this.currentSelection = currentSelection;
         this.pageInfo = pageInfo;
         setPageAnnotations(pageAnnotations);

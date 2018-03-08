@@ -53,7 +53,11 @@ public class AddAnnotationRequest extends ReaderBaseRequest {
     }
 
     private void saveAnnotation() {
-        String key = ReaderViewUtil.getListKey(readerSelectionInfos);
+        String tag = "";
+        for(SelectionInfo selectionInfo : readerSelectionInfos.values()){
+            tag += selectionInfo.toString();
+        }
+        String key = ReaderViewUtil.getKey(tag);
         if(srcNoteState == ReaderConfig.QUOTE_STATE_NOT_CHANGED) {
             srcNote = getSelectText();
         }

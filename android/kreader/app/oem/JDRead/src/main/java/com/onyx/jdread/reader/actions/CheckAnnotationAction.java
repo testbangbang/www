@@ -9,12 +9,16 @@ import com.onyx.jdread.reader.request.CheckAnnotationRequest;
  */
 
 public class CheckAnnotationAction extends BaseReaderAction {
+    public boolean isEquals = false;
+    public String userNote = "";
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
-        final CheckAnnotationRequest action = new CheckAnnotationRequest(readerDataHolder.getReader(),readerDataHolder.getReaderSelectionInfo().getReaderSelectionInfos());
-        action.execute(new RxCallback() {
+        final CheckAnnotationRequest request = new CheckAnnotationRequest(readerDataHolder.getReader(),readerDataHolder.getReaderSelectionInfo().getReaderSelectionInfos());
+        request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+                isEquals = request.isEquals;
+                userNote = request.userNote;
                 if(baseCallback != null){
                     baseCallback.onNext(o);
                 }

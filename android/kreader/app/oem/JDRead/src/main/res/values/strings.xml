@@ -527,4 +527,5 @@
     <string name="book_batch_download_buy_chapter">Chapter to buy</string>
     <string name="book_batch_download_item_current_chapter">Current Chapter</string>
     <string name="book_batch_download_item_after_chapter">After %d chapters</string>
+    <string name="annotation_repeat">Cannot be added repeatedly</string>
 </resources>

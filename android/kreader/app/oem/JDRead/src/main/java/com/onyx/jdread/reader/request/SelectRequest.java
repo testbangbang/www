@@ -71,9 +71,9 @@ public class SelectRequest extends ReaderBaseRequest {
         getReaderViewInfo().setLoadToc(false);
         LayoutProviderUtils.updateReaderViewInfo(getReader(), getReaderViewInfo(), getReader().getReaderHelper().getReaderLayoutManager());
         if (selection != null && selection.getRectangles().size() > 0) {
-            getReaderUserDataInfo().saveHighlightResult(translateToScreen(pageInfo, selection));
+            getReaderUserDataInfo().saveHighlightResult(translateToScreen(getReaderViewInfo().getPageInfo(pagePosition),selection));
             getReaderUserDataInfo().setTouchPoint(touchPoint);
-            updateReaderSelectInfo(pagePosition,pageInfo);
+            updateReaderSelectInfo(pagePosition,getReaderViewInfo().getPageInfo(pagePosition));
 
             HitTestTextHelper.saveLastHighLightPosition(pagePosition,readerSelectionManager,start,end);
         }

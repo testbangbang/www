@@ -496,4 +496,5 @@
     <string name="book_batch_download_buy_chapter">章节购买</string>
     <string name="book_batch_download_item_current_chapter">本章</string>
     <string name="book_batch_download_item_after_chapter">后%d章</string>
+    <string name="annotation_repeat">不能重复添加</string>
 </resources>
