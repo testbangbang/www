@@ -511,6 +511,7 @@
     <string name="note_none">No notes</string>
     <string name="catalog_none">The catalog is empty</string>
     <string name="search_result_none">Search result empty</string>
+    <string name="search_result_canceled">Search canceled</string>
     <string name="new_user_package">New user membership package</string>
     <string name="new_user_package_detail">The 365 days membership for the new user is bound to the login account.</string>
     <string name="receive_success">Receive success</string>
