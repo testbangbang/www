@@ -28,7 +28,7 @@ public class RedoAction extends BaseNoteAction {
             @Override
             public void onNext(@NonNull RedoRequest redoRequest) {
                 RxCallback.onNext(rxCallback, redoRequest);
-                getNoteManager().post(new UndoRedoEvent(true));
+                getNoteManager().post(new UndoRedoEvent(true).setRawRenderEnable(false));
             }
         });
     }

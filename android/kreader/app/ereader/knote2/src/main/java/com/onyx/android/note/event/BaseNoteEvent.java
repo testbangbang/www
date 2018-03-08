@@ -7,6 +7,7 @@ package com.onyx.android.note.event;
 public class BaseNoteEvent {
 
     private boolean resumePen;
+    private boolean rawRenderEnable;
 
     public BaseNoteEvent(boolean resumePen) {
         this.resumePen = resumePen;
@@ -16,7 +17,17 @@ public class BaseNoteEvent {
         return resumePen;
     }
 
-    public void setResumePen(boolean resumePen) {
+    public boolean isRawRenderEnable() {
+        return rawRenderEnable;
+    }
+
+    public BaseNoteEvent setResumePen(boolean resumePen) {
         this.resumePen = resumePen;
+        return this;
+    }
+
+    public BaseNoteEvent setRawRenderEnable(boolean rawRenderEnable) {
+        this.rawRenderEnable = rawRenderEnable;
+        return this;
     }
 }

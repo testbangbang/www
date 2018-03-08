@@ -32,9 +32,9 @@
             android:text="width2" />
 
         <TextView
-            android:onClick="@{model::onErase}"
+            android:onClick="@{model::onErasePage}"
             style="@style/note_menu_text"
-            android:text="erase" />
+            android:text="erase page" />
 
         <TextView
             android:onClick="@{model::onEmptyBackground}"
@@ -47,8 +47,13 @@
             android:text="grid" />
 
         <TextView
-            android:onClick="@{model::onOverrideErase}"
+            android:onClick="@{model::onEnterErase}"
             style="@style/note_menu_text"
-            android:text="override" />
+            android:text="enter erase" />
+
+        <TextView
+            android:onClick="@{model::onExitErase}"
+            style="@style/note_menu_text"
+            android:text="exit erase" />
     </LinearLayout>
 </layout>

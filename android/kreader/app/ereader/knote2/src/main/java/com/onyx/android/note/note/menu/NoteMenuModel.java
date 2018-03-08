@@ -15,6 +15,8 @@ import com.onyx.android.note.action.menu.BackgroundChangeAction;
 import com.onyx.android.note.action.menu.ToggleTopMenuAction;
 import com.onyx.android.note.common.StrokeWidth;
 import com.onyx.android.note.common.base.BaseViewModel;
+import com.onyx.android.note.handler.HandlerManager;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.pen.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
@@ -73,8 +75,12 @@ public class NoteMenuModel extends BaseViewModel {
                 .execute(null);
     }
 
-    public void onOverrideErase(View view) {
+    public void onEnterErase(View view) {
+        getNoteBundle().getHandlerManager().activeProvider(HandlerManager.ERASE_PROVIDER);
+    }
 
+    public void onExitErase(View view) {
+        getNoteBundle().getHandlerManager().activeProvider(HandlerManager.EPD_SHAPE_PROVIDER);
     }
 
     public void onRedo(View view) {
@@ -85,11 +91,15 @@ public class NoteMenuModel extends BaseViewModel {
         new UndoAction(getNoteManager(), false).execute(null);
     }
 
-    public void onErase(View view) {
+    public void onErasePage(View view) {
         new ClearAllFreeShapesAction(getNoteManager()).execute(null);
     }
 
     private NoteManager getNoteManager() {
-        return NoteDataBundle.getInstance().getNoteManager();
+        return getNoteBundle().getNoteManager();
+    }
+
+    private NoteDataBundle getNoteBundle() {
+        return NoteDataBundle.getInstance();
     }
 }
