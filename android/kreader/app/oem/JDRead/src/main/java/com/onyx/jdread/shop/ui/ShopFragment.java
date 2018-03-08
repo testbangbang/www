@@ -80,6 +80,7 @@ public class ShopFragment extends BaseFragment {
                 setScrollbarFocusPosition(curIndex);
             }
         });
+        checkWifi();
     }
 
     private void setScrollbarFocusPosition(int curIndex) {
@@ -92,14 +93,14 @@ public class ShopFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-        checkWifi();
     }
 
     private void checkWifi() {
-        if (checkWifiAndGoNetWorkErrorFragment()) {
+        if (checkWifiDisConnected()) {
             Bundle bundle = new Bundle();
             bundle.putBoolean(Constants.NET_ERROR_SHOW_TITLE_BAR, false);
             setBundle(bundle);
+            goNetWorkErrorFragment();
         }
     }
 
@@ -146,9 +147,6 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRankViewClick(RankViewClick event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookRankFragment.class.getName());
         }
@@ -156,9 +154,6 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEnjoyReadViewClick(EnjoyReadViewClick event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookVIPReadFragment.class.getName());
         }
@@ -166,9 +161,6 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSaleViewClick(SaleViewClick event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookSaleFragment.class.getName());
         }
@@ -176,9 +168,6 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNewBookViewClick(NewBookViewClick event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookNewBooksFragment.class.getName());
         }
@@ -186,9 +175,6 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryViewClick(CategoryViewClick event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
         }
@@ -203,9 +189,6 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         gotoBookDetailPage(event.getBookBean().ebook_id);
     }
 
@@ -218,9 +201,6 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBannerItemClickEvent(BannerItemClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         BookModelConfigResultBean.DataBean.AdvBean advBean = event.advBean;
         if (advBean != null) {
             if (advBean.relate_type == Constants.RELATE_TYPE_BOOK_LIST) {
@@ -246,25 +226,16 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShopMainViewAllBookEvent(ShopMainViewAllBookEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
         if (modulesBean != null) {
             JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);

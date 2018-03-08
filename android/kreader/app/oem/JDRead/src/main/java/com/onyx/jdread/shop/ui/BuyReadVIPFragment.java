@@ -78,14 +78,14 @@ public class BuyReadVIPFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-        checkWifi();
     }
 
     private void checkWifi() {
-        if (checkWifiAndGoNetWorkErrorFragment()) {
+        if (checkWifiDisConnected()) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.read_vip));
             setBundle(bundle);
+            goNetWorkErrorFragment();
         }
     }
 
@@ -100,6 +100,7 @@ public class BuyReadVIPFragment extends BaseFragment {
         binding.setViewModel(getBuyReadVipModel());
         getBuyReadVipModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.read_vip);
         getBuyReadVipModel().setVipUserInfoViewModel(getShopDataBundle().getVipUserInfoViewModel());
+        checkWifi();
     }
 
     private void initRecycleView() {
@@ -148,7 +149,7 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipButtonClickEvent(VipButtonClickEvent event) {
-        if (checkWfiDisConnected()) {
+        if (checkWifiDisConnected()) {
             return;
         }
         showVipNoticeDialog();
@@ -224,7 +225,7 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipGoodItemClickEvent(VipGoodItemClickEvent event) {
-        if (checkWfiDisConnected()) {
+        if (checkWifiDisConnected()) {
             return;
         }
         if (!checkVipGoodCanBuy(event.dataBean)) {

@@ -48,14 +48,14 @@ public class BannerWebFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-        checkWifi();
     }
 
     private void checkWifi() {
-        if (checkWifiAndGoNetWorkErrorFragment()) {
+        if (checkWifiDisConnected()) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.banner));
             setBundle(bundle);
+            goNetWorkErrorFragment();
         }
     }
 
@@ -100,6 +100,7 @@ public class BannerWebFragment extends BaseFragment {
         titleBarViewModel.leftText = ResManager.getString(R.string.banner);
         titleBarViewModel.setEventBus(ShopDataBundle.getInstance().getEventBus());
         binding.setTitleBarViewModel(titleBarViewModel);
+        checkWifi();
     }
 
     private void initListener() {

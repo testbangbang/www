@@ -73,6 +73,7 @@ public class ShopCartFragment extends BaseFragment {
         shopCartAdapter = new ShopCartAdapter();
         binding.shopCartRecycler.setAdapter(shopCartAdapter);
         paginator = binding.shopCartRecycler.getPaginator();
+        checkWifi();
     }
 
     private void initData() {
@@ -103,14 +104,14 @@ public class ShopCartFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         Utils.ensureRegister(EventBus.getDefault(), this);
-        checkWifi();
     }
 
     private void checkWifi() {
-        if (checkWifiAndGoNetWorkErrorFragment()) {
+        if (checkWifiDisConnected()) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.cart));
             setBundle(bundle);
+            goNetWorkErrorFragment();
         }
     }
 
@@ -290,9 +291,6 @@ public class ShopCartFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookClickEvent(CartBookItemClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         gotoBookDetailPage(Long.parseLong(event.getBookBean().getDetail().bookId));
     }
 

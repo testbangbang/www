@@ -194,6 +194,7 @@ public class BookDetailFragment extends BaseFragment {
         getBookDetailViewModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.title_bar_title_book_detail);
         getBookDetailViewModel().getTitleBarViewModel().pageTag = PageTagConstants.BOOK_DETAIL;
         getBookDetailViewModel().getTitleBarViewModel().showRightText = false;
+        checkWifi();
     }
 
     private void setRecommendRecycleView() {
@@ -214,14 +215,14 @@ public class BookDetailFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-        checkWifi();
     }
 
     private void checkWifi() {
-        if (checkWifiAndGoNetWorkErrorFragment()) {
+        if (checkWifiDisConnected()) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.title_bar_title_book_detail));
             setBundle(bundle);
+            goNetWorkErrorFragment();
         }
     }
 
@@ -383,9 +384,6 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewCommentEvent(ViewCommentEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(CommentFragment.class.getName());
         }
@@ -393,7 +391,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadWholeBookEvent(DownloadWholeBookEvent event) {
-        if (checkWfiDisConnected()) {
+        if (checkWifiDisConnected()) {
             return;
         }
         BookDetailResultBean bookDetailResultBean = event.getBookDetailResultBean();
@@ -412,9 +410,6 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCopyrightEvent(CopyrightEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         showCopyRightDialog();
     }
 
@@ -425,7 +420,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
-        if (checkWfiDisConnected()) {
+        if (checkWifiDisConnected()) {
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {
@@ -452,7 +447,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailReadNowEvent(BookDetailReadNowEvent event) {
-        if (checkWfiDisConnected()) {
+        if (checkWifiDisConnected()) {
             return;
         }
         BookDetailResultBean bookDetailResultBean = event.getBookDetailResultBean();
@@ -898,9 +893,6 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMenuWifiSettingEvent(MenuWifiSettingEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(WifiFragment.class.getName());
         }
@@ -908,9 +900,6 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookSearchKeyWordEvent(BookSearchKeyWordEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         if (getViewEventCallBack() != null) {
             JDPreferenceManager.setStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
             JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, event.keyWord);
@@ -920,9 +909,6 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookSearchPathEvent(BookSearchPathEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         if (getViewEventCallBack() != null) {
             JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, "");
             JDPreferenceManager.setStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, event.catId);

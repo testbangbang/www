@@ -151,6 +151,7 @@ public class AllCategoryFragment extends BaseFragment {
         topRecyclerView.setAdapter(new AllCategoryTopAdapter(getEventBus()));
         allCategoryBinding.setCategoryViewModel(getAllCategoryViewModel());
         initPageIndicator(getAllCategoryViewModel().getAllCategoryItems());
+        checkWifi();
     }
 
     private void initPageIndicator(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> resultBean) {
@@ -212,14 +213,14 @@ public class AllCategoryFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-        checkWifi();
     }
 
     private void checkWifi() {
-        if (checkWifiAndGoNetWorkErrorFragment()) {
+        if (checkWifiDisConnected()) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.all_category));
             setBundle(bundle);
+            goNetWorkErrorFragment();
         }
     }
 
@@ -283,9 +284,6 @@ public class AllCategoryFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
         if (categoryBean != null) {
             categoryBean.isSelect = true;

@@ -90,6 +90,7 @@ public class BookSaleFragment extends BaseFragment {
         setRecycleView();
         bookSaleBinding.setViewModel(getBookSaleViewModel());
         getBookSaleViewModel().getTitleBarViewModel().leftText = getString(R.string.sale);
+        checkWifi();
     }
 
     private void setRecycleView() {
@@ -111,14 +112,14 @@ public class BookSaleFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-        checkWifi();
     }
 
     private void checkWifi() {
-        if (checkWifiAndGoNetWorkErrorFragment()) {
+        if (checkWifiDisConnected()) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.sale));
             setBundle(bundle);
+            goNetWorkErrorFragment();
         }
     }
 
@@ -161,9 +162,6 @@ public class BookSaleFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
         if (modulesBean != null) {
             JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
@@ -178,9 +176,6 @@ public class BookSaleFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
