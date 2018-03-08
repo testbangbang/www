@@ -157,6 +157,9 @@ public class PageTextView extends AppCompatTextView {
         if (count % pCount != 0) {
             totalPageNumber += 1;
         }
+        if(totalPageNumber <= 0){
+            totalPageNumber = 1;
+        }
         page = new int[totalPageNumber];
         page[0] = 0;
         for (int i = 0; i < totalPageNumber - 1; i++) {

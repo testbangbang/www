@@ -332,7 +332,7 @@ public class ReaderViewHelper {
         }
     }
 
-    private void updateAnnotationRectangles(final Reader reader,final ReaderViewInfo readerViewInfo,final ReaderUserDataInfo readerUserDataInfo) {
+    public static void updateAnnotationRectangles(final Reader reader,final ReaderViewInfo readerViewInfo,final ReaderUserDataInfo readerUserDataInfo) {
         for (PageInfo pageInfo : readerViewInfo.getVisiblePages()) {
             List<PageAnnotation> annotations = readerUserDataInfo.getPageAnnotations(pageInfo);
             if (annotations == null) {
