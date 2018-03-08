@@ -10,7 +10,6 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.data.model.Subject;
 import com.onyx.android.sdk.data.model.homework.Question;
-import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
@@ -20,7 +19,6 @@ import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.ActivityAnswerBinding;
 import com.onyx.edu.homework.event.CloseScribbleEvent;
 import com.onyx.edu.homework.event.SaveNoteEvent;
-import com.onyx.edu.homework.utils.TextUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -70,6 +68,12 @@ public class DraftActivity extends BaseActivity {
                 onBackPressed();
             }
         });
+        binding.tvDraft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        } );
     }
 
     private DataBundle getDataBundle() {

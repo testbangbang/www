@@ -38,12 +38,24 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"/>
 
-        <LinearLayout
-            android:background="@android:color/white"
-            android:id="@+id/tool_layout"
-            android:orientation="horizontal"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:background="@android:color/white"
+                android:orientation="horizontal"
+                android:id="@+id/tool_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
+            <TextView
+                android:gravity="center"
+                android:text="@string/close_draft"
+                android:padding="@dimen/homework_text_margin"
+                android:background="@drawable/round_bg"
+                android:id="@+id/tv_draft"
+                android:layout_centerInParent="true"
+                style="@style/homework_text" />
+        </RelativeLayout>
     </LinearLayout>
 </layout>

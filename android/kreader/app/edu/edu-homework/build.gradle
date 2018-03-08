@@ -14,11 +14,21 @@ android {
         versionCode gitVersionCode(projectDir)
         versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
         multiDexEnabled true
+
+        ndk {
+            abiFilter("armeabi-v7a")
+        }
+        resConfigs "zh-rCN"
     }
     buildTypes {
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../../proguard-rules.pro', 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        debug{
             signingConfig signingConfigs.release
         }
 
