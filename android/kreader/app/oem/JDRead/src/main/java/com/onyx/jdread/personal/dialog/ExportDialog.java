@@ -27,6 +27,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class ExportDialog extends DialogFragment implements View.OnClickListener {
     private DialogExportBinding binding;
+    private EventBus eventBus;
 
     @Nullable
     @Override
@@ -63,15 +64,25 @@ public class ExportDialog extends DialogFragment implements View.OnClickListener
             case R.id.dialog_export_close:
                 break;
             case R.id.dialog_export_to_native:
-                EventBus.getDefault().post(new ExportToNativeEvent());
+                if (eventBus != null) {
+                    eventBus.post(new ExportToNativeEvent());
+                }
                 break;
             case R.id.dialog_export_to_email:
-                EventBus.getDefault().post(new ExportToEmailEvent());
+                if (eventBus != null) {
+                    eventBus.post(new ExportToEmailEvent());
+                }
                 break;
             case R.id.dialog_export_to_impression:
-                EventBus.getDefault().post(new ExportToImpressionEvent());
+                if (eventBus != null) {
+                    eventBus.post(new ExportToImpressionEvent());
+                }
                 break;
         }
         dismiss();
+    }
+
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 }

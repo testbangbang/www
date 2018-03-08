@@ -3,6 +3,9 @@ package com.onyx.jdread.main.common;
 import android.os.Environment;
 
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.device.EnvironmentUtil;
+
+import java.io.File;
 
 /**
  * Created by 12 on 2016/12/6.
@@ -145,4 +148,7 @@ public class Constants {
     public static final String WIFI_PASS_BOOK_DIR = Device.currentDevice.getExternalStorageDirectory() + "/Books/";
     public static final String MANUAL_FAQ_URL = "https://jdread-api.jd.com/faq";
     public static final int NET_BOOK_STATUS_DOWN = 1;
+    public static final String NATIVIE_DIR = EnvironmentUtil.getExternalStorageDirectory() + File.separator + "Notes";
+    public static final String EMAIL_DIR = EnvironmentUtil.getExternalStorageDirectory() + File.separator + "TempExport";
+    public static final String ZIP_NAME = "jdread";
 }

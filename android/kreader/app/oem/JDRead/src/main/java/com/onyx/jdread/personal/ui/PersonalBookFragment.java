@@ -22,6 +22,7 @@ import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -187,7 +188,7 @@ public class PersonalBookFragment extends BaseFragment {
                 if (DownLoadHelper.isDownloading(infoBean.downLoadState) ||
                         DownLoadHelper.isStarted(infoBean.downLoadState) ||
                         DownLoadHelper.isConnected(infoBean.downLoadState)) {
-                    DownLoadHelper.stopDownloadingTask(metadata.getCloudId());
+                    DownLoadHelper.stopDownloadingTask(metadata.getCloudId() + Constants.WHOLE_BOOK_DOWNLOAD_TAG);
                     infoBean.downLoadState = DownLoadHelper.getPausedState();
                     updateProgress(infoBean, metadata.getCloudId());
                     return;
@@ -259,7 +260,7 @@ public class PersonalBookFragment extends BaseFragment {
                     bean.downLoadState = info.downLoadState;
                     bean.localPath = info.localPath;
                     bean.percentage = info.percentage;
-                    if (bookDetail.ebook_id == Integer.parseInt(metadata.getCloudId())) {
+                    if (bookDetail.ebook_id == PagePositionUtils.getPosition(metadata.getCloudId())) {
                         bean.key = bookDetail.key;
                         bean.random = bookDetail.random;
                     }
@@ -446,9 +447,7 @@ public class PersonalBookFragment extends BaseFragment {
         BookDetailResultBean.DetailBean detail = new BookDetailResultBean.DetailBean();
         detail.name = metadata.getName();
         detail.author = metadata.getAuthors();
-        if (!StringUtils.isNullOrEmpty(metadata.getCloudId())) {
-            detail.ebook_id = Integer.parseInt(metadata.getCloudId());
-        }
+        detail.ebook_id = PagePositionUtils.getPosition(metadata.getCloudId());
         detail.image_url = metadata.getCoverUrl();
         detail.file_size = metadata.getSize();
         detail.downLoadUrl = StringUtils.isNotBlank(metadata.getLocation()) ? metadata.getLocation() : null;

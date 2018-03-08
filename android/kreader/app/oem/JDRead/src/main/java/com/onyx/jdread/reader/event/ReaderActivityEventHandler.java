@@ -10,6 +10,10 @@ import com.onyx.android.sdk.ui.dialog.DialogMessage;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.personal.dialog.ExportDialog;
+import com.onyx.jdread.personal.event.ExportToEmailEvent;
+import com.onyx.jdread.personal.event.ExportToImpressionEvent;
+import com.onyx.jdread.personal.event.ExportToNativeEvent;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.AnnotationCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.CloseDocumentAction;
@@ -24,6 +28,7 @@ import com.onyx.jdread.reader.actions.ToggleBookmarkAction;
 import com.onyx.jdread.reader.actions.UpdateViewPageAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.catalog.event.AnnotationItemClickEvent;
+import com.onyx.jdread.reader.catalog.event.ExportReadNoteEvent;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -43,6 +48,9 @@ import com.onyx.jdread.reader.menu.event.ToggleBookmarkSuccessEvent;
 import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
+import com.onyx.jdread.setting.common.AssociateDialogHelper;
+import com.onyx.jdread.setting.common.ExportHelper;
+import com.onyx.jdread.setting.event.BindEmailEvent;
 import com.onyx.jdread.util.BroadcastHelper;
 import com.onyx.jdread.util.Utils;
 
@@ -60,11 +68,13 @@ public class ReaderActivityEventHandler {
     private ReaderNoteDialog readerNoteDialog;
     private CloseDocumentDialog closeDocumentDialog;
     private ReaderBookInfoDialog readerBookInfoDialog;
+    private ExportHelper exportHelper;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
         this.readerViewBack = readerViewBack;
         ReaderPageInfoModel.setHasChapterInfo(true);
+        exportHelper = new ExportHelper(readerViewBack.getContext(), readerViewModel.getEventBus());
     }
 
     public void registerListener() {
@@ -261,6 +271,41 @@ public class ReaderActivityEventHandler {
         if(readerBookInfoDialog != null && readerBookInfoDialog.isShowing()){
             readerBookInfoDialog.dismiss();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportReadNoteEvent(ExportReadNoteEvent event) {
+        Activity activity = readerViewBack.getContext();
+        if (activity == null) {
+            return;
+        }
+        hideBookInfoDialog();
+        ExportDialog dialog = new ExportDialog();
+        dialog.setEventBus(readerViewModel.getEventBus());
+        dialog.show(activity.getFragmentManager(), "");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBindEmailEvent(BindEmailEvent event) {
+        AssociateDialogHelper.dismissEmailDialog();
+        ToastUtil.showToast(R.string.bind_email_success);
+        onExportReadNoteEvent(null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportToNativeEvent(ExportToNativeEvent event) {
+        // TODO: 2018/3/8 ExportAction
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportToEmailEvent(ExportToEmailEvent event) {
+        // TODO: 2018/3/8 ExportAction
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportToImpressionEvent(ExportToImpressionEvent event) {
+        // TODO: 2018/3/8 ExportAction
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

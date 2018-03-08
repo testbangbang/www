@@ -320,6 +320,8 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
             int currentPage = Math.max(pageRecyclerView.getPaginator().getCurrentPage() + 1, 1);
             String format = String.format("%d/%d", currentPage, totalPage);
             binding.getReaderBookInfoModel().setPageInfo(format);
+            binding.readerBookInfoTitleBar.titleSave.setVisibility(currentMode == ReaderBookInfoDialogConfig.NOTE_MODE ?
+                    View.VISIBLE : View.GONE);
         }
     }
 
