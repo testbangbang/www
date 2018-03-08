@@ -84,7 +84,7 @@ public class EndEllipsizeTextView extends AppCompatTextView {
     public int getNoEllipsizeLineEndIndex(int width, CharSequence text, TextPaint paint) {
         CharSequence lineOne = null;
         int length = text.length();
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i <= length; i++) {
             lineOne = text.subSequence(0, i);
             float textWidth = StaticLayout.getDesiredWidth(lineOne, paint);
             if (textWidth >= width) {
