@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.shop.ui.NetWorkErrorFragment;
 import com.onyx.jdread.util.Utils;
 
 /**
@@ -75,5 +76,13 @@ public class BaseFragment extends Fragment {
             return true;
         }
         return false;
+    }
+
+    public boolean checkWifiAndGoNetWorkErrorFragment(){
+        boolean disConnected = checkWfiDisConnected();
+        if (disConnected) {
+            getViewEventCallBack().gotoView(NetWorkErrorFragment.class.getName());
+        }
+        return disConnected;
     }
 }

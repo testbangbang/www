@@ -30,7 +30,6 @@ import com.onyx.jdread.shop.action.GetShopCartItemsAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
-import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CartBookItemClickEvent;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 import com.onyx.jdread.shop.model.ShopCartModel;
@@ -104,6 +103,15 @@ public class ShopCartFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         Utils.ensureRegister(EventBus.getDefault(), this);
+        checkWifi();
+    }
+
+    private void checkWifi() {
+        if (checkWifiAndGoNetWorkErrorFragment()) {
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.cart));
+            setBundle(bundle);
+        }
     }
 
     @Override

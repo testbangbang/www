@@ -193,6 +193,15 @@ public class ViewAllBooksFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
+        checkWifi();
+    }
+
+    private void checkWifi() {
+        if (checkWifiAndGoNetWorkErrorFragment()) {
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.NET_ERROR_TITLE, getTitleBarViewModel().leftText);
+            setBundle(bundle);
+        }
     }
 
     @Override

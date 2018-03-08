@@ -111,6 +111,15 @@ public class BookSaleFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
+        checkWifi();
+    }
+
+    private void checkWifi() {
+        if (checkWifiAndGoNetWorkErrorFragment()) {
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.sale));
+            setBundle(bundle);
+        }
     }
 
     @Override

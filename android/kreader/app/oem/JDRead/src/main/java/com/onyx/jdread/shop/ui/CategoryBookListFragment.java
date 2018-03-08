@@ -234,6 +234,15 @@ public class CategoryBookListFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
+        checkWifi();
+    }
+
+    private void checkWifi() {
+        if (checkWifiAndGoNetWorkErrorFragment()) {
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.NET_ERROR_TITLE, currentCatName);
+            setBundle(bundle);
+        }
     }
 
     @Override

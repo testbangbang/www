@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.ui;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -139,6 +138,15 @@ public class CommentFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
+        checkWifi();
+    }
+
+    private void checkWifi() {
+        if (checkWifiAndGoNetWorkErrorFragment()) {
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.title_bar_title_book_comment));
+            setBundle(bundle);
+        }
     }
 
     @Override

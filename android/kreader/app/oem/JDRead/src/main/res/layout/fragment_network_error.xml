@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="titleBarViewModel"
+            type="com.onyx.jdread.shop.model.TitleBarViewModel" />
+
+        <import type="android.view.View"/>
+
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/net_error_page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:clickable="true">
+
+        <include
+            android:id="@+id/layout_title_bar"
+            layout="@layout/layout_title_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+            android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+            bind:titleBarViewModel="@{titleBarViewModel}" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_wifi_90px" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/network_error_tip_margin_top"
+                android:text="@string/network_exception"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <TextView
+                android:id="@+id/please_check_wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/network_error_tip_margin_top"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</layout>

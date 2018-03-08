@@ -145,4 +145,6 @@ public class Constants {
     public static final String WIFI_PASS_BOOK_DIR = Device.currentDevice.getExternalStorageDirectory() + "/Books/";
     public static final String MANUAL_FAQ_URL = "https://jdread-api.jd.com/faq";
     public static final int NET_BOOK_STATUS_DOWN = 1;
+    public static final String NET_ERROR_TITLE = "net_error_title";
+    public static final String NET_ERROR_SHOW_TITLE_BAR = "net_error_show_title_bar";
 }

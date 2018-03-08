@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.ui;
 
-import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -31,9 +30,9 @@ import com.onyx.jdread.shop.action.GetVipGoodListAction;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
-import com.onyx.jdread.shop.event.PayByCashSuccessEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
+import com.onyx.jdread.shop.event.PayByCashSuccessEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.VipButtonClickEvent;
 import com.onyx.jdread.shop.event.VipGoodItemClickEvent;
@@ -79,6 +78,15 @@ public class BuyReadVIPFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
+        checkWifi();
+    }
+
+    private void checkWifi() {
+        if (checkWifiAndGoNetWorkErrorFragment()) {
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.read_vip));
+            setBundle(bundle);
+        }
     }
 
     @Override

@@ -92,6 +92,15 @@ public class ShopFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
+        checkWifi();
+    }
+
+    private void checkWifi() {
+        if (checkWifiAndGoNetWorkErrorFragment()) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(Constants.NET_ERROR_SHOW_TITLE_BAR, false);
+            setBundle(bundle);
+        }
     }
 
     @Override
