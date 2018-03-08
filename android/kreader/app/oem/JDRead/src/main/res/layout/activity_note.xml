@@ -235,8 +235,6 @@
                     android:gravity="top"
                     android:maxLines="13"
                     android:onClick="@{()->noteViewModel.gotoPagePosition()}"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
                     android:paddingTop="10dp"
                     android:text="@={noteViewModel.srcNote}"
                     android:textColor="@android:color/black"
