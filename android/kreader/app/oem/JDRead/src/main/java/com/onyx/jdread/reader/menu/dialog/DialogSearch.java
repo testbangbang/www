@@ -372,6 +372,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         startPage = 0;
         readerDataHolder.getReaderUserDataInfo().saveSearchResults(null);
         binding.getDialogSearchModel().setIsEmpty(false);
+        binding.getDialogSearchModel().setIsCanceled(false);
     }
 
     private void mergeSearchList() {
@@ -605,6 +606,7 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         if (searchContentAction != null) {
             searchContentAction.stopSearch();
         }
+        binding.getDialogSearchModel().setIsCanceled(true);
         hideLoadingLayout();
     }
 
