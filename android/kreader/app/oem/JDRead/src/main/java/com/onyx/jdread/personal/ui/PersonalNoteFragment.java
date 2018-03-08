@@ -29,6 +29,7 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.manager.EvernoteManager;
+import com.onyx.jdread.personal.action.ExportAction;
 import com.onyx.jdread.personal.action.ExportNoteAction;
 import com.onyx.jdread.personal.action.GetPersonalNotesAction;
 import com.onyx.jdread.personal.adapter.PersonalNoteAdapter;
@@ -205,7 +206,8 @@ public class PersonalNoteFragment extends BaseFragment {
     private void exportNote(int exportType) {
         if (personalNoteAdapter != null) {
             List<NoteBean> data = personalNoteAdapter.getData();
-            exportHelper.exportNote(exportType, data);
+            ExportAction action = new ExportAction(exportHelper, exportType, data);
+            action.execute(PersonalDataBundle.getInstance(), null);
         }
     }
 

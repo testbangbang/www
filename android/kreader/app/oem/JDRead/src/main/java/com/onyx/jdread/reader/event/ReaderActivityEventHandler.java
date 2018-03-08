@@ -294,18 +294,18 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToNativeEvent(ExportToNativeEvent event) {
-        // TODO: 2018/3/8 exportHelper.exportNote(ExportHelper.TYPE_NATIVE, data);
+        // TODO: 2018/3/8 ExportAction
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToEmailEvent(ExportToEmailEvent event) {
-        // TODO: 2018/3/8 exportHelper.exportNote(ExportHelper.TYPE_EMAIL, data);
+        // TODO: 2018/3/8 ExportAction
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToImpressionEvent(ExportToImpressionEvent event) {
-        // TODO: 2018/3/8 exportHelper.exportNote(ExportHelper.TYPE_EVERNOTE, data);
+        // TODO: 2018/3/8 ExportAction
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
