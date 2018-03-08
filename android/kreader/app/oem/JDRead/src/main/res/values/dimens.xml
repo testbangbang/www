@@ -121,7 +121,7 @@
     <dimen name="subject_model_item_width">103dp</dimen>
     <dimen name="subject_model_item_height">137dp</dimen>
     <dimen name="subject_model_item_space">32dp</dimen>
-    <dimen name="shop_back_top_button_margin_top">133dp</dimen>
+    <dimen name="shop_back_top_button_margin_top">112dp</dimen>
     <dimen name="loading_dialog_min_height">120dp</dimen>
     <dimen name="loading_dialog_min_width">140dp</dimen>
     <dimen name="loading_dialog_margin">5dp</dimen>
@@ -562,4 +562,5 @@
     <dimen name="search_result_book_format_margin_top">10dp</dimen>
     <dimen name="search_result_book_format_margin_left">8dp</dimen>
     <dimen name="font_size_14">14sp</dimen>
+    <dimen name="end_view_empty_height">120dp</dimen>
 </resources>
