@@ -38,6 +38,7 @@ public class OpenDocumentAction extends BaseReaderAction {
 
     private void loadDocumentOptions(final ReaderDataHolder readerDataHolder) {
         final LoadDocumentOptionsRequest request = new LoadDocumentOptionsRequest(readerDataHolder.getReader());
+        request.setAppContext(readerDataHolder.getAppContext());
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
