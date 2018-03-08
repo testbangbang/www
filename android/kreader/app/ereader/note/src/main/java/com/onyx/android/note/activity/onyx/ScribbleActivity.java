@@ -104,6 +104,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private TextView titleTextView;
     private ScribbleSubMenu scribbleSubMenu = null;
     private ImageView switchBtn;
+    private ImageView handTouch;
     private ContentView functionContentView;
     private FrameLayout workView;
     private RelativeLayout rootView;
@@ -111,6 +112,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private SpanTextHandler spanTextHandler;
     private boolean isKeyboardInput = false;
     private boolean isPictureEditMode = false;
+    private boolean handTouchEnable = true;
     private Uri editPictUri;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
 
@@ -144,6 +146,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     @Override
     protected void onDestroy() {
         spanTextView.clear();
+        EpdController.enableCapacitanceTp(true);
         super.onDestroy();
     }
 
@@ -166,6 +169,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView saveBtn = (ImageView) findViewById(R.id.button_save);
         ImageView exportBtn = (ImageView) findViewById(R.id.button_export);
         ImageView screenRefreshBtn = (ImageView) findViewById(R.id.button_screen_refresh);
+        handTouch = (ImageView) findViewById(R.id.button_hand_touch);
         final ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
         workView = (FrameLayout) findViewById(R.id.work_view);
         rootView = (RelativeLayout) findViewById(R.id.onyx_activity_scribble);
@@ -312,6 +316,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         switchScribbleMode(isLineLayoutMode(), true);
                     }
                 });
+            }
+        });
+
+        handTouch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setHandTouchEnable(!isHandTouchEnable());
             }
         });
 
@@ -1097,6 +1108,21 @@ public class ScribbleActivity extends BaseScribbleActivity {
             adapter.addObject(createFunctionItem(R.drawable.ic_shape_brush, ScribbleMenuCategory.BRUSH_PEN_STYLE));
         }
         return adapter;
+    }
+
+    public void setHandTouchEnable(final boolean handTouchEnable) {
+        this.handTouchEnable = handTouchEnable;
+        EpdController.enableCapacitanceTp(handTouchEnable);
+        syncWithCallback(false, shouldResume(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                handTouch.setImageResource(handTouchEnable ? R.drawable.ic_touch : R.drawable.ic_touch_forbid);
+            }
+        });
+    }
+
+    public boolean isHandTouchEnable() {
+        return handTouchEnable;
     }
 
     @Override
