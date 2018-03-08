@@ -118,7 +118,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         Iterator<Library> iterator = libraryList.iterator();
         while (iterator.hasNext()) {
             Library library = iterator.next();
-            QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.LastOpenTime, SortOrder.Desc);
+            QueryArgs queryArgs = QueryBuilder.allBooksQuery(this.queryArgs.sortBy, this.queryArgs.order);
             queryArgs.libraryUniqueId = library.getIdString();
             queryArgs.limit = 4;
             QueryBuilder.generateMetadataInQueryArgs(queryArgs);
