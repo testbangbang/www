@@ -61,6 +61,7 @@ import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
+import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
 import com.onyx.jdread.shop.action.UpdateDownloadInfoAction;
@@ -433,6 +434,11 @@ public class MainActivity extends AppCompatActivity {
             if (StringUtils.isNotBlank(event.getTargetView())) {
                 childViewEventCallBack.gotoView(event.getTargetView());
             }
+            if (PersonalFragment.class.getName().equals(currentChildViewName)) {
+                PersonalFragment fragment = (PersonalFragment) currentFragment;
+                fragment.setRefresh();
+            }
+
         } else {
             ToastUtil.showToast(this, event.getMessage());
         }

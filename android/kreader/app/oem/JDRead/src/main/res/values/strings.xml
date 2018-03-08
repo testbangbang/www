@@ -542,4 +542,10 @@
     <string name="net_book_day_befor_update">(update %s days ago)</string>
     <string name="greater_than_ninety_nine">99+</string>
     <string name="delete">Delete</string>
+    <string name="native_export_success">The export is successful, please connect to your PC and view it in /Notes folder</string>
+    <string name="email_export_success">Export successful, please check in the associated mailbox</string>
+    <string name="evernote_export_success">Export success, please check in the associated impression notes</string>
+    <string name="export_failed">Export failed, please check the network and try again</string>
+    <string name="bind_email_success">Associated E-mail success</string>
+    <string name="unbind_email_success">Undo E-mail binding success</string>
 </resources>

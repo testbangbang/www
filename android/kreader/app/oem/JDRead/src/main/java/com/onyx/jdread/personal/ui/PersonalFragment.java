@@ -179,4 +179,10 @@ public class PersonalFragment extends BaseFragment {
             viewEventCallBack.gotoView(name);
         }
     }
+
+    public void setRefresh() {
+        if (!binding.getIsLogin()) {
+            initData();
+        }
+    }
 }
