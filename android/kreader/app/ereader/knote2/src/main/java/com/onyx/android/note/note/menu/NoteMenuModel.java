@@ -84,11 +84,11 @@ public class NoteMenuModel extends BaseViewModel {
     }
 
     public void onRedo(View view) {
-        new RedoAction(getNoteManager(), false).execute(null);
+        new RedoAction(getNoteManager()).execute(null);
     }
 
     public void onUndo(View view) {
-        new UndoAction(getNoteManager(), false).execute(null);
+        new UndoAction(getNoteManager()).execute(null);
     }
 
     public void onErasePage(View view) {
