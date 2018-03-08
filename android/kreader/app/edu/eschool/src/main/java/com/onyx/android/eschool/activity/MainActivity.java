@@ -85,6 +85,8 @@ public class MainActivity extends BaseActivity {
     public static final int BOOK_READING_TAB = 3;
     public static final int STUDENT_INFO_TAB = 4;
 
+    private boolean supportTabSwitch = false;
+
     @Override
     protected Integer getLayoutId() {
         return R.layout.activity_main;
@@ -332,7 +334,9 @@ public class MainActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTabSwitchEvent(TabSwitchEvent switchEvent) {
-        processTabSwitchEvent(switchEvent);
+        if (supportTabSwitch) {
+            processTabSwitchEvent(switchEvent);
+        }
     }
 
     private void processTabSwitchEvent(TabSwitchEvent switchEvent) {
