@@ -17,16 +17,21 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/OnyxAppCompat">
-
-        <meta-data android:name="channel" android:value="${channel_value}"/>
-        <meta-data android:name="type" android:value="${type_value}"/>
-        <meta-data android:name="platform" android:value="${platform_value}" />
+        <meta-data
+            android:name="channel"
+            android:value="${channel_value}" />
+        <meta-data
+            android:name="type"
+            android:value="${type_value}" />
+        <meta-data
+            android:name="platform"
+            android:value="${platform_value}" />
 
         <activity android:name=".activity.mx.ManagerActivity" />
-        <activity android:name=".activity.mx.ScribbleActivity"
-            android:windowSoftInputMode="adjustNothing"/>
         <activity
-            android:name=".activity.StartupActivity">
+            android:name=".activity.mx.ScribbleActivity"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".activity.StartupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,13 +39,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.onyx.ManagerActivity" />
-
         <activity
             android:name=".activity.onyx.ScribbleActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="image/jpeg" />
@@ -50,14 +55,25 @@
                 <data android:mimeType="image/x-windows-bmp" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activity.onyx.SpanScribbleActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name=".activity.onyx.SettingActivity"/>
         <activity
-            android:windowSoftInputMode="adjustNothing"
-            android:name=".activity.onyx.BackupRestoreActivity"/>
-        <activity android:name=".test.NoteTestActivity"/>
+            android:name=".activity.onyx.SpanScribbleActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".activity.onyx.SettingActivity" />
+        <activity
+            android:name=".activity.onyx.BackupRestoreActivity"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".test.NoteTestActivity" />
+
+        <receiver
+            android:name=".receiver.ChangeDBFilePermissionForDiagnosticReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="onyx.android.note.intent.action.UNLOCK_DB_FILE_PERMISSION" />
+                <action android:name="onyx.android.note.intent.action.LOCK_DB_FILE_PERMISSION" />
+            </intent-filter>
+        </receiver>
     </application>
+
 </manifest>
