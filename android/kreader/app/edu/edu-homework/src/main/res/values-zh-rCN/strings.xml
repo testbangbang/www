@@ -17,18 +17,18 @@
     <string name="not_answer" formatted="false">未答：%d</string>
     <string name="submit_tips">确认提交吗？</string>
     <string name="continue_answer">继续答题</string>
-    <string name="submit">提交</string>
-    <string name="submit_success">提交成功</string>
+    <string name="submit">提交作业</string>
+    <string name="submit_success">提交作业成功</string>
     <string name="submited">已提交</string>
     <string name="submitting">正在提交...</string>
     <string name="exit">退出</string>
     <string name="submit_fail">提交失败</string>
     <string name="answer_record">答题记录</string>
-    <string name="get_result">获取批改</string>
+    <string name="get_result">查看批改</string>
     <string name="waiting_review">作业还在等待老师批改</string>
     <string name="right_answer">正确答案：</string>
     <string name="exit_tips">确定要退出吗？</string>
-    <string name="analysis">题目解析</string>
+    <string name="analysis">答案讲解</string>
     <string name="score" formatted="false">%.1f分</string>
     <string name="no_find_homework">没找到作业</string>
     <string name="fetching_review">正在获取批改</string>
@@ -54,7 +54,7 @@
     <string name="end_time_tips">作答时间到，请提交</string>
     <string name="total_score" formatted="false">总分：%.1f</string>
     <string name="single_score" formatted="false">单题：%.1f</string>
-    <string name="score_rank">评分排名</string>
+    <string name="score_rank">结果总览</string>
     <string name="return_question">返回题目</string>
     <string name="question_number">题号</string>
     <string name="question_type">题型</string>
