@@ -81,6 +81,9 @@ public class LibraryRenameAction extends BaseAction<LibraryDataBundle> {
     }
 
     private boolean isExist(LibraryDataBundle libraryDataBundle, String newLibraryName) {
+        if (ResManager.getString(R.string.library_name).equals(newLibraryName)) {
+            return true;
+        }
         for (DataModel dataModel : libraryList) {
             if (newLibraryName.equals(dataModel.title.get())) {
                 return true;
