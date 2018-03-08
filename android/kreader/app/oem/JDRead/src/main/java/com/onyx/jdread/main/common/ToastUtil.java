@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -55,26 +56,29 @@ public class ToastUtil {
             textView.setGravity(Gravity.CENTER);
             textView.setPadding(left, top, right, bottom);
             textView.setShadowLayer(radius, dx, dy, Color.TRANSPARENT);
-            if (offset != 0) {
-                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, offset);
-            }
+            setGravity(offset);
             toast.show();
         } else {
             if (message.equals(oldMsg)) {
                 if (!toast.getView().isShown()) {
-                    if (offset != 0) {
-                        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, offset);
-                    }
+                    setGravity(offset);
                     toast.show();
                 }
             } else {
                 oldMsg = message;
                 toast.setText(message);
-                if (offset != 0) {
-                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, offset);
-                }
+                setGravity(offset);
                 toast.show();
             }
+        }
+    }
+
+    private static void setGravity(int offset) {
+        if (offset != 0) {
+            toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, offset);
+        } else {
+            toast.setGravity(ResManager.getInteger(R.integer.default_toast_gravity),
+                    0, ResManager.getDimens(R.dimen.default_toast_y_offset));
         }
     }
 

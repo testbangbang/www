@@ -177,7 +177,7 @@ public class PersonalBookFragment extends BaseFragment {
                 BookDetailResultBean.DetailBean detail = covert(metadata);
                 BookExtraInfoBean infoBean = detail.bookExtraInfoBean;
 
-                if (ResManager.getString(R.string.self_import).equals(binding.getFilterName()) || infoBean.percentage == DownLoadHelper.DOWNLOAD_PERCENT_FINISH) {
+                if (ResManager.getString(R.string.self_import).equals(binding.getFilterName()) || DownLoadHelper.isDownloaded(infoBean.downLoadState)) {
                     openBook(metadata.getNativeAbsolutePath(), detail);
                     return;
                 }
@@ -255,11 +255,13 @@ public class PersonalBookFragment extends BaseFragment {
                 BookDetailResultBean.DetailBean bookDetail = ShopDataBundle.getInstance().getBookDetail();
                 BookExtraInfoBean bean = null;
                 String downloadInfo = metadata.getDownloadInfo();
+                info.downLoadTaskTag = tag + Constants.WHOLE_BOOK_DOWNLOAD_TAG;
                 if (StringUtils.isNotBlank(downloadInfo)) {
                     bean = JSONObjectParseUtils.toBean(downloadInfo, BookExtraInfoBean.class);
                     bean.downLoadState = info.downLoadState;
                     bean.localPath = info.localPath;
                     bean.percentage = info.percentage;
+                    bean.downLoadTaskTag = info.downLoadTaskTag;
                     if (bookDetail.ebook_id == PagePositionUtils.getPosition(metadata.getCloudId())) {
                         bean.key = bookDetail.key;
                         bean.random = bookDetail.random;
@@ -330,7 +332,7 @@ public class PersonalBookFragment extends BaseFragment {
     private void getSelfImportBooks() {
         QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.None, SortOrder.Asc);
         queryArgs.conditionGroup.and(Metadata_Table.cloudId.isNull());
-        QueryBuilder.generateQueryArgs(queryArgs);
+        QueryBuilder.generateMetadataInQueryArgs(queryArgs);
         final RxMetadataLoadAction action = new RxMetadataLoadAction(queryArgs);
         action.execute(LibraryDataBundle.getInstance(), new RxCallback() {
             @Override
@@ -451,6 +453,7 @@ public class PersonalBookFragment extends BaseFragment {
         detail.image_url = metadata.getCoverUrl();
         detail.file_size = metadata.getSize();
         detail.downLoadUrl = StringUtils.isNotBlank(metadata.getLocation()) ? metadata.getLocation() : null;
+        detail.format = metadata.getType();
         String downloadInfo = metadata.getDownloadInfo();
 
         BookExtraInfoBean infoBean = null;

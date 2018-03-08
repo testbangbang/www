@@ -563,4 +563,5 @@
     <dimen name="search_result_book_format_margin_left">8dp</dimen>
     <dimen name="font_size_14">14sp</dimen>
     <dimen name="end_view_empty_height">120dp</dimen>
+    <dimen name="default_toast_y_offset">64dp</dimen>
 </resources>
