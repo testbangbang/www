@@ -81,6 +81,7 @@ public class RxGetBoughtAndUnlimitedRequest extends RxBaseCloudRequest {
                     metadata.setCoverUrl(bean.large_image_url);
                     metadata.setSize((long) (bean.file_size * 1000 * 1000));
                     metadata.setIdString(String.valueOf(bean.ebook_id));
+                    metadata.setType(bean.format);
                     bookBean.metadata = metadata;
                     boughtBooks.add(bookBean);
                 }
