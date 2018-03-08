@@ -4,6 +4,7 @@ import android.databinding.BaseObservable;
 import android.databinding.ObservableField;
 
 import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
+import com.onyx.jdread.reader.catalog.event.ExportReadNoteEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -29,5 +30,9 @@ public class TitleBarModel extends BaseObservable {
 
     public void rightTitleClicked(){
         eventBus.post(new TitleBarRightTitleEvent());
+    }
+
+    public void exportNoteClicked() {
+        eventBus.post(new ExportReadNoteEvent());
     }
 }

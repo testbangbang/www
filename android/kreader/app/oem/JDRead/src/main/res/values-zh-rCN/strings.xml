@@ -483,6 +483,7 @@
     <string name="note_none">您还未添加笔记</string>
     <string name="catalog_none">目录为空</string>
     <string name="search_result_none">书内无相关信息</string>
+    <string name="search_result_canceled">取消搜索</string>
     <string name="new_user_package">新用户会员礼包</string>
     <string name="new_user_package_detail">为新用户准备的365天会员，领取后即绑定到登录本机的账号上。</string>
     <string name="receive_success">领取成功</string>
@@ -511,4 +512,10 @@
     <string name="net_book_hours_befor_update">(%d小时前更新)</string>
     <string name="net_book_day_befor_update">(%s天前更新)</string>
     <string name="delete">删除</string>
+    <string name="native_export_success">导出成功，请连接个人电脑后在/Notes文件夹中查看</string>
+    <string name="email_export_success">导出成功，请在关联邮箱查收</string>
+    <string name="evernote_export_success">导出成功，请在关联印象笔记中查看</string>
+    <string name="export_failed">导出失败，请检查网络并重试</string>
+    <string name="bind_email_success">关联电子邮箱成功</string>
+    <string name="unbind_email_success">解除电子邮箱绑定成功</string>
 </resources>

@@ -50,11 +50,15 @@ public class ManagerActivityUtils {
     }
 
     public static void startProductionTest(Context context) {
-        Intent intent = new Intent();
-        String packageName = "com.onyx.android.production.test";
-        String className = "com.onyx.android.productiontest.activity.ProductionTestMainActivity";
-        intent.setClassName(packageName, className);
-        context.startActivity(intent);
+        try {
+            Intent intent = new Intent();
+            String packageName = "com.onyx.android.production.test";
+            String className = "com.onyx.android.productiontest.activity.ProductionTestMainActivity";
+            intent.setClassName(packageName, className);
+            context.startActivity(intent);
+        } catch (Exception e) {
+        }
+
     }
 
     public static void reset(Context context) {

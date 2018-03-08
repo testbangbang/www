@@ -101,7 +101,8 @@
                 android:layout_marginRight="@dimen/quick_back_button_explanation_margin_right"
                 android:layout_marginBottom="@dimen/switch_show_quick_button_text_margin"
                 android:text="@string/quick_back_button_explanation"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:textSize="@dimen/level_three_heading_font"
+                android:textColor="@color/text_color_grey"/>
 
             <View
                 style="@style/DottedLineStyle"

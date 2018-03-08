@@ -20,7 +20,11 @@ import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.util.RegularUtil;
+import com.onyx.jdread.setting.event.BindEmailEvent;
+import com.onyx.jdread.setting.event.UnBindEmailEvent;
 import com.onyx.jdread.util.Utils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Observable;
 
@@ -67,6 +71,11 @@ public class AssociatedEmailDialog extends Dialog {
         public final ObservableField<String> title = new ObservableField<>();
         public final ObservableField<String> emailAddress = new ObservableField<>();
         public final ObservableBoolean bound = new ObservableBoolean();
+        private EventBus eventBus;
+
+        public DialogModel(EventBus eventBus) {
+            this.eventBus = eventBus;
+        }
 
         private boolean checkedEdit() {
             if (StringUtils.isNullOrEmpty(emailAddress.get()) || !RegularUtil.isEmail(emailAddress.get())) {
@@ -78,17 +87,18 @@ public class AssociatedEmailDialog extends Dialog {
 
         public void bindToEmail() {
             if (checkedEdit()) {
-                bound.set(true);
                 JDPreferenceManager.setStringValue(R.string.email_address_key, emailAddress.get());
-                title.set(JDReadApplication.getInstance().getString(R.string.email_bound));
+                if (eventBus != null) {
+                    eventBus.post(new BindEmailEvent());
+                }
             }
         }
 
         public void unbindToEmail() {
-            emailAddress.set(null);
-            bound.set(false);
             JDPreferenceManager.setStringValue(R.string.email_address_key, null);
-            title.set(JDReadApplication.getInstance().getString(R.string.bind_to_email));
+            if (eventBus != null) {
+                eventBus.post(new UnBindEmailEvent());
+            }
         }
     }
 

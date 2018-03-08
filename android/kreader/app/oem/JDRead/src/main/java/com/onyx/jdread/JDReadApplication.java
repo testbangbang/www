@@ -25,6 +25,7 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.SupportType;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.manager.CrashExceptionHandler;
+import com.onyx.jdread.manager.EvernoteManager;
 import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.personal.action.AutoLoginAction;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
@@ -88,6 +89,7 @@ public class JDReadApplication extends MultiDexApplication {
         initEventListener();
         initDownloadManager();
         initCrashExceptionHandler();
+        EvernoteManager.getEvernoteSession(this);
     }
 
     private void initDownloadManager() {
