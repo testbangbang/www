@@ -18,7 +18,6 @@
             android:layout_height="@dimen/setting_device_detail_height"
             android:layout_marginLeft="@dimen/setting_device_detail_margin_left"
             android:gravity="center_vertical"
-            android:onClick="@{()->settingModel.deviceConfig()}"
             android:orientation="horizontal">
 
             <ImageView
@@ -63,7 +62,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/setting_device_detail_describe_margin_top"
+                android:padding="@dimen/setting_device_detail_describe_margin_top"
                 android:onClick="@{()->settingModel.deviceConfig()}"
                 android:src="@mipmap/ic_setting_more" />
         </LinearLayout>
