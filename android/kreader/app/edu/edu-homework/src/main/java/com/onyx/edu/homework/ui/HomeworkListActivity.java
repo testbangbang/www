@@ -47,6 +47,7 @@ import com.onyx.edu.homework.event.CloseSubMenuEvent;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.ExitEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
+import com.onyx.edu.homework.event.OpenDraftEvent;
 import com.onyx.edu.homework.event.ReloadQuestionViewEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
@@ -157,6 +158,12 @@ public class HomeworkListActivity extends BaseActivity {
                 gotoScoreActivity();
             }
         });
+        binding.tvDraft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDataBundle().post(new OpenDraftEvent());
+            }
+        } );
         hideMessage();
     }
 
@@ -501,14 +508,19 @@ public class HomeworkListActivity extends BaseActivity {
         }
         binding.page.setText(getString(R.string.question_page, current + File.separator + total));
 
+        Question question = questions.get(position);
         if (getDataBundle().isReview()) {
-            Question question = questions.get(position);
             if (question.review != null) {
                 binding.answerIcon.setImageResource(question.review.isRightAnswer() ? R.drawable.ic_right : R.drawable.ic_wrong);
             }
         }
 
         showQuestionScore();
+        showDraft(question);
+    }
+
+    private void showDraft(Question question) {
+        binding.tvDraft.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
     }
 
     @Override

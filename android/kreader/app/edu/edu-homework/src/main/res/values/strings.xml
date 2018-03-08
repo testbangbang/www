@@ -50,6 +50,8 @@
     <string name="subject" formatted="false">学科：%s</string>
     <string name="publish_time" formatted="false">发布时间：%s</string>
     <string name="draft">草稿</string>
+    <string name="open_draft">打开草稿</string>
+    <string name="close_draft">关闭草稿</string>
     <string name="end_time" formatted="false">截止时间：%s</string>
     <string name="end_time_tips">作答时间到，请提交</string>
     <string name="total_score" formatted="false">总分：%.1f</string>

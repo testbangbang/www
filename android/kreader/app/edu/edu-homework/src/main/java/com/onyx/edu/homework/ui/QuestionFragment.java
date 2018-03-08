@@ -38,7 +38,12 @@ import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.FragmentQuestionBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
+import com.onyx.edu.homework.event.OpenDraftEvent;
 import com.onyx.edu.homework.utils.TextUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 /**
@@ -69,12 +74,14 @@ public class QuestionFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        DataBundle.getInstance().unregister(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_question, container, false);
+        DataBundle.getInstance().register(this);
         return binding.getRoot();
     }
 
@@ -100,18 +107,17 @@ public class QuestionFragment extends BaseFragment {
         Spanned content = question.isChoiceQuestion() ? TextUtils.fromHtml(question.content, new Base64ImageParser(getActivity()), null)
                 : null;
         binding.content.setText(content);
-        binding.draft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoDraft();
-            }
-        });
         bindQuestionOption(binding.option, question);
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOpenDraftEvent(OpenDraftEvent event) {
+        gotoDraft();
     }
 
     private void gotoDraft() {
         binding.imageView.setVisibility(View.GONE);
-        binding.draft.setVisibility(View.INVISIBLE);
         Intent intent = new Intent(getActivity(), DraftActivity.class);
         intent.putExtra(Constant.TAG_QUESTION, question);
         startActivity(intent);
@@ -119,7 +125,6 @@ public class QuestionFragment extends BaseFragment {
 
     private void initViewVisibility() {
         binding.content.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
-        binding.draft.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
 
         boolean showScribble = !question.isChoiceQuestion();
         binding.scribble.setVisibility(showScribble ? View.VISIBLE : View.GONE);
