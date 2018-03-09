@@ -5317,6 +5317,12 @@ public class AlBookEng{
 			
 			j = format.getTextBuffer(start, format_text_and_style, shtamp.value, profiles);		
 			i = start - (start & AlFiles.LEVEL1_FILE_BUF_MASK);
+
+			if (i >= j) {
+				// force start to be increased in such problematic case, so we can always step forwards in the loop
+				// joy@onyx
+				start++;
+			}
 			
 			char ch;
 			for (; i < j; i++, start++) {
