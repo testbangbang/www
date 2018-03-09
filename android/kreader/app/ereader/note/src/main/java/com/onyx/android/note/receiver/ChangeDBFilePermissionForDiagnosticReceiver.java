@@ -42,7 +42,7 @@ public class ChangeDBFilePermissionForDiagnosticReceiver extends BroadcastReceiv
     private List<File> collectAllSubFile(File folder) {
         List<File> resultList = new ArrayList<>();
         resultList.add(folder);
-        FileUtils.getAllFileUnderCurrentFolder(folder.getPath(), null, true, resultList);
+        FileUtils.getAllFiles(folder.getPath(), null, true, resultList);
         return resultList;
     }
 }

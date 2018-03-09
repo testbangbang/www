@@ -112,7 +112,7 @@ public class FileUtils {
         }
     }
 
-    public static void getAllFileUnderCurrentFolder(final String parentPath, final Set<String> extensionFilters, boolean recursive, final Collection<File> fileList) {
+    public static void getAllFiles(final String parentPath, final Set<String> extensionFilters, boolean recursive, final Collection<File> fileList) {
         File parent = new File(parentPath);
         File[] files = parent.listFiles();
         if (files == null) {
@@ -129,7 +129,7 @@ public class FileUtils {
                     fileList.add(file);
                 }
             } else if (file.isDirectory() && recursive) {
-                getAllFileUnderCurrentFolder(absolutePath, extensionFilters, recursive, fileList);
+                getAllFiles(absolutePath, extensionFilters, recursive, fileList);
             }
         }
     }
