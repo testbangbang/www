@@ -52,9 +52,6 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
             ToastUtil.showToast(context, R.string.file_path_invalid);
             return;
         }
-        if (isTaskDownloading(tag)) {
-            return;
-        }
         startDownload(dataBundle, rxCallback);
     }
 

@@ -752,6 +752,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
         String localPath = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.name + Constants.BOOK_FORMAT;
+        insertBookDetail(bookDetailBean, localPath);
         DownloadAction downloadAction = new DownloadAction(getContext(), tryDownLoadUrl, localPath, bookDetailBean.ebook_id + "");
         downloadAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
