@@ -151,7 +151,7 @@ public class AllCategoryFragment extends BaseFragment {
         topRecyclerView.setAdapter(new AllCategoryTopAdapter(getEventBus()));
         allCategoryBinding.setCategoryViewModel(getAllCategoryViewModel());
         initPageIndicator(getAllCategoryViewModel().getAllCategoryItems());
-        checkWifi();
+        checkWifi(getAllCategoryViewModel().getTitleBarViewModel().leftText);
     }
 
     private void initPageIndicator(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> resultBean) {
@@ -213,15 +213,6 @@ public class AllCategoryFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-    }
-
-    private void checkWifi() {
-        if (checkWifiDisConnected()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.all_category));
-            setBundle(bundle);
-            goNetWorkErrorFragment();
-        }
     }
 
     @Override

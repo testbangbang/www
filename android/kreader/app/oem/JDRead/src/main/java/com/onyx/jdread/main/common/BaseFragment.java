@@ -4,6 +4,7 @@ package com.onyx.jdread.main.common;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.ui.NetWorkErrorFragment;
@@ -70,7 +71,7 @@ public class BaseFragment extends Fragment {
         return bundle;
     }
 
-    public boolean checkWifiDisConnected() {
+    public boolean isWifiDisconnected() {
         if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
             ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
             return true;
@@ -80,5 +81,17 @@ public class BaseFragment extends Fragment {
 
     public void goNetWorkErrorFragment(){
         getViewEventCallBack().gotoView(NetWorkErrorFragment.class.getName());
+    }
+
+    public void checkWifi(String title) {
+        if (isWifiDisconnected()) {
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.NET_ERROR_TITLE, title);
+            if (StringUtils.isNullOrEmpty(title)) {
+                bundle.putBoolean(Constants.NET_ERROR_SHOW_TITLE_BAR, false);
+            }
+            setBundle(bundle);
+            goNetWorkErrorFragment();
+        }
     }
 }

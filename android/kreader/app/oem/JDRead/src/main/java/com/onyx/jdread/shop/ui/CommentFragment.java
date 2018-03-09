@@ -90,7 +90,7 @@ public class CommentFragment extends BaseFragment {
         getBookDetailViewModel().getTitleBarViewModel().pageTag = PageTagConstants.BOOK_COMMENT;
         initDividerItemDecoration();
         setCommentsRecycleView();
-        checkWifi();
+        checkWifi(getBookDetailViewModel().getTitleBarViewModel().leftText);
     }
 
     private void setCommentsRecycleView() {
@@ -139,15 +139,6 @@ public class CommentFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-    }
-
-    private void checkWifi() {
-        if (checkWifiDisConnected()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.title_bar_title_book_comment));
-            setBundle(bundle);
-            goNetWorkErrorFragment();
-        }
     }
 
     @Override

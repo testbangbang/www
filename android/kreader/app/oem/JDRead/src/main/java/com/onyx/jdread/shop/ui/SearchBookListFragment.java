@@ -104,7 +104,7 @@ public class SearchBookListFragment extends BaseFragment {
             }
         });
         viewAllBinding.setViewModel(getViewAllViewModel());
-        checkWifi();
+        checkWifi(keyWord);
     }
 
     private void initPageIndicator() {
@@ -153,15 +153,6 @@ public class SearchBookListFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-    }
-
-    private void checkWifi() {
-        if (checkWifiDisConnected()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.NET_ERROR_TITLE, keyWord);
-            setBundle(bundle);
-            goNetWorkErrorFragment();
-        }
     }
 
     @Override

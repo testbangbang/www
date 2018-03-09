@@ -80,7 +80,7 @@ public class ShopFragment extends BaseFragment {
                 setScrollbarFocusPosition(curIndex);
             }
         });
-        checkWifi();
+        checkWifi("");
     }
 
     private void setScrollbarFocusPosition(int curIndex) {
@@ -93,15 +93,6 @@ public class ShopFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-    }
-
-    private void checkWifi() {
-        if (checkWifiDisConnected()) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(Constants.NET_ERROR_SHOW_TITLE_BAR, false);
-            setBundle(bundle);
-            goNetWorkErrorFragment();
-        }
     }
 
     @Override

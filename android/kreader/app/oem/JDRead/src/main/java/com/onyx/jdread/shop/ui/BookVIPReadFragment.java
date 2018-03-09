@@ -100,7 +100,7 @@ public class BookVIPReadFragment extends BaseFragment {
         bookVipReadBinding.layoutTitleBar.titleBarRightIcon.setImageResource(R.mipmap.ic_shelf_search);
         getVipReadViewModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.read_vip);
         getVipReadViewModel().getTitleBarViewModel().showRightText = true;
-        checkWifi();
+        checkWifi(getVipReadViewModel().getTitleBarViewModel().leftText);
     }
 
     private void setRecycleView() {
@@ -122,15 +122,6 @@ public class BookVIPReadFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-    }
-
-    private void checkWifi() {
-        if (checkWifiDisConnected()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.read_vip));
-            setBundle(bundle);
-            goNetWorkErrorFragment();
-        }
     }
 
     @Override
@@ -194,7 +185,7 @@ public class BookVIPReadFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipButtonClickEvent(VipButtonClickEvent event) {
-        if (checkWifiDisConnected()) {
+        if (isWifiDisconnected()) {
             return;
         }
         if (getViewEventCallBack() != null) {

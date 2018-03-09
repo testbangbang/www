@@ -168,7 +168,7 @@ public class CategoryBookListFragment extends BaseFragment {
                 showOrCloseAllCatButton();
             }
         });
-        checkWifi();
+        checkWifi(currentCatName);
     }
 
     private void initPageIndicator() {
@@ -237,15 +237,6 @@ public class CategoryBookListFragment extends BaseFragment {
         initLibrary();
     }
 
-    private void checkWifi() {
-        if (checkWifiDisConnected()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.NET_ERROR_TITLE, currentCatName);
-            setBundle(bundle);
-            goNetWorkErrorFragment();
-        }
-    }
-
     @Override
     public void onStop() {
         super.onStop();
@@ -272,7 +263,7 @@ public class CategoryBookListFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
         showOrCloseAllCatButton();
-        if (checkWifiDisConnected()) {
+        if (isWifiDisconnected()) {
             return;
         }
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
@@ -337,7 +328,7 @@ public class CategoryBookListFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSubjectListSortKeyChangeEvent(SubjectListSortKeyChangeEvent event) {
         showOrCloseSortButton();
-        if (checkWifiDisConnected()) {
+        if (isWifiDisconnected()) {
             return;
         }
         if (sortkey == event.sortKey) {

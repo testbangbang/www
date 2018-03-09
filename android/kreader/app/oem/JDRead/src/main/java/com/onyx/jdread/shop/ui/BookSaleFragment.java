@@ -90,7 +90,7 @@ public class BookSaleFragment extends BaseFragment {
         setRecycleView();
         bookSaleBinding.setViewModel(getBookSaleViewModel());
         getBookSaleViewModel().getTitleBarViewModel().leftText = getString(R.string.sale);
-        checkWifi();
+        checkWifi(getBookSaleViewModel().getTitleBarViewModel().leftText);
     }
 
     private void setRecycleView() {
@@ -112,15 +112,6 @@ public class BookSaleFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-    }
-
-    private void checkWifi() {
-        if (checkWifiDisConnected()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.sale));
-            setBundle(bundle);
-            goNetWorkErrorFragment();
-        }
     }
 
     @Override

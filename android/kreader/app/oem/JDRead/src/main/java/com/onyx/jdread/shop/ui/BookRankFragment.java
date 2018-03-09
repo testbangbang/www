@@ -86,7 +86,7 @@ public class BookRankFragment extends BaseFragment {
         setRecycleView();
         bookRankBinding.setRankViewModel(getRankViewModel());
         getRankViewModel().getTitleBarViewModel().leftText = getString(R.string.ranking);
-        checkWifi();
+        checkWifi(getRankViewModel().getTitleBarViewModel().leftText);
     }
 
     private void setRecycleView() {
@@ -108,15 +108,6 @@ public class BookRankFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-    }
-
-    private void checkWifi() {
-        if (checkWifiDisConnected()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.ranking));
-            setBundle(bundle);
-            goNetWorkErrorFragment();
-        }
     }
 
     @Override

@@ -198,7 +198,7 @@ public class BookDetailFragment extends BaseFragment {
         getBookDetailViewModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.title_bar_title_book_detail);
         getBookDetailViewModel().getTitleBarViewModel().pageTag = PageTagConstants.BOOK_DETAIL;
         getBookDetailViewModel().getTitleBarViewModel().showRightText = false;
-        checkWifi();
+        checkWifi(getBookDetailViewModel().getTitleBarViewModel().leftText);
     }
 
     private void setRecommendRecycleView() {
@@ -219,15 +219,6 @@ public class BookDetailFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-    }
-
-    private void checkWifi() {
-        if (checkWifiDisConnected()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.NET_ERROR_TITLE, ResManager.getString(R.string.title_bar_title_book_detail));
-            setBundle(bundle);
-            goNetWorkErrorFragment();
-        }
     }
 
     @Override
@@ -395,9 +386,6 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadWholeBookEvent(DownloadWholeBookEvent event) {
-        if (checkWifiDisConnected()) {
-            return;
-        }
         BookDetailResultBean bookDetailResultBean = event.getBookDetailResultBean();
         if (bookDetailResultBean != null) {
             bookDetailBean = bookDetailResultBean.data;
@@ -424,7 +412,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
-        if (checkWifiDisConnected()) {
+        if (isWifiDisconnected()) {
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {
@@ -451,9 +439,6 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailReadNowEvent(BookDetailReadNowEvent event) {
-        if (checkWifiDisConnected()) {
-            return;
-        }
         BookDetailResultBean bookDetailResultBean = event.getBookDetailResultBean();
         if (bookDetailResultBean != null) {
             bookDetailBean = bookDetailResultBean.data;
@@ -645,6 +630,9 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void downLoadWholeBook() {
+        if (isWifiDisconnected()) {
+            return;
+        }
         nowReadButton.setEnabled(false);
         showShopCartView(false);
         changeBuyBookButtonState();
@@ -727,6 +715,10 @@ public class BookDetailFragment extends BaseFragment {
         }
         if (fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean);
+            return;
+        }
+
+        if (isWifiDisconnected()) {
             return;
         }
 

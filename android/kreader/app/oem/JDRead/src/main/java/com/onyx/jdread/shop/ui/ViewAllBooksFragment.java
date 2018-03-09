@@ -122,7 +122,7 @@ public class ViewAllBooksFragment extends BaseFragment {
         });
         viewAllBinding.setViewModel(getViewAllViewModel());
         initPageIndicator();
-        checkWifi();
+        checkWifi(getTitleBarViewModel().leftText);
     }
 
     private void initPageIndicator() {
@@ -194,15 +194,6 @@ public class ViewAllBooksFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
-    }
-
-    private void checkWifi() {
-        if (checkWifiDisConnected()) {
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.NET_ERROR_TITLE, getTitleBarViewModel().leftText);
-            setBundle(bundle);
-            goNetWorkErrorFragment();
-        }
     }
 
     @Override
