@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.api.device.epd.UpdateScheme;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityReaderBinding;
@@ -65,14 +66,19 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
             EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
         }
-        ParserOpenDocumentInfoAction parserOpenDocumentInfoAction = new ParserOpenDocumentInfoAction(getIntent());
-        parserOpenDocumentInfoAction.execute(readerViewModel.getReaderDataHolder(),null);
-        if (binding.getReadViewModel().setDocumentInfo(parserOpenDocumentInfoAction.getDocumentInfo())) {
-            updateLoadingState();
-            readerViewModel.setReaderPageView(binding.readerPageView);
-            OpenDocumentAction openDocumentAction = new OpenDocumentAction(this);
-            openDocumentAction.execute(readerViewModel.getReaderDataHolder(),null);
-        }
+        final ParserOpenDocumentInfoAction parserOpenDocumentInfoAction = new ParserOpenDocumentInfoAction(getIntent());
+        parserOpenDocumentInfoAction.execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                if (binding.getReadViewModel().setDocumentInfo(parserOpenDocumentInfoAction.getDocumentInfo())) {
+                    updateLoadingState();
+                    readerViewModel.setReaderPageView(binding.readerPageView);
+                    OpenDocumentAction openDocumentAction = new OpenDocumentAction(ReaderActivity.this);
+                    openDocumentAction.execute(readerViewModel.getReaderDataHolder(),null);
+                }
+            }
+        });
+
     }
 
     private void updateLoadingState(){

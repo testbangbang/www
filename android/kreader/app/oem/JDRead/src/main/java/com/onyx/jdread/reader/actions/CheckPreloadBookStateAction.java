@@ -6,6 +6,7 @@ import android.content.res.AssetManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.request.CheckPreloadBookStateRequest;
 import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 import java.io.File;
@@ -16,24 +17,22 @@ import java.io.File;
 
 public class CheckPreloadBookStateAction extends BaseReaderAction {
     private String preloadBook;
-    private static final String PRELOAD_BOOK_NAME = "preload.txt";
+
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        String preloadPath = readerDataHolder.getAppContext().getFilesDir().getAbsolutePath() + File.separator;
-        String bookPath = preloadPath + PRELOAD_BOOK_NAME;
-        if(!FileUtils.fileExist(bookPath)){
-            createPreloadBook(readerDataHolder.getAppContext(),bookPath);
-        }
-        preloadBook = bookPath;
-        return;
-    }
-
-    public static void createPreloadBook(Context context,String preloadPath) {
-        String srcFileName = PRELOAD_BOOK_NAME;
-
-        AssetManager am = context.getAssets();
-        ReaderViewUtil.readAssetsFile(am, srcFileName, preloadPath);
+    public void execute(ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
+        AssetManager am = readerDataHolder.getAppContext().getAssets();
+        String applicationPath = readerDataHolder.getAppContext().getFilesDir().getAbsolutePath() + File.separator;
+        final CheckPreloadBookStateRequest request = new CheckPreloadBookStateRequest(null,am,applicationPath);
+        request.execute(new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                preloadBook = request.getPreloadBook();
+                if(baseCallback != null){
+                    baseCallback.onNext(o);
+                }
+            }
+        });
     }
 
     public String getPreloadBook() {
