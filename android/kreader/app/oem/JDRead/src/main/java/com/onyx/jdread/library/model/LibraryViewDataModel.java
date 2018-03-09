@@ -50,6 +50,7 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableList<DataModel> items = new ObservableArrayList<>();
     public final ObservableField<String> title = new ObservableField<>();
     public final ObservableInt count = new ObservableInt(-1);
+    public final ObservableInt bookCount = new ObservableInt(-1);
     public final ObservableInt libraryCount = new ObservableInt(0);
     public final ObservableBoolean showTopMenu = new ObservableBoolean(true);
     public final ObservableBoolean showBottomMenu = new ObservableBoolean(false);

@@ -56,7 +56,8 @@ public class RxMetadataLoadAction extends BaseAction<LibraryDataBundle> {
             @Override
             public void onNext(RxLibraryLoadRequest rxLibraryLoadRequest) {
                 if (baseCallback != null) {
-                    dataModel.count.set((int) (dataModel.libraryPathList.size() == 0 ? libraryRequest.getAllBookCount() : libraryRequest.getTotalCount()));
+                    dataModel.count.set((int) (libraryRequest.getTotalCount()));
+                    dataModel.bookCount.set((int) (dataModel.libraryPathList.size() == 0 ? libraryRequest.getAllBookCount() : libraryRequest.getTotalCount()));
                     dataModel.libraryCount.set((int) libraryRequest.getLibraryCount());
                     dataModel.getLibrarySelectedModel().setCount(libraryRequest.getMetaDataCount());
                     dataModel.setPageData(libraryRequest.getModels());

@@ -187,7 +187,7 @@ public class LibraryFragment extends BaseFragment {
         pagination.resize(row, col, totalCount);
         pageIndicatorModel.updateCurrentPage(totalCount);
         pageIndicatorModel.setTotalFormat(libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() == 0 ? getString(R.string.total) : getString(R.string.bosom));
-        pageIndicatorModel.updateTotal(totalCount);
+        pageIndicatorModel.updateTotal(libraryDataBundle.getLibraryViewDataModel().bookCount.get());
         libraryDataBundle.getLibraryViewDataModel().updateDeletePage();
     }
 
@@ -586,9 +586,9 @@ public class LibraryFragment extends BaseFragment {
                 float progress = event.progressInfoModel.progress * 100;
                 item.downloadProgress.set((int) progress);
                 BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
-                item.downloadStatus.set(task.getStatus());
                 item.bookStatus.set(DownLoadHelper.getBookStatus(task.getStatus()));
-                item.showDownloadProgress.set(DownLoadHelper.isPause(task.getStatus()) || DownLoadHelper.isDownloading(task.getStatus()));
+                item.downloadStatus.set(task.getStatus());
+                item.showDownloadProgress.set(DownLoadHelper.showProgress(task.getStatus()));
             }
         }
     }
