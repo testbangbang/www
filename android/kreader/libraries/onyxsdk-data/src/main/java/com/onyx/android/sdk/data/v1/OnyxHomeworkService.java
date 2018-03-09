@@ -36,6 +36,6 @@ public interface OnyxHomeworkService {
     @GET("homeworks/myAnwserOnly" )
     Call<HomeworkReviewResult> getAnwsers(@Query("id") String id);
 
-    @GET("homeworks/{id}/staticRank")
-    Call<StaticRankResult> staticRank(@Path("id") String id);
+    @GET("homeworks/{child}/{id}/staticRankNew")
+    Call<StaticRankResult> staticRank(@Path("child") String child, @Path("id") String id);
 }

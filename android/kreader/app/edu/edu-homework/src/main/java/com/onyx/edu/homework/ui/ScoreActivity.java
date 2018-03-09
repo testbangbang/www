@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.StatisticsResult;
 import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.data.model.homework.QuestionReview;
 import com.onyx.android.sdk.data.model.homework.StaticRankResult;
@@ -210,7 +209,10 @@ public class ScoreActivity extends BaseActivity {
     }
 
     private void getStaticRank() {
-        new StaticRankAction(getDataBundle().getPublicHomeworkId()).execute(this, new BaseCallback() {
+        new StaticRankAction()
+                .setChildId(getDataBundle().getChildId())
+                .setId(getDataBundle().getPersonalHomeworkId())
+                .execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 StaticRankRequest rankRequest = (StaticRankRequest) request;

@@ -254,7 +254,7 @@ public class HomeworkListActivity extends BaseActivity {
 
     private void getHomeworkReview() {
         getDataBundle().post(new StopNoteEvent(false));
-        GetHomeworkReviewsAction reviewsAction = new GetHomeworkReviewsAction(getDataBundle().getPublicHomeworkId(), getDataBundle().getPersonalHomeworkId(), questions, true, true);
+        GetHomeworkReviewsAction reviewsAction = new GetHomeworkReviewsAction(getDataBundle().getChildId(), getDataBundle().getPersonalHomeworkId(), questions, true, true);
         reviewsAction.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -285,16 +285,16 @@ public class HomeworkListActivity extends BaseActivity {
             showMessage(R.string.no_find_homework);
             return;
         }
-        String publicHomeworkId = homeworkIntent.child._id;
+        String childId = homeworkIntent.child._id;
         String personalHomeworkId = homeworkIntent._id;
-        if (StringUtils.isNullOrEmpty(publicHomeworkId)
+        if (StringUtils.isNullOrEmpty(childId)
                 || StringUtils.isNullOrEmpty(personalHomeworkId)) {
             showMessage(R.string.no_find_homework);
             return;
         }
-        getDataBundle().setPublicHomeworkId(publicHomeworkId).setPersonalHomeworkId(personalHomeworkId);
+        getDataBundle().setChildId(childId).setPersonalHomeworkId(personalHomeworkId);
         showMessage(R.string.loading_questions);
-        final HomeworkListActionChain actionChain = new HomeworkListActionChain(publicHomeworkId, personalHomeworkId);
+        final HomeworkListActionChain actionChain = new HomeworkListActionChain(childId, personalHomeworkId);
         actionChain.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

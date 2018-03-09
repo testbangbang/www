@@ -136,7 +136,7 @@ public class SubmitDialog extends OnyxBaseDialog {
     }
 
     private void submitImpl(List<HomeworkSubmitAnswer> totalAnswers) {
-        new HomeworkSubmitAction(getDataBundle().getPublicHomeworkId(),
+        new HomeworkSubmitAction(getDataBundle().getChildId(),
                 getDataBundle().getPersonalHomeworkId(),
                 totalAnswers).execute(getContext(), new BaseCallback() {
             @Override
