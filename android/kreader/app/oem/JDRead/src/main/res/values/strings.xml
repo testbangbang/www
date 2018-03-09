@@ -497,6 +497,7 @@
     <string name="book_detail_add_cart_tip_the_book_already_add_cart">the book already add to cart</string>
     <string name="pay_dialog_insufficient_balance">insufficient balance,go charge</string>
     <string name="pay_success">pay success</string>
+    <string name="pay_failed">pay failed</string>
     <string name="password_find">Password find</string>
     <string name="psw_success_to_unlock">Get success to unlock</string>
     <string name="find_password_qr_generating">Generating retrieve information...</string>
@@ -542,4 +543,5 @@
     <string name="net_book_day_befor_update">(update %s days ago)</string>
     <string name="greater_than_ninety_nine">99+</string>
     <string name="delete">Delete</string>
+    <string name="not_existent">book do not exist</string>
 </resources>
