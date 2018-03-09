@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.onyx.android.sdk.utils.FileUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +23,13 @@ public class ChangeDBFilePermissionForDiagnosticReceiver extends BroadcastReceiv
         if (!TextUtils.isEmpty(action)) {
             switch (action) {
                 case UNLOCK_DB_FILE_PERMISSION_ACTION:
-                    for (File file : getAllFileUnderCurrentFolder(dbFolder)) {
+                    for (File file : collectAllSubFile(dbFolder)) {
                         file.setReadable(true, false);
                         file.setExecutable(true, false);
                     }
                     break;
                 case LOCK_DB_FILE_PERMISSION_ACTION:
-                    for (File file : getAllFileUnderCurrentFolder(dbFolder)) {
+                    for (File file : collectAllSubFile(dbFolder)) {
                         file.setReadable(true);
                         file.setExecutable(false, false);
                         file.setExecutable(true);
@@ -37,19 +39,10 @@ public class ChangeDBFilePermissionForDiagnosticReceiver extends BroadcastReceiv
         }
     }
 
-    private List<File> getAllFileUnderCurrentFolder(File folder) {
+    private List<File> collectAllSubFile(File folder) {
         List<File> resultList = new ArrayList<>();
-        File[] folderSubItems = folder.listFiles();
         resultList.add(folder);
-        if (folderSubItems != null) {
-            for (File subFile : folderSubItems) {
-                if (subFile.isDirectory()) {
-                    resultList.addAll(getAllFileUnderCurrentFolder(subFile));
-                } else {
-                    resultList.add(subFile);
-                }
-            }
-        }
+        FileUtils.getAllFileUnderCurrentFolder(folder.getPath(), null, true, resultList);
         return resultList;
     }
 }
