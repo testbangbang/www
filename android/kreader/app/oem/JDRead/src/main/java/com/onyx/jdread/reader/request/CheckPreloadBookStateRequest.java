@@ -29,13 +29,13 @@ public class CheckPreloadBookStateRequest extends ReaderBaseRequest {
     public CheckPreloadBookStateRequest call() throws Exception {
         String bookPath = preloadPath + PRELOAD_BOOK_NAME;
         if (!FileUtils.fileExist(bookPath)) {
-            createPreloadBook(getReader().getReaderHelper().getContext(), bookPath);
+            createPreloadBook(bookPath);
         }
         preloadBook = bookPath;
         return this;
     }
 
-    public void createPreloadBook(Context context, String preloadPath) {
+    public void createPreloadBook(String preloadPath) {
         String srcFileName = PRELOAD_BOOK_NAME;
 
         ReaderViewUtil.readAssetsFile(am, srcFileName, preloadPath);
