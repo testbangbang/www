@@ -93,10 +93,10 @@
     <string name="login_immediately">立即登录</string>
     <string name="unsigned_in">未签到</string>
     <string name="signed_in">已签到</string>
-    <string name="manual">使用手册</string>
+    <string name="manual">常见问题</string>
     <string name="feedback">问题反馈</string>
     <string name="contact_us">联系我们</string>
-    <string name="product_introduce">产品介绍</string>
+    <string name="product_introduce">产品常见问题解答，请扫码查看</string>
     <string name="common_problem">常见问题</string>
     <string name="commit">提交</string>
     <string name="feedback_content_hint">请输入5-200字反馈内容</string>

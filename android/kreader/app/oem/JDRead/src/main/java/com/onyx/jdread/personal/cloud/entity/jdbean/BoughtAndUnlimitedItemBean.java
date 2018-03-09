@@ -14,4 +14,5 @@ public class BoughtAndUnlimitedItemBean {
     public int second_catid1;
     public int second_catid2;
     public float file_size;
+    public String format;
 }

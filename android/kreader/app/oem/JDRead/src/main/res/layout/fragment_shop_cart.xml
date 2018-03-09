@@ -23,7 +23,6 @@
                 android:id="@+id/shop_cart_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/imagebtn_bg"
                 android:drawableLeft="@mipmap/ic_read_back"
                 android:drawablePadding="@dimen/title_bar_drawable_padding"
                 android:gravity="center_vertical"

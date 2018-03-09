@@ -83,7 +83,7 @@
     <string name="document_path_error">Book path error</string>
     <string name="open_book_parameter_error">There is no book path in opening book information</string>
     <string name="open_book_fail">Open book fail</string>
-    <string name="product_introduce">Product introduce</string>
+    <string name="product_introduce">The product FAQ, please scan the code</string>
     <string name="common_problem">Common problem</string>
     <string name="commit">commit</string>
     <string name="feedback_content_hint">Please enter 5-200 word feedback content</string>
@@ -106,7 +106,7 @@
     <string name="official_email">Email: XXXXXXXX@jd.com</string>
     <string name="device_setting_version_number">Version: %s</string>
     <string name="device_setting_serial_number">Serial: %s</string>
-    <string name="manual">Manual</string>
+    <string name="manual">Common problem</string>
     <string name="feedback">The problem of feedback</string>
     <string name="contact_us">Contact us</string>
     <string name="view_all">View All</string>

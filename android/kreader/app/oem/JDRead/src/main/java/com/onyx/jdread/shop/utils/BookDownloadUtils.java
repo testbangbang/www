@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.utils;
 
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
@@ -9,6 +10,7 @@ import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.shop.action.BookshelfInsertAction;
 import com.onyx.jdread.shop.action.DownLoadWholeBookAction;
 import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
@@ -80,6 +82,8 @@ public class BookDownloadUtils {
         if (FileUtils.fileExist(localPath)) {
             FileUtils.deleteFile(localPath);
         }
+        bookDetailBean.bookExtraInfoBean.downLoadTaskTag = bookDetailBean.ebook_id + Constants.WHOLE_BOOK_DOWNLOAD_TAG;
+        insert(bookDetailBean, localPath);
         DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.downLoadUrl, localPath, bookDetailBean.ebook_id + Constants.WHOLE_BOOK_DOWNLOAD_TAG);
         downloadAction.setBookDetailBean(bookDetailBean);
         downloadAction.execute(dataBundle, new RxCallback() {
@@ -88,5 +92,10 @@ public class BookDownloadUtils {
 
             }
         });
+    }
+
+    private static void insert(BookDetailResultBean.DetailBean detail, String localPath) {
+        BookshelfInsertAction action = new BookshelfInsertAction(detail, localPath);
+        action.execute(ShopDataBundle.getInstance(), null);
     }
 }
