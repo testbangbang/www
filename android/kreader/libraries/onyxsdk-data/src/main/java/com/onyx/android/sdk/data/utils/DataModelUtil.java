@@ -81,7 +81,9 @@ public class DataModelUtil {
                 model.downLoadTaskTag = extraInfoBean.downLoadTaskTag;
                 float progress = extraInfoBean.progress * 100 / extraInfoBean.totalSize;
                 model.downloadProgress.set((int) progress);
-                model.showDownloadProgress.set(extraInfoBean.downLoadState == FileDownloadStatus.paused || extraInfoBean.downLoadState == FileDownloadStatus.progress);
+                model.showDownloadProgress.set(extraInfoBean.downLoadState == FileDownloadStatus.paused
+                        || extraInfoBean.downLoadState == FileDownloadStatus.progress
+                        || extraInfoBean.downLoadState == FileDownloadStatus.started);
             }
 
             CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());

@@ -7,6 +7,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -40,6 +41,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     public InitFirstPageViewRequest call() throws Exception {
         updateView();
         initPosition();
+        restoreLayout();
         restoreReaderTextStyle();
         getReader().getReaderViewHelper().updatePageView(getReader(), getReaderUserDataInfo(), getReaderViewInfo());
         updateSetting(getReader());
@@ -100,6 +102,25 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         }
         getReader().getReaderHelper().gotoPosition(position);
         restoreScale(getReader(), position);
+    }
+
+    private void restoreLayout() throws ReaderException {
+        restoreLayoutType();
+        restoreReflowSettings();
+    }
+
+    private void restoreLayoutType() throws ReaderException {
+        BaseOptions baseOptions = getReader().getReaderHelper().getDocumentOptions();
+        if (StringUtils.isNotBlank(baseOptions.getLayoutType())) {
+            getReader().getReaderHelper().getReaderLayoutManager().setCurrentLayout(baseOptions.getLayoutType(), baseOptions.getNavigationArgs());
+        }
+    }
+
+    private void restoreReflowSettings() {
+        BaseOptions baseOptions = getReader().getReaderHelper().getDocumentOptions();
+        if (StringUtils.isNotBlank(baseOptions.getReflowSettings())) {
+            getReader().getReaderHelper().getImageReflowManager().updateSettings(ImageReflowSettings.fromJsonString(baseOptions.getReflowSettings()));
+        }
     }
 
     private void restoreReaderTextStyle() throws ReaderException {

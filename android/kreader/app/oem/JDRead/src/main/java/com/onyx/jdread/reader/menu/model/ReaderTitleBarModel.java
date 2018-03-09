@@ -25,8 +25,9 @@ public class ReaderTitleBarModel extends BaseObservable {
     private ObservableBoolean isShow = new ObservableBoolean(true);
     private EventBus eventBus;
 
-    public ReaderTitleBarModel(EventBus eventBus) {
+    public ReaderTitleBarModel(EventBus eventBus,boolean supportFontSizeAdjustment) {
         this.eventBus = eventBus;
+        setIsSearchContext(supportFontSizeAdjustment);
     }
 
     public EventBus getEventBus() {
@@ -62,8 +63,8 @@ public class ReaderTitleBarModel extends BaseObservable {
         return isSearchContext;
     }
 
-    public void setIsSearchContext(ObservableBoolean isSearchContext) {
-        this.isSearchContext = isSearchContext;
+    public void setIsSearchContext(boolean isSearchContext) {
+        this.isSearchContext.set(isSearchContext);
     }
 
     public ObservableInt getBookMarkImageId() {

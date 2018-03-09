@@ -190,6 +190,7 @@
     <integer name="batch_download_recycle_view_col">2</integer>
     <integer name="book_batch_download_recycle_view_item_space">20</integer>
     <integer name="back_tab_index">2</integer>
+    <integer name="default_toast_gravity">0x00000051</integer>
 
     <integer name="net_error_tip_goto_setting_start">3</integer>
     <integer name="net_error_tip_goto_setting_end">9</integer>

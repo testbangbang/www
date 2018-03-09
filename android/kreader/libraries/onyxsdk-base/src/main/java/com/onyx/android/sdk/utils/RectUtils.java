@@ -345,4 +345,9 @@ public class RectUtils {
         rect.right += right;
         rect.bottom += bottom;
     }
+
+    public static boolean contains(RectF rect,float x, float y){
+        return rect.left < rect.right && rect.top < rect.bottom  // check for empty first
+                && x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    }
 }

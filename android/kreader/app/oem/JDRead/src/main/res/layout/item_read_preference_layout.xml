@@ -22,6 +22,8 @@
             android:padding="@dimen/item_preference_padding"
             android:text="@{type}"
             android:textColor="@android:color/black"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:textSize="@dimen/level_three_heading_font" />
     </LinearLayout>
 </layout>

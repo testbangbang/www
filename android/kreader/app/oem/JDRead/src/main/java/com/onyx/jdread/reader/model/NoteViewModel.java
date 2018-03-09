@@ -66,6 +66,12 @@ public class NoteViewModel {
                 setSrcPageNumber(currentPage + "/" + totalPage);
             }
         });
+        this.binding.tvNewNote.setOnPagingListener(new PageTextView.OnPagingListener() {
+            @Override
+            public void onPageChange(int currentPage, int totalPage) {
+                setNewPageNumber(currentPage + "/" + totalPage);
+            }
+        });
     }
 
     public void setReaderDataHolder(EventBus eventBus) {

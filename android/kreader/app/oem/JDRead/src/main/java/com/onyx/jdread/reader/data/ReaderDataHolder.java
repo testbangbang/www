@@ -7,6 +7,7 @@ import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.rx.RxRequest;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.GammaInfo;
@@ -45,6 +46,7 @@ public class ReaderDataHolder {
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
         setAppContext(appContext);
+        initRequestAppContext(appContext);
         initView(appContext);
     }
 
@@ -189,8 +191,12 @@ public class ReaderDataHolder {
         this.appContext = appContext;
     }
 
+    public void initRequestAppContext(Context appContext) {
+        RxRequest.setAppContext(appContext);
+    }
+
     public String getCurrentPagePosition() {
-        return getReaderViewInfo().getFirstVisiblePage().getPositionSafely();
+        return getReaderViewInfo().getFirstVisiblePagePosition();
     }
 
     public String getBookName(){

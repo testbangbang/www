@@ -1,38 +1,59 @@
 package com.onyx.jdread.personal.ui;
 
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.evernote.client.android.EvernoteSession;
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.ZipUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalNoteBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.manager.EvernoteManager;
+import com.onyx.jdread.personal.action.ExportAction;
+import com.onyx.jdread.personal.action.ExportNoteAction;
 import com.onyx.jdread.personal.action.GetPersonalNotesAction;
 import com.onyx.jdread.personal.adapter.PersonalNoteAdapter;
+import com.onyx.jdread.personal.cloud.entity.jdbean.BookBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean;
 import com.onyx.jdread.personal.dialog.ExportDialog;
 import com.onyx.jdread.personal.event.ExportToEmailEvent;
 import com.onyx.jdread.personal.event.ExportToImpressionEvent;
 import com.onyx.jdread.personal.event.ExportToNativeEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.setting.common.AssociateDialogHelper;
+import com.onyx.jdread.setting.common.ExportHelper;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
+import com.onyx.jdread.setting.event.BindEmailEvent;
+import com.onyx.jdread.setting.event.UnBindEmailEvent;
+import com.onyx.jdread.setting.view.AssociatedEmailDialog;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +65,7 @@ public class PersonalNoteFragment extends BaseFragment {
     private PersonalNoteBinding binding;
     private PersonalNoteAdapter personalNoteAdapter;
     private GPaginator paginator;
+    private ExportHelper exportHelper;
 
     @Nullable
     @Override
@@ -81,6 +103,7 @@ public class PersonalNoteFragment extends BaseFragment {
         titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.personal_notes));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.personalNoteTitle.setTitleModel(titleModel);
+        exportHelper = new ExportHelper(getActivity(), PersonalDataBundle.getInstance().getEventBus());
 
         final GetPersonalNotesAction action = new GetPersonalNotesAction();
         action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
@@ -104,7 +127,7 @@ public class PersonalNoteFragment extends BaseFragment {
             public void onClick(View v) {
                 List<NoteBean> data = personalNoteAdapter.getData();
                 if (data != null && data.size() > 0) {
-                    for (NoteBean bean :data) {
+                    for (NoteBean bean : data) {
                         bean.checked = !bean.checked;
                     }
                     setExportText(data.get(0).checked);
@@ -156,6 +179,7 @@ public class PersonalNoteFragment extends BaseFragment {
 
     private void showExportDialog() {
         ExportDialog dialog = new ExportDialog();
+        dialog.setEventBus(PersonalDataBundle.getInstance().getEventBus());
         dialog.show(getActivity().getFragmentManager(), "");
     }
 
@@ -166,21 +190,31 @@ public class PersonalNoteFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToNativeEvent(ExportToNativeEvent event) {
+        exportNote(ExportHelper.TYPE_NATIVE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToEmailEvent(ExportToEmailEvent event) {
+        exportNote(ExportHelper.TYPE_EMAIL);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToImpressionEvent(ExportToImpressionEvent event) {
+        exportNote(ExportHelper.TYPE_EVERNOTE);
+    }
+
+    private void exportNote(int exportType) {
         if (personalNoteAdapter != null) {
             List<NoteBean> data = personalNoteAdapter.getData();
-            for (NoteBean bean : data) {
-                if (bean.checked) {
-                    EvernoteManager.createNote(bean.ebook.name, bean.ebook.info);
-                }
-            }
+            ExportAction action = new ExportAction(exportHelper, exportType, data);
+            action.execute(PersonalDataBundle.getInstance(), null);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBindEmailEvent(BindEmailEvent event) {
+        AssociateDialogHelper.dismissEmailDialog();
+        ToastUtil.showToast(R.string.bind_email_success);
+        showExportDialog();
     }
 }

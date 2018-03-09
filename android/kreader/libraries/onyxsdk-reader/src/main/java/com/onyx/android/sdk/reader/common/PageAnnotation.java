@@ -48,4 +48,28 @@ public class PageAnnotation {
     public ArrayList<RectF> getRectangles() {
         return rectangles;
     }
+
+    public PageAnnotation copy(){
+        Annotation annotation = new Annotation();
+        annotation.setQuote(getAnnotation().getQuote());
+        annotation.setQuoteState(getAnnotation().getQuoteState());
+        annotation.setKey(getAnnotation().getKey());
+        annotation.setNote(getAnnotation().getNote());
+        annotation.setChapterName(getAnnotation().getChapterName());
+        annotation.setApplication(getAnnotation().getApplication());
+        annotation.setLocationBegin(getAnnotation().getLocationBegin());
+        annotation.setLocationEnd(getAnnotation().getLocationEnd());
+        annotation.setPageNumber(getAnnotation().getPageNumber());
+        annotation.setPosition(getAnnotation().getPosition());
+        annotation.setRectangles(getAnnotation().getRectangles());
+        annotation.setCreatedAt(getAnnotation().getCreatedAt());
+        annotation.setGuid(getAnnotation().getGuid());
+        annotation.setId(getAnnotation().getId());
+        annotation.setIdString(getAnnotation().getIdString());
+        annotation.setUpdatedAt(getAnnotation().getUpdatedAt());
+
+        PageAnnotation pageAnnotation = new PageAnnotation(pageInfo,annotation);
+        pageAnnotation.rectangles.addAll(getRectangles());
+        return pageAnnotation;
+    }
 }

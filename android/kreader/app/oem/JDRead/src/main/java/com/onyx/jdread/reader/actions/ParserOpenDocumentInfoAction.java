@@ -24,26 +24,31 @@ public class ParserOpenDocumentInfoAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        setDocumentInfo(readerDataHolder);
-        setSecurityInfo();
-    }
-
-    private String getPreloadBookPath(ReaderDataHolder readerDataHolder){
-        CheckPreloadBookStateAction action = new CheckPreloadBookStateAction();
-        action.execute(readerDataHolder,null);
-        return action.getPreloadBook();
-    }
-
-    private void setDocumentInfo(ReaderDataHolder readerDataHolder){
-        documentInfo = new DocumentInfo();
+    public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
         String bookPath;
         if(!intent.hasExtra(DocumentInfo.BOOK_PATH)){
-            bookPath = getPreloadBookPath(readerDataHolder);
-            readerDataHolder.setPreload(true);
+            final CheckPreloadBookStateAction action = new CheckPreloadBookStateAction();
+            action.execute(readerDataHolder, new RxCallback() {
+                @Override
+                public void onNext(Object o) {
+                    readerDataHolder.setPreload(true);
+                    setDocumentInfo(readerDataHolder,action.getPreloadBook());
+                    if(baseCallback != null){
+                        baseCallback.onNext(o);
+                    }
+                }
+            });
         }else {
             bookPath = intent.getStringExtra(DocumentInfo.BOOK_PATH);
+            setDocumentInfo(readerDataHolder,bookPath);
+            if(baseCallback != null){
+                baseCallback.onNext(this);
+            }
         }
+    }
+
+    private void setDocumentInfo(ReaderDataHolder readerDataHolder,String bookPath){
+        documentInfo = new DocumentInfo();
         if(StringUtils.isNullOrEmpty(bookPath)){
             documentInfo.setMessageId(R.string.document_path_error);
             return;
@@ -62,6 +67,7 @@ public class ParserOpenDocumentInfoAction extends BaseReaderAction {
         if(intent.hasExtra(DocumentInfo.PASSWORD)){
             documentInfo.setBookName(intent.getStringExtra(DocumentInfo.PASSWORD));
         }
+        setSecurityInfo();
     }
 
     private void setSecurityInfo(){

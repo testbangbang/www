@@ -3,51 +3,56 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/focused_bg"
-    android:paddingLeft="@dimen/tree_recycler_item_view_padding"
-    android:paddingRight="@dimen/tree_recycler_item_view_padding">
-
-    <ImageView
-        android:id="@+id/image_view_indicator"
-        android:layout_width="@dimen/image_view_indicator_size"
-        android:layout_height="@dimen/image_view_indicator_size"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/image_view_indicator_margin_right"
-        android:src="@drawable/ic_tree_recycler_item_view_indicator" />
-
-    <TextView
-        android:id="@+id/text_view_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="5dp"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/tree_item_text_size" />
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/text_view_description"
-        android:layout_toRightOf="@id/image_view_indicator"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="horizontal">
 
-        <View
-            android:id="@+id/current_chapter"
-            android:layout_width="3dp"
-            android:layout_height="match_parent"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:layout_marginRight="5dp"
-            android:background="@android:color/black" />
+        <ImageView
+            android:id="@+id/image_view_indicator"
+            android:layout_width="@dimen/image_view_indicator_size"
+            android:layout_height="@dimen/image_view_indicator_size"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/image_view_indicator_margin_right"
+            android:src="@drawable/ic_tree_recycler_item_view_indicator" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/current_chapter"
+                android:layout_width="3dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:background="@android:color/black"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp" />
+
+            <TextView
+                android:id="@+id/text_view_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/tree_item_text_size" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/text_view_title"
-            android:layout_width="match_parent"
+            android:id="@+id/text_view_description"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center"
             android:textColor="@android:color/black"
             android:textSize="@dimen/tree_item_text_size" />
     </LinearLayout>

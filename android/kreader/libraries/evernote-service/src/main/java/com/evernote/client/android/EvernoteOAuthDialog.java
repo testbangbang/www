@@ -46,6 +46,7 @@ public class EvernoteOAuthDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getDialog().setCanceledOnTouchOutside(false);
         view = inflater.inflate(R.layout.esdk__dialog_login_layout, container, false);
         initData();
         initView();

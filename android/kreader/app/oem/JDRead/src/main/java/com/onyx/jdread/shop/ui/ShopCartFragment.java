@@ -24,10 +24,13 @@ import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.adapter.ShopCartAdapter;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
+import com.onyx.jdread.personal.dialog.TopUpDialog;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
+import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.GetShopCartItemsAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.event.CartBookItemClickEvent;
@@ -202,21 +205,35 @@ public class ShopCartFragment extends BaseFragment {
                 ToastUtil.showToast(ResManager.getString(R.string.no_selected));
                 return;
             }
-            final GetOrderUrlAction orderUrlAction = new GetOrderUrlAction(ids);
-            orderUrlAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+
+            String[] bookIds = new String[ids.size()];
+            for (int i = 0; i < ids.size(); i++) {
+                bookIds[i] = ids.get(i);
+            }
+            getOrderInfo(bookIds);
+        }
+    }
+
+    private void getOrderInfo(String[] bookIds) {
+        if (bookIds != null) {
+            GetOrderInfoAction action = new GetOrderInfoAction(bookIds);
+            action.execute(ShopDataBundle.getInstance(), new RxCallback<GetOrderInfoAction>() {
                 @Override
-                public void onNext(Object o) {
-                    GetOrderUrlResultBean orderUrlResultBean = PersonalDataBundle.getInstance().getOrderUrlResultBean();
-                    if (orderUrlResultBean != null) {
-                        String url = CloudApiContext.JD_BOOK_ORDER_URL + CloudApiContext.GotoOrder.ORDER_ORDERSTEP1_ACTION;
-                        String tokenKey = CloudApiContext.GotoOrder.TOKENKEY;
-                        String payUrl = url + tokenKey + orderUrlResultBean.getTokenKey();
-                        PayFragment payFragment = new PayFragment();
+                public void onNext(GetOrderInfoAction getOrderInfoAction) {
+                    GetOrderInfoResultBean.DataBean dataBean = getOrderInfoAction.getDataBean();
+                    if (dataBean != null) {
+                        TopUpDialog dialog = new TopUpDialog();
                         Bundle bundle = new Bundle();
-                        bundle.putString(Constants.PAY_URL, payUrl);
-                        payFragment.setArguments(bundle);
-                        payFragment.show(getActivity().getFragmentManager(), "");
+                        bundle.putInt(Constants.PAY_DIALOG_TYPE, Constants.PAY_DIALOG_TYPE_PAY_ORDER);
+                        bundle.putSerializable(Constants.ORDER_INFO, dataBean);
+                        dialog.setArguments(bundle);
+                        dialog.show(getActivity().getFragmentManager(), "");
                     }
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    super.onError(throwable);
                 }
             });
         }
