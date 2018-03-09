@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -21,7 +24,10 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.OpenDocumentAction;
 import com.onyx.jdread.reader.actions.ParserOpenDocumentInfoAction;
+import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.common.ReaderViewBack;
+import com.onyx.jdread.reader.data.PageTurningDetector;
+import com.onyx.jdread.reader.data.PageTurningDirection;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.model.SelectMenuModel;
@@ -50,6 +56,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         readerViewModel = new ReaderViewModel();
         binding.setReadViewModel(readerViewModel);
         readerActivityEventHandler = new ReaderActivityEventHandler(readerViewModel,this);
+        initLastPageView();
         initSurfaceView();
         initSelectMenu();
     }
@@ -80,6 +87,62 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
             readerViewModel.setTipMessage(ResManager.getString(R.string.preload_loading));
             readerViewModel.setIsShowTipMessage(true);
         }
+    }
+
+    private void initLastPageView() {
+        binding.buttonBackToLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReaderActivity.this.finish();
+            }
+        });
+
+        final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                if (PrevPageAction.getRegionOne(ReaderActivity.this).contains((int)e.getX(), (int)e.getY())) {
+                    readerViewModel.setIsShowLastPage(false);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                PageTurningDirection direction = PageTurningDetector.detectHorizontalTuring(ReaderActivity.this, (int)(e2.getX() - e1.getX()));
+                if (direction == PageTurningDirection.Left) {
+                    readerViewModel.setIsShowLastPage(false);
+                }
+                return true;
+            }
+
+        });
+        binding.layoutLastPage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
     }
 
     private void initSurfaceView() {

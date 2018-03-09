@@ -549,4 +549,7 @@
     <string name="export_failed">Export failed, please check the network and try again</string>
     <string name="bind_email_success">Associated E-mail success</string>
     <string name="unbind_email_success">Undo E-mail binding success</string>
+    <string name="end_of_book">End of book</string>
+    <string name="end_of_book_description"></string>
+    <string name="back_to_library">Back to library</string>
 </resources>
