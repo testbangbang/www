@@ -532,6 +532,7 @@
     <string name="book_batch_download_buy_chapter">Chapter to buy</string>
     <string name="book_batch_download_item_current_chapter">Current Chapter</string>
     <string name="book_batch_download_item_after_chapter">After %d chapters</string>
+    <string name="annotation_repeat">Cannot be added repeatedly</string>
     <string name="reboot">Reboot</string>
     <string name="shutdown">Shutdown</string>
     <string name="please_check_wifi">Please check the wireless network and try again.</string>

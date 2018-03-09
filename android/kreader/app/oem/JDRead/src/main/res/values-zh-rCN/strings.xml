@@ -502,6 +502,7 @@
     <string name="book_batch_download_buy_chapter">章节购买</string>
     <string name="book_batch_download_item_current_chapter">本章</string>
     <string name="book_batch_download_item_after_chapter">后%d章</string>
+    <string name="annotation_repeat">不能重复添加</string>
     <string name="reboot">重启</string>
     <string name="shutdown">关机</string>
     <string name="please_check_wifi">请查看无线网络设置后重试</string>

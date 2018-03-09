@@ -5,20 +5,17 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.jdread.R;
-import com.onyx.jdread.reader.menu.common.ReaderConfig;
-import com.onyx.jdread.reader.utils.MapKeyComparator;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_LARGE;
 import static com.onyx.jdread.reader.menu.common.ReaderConfig.FONT_SIZE_MEDIUM;
@@ -176,12 +173,12 @@ public class ReaderSelectionHelper {
     public boolean update(String pagePosition, final Context context,
                                        ReaderSelection readerSelection, PointF lastPoint,
                                        PageInfo pageInfo,
-                                       ReaderTextStyle style) {
+                                       ReaderTextStyle style,List<PageAnnotation> pageAnnotations) {
         SelectionInfo readerSelectionInfo = readerSelectionInfos.get(pagePosition);
         if (readerSelectionInfo == null || readerSelectionInfo.getCurrentSelection() == null) {
-            readerSelectionInfo = addPageSelection(pagePosition, readerSelection, pageInfo);
+            readerSelectionInfo = addPageSelection(pagePosition, readerSelection, pageInfo,pageAnnotations);
         } else {
-            readerSelectionInfo.setCurrentSelection(readerSelection, pageInfo);
+            readerSelectionInfo.setCurrentSelection(readerSelection, pageInfo,pageAnnotations);
         }
         readerSelectionInfo.setTouchPoint(lastPoint);
         List<RectF> rects = readerSelectionInfo.getCurrentSelection().getRectangles();
@@ -207,9 +204,9 @@ public class ReaderSelectionHelper {
         return true;
     }
 
-    private SelectionInfo addPageSelection(String pagePosition, ReaderSelection readerSelection, PageInfo pageInfo) {
+    private SelectionInfo addPageSelection(String pagePosition, ReaderSelection readerSelection, PageInfo pageInfo,List<PageAnnotation> pageAnnotations) {
         SelectionInfo readerSelectionInfo = new SelectionInfo();
-        readerSelectionInfo.setCurrentSelection(readerSelection, pageInfo);
+        readerSelectionInfo.setCurrentSelection(readerSelection, pageInfo,pageAnnotations);
         readerSelectionInfo.setPagePosition(pagePosition);
         readerSelectionInfos.put(pagePosition, readerSelectionInfo);
         return readerSelectionInfo;

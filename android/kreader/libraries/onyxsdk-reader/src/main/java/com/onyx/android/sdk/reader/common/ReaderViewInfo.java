@@ -41,6 +41,15 @@ public class ReaderViewInfo {
     public String chapterName;
     private List<ChapterInfo> readTocChapterNodeList;
     private boolean isLoadToc = true;
+    private String firstVisiblePagePosition;
+
+    public String getFirstVisiblePagePosition() {
+        return firstVisiblePagePosition;
+    }
+
+    public void setFirstVisiblePagePosition(String firstVisiblePagePosition) {
+        this.firstVisiblePagePosition = firstVisiblePagePosition;
+    }
 
     public boolean isLoadToc() {
         return isLoadToc;

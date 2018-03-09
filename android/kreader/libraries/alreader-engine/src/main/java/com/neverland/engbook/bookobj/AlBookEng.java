@@ -3455,7 +3455,7 @@ public class AlBookEng{
 					vP = 0;
 				} else
 				if (preferences.chinezeSpecial) {
-					vE = 4;
+					vE = profiles.chinezeFormatting;
 					vP = 0;
 				}
 			} else

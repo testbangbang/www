@@ -132,11 +132,11 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     private void initCatalogView(final ReaderUserDataInfo readerUserDataInfo,ReaderViewInfo readerViewInfo) {
         readerDocumentTableOfContent = readerUserDataInfo.getTableOfContent();
         final int row = getContext().getResources().getInteger(R.integer.book_info_dialog_catalog_row);
-        ArrayList<TreeRecyclerView.TreeNode> rootNodes = ReaderBookInfoDialogConfig.buildTreeNodesFromToc(readerDocumentTableOfContent);
-        binding.getReaderBookInfoModel().setRootNodes(rootNodes);
+        ReaderBookInfoDialogConfig.Node node = ReaderBookInfoDialogConfig.buildTreeNodesFromToc(readerDocumentTableOfContent);
+        binding.getReaderBookInfoModel().setRootNodes(node.nodes);
         binding.bookInfoCatalogContent.setDefaultPageKeyBinding();
         binding.bookInfoCatalogContent.setPageTurningCycled(true);
-        binding.bookInfoCatalogContent.bindTree(rootNodes, new TreeRecyclerView.Callback() {
+        binding.bookInfoCatalogContent.bindTree(node.nodes, new TreeRecyclerView.Callback() {
             @Override
             public void onTreeNodeClicked(TreeRecyclerView.TreeNode node) {
                 ReaderDocumentTableOfContentEntry entry = (ReaderDocumentTableOfContentEntry) node.getTag();
@@ -159,12 +159,12 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
                     onPageChanged();
                 }
             }
-        }, row);
+        }, row,node.hasChildren);
 
         if (readerDocumentTableOfContent != null && hasChildren(readerDocumentTableOfContent.getRootEntry())) {
             ReaderDocumentTableOfContentEntry entry = locateEntry(readerDocumentTableOfContent.getRootEntry().getChildren(),
                     PagePositionUtils.getPosition(getCurrentPagePosition()));
-            TreeRecyclerView.TreeNode treeNode = findTreeNodeByTag(rootNodes, entry);
+            TreeRecyclerView.TreeNode treeNode = findTreeNodeByTag(node.nodes, entry);
             if (treeNode != null) {
                 binding.bookInfoCatalogContent.setCurrentNode(treeNode);
                 binding.bookInfoCatalogContent.expandTo(treeNode);

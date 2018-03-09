@@ -6,11 +6,15 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.highlight.HitTestTextHelper;
 import com.onyx.jdread.reader.highlight.ReaderSelectionHelper;
 import com.onyx.jdread.reader.highlight.SelectionInfo;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by huxiaomao on 2018/1/15.
@@ -24,6 +28,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
     private float width;
     private float height;
     private ReaderSelection currentPageReaderSelect;
+    private List<PageAnnotation> currentPageAnnotation = new ArrayList<>();
     private PointF currentPageTouchPoint;
     private PageInfo pageInfo;
 
@@ -47,6 +52,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
         }
 
         getReader().getReaderHelper().getReaderLayoutManager().prevScreen();
+        HitTestTextHelper.loadPageAnnotations(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
         newPagePosition = getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
 
         SelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(newPagePosition);
@@ -96,7 +102,8 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
                 getReaderUserDataInfo().getHighlightResult(),
                 getReaderUserDataInfo().getTouchPoint(),
                 pageInfo,
-                getReader().getReaderHelper().getReaderLayoutManager().getTextStyleManager().getStyle());
+                getReader().getReaderHelper().getReaderLayoutManager().getTextStyleManager().getStyle(),
+                getReaderUserDataInfo().getPageAnnotations(pageInfo.getName()));
         readerSelectionManager.updateDisplayPosition(pagePosition);
         readerSelectionManager.setEnable(pagePosition, true);
     }
@@ -106,6 +113,7 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
     }
 
     private boolean extendCurrentPageUpperLeftSelectTextRegion() {
+        HitTestTextHelper.loadPageAnnotations(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
         SelectionInfo readerSelectionInfo = readerSelectionManager.getReaderSelectionInfo(currentPagePosition);
 
         PointF start = new PointF(0,0);
@@ -125,11 +133,11 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
 
             ReaderHitTestManager hitTestManager = getReader().getReaderHelper().getHitTestManager();
             PageInfo pageInfo = getReader().getReaderHelper().getReaderLayoutManager().getPageManager().getPageInfo(currentPagePosition);
-
             newReaderSelectionInfo = HitTestTextHelper.selectOnScreen(start, end, currentPagePosition, pageInfo, hitTestManager, getReaderUserDataInfo());
             if (newReaderSelectionInfo != null && newReaderSelectionInfo.getCurrentSelection() != null) {
                 currentPageReaderSelect = getReaderUserDataInfo().getHighlightResult();
                 currentPageTouchPoint = getReaderUserDataInfo().getTouchPoint();
+                currentPageAnnotation.addAll(getReaderUserDataInfo().getPageAnnotations(pageInfo.getName()));
                 this.pageInfo = pageInfo;
                 return true;
             }
@@ -142,7 +150,8 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
                 currentPageReaderSelect,
                 currentPageTouchPoint,
                 pageInfo,
-                getReader().getReaderHelper().getReaderLayoutManager().getTextStyleManager().getStyle());
+                getReader().getReaderHelper().getReaderLayoutManager().getTextStyleManager().getStyle(),
+                currentPageAnnotation);
         readerSelectionManager.updateDisplayPosition(currentPagePosition);
         readerSelectionManager.setEnable(currentPagePosition, true);
     }

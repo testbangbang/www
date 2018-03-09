@@ -26,7 +26,7 @@ public class SelectWordAction extends BaseReaderAction {
                 selectWordInfo.endPoint,
                 selectWordInfo.touchPoint,
                 ReaderHitTestOptionsImpl.create(true),
-                readerDataHolder.getReaderViewInfo().getPageInfo(selectWordInfo.pagePosition));
+                readerDataHolder.getReaderViewInfo().getPageInfo(selectWordInfo.pagePosition),true);
 
         final String pagePosition = readerDataHolder.getCurrentPagePosition();
         readerDataHolder.getReaderSelectionInfo().increaseSelectCount();

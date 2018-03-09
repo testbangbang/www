@@ -24,15 +24,21 @@ public class ReaderBookInfoDialogConfig {
     public static final int CATALOG_MODE = 1;
     public static final int BOOKMARK_MODE = 2;
     public static final int NOTE_MODE = 3;
+    public static class Node{
+        public ArrayList<TreeRecyclerView.TreeNode> nodes = new ArrayList<>();
+        public boolean hasChildren = false;
+    }
 
-    public static ArrayList<TreeRecyclerView.TreeNode> buildTreeNodesFromToc(ReaderDocumentTableOfContent toc) {
-        ArrayList<TreeRecyclerView.TreeNode> nodes = new ArrayList<>();
+    public static Node buildTreeNodesFromToc(ReaderDocumentTableOfContent toc) {
+        Node node = new Node();
         if (toc != null && toc.getRootEntry().getChildren() != null) {
             for (ReaderDocumentTableOfContentEntry entry : toc.getRootEntry().getChildren()) {
-                nodes.add(buildTreeNode(null, entry));
+                TreeRecyclerView.TreeNode treeNode = buildTreeNode(null, entry);
+                node.nodes.add(treeNode);
+                node.hasChildren = treeNode.hasChildren();
             }
         }
-        return nodes;
+        return node;
     }
 
     private static TreeRecyclerView.TreeNode buildTreeNode(TreeRecyclerView.TreeNode parent, ReaderDocumentTableOfContentEntry entry) {
