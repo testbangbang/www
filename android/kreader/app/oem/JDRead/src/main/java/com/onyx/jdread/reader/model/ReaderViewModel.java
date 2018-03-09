@@ -21,6 +21,7 @@ public class ReaderViewModel extends BaseObservable {
     private ReaderDataHolder readerDataHolder;
     private ObservableBoolean isShowTipMessage = new ObservableBoolean(false);
     private ObservableField<String> tipMessage = new ObservableField<>();
+    private ObservableBoolean isShowLastPage = new ObservableBoolean(false);
     private ObservableField<String> page = new ObservableField<>();
     private ObservableField<String> time = new ObservableField<>();
 
@@ -86,6 +87,14 @@ public class ReaderViewModel extends BaseObservable {
 
     public ObservableField<String> getTipMessage() {
         return tipMessage;
+    }
+
+    public ObservableBoolean getIsShowLastPage() {
+        return isShowLastPage;
+    }
+
+    public void setIsShowLastPage(boolean isShowLastPage) {
+        this.isShowLastPage.set(isShowLastPage);
     }
 
     public void clearSurfaceView(SurfaceView surfaceView) {

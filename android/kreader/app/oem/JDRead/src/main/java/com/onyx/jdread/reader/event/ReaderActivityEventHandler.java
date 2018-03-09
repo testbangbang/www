@@ -132,6 +132,11 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe
+    public void onShowLastPageEvent(ShowLastPageEvent event) {
+        readerViewModel.setIsShowLastPage(true);
+    }
+
+    @Subscribe
     public void onCloseDocumentEvent(CloseDocumentEvent event) {
         new CloseDocumentAction().execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
             @Override
