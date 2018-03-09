@@ -22,6 +22,7 @@
 #include "JNIUtils.h"
 #include "jsonxx.h"
 #include "form_helper.h"
+#include "libjdrebr/DRM_API/DRMLib.h"
 
 static const char * selectionClassName = "com/onyx/android/sdk/reader/plugins/neopdf/NeoPdfSelection";
 static const char * splitterClassName = "com/onyx/android/sdk/reader/api/ReaderTextSplitter";
@@ -302,6 +303,8 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     FPDFDOC_ExitFormFillEnvironment(formHandle);
 
     FPDF_CloseDocument(document);
+
+    destroyData();
     return true;
 }
 
@@ -1003,4 +1006,21 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
     }
 
     return true;
+}
+
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetDecryptInfo
+  (JNIEnv *env, jobject thiz, jint id, jstring jbookKey, jint jbookKeyLen, jstring juuid, jstring jrand){
+   const char *bookKey = NULL;
+   const char *uuid = NULL;
+   const char *rand = NULL;
+
+   JNIString bookKeyString(env, jbookKey);
+   bookKey = bookKeyString.getLocalString();
+
+   JNIString uuidString(env, juuid);
+   uuid = uuidString.getLocalString();
+
+   JNIString randString(env, jrand);
+   rand = randString.getLocalString();
+   setDecryptInfo(bookKey,jbookKeyLen,uuid,rand);
 }
