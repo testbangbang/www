@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.ui;
 
-import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -31,9 +30,9 @@ import com.onyx.jdread.shop.action.GetVipGoodListAction;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
-import com.onyx.jdread.shop.event.PayByCashSuccessEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
+import com.onyx.jdread.shop.event.PayByCashSuccessEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.VipButtonClickEvent;
 import com.onyx.jdread.shop.event.VipGoodItemClickEvent;
@@ -92,6 +91,7 @@ public class BuyReadVIPFragment extends BaseFragment {
         binding.setViewModel(getBuyReadVipModel());
         getBuyReadVipModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.read_vip);
         getBuyReadVipModel().setVipUserInfoViewModel(getShopDataBundle().getVipUserInfoViewModel());
+        checkWifi(getBuyReadVipModel().getTitleBarViewModel().leftText);
     }
 
     private void initRecycleView() {
@@ -140,7 +140,7 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipButtonClickEvent(VipButtonClickEvent event) {
-        if (checkWfiDisConnected()) {
+        if (isWifiDisconnected()) {
             return;
         }
         showVipNoticeDialog();
@@ -216,7 +216,7 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipGoodItemClickEvent(VipGoodItemClickEvent event) {
-        if (checkWfiDisConnected()) {
+        if (isWifiDisconnected()) {
             return;
         }
         if (!checkVipGoodCanBuy(event.dataBean)) {

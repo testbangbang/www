@@ -8,7 +8,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BatchDownloadResultBean;
 
 public class ChapterGroupItemClickEvent {
 
-    private BatchDownloadResultBean.DataBean.ListBean listBean;
+    public BatchDownloadResultBean.DataBean.ListBean listBean;
 
     public ChapterGroupItemClickEvent(BatchDownloadResultBean.DataBean.ListBean listBean) {
         this.listBean = listBean;

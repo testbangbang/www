@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
 import com.onyx.jdread.shop.event.TopBackEvent;
@@ -26,6 +27,7 @@ public class TitleBarViewModel extends BaseObservable{
     public boolean showRightText3;
     public final ObservableInt rightText2IconId =new ObservableInt();
     public final ObservableInt rightText3IconId =new ObservableInt();
+    public final ObservableBoolean showTitleBar =new ObservableBoolean(true);
     public int pageTag;
 
     public void onLeftTitleClick() {

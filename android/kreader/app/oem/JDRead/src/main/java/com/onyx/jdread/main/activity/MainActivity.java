@@ -69,6 +69,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.ui.NetWorkErrorFragment;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.util.Utils;
 
@@ -381,6 +382,9 @@ public class MainActivity extends AppCompatActivity {
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
             String childClassName = functionBarItem.getStackList().popChildView();
+            if (isNetWorkFragment(currentFragment.getClass().getName()) || isNetWorkFragment(childClassName)) {
+                childClassName = functionBarItem.getStackList().popChildView();
+            }
             switchCurrentFragment(childClassName);
         }
 
@@ -399,8 +403,16 @@ public class MainActivity extends AppCompatActivity {
         if (isSelectedBefore && currentFragment != null && currentFragment.getClass().getName().equals(LibraryFragment.class.getName())) {
             LibraryDataBundle.getInstance().getEventBus().post(new BackToRootFragment());
         }
+
+        if (isNetWorkFragment(event.getStackList().peek())) {
+            event.getStackList().pop();
+        }
         switchCurrentFragment(isSelectedBefore ? event.getStackList().remainLastStack() :
                 event.getStackList().peek());
+    }
+
+    private boolean isNetWorkFragment(String peek) {
+        return NetWorkErrorFragment.class.getName().equals(peek);
     }
 
     @Subscribe

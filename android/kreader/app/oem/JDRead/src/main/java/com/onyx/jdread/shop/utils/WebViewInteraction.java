@@ -45,7 +45,7 @@ public class WebViewInteraction {
     @JavascriptInterface
     public void clearShoppingCart(String buiedBookIds) {
         Log.i(TAG,"clearShoppingCart()");
-        EventBus.getDefault().post(new BuyBookSuccessEvent(buiedBookIds));
+        EventBus.getDefault().post(new BuyBookSuccessEvent(buiedBookIds,false));
     }
 
     @JavascriptInterface

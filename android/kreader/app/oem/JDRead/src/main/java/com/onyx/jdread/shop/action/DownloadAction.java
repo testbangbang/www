@@ -1,7 +1,6 @@
 package com.onyx.jdread.shop.action;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -51,9 +50,6 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
         }
         if (StringUtils.isNullOrEmpty(filePath)) {
             ToastUtil.showToast(context, R.string.file_path_invalid);
-            return;
-        }
-        if (isTaskDownloading(tag)) {
             return;
         }
         startDownload(dataBundle, rxCallback);
@@ -111,8 +107,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
                         }
                         rxCallback.onError(e);
                     } else {
-                        ToastUtil.showToast(context, R.string.download_finished);
-                        rxCallback.onNext(DownloadAction.this);
+                         rxCallback.onNext(DownloadAction.this);
                     }
                 }
                 removeDownloadingTask(tag);
