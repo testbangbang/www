@@ -177,6 +177,7 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.action1.setVisibility(View.GONE);
         binding.action0.setText(R.string.close);
         binding.action0.setVisibility(View.VISIBLE);
+        dismiss();
         DataBundle.getInstance().post(new SubmitEvent());
     }
 }

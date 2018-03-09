@@ -561,6 +561,7 @@ public class ScribbleFragment extends BaseFragment {
                               final BaseCallback callback) {
         String documentUniqueId = getShapeDataInfo().getDocumentUniqueId();
         if (StringUtils.isNullOrEmpty(documentUniqueId)) {
+            BaseCallback.invoke(callback, null, null);
             return;
         }
         final DocumentSaveAction saveAction = new
