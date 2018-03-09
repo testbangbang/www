@@ -112,6 +112,28 @@ public class FileUtils {
         }
     }
 
+    public static void getAllFiles(final String parentPath, final Set<String> extensionFilters, boolean recursive, final Collection<File> fileList) {
+        File parent = new File(parentPath);
+        File[] files = parent.listFiles();
+        if (files == null) {
+            return;
+        }
+        for (File file : files) {
+            if (file.isHidden()) {
+                continue;
+            }
+            final String absolutePath = file.getAbsolutePath();
+            if (file.isFile()) {
+                final String extension = getFileExtension(absolutePath);
+                if (extensionFilters == null || extensionFilters.contains(extension)) {
+                    fileList.add(file);
+                }
+            } else if (file.isDirectory() && recursive) {
+                getAllFiles(absolutePath, extensionFilters, recursive, fileList);
+            }
+        }
+    }
+
     /**
      * get file list of tree of path by depth first,contains the hide file or folder
      *
