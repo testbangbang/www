@@ -27,6 +27,7 @@ import com.onyx.jdread.databinding.DialogTopUpBinding;
 import com.onyx.jdread.library.utils.QRCodeUtil;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.GetPayQRCodeAction;
 import com.onyx.jdread.personal.action.GetRechargeStatusAction;
 import com.onyx.jdread.personal.action.GetTopUpValueAction;
@@ -38,9 +39,12 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.event.GetRechargePollEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxGetPayResultByCashRequest;
+import com.onyx.jdread.shop.action.BuyChaptersAction;
 import com.onyx.jdread.shop.action.PayByReadBeanAction;
 import com.onyx.jdread.shop.cloud.entity.BaseShopRequestBean;
+import com.onyx.jdread.shop.cloud.entity.NetBookPayParamsBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BuyChaptersResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
@@ -78,6 +82,8 @@ public class TopUpDialog extends DialogFragment {
     private static final int DEFAULT_POLL_TIME = 300;
     private Disposable countDownDisposable;
     private RxGetPayResultByCashRequest payByCashRequest;
+    private int payDialogType;
+    private NetBookPayParamsBean payParamsBean;
 
     @Nullable
     @Override
@@ -131,14 +137,12 @@ public class TopUpDialog extends DialogFragment {
         Bundle arguments = getArguments();
         PayOrderViewModel payOrderViewModel = getPayOrderViewModel();
         if (arguments != null) {
-            int payDialogType = arguments.getInt(Constants.PAY_DIALOG_TYPE);
+            payDialogType = arguments.getInt(Constants.PAY_DIALOG_TYPE);
             if (payDialogType == Constants.PAY_DIALOG_TYPE_PAY_ORDER) {
                 GetOrderInfoResultBean.DataBean orderInfo = (GetOrderInfoResultBean.DataBean) arguments.getSerializable(Constants.ORDER_INFO);
-                payOrderViewModel.title.set(ResManager.getString(R.string.payment_order));
+                payOrderViewModel.showPaymentLinearLayout.set(true);
                 payOrderViewModel.setOrderInfo(orderInfo);
-                payOrderViewModel.setUserInfo(PersonalDataBundle.getInstance().getUserInfo());
                 binding.setOrderModel(payOrderViewModel);
-                binding.setUserInfo(PersonalDataBundle.getInstance().getUserInfo());
                 changePayButtonState(!orderInfo.need_recharge);
                 binding.payOrder.paymentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
@@ -150,12 +154,37 @@ public class TopUpDialog extends DialogFragment {
                         }
                     }
                 });
-            } else {
-                setVisible(R.id.dialog_top_up_detail_layout);
+            } else if (isBuyNetBook()) {
+                payOrderViewModel.showPaymentLinearLayout.set(false);
+                payParamsBean = (NetBookPayParamsBean) arguments.getSerializable(Constants.ORDER_INFO);
+                GetOrderInfoResultBean.DataBean orderInfo = new GetOrderInfoResultBean.DataBean();
+                orderInfo.pay_amount = payParamsBean.jd_price;
+                orderInfo.voucher_amount = payParamsBean.voucher;
+                orderInfo.yuedou_amount = payParamsBean.yuedou;
+                orderInfo.desc = payParamsBean.bookName;
+                payOrderViewModel.setOrderInfo(orderInfo);
+                getPayOrderViewModel().getOrderInfo().need_recharge = false;
+                changePayButtonState(true);
                 binding.setOrderModel(payOrderViewModel);
-                getTopUpValue();
+            } else {
+                gotoTopUpPage();
             }
         }
+    }
+
+    private boolean isBuyNetBook() {
+        return payDialogType == Constants.PAY_DIALOG_TYPE_NET_BOOK;
+    }
+
+    private void buyNetBookChapters(NetBookPayParamsBean orderInfo) {
+        BuyChaptersAction action = new BuyChaptersAction(orderInfo.ebookId, orderInfo.start_chapter, orderInfo.count);
+        action.execute(ShopDataBundle.getInstance(), new RxCallback<BuyChaptersAction>() {
+            @Override
+            public void onNext(BuyChaptersAction action) {
+                BuyChaptersResultBean resultBean = action.getResultBean();
+                checkPayResult(resultBean, true);
+            }
+        });
     }
 
     private void changePayButtonState(boolean showPayStatus) {
@@ -237,12 +266,7 @@ public class TopUpDialog extends DialogFragment {
         binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode.setVisibility(R.id.dialog_top_up_qr_code_layout == id ? View.VISIBLE : View.GONE);
         binding.dialogTopUpSuccessLayout.dialogTopUpSuccess.setVisibility(R.id.dialog_top_up_success_layout == id ? View.VISIBLE : View.GONE);
         binding.payOrder.dialogPayOrder.setVisibility(R.id.dialog_pay_order == id ? View.VISIBLE : View.GONE);
-        if (R.id.dialog_pay_order == id) {
-            getPayOrderViewModel().title.set(ResManager.getString(R.string.payment_order));
-        }
-        if (R.id.dialog_top_up_detail_layout == id) {
-            getPayOrderViewModel().title.set(ResManager.getString(R.string.top_up));
-        }
+        getPayOrderViewModel().title.set(R.id.dialog_top_up_detail_layout == id ? ResManager.getString(R.string.top_up) : "");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -262,18 +286,32 @@ public class TopUpDialog extends DialogFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConfirmPayClickEvent(ConfirmPayClickEvent event) {
-        int checkedRadioButtonId = binding.payOrder.paymentRadioGroup.getCheckedRadioButtonId();
-        if (checkedRadioButtonId == R.id.payment_read_bean) {
+        if (isBuyNetBook()) {
             if (getPayOrderViewModel().getOrderInfo().need_recharge) {
-                setVisible(R.id.dialog_top_up_detail_layout);
-                binding.setOrderModel(getPayOrderViewModel());
-                getTopUpValue();
+                gotoTopUpPage();
             } else {
-                payByReadBean();
+                if (payParamsBean != null) {
+                    buyNetBookChapters(payParamsBean);
+                }
             }
         } else {
-            payByCash();
+            int checkedRadioButtonId = binding.payOrder.paymentRadioGroup.getCheckedRadioButtonId();
+            if (checkedRadioButtonId == R.id.payment_read_bean) {
+                if (getPayOrderViewModel().getOrderInfo().need_recharge) {
+                    gotoTopUpPage();
+                } else {
+                    payByReadBean();
+                }
+            } else {
+                payByCash();
+            }
         }
+    }
+
+    private void gotoTopUpPage() {
+        setVisible(R.id.dialog_top_up_detail_layout);
+        binding.setOrderModel(getPayOrderViewModel());
+        getTopUpValue();
     }
 
     private void payByCash() {
@@ -312,16 +350,7 @@ public class TopUpDialog extends DialogFragment {
             @Override
             public void onNext(PayByReadBeanAction action) {
                 BaseResultBean resultBean = action.getResultBean();
-                if (resultBean != null) {
-                    if (resultBean.result_code == Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
-                        onPaySuccess();
-                    } else if (resultBean.result_code == Constants.RESULT_PAY_ORDER_INSUFFICIENT_BALANCE) {
-                        getPayOrderViewModel().getOrderInfo().need_recharge = true;
-                        changePayButtonState(false);
-                    } else {
-                        // TODO pay failure
-                    }
-                }
+                checkPayResult(resultBean, false);
             }
 
             @Override
@@ -331,11 +360,24 @@ public class TopUpDialog extends DialogFragment {
         });
     }
 
-    private void onPaySuccess() {
+    private void checkPayResult(BaseResultBean resultBean, boolean isNetBook) {
+        if (resultBean != null) {
+            if (BaseResultBean.checkSuccess(resultBean)) {
+                onPaySuccess(isNetBook);
+            } else if (resultBean.result_code == Constants.RESULT_PAY_ORDER_INSUFFICIENT_BALANCE) {
+                getPayOrderViewModel().getOrderInfo().need_recharge = true;
+                changePayButtonState(false);
+            } else {
+                ToastUtil.showToast(ResManager.getString(R.string.pay_failed));
+            }
+        }
+    }
+
+    private void onPaySuccess(boolean isNetBook) {
         getPayOrderViewModel().confirmButtonText.set(ResManager.getString(R.string.pay_success));
         binding.payOrder.confirmPay.setBackgroundDrawable(null);
         binding.payOrder.confirmPay.setEnabled(false);
-        dismissDialog(new BuyBookSuccessEvent(""));
+        dismissDialog(new BuyBookSuccessEvent("", isNetBook));
     }
 
     private void dismissDialog(final Object event) {

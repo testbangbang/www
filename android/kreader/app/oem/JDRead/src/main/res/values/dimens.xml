@@ -566,4 +566,5 @@
     <dimen name="default_toast_y_offset">64dp</dimen>
     <dimen name="custom_search_view_padding">10dp</dimen>
     <dimen name="custom_search_view_drawable_padding">20dp</dimen>
+    <dimen name="network_error_tip_margin_top">6dp</dimen>
 </resources>

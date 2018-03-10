@@ -21,19 +21,14 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.adapter.ShopCartAdapter;
-import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.dialog.TopUpDialog;
-import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.GetShopCartItemsAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateBean;
-import com.onyx.jdread.shop.common.CloudApiContext;
-import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.CartBookItemClickEvent;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 import com.onyx.jdread.shop.model.ShopCartModel;
@@ -77,6 +72,7 @@ public class ShopCartFragment extends BaseFragment {
         shopCartAdapter = new ShopCartAdapter();
         binding.shopCartRecycler.setAdapter(shopCartAdapter);
         paginator = binding.shopCartRecycler.getPaginator();
+        checkWifi(ResManager.getString(R.string.cart));
     }
 
     private void initData() {
@@ -299,9 +295,6 @@ public class ShopCartFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookClickEvent(CartBookItemClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         gotoBookDetailPage(Long.parseLong(event.getBookBean().getDetail().bookId));
     }
 

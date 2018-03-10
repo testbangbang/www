@@ -2,7 +2,6 @@ package com.onyx.jdread.shop.utils;
 
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;

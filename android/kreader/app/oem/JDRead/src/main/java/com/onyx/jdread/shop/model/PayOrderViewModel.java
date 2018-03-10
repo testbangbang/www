@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
@@ -23,6 +24,7 @@ public class PayOrderViewModel extends BaseObservable {
 
     public final ObservableField<String> title = new ObservableField();
     public final ObservableField<String> confirmButtonText = new ObservableField();
+    public final ObservableBoolean showPaymentLinearLayout = new ObservableBoolean(true);
     private GetOrderInfoResultBean.DataBean orderInfo;
     private UserInfo userInfo;
 

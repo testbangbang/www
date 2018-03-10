@@ -33,7 +33,7 @@ public class UpdatePageInfoAction extends BaseReaderAction {
         float progress = ReaderPageInfoFormat.getReadProgress(readerDataHolder,readerViewInfo);
 
         int currentPage = readerDataHolder.getCurrentPage();
-        int total = readerDataHolder.getReader().getReaderHelper().getNavigator().getTotalPage() - 1;
+        int total = readerViewInfo.getTotalPage() - 1;
 
         if(isInit) {
             if(!readerViewInfo.canNextScreen){
