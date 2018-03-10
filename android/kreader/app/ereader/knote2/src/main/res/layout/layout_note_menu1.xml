@@ -55,5 +55,10 @@
             android:onClick="@{model::onExitErase}"
             style="@style/note_menu_text"
             android:text="exit erase" />
+
+        <TextView
+            android:onClick="@{model::onCircleShape}"
+            style="@style/note_menu_text"
+            android:text="circle" />
     </LinearLayout>
 </layout>

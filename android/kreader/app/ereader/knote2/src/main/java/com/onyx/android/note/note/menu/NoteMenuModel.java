@@ -21,6 +21,7 @@ import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.pen.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -76,7 +77,7 @@ public class NoteMenuModel extends BaseViewModel {
     }
 
     public void onEnterErase(View view) {
-        getNoteBundle().getHandlerManager().activeProvider(HandlerManager.ERASE_PROVIDER);
+        getNoteBundle().getHandlerManager().activeProvider(HandlerManager.ERASE_OVERLAY_PROVIDER);
     }
 
     public void onExitErase(View view) {
@@ -93,6 +94,11 @@ public class NoteMenuModel extends BaseViewModel {
 
     public void onErasePage(View view) {
         new ClearAllFreeShapesAction(getNoteManager()).execute(null);
+    }
+
+    public void onCircleShape(View view) {
+        NoteDataBundle.getInstance().getDrawDataHolder().setCurrentShapeType(ShapeFactory.SHAPE_RECTANGLE);
+        getNoteBundle().getHandlerManager().activeProvider(HandlerManager.NORMAL_SHAPE_PROVIDER);
     }
 
     private NoteManager getNoteManager() {
