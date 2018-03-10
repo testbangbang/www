@@ -43,6 +43,8 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     private ReaderViewModel readerViewModel;
     private SelectMenuModel selectMenuModel;
     private ReaderActivityEventHandler readerActivityEventHandler;
+    private boolean isGuide = false;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +52,10 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         initView();
         registerListener();
         initData();
+    }
+
+    protected void setGuide(boolean isGuide) {
+        this.isGuide = isGuide;
     }
 
     private void initView() {
@@ -70,6 +76,10 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     }
 
     private void initData() {
+        if (isGuide) {
+            finish();
+            return;
+        }
         if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
             EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
         }

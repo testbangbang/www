@@ -17,7 +17,6 @@ import com.onyx.android.libsetting.view.dialog.WifiSavedDialog;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.wifi.AccessPoint;
 import com.onyx.android.sdk.wifi.WifiAdmin;
 import com.onyx.android.sdk.wifi.WifiUtil;
@@ -100,19 +99,11 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void init() {
-        checkGuide();
         initSystemBar();
         initWifi();
         initLogin();
         initCategory();
         initListener();
-    }
-
-    private void checkGuide() {
-        String flag = JDPreferenceManager.getStringValue(Constants.IS_GUIDE, "");
-        if (StringUtils.isNotBlank(flag)) {
-            finishGuide();
-        }
     }
 
     private void initSystemBar() {
@@ -438,8 +429,8 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void finishGuide() {
-        ManagerActivityUtils.startPreloadActivity(StartActivity.this);
         JDPreferenceManager.setStringValue(Constants.IS_GUIDE, Constants.IS_GUIDE);
+        ManagerActivityUtils.startPreloadActivity(StartActivity.this);
         finish();
     }
 

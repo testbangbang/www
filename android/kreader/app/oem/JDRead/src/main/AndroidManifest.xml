@@ -32,6 +32,12 @@
         android:theme="@style/AppTheme">
         <activity android:name=".main.activity.StartActivity"
             android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/ActivityFullscreen"/>
+
+
+        <activity
+            android:name=".reader.ui.PreloadActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:theme="@style/ActivityFullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,11 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".reader.ui.PreloadActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:theme="@style/ActivityFullscreen"/>
 
         <activity
             android:name=".main.activity.MainActivity"
