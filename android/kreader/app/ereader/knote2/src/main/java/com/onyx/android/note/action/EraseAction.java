@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.onyx.android.note.common.base.BaseNoteAction;
 import com.onyx.android.sdk.note.NoteManager;
-import com.onyx.android.sdk.note.request.SyncEraseRequest;
+import com.onyx.android.sdk.note.request.EraseRequest;
 import com.onyx.android.sdk.pen.data.TouchPointList;
 import com.onyx.android.sdk.rx.RxCallback;
 
@@ -12,28 +12,28 @@ import com.onyx.android.sdk.rx.RxCallback;
  * Created by lxm on 2018/3/1.
  */
 
-public class SyncEraseAction extends BaseNoteAction {
+public class EraseAction extends BaseNoteAction {
 
     private TouchPointList touchPointList;
     private boolean fixShape;
 
-    public SyncEraseAction(NoteManager noteManager, TouchPointList touchPointList) {
+    public EraseAction(NoteManager noteManager, TouchPointList touchPointList) {
         super(noteManager);
         this.touchPointList = touchPointList;
     }
 
-    public SyncEraseAction setFixShape(boolean fixShape) {
+    public EraseAction setFixShape(boolean fixShape) {
         this.fixShape = fixShape;
         return this;
     }
 
     @Override
     public void execute(final RxCallback rxCallback) {
-        SyncEraseRequest request = new SyncEraseRequest(getNoteManager(), touchPointList)
+        EraseRequest request = new EraseRequest(getNoteManager(), touchPointList)
                 .setFixShape(fixShape);
-        getNoteManager().getRxManager().enqueue(request, new RxCallback<SyncEraseRequest>() {
+        getNoteManager().getRxManager().enqueue(request, new RxCallback<EraseRequest>() {
             @Override
-            public void onNext(@NonNull SyncEraseRequest syncEraseRequest) {
+            public void onNext(@NonNull EraseRequest syncEraseRequest) {
                 RxCallback.onNext(rxCallback, syncEraseRequest);
             }
         });

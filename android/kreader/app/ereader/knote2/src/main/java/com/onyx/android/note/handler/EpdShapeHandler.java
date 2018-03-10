@@ -1,13 +1,16 @@
 package com.onyx.android.note.handler;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.action.AddShapesBackgroundAction;
-import com.onyx.android.note.action.RefreshDrawScreenAction;
-import com.onyx.android.note.action.SyncEraseAction;
+import com.onyx.android.note.action.EraseAction;
+import com.onyx.android.note.utils.DrawUtils;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.pen.data.TouchPoint;
 import com.onyx.android.sdk.pen.data.TouchPointList;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -46,7 +49,8 @@ public class EpdShapeHandler extends BaseHandler {
     @Override
     public void onRawDrawingPointsReceived(TouchPointList pointList) {
         super.onRawDrawingPointsReceived(pointList);
-        Shape shape = createNewShape(ShapeFactory.POSITION_FREE);
+        NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawDataHolder().getDrawingArgs();
+        Shape shape = DrawUtils.createShape(drawingArgs, ShapeFactory.POSITION_FREE);
         shape.addPoints(pointList);
         new AddShapesBackgroundAction(getNoteManager()).setShape(shape).execute(null);
     }
@@ -119,7 +123,7 @@ public class EpdShapeHandler extends BaseHandler {
         if (erasePoints == null || CollectionUtils.isNullOrEmpty(erasePoints.getPoints())) {
             return;
         }
-        new SyncEraseAction(getNoteManager(), touchPointList)
+        new EraseAction(getNoteManager(), touchPointList)
                 .setFixShape(true)
                 .execute(null);
     }

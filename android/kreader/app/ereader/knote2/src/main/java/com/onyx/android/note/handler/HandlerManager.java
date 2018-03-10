@@ -17,6 +17,7 @@ public class HandlerManager {
 
     public static final String EPD_SHAPE_PROVIDER = "epd_shape";
     public static final String NORMAL_SHAPE_PROVIDER = "normal_shape";
+    public static final String ERASE_PROVIDER = "erase";
     public static final String SELECTION_PROVIDER = "selection";
 
     private EventBus eventBus;
@@ -41,10 +42,12 @@ public class HandlerManager {
     private void initProviderMap() {
         providerMap.put(EPD_SHAPE_PROVIDER, new EpdShapeHandler(getEventBus(), getNoteManager()));
         providerMap.put(NORMAL_SHAPE_PROVIDER, new NormalShapeHandler(getEventBus(), getNoteManager()));
+        providerMap.put(ERASE_PROVIDER, new EraseHandler(getEventBus(), getNoteManager()));
         providerMap.put(SELECTION_PROVIDER, new SelectionHandler(getEventBus(), getNoteManager()));
     }
 
     public void activeProvider(String providerName) {
+        providerMap.get(activeProvider).onDeactivate();
         activeProvider = providerName;
         providerMap.get(activeProvider).onActivate();
     }
@@ -53,4 +56,7 @@ public class HandlerManager {
         providerMap.get(activeProvider).onDeactivate();
     }
 
+    public boolean inEraseProvider() {
+        return activeProvider.equals(ERASE_PROVIDER);
+    }
 }

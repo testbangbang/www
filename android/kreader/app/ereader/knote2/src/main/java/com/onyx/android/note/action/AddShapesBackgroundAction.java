@@ -3,7 +3,6 @@ package com.onyx.android.note.action;
 import com.onyx.android.note.common.base.BaseNoteAction;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.request.AddShapesBackgroundRequest;
-import com.onyx.android.sdk.note.request.RenderToBitmapRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.CollectionUtils;
