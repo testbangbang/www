@@ -12,7 +12,6 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/fragment_content_padding"
             android:layout_marginRight="@dimen/fragment_content_padding"
             android:layout_weight="1"
             android:background="@drawable/shop_search_book_edit_text_background"
