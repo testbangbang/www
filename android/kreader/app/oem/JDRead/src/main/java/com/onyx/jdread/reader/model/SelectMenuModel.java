@@ -4,7 +4,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.graphics.RectF;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -24,7 +24,6 @@ import com.onyx.jdread.reader.event.PopupTranslationClickEvent;
 import com.onyx.jdread.reader.event.WordTranslateResultEvent;
 import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.HighlightCursor;
-import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.setting.action.TranslateAction;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -234,7 +233,7 @@ public class SelectMenuModel {
     }
 
     public void setLayoutParams(int w, int h) {
-        FrameLayout.LayoutParams p = new FrameLayout.LayoutParams(w, h);
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(w, h);
         selectMenuRootView.setLayoutParams(p);
     }
 
