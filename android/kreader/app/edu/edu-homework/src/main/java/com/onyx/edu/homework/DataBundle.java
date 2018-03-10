@@ -160,7 +160,7 @@ public class DataBundle {
         return state == HomeworkState.REVIEW;
     }
 
-    public boolean isExpired() {
+    public boolean isDoingAndExpired() {
         return isDoing() && getHomework().isExpired();
     }
 

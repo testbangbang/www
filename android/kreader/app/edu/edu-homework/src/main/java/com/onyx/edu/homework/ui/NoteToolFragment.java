@@ -560,7 +560,7 @@ public class NoteToolFragment extends BaseFragment {
     public boolean shouldResume() {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
-                && !getDataBundle().isExpired()
+                && !getDataBundle().isDoingAndExpired()
                 && isRunning();
     }
 }
