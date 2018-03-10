@@ -3,7 +3,6 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
@@ -77,8 +76,8 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         metadata.setType(detailBean.format);
         BookExtraInfoBean extraInfo = detailBean.bookExtraInfoBean;
         if (extraInfo != null) {
-            extraInfo.key = detailBean.key;
-            extraInfo.random = detailBean.random;
+            extraInfo.key = extraInfo.isWholeBookDownLoad ? detailBean.key : "";
+            extraInfo.random = extraInfo.isWholeBookDownLoad ? detailBean.random : "";
             metadata.setSize((long) extraInfo.totalSize);
             metadata.setDownloadInfo(JSONObjectParseUtils.toJson(extraInfo));
             metadata.setFetchSource(extraInfo.isWholeBookDownLoad ? Metadata.FetchSource.CLOUD : Metadata.FetchSource.CLOUD_TRY_READ);

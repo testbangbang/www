@@ -516,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
     public void onDownloadFinishEvent(DownloadFinishEvent event) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (task != null) {
-            updateDownloadInfo(task, task.getPath());
+            updateDownloadInfo(task);
         }
     }
 
@@ -524,19 +524,20 @@ public class MainActivity extends AppCompatActivity {
     public void onDownloadingEvent(DownloadingEvent event) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (DownLoadHelper.isPause(task.getStatus())) {
-            updateDownloadInfo(task, task.getPath());
+            updateDownloadInfo(task);
         }
     }
 
-    private void updateDownloadInfo(BaseDownloadTask task, String localPath) {
+    private void updateDownloadInfo(BaseDownloadTask task) {
         JDReadApplication.getInstance().setNotifyLibraryData(true);
         BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
         extraInfoBean.downLoadState = task.getStatus();
         extraInfoBean.downloadUrl = task.getUrl();
-        extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
+        extraInfoBean.localPath = task.getPath();
         extraInfoBean.progress = task.getSmallFileSoFarBytes();
         extraInfoBean.totalSize = task.getSmallFileTotalBytes();
-        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean, localPath);
+        extraInfoBean.percentage = (int) ((extraInfoBean.progress / extraInfoBean.totalSize) * 100);
+        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean);
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {

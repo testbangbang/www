@@ -60,6 +60,7 @@ import com.onyx.jdread.util.Utils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,6 +143,7 @@ public class TopUpDialog extends DialogFragment {
                 GetOrderInfoResultBean.DataBean orderInfo = (GetOrderInfoResultBean.DataBean) arguments.getSerializable(Constants.ORDER_INFO);
                 payOrderViewModel.showPaymentLinearLayout.set(true);
                 payOrderViewModel.setOrderInfo(orderInfo);
+                getPayOrderViewModel().title.set("");
                 binding.setOrderModel(payOrderViewModel);
                 changePayButtonState(!orderInfo.need_recharge);
                 binding.payOrder.paymentRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -164,6 +166,7 @@ public class TopUpDialog extends DialogFragment {
                 orderInfo.desc = payParamsBean.bookName;
                 payOrderViewModel.setOrderInfo(orderInfo);
                 getPayOrderViewModel().getOrderInfo().need_recharge = false;
+                getPayOrderViewModel().title.set("");
                 changePayButtonState(true);
                 binding.setOrderModel(payOrderViewModel);
             } else {
@@ -363,6 +366,10 @@ public class TopUpDialog extends DialogFragment {
     private void checkPayResult(BaseResultBean resultBean, boolean isNetBook) {
         if (resultBean != null) {
             if (BaseResultBean.checkSuccess(resultBean)) {
+                if (isNetBook && ((BuyChaptersResultBean) resultBean).data != null) {
+                    BuyChaptersResultBean buyChaptersResultBean = (BuyChaptersResultBean) resultBean;
+                    ShopDataBundle.getInstance().getBookDetailViewModel().netBookIds.set((ArrayList<String>) buyChaptersResultBean.data.chapter_ids);
+                }
                 onPaySuccess(isNetBook);
             } else if (resultBean.result_code == Constants.RESULT_PAY_ORDER_INSUFFICIENT_BALANCE) {
                 getPayOrderViewModel().getOrderInfo().need_recharge = true;
