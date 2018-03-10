@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="StartBinding">
+
+        <variable
+            name="systemBarModel"
+            type="com.onyx.jdread.main.model.SystemBarModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:paddingBottom="@dimen/start_battery_padding_top"
+            android:paddingRight="@dimen/start_battery_padding_right"
+            android:paddingTop="@dimen/start_battery_padding_top"
+            android:src="@{systemBarModel.batteryImageRes}" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_width"
+            android:background="@android:color/black" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/start_title_height"
+            android:layout_marginLeft="@dimen/start_whole_margin"
+            android:layout_marginRight="@dimen/start_whole_margin">
+
+            <ImageView
+                android:id="@+id/start_wifi_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_setting_add"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/start_skip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:drawablePadding="@dimen/start_skip_padding"
+                android:drawableRight="@mipmap/ic_setting_more"
+                android:gravity="center_vertical"
+                android:text="@string/skip"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingLeft="@dimen/start_whole_margin"
+            android:paddingRight="@dimen/start_whole_margin"
+            android:paddingTop="@dimen/start_whole_margin">
+
+            <include
+                android:id="@+id/start_welcome"
+                layout="@layout/start_welcome"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/start_wifi_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/start_login"
+                layout="@layout/start_login"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/start_preference"
+                layout="@layout/start_preference"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_width"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/start_next"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/start_next_height"
+            android:gravity="center"
+            android:text="@string/next_step"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+    </LinearLayout>
+</layout>

@@ -151,4 +151,5 @@ public class Constants {
     public static final String NATIVIE_DIR = EnvironmentUtil.getExternalStorageDirectory() + File.separator + "Notes";
     public static final String EMAIL_DIR = EnvironmentUtil.getExternalStorageDirectory() + File.separator + "TempExport";
     public static final String ZIP_NAME = "jdread";
+    public static final String IS_GUIDE = "is_guide";
 }

@@ -30,8 +30,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".reader.ui.PreloadActivity"
+        <activity android:name=".main.activity.StartActivity"
             android:windowSoftInputMode="adjustNothing"
             android:theme="@style/ActivityFullscreen">
             <intent-filter>
@@ -42,14 +41,19 @@
         </activity>
 
         <activity
+            android:name=".reader.ui.PreloadActivity"
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/ActivityFullscreen"/>
+
+        <activity
             android:name=".main.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing"
-            android:theme="@style/ActivityFullscreen"></activity>
+            android:theme="@style/ActivityFullscreen"/>
 
         <activity
             android:name=".reader.ui.ReaderActivity"
             android:theme="@style/ActivityFullscreen"
-            android:windowSoftInputMode="adjustNothing"></activity>
+            android:windowSoftInputMode="adjustNothing"/>
 
         <activity
             android:name=".main.activity.LockScreenActivity"

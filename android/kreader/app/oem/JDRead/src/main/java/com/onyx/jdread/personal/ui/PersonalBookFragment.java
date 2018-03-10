@@ -256,12 +256,14 @@ public class PersonalBookFragment extends BaseFragment {
                 BookExtraInfoBean bean = null;
                 String downloadInfo = metadata.getDownloadInfo();
                 info.downLoadTaskTag = tag + Constants.WHOLE_BOOK_DOWNLOAD_TAG;
+                info.isWholeBookDownLoad = true;
                 if (StringUtils.isNotBlank(downloadInfo)) {
                     bean = JSONObjectParseUtils.toBean(downloadInfo, BookExtraInfoBean.class);
                     bean.downLoadState = info.downLoadState;
                     bean.localPath = info.localPath;
                     bean.percentage = info.percentage;
                     bean.downLoadTaskTag = info.downLoadTaskTag;
+                    bean.isWholeBookDownLoad = info.isWholeBookDownLoad;
                     if (bookDetail.ebook_id == PagePositionUtils.getPosition(metadata.getCloudId())) {
                         bean.key = bookDetail.key;
                         bean.random = bookDetail.random;
