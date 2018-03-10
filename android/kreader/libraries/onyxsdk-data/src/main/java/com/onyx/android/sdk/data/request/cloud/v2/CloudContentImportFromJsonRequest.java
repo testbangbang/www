@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
+import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.db.table.OnyxMetadataProvider;
 import com.onyx.android.sdk.data.model.Library;
@@ -19,8 +20,10 @@ import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -40,10 +43,10 @@ import java.util.List;
  */
 
 public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
-    private static final String TAG = CloudContentImportFromJsonRequest.class.getSimpleName();
 
     private List<String> filePathList = new ArrayList<>();
     private boolean copyToCloudDir = true;
+    private boolean supportCFA = true;
 
     public CloudContentImportFromJsonRequest(List<String> filePathList) {
         this.filePathList = filePathList;
@@ -53,11 +56,16 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
         this.copyToCloudDir = set;
     }
 
+    public void setSupportCFA(boolean support) {
+        this.supportCFA = support;
+    }
+
     @Override
     public void execute(CloudManager cloudManager) throws Exception {
         if (CollectionUtils.isNullOrEmpty(filePathList)) {
             return;
         }
+        Benchmark benchmark = new Benchmark();
         for (String path : filePathList) {
             if (StringUtils.isNullOrEmpty(path) || !FileUtils.fileExist(path)) {
                 continue;
@@ -70,7 +78,7 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
                 contentImportList = importConfig.contentImportList;
             }
             if (importConfig == null || contentImportList == null || CollectionUtils.isNullOrEmpty(contentImportList)) {
-                Log.w(TAG, "detect contentImportList is empty");
+                Log.w(getClass().getSimpleName(), "detect contentImportList is empty");
                 continue;
             }
             pingDatabase();
@@ -84,6 +92,7 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
                 importToDatabase(getContext(), cloudManager, FileUtils.getParent(path), contentImport);
             }
         }
+        Log.w(getClass().getName(), "time: " + String.valueOf(benchmark.duration()) + "ms");
     }
 
     private void pingDatabase() {
@@ -121,19 +130,6 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
         database.endTransaction();
     }
 
-    private String getTargetFilePath(String guid, String sourceDir, String fileName) {
-        String sourceFilePath = sourceDir + File.separator + fileName;
-        if (!copyToCloudDir || StringUtils.isNullOrEmpty(guid)) {
-            return sourceFilePath;
-        }
-        File targetFile = new File(CloudUtils.dataCacheDirectory(getContext(), guid), fileName);
-        boolean success = FileUtils.copyFile(new File(sourceFilePath), targetFile);
-        if (success) {
-            return targetFile.getAbsolutePath();
-        }
-        return sourceFilePath;
-    }
-
     private void saveAllMetadata(Context context, DataProviderBase dataProvider, String parentPath,
                                  Library library, List<CloudMetadata> metadataList) {
         if (!CollectionUtils.isNullOrEmpty(metadataList)) {
@@ -149,9 +145,9 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
     }
 
     private boolean saveMetadata(Context context, DataProviderBase dataProvider, String parentPath, Metadata metadata) {
-        String fileName = FileUtils.getFileNameFromUrl(metadata.getLocation());
+        String fileName = FileUtils.getFileNameFromUrl(MetadataUtils.getDownloadUrl(metadata, supportCFA));
         if (StringUtils.isNotBlank(fileName)) {
-            String filePath = getTargetFilePath(metadata.getGuid(), parentPath, fileName);
+            String filePath = getMetadataTargetFilePath(parentPath, metadata);
             metadata.setNativeAbsolutePath(filePath);
         }
         if (StringUtils.isNullOrEmpty(metadata.getNativeAbsolutePath())) {
@@ -178,11 +174,7 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
     }
 
     private void saveThumbnail(Context context, DataProviderBase dataProvider, String parentPath, Metadata metadata) {
-        String thumbnailPath = null;
-        String thumbnailFileName = FileUtils.getFileNameFromUrl(metadata.getCoverUrl());
-        if (StringUtils.isNotBlank(thumbnailFileName)) {
-            thumbnailPath = getTargetFilePath(metadata.getGuid(), parentPath, thumbnailFileName);
-        }
+        String thumbnailPath = getCoverTargetFilePath(parentPath, metadata);
         if (StringUtils.isNullOrEmpty(thumbnailPath) || StringUtils.isNullOrEmpty(metadata.getAssociationId())) {
             return;
         }
@@ -213,5 +205,45 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
             return;
         }
         group.save(databaseWrapper);
+    }
+
+    private String getCoverKey() {
+        OnyxThumbnail.ThumbnailKind kind = supportCFA ? OnyxThumbnail.ThumbnailKind.Large :
+                OnyxThumbnail.ThumbnailKind.Original;
+        return kind.toString().toLowerCase();
+    }
+
+    private String getCoverTargetFilePath(String sourceDir, Metadata metadata) {
+        String coverKey = getCoverKey();
+        File targetFile = CloudUtils.imageCachePath(getContext(), metadata.getAssociationId(), coverKey);
+        if (targetFile == null) {
+            return null;
+        }
+        String sourceFilePath = sourceDir + File.separator + FileUtils.getFileNameFromUrl(metadata.getCoverUrl(coverKey));
+        if (!FileUtils.fileExist(sourceFilePath)) {
+            sourceFilePath = sourceDir + File.separator + FileUtils.getFileNameFromUrl(metadata.getCoverUrl());
+        }
+        boolean fileExist = FileUtils.fileExist(sourceFilePath);
+        return fileExist ? createTargetFile(sourceFilePath, metadata.getAssociationId(), targetFile.getName()) : null;
+    }
+
+    private String createTargetFile(String sourceFilePath, String associationId, String targetFileName) {
+        if (!copyToCloudDir || StringUtils.isNullOrEmpty(associationId) || StringUtils.isNullOrEmpty(targetFileName)) {
+            return sourceFilePath;
+        }
+        File targetFile = new File(CloudUtils.dataCacheDirectory(getContext(), associationId), targetFileName);
+        boolean success = FileUtils.copyFile(new File(sourceFilePath), targetFile);
+        Log.w(getClass().getSimpleName(), "createTargetFile:" + targetFile.getAbsolutePath() + " ,success:" + success);
+        return success ? targetFile.getAbsolutePath() : sourceFilePath;
+    }
+
+    private String getMetadataTargetFilePath(String sourceDir, Metadata metadata) {
+        String fileName = FileUtils.getFileNameFromUrl(MetadataUtils.getDownloadUrl(metadata, supportCFA));
+        String sourceFilePath = sourceDir + File.separator + fileName;
+        if (!copyToCloudDir || StringUtils.isNullOrEmpty(metadata.getAssociationId())) {
+            return sourceFilePath;
+        }
+        String targetFileName = FileUtils.fixNotAllowFileName(metadata.getName() + "." + MetadataUtils.getType(metadata));
+        return createTargetFile(sourceFilePath, metadata.getAssociationId(), targetFileName);
     }
 }

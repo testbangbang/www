@@ -296,7 +296,8 @@ public class SchoolApp extends MultiDexApplication {
         if (!file.exists()) {
             return;
         }
-        ContentImportAction importAction = new ContentImportAction(file.getAbsolutePath(), true);
+        ContentImportAction importAction = new ContentImportAction(file.getAbsolutePath(),
+                DeviceConfig.sharedInstance(this).isDeviceSupportColor());
         importAction.execute(getLibraryDataHolder(), null);
     }
 

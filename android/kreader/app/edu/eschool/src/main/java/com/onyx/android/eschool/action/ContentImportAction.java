@@ -1,10 +1,10 @@
 package com.onyx.android.eschool.action;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
-import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentImportFromJsonRequest;
@@ -19,29 +19,26 @@ import java.util.List;
 public class ContentImportAction extends BaseAction<LibraryDataHolder> {
 
     private String jsonFilePath;
-    private boolean forceImport = false;
+    private boolean supportCFA = true;
 
     public ContentImportAction(String jsonFilePath) {
         this.jsonFilePath = jsonFilePath;
     }
 
-    public ContentImportAction(String jsonFilePath, boolean forceImport) {
+    public ContentImportAction(String jsonFilePath, boolean supportCFA) {
         this.jsonFilePath = jsonFilePath;
-        this.forceImport = forceImport;
+        this.supportCFA = supportCFA;
     }
 
     @Override
     public void execute(final LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
-        if (!forceImport && StudentPreferenceManager.hasImportContent(dataHolder.getContext())) {
-            return;
-        }
         if (StringUtils.isNullOrEmpty(jsonFilePath)) {
             return;
         }
-        StudentPreferenceManager.setImportContent(dataHolder.getContext(), true);
-        List<String> filePathList = new ArrayList<>();
+        final List<String> filePathList = new ArrayList<>();
         filePathList.add(jsonFilePath);
         CloudContentImportFromJsonRequest listImportRequest = new CloudContentImportFromJsonRequest(filePathList);
+        listImportRequest.setSupportCFA(supportCFA);
         dataHolder.getCloudManager().submitRequest(dataHolder.getContext(), listImportRequest, new BaseCallback() {
 
             @Override
@@ -58,6 +55,9 @@ public class ContentImportAction extends BaseAction<LibraryDataHolder> {
             public void done(BaseRequest request, Throwable e) {
                 Toast.makeText(request.getContext().getApplicationContext(), e == null ?
                         R.string.cloud_content_import_success : R.string.cloud_content_import_failed, Toast.LENGTH_LONG).show();
+                if (e != null) {
+                    Log.e(ContentImportAction.class.getSimpleName(), filePathList.toString(), e);
+                }
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
