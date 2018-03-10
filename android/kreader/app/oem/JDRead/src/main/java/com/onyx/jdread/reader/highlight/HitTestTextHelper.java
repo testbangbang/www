@@ -5,10 +5,14 @@ import android.graphics.PointF;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
+import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.host.impl.ReaderHitTestOptionsImpl;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.ReaderViewHelper;
+import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 import com.onyx.jdread.reader.request.SelectRequest;
 
 /**
@@ -91,7 +95,7 @@ public class HitTestTextHelper {
             readerUserDataInfo.setTouchPoint(touchPoint);
             SelectionInfo readerSelectionInfo = new SelectionInfo();
             readerSelectionInfo.setPagePosition(pagePosition);
-            readerSelectionInfo.setCurrentSelection(selection,pageInfo);
+            readerSelectionInfo.setCurrentSelection(selection,pageInfo,readerUserDataInfo.getPageAnnotations(pageInfo.getName()));
             return readerSelectionInfo;
         }
         return null;
@@ -102,6 +106,26 @@ public class HitTestTextHelper {
         if(readerSelectionInfo != null){
             readerSelectionInfo.setHighLightBeginTop(start);
             readerSelectionInfo.setHighLightEndBottom(end);
+        }
+    }
+
+    public static void loadPageAnnotations(Reader reader,ReaderUserDataInfo readerUserDataInfo, ReaderViewInfo readerViewInfo){
+        if (readerViewInfo != null) {
+            try {
+                LayoutProviderUtils.updateReaderViewInfo(reader, readerViewInfo, reader.getReaderHelper().getReaderLayoutManager());
+
+                boolean isSupportScale = reader.getReaderHelper().getRendererFeatures().supportScale();
+                String displayName = reader.getReaderHelper().getPlugin().displayName();
+                String md5 = reader.getReaderHelper().getDocumentMd5();
+                ReaderNavigator navigator = reader.getReaderHelper().getNavigator();
+                readerUserDataInfo.loadPageAnnotations(reader.getReaderHelper().getContext(),
+                        isSupportScale, displayName, md5, navigator, readerViewInfo.getVisiblePages());
+                if (!isSupportScale) {
+                    ReaderViewHelper.updateAnnotationRectangles(reader,readerViewInfo,readerUserDataInfo);
+                }
+            } catch (Exception e) {
+
+            }
         }
     }
 }

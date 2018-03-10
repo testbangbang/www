@@ -146,8 +146,8 @@ public class BaseHandler {
 
     private boolean isShowSelectMenu(){
         if(getReaderDataHolder().getSelectMenuModel().getIsShowSelectMenu().get()){
-            getReaderDataHolder().getSelectMenuModel().setIsShowSelectMenu(false);
             new CleanSelectionAction().execute(getReaderDataHolder(),null);
+            getReaderDataHolder().getSelectMenuModel().setIsShowSelectMenu(false);
             return true;
         }
         return false;

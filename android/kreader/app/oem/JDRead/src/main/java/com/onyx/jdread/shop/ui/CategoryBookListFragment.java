@@ -168,6 +168,7 @@ public class CategoryBookListFragment extends BaseFragment {
                 showOrCloseAllCatButton();
             }
         });
+        checkWifi(currentCatName);
     }
 
     private void initPageIndicator() {
@@ -252,9 +253,6 @@ public class CategoryBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             saveContentPage();
@@ -265,7 +263,7 @@ public class CategoryBookListFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
         showOrCloseAllCatButton();
-        if (checkWfiDisConnected()) {
+        if (isWifiDisconnected()) {
             return;
         }
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
@@ -330,7 +328,7 @@ public class CategoryBookListFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSubjectListSortKeyChangeEvent(SubjectListSortKeyChangeEvent event) {
         showOrCloseSortButton();
-        if (checkWfiDisConnected()) {
+        if (isWifiDisconnected()) {
             return;
         }
         if (sortkey == event.sortKey) {

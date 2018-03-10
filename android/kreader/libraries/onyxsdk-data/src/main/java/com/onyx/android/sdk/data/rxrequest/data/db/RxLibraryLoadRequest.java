@@ -7,8 +7,6 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -48,6 +46,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
     private EventBus eventBus;
     private long totalCount;
     private long libraryCount;
+    private long allBookCount;
 
     public RxLibraryLoadRequest(DataManager dataManager, QueryArgs queryArgs) {
         super(dataManager);
@@ -78,6 +77,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         libraryList.clear();
         libraryCount = getDataProvider().libraryCount(queryArgs.libraryUniqueId);
         totalCount = getDataProvider().count(getAppContext(), queryArgs) + getDataProvider().libraryCount(queryArgs.libraryUniqueId);
+        allBookCount = getDataProvider().count(getAppContext(), new QueryArgs());
         setQueryOffsetBounds();
         DataManagerHelper.loadLibraryList(getDataProvider(), libraryList, queryArgs);
         loadLibraryCover();
@@ -194,5 +194,9 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
 
     public int getMetaDataCount() {
         return (int) (getTotalCount() - getLibraryCount());
+    }
+
+    public long getAllBookCount() {
+        return allBookCount;
     }
 }

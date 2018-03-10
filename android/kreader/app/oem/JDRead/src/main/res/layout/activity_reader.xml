@@ -15,29 +15,69 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <SurfaceView
-            android:id="@+id/reader_page_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            <SurfaceView
+                android:id="@+id/reader_page_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <include
-            android:id="@+id/reader_popup_selection_menu"
-            layout="@layout/popup_selection_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:visibility="gone" />
+            <include
+                android:id="@+id/reader_popup_selection_menu"
+                layout="@layout/popup_selection_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:visibility="gone" />
 
-        <TextView
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@{readViewModel.tipMessage}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font"
+                android:background="@android:color/white"
+                android:visibility="@{readViewModel.isShowTipMessage?View.VISIBLE:View.GONE}" />
+
+        <RelativeLayout
+            android:id="@+id/layout_last_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@{readViewModel.tipMessage}"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font"
-            android:background="@android:color/white"
-            android:visibility="@{readViewModel.isShowTipMessage?View.VISIBLE:View.GONE}" />
+            android:visibility="@{readViewModel.isShowLastPage?View.VISIBLE:View.GONE}">
+
+            <TextView
+                android:id="@+id/textview_end_of_book_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="200dp"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:text="@string/end_of_book"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textview_end_of_book_title"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="22dp"
+                android:textSize="16sp"
+                android:gravity="center_horizontal"
+                android:text="@string/end_of_book_description"/>
+
+            <Button
+                android:id="@+id/button_back_to_library"
+                android:layout_width="268dp"
+                android:layout_height="34dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="118dp"
+                android:background="@drawable/rectangle_stroke_round"
+                android:textSize="20sp"
+                android:text="@string/back_to_library"/>
+
+        </RelativeLayout>
     </FrameLayout>
 
 </layout>

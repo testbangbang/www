@@ -9,6 +9,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.DialogMessage;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.MainActivity;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.dialog.ExportDialog;
 import com.onyx.jdread.personal.event.ExportToEmailEvent;
@@ -16,6 +17,7 @@ import com.onyx.jdread.personal.event.ExportToImpressionEvent;
 import com.onyx.jdread.personal.event.ExportToNativeEvent;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.AnnotationCopyToClipboardAction;
+import com.onyx.jdread.reader.actions.CheckAnnotationAction;
 import com.onyx.jdread.reader.actions.CloseDocumentAction;
 import com.onyx.jdread.reader.actions.DeleteAnnotationAction;
 import com.onyx.jdread.reader.actions.GetViewSettingAction;
@@ -130,6 +132,11 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe
+    public void onShowLastPageEvent(ShowLastPageEvent event) {
+        readerViewModel.setIsShowLastPage(true);
+    }
+
+    @Subscribe
     public void onCloseDocumentEvent(CloseDocumentEvent event) {
         new CloseDocumentAction().execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
             @Override
@@ -217,11 +224,22 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupLineationClickEvent(PopupLineationClickEvent event) {
-        AddAnnotation();
+        final CheckAnnotationAction action = new CheckAnnotationAction();
+        action.execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                AddAnnotation(action.isEquals,action.userNote);
+            }
+        });
     }
 
-    private void AddAnnotation(){
-        new AddAnnotationAction("","", ReaderConfig.QUOTE_STATE_NOT_CHANGED).execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+    private void AddAnnotation(boolean isEquals,String userNote){
+        if(isEquals){
+            updatePageView();
+            ToastMessage.showMessageCenter(readerViewModel.getReaderDataHolder().getAppContext(), ResManager.getString(R.string.annotation_repeat));
+            return;
+        }
+        new AddAnnotationAction(userNote,"", ReaderConfig.QUOTE_STATE_NOT_CHANGED).execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updatePageView();
@@ -236,6 +254,16 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopupNoteClickEvent(PopupNoteClickEvent event) {
+        final CheckAnnotationAction action = new CheckAnnotationAction();
+        action.execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                showReaderNoteDialog();
+            }
+        });
+    }
+
+    private void showReaderNoteDialog(){
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
             return;

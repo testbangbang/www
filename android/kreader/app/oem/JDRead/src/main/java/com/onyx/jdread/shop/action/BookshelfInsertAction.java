@@ -81,6 +81,7 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
             extraInfo.random = detailBean.random;
             metadata.setSize((long) extraInfo.totalSize);
             metadata.setDownloadInfo(JSONObjectParseUtils.toJson(extraInfo));
+            metadata.setFetchSource(extraInfo.isWholeBookDownLoad ? Metadata.FetchSource.CLOUD : Metadata.FetchSource.CLOUD_TRY_READ);
         }
         metadata.setIdString(localPath);
         return metadata;

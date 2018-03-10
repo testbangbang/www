@@ -1,5 +1,31 @@
 LOCAL_PATH:= $(call my-dir)
 
+#jddrm ebr
+include $(CLEAR_VARS)
+
+LIBEBR_ROOT := libjdrebr
+
+LOCAL_MODULE := ebr
+
+LOCAL_SRC_FILES := \
+  $(LIBEBR_ROOT)/DRM_API/DRMLib.cpp \
+  $(LIBEBR_ROOT)/DRM_API/drmalgorithm.cpp \
+  $(LIBEBR_ROOT)/DRM_API/Utility.cpp  \
+  $(LIBEBR_ROOT)/DRM_API/md5.c  \
+  $(LIBEBR_ROOT)/miracl/mraes.c \
+  $(LIBEBR_ROOT)/miracl/mrshs256.c \
+  $(LIBEBR_ROOT)/miracl/p1363.c \
+  $(LIBEBR_ROOT)/miracl/rijndael-alg-fst.c
+
+LOCAL_C_INCLUDES += \
+  $(LOCAL_PATH)/$(LIBEBR_ROOT)/DRM_API \
+  $(LOCAL_PATH)/$(LIBEBR_ROOT)/miracl
+
+LOCAL_CFLAGS += -D_CLIENT
+LOCAL_LDLIBS := -llog
+
+include $(BUILD_STATIC_LIBRARY)
+
 MY_LOCAL_PATH := $(LOCAL_PATH)
 
 JSONXX_ROOT := $(MY_LOCAL_PATH)/../../common/jsonxx
@@ -231,7 +257,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE:= libpdfium-new
 
-LOCAL_STATIC_LIBRARIES += libfx_freetype libfx_agg libfx_lcms2 libfx_libopenjpeg libfx_jpeg libfx_zlib \
+LOCAL_STATIC_LIBRARIES += libfx_freetype libfx_agg libfx_lcms2 libfx_libopenjpeg libfx_jpeg libfx_zlib ebr \
     libjsonxx libssl-prebuilt libcrypto-prebuilt
 
 LOCAL_CFLAGS += -O2

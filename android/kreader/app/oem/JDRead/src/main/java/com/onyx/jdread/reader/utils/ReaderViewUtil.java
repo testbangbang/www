@@ -104,7 +104,7 @@ public class ReaderViewUtil {
         return bRet;
     }
 
-    static public String getListKey(final Map<String, SelectionInfo> list) {
-        return FileUtils.computeMD5(JSON.toJSONString(list));
+    static public String getKey(String message) {
+        return FileUtils.computeMD5(message);
     }
 }

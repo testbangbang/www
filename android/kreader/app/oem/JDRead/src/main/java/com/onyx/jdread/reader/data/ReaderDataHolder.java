@@ -196,7 +196,7 @@ public class ReaderDataHolder {
     }
 
     public String getCurrentPagePosition() {
-        return getReaderViewInfo().getFirstVisiblePage().getPositionSafely();
+        return getReaderViewInfo().getFirstVisiblePagePosition();
     }
 
     public String getBookName(){

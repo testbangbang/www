@@ -27,8 +27,8 @@ public class BatchDownloadResultBean {
             public int count;
             public String chapterCount;
             public String discount;
-            public float jd_price;
-            public float old_price;
+            public int jd_price;
+            public int old_price;
             public List<String> ids;
         }
     }

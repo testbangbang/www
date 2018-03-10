@@ -584,4 +584,7 @@
     <dimen name="start_skip_padding">10dp</dimen>
     <dimen name="start_preference_drawable_padding">10dp</dimen>
     <dimen name="start_login_eye_margin_right">10dp</dimen>
+    <dimen name="custom_search_view_padding">10dp</dimen>
+    <dimen name="custom_search_view_drawable_padding">20dp</dimen>
+    <dimen name="network_error_tip_margin_top">6dp</dimen>
 </resources>

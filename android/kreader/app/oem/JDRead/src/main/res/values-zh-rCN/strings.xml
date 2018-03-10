@@ -470,6 +470,7 @@
     <string name="book_detail_add_cart_tip_the_book_already_add_cart">图书已经加入到购物车</string>
     <string name="pay_dialog_insufficient_balance">余额不足，去充值</string>
     <string name="pay_success">支付成功</string>
+    <string name="pay_failed">支付失败</string>
     <string name="password_find">密码找回</string>
     <string name="psw_success_to_unlock">获取成功，去解锁</string>
     <string name="find_password_qr_generating">正在生成找回信息...</string>
@@ -502,6 +503,7 @@
     <string name="book_batch_download_buy_chapter">章节购买</string>
     <string name="book_batch_download_item_current_chapter">本章</string>
     <string name="book_batch_download_item_after_chapter">后%d章</string>
+    <string name="annotation_repeat">不能重复添加</string>
     <string name="reboot">重启</string>
     <string name="shutdown">关机</string>
     <string name="please_check_wifi">请查看无线网络设置后重试</string>
@@ -523,4 +525,8 @@
     <string name="welcome_tip">欢迎使用JDRead，请根据提示完成初始设置，以便我们为您提供更好的服务。</string>
     <string name="register_account">注册账户</string>
     <string name="select_interest">选择您感兴趣的图书类型</string>
+    <string name="end_of_book">全书完</string>
+    <string name="end_of_book_description">一本书像一艘船，带领我们从狭隘的地方\n驶向无限广阔的海洋</string>
+    <string name="back_to_library">返回书架</string>
+    <string name="not_existent">不存在的书籍</string>
 </resources>

@@ -42,26 +42,13 @@
                 android:onClick="@{()->searchModel.back()}"
                 android:src="@mipmap/ic_read_back" />
 
-            <android.support.v7.widget.SearchView
+            <com.onyx.jdread.library.view.CustomSearchView
                 android:id="@+id/search_view"
-                android:layout_marginLeft="@dimen/fragment_content_padding"
-                android:layout_marginRight="@dimen/fragment_content_padding"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/shop_search_book_edit_text_background"
-                android:shadowColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font"
-                app:iconifiedByDefault="false"
-                android:imeOptions="flagNoEnterAction"
-                app:queryHint="@string/search_view_hint"
-                app:searchIcon="@null" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="@{()->searchModel.search()}"
-                android:src="@mipmap/ic_shelf_search" />
+                android:layout_marginLeft="@dimen/fragment_content_padding"
+                android:layout_marginRight="@dimen/fragment_content_padding"
+                android:layout_weight="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -110,8 +97,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:padding="@dimen/clear_search_history_padding"
                     android:onClick="@{()->searchModel.clearHistory()}"
+                    android:padding="@dimen/clear_search_history_padding"
                     android:src="@mipmap/ic_shelf_search_delet" />
             </RelativeLayout>
 

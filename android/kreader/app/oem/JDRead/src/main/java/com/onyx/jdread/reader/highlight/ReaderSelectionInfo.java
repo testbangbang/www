@@ -49,11 +49,9 @@ public class ReaderSelectionInfo {
         String result = "";
         List<Map.Entry<String, SelectionInfo>> list = new ArrayList<Map.Entry<String, SelectionInfo>>(readerSelectionInfos.entrySet());
         Collections.sort(list, new MapKeyComparator());
-        Log.i(TAG,"getSelectText:");
         for (int i = 0; i < list.size(); i++) {
             Map.Entry<String, SelectionInfo> stringStringEntry = list.get(i);
             SelectionInfo readerSelectionInfo = stringStringEntry.getValue();
-            Log.i(TAG,"pagePosition:" + readerSelectionInfo.pagePosition + ",text:" + readerSelectionInfo.getCurrentSelection().getText());
             result += readerSelectionInfo.getCurrentSelection().getText();
         }
         return result;

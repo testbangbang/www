@@ -13,6 +13,8 @@ import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
@@ -29,6 +31,7 @@ import com.onyx.jdread.library.event.SearchBookEvent;
 import com.onyx.jdread.library.event.SortByNameEvent;
 import com.onyx.jdread.library.event.SortByTimeEvent;
 import com.onyx.jdread.library.event.WifiPassBookEvent;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,6 +50,7 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableList<DataModel> items = new ObservableArrayList<>();
     public final ObservableField<String> title = new ObservableField<>();
     public final ObservableInt count = new ObservableInt(-1);
+    public final ObservableInt bookCount = new ObservableInt(-1);
     public final ObservableInt libraryCount = new ObservableInt(0);
     public final ObservableBoolean showTopMenu = new ObservableBoolean(true);
     public final ObservableBoolean showBottomMenu = new ObservableBoolean(false);
@@ -173,7 +177,15 @@ public class LibraryViewDataModel extends Observable {
         args.libraryUniqueId = libraryId;
         generateQueryArgs(args);
         QueryBuilder.andWith(args.conditionGroup, QueryBuilder.storageIdCondition(getSdcardCid()));
+        if (!JDReadApplication.getInstance().getLogin()) {
+            QueryBuilder.andWith(args.conditionGroup, hideUserBought());
+        }
         return generateMetadataInQueryArgs(args);
+    }
+
+    private OperatorGroup hideUserBought() {
+        return OperatorGroup.clause()
+                .or(Metadata_Table.fetchSource.isNot(Metadata.FetchSource.CLOUD));
     }
 
     public QueryArgs libraryQuery() {

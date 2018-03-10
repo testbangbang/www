@@ -100,6 +100,7 @@ public class BookVIPReadFragment extends BaseFragment {
         bookVipReadBinding.layoutTitleBar.titleBarRightIcon.setImageResource(R.mipmap.ic_shelf_search);
         getVipReadViewModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.read_vip);
         getVipReadViewModel().getTitleBarViewModel().showRightText = true;
+        checkWifi(getVipReadViewModel().getTitleBarViewModel().leftText);
     }
 
     private void setRecycleView() {
@@ -162,9 +163,6 @@ public class BookVIPReadFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
         if (modulesBean != null) {
             JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
@@ -179,9 +177,6 @@ public class BookVIPReadFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
@@ -190,7 +185,7 @@ public class BookVIPReadFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipButtonClickEvent(VipButtonClickEvent event) {
-        if (checkWfiDisConnected()) {
+        if (isWifiDisconnected()) {
             return;
         }
         if (getViewEventCallBack() != null) {

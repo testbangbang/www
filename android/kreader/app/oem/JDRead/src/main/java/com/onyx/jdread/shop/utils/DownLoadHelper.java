@@ -103,10 +103,17 @@ public class DownLoadHelper {
             case FileDownloadStatus.progress:
                 bookStatus = ResManager.getString(R.string.is_downloading);
                 break;
+            case FileDownloadStatus.started:
+                bookStatus = ResManager.getString(R.string.started);
+                break;
             case FileDownloadStatus.completed:
             default:
                 bookStatus = "";
         }
         return bookStatus;
+    }
+
+    public static boolean showProgress(int downloadStatus) {
+        return isDownloading(downloadStatus) || isPause(downloadStatus) || isStarted(downloadStatus);
     }
 }
