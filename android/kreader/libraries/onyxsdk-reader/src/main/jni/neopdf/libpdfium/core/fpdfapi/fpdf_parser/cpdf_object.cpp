@@ -18,6 +18,14 @@
 
 CPDF_Object::~CPDF_Object() {}
 
+CPDF_Object::Type CPDF_Object::GetExType(){
+  return m_exType;
+}
+
+void CPDF_Object::SetExType(Type type){
+  m_exType = type;
+}
+
 CPDF_Object* CPDF_Object::GetDirect() const {
   return const_cast<CPDF_Object*>(this);
 }

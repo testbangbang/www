@@ -27,6 +27,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class NoteViewModel {
     private ObservableField<String> srcNote = new ObservableField<>();
+    private ObservableField<String> srcEditNote = new ObservableField<>();
     private ObservableField<String> srcPageNumber = new ObservableField<>();
     private ObservableField<String> newNote = new ObservableField<>();
     private ObservableField<String> newPageNumber = new ObservableField<>();
@@ -102,6 +103,7 @@ public class NoteViewModel {
 
     private void update(NoteInfo noteInfo) {
         setSrcNote(noteInfo.srcNote);
+        setSrcEditNote(noteInfo.srcNote);
         setChapterName(ReaderViewUtil.trim(noteInfo.chapterName));
         setCreateNoteDate(noteInfo.updateDate);
         setNewNote(noteInfo.newNote);
@@ -178,8 +180,10 @@ public class NoteViewModel {
 
     public int getSrcNoteSate(){
         String note = srcNote.get();
-        if(noteInfo.srcNote.equals(note)){
-            return ReaderConfig.QUOTE_STATE_NOT_CHANGED;
+        if(!noteInfo.isSrcNoteModify) {
+            if (noteInfo.srcNote.equals(note)) {
+                return ReaderConfig.QUOTE_STATE_NOT_CHANGED;
+            }
         }
         return ReaderConfig.QUOTE_STATE_MODIFY;
     }
@@ -194,6 +198,14 @@ public class NoteViewModel {
 
     public void setSrcNote(String srcNote) {
         this.srcNote.set(srcNote);
+    }
+
+    public ObservableField<String> getSrcEditNote() {
+        return srcEditNote;
+    }
+
+    public void setSrcEditNote(String srcEditNote) {
+        this.srcEditNote.set(srcEditNote);
     }
 
     public ObservableField<String> getNewNote() {

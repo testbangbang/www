@@ -24,7 +24,6 @@ import com.onyx.jdread.reader.event.PopupTranslationClickEvent;
 import com.onyx.jdread.reader.event.WordTranslateResultEvent;
 import com.onyx.jdread.reader.handler.HandlerManger;
 import com.onyx.jdread.reader.highlight.HighlightCursor;
-import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.setting.action.TranslateAction;
 import com.onyx.jdread.setting.model.SettingBundle;

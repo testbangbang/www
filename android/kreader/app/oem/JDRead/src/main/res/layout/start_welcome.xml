@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:id="@+id/start_first"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_jdread_logo" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/start_welcome_jdread_margin_top"
+            android:src="@mipmap/ic_jdread_small" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/start_welcome_text_margin_right"
+            android:layout_marginRight="@dimen/start_welcome_text_margin_right"
+            android:layout_marginTop="@dimen/start_welcome_text_margin_top"
+            android:gravity="center_horizontal"
+            android:text="@string/welcome_tip"
+            android:textColor="@color/text_gray_color"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="3" />
+    </LinearLayout>
+</layout>

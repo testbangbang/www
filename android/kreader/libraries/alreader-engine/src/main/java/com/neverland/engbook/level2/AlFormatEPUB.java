@@ -260,7 +260,9 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
                 for (int j = startFind; j < lnk.size(); j++) {
                     if (lnk.get(j).name.contentEquals(link)) {
                         pos = lnk.get(j).positionS;
-                        startFind = ++j;
+                        // always search in lnk list from first entry
+                        // because entries in lnk list are not guaranteed to be ordered by positionS
+                        // startFind = ++j;
 
                         parNum = findParagraphByPos(pos);
                         if (par0.get(parNum).start == pos && a.section == 0)

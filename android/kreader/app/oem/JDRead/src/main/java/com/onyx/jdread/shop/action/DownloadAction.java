@@ -8,16 +8,19 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.event.DownloadErrorEvent;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
 import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.model.ProgressInfoModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.DownLoadHelper;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -82,6 +85,10 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
                     infoModel.progress = infoModel.soFarBytes / infoModel.totalBytes;
                 }
                 dataBundle.getEventBus().post(new DownloadingEvent(tag, infoModel));
+                BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(tag);
+                if (DownLoadHelper.isPause(task.getStatus())) {
+                    updateDownloadInfo(task);
+                }
                 if (downLoadCallback != null) {
                     downLoadCallback.progress(tag, infoModel);
                 }
@@ -92,11 +99,12 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
                 DownloadFinishEvent downloadFinishEvent = new DownloadFinishEvent(tag);
                 downloadFinishEvent.setThrowable(e);
                 dataBundle.getEventBus().post(downloadFinishEvent);
+                BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(tag);
+                if (task != null) {
+                    updateDownloadInfo(task);
+                }
                 if (downLoadCallback != null) {
                     downLoadCallback.done(tag);
-                }
-                if (e != null) {
-                    dataBundle.getEventBus().post(new DownloadErrorEvent(tag));
                 }
                 if (rxCallback != null) {
                     if (e != null) {
@@ -107,7 +115,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
                         }
                         rxCallback.onError(e);
                     } else {
-                         rxCallback.onNext(DownloadAction.this);
+                        rxCallback.onNext(DownloadAction.this);
                     }
                 }
                 removeDownloadingTask(tag);
@@ -154,5 +162,22 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
 
     public void removeDownLoadCallback(DownLoadCallback downLoadCallback) {
         this.downLoadCallback = downLoadCallback;
+    }
+
+    private void updateDownloadInfo(BaseDownloadTask task) {
+        JDReadApplication.getInstance().setNotifyLibraryData(true);
+        BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
+        extraInfoBean.downLoadState = task.getStatus();
+        extraInfoBean.downloadUrl = task.getUrl();
+        extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
+        extraInfoBean.progress = task.getSmallFileSoFarBytes();
+        extraInfoBean.totalSize = task.getSmallFileTotalBytes();
+        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean, task.getPath());
+        action.execute(ShopDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
     }
 }

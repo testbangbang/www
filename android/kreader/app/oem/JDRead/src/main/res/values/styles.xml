@@ -298,7 +298,7 @@
     <style name="ReaderBookInfoBookmarkItemTitleStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textColor">@color/text_gray_color</item>
         <item name="android:textSize">@dimen/level_four_heading_font</item>
         <item name="android:paddingTop">5dp</item>
         <item name="android:lines">1</item>
