@@ -134,4 +134,5 @@
     <string name="notification">通知</string>
 
     <string name="close">关闭</string>
+    <string name="homework_checked">已批改</string>
 </resources>
