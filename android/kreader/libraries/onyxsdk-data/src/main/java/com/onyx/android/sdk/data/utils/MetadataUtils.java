@@ -24,6 +24,10 @@ import java.util.Set;
 public class MetadataUtils {
     public static final String INTENT_EXTRA_DATA_METADATA = "intent_extra_data_metadata";
 
+    public static final String PDF_FILE_TYPE = "pdf";
+    public static final String CFA_TAG = "cfa";
+    public static final String CFA_PDF_FILE_TYPE = CFA_TAG + "-" + PDF_FILE_TYPE;
+
     static public int compareStringAsc(final String a, final String b) {
         if (a == null && b == null) {
             return 0;
@@ -658,5 +662,28 @@ public class MetadataUtils {
     public static Metadata getIntentExtraDataMetadata(Intent intent) {
         String json = intent.getStringExtra(INTENT_EXTRA_DATA_METADATA);
         return JSONObjectParseUtils.parseObject(json, Metadata.class);
+    }
+
+    public static String getType(Metadata book) {
+        if (CollectionUtils.isNullOrEmpty(book.getBookLocations())) {
+            return book.getType();
+        }
+        boolean contains = book.containsBookLocation(CFA_TAG, PDF_FILE_TYPE);
+        return contains ? PDF_FILE_TYPE : book.getType();
+    }
+
+    public static String getDownloadUrl(Metadata metadata, boolean supportCFA) {
+        if (CollectionUtils.isNullOrEmpty(metadata.getBookLocations())) {
+            return metadata.getLocation();
+        }
+        String url;
+        if (supportCFA) {
+            url = metadata.getBookLocation(CFA_PDF_FILE_TYPE);
+            if (StringUtils.isNotBlank(url)) {
+                return url;
+            }
+        }
+        url = metadata.getBookLocation(getType(metadata));
+        return StringUtils.isNotBlank(url) ? url : metadata.getLocation();
     }
 }
