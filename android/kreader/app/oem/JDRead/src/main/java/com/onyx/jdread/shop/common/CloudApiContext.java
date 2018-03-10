@@ -85,6 +85,8 @@ public class CloudApiContext {
         public static final String GET_CHAPTER_GROUP_INFO = "net/%s/order_commit";
         public static final String GET_CHAPTER_START_ID = "net/startchapter/%s";
         public static final String BUY_CHAPTERS = "net/%s/order";
+        public static final String GET_CHAPTERS_CONTENT = "net/%s/chapter";
+        public static final String GET_CHAPTER_CATALOG = "net/%s/catalog";
     }
 
     public static class CategoryLevel2BookList {
@@ -127,6 +129,9 @@ public class CloudApiContext {
         public static final String EBOOKID = "ebookId";
         public static final String START_CHAPTER_ID = "start_chapter";
         public static final String CHAPTER_COUNT = "count";
+        public static final String CHAPTER_CONTENT_TYPE = "type";
+        public static final String CHAPTER_CONTENT_IDS = "ids";
+        public static final String CHAPTER_CONTENT_CAN_TRY = "can_try";
         public static final String TYPE = "type";
         public static final String HARDWARE_ID = "hardware_id";
         public static final String IS_TOB = "is_tob"; //is Enterprise Edition

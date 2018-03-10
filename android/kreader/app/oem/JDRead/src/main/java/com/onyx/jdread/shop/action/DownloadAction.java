@@ -14,7 +14,6 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
-import com.onyx.jdread.shop.event.DownloadErrorEvent;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
 import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
@@ -169,10 +168,13 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
         BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
         extraInfoBean.downLoadState = task.getStatus();
         extraInfoBean.downloadUrl = task.getUrl();
-        extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
+        extraInfoBean.localPath = task.getPath();
         extraInfoBean.progress = task.getSmallFileSoFarBytes();
         extraInfoBean.totalSize = task.getSmallFileTotalBytes();
-        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean, task.getPath());
+        if (extraInfoBean.progress != 0) {
+            extraInfoBean.percentage = (int) ((extraInfoBean.progress  * 100 / extraInfoBean.totalSize));
+        }
+        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean);
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {

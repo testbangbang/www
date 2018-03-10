@@ -14,9 +14,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -64,13 +62,7 @@ import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
-import com.onyx.jdread.shop.action.UpdateDownloadInfoAction;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
-import com.onyx.jdread.shop.event.DownloadFinishEvent;
-import com.onyx.jdread.shop.event.DownloadingEvent;
-import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.ui.NetWorkErrorFragment;
-import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;

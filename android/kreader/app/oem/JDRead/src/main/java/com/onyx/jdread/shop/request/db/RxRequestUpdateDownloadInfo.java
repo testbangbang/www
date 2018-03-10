@@ -12,15 +12,10 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 
 public class RxRequestUpdateDownloadInfo extends RxBaseDBRequest {
 
-    private String  localPath;
     private BookExtraInfoBean extraInfo;
 
     public RxRequestUpdateDownloadInfo(DataManager dm) {
         super(dm);
-    }
-
-    public void setLocalPath(String localPath) {
-        this.localPath = localPath;
     }
 
     public void setExtraInfo(BookExtraInfoBean extraInfo) {
@@ -35,7 +30,7 @@ public class RxRequestUpdateDownloadInfo extends RxBaseDBRequest {
 
     public void updateInfo() {
         if (extraInfo != null) {
-            Metadata findMeta = getDataProvider().findMetadataByIdString(getAppContext(), localPath);
+            Metadata findMeta = getDataProvider().findMetadataByIdString(getAppContext(), extraInfo.localPath);
             BookExtraInfoBean findExtraInfoBean = JSONObjectParseUtils.toBean(findMeta.getDownloadInfo(), BookExtraInfoBean.class);
             if (findMeta != null && findMeta.hasValidId() && findExtraInfoBean != null) {
                 findExtraInfoBean.progress = extraInfo.progress;
