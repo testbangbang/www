@@ -26,6 +26,7 @@ public class PageTextView extends AppCompatTextView {
     private int totalPageNumber = 0;
     private int page[];
     private OnPagingListener onPagingListener;
+    private boolean pageTurningCycled = false;
 
     public interface OnPagingListener {
         void onPageChange(int currentPage, int totalPage);
@@ -41,6 +42,14 @@ public class PageTextView extends AppCompatTextView {
 
     public PageTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public boolean isPageTurningCycled() {
+        return pageTurningCycled;
+    }
+
+    public void setPageTurningCycled(boolean pageTurningCycled) {
+        this.pageTurningCycled = pageTurningCycled;
     }
 
     public void setOnPagingListener(OnPagingListener listener) {
@@ -109,7 +118,11 @@ public class PageTextView extends AppCompatTextView {
     public void prevPage() {
         currentPageNumber--;
         if(currentPageNumber < 0){
-            currentPageNumber = totalPageNumber - 1;
+            if(pageTurningCycled) {
+                currentPageNumber = totalPageNumber - 1;
+            }else{
+                currentPageNumber = 0;
+            }
         }
 
         int start = page[currentPageNumber];
@@ -125,7 +138,11 @@ public class PageTextView extends AppCompatTextView {
     public void nextPage() {
         currentPageNumber++;
         if(currentPageNumber >= totalPageNumber){
-            currentPageNumber = 0;
+            if(pageTurningCycled) {
+                currentPageNumber = 0;
+            }else {
+                currentPageNumber = totalPageNumber - 1;
+            }
         }
         int start = page[currentPageNumber];
         setText(srcContent.subSequence(start, srcContent.length()));
