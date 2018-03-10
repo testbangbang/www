@@ -84,4 +84,6 @@ dependencies {
     compile "com.google.android:flexbox:$rootProject.flexboxVersion"
     compile "com.github.bumptech.glide:glide:$rootProject.glideVersion"
     testCompile "junit:junit:$rootProject.junitVersion"
+    // db debug
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.2'
 }
