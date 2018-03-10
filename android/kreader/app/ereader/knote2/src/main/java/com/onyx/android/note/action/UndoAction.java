@@ -15,16 +15,13 @@ import com.onyx.android.sdk.rx.RxCallback;
 
 public class UndoAction extends BaseNoteAction {
 
-    private boolean isLineLayoutMode;
-
-    public UndoAction(NoteManager noteManager, boolean isLineLayoutMode) {
+    public UndoAction(NoteManager noteManager) {
         super(noteManager);
-        this.isLineLayoutMode = isLineLayoutMode;
     }
 
     @Override
     public void execute(final RxCallback rxCallback) {
-        UndoRequest undoRequest = new UndoRequest(getNoteManager(), isLineLayoutMode);
+        UndoRequest undoRequest = new UndoRequest(getNoteManager());
         getNoteManager().getRxManager().enqueue(undoRequest, new RxCallback<UndoRequest>() {
             @Override
             public void onNext(@NonNull UndoRequest undoRequest) {

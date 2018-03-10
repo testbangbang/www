@@ -43,4 +43,8 @@ public class DrawDataHolder {
     public void setStrokeWidth(float width) {
         getDrawingArgs().strokeWidth = width;
     }
+
+    public void setCurrentShapeType(int newShape) {
+        getDrawingArgs().setCurrentShapeType(newShape);
+    }
 }

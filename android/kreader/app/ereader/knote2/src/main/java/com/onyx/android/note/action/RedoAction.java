@@ -14,16 +14,13 @@ import com.onyx.android.sdk.rx.RxCallback;
 
 public class RedoAction extends BaseNoteAction {
 
-    private boolean isLineLayoutMode;
-
-    public RedoAction(NoteManager noteManager, boolean isLineLayoutMode) {
+    public RedoAction(NoteManager noteManager) {
         super(noteManager);
-        this.isLineLayoutMode = isLineLayoutMode;
     }
 
     @Override
     public void execute(final RxCallback rxCallback) {
-        RedoRequest redoRequest = new RedoRequest(getNoteManager(), isLineLayoutMode);
+        RedoRequest redoRequest = new RedoRequest(getNoteManager());
         getNoteManager().getRxManager().enqueue(redoRequest, new RxCallback<RedoRequest>() {
             @Override
             public void onNext(@NonNull RedoRequest redoRequest) {

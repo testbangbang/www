@@ -1,19 +1,13 @@
 package com.onyx.android.note.handler;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 
-import com.onyx.android.note.NoteDataBundle;
-import com.onyx.android.note.action.AddShapesAction;
-import com.onyx.android.note.action.RenderToBitmapAction;
+import com.onyx.android.note.action.EraseAction;
 import com.onyx.android.sdk.note.NoteManager;
-import com.onyx.android.sdk.note.data.ScribbleMode;
 import com.onyx.android.sdk.note.event.RawDrawingRenderEnabledEvent;
 import com.onyx.android.sdk.pen.data.TouchPoint;
 import com.onyx.android.sdk.pen.data.TouchPointList;
-import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.utils.CollectionUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Subscriber;
@@ -29,32 +23,29 @@ import io.reactivex.schedulers.Schedulers;
  * Created by lxm on 2018/3/5.
  */
 
-public class EraseHandler extends BaseHandler {
+public class BaseEraseHandler extends BaseHandler {
 
     private static long SYNC_ERASE_TOUCH_POINT_SIZE = 50;
     private TouchPointList erasePoints;
     private FlowableEmitter<TouchPoint> emitter;
     private Subscription subscription;
 
-    public EraseHandler(@NonNull EventBus eventBus, NoteManager noteManager) {
+    public BaseEraseHandler(@NonNull EventBus eventBus, NoteManager noteManager) {
         super(eventBus, noteManager);
     }
 
     @Override
     public void onActivate() {
         super.onActivate();
-        getNoteManager().post(new RawDrawingRenderEnabledEvent(false));
     }
 
     @Override
     public void onDeactivate() {
         super.onDeactivate();
-        getNoteManager().post(new RawDrawingRenderEnabledEvent(true));
     }
 
     @Override
-    public void onBeginRawDraw(boolean shortcutDrawing, final TouchPoint point) {
-        super.onBeginRawDraw(shortcutDrawing, point);
+    public void onBeginRawErasing(boolean shortcutErasing, final TouchPoint point) {
         erasePoints = new TouchPointList();
         Flowable.create(new FlowableOnSubscribe<TouchPoint>() {
 
@@ -77,7 +68,7 @@ public class EraseHandler extends BaseHandler {
                     public void onNext(TouchPoint touchPoint) {
                         erasePoints.add(touchPoint);
                         if (erasePoints.size() == SYNC_ERASE_TOUCH_POINT_SIZE) {
-                            renderToBitmap(erasePoints);
+                            eraseByPoints(erasePoints);
                             erasePoints = new TouchPointList();
                             subscription.request(SYNC_ERASE_TOUCH_POINT_SIZE);
                         }
@@ -96,43 +87,31 @@ public class EraseHandler extends BaseHandler {
     }
 
     @Override
-    public void onRawDrawingPointsMoveReceived(TouchPoint point) {
-        super.onRawDrawingPointsMoveReceived(point);
+    public void onRawErasingPointMove(TouchPoint touchPoint) {
         if (emitter != null) {
-            emitter.onNext(point);
+            emitter.onNext(touchPoint);
         }
     }
 
     @Override
-    public void onRawDrawingPointsReceived(TouchPointList pointList) {
-        super.onRawDrawingPointsReceived(pointList);
-        new AddShapesAction(getNoteManager())
-                .setShape(createEraseShape(pointList))
+    public void onRawErasingPointsReceived(TouchPointList pointList) {
+        eraseByPoints(pointList);
+    }
+
+    private void eraseByPoints(TouchPointList touchPointList) {
+        if (erasePoints == null || CollectionUtils.isNullOrEmpty(erasePoints.getPoints())) {
+            return;
+        }
+        new EraseAction(getNoteManager(), touchPointList)
+                .setFixShape(true)
                 .execute(null);
     }
 
     @Override
-    public void onEndRawDrawing(boolean outLimitRegion, TouchPoint point) {
+    public void onEndRawErasing(boolean outLimitRegion, TouchPoint point) {
         super.onEndRawDrawing(outLimitRegion, point);
         emitter.onNext(point);
         subscription.cancel();
     }
 
-    private void renderToBitmap(TouchPointList touchPointList) {
-        new RenderToBitmapAction(getNoteManager())
-                .setShape(createEraseShape(touchPointList))
-                .setPauseRawDraw(false)
-                .setRenderToScreen(true)
-                .execute(null);
-    }
-
-    private Shape createEraseShape(TouchPointList touchPointList) {
-        NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawDataHolder().getDrawingArgs();
-        Shape shape = ShapeFactory.createShape(ShapeFactory.SHAPE_ERASE_OVERLAY);
-        shape.setStrokeWidth(drawingArgs.strokeWidth);
-        shape.setColor(Color.TRANSPARENT);
-        shape.setLayoutType(ShapeFactory.POSITION_FREE);
-        shape.addPoints(touchPointList);
-        return shape;
-    }
 }
