@@ -63,6 +63,12 @@ public class BaseFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoadingDialog();
+    }
+
     public void setBundle(Bundle bundle) {
         this.bundle = bundle;
     }

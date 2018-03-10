@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.utils;
 
-import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -14,7 +13,6 @@ import com.onyx.jdread.shop.action.DownLoadWholeBookAction;
 import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.DownLoadWholeBookResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -63,12 +61,7 @@ public class BookDownloadUtils {
                 }
             });
         } else {
-            BookExtraInfoBean bookExtraInfoBean = bookDetailBean.bookExtraInfoBean;
-            if (bookExtraInfoBean != null && DownLoadHelper.isDownloading(bookExtraInfoBean.downLoadState)) {
-                OnyxDownloadManager.getInstance().pauseTask(bookExtraInfoBean.downLoadTaskTag, false);
-            } else {
-                downloadBook(dataBundle, bookDetailBean, rxCallback);
-            }
+            downloadBook(dataBundle, bookDetailBean, rxCallback);
         }
     }
 
