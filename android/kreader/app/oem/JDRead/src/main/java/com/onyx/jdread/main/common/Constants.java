@@ -152,6 +152,7 @@ public class Constants {
     public static final String NATIVIE_DIR = EnvironmentUtil.getExternalStorageDirectory() + File.separator + "Notes";
     public static final String EMAIL_DIR = EnvironmentUtil.getExternalStorageDirectory() + File.separator + "TempExport";
     public static final String ZIP_NAME = "jdread";
+    public static final String IS_GUIDE = "is_guide";
     public static final String NET_ERROR_TITLE = "net_error_title";
     public static final String NET_ERROR_SHOW_TITLE_BAR = "net_error_show_title_bar";
 }

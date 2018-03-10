@@ -270,8 +270,10 @@ public class JDAppBaseInfo {
     public void setPageSize(String page, String pageSize) {
         String currentPage = "1";
         String currentPageSize = "20";
-        if (StringUtils.isNotBlank(page) || StringUtils.isNotBlank(pageSize)) {
+        if (StringUtils.isNotBlank(page)) {
             currentPage = page;
+        }
+        if (StringUtils.isNotBlank(pageSize)) {
             currentPageSize = pageSize;
         }
         Map<String, String> map = new HashMap<>();

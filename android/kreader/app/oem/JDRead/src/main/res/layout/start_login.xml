@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="loginViewModel"
+            type="com.onyx.jdread.personal.model.UserLoginViewModel" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/start_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/start_login_margin_top"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/start_login_padding"
+        android:paddingRight="@dimen/start_login_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_login_jd_account"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/start_login_account_margin_top"
+            android:background="@drawable/edittext_background"
+            android:hint="@string/edit_text_account_hint"
+            android:padding="@dimen/edit_text_padding"
+            android:text="@={loginViewModel.account}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/start_login_password_margin_top">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_background"
+                android:hint="@string/password_edit_hint"
+                android:inputType="textPassword"
+                android:padding="@dimen/edit_text_padding"
+                android:text="@={loginViewModel.password}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font"
+                bind:isShowPassword="@{loginViewModel.isShowPassword}" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/start_login_eye_margin_right"
+                android:onClick="@{()->loginViewModel.onChangePasswordVisibleViewClick()}"
+                android:src="@mipmap/ic_password_invisible"
+                bind:backgroundImage="@{loginViewModel.isShowPassword}" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="@dimen/start_login_register_margin_top"
+            android:background="@drawable/bottom_line"
+            android:onClick="@{()->loginViewModel.onRegisterViewClick()}"
+            android:text="@string/register_account"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/personal_logout_height"
+            android:layout_marginTop="@dimen/start_login_login_margin_top"
+            android:background="@drawable/rectangle_stroke_corners"
+            android:enabled="@{loginViewModel.loginButtonEnabled}"
+            android:gravity="center"
+            android:onClick="@{()->loginViewModel.onLoginViewClick()}"
+            android:paddingLeft="@dimen/personal_log_out_margin"
+            android:paddingRight="@dimen/personal_log_out_margin"
+            android:text="@string/login"
+            android:textSize="@dimen/level_two_heading_font" />
+    </LinearLayout>
+</layout>

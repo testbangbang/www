@@ -520,6 +520,11 @@
     <string name="export_failed">导出失败，请检查网络并重试</string>
     <string name="bind_email_success">关联电子邮箱成功</string>
     <string name="unbind_email_success">解除电子邮箱绑定成功</string>
+    <string name="skip">跳过</string>
+    <string name="next_step">下一步</string>
+    <string name="welcome_tip">欢迎使用JDRead，请根据提示完成初始设置，以便我们为您提供更好的服务。</string>
+    <string name="register_account">注册账户</string>
+    <string name="select_interest">选择您感兴趣的图书类型</string>
     <string name="end_of_book">全书完</string>
     <string name="end_of_book_description">一本书像一艘船，带领我们从狭隘的地方\n驶向无限广阔的海洋</string>
     <string name="back_to_library">返回书架</string>
