@@ -2,6 +2,7 @@ package com.onyx.android.sdk.reader.plugins.neopdf;
 
 import android.graphics.Bitmap;
 
+import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderRichMedia;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -23,7 +24,9 @@ import java.util.List;
 public class NeoPdfJniWrapper {
 
     public static final Class TAG = NeoPdfJniWrapper.class;
-
+    public static final String TAG_KEY = "key";
+    public static final String TAG_RANDOM = "random";
+    public static final String TAG_UU_ID = "uu_id";
     static{
         System.loadLibrary("neo_pdf");
     }
@@ -84,6 +87,8 @@ public class NeoPdfJniWrapper {
 
     private native boolean nativeGetPageTextRegions(int id, int page, final List<ReaderSelection> list);
 
+    private native void nativeSetDecryptInfo(int id,final String bookKey,final int bookKeyLen,final String uuid,final String rand);
+
     private int id;
     private String filePath = null;
 
@@ -97,7 +102,37 @@ public class NeoPdfJniWrapper {
 
     public long openDocument(final String path, final String password) {
         filePath = path;
+        if(NeoPdfReaderPlugin.isJDPDF(filePath)){
+            setDecryptInfo(password);
+        }
         return nativeOpenDocument(id, path, password);
+    }
+
+    public void setDecryptInfo(final String password){
+        try {
+            JSONObject object = JSONObject.parseObject(password);
+            String bookKey = object.getString(TAG_KEY);
+            String uuid = object.getString(TAG_UU_ID);
+            String rand = object.getString(TAG_RANDOM);
+            int bookKeyLen = -1;//-1 = unencrypted
+            if(bookKey != null && bookKey.length() > 0){
+                bookKeyLen = bookKey.length();
+            }
+
+            if(bookKey == null){
+                bookKey = "";
+            }
+            if(uuid == null){
+                uuid = "";
+            }
+            if(rand == null){
+                rand = "";
+            }
+            nativeSetDecryptInfo(id,bookKey,bookKeyLen,uuid,rand);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     public boolean closeDocument() {

@@ -32,6 +32,7 @@ import com.onyx.android.sdk.reader.plugins.comic.ComicReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.images.ImagesReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.jeb.JEBReaderPlugin;
+import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfJniWrapper;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 import com.onyx.android.sdk.reader.reflow.ImageReflowManager;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
@@ -43,6 +44,7 @@ import com.onyx.jdread.reader.layout.ReaderLayoutManager;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
 import org.apache.lucene.analysis.cn.AnalyzerAndroidWrapper;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -136,11 +138,29 @@ public class ReaderHelper {
 
     public ReaderDocument openDocument(final String path, final BaseOptions baseOptions, final ReaderPluginOptions pluginOptions) throws Exception {
         this.documentOptions = baseOptions;
+        //jeb(epub)
         ReaderDocumentOptionsImpl readerDocumentOptions = documentOptions.documentOptions();
         readerDocumentOptions.setDocumentKey(documentInfo.getSecurityInfo().getKey());
         readerDocumentOptions.setDocumentDeviceUUID(documentInfo.getSecurityInfo().getUuId());
         readerDocumentOptions.setDocumentRandom(documentInfo.getSecurityInfo().getRandom());
+        //jeb(pdf)
+        readerDocumentOptions.setDocumentPassword(getJebPassword(documentInfo.getSecurityInfo().getKey(),
+                documentInfo.getSecurityInfo().getUuId(),documentInfo.getSecurityInfo().getRandom()));
         return plugin.open(path,readerDocumentOptions , pluginOptions);
+    }
+
+    private String getJebPassword(String key,String uuid,String random){
+        JSONObject object = new JSONObject();
+        String password = "";
+        try {
+            object.put(NeoPdfJniWrapper.TAG_KEY, key);
+            object.put(NeoPdfJniWrapper.TAG_UU_ID, uuid);
+            object.put(NeoPdfJniWrapper.TAG_RANDOM, random);
+            password = object.toString();
+        }catch (Exception e){
+
+        }
+        return password;
     }
 
     public boolean closeDocument() {

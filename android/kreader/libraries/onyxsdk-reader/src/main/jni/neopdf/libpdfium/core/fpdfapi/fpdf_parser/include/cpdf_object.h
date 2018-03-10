@@ -23,6 +23,8 @@ class CPDF_Reference;
 class CPDF_Stream;
 class CPDF_String;
 
+#define JDPDFENCRYPTBY360BUY_KEY "JDPDFENCRYPTBY360BUY"
+
 class CPDF_Object {
  public:
   static const uint32_t kInvalidObjNum = static_cast<uint32_t>(-1);
@@ -35,10 +37,13 @@ class CPDF_Object {
     DICTIONARY,
     STREAM,
     NULLOBJ,
-    REFERENCE
+    REFERENCE,
+    JDSTREAM
   };
 
   virtual Type GetType() const = 0;
+  virtual Type GetExType();
+  virtual void SetExType(Type type);
   uint32_t GetObjNum() const { return m_ObjNum; }
   uint32_t GetGenNum() const { return m_GenNum; }
 
@@ -95,7 +100,7 @@ class CPDF_Object {
   friend class CPDF_Stream;
   friend struct std::default_delete<CPDF_Object>;
 
-  CPDF_Object() : m_ObjNum(0), m_GenNum(0) {}
+  CPDF_Object() : m_ObjNum(0), m_GenNum(0),m_exType(NULLOBJ) {}
   virtual ~CPDF_Object();
 
   CPDF_Object* CloneObjectNonCyclic(bool bDirect) const;
@@ -112,6 +117,7 @@ class CPDF_Object {
 
   uint32_t m_ObjNum;
   uint32_t m_GenNum;
+  Type     m_exType;
 
  private:
   CPDF_Object(const CPDF_Object& src) {}
