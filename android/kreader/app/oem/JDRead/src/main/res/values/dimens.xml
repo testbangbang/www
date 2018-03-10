@@ -564,4 +564,6 @@
     <dimen name="font_size_14">14sp</dimen>
     <dimen name="end_view_empty_height">120dp</dimen>
     <dimen name="default_toast_y_offset">64dp</dimen>
+    <dimen name="custom_search_view_padding">10dp</dimen>
+    <dimen name="custom_search_view_drawable_padding">20dp</dimen>
 </resources>

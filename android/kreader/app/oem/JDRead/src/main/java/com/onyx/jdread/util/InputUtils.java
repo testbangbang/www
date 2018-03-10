@@ -39,7 +39,7 @@ public class InputUtils {
             return s;
         }
         int length = 0;
-        int endIndex = s.length() - 1;
+        int endIndex = s.length();
         for (int i = 0; i < s.length(); i++) {
             int ascii = Character.codePointAt(s, i);
             if (ascii >= 0 && ascii <= 255) {
