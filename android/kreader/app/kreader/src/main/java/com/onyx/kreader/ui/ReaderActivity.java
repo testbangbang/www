@@ -153,6 +153,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        ReaderDeviceManager.exitAnimationUpdate(false);
         afterResume();
     }
 
@@ -182,6 +183,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             onDocumentDeactivated();
         }
         getReaderDataHolder().onActivityPause();
+        ReaderDeviceManager.exitAnimationUpdate(false);
         super.onPause();
     }
 
