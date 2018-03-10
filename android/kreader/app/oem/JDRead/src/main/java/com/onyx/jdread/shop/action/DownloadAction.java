@@ -171,7 +171,9 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
         extraInfoBean.localPath = task.getPath();
         extraInfoBean.progress = task.getSmallFileSoFarBytes();
         extraInfoBean.totalSize = task.getSmallFileTotalBytes();
-        extraInfoBean.percentage = (int) ((extraInfoBean.progress / extraInfoBean.totalSize) * 100);
+        if (extraInfoBean.progress != 0) {
+            extraInfoBean.percentage = (int) ((extraInfoBean.progress  * 100 / extraInfoBean.totalSize));
+        }
         UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean);
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
