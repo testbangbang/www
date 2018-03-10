@@ -4,6 +4,7 @@ import android.util.SparseIntArray;
 
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.StrokeWidth;
 import com.onyx.android.sdk.ui.data.MenuId;
 
 import java.util.HashMap;
@@ -52,11 +53,11 @@ public class ScribbleSubMenuMap {
     public static Map<Float, Integer> getStrokeMapping() {
         if (strokeMapping == null) {
             strokeMapping = new HashMap<>();
-            strokeMapping.put(NoteModel.getDefaultStrokeWidth(), MenuId.THICKNESS_ULTRA_LIGHT);
-            strokeMapping.put(4.0f, MenuId.THICKNESS_LIGHT);
-            strokeMapping.put(6.0f, MenuId.THICKNESS_NORMAL);
-            strokeMapping.put(8.0f, MenuId.THICKNESS_BOLD);
-            strokeMapping.put(10.0f, MenuId.THICKNESS_ULTRA_BOLD);
+            strokeMapping.put(StrokeWidth.ULTRA_LIGHT, MenuId.THICKNESS_ULTRA_LIGHT);
+            strokeMapping.put(StrokeWidth.LIGHT, MenuId.THICKNESS_LIGHT);
+            strokeMapping.put(StrokeWidth.NORMAL, MenuId.THICKNESS_NORMAL);
+            strokeMapping.put(StrokeWidth.BOLD, MenuId.THICKNESS_BOLD);
+            strokeMapping.put(StrokeWidth.ULTRA_BOLD, MenuId.THICKNESS_ULTRA_BOLD);
         }
         return strokeMapping;
     }
