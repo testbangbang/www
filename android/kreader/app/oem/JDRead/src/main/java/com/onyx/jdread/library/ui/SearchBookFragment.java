@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 import com.jingdong.app.reader.data.DrmTools;
 import com.onyx.android.sdk.data.GPaginator;
@@ -78,6 +80,7 @@ public class SearchBookFragment extends BaseFragment {
     private SearchHistoryAdapter searchHistoryAdapter;
 
     private boolean isBookSearching = false;
+    private String lastString;
 
     @Nullable
     @Override
@@ -107,6 +110,7 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchHistoryRecycler.setLayoutManager(new DisableScrollGridManager(getContext().getApplicationContext()));
         searchHistoryAdapter = new SearchHistoryAdapter();
         binding.searchHistoryRecycler.setAdapter(searchHistoryAdapter);
+        binding.searchView.setMaxByte(ResManager.getInteger(R.integer.search_word_key_max_length));
         initPageIndicator();
         hideSearchViewLine();
     }
@@ -181,11 +185,6 @@ public class SearchBookFragment extends BaseFragment {
     private void queryTextChange(String newText) {
         searchBookModel.searchHint.clear();
         searchHintAdapter.notifyDataSetChanged();
-        if (StringUtils.isNotBlank(newText) && InputUtils.getByteCount(newText) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
-            ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
-            binding.searchView.setQuery(InputUtils.getEffectiveString(newText, ResManager.getInteger(R.integer.search_word_key_max_length)), false);
-            return;
-        }
         searchBookModel.isInputting.set(StringUtils.isNotBlank(newText));
         searchBookModel.searchKey.set(newText);
         checkView();
