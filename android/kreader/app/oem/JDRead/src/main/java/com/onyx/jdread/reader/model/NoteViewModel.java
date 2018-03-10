@@ -178,8 +178,10 @@ public class NoteViewModel {
 
     public int getSrcNoteSate(){
         String note = srcNote.get();
-        if(noteInfo.srcNote.equals(note)){
-            return ReaderConfig.QUOTE_STATE_NOT_CHANGED;
+        if(!noteInfo.isSrcNoteModify) {
+            if (noteInfo.srcNote.equals(note)) {
+                return ReaderConfig.QUOTE_STATE_NOT_CHANGED;
+            }
         }
         return ReaderConfig.QUOTE_STATE_MODIFY;
     }

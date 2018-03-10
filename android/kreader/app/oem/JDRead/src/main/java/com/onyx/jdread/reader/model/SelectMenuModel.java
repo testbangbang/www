@@ -4,7 +4,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.graphics.RectF;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -233,7 +233,7 @@ public class SelectMenuModel {
     }
 
     public void setLayoutParams(int w, int h) {
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(w, h);
+        FrameLayout.LayoutParams p = new FrameLayout.LayoutParams(w, h);
         selectMenuRootView.setLayoutParams(p);
     }
 

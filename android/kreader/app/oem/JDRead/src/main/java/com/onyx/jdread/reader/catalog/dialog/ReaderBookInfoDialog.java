@@ -37,6 +37,8 @@ import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -184,7 +186,14 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
             map.put(bookmark.getPosition(), bookmark);
             result.add(bookmark);
         }
-
+        Collections.sort(result,new Comparator<Bookmark>() {
+            @Override
+            public int compare(Bookmark o1, Bookmark o2) {
+                int position1 = PagePositionUtils.getPosition(o1.getPosition());
+                int position2 = PagePositionUtils.getPosition(o2.getPosition());
+                return position1 - position2;
+            }
+        });
         return result;
     }
 
