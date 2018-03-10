@@ -511,37 +511,4 @@ public class MainActivity extends AppCompatActivity {
     public void onHideSoftWindowEvent(HideSoftWindowEvent event) {
         Utils.hideSoftWindow(this);
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDownloadFinishEvent(DownloadFinishEvent event) {
-        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
-        if (task != null) {
-            updateDownloadInfo(task, task.getPath());
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDownloadingEvent(DownloadingEvent event) {
-        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
-        if (DownLoadHelper.isPause(task.getStatus())) {
-            updateDownloadInfo(task, task.getPath());
-        }
-    }
-
-    private void updateDownloadInfo(BaseDownloadTask task, String localPath) {
-        JDReadApplication.getInstance().setNotifyLibraryData(true);
-        BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-        extraInfoBean.downLoadState = task.getStatus();
-        extraInfoBean.downloadUrl = task.getUrl();
-        extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
-        extraInfoBean.progress = task.getSmallFileSoFarBytes();
-        extraInfoBean.totalSize = task.getSmallFileTotalBytes();
-        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean, localPath);
-        action.execute(ShopDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-
-            }
-        });
-    }
 }
