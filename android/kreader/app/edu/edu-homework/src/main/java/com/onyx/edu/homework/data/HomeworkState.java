@@ -6,12 +6,12 @@ package com.onyx.edu.homework.data;
 
 public enum HomeworkState {
 
-    DOING, SUBMITTED, REVIEW, SUBMITTED_AFTER_REVIEW;
+    BEFORE_SUBMIT, SUBMITTED, REVIEW, SUBMITTED_AFTER_REVIEW;
 
     public static HomeworkState getHomeworkState(int state) {
         int size = HomeworkState.values().length;
         if (state >= size) {
-            return HomeworkState.DOING;
+            return HomeworkState.BEFORE_SUBMIT;
         }
         return HomeworkState.values()[state];
     }

@@ -7,6 +7,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.homework.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.base.NoteActionChain;
 
@@ -41,7 +42,8 @@ public class MakeHomeworkPagesAnswerActionChain extends BaseNoteAction {
             docIds.add(answer.uniqueId);
         }
         NoteActionChain chain = new NoteActionChain(true);
-        GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds);
+        boolean filterUnRedoingDocId = DataBundle.getInstance().isReview();
+        GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds).setFilterUnRedoingDocId(filterUnRedoingDocId);
         final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(),
                 questions,
                 size,

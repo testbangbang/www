@@ -165,8 +165,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void loadPageReview(int page, final BaseCallback callback) {
-        if (!getDataBundle().isReview()
-                || question.isChoiceQuestion()
+        if (question.isChoiceQuestion()
                 || question.review == null
                 || CollectionUtils.isNullOrEmpty(question.review.attachmentUrl)) {
             BaseCallback.invoke(callback, null, null);
