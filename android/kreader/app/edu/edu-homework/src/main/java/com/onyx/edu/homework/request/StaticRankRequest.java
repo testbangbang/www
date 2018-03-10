@@ -13,16 +13,23 @@ import retrofit2.Response;
 
 public class StaticRankRequest extends BaseCloudRequest {
 
-    private String publicHomeworkId;
+    private String childId;
+    private String id;
     private Response<StaticRankResult> response;
 
-    public StaticRankRequest(String publicHomeworkId) {
-        this.publicHomeworkId = publicHomeworkId;
+    public StaticRankRequest setChildId(String childId) {
+        this.childId = childId;
+        return this;
+    }
+
+    public StaticRankRequest setId(String id) {
+        this.id = id;
+        return this;
     }
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).staticRank(publicHomeworkId));
+        response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).staticRank(childId, id));
     }
 
     public StaticRankResult getStaticRank() {

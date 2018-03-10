@@ -1,6 +1,5 @@
 package com.onyx.edu.homework;
 
-import com.android.annotations.Nullable;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
@@ -44,7 +43,7 @@ public class DataBundle {
     private EventBus eventBus;
     private NoteViewHelper noteViewHelper;
     private HomeworkState state = HomeworkState.DOING;
-    private String publicHomeworkId;
+    private String childId;
     private String personalHomeworkId;
 
     public CloudManager getCloudManager() {
@@ -63,13 +62,13 @@ public class DataBundle {
         return this;
     }
 
-    public DataBundle setPublicHomeworkId(String publicHomeworkId) {
-        this.publicHomeworkId = publicHomeworkId;
+    public DataBundle setChildId(String childId) {
+        this.childId = childId;
         return this;
     }
 
-    public String getPublicHomeworkId() {
-        return publicHomeworkId;
+    public String getChildId() {
+        return childId;
     }
 
     public String getPersonalHomeworkId() {

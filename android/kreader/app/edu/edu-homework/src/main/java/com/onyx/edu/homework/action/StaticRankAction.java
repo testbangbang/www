@@ -12,15 +12,22 @@ import com.onyx.edu.homework.request.StaticRankRequest;
 
 public class StaticRankAction extends BaseAction {
 
-    private String publicHomeworkId;
+    private String childId;
+    private String id;
 
-    public StaticRankAction(String publicHomeworkId) {
-        this.publicHomeworkId = publicHomeworkId;
+    public StaticRankAction setChildId(String childId) {
+        this.childId = childId;
+        return this;
+    }
+
+    public StaticRankAction setId(String id) {
+        this.id = id;
+        return this;
     }
 
     @Override
     public void execute(Context context, BaseCallback baseCallback) {
-        StaticRankRequest rankRequest = new StaticRankRequest(publicHomeworkId);
+        StaticRankRequest rankRequest = new StaticRankRequest().setChildId(childId).setId(id);
         getCloudManager().submitRequest(context, rankRequest, baseCallback);
     }
 }

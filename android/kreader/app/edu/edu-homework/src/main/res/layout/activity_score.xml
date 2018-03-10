@@ -45,6 +45,7 @@
                 android:paddingLeft="15dp"
                 style="@style/homework_text"
                 android:layout_centerVertical="true"
+                android:text="@string/rank_str"
                 android:id="@+id/rank" />
 
             <TextView
