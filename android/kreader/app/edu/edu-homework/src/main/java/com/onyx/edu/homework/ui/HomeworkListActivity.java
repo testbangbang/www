@@ -583,7 +583,8 @@ public class HomeworkListActivity extends BaseActivity {
         binding.analysis.setVisibility(getDataBundle().canCheckAnswer() ? View.VISIBLE : View.GONE);
         binding.answerIcon.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
-        binding.submit.setVisibility(getDataBundle().isReview() || getDataBundle().canCheckAnswer() ? View.GONE : View.VISIBLE);
+//        binding.submit.setVisibility(getDataBundle().isReview() || getDataBundle().canCheckAnswer() ? View.GONE : View.VISIBLE);
+        binding.submit.setVisibility(View.VISIBLE);
         binding.getResultLayout.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
         binding.newMessage.setVisibility(getDataBundle().canGetReview() ? View.VISIBLE : View.GONE);
         binding.hasAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
@@ -647,7 +648,7 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void countDownEndTime() {
-        if (getDataBundle().isExpired()) {
+        if (getDataBundle().isDoingAndExpired()) {
             return;
         }
         Date endTime = getDataBundle().getHomework().getEndTime();
