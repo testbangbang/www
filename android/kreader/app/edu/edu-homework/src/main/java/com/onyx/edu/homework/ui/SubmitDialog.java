@@ -21,6 +21,7 @@ import com.onyx.edu.homework.action.HomeworkSubmitAction;
 import com.onyx.edu.homework.action.CheckWifiAction;
 import com.onyx.edu.homework.action.note.MakeHomeworkPagesAnswerActionChain;
 import com.onyx.edu.homework.databinding.DialogSubmitBinding;
+import com.onyx.edu.homework.event.ShowRecordFragmentEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 
 import java.util.ArrayList;
@@ -58,6 +59,13 @@ public class SubmitDialog extends OnyxBaseDialog {
             @Override
             public void onClick(View v) {
                 prepareSubmit();
+            }
+        });
+        binding.tvAction2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                DataBundle.getInstance().post(new ShowRecordFragmentEvent());
+                dismiss();
             }
         });
         checkQuestionAnswer();
@@ -158,18 +166,21 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.message.setText(R.string.opening_wifi);
         binding.action1.setVisibility(View.INVISIBLE);
         binding.action0.setVisibility(View.INVISIBLE);
+        binding.tvAction2.setVisibility(View.INVISIBLE);
     }
 
     private void onStartSubmit() {
         binding.message.setText(R.string.submitting);
         binding.action1.setVisibility(View.INVISIBLE);
         binding.action0.setVisibility(View.INVISIBLE);
+        binding.tvAction2.setVisibility(View.INVISIBLE);
     }
 
     private void onFailSubmit(Throwable e) {
         binding.message.setText(R.string.submit_fail);
         binding.action1.setVisibility(View.VISIBLE);
         binding.action0.setVisibility(View.VISIBLE);
+        binding.tvAction2.setVisibility(View.VISIBLE);
     }
 
     private void onSuccessSubmit() {
@@ -177,6 +188,7 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.action1.setVisibility(View.GONE);
         binding.action0.setText(R.string.close);
         binding.action0.setVisibility(View.VISIBLE);
+        binding.tvAction2.setVisibility(View.GONE);
         dismiss();
         DataBundle.getInstance().post(new SubmitEvent());
     }
