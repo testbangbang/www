@@ -50,11 +50,13 @@ import com.onyx.edu.homework.event.GotoQuestionPageEvent;
 import com.onyx.edu.homework.event.OpenDraftEvent;
 import com.onyx.edu.homework.event.ReloadQuestionViewEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
+import com.onyx.edu.homework.event.ShowRecordFragmentEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 import com.onyx.edu.homework.receiver.OnyxNotificationReceiver;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.Date;
@@ -119,7 +121,7 @@ public class HomeworkListActivity extends BaseActivity {
         binding.singleScore.setText(getString(R.string.single_score, 0f));
         binding.hasAnswer.setText(getString(R.string.has_answer, 0));
         binding.notAnswer.setText(getString(R.string.not_answer, 0));
-        binding.submit.setText(R.string.submit);
+        binding.submit.setText(R.string.submit_homework);
         binding.answerRecord.setText(R.string.answer_record);
         binding.getResult.setText(R.string.get_result);
         binding.answerRecord.setOnClickListener(new View.OnClickListener() {
@@ -539,7 +541,13 @@ public class HomeworkListActivity extends BaseActivity {
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
         updateViewState();
-        toggleRecordFragment();
+        showRecordFragment();
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowRecordFragmentEvent(ShowRecordFragmentEvent event) {
+        showRecordFragment();
     }
 
     @Subscribe
@@ -582,7 +590,8 @@ public class HomeworkListActivity extends BaseActivity {
     private void updateViewState() {
         binding.analysis.setVisibility(getDataBundle().canCheckAnswer() ? View.VISIBLE : View.GONE);
         binding.answerIcon.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
-        binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
+//        binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
+        binding.answerRecord.setVisibility(View.GONE);
 //        binding.submit.setVisibility(getDataBundle().isReview() || getDataBundle().canCheckAnswer() ? View.GONE : View.VISIBLE);
         binding.submit.setVisibility(View.VISIBLE);
         binding.getResultLayout.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
@@ -618,21 +627,28 @@ public class HomeworkListActivity extends BaseActivity {
             return;
         }
         if (recordFragment == null) {
-            getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
-                @Override
-                public void done(BaseRequest request, Throwable e) {
-                    showRecordFragment();
-                }
-            });
+            showRecordFragment();
         }else {
             hideRecordFragment(true);
         }
     }
 
     private void showRecordFragment() {
-        recordFragment = RecordFragment.newInstance(questions);
-        getSupportFragmentManager().beginTransaction().replace(R.id.record_layout, recordFragment).commit();
-        binding.answerRecord.setText(R.string.return_answer);
+        if (getQuestionFragment() == null) {
+            return;
+        }
+
+        if (recordFragment != null) {
+            return;
+        }
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                recordFragment = RecordFragment.newInstance(questions);
+                getSupportFragmentManager().beginTransaction().replace(R.id.record_layout, recordFragment).commit();
+                binding.answerRecord.setText(R.string.return_answer);
+            }
+        });
     }
 
     private void hideRecordFragment(boolean reload) {

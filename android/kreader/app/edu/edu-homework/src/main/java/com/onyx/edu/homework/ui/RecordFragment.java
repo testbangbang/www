@@ -100,9 +100,6 @@ public class RecordFragment extends BaseFragment {
     }
 
     private void initObjectiveList() {
-        if (objectives.isEmpty()) {
-            return;
-        }
         final int column = 5;
         final int row = 2;
         binding.objectiveList.setLayoutManager(new DisableScrollGridManager(getContext()));
@@ -167,9 +164,6 @@ public class RecordFragment extends BaseFragment {
     }
 
     private void initSubjectiveList() {
-        if (subjectives.isEmpty()) {
-            return;
-        }
         binding.subjectiveList.setLayoutManager(new DisableScrollGridManager(getContext()));
         binding.subjectiveList.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override

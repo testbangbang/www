@@ -17,13 +17,14 @@
     <string name="not_answer" formatted="false">未答：%d</string>
     <string name="submit_tips">确认提交吗？</string>
     <string name="continue_answer">继续答题</string>
-    <string name="submit">提交作业</string>
+    <string name="submit">提交</string>
+    <string name="submit_homework">提交作业</string>
     <string name="submit_success">提交作业成功</string>
     <string name="submited">已提交</string>
     <string name="submitting">正在提交...</string>
     <string name="exit">退出</string>
     <string name="submit_fail">提交失败</string>
-    <string name="answer_record">答题记录</string>
+    <string name="answer_record">作业检查</string>
     <string name="get_result">查看批改</string>
     <string name="waiting_review">作业还在等待老师批改</string>
     <string name="right_answer">正确答案：</string>
