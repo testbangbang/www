@@ -43,6 +43,7 @@ import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.sql.language.Operator;
@@ -221,7 +222,7 @@ public class SchoolApp extends MultiDexApplication {
     }
 
     private void initSystemInBackground() {
-        enableWifiDetect();
+        initWifi();
         turnOffLed();
     }
 
@@ -335,8 +336,8 @@ public class SchoolApp extends MultiDexApplication {
         Fresco.initialize(singleton().getApplicationContext());
     }
 
-    private void enableWifiDetect() {
-        Device.currentDevice().enableWifiDetect(this, true);
+    private void initWifi() {
+        NetworkUtil.enableWifiOpenAndDetect(this);
     }
 
     public void terminateCloudStore() {
