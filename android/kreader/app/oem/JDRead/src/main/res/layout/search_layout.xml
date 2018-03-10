@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/fragment_content_padding"
+            android:layout_weight="1"
+            android:background="@drawable/shop_search_book_edit_text_background"
+            android:orientation="horizontal"
+            android:padding="@dimen/custom_search_view_padding">
+
+            <EditText
+                android:id="@+id/search_et_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/search_view_hint"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:paddingRight="@dimen/custom_search_view_drawable_padding"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <ImageView
+                android:id="@+id/search_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_read_close" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/button_padding"
+            android:src="@mipmap/ic_shelf_search" />
+
+    </LinearLayout>
+
+</LinearLayout>
