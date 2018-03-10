@@ -18,6 +18,7 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.adapter.AllCategoryAdapter;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
@@ -126,7 +127,7 @@ public class AllCategoryFragment extends BaseFragment {
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(itemDecoration);
         paginator = recyclerView.getPaginator();
-        getAllCategoryViewModel().getTitleBarViewModel().leftText = getString(R.string.all_category);
+        getAllCategoryViewModel().getTitleBarViewModel().leftText = ResManager.getString(R.string.all_category);
         recyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
@@ -150,6 +151,7 @@ public class AllCategoryFragment extends BaseFragment {
         topRecyclerView.setAdapter(new AllCategoryTopAdapter(getEventBus()));
         allCategoryBinding.setCategoryViewModel(getAllCategoryViewModel());
         initPageIndicator(getAllCategoryViewModel().getAllCategoryItems());
+        checkWifi(getAllCategoryViewModel().getTitleBarViewModel().leftText);
     }
 
     private void initPageIndicator(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> resultBean) {
@@ -273,9 +275,6 @@ public class AllCategoryFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
-        if (checkWfiDisConnected()) {
-            return;
-        }
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
         if (categoryBean != null) {
             categoryBean.isSelect = true;
@@ -301,8 +300,10 @@ public class AllCategoryFragment extends BaseFragment {
 
     public void saveCurCategoryLevelOneCateId(int index) {
         if (categoryBeanLevelOneList != null) {
-            int catId = categoryBeanLevelOneList.get(index).id;
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, catId);
+            if (categoryBeanLevelOneList.size() > index) {
+                int catId = categoryBeanLevelOneList.get(index).id;
+                JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, catId);
+            }
         }
     }
 

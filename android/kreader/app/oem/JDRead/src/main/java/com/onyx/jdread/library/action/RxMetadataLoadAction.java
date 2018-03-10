@@ -3,7 +3,6 @@ package com.onyx.jdread.library.action;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryLoadRequest;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.model.LibraryViewDataModel;
@@ -57,7 +56,8 @@ public class RxMetadataLoadAction extends BaseAction<LibraryDataBundle> {
             @Override
             public void onNext(RxLibraryLoadRequest rxLibraryLoadRequest) {
                 if (baseCallback != null) {
-                    dataModel.count.set((int) libraryRequest.getTotalCount());
+                    dataModel.count.set((int) (libraryRequest.getTotalCount()));
+                    dataModel.bookCount.set((int) (dataModel.libraryPathList.size() == 0 ? libraryRequest.getAllBookCount() : libraryRequest.getTotalCount()));
                     dataModel.libraryCount.set((int) libraryRequest.getLibraryCount());
                     dataModel.getLibrarySelectedModel().setCount(libraryRequest.getMetaDataCount());
                     dataModel.setPageData(libraryRequest.getModels());

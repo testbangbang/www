@@ -91,6 +91,7 @@ public class BannerWebFragment extends BaseFragment {
         titleBarViewModel.leftText = ResManager.getString(R.string.banner);
         titleBarViewModel.setEventBus(ShopDataBundle.getInstance().getEventBus());
         binding.setTitleBarViewModel(titleBarViewModel);
+        checkWifi(titleBarViewModel.leftText);
     }
 
     private void initListener() {

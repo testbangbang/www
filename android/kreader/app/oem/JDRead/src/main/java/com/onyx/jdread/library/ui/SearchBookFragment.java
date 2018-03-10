@@ -228,7 +228,7 @@ public class SearchBookFragment extends BaseFragment {
 
     private void checkSearchResult() {
         if (isEmptySearchResults()) {
-            if (checkWfiDisConnected()) {
+            if (isWifiDisconnected()) {
                 return;
             }
             ToastUtil.showToast(R.string.no_search_results);

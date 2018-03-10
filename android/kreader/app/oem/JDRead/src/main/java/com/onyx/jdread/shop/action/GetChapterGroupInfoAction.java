@@ -43,7 +43,7 @@ public class GetChapterGroupInfoAction extends BaseAction<ShopDataBundle> {
         GetChapterGroupInfoRequestBean baseRequestBean = new GetChapterGroupInfoRequestBean();
         JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
         Map<String, String> queryArgs = new HashMap<>();
-        queryArgs.put(CloudApiContext.BookDownLoad.START_CHAPTER, startChapter);
+        queryArgs.put(CloudApiContext.BookDownLoad.START_CHAPTER_ID, startChapter);
         appBaseInfo.addRequestParams(queryArgs);
         String sign = String.format(CloudApiContext.BookShopURI.GET_CHAPTER_GROUP_INFO, String.valueOf(bookID));
         appBaseInfo.setSign(appBaseInfo.getSignValue(sign));

@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.ui;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -91,6 +90,7 @@ public class CommentFragment extends BaseFragment {
         getBookDetailViewModel().getTitleBarViewModel().pageTag = PageTagConstants.BOOK_COMMENT;
         initDividerItemDecoration();
         setCommentsRecycleView();
+        checkWifi(getBookDetailViewModel().getTitleBarViewModel().leftText);
     }
 
     private void setCommentsRecycleView() {
