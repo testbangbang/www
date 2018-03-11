@@ -26,7 +26,7 @@ import com.onyx.jdread.shop.event.NewBookViewClick;
 import com.onyx.jdread.shop.event.RankViewClick;
 import com.onyx.jdread.shop.event.SaleViewClick;
 import com.onyx.jdread.shop.event.SearchViewClickEvent;
-import com.onyx.jdread.shop.event.ShopBakcTopClick;
+import com.onyx.jdread.shop.event.ShopBackTopClick;
 import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 import com.onyx.jdread.shop.event.ViewAllClickEvent;
 import com.onyx.jdread.shop.model.BookShopViewModel;
@@ -38,6 +38,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by huxiaomao on 2017/12/7.
  */
@@ -47,6 +50,9 @@ public class ShopFragment extends BaseFragment {
     private FragmentBookShopBinding bookShopBinding;
     private int space = ResManager.getInteger(R.integer.custom_recycle_view_space);
     private CustomRecycleView recyclerView;
+
+    private Map<Integer, Integer> pageIndexMap = new HashMap<>();
+    private int pageIndex = 0;
 
     @Nullable
     @Override
@@ -70,20 +76,23 @@ public class ShopFragment extends BaseFragment {
 
     private void initView() {
         bookShopBinding.setViewModel(getBookShopViewModel());
-        ShopMainConfigAdapter mainConfigdapter = new ShopMainConfigAdapter();
+        ShopMainConfigAdapter mainConfigAdapter = new ShopMainConfigAdapter();
         recyclerView = bookShopBinding.shopMainConfigRecycleView;
         recyclerView.addItemDecoration(new SpaceItemDecoration(space));
-        recyclerView.setAdapter(mainConfigdapter);
+        recyclerView.setAdapter(mainConfigAdapter);
+        recyclerView.updatePageIndexMap(pageIndexMap);
+        recyclerView.updateCurPage(pageIndex);
         recyclerView.setOnPagingListener(new CustomRecycleView.OnPagingListener() {
             @Override
             public void onPageChange(int curIndex) {
-                setScrollbarFocusPosition(curIndex);
+                updateScrollbarPageIndex(curIndex);
             }
         });
         checkWifi("");
     }
 
-    private void setScrollbarFocusPosition(int curIndex) {
+    private void updateScrollbarPageIndex(int curIndex) {
+        pageIndex = curIndex;
         if (bookShopBinding.scrollBar != null) {
             bookShopBinding.scrollBar.setFocusPosition(curIndex);
         }
@@ -114,8 +123,7 @@ public class ShopFragment extends BaseFragment {
         configAction.execute(getShopDataBundle(), new RxCallback<ShopMainConfigAction>() {
             @Override
             public void onNext(ShopMainConfigAction configAction) {
-                bookShopBinding.scrollBar.setTotal(getBookShopViewModel().getTotalPages());
-                scrollToTop();
+                scrollToCurrentPage();
             }
 
             @Override
@@ -125,14 +133,34 @@ public class ShopFragment extends BaseFragment {
         });
     }
 
+    private void scrollToCurrentPage() {
+        if (recyclerView == null) {
+            return;
+        }
+        int totalPage = getBookShopViewModel().getTotalPages();
+        pageIndex = recyclerView.getCurPageIndex();
+        pageIndexMap = recyclerView.getPageIndexMap();
+        if (pageIndex >= totalPage || pageIndexMap.keySet().size() >= totalPage) {
+            pageIndexMap.clear();
+            pageIndex = 0;
+        }
+        recyclerView.gotoPage(pageIndex, getPagePosition(pageIndexMap, pageIndex));
+        bookShopBinding.scrollBar.setTotal(totalPage);
+        bookShopBinding.scrollBar.setFocusPosition(pageIndex);
+    }
+
     private void scrollToTop() {
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
     }
 
+    private int getPagePosition(Map<Integer, Integer> pageIndexMap, int pageIndex) {
+        return pageIndexMap.containsKey(pageIndex) ? pageIndexMap.get(pageIndex) : 0;
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onShopBakcTopClick(ShopBakcTopClick event) {
+    public void onShopBackTopClick(ShopBackTopClick event) {
         scrollToTop();
     }
 
