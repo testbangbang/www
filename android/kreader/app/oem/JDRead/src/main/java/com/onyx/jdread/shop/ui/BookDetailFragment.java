@@ -151,7 +151,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void initData() {
         cleanData();
-        ebookId = JDPreferenceManager.getLongValue(Constants.SP_KEY_BOOK_ID, 0);
+        ebookId = getBookId();
         getBookDetail();
     }
 
@@ -343,7 +343,7 @@ public class BookDetailFragment extends BaseFragment {
         if (bookBean != null) {
             cleanData();
             initButton();
-            setBookId(bookBean.ebook_id);
+            switchToRecommendBook(bookBean.ebook_id);
         }
     }
 
@@ -845,11 +845,19 @@ public class BookDetailFragment extends BaseFragment {
         ViewHelper.dismissDialog(batchDownloadDialog);
     }
 
-    public void setBookId(long ebookId) {
-        this.ebookId = ebookId;
-        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, ebookId);
+    private void switchToRecommendBook(long ebookId) {
+        setBookId(ebookId);
         queryMetadata();
         getBookDetail();
+    }
+
+    public long getBookId() {
+        return getBundle().getLong(Constants.SP_KEY_BOOK_ID, 0);
+    }
+
+    public void setBookId(long ebookId) {
+        this.ebookId = ebookId;
+        getBundle().putLong(Constants.SP_KEY_BOOK_ID, ebookId);
     }
 
     public ShopDataBundle getShopDataBundle() {
