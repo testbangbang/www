@@ -17,18 +17,18 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class FunctionBarItem extends BaseObservable {
-    private StackList stackList;
+    private StackList<FragmentBarModel> stackList;
     private ObservableBoolean isShow = new ObservableBoolean(true);
     public final ObservableInt drawableTop = new ObservableInt();
     public final ObservableField<ViewConfig.FunctionModule> functionModule = new ObservableField<>();
     public final ObservableField<String> itemName = new ObservableField<>();
     public final ObservableBoolean isSelected = new ObservableBoolean(false);
 
-    public FunctionBarItem(ViewConfig.FunctionModule functionModule,String firstFragmentName, String itemName, int drawableRes) {
+    public FunctionBarItem(ViewConfig.FunctionModule functionModule, String firstFragmentName, String itemName, int drawableRes) {
         this.functionModule.set(functionModule);
         this.itemName.set(itemName);
         drawableTop.set(drawableRes);
-        stackList = new StackList();
+        stackList = new StackList<>();
         ViewConfig.initStackByName(stackList, firstFragmentName);
     }
 
@@ -54,7 +54,7 @@ public class FunctionBarItem extends BaseObservable {
         return isShow;
     }
 
-    public StackList getStackList() {
+    public StackList<FragmentBarModel> getStackList() {
         return stackList;
     }
 

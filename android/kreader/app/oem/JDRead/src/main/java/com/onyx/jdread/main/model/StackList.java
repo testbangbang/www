@@ -8,18 +8,22 @@ import java.util.LinkedList;
  * Created by huxiaomao on 2017/12/9.
  */
 
-public class StackList {
-    private LinkedList<String> stack = new LinkedList<>();
+public class StackList<T> {
+    private LinkedList<T> stack = new LinkedList<>();
 
-    public void push(String childViewName){
-        stack.addFirst(childViewName);
+    public int size() {
+        return stack.size();
     }
 
-    public String peek(){
+    public void push(T item){
+        stack.addFirst(item);
+    }
+
+    public T peek(){
         return stack.getFirst();
     }
 
-    public String pop(){
+    public T pop(){
         return stack.removeFirst();
     }
 
@@ -27,7 +31,7 @@ public class StackList {
         return stack.isEmpty();
     }
 
-    public String popChildView(){
+    public T popChildView(){
         if(stack.size() <= 1){
             return stack.peek();
         }
@@ -35,11 +39,11 @@ public class StackList {
         return stack.peek();
     }
 
-    public String remainLastStack() {
+    public T remainLastStack() {
         if (stack.size() <= 1) {
             return stack.peek();
         }
-        String last = stack.getLast();
+        T last = stack.getLast();
         stack.clear();
         push(last);
         return last;

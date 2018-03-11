@@ -13,6 +13,7 @@ import com.onyx.jdread.databinding.ActivityLockScreenBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.main.event.PasswordIsCorrectEvent;
+import com.onyx.jdread.main.model.FragmentBarModel;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.ui.UnlockFragment;
 import com.onyx.jdread.main.model.StackList;
@@ -33,7 +34,7 @@ public class LockScreenActivity extends AppCompatActivity {
 
     private BaseFragment currentFragment;
     private Map<String, BaseFragment> childViewList = new HashMap<>();
-    private StackList stackList;
+    private StackList<FragmentBarModel> stackList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,9 +48,9 @@ public class LockScreenActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        stackList = new StackList();
+        stackList = new StackList<>();
         ViewConfig.initStackByName(stackList, UnlockFragment.class.getName());
-        switchCurrentFragment(stackList.peek());
+        switchCurrentFragment(stackList.peek().getName());
     }
 
     private BaseFragment getPageView(String childViewName) {
@@ -69,13 +70,17 @@ public class LockScreenActivity extends AppCompatActivity {
     private BaseFragment.ChildViewEventCallBack childViewEventCallBack = new BaseFragment.ChildViewEventCallBack() {
         @Override
         public void gotoView(String childClassName) {
-            stackList.push(childClassName);
-            switchCurrentFragment(childClassName);
+            gotoFragment(childClassName, null);
+        }
+
+        @Override
+        public void gotoView(String childClassName, Bundle bundle) {
+            gotoFragment(childClassName, bundle);
         }
 
         @Override
         public void viewBack() {
-            switchCurrentFragment(stackList.popChildView());
+            switchCurrentFragment(stackList.popChildView().getName());
         }
 
         @Override
@@ -86,6 +91,15 @@ public class LockScreenActivity extends AppCompatActivity {
         public void hideOrShowFunctionBar(boolean flags) {
         }
     };
+
+    private void gotoFragment(String childClassName, Bundle bundle) {
+        FragmentBarModel barModel = new FragmentBarModel();
+        barModel.setName(childClassName);
+        barModel.setBaseFragment(getPageView(childClassName));
+        barModel.getBaseFragment().setBundle(bundle);
+        stackList.push(barModel);
+        switchCurrentFragment(childClassName);
+    }
 
     public void switchCurrentFragment(String childViewName) {
         if (StringUtils.isNullOrEmpty(childViewName)) {
