@@ -184,10 +184,9 @@ public class ShopFragment extends BaseFragment {
     }
 
     private void gotoBookDetailPage(long ebookId) {
-        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, ebookId);
-        if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
-        }
+        Bundle bundle = new Bundle();
+        bundle.putLong(Constants.SP_KEY_BOOK_ID, ebookId);
+        getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

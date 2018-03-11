@@ -31,7 +31,6 @@ import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.common.LoginHelper;
@@ -151,7 +150,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void initData() {
         cleanData();
-        ebookId = JDPreferenceManager.getLongValue(Constants.SP_KEY_BOOK_ID, 0);
+        ebookId = getBookId();
         getBookDetail();
     }
 
@@ -343,7 +342,7 @@ public class BookDetailFragment extends BaseFragment {
         if (bookBean != null) {
             cleanData();
             initButton();
-            setBookId(bookBean.ebook_id);
+            switchToRecommendBook(bookBean.ebook_id);
         }
     }
 
@@ -845,11 +844,19 @@ public class BookDetailFragment extends BaseFragment {
         ViewHelper.dismissDialog(batchDownloadDialog);
     }
 
-    public void setBookId(long ebookId) {
-        this.ebookId = ebookId;
-        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, ebookId);
+    private void switchToRecommendBook(long ebookId) {
+        setBookId(ebookId);
         queryMetadata();
         getBookDetail();
+    }
+
+    public long getBookId() {
+        return getBundle().getLong(Constants.SP_KEY_BOOK_ID, 0);
+    }
+
+    public void setBookId(long ebookId) {
+        this.ebookId = ebookId;
+        getBundle().putLong(Constants.SP_KEY_BOOK_ID, ebookId);
     }
 
     public ShopDataBundle getShopDataBundle() {
@@ -938,17 +945,19 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookSearchKeyWordEvent(BookSearchKeyWordEvent event) {
         if (getViewEventCallBack() != null) {
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, event.keyWord);
-            getViewEventCallBack().gotoView(SearchBookListFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
+            bundle.putString(Constants.SP_KEY_KEYWORD, event.keyWord);
+            getViewEventCallBack().gotoView(SearchBookListFragment.class.getName(), bundle);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookSearchPathEvent(BookSearchPathEvent event) {
         if (getViewEventCallBack() != null) {
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, "");
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, event.catId);
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, event.catId);
+            bundle.putString(Constants.SP_KEY_KEYWORD, "");
             getViewEventCallBack().gotoView(SearchBookListFragment.class.getName());
         }
     }
