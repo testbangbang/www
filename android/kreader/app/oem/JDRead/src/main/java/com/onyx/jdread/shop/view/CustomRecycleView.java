@@ -14,6 +14,7 @@ import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jackdeng on 2018/2/1.
@@ -26,7 +27,7 @@ public class CustomRecycleView extends RecyclerView {
     private float lastY;
     private int curPageIndex;
     private OnPagingListener onPagingListener;
-    private HashMap<Integer, Integer> pageIndexMap = new HashMap<>();
+    private Map<Integer, Integer> pageIndexMap = new HashMap<>();
     private boolean pageTurningCycled = false;
     private int totalPages;
 
@@ -128,11 +129,11 @@ public class CustomRecycleView extends RecyclerView {
             if (curPageIndex > 0) {
                 curPageIndex--;
             }
-            int preIndex = pageIndexMap.get(curPageIndex);
-            managerScrollToPosition(preIndex);
-            if (onPagingListener != null) {
-                onPagingListener.onPageChange(curPageIndex);
+            int position = 0;
+            if (pageIndexMap.containsKey(curPageIndex)) {
+                position = pageIndexMap.get(curPageIndex);
             }
+            gotoPage(curPageIndex, position);
         }
     }
 
@@ -148,12 +149,15 @@ public class CustomRecycleView extends RecyclerView {
                 return;
             }
             int lastVisibleItemPosition = getDisableLayoutManager().findLastVisibleItemPosition();
-            curPageIndex++;
-            pageIndexMap.put(curPageIndex, lastVisibleItemPosition);
-            managerScrollToPosition(lastVisibleItemPosition);
-            if (onPagingListener != null) {
-                onPagingListener.onPageChange(curPageIndex);
-            }
+            pageIndexMap.put(++curPageIndex, lastVisibleItemPosition);
+            gotoPage(curPageIndex, lastVisibleItemPosition);
+        }
+    }
+
+    public void gotoPage(int curPageIndex, int pagePosition) {
+        managerScrollToPosition(pagePosition);
+        if (onPagingListener != null) {
+            onPagingListener.onPageChange(curPageIndex);
         }
     }
 
@@ -183,5 +187,21 @@ public class CustomRecycleView extends RecyclerView {
     @Override
     public SubjectCommonAdapter getAdapter() {
         return (SubjectCommonAdapter) super.getAdapter();
+    }
+
+    public int getCurPageIndex() {
+        return curPageIndex;
+    }
+
+    public void updateCurPage(int page) {
+        this.curPageIndex = page;
+    }
+
+    public Map<Integer, Integer> getPageIndexMap() {
+        return pageIndexMap;
+    }
+
+    public void updatePageIndexMap(Map<Integer, Integer> map) {
+        this.pageIndexMap = map;
     }
 }

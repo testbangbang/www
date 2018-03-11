@@ -2,7 +2,7 @@ package com.onyx.jdread.shop.model;
 
 import android.databinding.ObservableBoolean;
 
-import com.onyx.jdread.shop.event.ShopBakcTopClick;
+import com.onyx.jdread.shop.event.ShopBackTopClick;
 import com.onyx.jdread.shop.event.ShopMainViewAllBookEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,6 +25,6 @@ public class MainConfigEndViewModel extends BaseSubjectViewModel{
     }
 
     public void onBackTopViewClick() {
-        getEventBus().post(new ShopBakcTopClick());
+        getEventBus().post(new ShopBackTopClick());
     }
 }
