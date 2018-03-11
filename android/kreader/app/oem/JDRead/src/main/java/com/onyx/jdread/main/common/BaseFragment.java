@@ -23,6 +23,8 @@ public class BaseFragment extends Fragment {
     public interface ChildViewEventCallBack {
         void gotoView(String childClassName);
 
+        void gotoView(String childClassName, Bundle bundle);
+
         void viewBack();
 
         void hideOrShowSystemBar(boolean flags);
@@ -85,8 +87,8 @@ public class BaseFragment extends Fragment {
         return false;
     }
 
-    public void goNetWorkErrorFragment(){
-        getViewEventCallBack().gotoView(NetWorkErrorFragment.class.getName());
+    public void goNetWorkErrorFragment(Bundle bundle){
+        getViewEventCallBack().gotoView(NetWorkErrorFragment.class.getName(), bundle);
     }
 
     public void checkWifi(String title) {
@@ -96,8 +98,7 @@ public class BaseFragment extends Fragment {
             if (StringUtils.isNullOrEmpty(title)) {
                 bundle.putBoolean(Constants.NET_ERROR_SHOW_TITLE_BAR, false);
             }
-            setBundle(bundle);
-            goNetWorkErrorFragment();
+            goNetWorkErrorFragment(bundle);
         }
     }
 }

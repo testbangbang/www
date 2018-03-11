@@ -3,6 +3,7 @@ package com.onyx.jdread.main.common;
 import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.library.ui.WiFiPassBookFragment;
+import com.onyx.jdread.main.model.FragmentBarModel;
 import com.onyx.jdread.main.model.StackList;
 import com.onyx.jdread.personal.ui.ConsumptionRecordFragment;
 import com.onyx.jdread.personal.ui.GiftCenterFragment;
@@ -133,8 +134,10 @@ public class ViewConfig {
         return childViewInfo.get(childViewName);
     }
 
-    public static void initStackByName(StackList stackList, String fragmentName) {
-        stackList.push(fragmentName);
+    public static void initStackByName(StackList<FragmentBarModel> stackList, String fragmentName) {
+        FragmentBarModel barModel = new FragmentBarModel();
+        barModel.setName(fragmentName);
+        stackList.push(barModel);
     }
 
     public static boolean isCheckFragment(String name) {
