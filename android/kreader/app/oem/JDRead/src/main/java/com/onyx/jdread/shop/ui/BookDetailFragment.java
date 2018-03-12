@@ -338,6 +338,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
     public void onRecommendItemClickEvent(RecommendItemClickEvent event) {
+        if (isWifiDisconnected()) {
+            return;
+        }
         ResultBookBean bookBean = event.getBookBean();
         if (bookBean != null) {
             cleanData();
