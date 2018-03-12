@@ -126,7 +126,7 @@ public class ReaderSelectionHelper {
         readerSelectionInfos.clear();
     }
 
-    private boolean getCurrentFontSizeChooseIcon(ReaderTextStyle style) {
+    public boolean getCurrentFontSizeChooseIcon(ReaderTextStyle style) {
         if (style == null) {
             chooseLeftIcon = R.mipmap.ic_read_word_left_3;
             chooseRightIcon = R.mipmap.ic_read_word_right_3;
