@@ -21,12 +21,12 @@ import org.greenrobot.eventbus.Subscribe;
  * Created by lxm on 2018/2/28.
  */
 
-public class PenManager {
+public class PenEventHandler {
 
     private EventBus eventBus;
     private boolean dialogShowed = false;
 
-    public PenManager(EventBus eventBus) {
+    public PenEventHandler(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 
