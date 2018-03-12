@@ -53,7 +53,6 @@ public class DownLoadHelper {
     public static void stopDownloadingTask(Object tag) {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(tag);
         if (task != null) {
-            OnyxDownloadManager.getInstance().removeTask(tag);
             task.pause();
         }
     }
