@@ -40,7 +40,6 @@ import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.HomeworkIntent;
-import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.data.NotificationType;
 import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
@@ -55,6 +54,7 @@ import com.onyx.edu.homework.event.ShowRecordFragmentEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 import com.onyx.edu.homework.receiver.OnyxNotificationReceiver;
+import com.onyx.edu.homework.utils.ViewUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -417,12 +417,12 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showMessage(@StringRes int messageId) {
-        binding.message.setVisibility(View.VISIBLE);
+        ViewUtils.setGone(binding.message, true);
         binding.message.setText(messageId);
     }
 
     private void hideMessage() {
-        binding.message.setVisibility(View.GONE);
+        ViewUtils.setGone(binding.message, false);
     }
 
     private void showHomeworkScore() {
@@ -526,7 +526,7 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showDraft(Question question) {
-        binding.tvDraft.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
+        ViewUtils.setGone(binding.tvDraft, question.isChoiceQuestion());
     }
 
     @Override
@@ -544,8 +544,8 @@ public class HomeworkListActivity extends BaseActivity {
 
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
-        updateViewState();
         showRecordFragment();
+        updateViewState();
     }
 
 
@@ -592,21 +592,19 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void updateViewState() {
-        binding.analysis.setVisibility(getDataBundle().canCheckAnswer() ? View.VISIBLE : View.GONE);
-        binding.answerIcon.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
-//        binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
-        binding.answerRecord.setVisibility(View.GONE);
-//        binding.submit.setVisibility(getDataBundle().isReview() || getDataBundle().canCheckAnswer() ? View.GONE : View.VISIBLE);
-        binding.submit.setVisibility(View.VISIBLE);
+        ViewUtils.setGone(binding.analysis, getDataBundle().canCheckAnswer());
+        ViewUtils.setGone(binding.answerIcon, getDataBundle().isReview());
+        ViewUtils.setGone(binding.answerRecord, recordFragment != null);
+        ViewUtils.setGone(binding.submit, true);
         binding.submit.setText(getDataBundle().isSubmittedAfterReview() || getDataBundle().isReview() ?
                 R.string.correct_homework : R.string.submit_homework);
-        binding.getResultLayout.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
-        binding.newMessage.setVisibility(getDataBundle().canGetReview() ? View.VISIBLE : View.GONE);
-        binding.hasAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
-        binding.notAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
-        binding.totalScore.setVisibility(View.GONE);
-        binding.singleScore.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
-        binding.scoreRank.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        ViewUtils.setGone(binding.getResultLayout, getDataBundle().isSubmitted());
+        ViewUtils.setGone(binding.newMessage, getDataBundle().canGetReview());
+        ViewUtils.setGone(binding.hasAnswer, getDataBundle().isReview());
+        ViewUtils.setGone(binding.notAnswer, !getDataBundle().isReview());
+        ViewUtils.setGone(binding.totalScore, false);
+        ViewUtils.setGone(binding.singleScore, getDataBundle().isReview());
+        ViewUtils.setGone(binding.scoreRank, getDataBundle().isReview());
     }
 
     @Override
@@ -667,6 +665,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (reload) {
             reloadQuestionFragment(currentPage);
         }
+        updateViewState();
     }
 
     private void countDownEndTime() {
