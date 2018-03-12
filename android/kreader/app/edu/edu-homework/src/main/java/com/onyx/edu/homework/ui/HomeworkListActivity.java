@@ -608,7 +608,7 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressedSupport() {
         getDataBundle().post(new CloseSubMenuEvent());
         showExitDialog();
     }

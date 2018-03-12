@@ -105,7 +105,7 @@ public class DraftActivity extends BaseActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressedSupport() {
         DataBundle.getInstance().post(new SaveNoteEvent(true));
     }
 
