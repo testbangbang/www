@@ -203,7 +203,14 @@ public class ReaderDataHolder {
             RectF pageRect = new RectF(0, 0, subNotePage.getOriginWidth(),
                     subNotePage.getOriginHeight());
             RectF viewportRect = new RectF(getSideNotePageLeft(), 0, getSideNotePageRight(), displayHeight);
-            float scale = PageUtils.scaleToFitRect(pageRect, viewportRect);
+
+            //we just force fulfill parent rect when document support scalable.
+            float scale;
+            if (supportScalable()) {
+                scale = PageUtils.scaleToFillRect(pageRect, viewportRect);
+            } else {
+                scale = PageUtils.scaleToFitRect(pageRect, viewportRect);
+            }
 
             subNotePage.setScale(scale);
             subNotePage.updateDisplayRect(pageRect);

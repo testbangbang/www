@@ -2,6 +2,7 @@ package com.onyx.android.sdk.reader.host.math;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
+
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
 
@@ -84,6 +85,18 @@ public class PageUtils {
         float scale = Math.min(parent.width() / child.width(), parent.height() / child.height());
         float pageWidth = child.width() * scale;
         float pageHeight = child.height() * scale;
+        float pageLeft = parent.left + (parent.width() - pageWidth) / 2;
+        float pageTop = parent.top + (parent.height() - pageHeight) / 2;
+        child.set(pageLeft, pageTop, pageLeft + pageWidth, pageTop + pageHeight);
+        return scale;
+    }
+
+    static public float scaleToFillRect(final RectF child, final RectF parent) {
+        float scale = Math.max(parent.width() / child.width(), parent.height() / child.height());
+        float scalePageWidth = child.width() * scale;
+        float scalePageHeight = child.height() * scale;
+        float pageWidth = scalePageWidth > parent.width() ? parent.width() : scalePageWidth;
+        float pageHeight = scalePageHeight > parent.height() ? parent.height() : scalePageHeight;
         float pageLeft = parent.left + (parent.width() - pageWidth) / 2;
         float pageTop = parent.top + (parent.height() - pageHeight) / 2;
         child.set(pageLeft, pageTop, pageLeft + pageWidth, pageTop + pageHeight);
