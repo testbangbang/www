@@ -851,12 +851,20 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     public long getBookId() {
-        return getBundle().getLong(Constants.SP_KEY_BOOK_ID, 0);
+        Bundle bundle = getBundle();
+        if (bundle != null) {
+            return bundle.getLong(Constants.SP_KEY_BOOK_ID, 0);
+        } else {
+            return 0;
+        }
     }
 
     public void setBookId(long ebookId) {
         this.ebookId = ebookId;
-        getBundle().putLong(Constants.SP_KEY_BOOK_ID, ebookId);
+        Bundle bundle = getBundle();
+        if (bundle != null) {
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, ebookId);
+        }
     }
 
     public ShopDataBundle getShopDataBundle() {
@@ -958,7 +966,7 @@ public class BookDetailFragment extends BaseFragment {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, event.catId);
             bundle.putString(Constants.SP_KEY_KEYWORD, "");
-            getViewEventCallBack().gotoView(SearchBookListFragment.class.getName());
+            getViewEventCallBack().gotoView(SearchBookListFragment.class.getName(), bundle);
         }
     }
 

@@ -76,8 +76,11 @@ public class CommentFragment extends BaseFragment {
 
     private void initData() {
         resetCurrentPage();
-        ebookId = JDPreferenceManager.getLongValue(Constants.SP_KEY_BOOK_ID, 0);
-        getBookComments();
+        Bundle bundle = getBundle();
+        if (bundle != null) {
+            ebookId = bundle.getLong(Constants.SP_KEY_BOOK_ID, 0);
+            getBookComments();
+        }
     }
 
     private void getBookComments() {

@@ -278,10 +278,11 @@ public class AllCategoryFragment extends BaseFragment {
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
         if (categoryBean != null) {
             categoryBean.isSelect = true;
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, categoryBean.id);
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, categoryBean.level);
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_CATEGORY_NAME, categoryBean.name);
-            getViewEventCallBack().gotoView(CategoryBookListFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, categoryBean.id);
+            bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, categoryBean.level);
+            bundle.putString(Constants.SP_KEY_CATEGORY_NAME, categoryBean.name);
+            getViewEventCallBack().gotoView(CategoryBookListFragment.class.getName(), bundle);
         }
     }
 
