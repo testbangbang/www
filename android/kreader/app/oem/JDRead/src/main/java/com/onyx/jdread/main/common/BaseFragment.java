@@ -87,12 +87,16 @@ public class BaseFragment extends Fragment {
         return false;
     }
 
+    public boolean isWifiDisconnectedNoToast() {
+        return !Utils.isNetworkConnected(JDReadApplication.getInstance());
+    }
+
     public void goNetWorkErrorFragment(Bundle bundle){
         getViewEventCallBack().gotoView(NetWorkErrorFragment.class.getName(), bundle);
     }
 
     public void checkWifi(String title) {
-        if (isWifiDisconnected()) {
+        if (isWifiDisconnectedNoToast()) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.NET_ERROR_TITLE, title);
             if (StringUtils.isNullOrEmpty(title)) {
