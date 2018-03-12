@@ -43,11 +43,11 @@
                 android:layout_weight="4"
                 android:gravity="center">
 
-                <TextView
+                <com.onyx.jdread.setting.view.OnyxDigitalClock
+                    android:id="@+id/onyx_digital_clock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@{systemBarModel.time}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
             </LinearLayout>
