@@ -338,7 +338,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
     public void onRecommendItemClickEvent(RecommendItemClickEvent event) {
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         ResultBookBean bookBean = event.getBookBean();
@@ -386,7 +386,9 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewCommentEvent(ViewCommentEvent event) {
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(CommentFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, getBookId());
+            getViewEventCallBack().gotoView(CommentFragment.class.getName(), bundle);
         }
     }
 
@@ -417,7 +419,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {
@@ -634,7 +636,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void downLoadWholeBook() {
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         nowReadButton.setEnabled(false);
@@ -724,7 +726,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
 
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
 

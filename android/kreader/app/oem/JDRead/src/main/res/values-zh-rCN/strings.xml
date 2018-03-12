@@ -530,4 +530,5 @@
     <string name="back_to_library">返回书架</string>
     <string name="not_existent">不存在的书籍</string>
     <string name="input_special_characters">输入含有特殊字符</string>
+    <string name="no_results">暂无</string>
 </resources>

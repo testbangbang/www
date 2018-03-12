@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.utils;
 import android.app.Dialog;
 import android.app.DialogFragment;
 
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
@@ -183,6 +184,19 @@ public class ViewHelper {
         } else {
             int hours = TimeUtils.hoursBetweenInMillis(Long.valueOf(modifiedTime), Calendar.getInstance().getTimeInMillis());
             return String.format(ResManager.getString(R.string.net_book_hours_befor_update), hours);
+        }
+    }
+
+    public static String friendlyShowCopyRightInfo(String info) {
+        String noResults = ResManager.getString(R.string.no_results);
+        return StringUtils.isNullOrEmpty(info) ? noResults : info;
+    }
+
+    public static String formatFileSize(float fileSize) {
+        if (fileSize > 0) {
+            return String.format(ResManager.getString(R.string.copyright_book_size_value), fileSize);
+        } else {
+            return friendlyShowCopyRightInfo("");
         }
     }
 }
