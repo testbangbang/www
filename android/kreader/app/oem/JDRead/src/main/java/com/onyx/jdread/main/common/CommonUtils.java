@@ -36,6 +36,9 @@ public class CommonUtils {
     }
 
     public static String formatWordCount(int wordCount) {
+        if (wordCount <= 0) {
+            return ResManager.getString(R.string.no_results);
+        }
         if (wordCount > 10000) {
             return wordCount / 10000 + JDReadApplication.getInstance().getString(R.string.word_count_million_words);
         } else {

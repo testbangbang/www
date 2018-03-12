@@ -386,7 +386,9 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewCommentEvent(ViewCommentEvent event) {
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(CommentFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, getBookId());
+            getViewEventCallBack().gotoView(CommentFragment.class.getName(), bundle);
         }
     }
 

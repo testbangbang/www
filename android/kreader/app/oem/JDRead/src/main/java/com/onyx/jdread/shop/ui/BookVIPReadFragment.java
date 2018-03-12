@@ -167,9 +167,9 @@ public class BookVIPReadFragment extends BaseFragment {
         if (modulesBean != null) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
-            bundle.getInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
-            bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
-            bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
+            bundle.putInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+            bundle.putInt(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
+            bundle.putInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
             getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName(), bundle);
         }
     }

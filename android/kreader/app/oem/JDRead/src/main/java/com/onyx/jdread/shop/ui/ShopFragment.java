@@ -223,9 +223,9 @@ public class ShopFragment extends BaseFragment {
             if (advBean.relate_type == Constants.RELATE_TYPE_BOOK_LIST) {
                 Bundle bundle = new Bundle();
                 bundle.putString(Constants.SP_KEY_SUBJECT_NAME, advBean.show_name);
-                bundle.getInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
-                bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_ID, advBean.id);
-                bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, advBean.f_type);
+                bundle.putInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+                bundle.putInt(Constants.SP_KEY_SUBJECT_MODEL_ID, advBean.id);
+                bundle.putInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, advBean.f_type);
                 getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName(), bundle);
             } else if (advBean.relate_type == Constants.RELATE_TYPE_LINK) {
                 if (getViewEventCallBack() != null) {
@@ -255,9 +255,9 @@ public class ShopFragment extends BaseFragment {
         if (modulesBean != null) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
-            bundle.getInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
-            bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
-            bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
+            bundle.putInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+            bundle.putInt(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
+            bundle.putInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
             getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName(), bundle);
         }
     }
