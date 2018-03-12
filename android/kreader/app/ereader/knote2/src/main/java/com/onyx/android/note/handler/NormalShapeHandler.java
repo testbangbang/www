@@ -67,7 +67,7 @@ public class NormalShapeHandler extends BaseHandler {
     }
 
     private Shape createShape(TouchPoint downPoint) {
-        NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawDataHolder().getDrawingArgs();
+        NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawingArgs();
         Shape shape = DrawUtils.createShape(drawingArgs, ShapeFactory.POSITION_FREE);
         shape.onDown(downPoint, downPoint);
         return shape;

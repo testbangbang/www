@@ -34,7 +34,6 @@ public class NoteFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getNoteBundle().getPenEventHandler().subscribe();
-        getNoteBundle().getDrawDataHolder().subscribe();
     }
 
     @Nullable
@@ -49,7 +48,6 @@ public class NoteFragment extends BaseFragment {
     public void onDestroy() {
         getNoteBundle().getHandlerManager().quit();
         getNoteBundle().getPenEventHandler().unSubscribe();
-        getNoteBundle().getDrawDataHolder().unSubscribe();
         super.onDestroy();
     }
 

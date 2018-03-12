@@ -97,7 +97,7 @@ public class NoteMenuModel extends BaseViewModel {
     }
 
     public void onCircleShape(View view) {
-        NoteDataBundle.getInstance().getDrawDataHolder().setCurrentShapeType(ShapeFactory.SHAPE_RECTANGLE);
+        NoteDataBundle.getInstance().getDrawingArgs().setCurrentShapeType(ShapeFactory.SHAPE_RECTANGLE);
         getNoteBundle().getHandlerManager().activeProvider(HandlerManager.NORMAL_SHAPE_PROVIDER);
     }
 

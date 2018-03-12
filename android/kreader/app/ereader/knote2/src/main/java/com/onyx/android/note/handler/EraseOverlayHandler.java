@@ -126,7 +126,7 @@ public class EraseOverlayHandler extends BaseHandler {
     }
 
     private Shape createEraseShape(TouchPointList touchPointList) {
-        NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawDataHolder().getDrawingArgs();
+        NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawingArgs();
         Shape shape = ShapeFactory.createShape(ShapeFactory.SHAPE_ERASE_OVERLAY);
         shape.setStrokeWidth(drawingArgs.strokeWidth);
         shape.setColor(Color.TRANSPARENT);
