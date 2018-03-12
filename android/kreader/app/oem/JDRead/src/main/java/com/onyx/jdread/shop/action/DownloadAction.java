@@ -85,7 +85,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
                 }
                 dataBundle.getEventBus().post(new DownloadingEvent(tag, infoModel));
                 BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(tag);
-                if (DownLoadHelper.isPause(task.getStatus())) {
+                if (task != null && DownLoadHelper.isPause(task.getStatus())) {
                     updateDownloadInfo(task);
                 }
                 if (downLoadCallback != null) {
@@ -172,7 +172,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
         extraInfoBean.progress = task.getSmallFileSoFarBytes();
         extraInfoBean.totalSize = task.getSmallFileTotalBytes();
         if (extraInfoBean.progress != 0) {
-            extraInfoBean.percentage = (int) ((extraInfoBean.progress  * 100 / extraInfoBean.totalSize));
+            extraInfoBean.percentage = (int) ((extraInfoBean.progress * 100 / extraInfoBean.totalSize));
         }
         UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean);
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
