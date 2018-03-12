@@ -11,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
@@ -29,6 +31,7 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
     private int selectionEnd;
     private int maxByte = Integer.MAX_VALUE;
     private EditText etInput;
+    private ImageView clearButton;
     private SearchView.OnQueryTextListener onQueryTextListener;
     private SearchListener customSearchListener;
 
@@ -68,7 +71,8 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
                 doSearch();
             }
         });
-        findViewById(R.id.search_clear).setOnClickListener(new OnClickListener() {
+        clearButton = (ImageView) findViewById(R.id.search_clear);
+        clearButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 etInput.setText("");
@@ -119,6 +123,11 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
         if (onQueryTextListener != null) {
             onQueryTextListener.onQueryTextChange(s.toString());
         }
+        showClearButton(StringUtils.isNotBlank(s.toString()));
+    }
+
+    private void showClearButton(boolean show) {
+        clearButton.setVisibility(show ? VISIBLE : INVISIBLE);
     }
 
     public void setQuery(CharSequence query, boolean submit) {
