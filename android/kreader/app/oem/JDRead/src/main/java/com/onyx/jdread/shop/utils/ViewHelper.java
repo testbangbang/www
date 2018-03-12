@@ -2,16 +2,24 @@ package com.onyx.jdread.shop.utils;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.webkit.WebSettings;
 
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.databinding.DialogVipNoticeBinding;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
+import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.MainConfigEndViewModel;
 import com.onyx.jdread.shop.model.SubjectType;
+import com.onyx.jdread.shop.view.BookInfoDialog;
 import com.onyx.jdread.util.TimeUtils;
 
 import java.text.DecimalFormat;
@@ -198,5 +206,29 @@ public class ViewHelper {
         } else {
             return friendlyShowCopyRightInfo("");
         }
+    }
+
+    public static BookInfoDialog showNoticeDialog(Context context, String title, String url, View.OnClickListener closeListener) {
+        final DialogVipNoticeBinding infoBinding = DialogVipNoticeBinding.inflate(LayoutInflater.from(context), null, false);
+        final DialogBookInfoViewModel infoViewModel = new DialogBookInfoViewModel();
+        infoViewModel.title.set(title);
+        infoBinding.setViewModel(infoViewModel);
+        infoBinding.setListener(closeListener);
+        final BookInfoDialog dialog = new BookInfoDialog(context.getApplicationContext());
+        dialog.setView(infoBinding.getRoot());
+        infoBinding.infoWebView.setCallParentPageFinishedMethod(false);
+        infoBinding.infoWebView.loadUrl(url);
+        infoBinding.infoWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
+            @Override
+            public void onPageChanged(int totalPage, int curPage) {
+                infoViewModel.currentPage.set(curPage);
+                infoViewModel.totalPage.set(totalPage);
+            }
+        });
+        WebSettings settings = infoBinding.infoWebView.getSettings();
+        settings.setSupportZoom(false);
+        settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
+        dialog.show();
+        return dialog;
     }
 }

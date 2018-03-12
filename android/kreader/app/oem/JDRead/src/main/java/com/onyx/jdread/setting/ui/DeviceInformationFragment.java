@@ -1,5 +1,6 @@
 package com.onyx.jdread.setting.ui;
 
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.setting.adapter.DeviceInfoAdapter;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
@@ -24,6 +26,7 @@ import com.onyx.jdread.setting.event.DeviceModelEvent;
 import com.onyx.jdread.setting.event.ResetDeviceEvent;
 import com.onyx.jdread.setting.model.DeviceInformationModel;
 import com.onyx.jdread.setting.model.SettingBundle;
+import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
 
@@ -40,6 +43,8 @@ public class DeviceInformationFragment extends BaseFragment {
     private DeviceInfoAdapter deviceInfoAdapter;
     private long lastPressTime;
     private long resetPressCount;
+
+    private Dialog copyrightNoticeDialog;
 
     @Nullable
     @Override
@@ -75,6 +80,12 @@ public class DeviceInformationFragment extends BaseFragment {
         Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        ViewHelper.dismissDialog(copyrightNoticeDialog);
+    }
+
     @Subscribe
     public void onBackToDeviceConfigFragment(BackToDeviceConfigFragment event) {
         viewEventCallBack.viewBack();
@@ -82,7 +93,22 @@ public class DeviceInformationFragment extends BaseFragment {
 
     @Subscribe
     public void onCopyrightNoticeEvent(CopyrightNoticeEvent event) {
+        showCopyrightNoticeDialog();
+    }
 
+    private void showCopyrightNoticeDialog() {
+        if (ViewHelper.dialogIsShowing(copyrightNoticeDialog)) {
+            return;
+        }
+        copyrightNoticeDialog = ViewHelper.showNoticeDialog(getActivity(),
+                ResManager.getString(R.string.copyright_notice_and_terms_of_service),
+                ResManager.getUriOfRawName("copyright_notice.html"), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ViewHelper.dismissDialog(copyrightNoticeDialog);
+                        copyrightNoticeDialog = null;
+                    }
+                });
     }
 
     @Subscribe
