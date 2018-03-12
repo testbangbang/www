@@ -2,6 +2,7 @@ package com.onyx.android.sdk.reader.host.math;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
+
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
 
@@ -80,10 +81,19 @@ public class PageUtils {
         return deltaScale;
     }
 
-    static public float scaleToFitRect(final RectF child, final RectF parent) {
-        float scale = Math.min(parent.width() / child.width(), parent.height() / child.height());
-        float pageWidth = child.width() * scale;
-        float pageHeight = child.height() * scale;
+    static public float scaleToFitRect(final RectF child, final RectF parent, boolean forceFillParent) {
+        float scale, pageWidth, pageHeight;
+        if (forceFillParent) {
+            scale = Math.max(parent.width() / child.width(), parent.height() / child.height());
+            float scalePageWidth = child.width() * scale;
+            float scalePageHeight = child.height() * scale;
+            pageWidth = scalePageWidth > parent.width() ? parent.width() : scalePageWidth;
+            pageHeight = scalePageHeight > parent.height() ? parent.height() : scalePageHeight;
+        } else {
+            scale = Math.min(parent.width() / child.width(), parent.height() / child.height());
+            pageWidth = child.width() * scale;
+            pageHeight = child.height() * scale;
+        }
         float pageLeft = parent.left + (parent.width() - pageWidth) / 2;
         float pageTop = parent.top + (parent.height() - pageHeight) / 2;
         child.set(pageLeft, pageTop, pageLeft + pageWidth, pageTop + pageHeight);
