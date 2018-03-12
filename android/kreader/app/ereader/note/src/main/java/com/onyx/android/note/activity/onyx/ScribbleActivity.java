@@ -535,6 +535,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
         Layout layout = spanTextView.getLayout();
         int line = layout.getLineForOffset(pos);
         int x = (int) layout.getPrimaryHorizontal(pos);
+        if (x > spanTextView.getMeasuredWidth() &&
+                line < (getNoteViewHelper().getLineLayoutArgs().getLineCount() - 1)) {
+            x = x - spanTextView.getMeasuredWidth();
+            line++;
+        }
         LineLayoutArgs args = getNoteViewHelper().getLineLayoutArgs();
         int top = args.getLineTop(line);
         int bottom = args.getLineBottom(line);
@@ -830,16 +835,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
         int line = layout.getLineForOffset(pos);
         if (line == (getNoteViewHelper().getLineLayoutArgs().getLineCount() - 1)) {
             showOutOfRangeTips();
-            syncWithCallback(true,true, null);
+            syncWithCallback(true, true, null);
             return;
         }
-        int width = spanTextView.getMeasuredWidth();
+        int width = (int) (spanTextView.getMeasuredWidth() - spaceWidth);
         float x = layout.getPrimaryHorizontal(pos) - spaceWidth;
         x = x >= width ? 0 : x;
         if (isBuildingSpan()) {
             return;
         }
-        spanTextHandler.buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x) - 2 * ShapeSpan.SHAPE_SPAN_MARGIN, getSpanTextFontHeight());
+        spanTextHandler.buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x) - 5 * ShapeSpan.SHAPE_SPAN_MARGIN, getSpanTextFontHeight());
     }
 
     private void onKeyboard() {
