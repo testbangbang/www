@@ -24,13 +24,17 @@ import com.onyx.jdread.util.InputUtils;
  */
 
 public class CustomSearchView extends LinearLayout implements TextWatcher {
-    private Context context;
     private CharSequence temp;
     private int selectionStart;
     private int selectionEnd;
     private int maxByte = Integer.MAX_VALUE;
     private EditText etInput;
     private SearchView.OnQueryTextListener onQueryTextListener;
+    private SearchListener customSearchListener;
+
+    public interface SearchListener {
+        void onQuerySearch(String query);
+    }
 
     public CustomSearchView(Context context) {
         super(context);
@@ -38,7 +42,6 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
 
     public CustomSearchView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
         LayoutInflater.from(context).inflate(R.layout.search_layout, this);
         initView();
         initListener();
@@ -62,9 +65,7 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
         findViewById(R.id.search_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onQueryTextListener != null) {
-                    onQueryTextListener.onQueryTextSubmit(etInput.getText().toString());
-                }
+                doSearch();
             }
         });
         findViewById(R.id.search_clear).setOnClickListener(new OnClickListener() {
@@ -73,6 +74,21 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
                 etInput.setText("");
             }
         });
+    }
+
+    private void doSearch() {
+        String text = etInput.getText().toString();
+        if (customSearchListener != null) {
+            customSearchListener.onQuerySearch(text);
+            return;
+        }
+        if (onQueryTextListener != null) {
+            onQueryTextListener.onQueryTextSubmit(text);
+        }
+    }
+
+    public void setCustomSearchListener(SearchListener listener) {
+        this.customSearchListener = listener;
     }
 
     public void setOnQueryTextListener(SearchView.OnQueryTextListener onQueryTextListener) {

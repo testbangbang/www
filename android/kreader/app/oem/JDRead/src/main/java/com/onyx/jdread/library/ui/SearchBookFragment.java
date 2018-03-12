@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +35,7 @@ import com.onyx.jdread.library.event.SubmitSearchBookEvent;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.model.SearchBookModel;
+import com.onyx.jdread.library.view.CustomSearchView;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
@@ -161,7 +161,12 @@ public class SearchBookFragment extends BaseFragment {
                 return false;
             }
         });
-
+        binding.searchView.setCustomSearchListener(new CustomSearchView.SearchListener() {
+            @Override
+            public void onQuerySearch(String query) {
+                doSearchQueryOrHint(query);
+            }
+        });
         binding.searchResultRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
@@ -246,10 +251,7 @@ public class SearchBookFragment extends BaseFragment {
 
     private void checkSearchResult() {
         if (isEmptySearchResults()) {
-            if (isWifiDisconnected()) {
-                return;
-            }
-            ToastUtil.showToast(R.string.no_search_results);
+            checkWifi(getSearchBookModel().searchKey.get());
         }
     }
 
