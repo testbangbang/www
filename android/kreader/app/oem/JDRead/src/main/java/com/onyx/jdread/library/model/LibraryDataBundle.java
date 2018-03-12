@@ -65,4 +65,8 @@ public class LibraryDataBundle extends MainBundle {
     public SearchBookModel getSearchBookModel() {
         return searchBookModel;
     }
+
+    public void setSearchBookModel(SearchBookModel model) {
+        this.searchBookModel = model;
+    }
 }
