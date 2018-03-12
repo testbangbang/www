@@ -325,7 +325,11 @@ public class ReaderHelper {
         }
     }
 
-    private void clearBitmapCache() {
+    public void clearBitmapCache() {
+        if (currentPageBitmap != null && currentPageBitmap.isValid()) {
+            currentPageBitmap.close();
+            currentPageBitmap = null;
+        }
         if (bitmapCache != null) {
             bitmapCache.clear();
         }
