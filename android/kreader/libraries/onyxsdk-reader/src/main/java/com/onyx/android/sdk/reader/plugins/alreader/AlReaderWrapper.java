@@ -121,6 +121,9 @@ public class AlReaderWrapper {
         if (bookEng.openBook(path, bookOpt) != TAL_RESULT.OK) {
             return ERROR_FILE_INVALID;
         }
+        if (!bookEng.isBookOpened()) {
+            return ERROR_FILE_INVALID;
+        }
         setChineseConvertType(documentOptions.getChineseConvertType());
         return NO_ERROR;
     }

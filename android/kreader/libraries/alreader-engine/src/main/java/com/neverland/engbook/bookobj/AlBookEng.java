@@ -7431,7 +7431,7 @@ public class AlBookEng{
 		return result;
 	}
 
-	private boolean isBookOpened() {
+	public boolean isBookOpened() {
 		return openState.getState() == AlBookState.OPEN || openState.getState() >= AlBookState.PROCESS0;
 	}
 
