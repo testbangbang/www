@@ -5,10 +5,7 @@ import android.content.DialogInterface;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.model.homework.Question;
-import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.base.BaseAction;
-import com.onyx.edu.homework.event.ReloadQuestionViewEvent;
-import com.onyx.edu.homework.ui.HomeworkListActivity;
 import com.onyx.edu.homework.ui.SubmitDialog;
 
 import java.util.List;
@@ -31,7 +28,7 @@ public class ShowSubmitDialogAction extends BaseAction {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                DataBundle.getInstance().post(new ReloadQuestionViewEvent());
+//                DataBundle.getInstance().post(new ReloadQuestionViewEvent());
             }
         });
         dialog.show();
