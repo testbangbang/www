@@ -178,6 +178,22 @@ public class SearchBookFragment extends BaseFragment {
         return getSearchBookModel().showResult() && !isEmptySearchResults();
     }
 
+    private boolean checkSubmitQueryValid(String query) {
+        if (StringUtils.isNullOrEmpty(query)) {
+            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
+            return false;
+        }
+        if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
+            ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
+            return false;
+        }
+        if (!InputUtils.isHaveAvailableCharacters(query)) {
+            ToastUtil.showToast(R.string.input_special_characters);
+            return false;
+        }
+        return true;
+    }
+
     private void queryTextChangeImpl(String newText) {
         searchBookModel.searchHint.clear();
         searchHintAdapter.notifyDataSetChanged();
@@ -202,12 +218,7 @@ public class SearchBookFragment extends BaseFragment {
         if (isBookSearching()) {
             return;
         }
-        if (StringUtils.isNullOrEmpty(query)) {
-            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
-            return;
-        }
-        if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
-            ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
+        if (!checkSubmitQueryValid(query)) {
             return;
         }
         Utils.hideSoftWindow(getActivity());
