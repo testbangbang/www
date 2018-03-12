@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookShopBinding;
 import com.onyx.jdread.library.ui.SearchBookFragment;
@@ -70,6 +71,9 @@ public class ShopFragment extends BaseFragment {
     }
 
     private void initData() {
+        if (CollectionUtils.isNullOrEmpty(getBookShopViewModel().getMainConfigSubjcet())) {
+            checkWifi("");
+        }
         getShopMainConfigData();
     }
 
@@ -87,7 +91,6 @@ public class ShopFragment extends BaseFragment {
                 updateScrollbarPageIndex(curIndex);
             }
         });
-        checkWifi("");
     }
 
     private void updateScrollbarPageIndex(int curIndex) {
