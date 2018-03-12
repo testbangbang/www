@@ -35,6 +35,8 @@
             android:hint="@string/build_library_hint"
             android:imeOptions="actionDone"
             android:maxLines="1"
+            android:textIsSelectable="false"
+            android:longClickable="false"
             android:text="@={dialogModel.libraryName}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
