@@ -53,8 +53,6 @@ public class LibraryBuildDialog extends Dialog {
             bind.setDialogModel(model);
             bind.editName.addTextChangedListener(new TextWatcher() {
                 private CharSequence temp;
-                private int selectionStart;
-                private int selectionEnd;
 
                 @Override
                 public void beforeTextChanged(CharSequence s, int arg1, int arg2,
@@ -69,14 +67,10 @@ public class LibraryBuildDialog extends Dialog {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    selectionStart = bind.editName.getSelectionStart();
-                    selectionEnd = bind.editName.getSelectionEnd();
                     if (InputUtils.getByteCount(temp.toString()) > ResManager.getInteger(R.integer.group_name_max_length)) {
                         ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.toast_offset_y));
-                        s.delete(selectionStart - 1, selectionEnd);
-                        int tempSelection = selectionStart;
-                        bind.editName.setText(s);
-                        bind.editName.setSelection(tempSelection);
+                        bind.editName.setText(InputUtils.getEffectiveString(temp.toString(), ResManager.getInteger(R.integer.group_name_max_length)));
+                        bind.editName.setSelection(bind.editName.length());
                     }
                 }
 
@@ -122,7 +116,6 @@ public class LibraryBuildDialog extends Dialog {
                     dialog.dismiss();
                 }
             });
-            bind.editName.setLongClickable(false);
             dialog.setContentView(bind.getRoot());
             return dialog;
         }
