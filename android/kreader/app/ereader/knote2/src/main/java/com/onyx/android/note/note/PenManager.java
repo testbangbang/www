@@ -55,7 +55,7 @@ public class PenManager {
     }
 
     private boolean inRawNotRenderProvider() {
-        return getHandlerManager().inEraseProvider() ||
+        return getHandlerManager().inEpdShapeProvider() ||
                 getHandlerManager().inNormalShapeProvider();
     }
 

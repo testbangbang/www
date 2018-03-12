@@ -40,7 +40,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by lxm on 2018/2/25.
  */
 
-public class NormalShapeHandler extends BaseEraseHandler {
+public class NormalShapeHandler extends BaseHandler {
 
     private static final String TAG = "NormalShapeHandler";
 
@@ -170,5 +170,10 @@ public class NormalShapeHandler extends BaseEraseHandler {
             d.dispose();
         }
         actionDisposables = new ArrayList<>();
+    }
+
+    @Override
+    public boolean useDrawErase() {
+        return true;
     }
 }
