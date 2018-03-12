@@ -47,7 +47,7 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
         }
         int state = model.getState();
         currentState = HomeworkState.getHomeworkState(state);
-        if (currentState == HomeworkState.DOING) {
+        if (currentState == HomeworkState.BEFORE_SUBMIT) {
             return;
         }
         Response<HomeworkReviewResult> response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).getAnwsers(publicHomeworkId));

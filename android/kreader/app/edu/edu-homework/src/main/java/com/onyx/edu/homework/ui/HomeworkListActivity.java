@@ -40,6 +40,7 @@ import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.HomeworkIntent;
+import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.data.NotificationType;
 import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
@@ -244,6 +245,9 @@ public class HomeworkListActivity extends BaseActivity {
 
     private void showExpiredDialog() {
         if (getQuestionFragment() == null) {
+            return;
+        }
+        if (!visible) {
             return;
         }
         getQuestionFragment().saveQuestion(SaveDocumentOption.onStopSaveOption(), new BaseCallback() {
@@ -594,6 +598,8 @@ public class HomeworkListActivity extends BaseActivity {
         binding.answerRecord.setVisibility(View.GONE);
 //        binding.submit.setVisibility(getDataBundle().isReview() || getDataBundle().canCheckAnswer() ? View.GONE : View.VISIBLE);
         binding.submit.setVisibility(View.VISIBLE);
+        binding.submit.setText(getDataBundle().isSubmittedAfterReview() || getDataBundle().isReview() ?
+                R.string.correct_homework : R.string.submit_homework);
         binding.getResultLayout.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
         binding.newMessage.setVisibility(getDataBundle().canGetReview() ? View.VISIBLE : View.GONE);
         binding.hasAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);

@@ -17,12 +17,18 @@ public class GetPageUniqueIdsRequest extends BaseNoteRequest {
 
     private volatile List<String> docIds;
     private Map<String, List<String>> pageUniqueMap;
+    private boolean filterUnRedoingDocId;
 
     public GetPageUniqueIdsRequest(List<String> docIds) {
         this.docIds = docIds;
         setPauseInputProcessor(false);
         setResumeInputProcessor(false);
         setRender(false);
+    }
+
+    public GetPageUniqueIdsRequest setFilterUnRedoingDocId(boolean filterUnRedoingDocId) {
+        this.filterUnRedoingDocId = filterUnRedoingDocId;
+        return this;
     }
 
     @Override
@@ -34,6 +40,9 @@ public class GetPageUniqueIdsRequest extends BaseNoteRequest {
         pageUniqueMap = new HashMap<>();
         for (String docId : docIds) {
             NoteModel noteModel = NoteDataProvider.load(docId);
+            if (filterUnRedoingDocId && !NoteDataProvider.checkHasRedoingShape(getContext(), docId)) {
+                continue;
+            }
             if (noteModel != null && noteModel.getPageNameList() != null) {
                 pageUniqueMap.put(docId, noteModel.getPageNameList().getPageNameList());
             }

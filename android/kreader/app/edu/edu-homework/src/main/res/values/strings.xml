@@ -75,4 +75,5 @@
         <item>G</item>
         <item>H</item>
     </string-array>
+    <string name="correct_homework">改正作业</string>
 </resources>

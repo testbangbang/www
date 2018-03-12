@@ -42,7 +42,7 @@ public class DataBundle {
     private Homework homework;
     private EventBus eventBus;
     private NoteViewHelper noteViewHelper;
-    private HomeworkState state = HomeworkState.DOING;
+    private HomeworkState state = HomeworkState.BEFORE_SUBMIT;
     private String childId;
     private String personalHomeworkId;
 
@@ -149,11 +149,15 @@ public class DataBundle {
     }
 
     public boolean isSubmitted() {
-        return state == HomeworkState.SUBMITTED;
+        return state == HomeworkState.SUBMITTED || state == HomeworkState.SUBMITTED_AFTER_REVIEW;
+    }
+
+    public boolean isSubmittedAfterReview() {
+        return state == HomeworkState.SUBMITTED_AFTER_REVIEW;
     }
 
     public boolean isDoing() {
-        return state == HomeworkState.DOING || state == HomeworkState.SUBMITTED;
+        return state == HomeworkState.BEFORE_SUBMIT || state == HomeworkState.SUBMITTED || state == HomeworkState.SUBMITTED_AFTER_REVIEW;
     }
 
     public boolean isReview() {

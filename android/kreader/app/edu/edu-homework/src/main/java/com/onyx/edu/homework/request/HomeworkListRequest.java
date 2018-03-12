@@ -30,7 +30,7 @@ public class HomeworkListRequest extends BaseCloudRequest {
     private String publicHomeworkId;
     private String personalHomeworkId;
     private Homework homework;
-    private HomeworkState homeworkState = HomeworkState.DOING;
+    private HomeworkState homeworkState = HomeworkState.BEFORE_SUBMIT;
 
     public HomeworkListRequest(String publicHomeworkId, String personalHomeworkId) {
         this.publicHomeworkId = publicHomeworkId;

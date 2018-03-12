@@ -169,6 +169,14 @@ public class NoteDataProvider {
         return shapeModel != null;
     }
 
+    public static boolean checkHasRedoingShape(final Context context, final String uniqueId) {
+        Select select = new Select();
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(uniqueId))
+                .and(ShapeModel_Table.state.eq(ShapeState.REDOING));
+        ShapeModel shapeModel = (ShapeModel) where.querySingle();
+        return shapeModel != null;
+    }
+
     public static NoteModel createLibrary(final Context context, final String uniqueId, final String parentUniqueId, final String title) {
         NoteModel noteModel = NoteModel.createLibrary(uniqueId, parentUniqueId, title);
         saveNote(context, noteModel);

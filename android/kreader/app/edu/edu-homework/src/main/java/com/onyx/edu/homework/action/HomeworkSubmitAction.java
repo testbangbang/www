@@ -42,6 +42,7 @@ public class HomeworkSubmitAction extends BaseAction {
                     } else {
                         DataBundle.getInstance().setState(HomeworkState.SUBMITTED);
                     }
+                    DataBundle.getInstance().getHomework().setHasReview(false);
                 }
                 BaseCallback.invoke(baseCallback, request, e);
             }

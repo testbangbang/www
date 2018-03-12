@@ -56,6 +56,7 @@ public class HomeworkSubmitRequest extends BaseCloudRequest {
             } else {
                 model.setState(HomeworkState.SUBMITTED.ordinal());
             }
+            model.setHasReview(false);
             DBDataProvider.saveHomework(model);
         }
         clearFileCache();
