@@ -79,6 +79,8 @@ public class HomeworkListActivity extends BaseActivity {
     private int currentPage = 0;
     private CountDownTimer timer;
     private boolean visible;
+    @Nullable
+    private Question question;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -514,7 +516,7 @@ public class HomeworkListActivity extends BaseActivity {
         }
         binding.page.setText(getString(R.string.question_page, current + File.separator + total));
 
-        Question question = questions.get(position);
+        question = questions.get(position);
         if (getDataBundle().isReview()) {
             if (question.review != null) {
                 binding.answerIcon.setImageResource(question.review.isRightAnswer() ? R.drawable.ic_right : R.drawable.ic_wrong);
@@ -522,11 +524,11 @@ public class HomeworkListActivity extends BaseActivity {
         }
 
         showQuestionScore();
-        showDraft(question);
+        showDraft();
     }
 
-    private void showDraft(Question question) {
-        ViewUtils.setGone(binding.tvDraft, question.isChoiceQuestion());
+    private void showDraft() {
+        ViewUtils.setGone(binding.tvDraft, null != question && question.isChoiceQuestion() && recordFragment == null);
     }
 
     @Override
@@ -592,19 +594,23 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void updateViewState() {
-        ViewUtils.setGone(binding.analysis, getDataBundle().canCheckAnswer());
-        ViewUtils.setGone(binding.answerIcon, getDataBundle().isReview());
+        ViewUtils.setGone(binding.analysis, getDataBundle().canCheckAnswer() && recordFragment == null);
+        ViewUtils.setGone(binding.answerIcon, getDataBundle().isReview() && recordFragment == null);
         ViewUtils.setGone(binding.answerRecord, recordFragment != null);
         ViewUtils.setGone(binding.submit, true);
         binding.submit.setText(getDataBundle().isSubmittedAfterReview() || getDataBundle().isReview() ?
                 R.string.correct_homework : R.string.submit_homework);
         ViewUtils.setGone(binding.getResultLayout, getDataBundle().isSubmitted());
         ViewUtils.setGone(binding.newMessage, getDataBundle().canGetReview());
-        ViewUtils.setGone(binding.hasAnswer, getDataBundle().isReview());
+        ViewUtils.setGone(binding.hasAnswer, !getDataBundle().isReview());
         ViewUtils.setGone(binding.notAnswer, !getDataBundle().isReview());
         ViewUtils.setGone(binding.totalScore, false);
-        ViewUtils.setGone(binding.singleScore, getDataBundle().isReview());
+        ViewUtils.setGone(binding.singleScore, getDataBundle().isReview() && recordFragment == null);
         ViewUtils.setGone(binding.scoreRank, getDataBundle().isReview());
+        ViewUtils.setGone(binding.prevPage,recordFragment == null);
+        ViewUtils.setGone(binding.page,recordFragment == null);
+        ViewUtils.setGone(binding.nextPage,recordFragment == null);
+        showDraft();
     }
 
     @Override
@@ -651,6 +657,7 @@ public class HomeworkListActivity extends BaseActivity {
                 recordFragment = RecordFragment.newInstance(questions);
                 getSupportFragmentManager().beginTransaction().replace(R.id.record_layout, recordFragment).commit();
                 binding.answerRecord.setText(R.string.return_answer);
+                updateViewState();
             }
         });
     }
