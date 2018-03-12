@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -95,10 +96,7 @@ public class CategoryBookListFragment extends BaseFragment {
             getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_filter);
             getCategoryBookListViewModel().getTitleBarViewModel().rightText3 = getString(R.string.subject_list_sort_type_hot);
             initDefaultParams();
-            setSortButtonIsOpen(false);
-            setAllCatIsOpen(false);
-            setRightText2Icon();
-            setRightText3Icon();
+            hideOptionLayout();
             getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
             setCategoryV2Data();
         }
@@ -154,6 +152,20 @@ public class CategoryBookListFragment extends BaseFragment {
                 }
             }
         });
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent ev) {
+                if (isOptionLayoutShowing()) {
+                    if (ev.getAction() == MotionEvent.ACTION_UP) {
+                        hideOptionLayout();
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
         categoryBookListBinding.setViewModel(getCategoryBookListViewModel());
         CategoryBookListAdapter categoryBookListAdapter = new CategoryBookListAdapter(getEventBus());
         categoryBookListAdapter.setRowAndCol(catRow, catCol);
@@ -171,6 +183,15 @@ public class CategoryBookListFragment extends BaseFragment {
             }
         });
         checkWifi(currentCatName);
+    }
+
+    private void hideOptionLayout() {
+        setAllCatIsOpen(false);
+        setSortButtonIsOpen(false);
+    }
+
+    private boolean isOptionLayoutShowing() {
+        return getCategoryBookListViewModel().allCatIsOpen.get() || getCategoryBookListViewModel().sortButtonIsOpen.get();
     }
 
     private void initPageIndicator() {
@@ -255,6 +276,11 @@ public class CategoryBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
+        if (isOptionLayoutShowing()) {
+            hideOptionLayout();
+            return;
+        }
+
         ResultBookBean bookBean = event.getBookBean();
         if (bookBean != null) {
             saveContentPage();
@@ -298,7 +324,6 @@ public class CategoryBookListFragment extends BaseFragment {
         }
         boolean allCatIsOpen = getCategoryBookListViewModel().allCatIsOpen.get();
         setAllCatIsOpen(!allCatIsOpen);
-        setRightText2Icon();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -312,15 +337,16 @@ public class CategoryBookListFragment extends BaseFragment {
         }
         boolean sortButtonIsOpen = getCategoryBookListViewModel().sortButtonIsOpen.get();
         setSortButtonIsOpen(!sortButtonIsOpen);
-        setRightText3Icon();
     }
 
     private void setAllCatIsOpen(boolean allCatIsOpen) {
         getCategoryBookListViewModel().allCatIsOpen.set(allCatIsOpen);
+        setRightText2Icon();
     }
 
     private void setSortButtonIsOpen(boolean sortButtonIsOpen) {
         getCategoryBookListViewModel().sortButtonIsOpen.set(sortButtonIsOpen);
+        setRightText3Icon();
     }
 
     private void setRightText2Icon() {
