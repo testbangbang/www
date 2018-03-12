@@ -35,6 +35,7 @@ import com.onyx.jdread.library.event.SubmitSearchBookEvent;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.model.SearchBookModel;
+import com.onyx.jdread.library.view.CustomSearchView;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
@@ -160,7 +161,12 @@ public class SearchBookFragment extends BaseFragment {
                 return false;
             }
         });
-
+        binding.searchView.setCustomSearchListener(new CustomSearchView.SearchListener() {
+            @Override
+            public void onQuerySearch(String query) {
+                doSearchQueryOrHint(query);
+            }
+        });
         binding.searchResultRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
