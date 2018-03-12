@@ -6,8 +6,11 @@ import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -23,11 +26,9 @@ import com.onyx.jdread.util.InputUtils;
  * Created by hehai on 18-3-10.
  */
 
-public class CustomSearchView extends LinearLayout implements TextWatcher {
+public class CustomSearchView extends LinearLayout implements TextWatcher, ActionMode.Callback {
     private Context context;
     private CharSequence temp;
-    private int selectionStart;
-    private int selectionEnd;
     private int maxByte = Integer.MAX_VALUE;
     private EditText etInput;
     private SearchView.OnQueryTextListener onQueryTextListener;
@@ -73,6 +74,8 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
                 etInput.setText("");
             }
         });
+
+        etInput.setCustomSelectionActionModeCallback(this);
     }
 
     public void setOnQueryTextListener(SearchView.OnQueryTextListener onQueryTextListener) {
@@ -91,14 +94,10 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        selectionStart = etInput.getSelectionStart();
-        selectionEnd = etInput.getSelectionEnd();
         if (InputUtils.getByteCount(temp.toString()) > maxByte) {
             ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.toast_offset_y));
-            s.delete(selectionStart - 1, selectionEnd);
-            int tempSelection = selectionStart;
-            etInput.setText(s);
-            etInput.setSelection(tempSelection);
+            etInput.setText(InputUtils.getEffectiveString(temp.toString(), maxByte));
+            etInput.setSelection(etInput.getText().length());
         }
         if (onQueryTextListener != null) {
             onQueryTextListener.onQueryTextChange(s.toString());
@@ -126,5 +125,25 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
 
     public void setMaxByte(int maxByte) {
         this.maxByte = maxByte;
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+
     }
 }
