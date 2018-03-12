@@ -18,7 +18,6 @@ import com.onyx.jdread.databinding.FragmentCategoryBookListBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.CategoryBookListAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
@@ -84,22 +83,25 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void initData() {
-        catLevel = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, 0);
-        catTwoId = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
-        currentCatName = JDPreferenceManager.getStringValue(Constants.SP_KEY_CATEGORY_NAME, "");
-        typeFree = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_CATEGORY_ISFREE, false);
-        getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
-        getCategoryBookListViewModel().getTitleBarViewModel().showRightText2 = true;
-        getCategoryBookListViewModel().getTitleBarViewModel().showRightText3 = true;
-        getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_filter);
-        getCategoryBookListViewModel().getTitleBarViewModel().rightText3 = getString(R.string.subject_list_sort_type_hot);
-        initDefaultParams();
-        setSortButtonIsOpen(false);
-        setAllCatIsOpen(false);
-        setRightText2Icon();
-        setRightText3Icon();
-        getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
-        setCategoryV2Data();
+        Bundle bundle = getBundle();
+        if (bundle != null) {
+            catLevel = bundle.getInt(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, 0);
+            catTwoId = bundle.getInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
+            currentCatName = bundle.getString(Constants.SP_KEY_CATEGORY_NAME, "");
+            typeFree = bundle.getBoolean(Constants.SP_KEY_CATEGORY_ISFREE, false);
+            getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
+            getCategoryBookListViewModel().getTitleBarViewModel().showRightText2 = true;
+            getCategoryBookListViewModel().getTitleBarViewModel().showRightText3 = true;
+            getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_filter);
+            getCategoryBookListViewModel().getTitleBarViewModel().rightText3 = getString(R.string.subject_list_sort_type_hot);
+            initDefaultParams();
+            setSortButtonIsOpen(false);
+            setAllCatIsOpen(false);
+            setRightText2Icon();
+            setRightText3Icon();
+            getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
+            setCategoryV2Data();
+        }
     }
 
     private void initDefaultParams() {
@@ -253,10 +255,12 @@ public class CategoryBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
-        if (getViewEventCallBack() != null) {
+        ResultBookBean bookBean = event.getBookBean();
+        if (bookBean != null) {
             saveContentPage();
-            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, bookBean.ebook_id);
+            getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
         }
     }
 
@@ -276,8 +280,10 @@ public class CategoryBookListFragment extends BaseFragment {
         this.currentPage = 1;
         this.sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
-        JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
-        JDPreferenceManager.setStringValue(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
+        bundle.putString(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
+        setBundle(bundle);
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
     }
 

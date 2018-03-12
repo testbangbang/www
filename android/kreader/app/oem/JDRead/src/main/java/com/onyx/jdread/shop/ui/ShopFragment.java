@@ -12,7 +12,6 @@ import com.onyx.jdread.databinding.FragmentBookShopBinding;
 import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
@@ -167,42 +166,42 @@ public class ShopFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRankViewClick(RankViewClick event) {
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookRankFragment.class.getName());
+            getViewEventCallBack().gotoView(BookRankFragment.class.getName(), null);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEnjoyReadViewClick(EnjoyReadViewClick event) {
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookVIPReadFragment.class.getName());
+            getViewEventCallBack().gotoView(BookVIPReadFragment.class.getName(), null);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSaleViewClick(SaleViewClick event) {
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookSaleFragment.class.getName());
+            getViewEventCallBack().gotoView(BookSaleFragment.class.getName(), null);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNewBookViewClick(NewBookViewClick event) {
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookNewBooksFragment.class.getName());
+            getViewEventCallBack().gotoView(BookNewBooksFragment.class.getName(), null);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryViewClick(CategoryViewClick event) {
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
+            getViewEventCallBack().gotoView(AllCategoryFragment.class.getName(), null);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSearchViewClickEvent(SearchViewClickEvent event) {
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(SearchBookFragment.class.getName());
+            getViewEventCallBack().gotoView(SearchBookFragment.class.getName(), null);
         }
     }
 
@@ -222,19 +221,17 @@ public class ShopFragment extends BaseFragment {
         BookModelConfigResultBean.DataBean.AdvBean advBean = event.advBean;
         if (advBean != null) {
             if (advBean.relate_type == Constants.RELATE_TYPE_BOOK_LIST) {
-                JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, advBean.show_name);
-                JDPreferenceManager.setIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
-                JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, advBean.id);
-                JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, advBean.f_type);
-                if (getViewEventCallBack() != null) {
-                    getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
-                }
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.SP_KEY_SUBJECT_NAME, advBean.show_name);
+                bundle.getInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+                bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_ID, advBean.id);
+                bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, advBean.f_type);
+                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName(), bundle);
             } else if (advBean.relate_type == Constants.RELATE_TYPE_LINK) {
                 if (getViewEventCallBack() != null) {
                     Bundle bundle = new Bundle();
                     bundle.putString(Constants.BANNER_URL,advBean.relate_link);
-                    setBundle(bundle);
-                    getViewEventCallBack().gotoView(BannerWebFragment.class.getName());
+                    getViewEventCallBack().gotoView(BannerWebFragment.class.getName(), bundle);
                 }
             } else if (advBean.relate_type == Constants.RELATE_TYPE_BOOK_DETAIL) {
                 gotoBookDetailPage(Long.valueOf(advBean.relate_link));
@@ -244,25 +241,24 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
-        getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
+        getViewEventCallBack().gotoView(ShopCartFragment.class.getName(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShopMainViewAllBookEvent(ShopMainViewAllBookEvent event) {
-        getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
+        getViewEventCallBack().gotoView(AllCategoryFragment.class.getName(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewAllClickEvent(ViewAllClickEvent event) {
         BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
         if (modulesBean != null) {
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
-            if (getViewEventCallBack() != null) {
-                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
-            }
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
+            bundle.getInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+            bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
+            bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
+            getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName(), bundle);
         }
     }
 
