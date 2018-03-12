@@ -69,6 +69,10 @@ public class PageIndicatorModel extends BaseObservable {
         this.gPaginator = gPaginator;
     }
 
+    public GPaginator getPaginator() {
+        return this.gPaginator;
+    }
+
     public void setTotalFormat(String totalFormat) {
         this.totalFormat = totalFormat;
     }
