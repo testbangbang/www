@@ -151,11 +151,12 @@ public class BookRankFragment extends BaseFragment {
     public void onViewAllClickEvent(ViewAllClickEvent event) {
         BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
         if (modulesBean != null) {
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_RANK);
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_RANK_TYPE, modulesBean.rank_type);
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
+            bundle.putInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_RANK);
+            bundle.putInt(Constants.SP_KEY_SUBJECT_RANK_TYPE, modulesBean.rank_type);
             if (getViewEventCallBack() != null) {
-                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
+                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName(), bundle);
             }
         }
     }
@@ -164,7 +165,9 @@ public class BookRankFragment extends BaseFragment {
     public void onBookItemClickEvent(BookItemClickEvent event) {
         JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
+            getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
         }
     }
 

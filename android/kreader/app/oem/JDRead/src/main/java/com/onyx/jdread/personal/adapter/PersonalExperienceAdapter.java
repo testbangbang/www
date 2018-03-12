@@ -1,21 +1,18 @@
 package com.onyx.jdread.personal.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemExperienceBinding;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendItemBean;
-import com.onyx.jdread.shop.ui.BookDetailFragment;
 
 import java.util.List;
 
@@ -24,7 +21,12 @@ import java.util.List;
  */
 
 public class PersonalExperienceAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
+
     private List<RecommendItemBean> data;
+
+    public List<RecommendItemBean> getData() {
+        return data;
+    }
 
     @Override
     public int getRowCount() {

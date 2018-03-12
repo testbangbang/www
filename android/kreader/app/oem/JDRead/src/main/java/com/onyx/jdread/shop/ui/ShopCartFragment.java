@@ -18,7 +18,6 @@ import com.onyx.jdread.databinding.ShopCartBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.adapter.ShopCartAdapter;
@@ -299,9 +298,8 @@ public class ShopCartFragment extends BaseFragment {
     }
 
     private void gotoBookDetailPage(long ebookId) {
-        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, ebookId);
-        if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
-        }
+        Bundle bundle = new Bundle();
+        bundle.putLong(Constants.SP_KEY_BOOK_ID, ebookId);
+        getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
     }
 }

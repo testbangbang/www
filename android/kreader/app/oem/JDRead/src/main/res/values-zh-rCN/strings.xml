@@ -529,4 +529,5 @@
     <string name="end_of_book_description">一本书像一艘船，带领我们从狭隘的地方\n驶向无限广阔的海洋</string>
     <string name="back_to_library">返回书架</string>
     <string name="not_existent">不存在的书籍</string>
+    <string name="input_special_characters">输入含有特殊字符</string>
 </resources>

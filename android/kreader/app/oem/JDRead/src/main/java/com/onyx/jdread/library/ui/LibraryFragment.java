@@ -31,7 +31,6 @@ import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -558,9 +557,10 @@ public class LibraryFragment extends BaseFragment {
     @Subscribe
     public void onBookDetailEvent(BookDetailEvent event) {
         if (StringUtils.isNotBlank(event.getDataModel().cloudId.get())) {
-            PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, Long.valueOf(event.getDataModel().cloudId.get()));
             if (getViewEventCallBack() != null) {
-                getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+                Bundle bundle = new Bundle();
+                bundle.putLong(Constants.SP_KEY_BOOK_ID, Long.valueOf(event.getDataModel().cloudId.get()));
+                getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
             }
         }
     }

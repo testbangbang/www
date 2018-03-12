@@ -63,7 +63,7 @@ public class InputUtils {
         return string.replaceAll(regEx, "%");
     }
 
-    private static boolean isHaveAvailableCharacters(String string) {
+    public static boolean isHaveAvailableCharacters(String string) {
         String limitEx = "[a-zA-Z0-9\\u4e00-\\u9fa5]";
         Pattern pattern = Pattern.compile(limitEx);
         Matcher m = pattern.matcher(string);

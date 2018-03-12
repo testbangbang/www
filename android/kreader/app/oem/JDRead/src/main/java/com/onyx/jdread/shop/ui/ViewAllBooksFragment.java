@@ -211,9 +211,10 @@ public class ViewAllBooksFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
+            getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
         }
     }
 
