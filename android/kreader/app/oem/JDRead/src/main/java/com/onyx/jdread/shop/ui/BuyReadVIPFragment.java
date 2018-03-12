@@ -140,7 +140,7 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipButtonClickEvent(VipButtonClickEvent event) {
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         showVipNoticeDialog();
@@ -216,7 +216,7 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipGoodItemClickEvent(VipGoodItemClickEvent event) {
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         if (!checkVipGoodCanBuy(event.dataBean)) {
