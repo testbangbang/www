@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -246,10 +245,7 @@ public class SearchBookFragment extends BaseFragment {
 
     private void checkSearchResult() {
         if (isEmptySearchResults()) {
-            if (isWifiDisconnected()) {
-                return;
-            }
-            ToastUtil.showToast(R.string.no_search_results);
+            checkWifi(getSearchBookModel().searchKey.get());
         }
     }
 
