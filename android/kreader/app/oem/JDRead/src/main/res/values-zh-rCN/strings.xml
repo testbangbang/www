@@ -533,4 +533,5 @@
     <string name="not_existent">不存在的书籍</string>
     <string name="input_special_characters">输入含有特殊字符</string>
     <string name="no_results">暂无</string>
+    <string name="jd_loading">loading</string>
 </resources>
