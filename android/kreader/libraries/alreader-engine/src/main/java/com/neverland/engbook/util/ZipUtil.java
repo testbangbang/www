@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +24,26 @@ import java.util.zip.ZipInputStream;
 
 public class ZipUtil {
     private static final String TAG = ZipUtil.class.getCanonicalName();
+    private static final List<String> images = new ArrayList<>();
+    static {
+        images.add(".jpg");
+        images.add(".jpeg");
+        images.add(".png");
+        images.add(".gif");
+        images.add(".bmp");
+    }
+
+    public static boolean isImage(String zipPath){
+        for (String suffix : images){
+            if(zipPath.toLowerCase().endsWith(suffix)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static Map<String,Integer> unzipFile(String dataZip, String dstFolder, final String key,
-                                 final String deviceUUID, final String random) {
+                                                final String deviceUUID, final String random) {
         Map<String,Integer> maps = new HashMap<>();
 
         ZipInputStream zis = null;
@@ -45,7 +63,7 @@ public class ZipUtil {
                 String zipPath = entry.getName();
                 int fileSize = 0;
                 try {
-                    if (entry.isDirectory() || zipPath.contains("images")) {
+                    if (entry.isDirectory() || isImage(zipPath)) {
 
                     } else {
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
