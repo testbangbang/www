@@ -37,3 +37,6 @@
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig$* { *; }
 
+# bugly
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}

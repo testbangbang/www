@@ -8,10 +8,12 @@ import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.PackageUtils;
 import com.onyx.edu.homework.base.BaseNoteAction;
+import com.onyx.edu.homework.data.BuglyConfig;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.HomeworkGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import me.yokeyword.fragmentation.Fragmentation;
 
@@ -38,6 +40,8 @@ public class HomeworkApp extends MultiDexApplication {
                      .stackViewMode(Fragmentation.BUBBLE)
                      .debug(BuildConfig.DEBUG)
                      .install();
+
+        CrashReport.initCrashReport(getApplicationContext(), BuglyConfig.APP_ID, BuildConfig.DEBUG);
     }
 
     static public void initContentProvider(final Context context) {
