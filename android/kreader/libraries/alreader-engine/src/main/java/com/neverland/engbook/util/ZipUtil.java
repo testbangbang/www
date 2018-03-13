@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.jingdong.app.reader.epub.paging.JDDecryptUtil;
 import com.neverland.engbook.level1.AlFileZipEntry;
+import com.neverland.engbook.level1.JEBFilesZIP;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,9 +43,9 @@ public class ZipUtil {
         return false;
     }
 
-    public static Map<String,Integer> unzipFile(String dataZip, String dstFolder, final String key,
-                                                final String deviceUUID, final String random) {
-        Map<String,Integer> maps = new HashMap<>();
+    public static Map<String,JEBFilesZIP.JEBFileInfo> unzipFile(String dataZip, String dstFolder, final String key,
+                                                                final String deviceUUID, final String random) {
+        Map<String,JEBFilesZIP.JEBFileInfo> maps = new HashMap<>();
 
         ZipInputStream zis = null;
         InputStream is = null;
@@ -78,7 +79,10 @@ public class ZipUtil {
                         fileSize = JDDecryptUtil.getDecryptFileSize(inputStream,length);
                         inputStream.close();
                         os.close();
-                        maps.put(File.separator + zipPath,fileSize);
+                        JEBFilesZIP.JEBFileInfo jebFileInfo = new JEBFilesZIP.JEBFileInfo();
+                        jebFileInfo.fileDecryptLength = fileSize;
+                        jebFileInfo.uLength = length;
+                        maps.put(File.separator + zipPath,jebFileInfo);
                         //Log.d(TAG, "unzip zipPath:" + zipPath + ",fileSize:" + fileSize);
                     }
                 } catch (Exception e) {
