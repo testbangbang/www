@@ -1,6 +1,9 @@
 package com.onyx.android.sdk.ui.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -17,6 +20,10 @@ public class ToastUtils {
     public static void showToast(Context appContext, String s) {
         if (toast == null) {
             toast = Toast.makeText(appContext.getApplicationContext(), s, Toast.LENGTH_SHORT);
+            View view = toast.getView();
+            TextView textView = (TextView) view.findViewById(android.R.id.message);
+            textView.setEllipsize(TextUtils.TruncateAt.END);
+            textView.setMaxLines(20);
             toast.show();
             oneTime = System.currentTimeMillis();
         } else {
