@@ -4,6 +4,8 @@ import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.data.v2.TokenHeaderInterceptor;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,6 +20,8 @@ import retrofit2.Retrofit;
 public class ServiceFactory {
     private static ConcurrentHashMap<String, Retrofit> retrofitMap = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, OkHttpClient> clientMap = new ConcurrentHashMap<>();
+    private static InetSocketAddress inetSocketAddress;
+    private static boolean openProxy;
 
     private static Retrofit getRetrofit(String baseUrl) {
         if (!retrofitMap.containsKey(baseUrl)) {
@@ -38,7 +42,9 @@ public class ServiceFactory {
         if (clientMap.containsKey(baseUrl)) {
             return clientMap.get(baseUrl);
         }
-        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        OkHttpClient client =
+                setProxy(new OkHttpClient().newBuilder())
+                        .build();
         clientMap.put(baseUrl, client);
         return client;
     }
@@ -153,6 +159,7 @@ public class ServiceFactory {
             removeInterceptors(builder, TokenHeaderInterceptor.class);
         }
         builder.addInterceptor(new TokenHeaderInterceptor(tokenKey, token));
+        setProxy(builder);
         okHttpClient = builder.build();
         Retrofit retrofit = getBaseRetrofitBuilder(baseUrl).client(okHttpClient).build();
         retrofitMap.put(baseUrl, retrofit);
@@ -165,5 +172,21 @@ public class ServiceFactory {
         restoreBuilderFromClient(clientMap.get(baseUrl), builder);
         builder.authenticator(auth);
         clientMap.put(baseUrl, builder.build());
+    }
+
+    private static OkHttpClient.Builder setProxy(OkHttpClient.Builder builder){
+        if (openProxy && null != inetSocketAddress) {
+            return builder.proxy(new Proxy(Proxy.Type.HTTP, inetSocketAddress));
+        } else {
+            return builder;
+        }
+    }
+
+    public static void setInetSocketAddress(InetSocketAddress inetSocketAddress) {
+        ServiceFactory.inetSocketAddress = inetSocketAddress;
+    }
+
+    public static void setOpenProxy(boolean openProxy) {
+        ServiceFactory.openProxy = openProxy;
     }
 }
