@@ -94,7 +94,7 @@ public class DraftActivity extends BaseActivity {
         DataBundle.getInstance().resetNoteViewHelper();
         scribbleFragment = ScribbleFragment.newInstance(question, true);
         getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
-        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_BOTTOM);
+        toolFragment = NoteToolFragment.newInstance(question, binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_BOTTOM);
         getSupportFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
     }
 

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.request.navigation.PageAddRequest;
@@ -63,12 +64,17 @@ public class NoteToolFragment extends BaseFragment {
     private MenuManager menuManager;
     private FragmentNoteToolBinding binding;
     private int subMenuVerb = RelativeLayout.ALIGN_PARENT_BOTTOM;
+    private Question question;
 
-    public static NoteToolFragment newInstance(RelativeLayout subMenuLayout, int initPageCount, int subMenuVerb) {
+    public static NoteToolFragment newInstance(Question question,
+                                               RelativeLayout subMenuLayout,
+                                               int initPageCount,
+                                               int subMenuVerb) {
         NoteToolFragment fragment = new NoteToolFragment();
         fragment.setSubMenuLayout(subMenuLayout);
         fragment.setInitPageCount(initPageCount);
         fragment.setSubMenuVerb(subMenuVerb);
+        fragment.setQuestion(question);
         return fragment;
     }
 
@@ -95,6 +101,10 @@ public class NoteToolFragment extends BaseFragment {
     @Subscribe
     public void onUpdatePagePositionEvent(UpdatePagePositionEvent event) {
         menuManager.getMainMenu().setText(MenuId.PAGE, createPagePositionText(event.position));
+    }
+
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
     private String createPagePositionText(String position) {
@@ -561,6 +571,13 @@ public class NoteToolFragment extends BaseFragment {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
                 && !getDataBundle().isExpired()
-                && isRunning();
+                && isRunning()
+                && !canNotEdit();
+    }
+
+    private boolean canNotEdit() {
+        return getDataBundle().isSubmittedBeforeReview()
+                && !question.isChoiceQuestion()
+                && !getDataBundle().canCheckAnswer();
     }
 }

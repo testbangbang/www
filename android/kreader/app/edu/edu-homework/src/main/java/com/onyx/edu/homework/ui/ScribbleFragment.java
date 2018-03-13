@@ -291,7 +291,9 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     public void showCover() {
-        binding.cover.setVisibility(View.VISIBLE);
+        if (binding != null && binding.cover != null) {
+            binding.cover.setVisibility(View.VISIBLE);
+        }
     }
 
     @Subscribe
@@ -442,6 +444,9 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     protected void onBeginErasing() {
+        if (canNotEdit()) {
+            return;
+        }
         flushDocument(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -451,6 +456,9 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     protected void onErasing(final MotionEvent touchPoint) {
+        if (canNotEdit()) {
+            return;
+        }
         if (erasePoint == null) {
             return;
         }
@@ -459,6 +467,9 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     protected void onFinishErasing(TouchPointList pointList) {
+        if (canNotEdit()) {
+            return;
+        }
         erasePoint = null;
         final List<Shape> stash = getNoteViewHelper().detachStash();
         RemoveByPointListAction removeByPointListAction = new RemoveByPointListAction(pointList, stash, binding.scribbleView, transBackground);
@@ -596,6 +607,13 @@ public class ScribbleFragment extends BaseFragment {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
                 && !getDataBundle().isExpired()
-                && isRunning();
+                && isRunning()
+                && !canNotEdit();
+    }
+
+    private boolean canNotEdit() {
+        return getDataBundle().isSubmittedBeforeReview()
+                && !question.isChoiceQuestion()
+                && !getDataBundle().canCheckAnswer();
     }
 }

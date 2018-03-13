@@ -222,7 +222,7 @@ public class QuestionFragment extends BaseFragment {
         }
         scribbleFragment = ScribbleFragment.newInstance(question);
         getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
-        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_TOP);
+        toolFragment = NoteToolFragment.newInstance(question, binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_TOP);
         getChildFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
     }
 

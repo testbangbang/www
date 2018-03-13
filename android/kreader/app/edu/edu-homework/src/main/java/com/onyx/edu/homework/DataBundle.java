@@ -165,6 +165,10 @@ public class DataBundle {
         return state == HomeworkState.SUBMITTED_AFTER_REVIEW;
     }
 
+    public boolean isSubmittedBeforeReview() {
+        return state == HomeworkState.SUBMITTED;
+    }
+
     public boolean isReview() {
         return state == HomeworkState.REVIEW;
     }
