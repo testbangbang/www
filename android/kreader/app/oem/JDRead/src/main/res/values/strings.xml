@@ -562,4 +562,5 @@
     <string name="not_existent">book do not exist</string>
     <string name="input_special_characters">Input contains special characters</string>
     <string name="no_results">no results</string>
+    <string name="jd_loading">loading</string>
 </resources>
