@@ -105,6 +105,8 @@ public class CloudApiContext {
         public static final String FILTER = "filter";
         public static final String SORT = "sort";
         public static final String KEY_WORD = "key_word";
+        public static final String SORT_KEY = "sort_key";
+        public static final String SORT_TYPE = "sort_type";
         public static final int SORT_TYPE_DESC = 1;
         public static final int SORT_TYPE_ASC = 2;
         public static final int SORT_KEY_SALES = 1;
