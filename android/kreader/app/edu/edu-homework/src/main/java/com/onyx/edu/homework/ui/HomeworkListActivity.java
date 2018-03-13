@@ -200,7 +200,11 @@ public class HomeworkListActivity extends BaseActivity {
             return;
         }
         final int next = currentPage + 1;
-        if (next >= questions.size() || getQuestionFragment() == null) {
+        if (next >= questions.size()) {
+            Toast.makeText(HomeworkListActivity.this, R.string.last_question_tip, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (getQuestionFragment() == null) {
             return;
         }
         getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {

@@ -1,7 +1,6 @@
 package com.onyx.edu.homework.action;
 
 import android.content.Context;
-import android.content.DialogInterface;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.model.homework.Question;
@@ -25,12 +24,6 @@ public class ShowSubmitDialogAction extends BaseAction {
     @Override
     public void execute(Context context, BaseCallback baseCallback) {
         SubmitDialog dialog = new SubmitDialog(context, questions);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-//                DataBundle.getInstance().post(new ReloadQuestionViewEvent());
-            }
-        });
         dialog.show();
     }
 }

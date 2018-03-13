@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.model.homework.Homework;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.ShapeState;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.edu.homework.data.HomeworkIntent;
 import com.onyx.edu.homework.data.HomeworkState;
 
@@ -111,7 +112,11 @@ public class DataBundle {
     }
 
     public void register(Object subscriber) {
-        getEventBus().register(subscriber);
+        if (!getEventBus().isRegistered(subscriber)) {
+            getEventBus().register(subscriber);
+        }else {
+            Debug.i(subscriber + " has been registered");
+        }
     }
 
     public void unregister(Object subscriber) {

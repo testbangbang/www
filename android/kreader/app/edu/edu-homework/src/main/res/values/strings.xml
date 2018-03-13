@@ -76,4 +76,5 @@
         <item>H</item>
     </string-array>
     <string name="correct_homework">改正作业</string>
+    <string name="last_question_tip">已经到最后一题了</string>
 </resources>
