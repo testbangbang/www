@@ -182,14 +182,41 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     private void updateVipStatus(UserInfo info) {
         if (info != null) {
-            PersonalDataBundle.getInstance().getUserInfo().vip_remain_days = info.vip_remain_days;
+            getUserInfo().vip_remain_days = info.vip_remain_days;
             getBuyReadVipModel().getVipUserInfoViewModel().vipStatus.set(String.format(
                     ResManager.getString(R.string.vip_read_days), info.vip_remain_days));
         }
     }
 
+    private UserInfo getUserInfo() {
+        return PersonalDataBundle.getInstance().getUserInfo();
+    }
+
+    private int getUserVipRemainDays() {
+        if (getUserInfo() == null) {
+            return 0;
+        }
+        return getUserInfo().vip_remain_days;
+    }
+
     private boolean checkVipGoodCanBuy(GetVipGoodsListResultBean.DataBean dataBean) {
-        return dataBean != null && dataBean.can_buy;
+        if (dataBean == null) {
+            ToastUtil.showToast(R.string.read_vip_can_not_buy);
+            return false;
+        }
+        if (!dataBean.can_buy) {
+            String message;
+            int maxYears = ResManager.getInteger(R.integer.read_vip_max_year);
+            int vipRemainDays = getUserVipRemainDays();
+            if (vipRemainDays / 365 >= maxYears) {
+                message = String.format(ResManager.getString(R.string.read_vip_surpass_yeas), maxYears);
+            } else {
+                message = ResManager.getString(R.string.read_vip_can_not_buy);
+            }
+            ToastUtil.showToast(message);
+            return false;
+        }
+        return true;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
