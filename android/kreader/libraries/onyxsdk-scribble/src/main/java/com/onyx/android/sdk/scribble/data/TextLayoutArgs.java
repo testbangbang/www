@@ -8,12 +8,12 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 public class TextLayoutArgs {
 
-    public static final int DRAW_DEFAULT_TEXT_SIZE = 40;
+    public static final int DRAW_DEFAULT_TEXT_SIZE = 30;
     public static final int DRAW_DEFAULT_TEXT_PADDING = 10;
-    public static final float DRAW_DEFAULT_TEXT_SPACING_ADD = 10f;
+    public static final float DRAW_DEFAULT_TEXT_SPACING_ADD = 15f;
     public static final float DRAW_DEFAULT_TEXT_SPACING_MULT = 1f;
 
-    public static final float DRAW_FILL_TEXT_SPACING_ADD = 30f;
+    public static final float DRAW_FILL_TEXT_SPACING_ADD = 15f;
 
     public String text;
     public int textSize = DRAW_DEFAULT_TEXT_SIZE;

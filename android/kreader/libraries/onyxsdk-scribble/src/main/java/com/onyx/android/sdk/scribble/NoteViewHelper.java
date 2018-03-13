@@ -301,6 +301,10 @@ public class NoteViewHelper {
         return textLayout;
     }
 
+    public StaticLayout getTextLayout() {
+        return textLayout;
+    }
+
     private void setCallback(final InputCallback c) {
         callback = c;
     }
