@@ -186,7 +186,7 @@
     <dimen name="item_top_up_padding">10dp</dimen>
     <dimen name="item_top_up_margin_top">10dp</dimen>
     <dimen name="top_up_padding">10dp</dimen>
-    <dimen name="top_up_tips_margin_top">25dp</dimen>
+    <dimen name="top_up_tips_margin_top">38dp</dimen>
     <dimen name="top_up_tips_margin_left">20dp</dimen>
     <dimen name="top_up_tips_recycler_margin">20dp</dimen>
     <dimen name="gift_center_recycler_padding">20dp</dimen>
@@ -475,7 +475,7 @@
     <dimen name="book_detail_cat_two_margin_left">12dp</dimen>
     <dimen name="book_detail_margin_top">30dp</dimen>
     <dimen name="personal_notes_image_padding">10dp</dimen>
-    <dimen name="top_up_qr_code_height">200dp</dimen>
+    <dimen name="top_up_qr_code_height">162dp</dimen>
     <dimen name="top_up_qr_code_margin_bottom">60dp</dimen>
     <dimen name="system_bar_icon_space">10dp</dimen>
     <dimen name="item_subject_common_name_margin_top">8dp</dimen>
@@ -529,12 +529,13 @@
     <dimen name="book_detail_buy_book_button_now_read_button_space">20dp</dimen>
     <dimen name="book_detail_recommend_recycle_view_space">26dp</dimen>
     <dimen name="book_detail_recommend_next_button_margin_left">20dp</dimen>
-    <dimen name="dialog_pay_order_item_margin_top">10dp</dimen>
+    <dimen name="dialog_pay_order_item_margin_top">30dp</dimen>
+    <dimen name="dialog_pay_order_payment_item_margin_top">26dp</dimen>
     <dimen name="dialog_pay_order_payment_bean_margin_left">20dp</dimen>
     <dimen name="dialog_pay_order_payment_cash_margin_left">25dp</dimen>
     <dimen name="dialog_pay_order_confirm_pay_margin_bottom">50dp</dimen>
     <dimen name="dialog_pay_order_confirm_pay_margin_left">20dp</dimen>
-    <dimen name="dialog_pay_order_confirm_pay_margin_top">80dp</dimen>
+    <dimen name="dialog_pay_order_confirm_pay_margin_top">190dp</dimen>
     <dimen name="dialog_pay_order_confirm_pay_padding">10dp</dimen>
     <dimen name="fragment_find_password_qr_image_size">280dp</dimen>
     <dimen name="fragment_find_password_qr_image_margin">20dp</dimen>
@@ -587,4 +588,7 @@
     <dimen name="custom_search_view_padding">10dp</dimen>
     <dimen name="custom_search_view_drawable_padding">20dp</dimen>
     <dimen name="network_error_tip_margin_top">6dp</dimen>
+    <dimen name="pay_order_by_cash_relative_layout_height">230dp</dimen>
+    <dimen name="pay_by_cash_qrcode_container_margin_top">25dp</dimen>
+    <dimen name="pay_by_cash_payment_tips_margin_top">25dp</dimen>
 </resources>

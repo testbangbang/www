@@ -469,7 +469,7 @@
     <string name="payment_order">订单支付</string>
     <string name="book_detail_add_cart_tip_the_book_already_add_cart">图书已经加入到购物车</string>
     <string name="pay_dialog_insufficient_balance">余额不足，去充值</string>
-    <string name="pay_success">支付成功</string>
+    <string name="pay_success">支付成功!</string>
     <string name="pay_failed">支付失败</string>
     <string name="password_find">密码找回</string>
     <string name="psw_success_to_unlock">获取成功，去解锁</string>

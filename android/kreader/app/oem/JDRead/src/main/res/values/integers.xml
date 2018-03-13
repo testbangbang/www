@@ -106,8 +106,8 @@
     <integer name="personal_experience_col">4</integer>
     <integer name="personal_consumption_record_row">5</integer>
     <integer name="personal_consumption_record_col">1</integer>
-    <item name="top_up_dialog_width_rate" type="integer" format="float">0.8</item>
-    <item name="top_up_dialog_height_rate" type="integer" format="float">0.6</item>
+    <item name="top_up_dialog_width_rate" type="integer" format="float">0.82</item>
+    <item name="top_up_dialog_height_rate" type="integer" format="float">0.76</item>
     <item name="export_dialog_width_rate" type="integer" format="float">0.8</item>
     <item name="export_dialog_height_rate" type="integer" format="float">0.3</item>
     <item name="login_dialog_width_rate" type="integer" format="float">0.8</item>
