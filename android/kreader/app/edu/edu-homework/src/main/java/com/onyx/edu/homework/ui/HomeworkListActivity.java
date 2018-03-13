@@ -572,7 +572,9 @@ public class HomeworkListActivity extends BaseActivity {
 
     @Subscribe
     public void onReloadQuestionViewEvent(ReloadQuestionViewEvent event) {
-        reloadQuestionFragment(currentPage);
+        if (recordFragment == null) {
+            reloadQuestionFragment(currentPage);
+        }
     }
 
     public void setCurrentPage(int page) {
