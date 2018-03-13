@@ -5,14 +5,18 @@ import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.homework.Homework;
+import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.ShapeState;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.data.HomeworkIntent;
 import com.onyx.edu.homework.data.HomeworkState;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 /**
  * Created by lxm on 2017/12/5.
@@ -161,16 +165,20 @@ public class DataBundle {
         return state == HomeworkState.SUBMITTED_AFTER_REVIEW;
     }
 
-    public boolean isDoing() {
-        return state == HomeworkState.BEFORE_SUBMIT || state == HomeworkState.SUBMITTED || state == HomeworkState.SUBMITTED_AFTER_REVIEW;
-    }
-
     public boolean isReview() {
         return state == HomeworkState.REVIEW;
     }
 
-    public boolean isDoingAndExpired() {
-        return isDoing() && getHomework().isExpired();
+    public boolean isExpired() {
+        return getHomework().isExpired();
+    }
+
+    public boolean beforeReview() {
+        return state.ordinal() < HomeworkState.REVIEW.ordinal();
+    }
+
+    public boolean afterReview() {
+        return state.ordinal() >= HomeworkState.REVIEW.ordinal();
     }
 
     public boolean canCheckAnswer() {
@@ -181,4 +189,20 @@ public class DataBundle {
         return !isReview() && getHomework().hasReview();
     }
 
+    public List<Question> getQuestions() {
+        return getHomework().getQuestions();
+    }
+
+    public Question getQuestion(String docId) {
+        List<Question> questions = getHomework().getQuestions();
+        if (CollectionUtils.isNullOrEmpty(questions)) {
+            return null;
+        }
+        for (Question question : questions) {
+            if (question.uniqueId.equals(docId)) {
+                return question;
+            }
+        }
+        return null;
+    }
 }

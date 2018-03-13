@@ -358,7 +358,7 @@ public class NoteToolFragment extends BaseFragment {
 
     public List<Integer> buildMainMenuIds() {
         List<Integer> functionMenuIds = new ArrayList<>();
-        if (getDataBundle().isDoing()) {
+        if (getDataBundle().beforeReview()) {
             functionMenuIds.add(MenuId.ADD_PAGE);
             functionMenuIds.add(MenuId.DELETE_PAGE);
         }
@@ -560,7 +560,7 @@ public class NoteToolFragment extends BaseFragment {
     public boolean shouldResume() {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
-                && !getDataBundle().isDoingAndExpired()
+                && !getDataBundle().isExpired()
                 && isRunning();
     }
 }

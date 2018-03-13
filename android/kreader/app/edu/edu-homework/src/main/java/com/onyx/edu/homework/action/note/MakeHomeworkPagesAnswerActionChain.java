@@ -22,12 +22,10 @@ import java.util.Map;
 public class MakeHomeworkPagesAnswerActionChain extends BaseNoteAction {
 
     private List<HomeworkSubmitAnswer> answers;
-    private List<Question> questions;
     private Rect size;
 
-    public MakeHomeworkPagesAnswerActionChain(List<HomeworkSubmitAnswer> answers, List<Question> questions, Rect s) {
+    public MakeHomeworkPagesAnswerActionChain(List<HomeworkSubmitAnswer> answers, Rect s) {
         this.answers = answers;
-        this.questions = questions;
         size = s;
     }
 
@@ -42,10 +40,9 @@ public class MakeHomeworkPagesAnswerActionChain extends BaseNoteAction {
             docIds.add(answer.uniqueId);
         }
         NoteActionChain chain = new NoteActionChain(true);
-        boolean filterUnRedoingDocId = DataBundle.getInstance().isReview();
+        boolean filterUnRedoingDocId = DataBundle.getInstance().afterReview();
         GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds).setFilterUnRedoingDocId(filterUnRedoingDocId);
         final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(),
-                questions,
                 size,
                 true);
         chain.addAction(pageUniqueIdsAction);

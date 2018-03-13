@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.request.HomeworkPagesRenderRequest;
 import com.onyx.edu.homework.utils.TextUtils;
@@ -32,28 +33,26 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
     private Map<String, List<Bitmap>> pageBitmaps = new HashMap<>();
     private Map<String, List<String>> pageFilePaths = new HashMap<>();
     private List<String> documentIds = new ArrayList<>();
-    private List<Question> questions;
     private int pageCount = -1;
     private int documentRenderCount = 0;
     private Rect size;
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
-                                     List<Question> questions,
                                      Rect s,
                                      int pageCount,
                                      boolean saveAsFile) {
         this.pageUniqueMap = pageUniqueMap;
         this.saveAsFile = saveAsFile;
         this.pageCount = pageCount;
-        this.questions = questions;
         size = s;
     }
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
-                                     List<Question> questions,
                                      Rect s,
                                      boolean saveAsFile) {
-        this(pageUniqueMap, questions, s, -1, saveAsFile);
+        this.pageUniqueMap = pageUniqueMap;
+        this.saveAsFile = saveAsFile;
+        size = s;
     }
 
     @Override
@@ -72,18 +71,16 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         final String docId = documentIds.get(0);
         TextLayoutArgs textLayoutArgs = null;
 
-        if (questions != null) {
-            Question question = getQuestion(docId);
-            if (question == null || !question.doneAnswer || question.isChoiceQuestion()) {
-                documentIds.remove(docId);
-                documentRenderCount = 0;
-                renderPageBitmap(noteViewHelper, baseCallback);
-                return;
-            }
+        Question question = getQuestion(docId);
+        if (question == null || (!question.isChoiceQuestion() && !question.doneAnswer)) {
+            documentIds.remove(docId);
+            documentRenderCount = 0;
+            renderPageBitmap(noteViewHelper, baseCallback);
+            return;
+        }
 
-            if (!question.isChoiceQuestion()) {
-                textLayoutArgs = TextLayoutArgs.create(question.content, TextUtils.getTextSpacingAdd(question));
-            }
+        if (!question.isChoiceQuestion()) {
+            textLayoutArgs = TextLayoutArgs.create(question.content, TextUtils.getTextSpacingAdd(question));
         }
 
         List<String> pageUniqueIds = pageUniqueMap.get(docId);
@@ -118,12 +115,7 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
     }
 
     private Question getQuestion(String docId) {
-        for (Question question : questions) {
-            if (question.uniqueId.equals(docId)) {
-                return question;
-            }
-        }
-        return null;
+        return DataBundle.getInstance().getQuestion(docId);
     }
 
     private boolean isFinished(final NoteViewHelper noteViewHelper) {

@@ -3,6 +3,7 @@ package com.onyx.edu.homework.ui;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
+import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -85,6 +86,7 @@ public class HomeworkListActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_homework_list);
         DataBundle.getInstance().register(this);
         initView();
@@ -682,7 +684,7 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void countDownEndTime() {
-        if (getDataBundle().isDoingAndExpired()) {
+        if (getDataBundle().afterReview()) {
             return;
         }
         Date endTime = getDataBundle().getHomework().getEndTime();

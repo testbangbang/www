@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -202,8 +203,13 @@ public class QuestionFragment extends BaseFragment {
     }
 
     private boolean radioButtonIsEnabled() {
-        //        return !getDataBundle().isDoingAndExpired() && !getDataBundle().canCheckAnswer();
-        return !getDataBundle().isDoingAndExpired();
+        if (getDataBundle().isExpired()) {
+            return false;
+        }
+        if (getDataBundle().isReview()) {
+            return false;
+        }
+        return true;
     }
 
     public void initFragment() {
@@ -226,6 +232,9 @@ public class QuestionFragment extends BaseFragment {
             reviewFragment = null;
         }
         if (scribbleFragment != null) {
+            if(Build.VERSION.SDK_INT <= 19) {
+                scribbleFragment.showCover();
+            }
             getChildFragmentManager().beginTransaction().remove(scribbleFragment).commit();
             scribbleFragment = null;
         }
@@ -293,7 +302,6 @@ public class QuestionFragment extends BaseFragment {
     private void renderDraftBitmap() {
         Rect size =  new Rect(0, 0, binding.imageView.getWidth(), binding.imageView.getHeight());
         final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(),
-                null,
                 size,
                 1);
         pageAction.execute(getNoteViewHelper(), new BaseCallback() {

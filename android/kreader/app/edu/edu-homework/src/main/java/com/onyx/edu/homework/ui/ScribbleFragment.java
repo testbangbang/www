@@ -148,6 +148,7 @@ public class ScribbleFragment extends BaseFragment {
 
                 @Override
                 public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
                 }
 
                 @Override
@@ -287,6 +288,10 @@ public class ScribbleFragment extends BaseFragment {
             }
 
         };
+    }
+
+    public void showCover() {
+        binding.cover.setVisibility(View.VISIBLE);
     }
 
     @Subscribe
@@ -590,7 +595,7 @@ public class ScribbleFragment extends BaseFragment {
     public boolean shouldResume() {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
-                && !getDataBundle().isDoingAndExpired()
+                && !getDataBundle().isExpired()
                 && isRunning();
     }
 }
