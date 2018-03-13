@@ -465,4 +465,31 @@ public class BitmapUtils {
         b[3] = (byte) (value >> 24 & 0xff);
         stream.write(b);
     }
+
+    public static Bitmap getBitmap(final byte[] data,
+                                   final int offset,
+                                   final int maxWidth,
+                                   final int maxHeight) {
+        if (data.length == 0) return null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(data, offset, data.length, options);
+        options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeByteArray(data, offset, data.length, options);
+    }
+
+    private static int calculateInSampleSize(final BitmapFactory.Options options,
+                                             final int maxWidth,
+                                             final int maxHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+        Debug.i("height = " + height + ", width = " + width);
+        while ((width >>= 1) >= maxWidth && (height >>= 1) >= maxHeight) {
+            inSampleSize <<= 1;
+            Debug.i("height = " + height + ", width = " + width);
+        }
+        return inSampleSize;
+    }
 }
