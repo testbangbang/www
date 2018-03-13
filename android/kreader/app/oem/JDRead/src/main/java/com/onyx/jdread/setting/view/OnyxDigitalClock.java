@@ -1,24 +1,19 @@
 package com.onyx.jdread.setting.view;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.util.Log;
 
+import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.util.TimeUtils;
 
 import java.util.Calendar;
-
-import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Created by hehai on 18-1-12.
@@ -31,12 +26,10 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
     private FormatChangeObserver mFormatChangeObserver;
 
     String format = m24;
-    private String EXTRA_ALARM_ACTION = "extra_alarm_action";
 
     public OnyxDigitalClock(Context context) {
         super(context);
         initClock(context);
-
     }
 
     public OnyxDigitalClock(Context context, AttributeSet attrs) {
@@ -54,10 +47,6 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
                 Settings.System.CONTENT_URI, true, mFormatChangeObserver);
 
         setText(DateFormat.format(format, mCalendar));
-        Intent intent = new Intent(EXTRA_ALARM_ACTION);
-        PendingIntent pi = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
-        AlarmManager am = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60 * 1000, pi);
     }
 
     @Override
@@ -93,7 +82,7 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
     private BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (EXTRA_ALARM_ACTION.equals(intent.getAction())) {
+            if (ScreenStateReceive.EXTRA_ALARM_ACTION.equals(intent.getAction())) {
                 mCalendar.setTimeInMillis(System.currentTimeMillis());
                 setText(DateFormat.format(format, mCalendar));
                 invalidate();
@@ -103,7 +92,7 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
 
     public void registerReceiver(Context context) {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(EXTRA_ALARM_ACTION);
+        filter.addAction(ScreenStateReceive.EXTRA_ALARM_ACTION);
         context.registerReceiver(alarmReceiver, filter);
     }
 
