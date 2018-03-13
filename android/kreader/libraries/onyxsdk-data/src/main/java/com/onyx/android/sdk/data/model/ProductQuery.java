@@ -18,6 +18,7 @@ public class ProductQuery extends BaseQuery{
     public String ownerId;
     public long parentId;
     public int coverLimit = 10;
+    public String model;
 
     public ProductQuery() {
         super();

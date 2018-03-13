@@ -2,13 +2,14 @@ package com.onyx.android.sdk.data.model;
 
 import com.onyx.android.sdk.data.utils.QueryUtils;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by suicheng on 2016/12/2.
  */
 
-public class BaseQuery {
+public class BaseQuery implements Serializable {
     public static final int MAX_LIMIT_COUNT = 1000;
     public static final int DEFAULT_LIMIT_COUNT = 30;
 

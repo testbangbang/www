@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -115,6 +116,7 @@ public class MainActivity extends OnyxAppCompatActivity {
 
     private void initProductQuery() {
         productQuery = new ProductQuery();
+        productQuery.model = Build.MODEL;
     }
 
     private void initPageViewConfig() {
