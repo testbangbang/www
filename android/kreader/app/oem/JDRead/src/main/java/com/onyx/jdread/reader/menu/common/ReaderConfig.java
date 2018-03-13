@@ -68,7 +68,7 @@ public class ReaderConfig {
     public static final String SETTING_STYLE_KEY = "setting_style_key";
 
     public static Map<Integer, ReaderTextStyle> presetStyle = new HashMap<>();
-    public static final int DEFAULT_PRESET_STYLE = SETTING_THREE_STYLE_KEY;
+    public static final int DEFAULT_PRESET_STYLE = SETTING_TWO_STYLE_KEY;
 
     public static final int FONT_SIZE_X_SMALL = 20;
     public static final int FONT_SIZE_SMALL = 23;
