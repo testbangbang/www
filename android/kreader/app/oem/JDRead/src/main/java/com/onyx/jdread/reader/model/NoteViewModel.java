@@ -174,12 +174,12 @@ public class NoteViewModel {
         if (isCreateNote) {
             getEventBus().post(new AddNoteEvent(newNote.get(),srcNote.get(),getSrcNoteSate()));
         } else {
-            getEventBus().post(new UpdateNoteEvent(annotation,newNote.get(),srcNote.get(),getSrcNoteSate()));
+            getEventBus().post(new UpdateNoteEvent(annotation,newNote.get(),srcEditNote.get(),getSrcNoteSate()));
         }
     }
 
     public int getSrcNoteSate(){
-        String note = srcNote.get();
+        String note = srcEditNote.get();
         if(!noteInfo.isSrcNoteModify) {
             if (noteInfo.srcNote.equals(note)) {
                 return ReaderConfig.QUOTE_STATE_NOT_CHANGED;
