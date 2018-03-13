@@ -54,7 +54,7 @@ public class MenuPopupWindow extends PopupWindow {
         popMenuAdapter.setData(list, list.size(), 1);
         int[] location = new int[2];
         view.getLocationOnScreen(location);
-        showAtLocation(view, Gravity.NO_GRAVITY, 770, y + location[1] + view.getHeight());
+        showAtLocation(view, Gravity.NO_GRAVITY, R.integer.personal_book_dropdown_menu, y + location[1] + view.getHeight());
     }
 
     private void initView() {
