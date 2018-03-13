@@ -3459,6 +3459,9 @@ public class AlBookEng{
 					vP = 0;
 				}
 			} else
+			if (oi.justify == AlParProperty.SL2_JUST_CENTER) {
+			    vP = vE = 0;
+			} else
 			if ((oi.prop & AlParProperty.SL2_INDENT_EM) != 0L) {
 				if (profiles.textIndentOverrideFromCSS) {
 					vE = profiles.textIndentDefaultEm * 2;
