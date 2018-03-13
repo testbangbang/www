@@ -1,5 +1,7 @@
 package com.onyx.jdread.setting.view;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +16,8 @@ import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.util.TimeUtils;
 
 import java.util.Calendar;
+
+import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Created by hehai on 18-1-12.
@@ -47,6 +51,10 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
                 Settings.System.CONTENT_URI, true, mFormatChangeObserver);
 
         setText(DateFormat.format(format, mCalendar));
+        Intent intent = new Intent(ScreenStateReceive.EXTRA_ALARM_ACTION);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
+        AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60 * 1000, pi);
     }
 
     @Override
