@@ -24,7 +24,6 @@ public class HandlerManger {
     private ReaderDataHolder readerDataHolder;
     private int activeProviderType;
     private long lastDownTime = 0;
-    private long currentTime = 0;
 
     public Map<Integer, BaseHandler> handlers = null;
 
