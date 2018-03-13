@@ -93,6 +93,6 @@ ext {
 
     //ui
     flexboxVersion='0.3.0'
-
+    bugly = '2.6.6'
 }
 
