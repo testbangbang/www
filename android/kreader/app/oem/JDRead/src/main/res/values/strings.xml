@@ -353,6 +353,8 @@
     <string name="send_succeed">send_succeed</string>
     <string name="buy_book_success">Book purchase success</string>
     <string name="buy_read_vip">Buy Read VIP</string>
+    <string name="read_vip_can_not_buy">Unable to buy Read VIP</string>
+    <string name="read_vip_surpass_yeas">The time of VIP has reached the limit of %d years, unable to buy</string>
     <string name="not_open_vip">Not open to read VIP</string>
     <string name="read_vip_instructions">Read VIP instructions</string>
     <string name="ten">￥10.00</string>
