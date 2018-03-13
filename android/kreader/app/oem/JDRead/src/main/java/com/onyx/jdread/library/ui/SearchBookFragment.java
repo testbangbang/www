@@ -493,6 +493,7 @@ public class SearchBookFragment extends BaseFragment {
         }
         DocumentInfo documentInfo = new DocumentInfo();
         documentInfo.setBookPath(filePath);
+        documentInfo.setBookName(model.title.get());
         DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
         securityInfo.setKey(model.key.get());
         securityInfo.setRandom(model.random.get());
