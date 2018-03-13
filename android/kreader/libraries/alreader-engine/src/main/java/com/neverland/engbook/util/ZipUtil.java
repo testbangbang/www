@@ -5,12 +5,14 @@ import android.util.Log;
 
 import com.jingdong.app.reader.epub.paging.JDDecryptUtil;
 import com.neverland.engbook.level1.AlFileZipEntry;
+import com.neverland.engbook.level1.JEBFilesZIP;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +25,27 @@ import java.util.zip.ZipInputStream;
 
 public class ZipUtil {
     private static final String TAG = ZipUtil.class.getCanonicalName();
+    private static final List<String> images = new ArrayList<>();
+    static {
+        images.add(".jpg");
+        images.add(".jpeg");
+        images.add(".png");
+        images.add(".gif");
+        images.add(".bmp");
+    }
 
-    public static Map<String,Integer> unzipFile(String dataZip, String dstFolder, final String key,
-                                 final String deviceUUID, final String random) {
-        Map<String,Integer> maps = new HashMap<>();
+    public static boolean isImage(String zipPath){
+        for (String suffix : images){
+            if(zipPath.toLowerCase().endsWith(suffix)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static Map<String,JEBFilesZIP.JEBFileInfo> unzipFile(String dataZip, String dstFolder, final String key,
+                                                                final String deviceUUID, final String random) {
+        Map<String,JEBFilesZIP.JEBFileInfo> maps = new HashMap<>();
 
         ZipInputStream zis = null;
         InputStream is = null;
@@ -45,7 +64,7 @@ public class ZipUtil {
                 String zipPath = entry.getName();
                 int fileSize = 0;
                 try {
-                    if (entry.isDirectory() || zipPath.contains("images")) {
+                    if (entry.isDirectory() || isImage(zipPath)) {
 
                     } else {
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -60,7 +79,10 @@ public class ZipUtil {
                         fileSize = JDDecryptUtil.getDecryptFileSize(inputStream,length);
                         inputStream.close();
                         os.close();
-                        maps.put(File.separator + zipPath,fileSize);
+                        JEBFilesZIP.JEBFileInfo jebFileInfo = new JEBFilesZIP.JEBFileInfo();
+                        jebFileInfo.fileDecryptLength = fileSize;
+                        jebFileInfo.uLength = length;
+                        maps.put(File.separator + zipPath,jebFileInfo);
                         //Log.d(TAG, "unzip zipPath:" + zipPath + ",fileSize:" + fileSize);
                     }
                 } catch (Exception e) {

@@ -39,7 +39,7 @@ public class AlFilesZIP extends AlFiles {
 
 	static public TAL_FILE_TYPE isZIPFile(String fName, AlFiles a, ArrayList<AlFileZipEntry> fList, String ext) {
 		TAL_FILE_TYPE res = TAL_FILE_TYPE.TXT;
-		Map<String,Integer> fileSizeMap = null;
+		Map<String,JEBFilesZIP.JEBFileInfo> fileSizeMap = null;
 		if ((ext == null || ext.equalsIgnoreCase(".JEB"))) {
 			fileSizeMap = ZipUtil.unzipFile(a.fileName, null, JEBFilesZIP.key,
 					JEBFilesZIP.deviceUUID, JEBFilesZIP.random);
@@ -280,9 +280,13 @@ public class AlFilesZIP extends AlFiles {
 				if(res == TAL_FILE_TYPE.JEB){
 					Integer fileSize = 0;
 					if (of.compress == 8) {
-						fileSize = fileSizeMap.get(of.name);
-						if (fileSize != null && fileSize > 0) {
-							of.uSize = fileSize;
+						JEBFilesZIP.JEBFileInfo jebFileInfo = fileSizeMap.get(of.name);
+						if(jebFileInfo != null) {
+							fileSize = jebFileInfo.fileDecryptLength;
+							if (fileSize != null && fileSize > 0) {
+								of.uSize = fileSize;
+								of.uLength = jebFileInfo.uLength;
+							}
 						}
 					}
 				}
