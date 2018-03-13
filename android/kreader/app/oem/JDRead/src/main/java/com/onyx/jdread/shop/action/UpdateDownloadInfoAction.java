@@ -23,7 +23,7 @@ public class UpdateDownloadInfoAction extends BaseAction<ShopDataBundle> {
     public void execute(ShopDataBundle dataBundle, final RxCallback rxCallback) {
         final RxRequestUpdateDownloadInfo rq = new RxRequestUpdateDownloadInfo(dataBundle.getDataManager());
         rq.setExtraInfo(extraInfo);
-        RxRequestBookshelfInsert.setAppContext(JDReadApplication.getInstance());
+        RxRequestUpdateDownloadInfo.setAppContext(JDReadApplication.getInstance());
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
