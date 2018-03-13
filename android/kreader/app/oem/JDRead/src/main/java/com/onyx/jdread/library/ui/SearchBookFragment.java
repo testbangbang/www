@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 
 import com.jingdong.app.reader.data.DrmTools;
 import com.onyx.android.sdk.data.GPaginator;
@@ -20,9 +18,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentSearchBookBinding;
 import com.onyx.jdread.library.action.ClearSearchHistoryAction;
@@ -39,6 +35,7 @@ import com.onyx.jdread.library.event.SubmitSearchBookEvent;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.model.SearchBookModel;
+import com.onyx.jdread.library.view.CustomSearchView;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
@@ -130,29 +127,24 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void initPageIndicator() {
-        pagination = binding.searchResultRecycler.getPaginator();
-        pageIndicatorModel = new PageIndicatorModel(pagination, new PageIndicatorModel.PageChangedListener() {
-            @Override
-            public void prev() {
-
-            }
-
-            @Override
-            public void next() {
-
-            }
-
-            @Override
-            public void gotoPage(int currentPage) {
-
-            }
-
-            @Override
-            public void onRefresh() {
-
-            }
-        });
+        pageIndicatorModel = initPageIndicatorModel(binding.searchResultRecycler.getPaginator());
+        pagination = pageIndicatorModel.getPaginator();
+        binding.searchResultRecycler.setPaginator(pagination);
         binding.setIndicatorModel(pageIndicatorModel);
+    }
+
+    private void clearPageIndicator() {
+        pagination.resize(pagination.getRows(), pagination.getColumns(), 0);
+        pagination.setCurrentPage(0);
+        pageIndicatorModel.updateCurrentPage(0);
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = searchBookModel.searchResult.size();
+        pagination.resize(searchResultAdapter.getRowCount(), searchResultAdapter.getColumnCount(), totalCount);
+        pageIndicatorModel.updateCurrentPage(totalCount);
+        pageIndicatorModel.setTotalFormat(getString(R.string.total));
+        pageIndicatorModel.updateTotal(totalCount);
     }
 
     private void initEvent() {
@@ -169,7 +161,12 @@ public class SearchBookFragment extends BaseFragment {
                 return false;
             }
         });
-
+        binding.searchView.setCustomSearchListener(new CustomSearchView.SearchListener() {
+            @Override
+            public void onQuerySearch(String query) {
+                doSearchQueryOrHint(query);
+            }
+        });
         binding.searchResultRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
@@ -179,10 +176,30 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private boolean isEmptySearchResults() {
-        return CollectionUtils.isNullOrEmpty(LibraryDataBundle.getInstance().getSearchBookModel().searchResult);
+        return CollectionUtils.isNullOrEmpty(getSearchBookModel().searchResult);
     }
 
-    private void queryTextChange(String newText) {
+    private boolean isShowSearchResult() {
+        return getSearchBookModel().showResult() && !isEmptySearchResults();
+    }
+
+    private boolean checkSubmitQueryValid(String query) {
+        if (StringUtils.isNullOrEmpty(query)) {
+            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
+            return false;
+        }
+        if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
+            ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
+            return false;
+        }
+        if (!InputUtils.isHaveAvailableCharacters(query)) {
+            ToastUtil.showToast(R.string.input_special_characters);
+            return false;
+        }
+        return true;
+    }
+
+    private void queryTextChangeImpl(String newText) {
         searchBookModel.searchHint.clear();
         searchHintAdapter.notifyDataSetChanged();
         searchBookModel.isInputting.set(StringUtils.isNotBlank(newText));
@@ -191,16 +208,22 @@ public class SearchBookFragment extends BaseFragment {
         searchBook(false, null);
     }
 
+    private void queryTextChange(String newText) {
+        if (StringUtils.isNullOrEmpty(newText)) {
+            queryTextChangeImpl(newText);
+            return;
+        }
+        if (isShowSearchResult()) {
+            return;
+        }
+        queryTextChangeImpl(newText);
+    }
+
     private void queryTextSubmit(String query) {
         if (isBookSearching()) {
             return;
         }
-        if (StringUtils.isNullOrEmpty(query)) {
-            ToastUtil.showToast(ResManager.getString(R.string.empty_search_key_prompt));
-            return;
-        }
-        if (StringUtils.isNotBlank(query) && InputUtils.getByteCount(query) > ResManager.getInteger(R.integer.search_word_key_max_length)) {
-            ToastUtil.showToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit));
+        if (!checkSubmitQueryValid(query)) {
             return;
         }
         Utils.hideSoftWindow(getActivity());
@@ -209,12 +232,13 @@ public class SearchBookFragment extends BaseFragment {
         searchBookModel.searchKey.set(query);
         checkView();
         setBookSearching(true);
+        clearPageIndicator();
         searchBook(true, new RxCallback() {
             @Override
             public void onNext(Object o) {
+                gotoPage(getValidPage());
                 updatePageIndicator();
                 loadSearchHistory();
-                gotoPage(pagination.getCurrentPage());
             }
 
             @Override
@@ -227,10 +251,7 @@ public class SearchBookFragment extends BaseFragment {
 
     private void checkSearchResult() {
         if (isEmptySearchResults()) {
-            if (isWifiDisconnected()) {
-                return;
-            }
-            ToastUtil.showToast(R.string.no_search_results);
+            checkWifi(getSearchBookModel().searchKey.get());
         }
     }
 
@@ -319,14 +340,6 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchResultRecycler.gotoPage(page);
     }
 
-    private void updatePageIndicator() {
-        int totalCount = searchBookModel.searchResult.size();
-        pagination.resize(searchResultAdapter.getRowCount(), searchResultAdapter.getColumnCount(), totalCount);
-        pageIndicatorModel.updateCurrentPage(totalCount);
-        pageIndicatorModel.setTotalFormat(getString(R.string.total));
-        pageIndicatorModel.updateTotal(totalCount);
-    }
-
     private void checkView() {
         binding.searchHotHistoryLayout.setVisibility(StringUtils.isNullOrEmpty(searchBookModel.searchKey.get()) ? View.VISIBLE : View.GONE);
         binding.searchHintLayout.setVisibility(searchBookModel.showHintList() ? View.VISIBLE : View.GONE);
@@ -335,12 +348,19 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void initData() {
-        searchBookModel = LibraryDataBundle.getInstance().getSearchBookModel();
+        LibraryDataBundle.getInstance().setSearchBookModel(getSearchBookModel());
         binding.setSearchModel(searchBookModel);
         loadHotSearchKey();
         loadSearchHistory();
         checkView();
         updateHotSearchView(searchBookModel.getHotWords(), searchBookModel.getDefaultHotWord());
+        restorePreData();
+    }
+
+    private void restorePreData() {
+        if (isShowSearchResult()) {
+            gotoPage(getValidPage());
+        }
     }
 
     private void loadSearchHistory() {
@@ -482,9 +502,46 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void gotoBookDetail(DataModel model) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, Long.valueOf(model.cloudId.get()));
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, Long.valueOf(model.cloudId.get()));
+            getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
         }
+    }
+
+    private SearchBookModel getSearchBookModel() {
+        if (searchBookModel == null) {
+            searchBookModel = new SearchBookModel(LibraryDataBundle.getInstance().getEventBus());
+            updateHotSearchResult(LibraryDataBundle.getInstance().getSearchBookModel().getHotWords(),
+                    LibraryDataBundle.getInstance().getSearchBookModel().getDefaultHotWord());
+        }
+        return searchBookModel;
+    }
+
+    private PageIndicatorModel initPageIndicatorModel(GPaginator pagination) {
+        if (pageIndicatorModel == null) {
+            pageIndicatorModel = new PageIndicatorModel(pagination, new PageIndicatorModel.PageChangedListener() {
+                @Override
+                public void prev() {
+                }
+
+                @Override
+                public void next() {
+                }
+
+                @Override
+                public void gotoPage(int currentPage) {
+                }
+
+                @Override
+                public void onRefresh() {
+                }
+            });
+        }
+        return pageIndicatorModel;
+    }
+
+    private int getValidPage() {
+        return pagination.getCurrentPage();
     }
 }

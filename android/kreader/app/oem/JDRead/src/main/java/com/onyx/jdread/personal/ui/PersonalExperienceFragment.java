@@ -10,30 +10,26 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalExperienceBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.RecommendUserAction;
 import com.onyx.jdread.personal.adapter.PersonalExperienceAdapter;
-import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendItemBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
-import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
-import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -110,7 +106,15 @@ public class PersonalExperienceFragment extends BaseFragment {
         adapter.setOnItemClickListener(new PageRecyclerView.PageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                viewEventCallBack.gotoView(BookDetailFragment.class.getName());
+                List<RecommendItemBean> data = adapter.getData();
+                if (data != null && CollectionUtils.getSize(data) > position) {
+                    RecommendItemBean recommendItemBean = data.get(position);
+                    if (recommendItemBean != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putLong(Constants.SP_KEY_BOOK_ID, recommendItemBean.ebook_id);
+                        getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
+                    }
+                }
             }
         });
     }

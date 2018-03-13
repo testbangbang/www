@@ -7,6 +7,8 @@ import android.content.Intent;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.LockScreenActivity;
 import com.onyx.jdread.main.activity.MainActivity;
+import com.onyx.jdread.main.activity.StartActivity;
+import com.onyx.jdread.reader.ui.PreloadActivity;
 import com.onyx.jdread.shop.event.MenuWifiSettingEvent;
 import com.onyx.jdread.shop.view.CustomDialog;
 
@@ -46,6 +48,19 @@ public class ManagerActivityUtils {
 
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void startPreloadActivity(Context context) {
+        Intent intent = new Intent(context, PreloadActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void startStartActivity(Context context) {
+        Intent intent = new Intent(context, StartActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

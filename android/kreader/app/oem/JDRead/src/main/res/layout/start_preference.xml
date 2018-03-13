@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:id="@+id/start_preference"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/start_preference_margin_top"
+            android:drawableLeft="@mipmap/ic_label"
+            android:drawablePadding="@dimen/start_preference_drawable_padding"
+            android:text="@string/select_interest"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/start_preference_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/start_preference_recycler_height"
+            android:layout_marginTop="@dimen/start_preference_recycler_margin_top" />
+    </LinearLayout>
+</layout>

@@ -13,19 +13,16 @@ import com.onyx.jdread.shop.request.db.RxRequestUpdateDownloadInfo;
 
 public class UpdateDownloadInfoAction extends BaseAction<ShopDataBundle> {
 
-    private String localPath;
     private BookExtraInfoBean extraInfo;
 
-    public UpdateDownloadInfoAction(BookExtraInfoBean extraInfo, String localPath) {
+    public UpdateDownloadInfoAction(BookExtraInfoBean extraInfo) {
         this.extraInfo = extraInfo;
-        this.localPath = localPath;
     }
 
     @Override
     public void execute(ShopDataBundle dataBundle, final RxCallback rxCallback) {
         final RxRequestUpdateDownloadInfo rq = new RxRequestUpdateDownloadInfo(dataBundle.getDataManager());
         rq.setExtraInfo(extraInfo);
-        rq.setLocalPath(localPath);
         RxRequestBookshelfInsert.setAppContext(JDReadApplication.getInstance());
         rq.execute(new RxCallback() {
             @Override

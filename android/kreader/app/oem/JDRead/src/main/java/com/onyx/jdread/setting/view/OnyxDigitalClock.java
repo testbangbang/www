@@ -1,16 +1,24 @@
 package com.onyx.jdread.setting.view;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
-import android.widget.TextView;
+import android.util.Log;
+
+import com.onyx.jdread.util.TimeUtils;
 
 import java.util.Calendar;
+
+import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Created by hehai on 18-1-12.
@@ -22,15 +30,13 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
     private final static String m24 = "k:mm";
     private FormatChangeObserver mFormatChangeObserver;
 
-    private Runnable mTicker;
-    private Handler mHandler;
-    private boolean mTickerStopped = false;
-
-    String mFormat;
+    String format = m24;
+    private String EXTRA_ALARM_ACTION = "extra_alarm_action";
 
     public OnyxDigitalClock(Context context) {
         super(context);
         initClock(context);
+
     }
 
     public OnyxDigitalClock(Context context, AttributeSet attrs) {
@@ -39,8 +45,6 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
     }
 
     private void initClock(Context context) {
-        Resources r = context.getResources();
-
         if (mCalendar == null) {
             mCalendar = Calendar.getInstance();
         }
@@ -49,39 +53,23 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
         getContext().getContentResolver().registerContentObserver(
                 Settings.System.CONTENT_URI, true, mFormatChangeObserver);
 
-        setFormat();
+        setText(DateFormat.format(format, mCalendar));
+        Intent intent = new Intent(EXTRA_ALARM_ACTION);
+        PendingIntent pi = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+        AlarmManager am = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60 * 1000, pi);
     }
 
     @Override
     protected void onAttachedToWindow() {
-        mTickerStopped = false;
         super.onAttachedToWindow();
-        mHandler = new Handler();
-
-        /**
-         * requests a tick on the next hard-second boundary
-         */
-        mTicker = new Runnable() {
-            @Override
-            public void run() {
-                if (mTickerStopped) {
-                    return;
-                }
-                mCalendar.setTimeInMillis(System.currentTimeMillis());
-                setText(DateFormat.format(mFormat, mCalendar));
-                invalidate();
-                long now = SystemClock.uptimeMillis();
-                long next = now + (1000 * 60 - now % (1000 * 60));
-                mHandler.postAtTime(mTicker, next);
-            }
-        };
-        mTicker.run();
+        registerReceiver(getContext());
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mTickerStopped = true;
+        unRegisterReceiver(getContext());
     }
 
     /**
@@ -91,14 +79,6 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
         return android.text.format.DateFormat.is24HourFormat(getContext());
     }
 
-    private void setFormat() {
-        if (get24HourMode()) {
-            mFormat = m24;
-        } else {
-            mFormat = m12;
-        }
-    }
-
     private class FormatChangeObserver extends ContentObserver {
         public FormatChangeObserver() {
             super(new Handler());
@@ -106,7 +86,35 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
 
         @Override
         public void onChange(boolean selfChange) {
-            setFormat();
+
         }
+    }
+
+    private BroadcastReceiver alarmReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (EXTRA_ALARM_ACTION.equals(intent.getAction())) {
+                mCalendar.setTimeInMillis(System.currentTimeMillis());
+                setText(DateFormat.format(format, mCalendar));
+                invalidate();
+            }
+        }
+    };
+
+    public void registerReceiver(Context context) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(EXTRA_ALARM_ACTION);
+        context.registerReceiver(alarmReceiver, filter);
+    }
+
+    public void unRegisterReceiver(Context context) {
+        context.unregisterReceiver(alarmReceiver);
+    }
+
+    public void setFormat() {
+        format = TimeUtils.is24Hour() ? m24 : m12;
+        mCalendar.setTimeInMillis(System.currentTimeMillis());
+        setText(DateFormat.format(format, mCalendar));
+        invalidate();
     }
 }

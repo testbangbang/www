@@ -23,6 +23,8 @@ public class BaseFragment extends Fragment {
     public interface ChildViewEventCallBack {
         void gotoView(String childClassName);
 
+        void gotoView(String childClassName, Bundle bundle);
+
         void viewBack();
 
         void hideOrShowSystemBar(boolean flags);
@@ -63,6 +65,12 @@ public class BaseFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoadingDialog();
+    }
+
     public void setBundle(Bundle bundle) {
         this.bundle = bundle;
     }
@@ -72,15 +80,19 @@ public class BaseFragment extends Fragment {
     }
 
     public boolean isWifiDisconnected() {
-        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
-            return true;
-        }
-        return false;
+        return !Utils.isNetworkConnected(JDReadApplication.getInstance());
     }
 
-    public void goNetWorkErrorFragment(){
-        getViewEventCallBack().gotoView(NetWorkErrorFragment.class.getName());
+    public boolean checkWifiDisconnected() {
+        boolean wifiDisconnected = isWifiDisconnected();
+        if (wifiDisconnected) {
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+        }
+        return wifiDisconnected;
+    }
+
+    public void goNetWorkErrorFragment(Bundle bundle){
+        getViewEventCallBack().gotoView(NetWorkErrorFragment.class.getName(), bundle);
     }
 
     public void checkWifi(String title) {
@@ -90,8 +102,7 @@ public class BaseFragment extends Fragment {
             if (StringUtils.isNullOrEmpty(title)) {
                 bundle.putBoolean(Constants.NET_ERROR_SHOW_TITLE_BAR, false);
             }
-            setBundle(bundle);
-            goNetWorkErrorFragment();
+            goNetWorkErrorFragment(bundle);
         }
     }
 }

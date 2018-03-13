@@ -92,29 +92,9 @@ public class SystemBarModel extends Observable {
     public final ObservableInt wifiImageRes = new ObservableInt();
     public final ObservableInt batteryImageRes = new ObservableInt();
     public final ObservableField<String> battery = new ObservableField<>();
-    public final ObservableField<String> time = new ObservableField<>();
 
     public SystemBarModel() {
-        updateTime();
-    }
 
-    public void updateTime() {
-        String time = TimeUtils.getTime(System.currentTimeMillis(), TimeUtils.DEFAULT_TIME_FORMAT);
-        time = handleTime(time);
-        this.time.set(time);
-    }
-
-    private String handleTime(String time) {
-        if (TimeUtils.is24Hour()) {
-            return time;
-        }
-        int apm = Calendar.getInstance().get(Calendar.AM_PM);
-        int resId = apm == Calendar.AM ? R.string.AM : R.string.PM;
-        return time + " " + ResManager.getString(resId);
-    }
-
-    public void setTimeFormat(boolean is24Hour) {
-        TimeUtils.setFormat(new SimpleDateFormat(is24Hour ? TimeUtils.DATA_TIME_24 : TimeUtils.DATA_TIME_12));
     }
 
     private BroadcastReceiver phoneBatteryReceiver = new BroadcastReceiver() {

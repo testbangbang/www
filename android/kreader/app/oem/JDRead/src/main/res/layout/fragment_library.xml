@@ -101,9 +101,9 @@
 
             <TextView
                 android:id="@+id/empty_library_prompt"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:clickable="true"
                 android:textSize="@dimen/level_two_heading_font"
                 android:visibility="@{libraryModel.count == 0?View.VISIBLE:View.GONE}" />

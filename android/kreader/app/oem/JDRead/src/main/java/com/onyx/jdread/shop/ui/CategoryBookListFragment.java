@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,7 +19,6 @@ import com.onyx.jdread.databinding.FragmentCategoryBookListBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.CategoryBookListAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
@@ -84,27 +84,27 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void initData() {
-        catLevel = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, 0);
-        catTwoId = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
-        currentCatName = JDPreferenceManager.getStringValue(Constants.SP_KEY_CATEGORY_NAME, "");
-        typeFree = JDPreferenceManager.getBooleanValue(Constants.SP_KEY_CATEGORY_ISFREE, false);
-        getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
-        getCategoryBookListViewModel().getTitleBarViewModel().showRightText2 = true;
-        getCategoryBookListViewModel().getTitleBarViewModel().showRightText3 = true;
-        getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_filter);
-        getCategoryBookListViewModel().getTitleBarViewModel().rightText3 = getString(R.string.subject_list_sort_type_hot);
-        initDefaultParams();
-        setSortButtonIsOpen(false);
-        setAllCatIsOpen(false);
-        setRightText2Icon();
-        setRightText3Icon();
-        getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
-        setCategoryV2Data();
+        Bundle bundle = getBundle();
+        if (bundle != null) {
+            catLevel = bundle.getInt(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, 0);
+            catTwoId = bundle.getInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
+            currentCatName = bundle.getString(Constants.SP_KEY_CATEGORY_NAME, "");
+            typeFree = bundle.getBoolean(Constants.SP_KEY_CATEGORY_ISFREE, false);
+            getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
+            getCategoryBookListViewModel().getTitleBarViewModel().showRightText2 = true;
+            getCategoryBookListViewModel().getTitleBarViewModel().showRightText3 = true;
+            getCategoryBookListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_filter);
+            getCategoryBookListViewModel().getTitleBarViewModel().rightText3 = getString(R.string.subject_list_sort_type_hot);
+            initDefaultParams();
+            hideOptionLayout();
+            getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
+            setCategoryV2Data();
+        }
     }
 
     private void initDefaultParams() {
-        sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
-        getCategoryBookListViewModel().updateSortKeyInfo(getCategoryBookListViewModel().getSortKeySelected());
+        restoreSortKeyAndType();
+        getCategoryBookListViewModel().updateSortKeyInfo(sortkey);
     }
 
     private String getFinalCatId() {
@@ -152,6 +152,20 @@ public class CategoryBookListFragment extends BaseFragment {
                 }
             }
         });
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent ev) {
+                if (isOptionLayoutShowing()) {
+                    if (ev.getAction() == MotionEvent.ACTION_UP) {
+                        hideOptionLayout();
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
         categoryBookListBinding.setViewModel(getCategoryBookListViewModel());
         CategoryBookListAdapter categoryBookListAdapter = new CategoryBookListAdapter(getEventBus());
         categoryBookListAdapter.setRowAndCol(catRow, catCol);
@@ -169,6 +183,15 @@ public class CategoryBookListFragment extends BaseFragment {
             }
         });
         checkWifi(currentCatName);
+    }
+
+    private void hideOptionLayout() {
+        setAllCatIsOpen(false);
+        setSortButtonIsOpen(false);
+    }
+
+    private boolean isOptionLayoutShowing() {
+        return getCategoryBookListViewModel().allCatIsOpen.get() || getCategoryBookListViewModel().sortButtonIsOpen.get();
     }
 
     private void initPageIndicator() {
@@ -253,17 +276,24 @@ public class CategoryBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
-        if (getViewEventCallBack() != null) {
+        if (isOptionLayoutShowing()) {
+            hideOptionLayout();
+            return;
+        }
+
+        ResultBookBean bookBean = event.getBookBean();
+        if (bookBean != null) {
             saveContentPage();
-            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, bookBean.ebook_id);
+            getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
         showOrCloseAllCatButton();
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean = event.getCategoryBean();
@@ -274,10 +304,10 @@ public class CategoryBookListFragment extends BaseFragment {
         this.catTwoId = categoryBean.id;
         this.currentCatName = categoryBean.name;
         this.currentPage = 1;
-        this.sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
-        JDPreferenceManager.setIntValue(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
-        JDPreferenceManager.setStringValue(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
+        Bundle bundle = getBundle();
+        bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
+        bundle.putString(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
     }
 
@@ -292,7 +322,6 @@ public class CategoryBookListFragment extends BaseFragment {
         }
         boolean allCatIsOpen = getCategoryBookListViewModel().allCatIsOpen.get();
         setAllCatIsOpen(!allCatIsOpen);
-        setRightText2Icon();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -306,15 +335,16 @@ public class CategoryBookListFragment extends BaseFragment {
         }
         boolean sortButtonIsOpen = getCategoryBookListViewModel().sortButtonIsOpen.get();
         setSortButtonIsOpen(!sortButtonIsOpen);
-        setRightText3Icon();
     }
 
     private void setAllCatIsOpen(boolean allCatIsOpen) {
         getCategoryBookListViewModel().allCatIsOpen.set(allCatIsOpen);
+        setRightText2Icon();
     }
 
     private void setSortButtonIsOpen(boolean sortButtonIsOpen) {
         getCategoryBookListViewModel().sortButtonIsOpen.set(sortButtonIsOpen);
+        setRightText3Icon();
     }
 
     private void setRightText2Icon() {
@@ -328,7 +358,7 @@ public class CategoryBookListFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSubjectListSortKeyChangeEvent(SubjectListSortKeyChangeEvent event) {
         showOrCloseSortButton();
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         if (sortkey == event.sortKey) {
@@ -337,6 +367,7 @@ public class CategoryBookListFragment extends BaseFragment {
             sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
             sortkey = event.sortKey;
         }
+        saveSortKeyAndType(event.sortKey, sortType);
         unsetContentPage();
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
     }
@@ -372,5 +403,25 @@ public class CategoryBookListFragment extends BaseFragment {
 
     private void unsetContentPage() {
         getCategoryBookListViewModel().setContentPage(0);
+    }
+
+    private void saveSortKeyAndType(int sortKey, int sortType) {
+        getBundle().putInt(CloudApiContext.SearchBook.SORT_KEY, sortKey);
+        getBundle().putInt(CloudApiContext.SearchBook.SORT_TYPE, sortType);
+    }
+
+    private void restoreSortKeyAndType() {
+        sortkey = getBundle().getInt(CloudApiContext.SearchBook.SORT_KEY, sortkey);
+        sortType = getBundle().getInt(CloudApiContext.SearchBook.SORT_TYPE, sortType);
+    }
+
+    @Override
+    public Bundle getBundle() {
+        Bundle bundle = super.getBundle();
+        if (bundle == null) {
+            bundle = new Bundle();
+            setBundle(bundle);
+        }
+        return bundle;
     }
 }

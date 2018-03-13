@@ -11,6 +11,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemDeviceConfigBinding;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.event.UpdateTimeFormatEvent;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.setting.event.DeviceConfigEvent;
@@ -19,6 +20,7 @@ import com.onyx.jdread.util.TimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -98,9 +100,8 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        SystemBarModel systemBarModel = MainBundle.getInstance().getSystemBarModel();
-        systemBarModel.setTimeFormat(isChecked);
-        systemBarModel.updateTime();
+        TimeUtils.setFormat(new SimpleDateFormat(isChecked ? TimeUtils.DATA_TIME_24 : TimeUtils.DATA_TIME_12));
+        eventBus.post(new UpdateTimeFormatEvent());
         data.get(0).setTimeFormat(isChecked ? FORMAT_24 : FORMAT_12);
     }
 

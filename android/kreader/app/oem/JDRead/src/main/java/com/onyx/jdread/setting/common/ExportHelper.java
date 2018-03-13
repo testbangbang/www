@@ -19,6 +19,7 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.setting.event.AssociatedEmailToolsEvent;
 import com.onyx.jdread.setting.view.AssociatedEmailDialog;
 import com.onyx.jdread.util.Utils;
 
@@ -62,8 +63,7 @@ public class ExportHelper {
                 }
                 String email = JDPreferenceManager.getStringValue(R.string.email_address_key, null);
                 if (StringUtils.isNullOrEmpty(email)) {
-                    AssociatedEmailDialog.DialogModel model = new AssociatedEmailDialog.DialogModel(eventBus);
-                    AssociateDialogHelper.showBindEmailDialog(model, context);
+                    eventBus.post(new AssociatedEmailToolsEvent());
                     return false;
                 }
                 break;

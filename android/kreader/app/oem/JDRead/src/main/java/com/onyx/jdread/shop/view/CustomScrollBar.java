@@ -46,7 +46,7 @@ public class CustomScrollBar extends View {
     }
 
     public void setTotal(int total) {
-        this.total = total;
+        this.total = total <= 0 ? 1 : total;
         invalidate();
     }
 

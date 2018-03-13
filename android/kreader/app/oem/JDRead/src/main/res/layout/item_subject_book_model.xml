@@ -23,7 +23,7 @@
             android:scaleType="fitXY"
             bind:cover="@{bookBean.image_url}" />
 
-        <TextView
+        <com.onyx.jdread.library.view.EndEllipsizeTextView
             android:id="@+id/textView_title"
             android:layout_width="@dimen/subject_model_item_width"
             android:layout_height="wrap_content"

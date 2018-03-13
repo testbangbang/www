@@ -15,7 +15,6 @@ import com.onyx.jdread.databinding.FragmentBookVipReadBinding;
 import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.UserInfoEvent;
@@ -24,6 +23,7 @@ import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
@@ -165,27 +165,28 @@ public class BookVIPReadFragment extends BaseFragment {
     public void onViewAllClickEvent(ViewAllClickEvent event) {
         BookModelConfigResultBean.DataBean.ModulesBean modulesBean = event.modulesBean;
         if (modulesBean != null) {
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
-            JDPreferenceManager.setIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
-            if (getViewEventCallBack() != null) {
-                getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName());
-            }
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
+            bundle.putInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_MODEL);
+            bundle.putInt(Constants.SP_KEY_SUBJECT_MODEL_ID, modulesBean.id);
+            bundle.putInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.f_type);
+            getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName(), bundle);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
-        if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+        ResultBookBean bookBean = event.getBookBean();
+        if (bookBean != null) {
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, bookBean.ebook_id);
+            getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipButtonClickEvent(VipButtonClickEvent event) {
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         if (getViewEventCallBack() != null) {

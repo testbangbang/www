@@ -23,7 +23,7 @@ public class ChangeChineseConvertTypeRequest extends ReaderBaseRequest {
     public ChangeChineseConvertTypeRequest call() throws Exception {
         getReader().getReaderHelper().getDocumentOptions().setChineseConvertType(convertType);
         getReader().getReaderHelper().getRenderer().setChineseConvertType(convertType);
-        getReader().getReaderHelper().getBitmapCache().clear();
+        getReader().getReaderHelper().clearBitmapCache();
         getReader().getReaderViewHelper().updatePageView(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(getReader());
         saveReaderOptions(getReader());

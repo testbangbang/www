@@ -6,14 +6,19 @@ import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
@@ -23,14 +28,18 @@ import com.onyx.jdread.util.InputUtils;
  * Created by hehai on 18-3-10.
  */
 
-public class CustomSearchView extends LinearLayout implements TextWatcher {
+public class CustomSearchView extends LinearLayout implements TextWatcher, ActionMode.Callback {
     private Context context;
     private CharSequence temp;
-    private int selectionStart;
-    private int selectionEnd;
     private int maxByte = Integer.MAX_VALUE;
     private EditText etInput;
+    private ImageView clearButton;
     private SearchView.OnQueryTextListener onQueryTextListener;
+    private SearchListener customSearchListener;
+
+    public interface SearchListener {
+        void onQuerySearch(String query);
+    }
 
     public CustomSearchView(Context context) {
         super(context);
@@ -38,7 +47,6 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
 
     public CustomSearchView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
         LayoutInflater.from(context).inflate(R.layout.search_layout, this);
         initView();
         initListener();
@@ -62,17 +70,33 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
         findViewById(R.id.search_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onQueryTextListener != null) {
-                    onQueryTextListener.onQueryTextSubmit(etInput.getText().toString());
-                }
+                doSearch();
             }
         });
-        findViewById(R.id.search_clear).setOnClickListener(new OnClickListener() {
+        clearButton = (ImageView) findViewById(R.id.search_clear);
+        clearButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 etInput.setText("");
             }
         });
+
+        etInput.setCustomSelectionActionModeCallback(this);
+    }
+
+    private void doSearch() {
+        String text = etInput.getText().toString();
+        if (customSearchListener != null) {
+            customSearchListener.onQuerySearch(text);
+            return;
+        }
+        if (onQueryTextListener != null) {
+            onQueryTextListener.onQueryTextSubmit(text);
+        }
+    }
+
+    public void setCustomSearchListener(SearchListener listener) {
+        this.customSearchListener = listener;
     }
 
     public void setOnQueryTextListener(SearchView.OnQueryTextListener onQueryTextListener) {
@@ -91,18 +115,19 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        selectionStart = etInput.getSelectionStart();
-        selectionEnd = etInput.getSelectionEnd();
         if (InputUtils.getByteCount(temp.toString()) > maxByte) {
             ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.toast_offset_y));
-            s.delete(selectionStart - 1, selectionEnd);
-            int tempSelection = selectionStart;
-            etInput.setText(s);
-            etInput.setSelection(tempSelection);
+            etInput.setText(InputUtils.getEffectiveString(temp.toString(), maxByte));
+            etInput.setSelection(etInput.getText().length());
         }
         if (onQueryTextListener != null) {
             onQueryTextListener.onQueryTextChange(s.toString());
         }
+        showClearButton(StringUtils.isNotBlank(s.toString()));
+    }
+
+    private void showClearButton(boolean show) {
+        clearButton.setVisibility(show ? VISIBLE : INVISIBLE);
     }
 
     public void setQuery(CharSequence query, boolean submit) {
@@ -126,5 +151,25 @@ public class CustomSearchView extends LinearLayout implements TextWatcher {
 
     public void setMaxByte(int maxByte) {
         this.maxByte = maxByte;
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+
     }
 }

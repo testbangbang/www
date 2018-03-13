@@ -19,6 +19,7 @@ import com.onyx.jdread.shop.event.ViewCommentEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +37,7 @@ public class BookDetailViewModel extends BaseObservable {
     private TitleBarViewModel titleBarViewModel;
     private DialogBookInfoViewModel dialogBookInfoViewModel;
     public final ObservableField<String> updateTimeInfo = new ObservableField<>();
+    public final ObservableField<ArrayList<String>> netBookIds = new ObservableField<>();
 
     public DialogBookInfoViewModel getDialogBookInfoViewModel() {
         if (dialogBookInfoViewModel == null) {

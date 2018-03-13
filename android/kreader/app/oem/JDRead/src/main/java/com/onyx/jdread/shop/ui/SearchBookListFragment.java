@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,13 +10,13 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentViewAllBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
@@ -30,6 +29,7 @@ import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.TitleBarViewModel;
 import com.onyx.jdread.shop.model.ViewAllViewModel;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -50,6 +50,8 @@ public class SearchBookListFragment extends BaseFragment {
     private String keyWord = "";
     private String catId = "";
 
+    private ViewAllViewModel viewAllViewModel;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,16 +63,20 @@ public class SearchBookListFragment extends BaseFragment {
     }
 
     private void initLibrary() {
-        if (!getEventBus().isRegistered(this)) {
-            getEventBus().register(this);
-        }
+        Utils.ensureRegister(getEventBus(), this);
     }
 
     private void initData() {
-        keyWord = JDPreferenceManager.getStringValue(Constants.SP_KEY_KEYWORD, "");
-        catId = JDPreferenceManager.getStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
+        keyWord = getBundle().getString(Constants.SP_KEY_KEYWORD, "");
+        catId = getBundle().getString(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
         getTitleBarViewModel().leftText = keyWord;
-        getBooksData(catId, currentPage, CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES, CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES, keyWord);
+        if (CollectionUtils.isNullOrEmpty(getViewAllViewModel().getBookList())) {
+            getBooksData(catId, currentPage, CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES, CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES, keyWord);
+        } else {
+            paginator.resize(row, col, CollectionUtils.getSize(getViewAllViewModel().getBookList()));
+            paginator.setCurrentPage(getCurrentPage());
+            gotoPage(getCurrentPage());
+        }
     }
 
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType, String keyWord) {
@@ -108,11 +114,7 @@ public class SearchBookListFragment extends BaseFragment {
     }
 
     private void initPageIndicator() {
-        int size = 0;
-        if (getViewAllViewModel().getBookList() != null) {
-            size = getViewAllViewModel().getBookList().size();
-        }
-        paginator.resize(row, col, size);
+        paginator.resize(row, col, CollectionUtils.getSize(getViewAllViewModel().getBookList()));
         getViewAllViewModel().setTotalPage(paginator.pages());
         setCurrentPage(paginator.getCurrentPage());
     }
@@ -125,8 +127,20 @@ public class SearchBookListFragment extends BaseFragment {
         initPageIndicator();
     }
 
+    private void gotoPage(int page) {
+        if (recyclerView == null) {
+            return;
+        }
+        recyclerView.gotoPage(page);
+        initPageIndicator();
+    }
+
     private void setCurrentPage(int currentPage) {
         getViewAllViewModel().setCurrentPage(currentPage + Constants.PAGE_STEP);
+    }
+
+    private int getCurrentPage() {
+        return getViewAllViewModel().getCurrentPage() - Constants.PAGE_STEP;
     }
 
     private ShopDataBundle getShopDataBundle() {
@@ -134,7 +148,10 @@ public class SearchBookListFragment extends BaseFragment {
     }
 
     private ViewAllViewModel getViewAllViewModel() {
-        return getShopDataBundle().getViewAllViewModel();
+        if (viewAllViewModel == null) {
+            viewAllViewModel = new ViewAllViewModel(getEventBus());
+        }
+        return viewAllViewModel;
     }
 
     private TitleBarViewModel getTitleBarViewModel() {
@@ -143,10 +160,6 @@ public class SearchBookListFragment extends BaseFragment {
 
     private EventBus getEventBus() {
         return getShopDataBundle().getEventBus();
-    }
-
-    private Context getContextJD() {
-        return JDReadApplication.getInstance().getApplicationContext();
     }
 
     @Override
@@ -170,10 +183,9 @@ public class SearchBookListFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(BookItemClickEvent event) {
-        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
-        if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
-        }
+        Bundle bundle = new Bundle();
+        bundle.putLong(Constants.SP_KEY_BOOK_ID, event.getBookBean().ebook_id);
+        getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

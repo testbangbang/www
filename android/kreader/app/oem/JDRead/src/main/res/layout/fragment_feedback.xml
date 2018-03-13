@@ -40,6 +40,7 @@
                 android:inputType="textMultiLine"
                 android:maxLength="@integer/feedback_content_max_length"
                 android:text="@={feedbackModel.feedback}"
+                android:textColorHint="@color/text_gray_color"
                 android:textSize="@dimen/level_two_heading_font"/>
 
             <View style="@style/DottedLineStyle" />
@@ -54,6 +55,7 @@
                 android:inputType="number"
                 android:singleLine="true"
                 android:text="@={feedbackModel.phone}"
+                android:textColorHint="@color/text_gray_color"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <View style="@style/DottedLineStyle" />

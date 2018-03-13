@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +16,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -44,8 +44,10 @@ import com.onyx.jdread.main.event.ShowBackTabEvent;
 import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
 import com.onyx.jdread.main.event.TabLongClickedEvent;
+import com.onyx.jdread.main.event.UpdateTimeFormatEvent;
 import com.onyx.jdread.main.event.UsbDisconnectedEvent;
 import com.onyx.jdread.main.event.WifiStateChangeEvent;
+import com.onyx.jdread.main.model.FragmentBarModel;
 import com.onyx.jdread.main.model.FunctionBarItem;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
@@ -64,13 +66,7 @@ import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
-import com.onyx.jdread.shop.action.UpdateDownloadInfoAction;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
-import com.onyx.jdread.shop.event.DownloadFinishEvent;
-import com.onyx.jdread.shop.event.DownloadingEvent;
-import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.ui.NetWorkErrorFragment;
-import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -124,8 +120,16 @@ public class MainActivity extends AppCompatActivity {
         binding.setMainViewModel(new MainViewModel());
         initSystemBar();
         initFunctionBar();
-        switchCurrentFragment(LibraryFragment.class.getName());
-        changeFunctionItem(LibraryFragment.class.getName());
+        initFirstChildView();
+    }
+
+    private void initFirstChildView() {
+        String childClassName = LibraryFragment.class.getName();
+        if (ViewConfig.isCheckFragment(childClassName)) {
+            changeFunctionItem(childClassName);
+        }
+        FragmentBarModel barModel = popCurrentChildView(functionBarModel.findFunctionGroup());
+        switchCurrentFragment(barModel.getBaseFragment(), null);
     }
 
     private void initSystemBar() {
@@ -230,29 +234,49 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(screenStateReceive, intentFilter);
     }
 
-    public void switchCurrentFragment(String childViewName) {
-        if (StringUtils.isNullOrEmpty(childViewName)) {
+    public void switchCurrentFragment(@NonNull BaseFragment baseFragment, @Nullable Bundle bundle) {
+        if (StringUtils.isNotBlank(currentChildViewName) && currentChildViewName.equals(
+                baseFragment.getClass().getName())) {
             return;
         }
-        if (StringUtils.isNotBlank(currentChildViewName) && currentChildViewName.equals(childViewName)) {
+        if (StringUtils.isNotBlank(currentChildViewName) && currentChildViewName.equals(
+                baseFragment.getClass().getName())) {
             return;
         }
         initFragmentManager();
         notifyChildViewChangeWindow();
-        BaseFragment baseFragment = getPageView(childViewName);
-        if (currentFragment != null) {
-            baseFragment.setBundle(currentFragment.getBundle());
-        }
+        baseFragment.setBundle(bundle);
         transaction.replace(R.id.main_content_view, baseFragment).commitNowAllowingStateLoss();
+        processEpdGcOnce();
+        saveChildViewInfo(baseFragment);
+    }
+
+    private void processEpdGcOnce() {
         if (tabCheckedCount >= ResManager.getInteger(R.integer.refresh_count)) {
             EpdController.appliGcOnce();
             tabCheckedCount = 0;
         } else {
             tabCheckedCount++;
         }
-        saveChildViewInfo(childViewName, baseFragment);
-        systemBarModel.updateTime();
+    }
 
+    private void saveChildViewInfo(@NonNull BaseFragment baseFragment) {
+        addToChildViewList(baseFragment);
+        currentFragment = baseFragment;
+        currentChildViewName = baseFragment.getClass().getName();
+    }
+
+    private void addToChildViewList(@NonNull BaseFragment baseFragment) {
+        if (baseFragment.getClass().getName().equals(SystemUpdateFragment.class.getName())) {
+            childViewList.put(baseFragment.getClass().getName(), baseFragment);
+        }
+    }
+
+    private Bundle getCurrentBundle() {
+        if (currentFragment == null) {
+            return null;
+        }
+        return currentFragment.getBundle();
     }
 
     private void changeFunctionItem(String childViewName) {
@@ -274,12 +298,6 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager = getSupportFragmentManager();
         }
         transaction = fragmentManager.beginTransaction();
-    }
-
-    private void saveChildViewInfo(String childViewName, BaseFragment baseFragment) {
-        childViewList.put(childViewName, baseFragment);
-        currentFragment = baseFragment;
-        currentChildViewName = childViewName;
     }
 
     private BaseFragment getPageView(String childViewName) {
@@ -306,9 +324,12 @@ public class MainActivity extends AppCompatActivity {
     private BaseFragment.ChildViewEventCallBack childViewEventCallBack = new BaseFragment.ChildViewEventCallBack() {
         @Override
         public void gotoView(String childClassName) {
-            PushChildViewToStackEvent event = new PushChildViewToStackEvent();
-            event.childClassName = childClassName;
-            EventBus.getDefault().post(event);
+            EventBus.getDefault().post(new PushChildViewToStackEvent(childClassName, getCurrentBundle()));
+        }
+
+        @Override
+        public void gotoView(String childClassName, Bundle bundle) {
+            EventBus.getDefault().post(new PushChildViewToStackEvent(childClassName, bundle));
         }
 
         @Override
@@ -365,15 +386,27 @@ public class MainActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(event);
     }
 
+    private FragmentBarModel createFragmentBarModel(String childClassName) {
+        FragmentBarModel model = new FragmentBarModel();
+        model.name.set(childClassName);
+        model.baseFragment.set(getPageView(childClassName));
+        return model;
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
-        switchCurrentFragment(event.childClassName);
-        if (ViewConfig.isCheckFragment(event.childClassName)) {
-            functionBarModel.changeTabSelection(ViewConfig.findChildViewParentId(event.childClassName));
+        pushChildViewToStack(event.childClassName, event.bundle);
+    }
+
+    private void pushChildViewToStack(String childClassName, Bundle bundle) {
+        FragmentBarModel model = createFragmentBarModel(childClassName);
+        switchCurrentFragment(model.getBaseFragment(), bundle);
+        if (ViewConfig.isCheckFragment(childClassName)) {
+            changeFunctionItem(childClassName);
         }
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
-            functionBarItem.getStackList().push(event.childClassName);
+            functionBarItem.getStackList().push(model);
         }
     }
 
@@ -381,34 +414,41 @@ public class MainActivity extends AppCompatActivity {
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
-            String childClassName = functionBarItem.getStackList().popChildView();
-            if (isNetWorkFragment(currentFragment.getClass().getName()) || isNetWorkFragment(childClassName)) {
-                childClassName = functionBarItem.getStackList().popChildView();
+            FragmentBarModel barModel = popCurrentChildView(functionBarItem);
+            if (isNetWorkFragment(currentFragment.getClass().getName()) || isNetWorkFragment(barModel.getName())) {
+                barModel = functionBarItem.getStackList().popChildView();
             }
-            switchCurrentFragment(childClassName);
+            switchCurrentFragment(barModel.getBaseFragment(), barModel.getBaseFragment().getBundle());
         }
-
         if (currentFragment != null && currentFragment.getClass().getName().equals(LibraryFragment.class.getName())) {
             LibraryDataBundle.getInstance().getEventBus().post(new BackToRootFragment());
         }
+    }
+
+    private FragmentBarModel popCurrentChildView(FunctionBarItem functionBarItem) {
+        FragmentBarModel barModel = functionBarItem.getStackList().popChildView();
+        if (barModel.getBaseFragment() == null) {
+            barModel.setBaseFragment(getPageView(barModel.getName()));
+        }
+        return barModel;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFunctionBarTabModel(FunctionBarItem event) {
         boolean isSelectedBefore = event.equals(functionBarModel.getSelectedFunctionItem());
         functionBarModel.changeTabSelection(event.functionModule.get());
-        if (currentFragment != null) {
-            currentFragment.setBundle(null);
-        }
         if (isSelectedBefore && currentFragment != null && currentFragment.getClass().getName().equals(LibraryFragment.class.getName())) {
             LibraryDataBundle.getInstance().getEventBus().post(new BackToRootFragment());
         }
-
-        if (isNetWorkFragment(event.getStackList().peek())) {
+        if (isNetWorkFragment(event.getStackList().peek().getName())) {
             event.getStackList().pop();
         }
-        switchCurrentFragment(isSelectedBefore ? event.getStackList().remainLastStack() :
-                event.getStackList().peek());
+        FragmentBarModel model = isSelectedBefore ? event.getStackList().remainLastStack() :
+                event.getStackList().peek();
+        if (model.getBaseFragment() == null) {
+            model.setBaseFragment(getPageView(model.getName()));
+        }
+        switchCurrentFragment(model.getBaseFragment(), model.getBaseFragment().getBundle());
     }
 
     private boolean isNetWorkFragment(String peek) {
@@ -513,35 +553,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDownloadFinishEvent(DownloadFinishEvent event) {
-        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
-        if (task != null) {
-            updateDownloadInfo(task, task.getPath());
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDownloadingEvent(DownloadingEvent event) {
-        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
-        if (DownLoadHelper.isPause(task.getStatus())) {
-            updateDownloadInfo(task, task.getPath());
-        }
-    }
-
-    private void updateDownloadInfo(BaseDownloadTask task, String localPath) {
-        JDReadApplication.getInstance().setNotifyLibraryData(true);
-        BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-        extraInfoBean.downLoadState = task.getStatus();
-        extraInfoBean.downloadUrl = task.getUrl();
-        extraInfoBean.percentage = OnyxDownloadManager.getInstance().getTaskProgress(task.getId());
-        extraInfoBean.progress = task.getSmallFileSoFarBytes();
-        extraInfoBean.totalSize = task.getSmallFileTotalBytes();
-        UpdateDownloadInfoAction action = new UpdateDownloadInfoAction(extraInfoBean, localPath);
-        action.execute(ShopDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-
-            }
-        });
+    public void onUpdateTimeFormatEvent(UpdateTimeFormatEvent event) {
+        binding.mainSystemBar.onyxDigitalClock.setFormat();
     }
 }

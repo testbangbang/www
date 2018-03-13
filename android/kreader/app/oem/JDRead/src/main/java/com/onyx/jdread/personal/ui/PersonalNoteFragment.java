@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.evernote.client.android.EvernoteSession;
 import com.onyx.android.sdk.data.GPaginator;
@@ -44,9 +45,11 @@ import com.onyx.jdread.personal.event.ExportToNativeEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.common.AssociateDialogHelper;
 import com.onyx.jdread.setting.common.ExportHelper;
+import com.onyx.jdread.setting.event.AssociatedEmailToolsEvent;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.event.BindEmailEvent;
 import com.onyx.jdread.setting.event.UnBindEmailEvent;
+import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.view.AssociatedEmailDialog;
 import com.onyx.jdread.util.Utils;
 
@@ -110,8 +113,8 @@ public class PersonalNoteFragment extends BaseFragment {
             @Override
             public void onNext(Object o) {
                 List<NoteBean> notes = action.getNotes();
+                setSelectAllText(notes == null ? 0 : notes.size());
                 if (notes != null) {
-                    setSelectAllText(notes.size());
                     personalNoteAdapter.setData(notes);
                     binding.setTotal(String.valueOf(notes.size()));
                     paginator.resize(personalNoteAdapter.getRowCount(), personalNoteAdapter.getColumnCount(), notes.size());
@@ -122,7 +125,7 @@ public class PersonalNoteFragment extends BaseFragment {
     }
 
     private void initListener() {
-        binding.personalNoteCheckAll.setOnClickListener(new View.OnClickListener() {
+        binding.personalNoteCheckAllText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<NoteBean> data = personalNoteAdapter.getData();
@@ -131,6 +134,21 @@ public class PersonalNoteFragment extends BaseFragment {
                         bean.checked = !bean.checked;
                     }
                     setExportText(data.get(0).checked);
+                    binding.personalNoteCheckAll.setChecked(data.get(0).checked);
+                    personalNoteAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        binding.personalNoteCheckAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                List<NoteBean> data = personalNoteAdapter.getData();
+                if (data != null && data.size() > 0) {
+                    for (NoteBean bean : data) {
+                        bean.checked = isChecked;
+                    }
+                    setExportText(isChecked);
                     personalNoteAdapter.notifyDataSetChanged();
                 }
             }
@@ -162,6 +180,7 @@ public class PersonalNoteFragment extends BaseFragment {
                         }
                     }
                 }
+                binding.personalNoteCheckAll.setChecked(data.size() == list.size());
                 setExportText(list.size() != 0);
             }
         });
@@ -175,6 +194,8 @@ public class PersonalNoteFragment extends BaseFragment {
     private void setSelectAllText(int size) {
         binding.personalNoteCheckAll.setEnabled(size != 0);
         binding.personalNoteCheckAll.setTextColor(size != 0 ? ResManager.getColor(R.color.normal_black) : ResManager.getColor(R.color.text_gray_color));
+        binding.personalNoteCheckAllText.setEnabled(size != 0);
+        binding.personalNoteCheckAllText.setTextColor(size != 0 ? ResManager.getColor(R.color.normal_black) : ResManager.getColor(R.color.text_gray_color));
     }
 
     private void showExportDialog() {
@@ -216,5 +237,11 @@ public class PersonalNoteFragment extends BaseFragment {
         AssociateDialogHelper.dismissEmailDialog();
         ToastUtil.showToast(R.string.bind_email_success);
         showExportDialog();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAssociatedEmailToolsEvent(AssociatedEmailToolsEvent event) {
+        AssociatedEmailDialog.DialogModel model = new AssociatedEmailDialog.DialogModel(PersonalDataBundle.getInstance().getEventBus());
+        AssociateDialogHelper.showBindEmailDialog(model, getActivity());
     }
 }

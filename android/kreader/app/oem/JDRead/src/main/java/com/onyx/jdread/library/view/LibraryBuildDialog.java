@@ -6,7 +6,10 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ObservableField;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ActionMode;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -50,8 +53,6 @@ public class LibraryBuildDialog extends Dialog {
             bind.setDialogModel(model);
             bind.editName.addTextChangedListener(new TextWatcher() {
                 private CharSequence temp;
-                private int selectionStart;
-                private int selectionEnd;
 
                 @Override
                 public void beforeTextChanged(CharSequence s, int arg1, int arg2,
@@ -66,17 +67,34 @@ public class LibraryBuildDialog extends Dialog {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    selectionStart = bind.editName.getSelectionStart();
-                    selectionEnd = bind.editName.getSelectionEnd();
                     if (InputUtils.getByteCount(temp.toString()) > ResManager.getInteger(R.integer.group_name_max_length)) {
                         ToastUtil.showOffsetToast(ResManager.getString(R.string.the_input_has_exceeded_the_upper_limit), ResManager.getInteger(R.integer.toast_offset_y));
-                        s.delete(selectionStart - 1, selectionEnd);
-                        int tempSelection = selectionStart;
-                        bind.editName.setText(s);
-                        bind.editName.setSelection(tempSelection);
+                        bind.editName.setText(InputUtils.getEffectiveString(temp.toString(), ResManager.getInteger(R.integer.group_name_max_length)));
+                        bind.editName.setSelection(bind.editName.length());
                     }
                 }
 
+            });
+            bind.editName.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+                @Override
+                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                    return false;
+                }
+
+                @Override
+                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                    return false;
+                }
+
+                @Override
+                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                    return false;
+                }
+
+                @Override
+                public void onDestroyActionMode(ActionMode mode) {
+
+                }
             });
             bind.positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,7 +116,6 @@ public class LibraryBuildDialog extends Dialog {
                     dialog.dismiss();
                 }
             });
-            bind.editName.setLongClickable(false);
             dialog.setContentView(bind.getRoot());
             return dialog;
         }

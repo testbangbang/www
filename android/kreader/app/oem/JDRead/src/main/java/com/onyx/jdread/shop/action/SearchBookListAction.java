@@ -3,7 +3,6 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -42,7 +41,7 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
         this.catId = catId;
         this.sortType = sortType;
         this.sortKey = sortKey;
-        this.keyWord = CommonUtils.removeSymbol(keyWord);
+        this.keyWord = keyWord;
         this.filter = filter;
     }
 

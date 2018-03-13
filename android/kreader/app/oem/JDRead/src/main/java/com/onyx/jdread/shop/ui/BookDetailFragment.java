@@ -31,7 +31,6 @@ import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.common.LoginHelper;
@@ -51,6 +50,7 @@ import com.onyx.jdread.shop.action.BookshelfInsertAction;
 import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.action.GetChapterGroupInfoAction;
 import com.onyx.jdread.shop.action.GetChapterStartIdAction;
+import com.onyx.jdread.shop.action.GetChaptersContentAction;
 import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.MetadataQueryAction;
 import com.onyx.jdread.shop.action.SearchBookListAction;
@@ -150,12 +150,11 @@ public class BookDetailFragment extends BaseFragment {
 
     private void initData() {
         cleanData();
-        ebookId = JDPreferenceManager.getLongValue(Constants.SP_KEY_BOOK_ID, 0);
+        ebookId = getBookId();
         getBookDetail();
     }
 
     private void getBookDetail() {
-        queryMetadata();
         getBookDetailData(false);
         getRecommendData();
     }
@@ -256,6 +255,8 @@ public class BookDetailFragment extends BaseFragment {
                         bookDetailBean = bookDetailResultBean.data;
                     }
 
+                    queryMetadata();
+
                     if (!ViewHelper.isCanNowRead(bookDetailBean)) {
                         hideNowReadButton();
                     }
@@ -328,18 +329,23 @@ public class BookDetailFragment extends BaseFragment {
         recommendListAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                if (recyclerViewRecommend != null) {
+                    recyclerViewRecommend.gotoPage(0);
+                }
             }
         });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
     public void onRecommendItemClickEvent(RecommendItemClickEvent event) {
+        if (checkWifiDisconnected()) {
+            return;
+        }
         ResultBookBean bookBean = event.getBookBean();
         if (bookBean != null) {
             cleanData();
             initButton();
-            setBookId(bookBean.ebook_id);
+            switchToRecommendBook(bookBean.ebook_id);
         }
     }
 
@@ -380,18 +386,19 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewCommentEvent(ViewCommentEvent event) {
         if (getViewEventCallBack() != null) {
-            getViewEventCallBack().gotoView(CommentFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, getBookId());
+            getViewEventCallBack().gotoView(CommentFragment.class.getName(), bundle);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadWholeBookEvent(DownloadWholeBookEvent event) {
-        BookDetailResultBean bookDetailResultBean = event.getBookDetailResultBean();
-        if (bookDetailResultBean != null) {
-            bookDetailBean = bookDetailResultBean.data;
-            BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-            bookDetailBean.bookExtraInfoBean = extraInfoBean;
-            bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = isWholeBookDownLoad;
+        if (bookDetailBean != null) {
+            if (bookDetailBean.bookExtraInfoBean == null) {
+                bookDetailBean.bookExtraInfoBean = new BookExtraInfoBean();
+                bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = isWholeBookDownLoad;
+            }
             if (!JDReadApplication.getInstance().getLogin() && !LoginHelper.loginDialogIsShowing()) {
                 LoginHelper.showUserLoginDialog(getUserLoginViewModel(), getActivity());
             } else {
@@ -412,7 +419,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {
@@ -439,11 +446,10 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailReadNowEvent(BookDetailReadNowEvent event) {
-        BookDetailResultBean bookDetailResultBean = event.getBookDetailResultBean();
-        if (bookDetailResultBean != null) {
-            bookDetailBean = bookDetailResultBean.data;
-            BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-            bookDetailBean.bookExtraInfoBean = extraInfoBean;
+        if (bookDetailBean != null) {
+            if (bookDetailBean.bookExtraInfoBean == null) {
+                bookDetailBean.bookExtraInfoBean = new BookExtraInfoBean();
+            }
             tryDownload(bookDetailBean);
         }
     }
@@ -630,7 +636,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void downLoadWholeBook() {
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         nowReadButton.setEnabled(false);
@@ -654,8 +660,10 @@ public class BookDetailFragment extends BaseFragment {
     private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean) {
         DocumentInfo documentInfo = new DocumentInfo();
         DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
-        securityInfo.setKey(detailBean.key);
-        securityInfo.setRandom(detailBean.random);
+        if (detailBean.bookExtraInfoBean != null && detailBean.bookExtraInfoBean.isWholeBookDownLoad) {
+            securityInfo.setKey(detailBean.bookExtraInfoBean.key);
+            securityInfo.setRandom(detailBean.bookExtraInfoBean.random);
+        }
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
@@ -718,7 +726,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
 
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
 
@@ -755,6 +763,8 @@ public class BookDetailFragment extends BaseFragment {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                ToastUtil.showToast(ResManager.getString(R.string.download_fail));
+                upDataButtonDown(buyBookButton, true, FileDownloadStatus.error);
             }
         });
     }
@@ -770,6 +780,7 @@ public class BookDetailFragment extends BaseFragment {
             }
             if (isWholeBookDownLoad && fileIsExists(localPath)) {
                 hideNowReadButton();
+                showShopCartView(false);
                 buyBookButton.setText(ResManager.getString(R.string.book_detail_button_now_read));
             }
         }
@@ -838,11 +849,27 @@ public class BookDetailFragment extends BaseFragment {
         ViewHelper.dismissDialog(batchDownloadDialog);
     }
 
-    public void setBookId(long ebookId) {
-        this.ebookId = ebookId;
-        JDPreferenceManager.setLongValue(Constants.SP_KEY_BOOK_ID, ebookId);
+    private void switchToRecommendBook(long ebookId) {
+        setBookId(ebookId);
         queryMetadata();
         getBookDetail();
+    }
+
+    public long getBookId() {
+        Bundle bundle = getBundle();
+        if (bundle != null) {
+            return bundle.getLong(Constants.SP_KEY_BOOK_ID, 0);
+        } else {
+            return 0;
+        }
+    }
+
+    public void setBookId(long ebookId) {
+        this.ebookId = ebookId;
+        Bundle bundle = getBundle();
+        if (bundle != null) {
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, ebookId);
+        }
     }
 
     public ShopDataBundle getShopDataBundle() {
@@ -893,6 +920,16 @@ public class BookDetailFragment extends BaseFragment {
         }
     }
 
+    private void getChapterContent(String type, String ids, boolean can_try) {
+        GetChaptersContentAction getChaptersContentAction = new GetChaptersContentAction(ebookId, type, ids, can_try);
+        getChaptersContentAction.execute(getShopDataBundle(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPayByCashSuccessEvent(PayByCashSuccessEvent event) {
         onBuyBookSuccessEvent(null);
@@ -921,18 +958,20 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookSearchKeyWordEvent(BookSearchKeyWordEvent event) {
         if (getViewEventCallBack() != null) {
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, event.keyWord);
-            getViewEventCallBack().gotoView(SearchBookListFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
+            bundle.putString(Constants.SP_KEY_KEYWORD, event.keyWord);
+            getViewEventCallBack().gotoView(SearchBookListFragment.class.getName(), bundle);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookSearchPathEvent(BookSearchPathEvent event) {
         if (getViewEventCallBack() != null) {
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_KEYWORD, "");
-            JDPreferenceManager.setStringValue(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, event.catId);
-            getViewEventCallBack().gotoView(SearchBookListFragment.class.getName());
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, event.catId);
+            bundle.putString(Constants.SP_KEY_KEYWORD, "");
+            getViewEventCallBack().gotoView(SearchBookListFragment.class.getName(), bundle);
         }
     }
 

@@ -143,10 +143,8 @@ public class AlReaderPlugin implements ReaderPlugin,
         }
         if (ret == AlReaderWrapper.ERROR_PASSWORD_INVALID) {
             throw ReaderException.passwordRequired();
-        } else if (ret == AlReaderWrapper.ERROR_UNKNOWN) {
-            throw ReaderException.cannotOpen();
         }
-        return null;
+        throw ReaderException.cannotOpen();
     }
 
     public boolean supportDrm() {
