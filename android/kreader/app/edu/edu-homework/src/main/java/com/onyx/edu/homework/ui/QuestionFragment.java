@@ -215,9 +215,9 @@ public class QuestionFragment extends BaseFragment {
             getDataBundle().getNoteViewHelper().setTextLayoutArgs(TextLayoutArgs.create(question.content, TextUtils.getTextSpacingAdd(question)));
         }
         scribbleFragment = ScribbleFragment.newInstance(question);
-        loadRootFragment(R.id.scribble_layout, scribbleFragment);
+        getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
         toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1, RelativeLayout.ALIGN_PARENT_TOP);
-        loadRootFragment(R.id.tool_layout, toolFragment);
+        getChildFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
     }
 
     private void removeFragment() {
