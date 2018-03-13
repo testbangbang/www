@@ -31,7 +31,7 @@
             android:paddingRight="@dimen/category_book_list_selected_button_padding_left_and_right"
             android:text="@{categoryBean.name}"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/font_size_15" />
+            android:textSize="@dimen/font_size_17" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
