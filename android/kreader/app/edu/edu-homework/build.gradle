@@ -86,4 +86,6 @@ dependencies {
     testCompile "junit:junit:$rootProject.junitVersion"
     // db debug
     debugCompile 'com.amitshekhar.android:debug-db:1.0.2'
+    // fragment
+    compile 'me.yokeyword:fragmentation:1.3.1'
 }

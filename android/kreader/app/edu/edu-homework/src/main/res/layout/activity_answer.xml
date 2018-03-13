@@ -41,21 +41,37 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <LinearLayout
-                android:background="@android:color/white"
-                android:orientation="horizontal"
                 android:id="@+id/tool_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:orientation="horizontal"/>
 
-            <TextView
-                android:gravity="center"
-                android:text="@string/close_draft"
-                android:padding="@dimen/homework_text_margin"
-                android:background="@drawable/round_bg"
-                android:id="@+id/tv_draft"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                style="@style/homework_text" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_draft"
+                    style="@style/homework_text"
+                    android:background="@drawable/round_bg"
+                    android:gravity="center"
+                    android:padding="@dimen/homework_text_margin"
+                    android:text="@string/close_draft"/>
+
+                <TextView
+                    android:id="@+id/analysis"
+                    style="@style/homework_text"
+                    android:background="@drawable/round_bg"
+                    android:gravity="center"
+                    android:padding="@dimen/homework_text_margin"
+                    android:text="@string/analysis"/>
+
+            </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
 </layout>

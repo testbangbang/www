@@ -8,6 +8,7 @@
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -53,24 +54,29 @@
             android:paddingLeft="@dimen/homework_text_margin"
             android:paddingRight="@dimen/homework_text_margin"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/has_answer"
+                tools:text="@string/has_answer"
                 style="@style/homework_text" />
 
             <TextView
                 android:id="@+id/not_answer"
+                tools:text="@string/not_answer"
                 style="@style/homework_text" />
 
             <TextView
                 android:visibility="gone"
                 android:id="@+id/total_score"
+                tools:text="@string/total_score"
                 style="@style/homework_text" />
 
             <TextView
                 android:visibility="gone"
+                tools:text="@string/single_score"
                 android:id="@+id/single_score"
                 style="@style/homework_text" />
 
@@ -126,6 +132,7 @@
                     android:textColor="@color/text_color"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    tools:text="@string/get_result"
                     android:id="@+id/get_result" />
 
                 <ImageView
@@ -144,12 +151,14 @@
                 android:padding="@dimen/homework_text_margin"
                 android:background="@drawable/round_bg"
                 android:id="@+id/answer_record"
+                tools:text="@string/return_question"
                 style="@style/homework_text" />
 
             <TextView
                 android:padding="@dimen/homework_text_margin"
                 android:background="@drawable/round_bg"
                 android:id="@+id/submit"
+                tools:text="@string/submit"
                 style="@style/homework_text" />
 
             <ImageView
@@ -166,6 +175,7 @@
                 android:gravity="center"
                 android:minWidth="80dp"
                 android:id="@+id/page"
+                tools:text="@string/question_page"
                 style="@style/homework_text" />
 
             <ImageView

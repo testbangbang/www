@@ -40,7 +40,6 @@ import com.onyx.edu.homework.action.note.ShowExitDialogAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.HomeworkIntent;
-import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.data.NotificationType;
 import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
@@ -55,6 +54,7 @@ import com.onyx.edu.homework.event.ShowRecordFragmentEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 import com.onyx.edu.homework.receiver.OnyxNotificationReceiver;
+import com.onyx.edu.homework.utils.ViewUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -79,6 +79,8 @@ public class HomeworkListActivity extends BaseActivity {
     private int currentPage = 0;
     private CountDownTimer timer;
     private boolean visible;
+    @Nullable
+    private Question question;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -417,12 +419,12 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showMessage(@StringRes int messageId) {
-        binding.message.setVisibility(View.VISIBLE);
+        ViewUtils.setGone(binding.message, true);
         binding.message.setText(messageId);
     }
 
     private void hideMessage() {
-        binding.message.setVisibility(View.GONE);
+        ViewUtils.setGone(binding.message, false);
     }
 
     private void showHomeworkScore() {
@@ -514,7 +516,7 @@ public class HomeworkListActivity extends BaseActivity {
         }
         binding.page.setText(getString(R.string.question_page, current + File.separator + total));
 
-        Question question = questions.get(position);
+        question = questions.get(position);
         if (getDataBundle().isReview()) {
             if (question.review != null) {
                 binding.answerIcon.setImageResource(question.review.isRightAnswer() ? R.drawable.ic_right : R.drawable.ic_wrong);
@@ -522,11 +524,11 @@ public class HomeworkListActivity extends BaseActivity {
         }
 
         showQuestionScore();
-        showDraft(question);
+        showDraft();
     }
 
-    private void showDraft(Question question) {
-        binding.tvDraft.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
+    private void showDraft() {
+        ViewUtils.setGone(binding.tvDraft, null != question && question.isChoiceQuestion() && recordFragment == null);
     }
 
     @Override
@@ -544,8 +546,8 @@ public class HomeworkListActivity extends BaseActivity {
 
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
-        updateViewState();
         showRecordFragment();
+        updateViewState();
     }
 
 
@@ -570,7 +572,9 @@ public class HomeworkListActivity extends BaseActivity {
 
     @Subscribe
     public void onReloadQuestionViewEvent(ReloadQuestionViewEvent event) {
-        reloadQuestionFragment(currentPage);
+        if (recordFragment == null) {
+            reloadQuestionFragment(currentPage);
+        }
     }
 
     public void setCurrentPage(int page) {
@@ -592,25 +596,27 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void updateViewState() {
-        binding.analysis.setVisibility(getDataBundle().canCheckAnswer() ? View.VISIBLE : View.GONE);
-        binding.answerIcon.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
-//        binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
-        binding.answerRecord.setVisibility(View.GONE);
-//        binding.submit.setVisibility(getDataBundle().isReview() || getDataBundle().canCheckAnswer() ? View.GONE : View.VISIBLE);
-        binding.submit.setVisibility(View.VISIBLE);
+        ViewUtils.setGone(binding.analysis, getDataBundle().canCheckAnswer() && recordFragment == null);
+        ViewUtils.setGone(binding.answerIcon, getDataBundle().isReview() && recordFragment == null);
+        ViewUtils.setGone(binding.answerRecord, recordFragment != null);
+        ViewUtils.setGone(binding.submit, true);
         binding.submit.setText(getDataBundle().isSubmittedAfterReview() || getDataBundle().isReview() ?
                 R.string.correct_homework : R.string.submit_homework);
-        binding.getResultLayout.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
-        binding.newMessage.setVisibility(getDataBundle().canGetReview() ? View.VISIBLE : View.GONE);
-        binding.hasAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
-        binding.notAnswer.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
-        binding.totalScore.setVisibility(View.GONE);
-        binding.singleScore.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
-        binding.scoreRank.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        ViewUtils.setGone(binding.getResultLayout, getDataBundle().isSubmitted());
+        ViewUtils.setGone(binding.newMessage, getDataBundle().canGetReview());
+        ViewUtils.setGone(binding.hasAnswer, !getDataBundle().isReview());
+        ViewUtils.setGone(binding.notAnswer, !getDataBundle().isReview());
+        ViewUtils.setGone(binding.totalScore, false);
+        ViewUtils.setGone(binding.singleScore, getDataBundle().isReview() && recordFragment == null);
+        ViewUtils.setGone(binding.scoreRank, getDataBundle().isReview());
+        ViewUtils.setGone(binding.prevPage,recordFragment == null);
+        ViewUtils.setGone(binding.page,recordFragment == null);
+        ViewUtils.setGone(binding.nextPage,recordFragment == null);
+        showDraft();
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressedSupport() {
         getDataBundle().post(new CloseSubMenuEvent());
         showExitDialog();
     }
@@ -653,6 +659,7 @@ public class HomeworkListActivity extends BaseActivity {
                 recordFragment = RecordFragment.newInstance(questions);
                 getSupportFragmentManager().beginTransaction().replace(R.id.record_layout, recordFragment).commit();
                 binding.answerRecord.setText(R.string.return_answer);
+                updateViewState();
             }
         });
     }
@@ -667,6 +674,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (reload) {
             reloadQuestionFragment(currentPage);
         }
+        updateViewState();
     }
 
     private void countDownEndTime() {

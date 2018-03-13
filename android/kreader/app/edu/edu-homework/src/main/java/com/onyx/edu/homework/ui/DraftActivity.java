@@ -8,14 +8,18 @@ import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Subject;
 import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
+import com.onyx.edu.homework.action.ShowAnalysisAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Constant;
+import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityAnswerBinding;
 import com.onyx.edu.homework.event.CloseScribbleEvent;
 import com.onyx.edu.homework.event.SaveNoteEvent;
@@ -74,6 +78,12 @@ public class DraftActivity extends BaseActivity {
                 onBackPressed();
             }
         } );
+        binding.analysis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAnalysisDialog();
+            }
+        } );
     }
 
     private DataBundle getDataBundle() {
@@ -105,12 +115,26 @@ public class DraftActivity extends BaseActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressedSupport() {
         DataBundle.getInstance().post(new SaveNoteEvent(true));
     }
 
     @Subscribe
     public void onCloseScribbleEvent(CloseScribbleEvent event) {
         finish();
+    }
+
+    private void showAnalysisDialog() {
+        SaveDocumentOption option = SaveDocumentOption.onStopSaveOption();
+        scribbleFragment.saveDocument(option.finishAfterSave,
+                option.resumeDrawing,
+                option.render,
+                option.showLoading,
+                new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        new ShowAnalysisAction(question).execute(DraftActivity.this, null);
+                    }
+                });
     }
 }
