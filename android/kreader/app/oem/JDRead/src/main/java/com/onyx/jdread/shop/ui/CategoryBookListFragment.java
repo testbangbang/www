@@ -103,8 +103,8 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void initDefaultParams() {
-        sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
-        getCategoryBookListViewModel().updateSortKeyInfo(getCategoryBookListViewModel().getSortKeySelected());
+        restoreSortKeyAndType();
+        getCategoryBookListViewModel().updateSortKeyInfo(sortkey);
     }
 
     private String getFinalCatId() {
@@ -304,12 +304,10 @@ public class CategoryBookListFragment extends BaseFragment {
         this.catTwoId = categoryBean.id;
         this.currentCatName = categoryBean.name;
         this.currentPage = 1;
-        this.sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
-        Bundle bundle = new Bundle();
+        Bundle bundle = getBundle();
         bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
         bundle.putString(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
-        setBundle(bundle);
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
     }
 
@@ -369,6 +367,7 @@ public class CategoryBookListFragment extends BaseFragment {
             sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
             sortkey = event.sortKey;
         }
+        saveSortKeyAndType(event.sortKey, sortType);
         unsetContentPage();
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
     }
@@ -404,5 +403,25 @@ public class CategoryBookListFragment extends BaseFragment {
 
     private void unsetContentPage() {
         getCategoryBookListViewModel().setContentPage(0);
+    }
+
+    private void saveSortKeyAndType(int sortKey, int sortType) {
+        getBundle().putInt(CloudApiContext.SearchBook.SORT_KEY, sortKey);
+        getBundle().putInt(CloudApiContext.SearchBook.SORT_TYPE, sortType);
+    }
+
+    private void restoreSortKeyAndType() {
+        sortkey = getBundle().getInt(CloudApiContext.SearchBook.SORT_KEY, sortkey);
+        sortType = getBundle().getInt(CloudApiContext.SearchBook.SORT_TYPE, sortType);
+    }
+
+    @Override
+    public Bundle getBundle() {
+        Bundle bundle = super.getBundle();
+        if (bundle == null) {
+            bundle = new Bundle();
+            setBundle(bundle);
+        }
+        return bundle;
     }
 }
