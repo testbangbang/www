@@ -1,11 +1,14 @@
 package com.onyx.jdread.reader.handler;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.data.RegionFunctionManager;
 import com.onyx.jdread.reader.event.ShowCloseDocumentDialogEvent;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +23,8 @@ public class HandlerManger {
     public static final int TTS_PROVIDER = 3;
     private ReaderDataHolder readerDataHolder;
     private int activeProviderType;
+    private long lastDownTime = 0;
+    private long currentTime = 0;
 
     public Map<Integer, BaseHandler> handlers = null;
 
@@ -91,9 +96,20 @@ public class HandlerManger {
 
     public void panFinished(int offsetX, int offsetY) {
         if (!readerDataHolder.getReaderViewInfo().canPan()) {
-            RegionFunctionManager.processRegionFunction(readerDataHolder, offsetX, offsetY);
+            if(processRegionFunctionIntervalTime()) {
+                RegionFunctionManager.processRegionFunction(readerDataHolder, offsetX, offsetY);
+            }
             return;
         }
+    }
+
+    private boolean processRegionFunctionIntervalTime(){
+        long currentTime = (new Date()).getTime();
+        if(currentTime - lastDownTime > ReaderConfig.READER_TOUCH_INTERVAL_TIME){
+            lastDownTime = currentTime;
+            return true;
+        }
+        return false;
     }
 
     public boolean onSingleTapConfirmed(MotionEvent event) {
