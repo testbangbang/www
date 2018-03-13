@@ -699,6 +699,7 @@ public class LibraryFragment extends BaseFragment {
         securityInfo.setRandom(dataModel.random.get());
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
+        documentInfo.setBookName(dataModel.title.get());
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 
