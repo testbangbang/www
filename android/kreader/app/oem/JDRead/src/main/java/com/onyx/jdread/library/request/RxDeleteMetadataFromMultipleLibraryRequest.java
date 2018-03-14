@@ -1,5 +1,6 @@
 package com.onyx.jdread.library.request;
 
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -7,7 +8,6 @@ import com.onyx.android.sdk.data.rxrequest.data.db.RxBaseDBRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.main.common.Constants;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
@@ -53,7 +53,7 @@ public class RxDeleteMetadataFromMultipleLibraryRequest extends RxBaseDBRequest 
         database.endTransaction();
 
         for (Metadata metadata : list) {
-            if (!metadata.getNativeAbsolutePath().startsWith(Constants.SYSTEM_PRE_BOOKS_DIR)) {
+            if (!metadata.getNativeAbsolutePath().startsWith(Constant.SYSTEM_PRE_BOOKS_DIR)) {
                 FileUtils.deleteFile(metadata.getNativeAbsolutePath());
             }
         }

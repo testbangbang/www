@@ -17,7 +17,6 @@ public class Constants {
     public static final String UTF_8 = "UTF-8";
     public static final String CLIENT_VERSION = "2.6.3";
     public static final int SYSTEM_SETTING_PRESS_COUNT = 6;
-    public static final String SYSTEM_PRE_BOOKS_DIR = "/system/media/prebooks/";
     public static boolean isUseCache = true;
     public static final String POST = "POST";
     public static final String MD_5 = "MD5";
