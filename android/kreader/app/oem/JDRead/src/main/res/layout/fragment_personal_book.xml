@@ -32,11 +32,13 @@
                 android:layout_height="wrap_content" />
 
             <LinearLayout
+                android:layout_marginTop="@dimen/setting_title_bar_padding"
+                android:layout_marginBottom="@dimen/setting_title_bar_padding"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:orientation="horizontal"
-                android:padding="@dimen/personal_book_title_padding">
+                android:paddingRight="@dimen/personal_book_title_padding">
 
                 <ImageView
                     android:id="@+id/personal_book_search"

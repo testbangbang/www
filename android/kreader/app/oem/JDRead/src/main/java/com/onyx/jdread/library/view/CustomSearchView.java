@@ -61,8 +61,8 @@ public class CustomSearchView extends LinearLayout implements TextWatcher, Actio
         etInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH && onQueryTextListener != null) {
-                    onQueryTextListener.onQueryTextSubmit(textView.getText().toString());
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    doSearch();
                 }
                 return true;
             }

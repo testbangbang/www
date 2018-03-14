@@ -50,6 +50,10 @@ public class JEBFilesZIP extends AlFiles {
     private static final String TAG_UU_ID = "uu_id";
     public static final String JEB_TAG = ".JEB";
     public static final String TAG_BOOK_NAME = "BookName";
+    public static class JEBFileInfo{
+        public int fileDecryptLength;
+        public int uLength;
+    }
 
     public static void setPassword(String password){
         try {
@@ -387,16 +391,19 @@ public class JEBFilesZIP extends AlFiles {
                     if (external_infl == null)
                         external_infl = new Inflater(true);
                     external_infl.reset();
-                    int bufferSize = ZIP_CHUNK_SIZE * 16;
+                    int bufferSize = cnt * 2;
 
                     int total_out, in_buff_size, out_buff_size, tmp, unzip_out_buff_size;
 
-                    if (in_external_buff == null)
+                    if (in_external_buff == null) {
                         in_external_buff = new byte[ZIP_CHUNK_SIZE];
-                    if (out_external_buff == null)
+                    }
+                    if (out_external_buff == null || bufferSize > out_external_buff.length) {
                         out_external_buff = new byte[bufferSize];
-                    if (unzip_external_buff == null)
+                    }
+                    if (unzip_external_buff == null) {
                         unzip_external_buff = new byte[ZIP_CHUNK_SIZE];
+                    }
 
                     int position = fileList.get(num).position;
 
@@ -404,6 +411,7 @@ public class JEBFilesZIP extends AlFiles {
                     total_out = out_buff_size = 0;
                     boolean isDecrypt = true;
                     int deend = 0;
+                    int fileLength = fileList.get(num).uLength;
                     while (res < cnt && pos < fileList.get(num).uSize) {
                         if (pos >= total_out && pos < (total_out + out_buff_size)) {
                             tmp = Math.min((total_out + out_buff_size) - pos, cnt - res);
@@ -422,10 +430,11 @@ public class JEBFilesZIP extends AlFiles {
 
                             try {
                                 unzip_out_buff_size = external_infl.inflate(unzip_external_buff, 0, ZIP_CHUNK_SIZE);
-                                if (cnt - res < ZIP_CHUNK_SIZE) {
-                                    deend = 1;
-                                } else {
+                                if(fileLength - unzip_out_buff_size > 0){
+                                    fileLength -= unzip_out_buff_size;
                                     deend = 0;
+                                } else {
+                                    deend = 1;
                                 }
                                 if (isDecrypt) {
                                     int decryptSize = 0;
