@@ -25,9 +25,10 @@ public class ReaderTitleBarModel extends BaseObservable {
     private ObservableBoolean isShow = new ObservableBoolean(true);
     private EventBus eventBus;
 
-    public ReaderTitleBarModel(EventBus eventBus,boolean supportFontSizeAdjustment) {
+    public ReaderTitleBarModel(EventBus eventBus,boolean supportFontSizeAdjustment,boolean isWholeBookDownLoad) {
         this.eventBus = eventBus;
         setIsSearchContext(supportFontSizeAdjustment);
+        setIsBuy(isWholeBookDownLoad);
     }
 
     public EventBus getEventBus() {
@@ -55,8 +56,8 @@ public class ReaderTitleBarModel extends BaseObservable {
         return isBuy;
     }
 
-    public void setIsBuy(ObservableBoolean isBuy) {
-        this.isBuy = isBuy;
+    public void setIsBuy(boolean isBuy) {
+        this.isBuy.set(isBuy);
     }
 
     public ObservableBoolean getIsSearchContext() {

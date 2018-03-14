@@ -711,6 +711,10 @@ public class LibraryFragment extends BaseFragment {
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookName(dataModel.title.get());
+        documentInfo.setWholeBookDownLoad(dataModel.isWholeBookDownLoad.get());
+        if(StringUtils.isNotBlank(dataModel.cloudId.get())) {
+            documentInfo.setCloudId(Integer.parseInt(dataModel.cloudId.get()));
+        }
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 

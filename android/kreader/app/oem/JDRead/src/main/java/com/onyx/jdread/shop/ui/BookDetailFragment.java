@@ -668,6 +668,8 @@ public class BookDetailFragment extends BaseFragment {
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
         documentInfo.setBookName(detailBean.name);
+        documentInfo.setWholeBookDownLoad(detailBean.bookExtraInfoBean.isWholeBookDownLoad);
+        documentInfo.setCloudId(detailBean.ebook_id);
         OpenBookHelper.openBook(super.getContext(), documentInfo);
     }
 

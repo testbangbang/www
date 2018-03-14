@@ -67,6 +67,15 @@ public class ParserOpenDocumentInfoAction extends BaseReaderAction {
         if(intent.hasExtra(DocumentInfo.PASSWORD)){
             documentInfo.setBookName(intent.getStringExtra(DocumentInfo.PASSWORD));
         }
+        if(intent.hasExtra(DocumentInfo.WHOLE_BOOK_DOWNLOAD)){
+            documentInfo.setWholeBookDownLoad(intent.getBooleanExtra(DocumentInfo.WHOLE_BOOK_DOWNLOAD,true));
+        }
+        if(intent.hasExtra(DocumentInfo.CLOUD_ID)){
+            documentInfo.setCloudId(intent.getLongExtra(DocumentInfo.CLOUD_ID,Integer.MAX_VALUE));
+        }
+        if(intent.hasExtra(DocumentInfo.OPEN_TYPE)){
+            documentInfo.setOpenType(intent.getIntExtra(DocumentInfo.OPEN_TYPE,DocumentInfo.OPEN_BOOK));
+        }
         setSecurityInfo();
     }
 

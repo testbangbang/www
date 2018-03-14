@@ -52,7 +52,7 @@ public class AddWIFIConfigurationDialog extends Dialog {
             AddWIFIConfigurationDialog dialog = new AddWIFIConfigurationDialog(context, R.style.CustomDialogStyle);
             final DialogAddWifiBinding binding = DataBindingUtil.bind(View.inflate(context, R.layout.dialog_add_wifi, null));
             binding.setDialogModel(model);
-            model.isShowPwd.set(false);
+            model.isShowPwd.set(true);
             model.sureEnable.set(false);
             binding.securitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override

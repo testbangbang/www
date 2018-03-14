@@ -12,12 +12,21 @@ public class DocumentInfo {
     public static final String BOOK_PATH = "bookPath";
     public static final String BOOK_NAME = "bookName";
     public static final String PASSWORD = "password";
+    public static final String WHOLE_BOOK_DOWNLOAD = "wholeBookDownLoad";
+    public static final String CLOUD_ID = "cloudId";
+    public static final String OPEN_TYPE = "openType";
+    public static final int OPEN_BOOK = 1;
+    public static final int OPEN_BOOK_CATALOG = 2;
     private String bookPath;
     private String bookName;
     private String password;
     private int messageId = Integer.MAX_VALUE;
     private SecurityInfo securityInfo;
     private boolean dryRun = false;
+    private boolean isWholeBookDownLoad = true;
+    private long cloudId = Integer.MAX_VALUE;
+    private int openType = OPEN_BOOK;
+
 
     public void setSecurityInfo(SecurityInfo securityInfo) {
         this.securityInfo = securityInfo;
@@ -108,6 +117,30 @@ public class DocumentInfo {
         this.dryRun = dryrun;
     }
 
+    public boolean isWholeBookDownLoad() {
+        return isWholeBookDownLoad;
+    }
+
+    public void setWholeBookDownLoad(boolean wholeBookDownLoad) {
+        isWholeBookDownLoad = wholeBookDownLoad;
+    }
+
+    public int getOpenType() {
+        return openType;
+    }
+
+    public void setOpenType(int openType) {
+        this.openType = openType;
+    }
+
+    public long getCloudId() {
+        return cloudId;
+    }
+
+    public void setCloudId(long cloudId) {
+        this.cloudId = cloudId;
+    }
+
     public void documentInfoToIntent(Intent intent){
         if(StringUtils.isNullOrEmpty(bookPath)){
             return;
@@ -128,5 +161,8 @@ public class DocumentInfo {
         if(StringUtils.isNotBlank(securityInfo.uuId)){
             intent.putExtra(SecurityInfo.UU_ID,securityInfo.uuId);
         }
+        intent.putExtra(WHOLE_BOOK_DOWNLOAD,isWholeBookDownLoad);
+        intent.putExtra(CLOUD_ID,cloudId);
+        intent.putExtra(OPEN_TYPE,openType);
     }
 }
