@@ -85,11 +85,13 @@ public class ShopCartFragment extends BaseFragment {
         shopCartModel = ShopDataBundle.getInstance().getShopCartModel();
         shopCartModel.setSettlementEnable(false);
         shopCartModel.setCheckAllEnable(false);
+        shopCartModel.setSelectedAll(false);
         shopCartModel.setTotalAmount("0");
         shopCartModel.setOriginalPrice("0");
         shopCartModel.setCashBack("0");
         shopCartModel.setSize("0");
         binding.setModel(shopCartModel);
+        binding.amountLayout.setVisibility(View.INVISIBLE);
         updateShopCartStatus(null, Constants.CART_TYPE_GET);
     }
 
@@ -110,17 +112,24 @@ public class ShopCartFragment extends BaseFragment {
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                List<ShopCartItemData> datas = shopCartModel.getDatas();
-                if (datas != null) {
-                    shopCartModel.setSize(datas.size() + "");
-                    shopCartModel.setSelectedAll(true);
-                    shopCartAdapter.setData(datas);
-                    binding.shopCartRecycler.notifyDataSetChanged();
-                    pages = paginator.pages();
-                    shopCartModel.setPageSize(paginator.getProgressText());
-                }
+                updateShopCartView(shopCartModel.getDatas());
             }
         });
+    }
+
+    private void updateShopCartView(List<ShopCartItemData> datas) {
+        if (datas == null) {
+            return;
+        }
+        int size = datas.size();
+        shopCartModel.setSize(size + "");
+        shopCartModel.setSelectedAll(size > 0);
+        shopCartModel.setCheckAllEnable(size > 0);
+        shopCartAdapter.setData(datas);
+        shopCartAdapter.notifyDataSetChanged();
+        pages = paginator.pages();
+        shopCartModel.setPageSize(paginator.getProgressText());
+        binding.amountLayout.setVisibility(size > 0 ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void initListener() {
