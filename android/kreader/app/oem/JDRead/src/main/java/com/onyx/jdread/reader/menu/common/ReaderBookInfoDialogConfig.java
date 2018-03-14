@@ -10,6 +10,7 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.TreeRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.catalog.dialog.DialogAnnotation;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
@@ -33,23 +34,31 @@ public class ReaderBookInfoDialogConfig {
         Node node = new Node();
         if (toc != null && toc.getRootEntry().getChildren() != null) {
             for (ReaderDocumentTableOfContentEntry entry : toc.getRootEntry().getChildren()) {
-                TreeRecyclerView.TreeNode treeNode = buildTreeNode(null, entry);
-                node.nodes.add(treeNode);
-                node.hasChildren = treeNode.hasChildren();
+                ArrayList<TreeRecyclerView.TreeNode> nodes = buildTreeNode(null, entry);
+                node.nodes.addAll(nodes);
             }
         }
         return node;
     }
 
-    private static TreeRecyclerView.TreeNode buildTreeNode(TreeRecyclerView.TreeNode parent, ReaderDocumentTableOfContentEntry entry) {
+    private static ArrayList<TreeRecyclerView.TreeNode> buildTreeNode(TreeRecyclerView.TreeNode parent, ReaderDocumentTableOfContentEntry entry) {
         String pageName = PagePositionUtils.getPageNumberForDisplay(entry.getPageName());
         TreeRecyclerView.TreeNode node = new TreeRecyclerView.TreeNode(parent, entry.getTitle(), pageName, entry);
+        ArrayList<TreeRecyclerView.TreeNode> nodes = new ArrayList<>();
         if (entry.getChildren() != null) {
             for (ReaderDocumentTableOfContentEntry child : entry.getChildren()) {
-                node.addChild(buildTreeNode(node, child));
+                String position = child.getPosition();
+                if(StringUtils.isNotBlank(position)){
+                    int pagePosition = PagePositionUtils.getPosition(position);
+                    if(pagePosition >= 0) {
+                        nodes.addAll(buildTreeNode(node, child));
+                    }
+                }
             }
+        }else{
+            nodes.add(node);
         }
-        return node;
+        return nodes;
     }
 
     public static void showAnnotationEditDialog(final Context context,final Annotation annotation, final int position) {

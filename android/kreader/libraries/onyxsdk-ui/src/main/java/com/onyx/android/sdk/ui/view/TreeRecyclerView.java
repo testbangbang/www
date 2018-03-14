@@ -256,7 +256,7 @@ public class TreeRecyclerView extends PageRecyclerView {
             textViewTitle.setText(trim(node.title));
             textViewDescription.setText(node.description);
             textViewDescription.setVisibility(View.GONE);
-            if(currentNode.equals(node)){
+            if(currentNode != null && currentNode.equals(node)){
                 currentChapter.setBackgroundColor(Color.BLACK);
             }else{
                 currentChapter.setBackgroundColor(Color.WHITE);

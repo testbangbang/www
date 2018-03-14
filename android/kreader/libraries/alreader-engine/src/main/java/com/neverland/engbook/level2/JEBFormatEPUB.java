@@ -256,7 +256,7 @@ public class JEBFormatEPUB extends AlFormatBaseHTML {
                 link.append(AlFiles.getAbsoluteName(toc_base, href));
                 if (pos != -1)
                     link.append(a.href.substring(pos));
-
+                pos = -1;
                 for (int j = startFind; j < lnk.size(); j++) {
                     if (lnk.get(j).name.contentEquals(link)) {
                         pos = lnk.get(j).positionS;
