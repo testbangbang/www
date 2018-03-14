@@ -17,6 +17,7 @@ public class ReaderConfig {
     public static final int HIT_TEST_TEXT_STEP = 30;
     public static final int QUOTE_STATE_MODIFY = 1;
     public static final int QUOTE_STATE_NOT_CHANGED = 2;
+    public static final int READER_TOUCH_INTERVAL_TIME = 500;
 
     public static class Typeface {
         public static final String TYPEFACE_ONE = TYPEFACE_ROOT_PATH + "FZHei-B01.TTF";

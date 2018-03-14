@@ -132,6 +132,11 @@ public class TopUpDialog extends DialogFragment {
         ss.setSpan(styleSpan, 2, 5, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         ss.setSpan(styleSpan2, 8, 12, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         binding.dialogTopUpQrCodeLayout.payWay.setText(ss);
+        if (isPayByCash()) {
+            binding.payOrder.payOrderBalance.setVisibility(View.GONE);
+            binding.payOrder.paymentReadBean.setVisibility(View.GONE);
+            binding.payOrder.paymentCash.setChecked(true);
+        }
     }
 
     private void initData() {
@@ -173,6 +178,10 @@ public class TopUpDialog extends DialogFragment {
                 gotoTopUpPage();
             }
         }
+    }
+
+    private boolean isPayByCash() {
+        return getArguments() != null && getArguments().getBoolean(Constants.PAY_BY_CASH, false);
     }
 
     private boolean isBuyNetBook() {
@@ -232,12 +241,12 @@ public class TopUpDialog extends DialogFragment {
         binding.dialogTopUpClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode.getVisibility() == View.VISIBLE) {
-                    abortPayByCashRequest();
-                    setVisible(R.id.dialog_top_up_detail_layout);
-                } else {
+                if (isPayByCash() || binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode.getVisibility() != View.VISIBLE) {
                     dismiss();
+                    return;
                 }
+                abortPayByCashRequest();
+                setVisible(R.id.dialog_top_up_detail_layout);
             }
         });
 
