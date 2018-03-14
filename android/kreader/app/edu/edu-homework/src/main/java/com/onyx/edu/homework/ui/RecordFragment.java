@@ -215,7 +215,6 @@ public class RecordFragment extends BaseFragment {
         int height = (int) getContext().getResources().getDimension(R.dimen.record_scribble_view_height);
         Rect size =  new Rect(0, 0, width, height);
         final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(),
-                questions,
                 size,
                 3);
         pageAction.execute(getNoteViewHelper(), new BaseCallback() {
