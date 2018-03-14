@@ -3,10 +3,12 @@ package com.onyx.android.sdk.data.model;
 import android.content.Context;
 import android.os.Build;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.converter.MapListStringConverter;
 import com.onyx.android.sdk.data.db.OnyxCloudDatabase;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.PackageUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
@@ -64,6 +66,15 @@ public class ApplicationUpdate extends BaseData {
             changeLogList = new ArrayList<>();
         }
         return changeLogList;
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getChangeLog() {
+        List<String> changeLogs = getChangeLogList();
+        if (!CollectionUtils.isNullOrEmpty(changeLogs)) {
+            return StringUtils.join(changeLogs, "\n");
+        }
+        return "";
     }
 
     public static ApplicationUpdate create(Context context) {
