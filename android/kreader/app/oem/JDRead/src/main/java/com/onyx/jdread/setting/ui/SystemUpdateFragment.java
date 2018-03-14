@@ -365,7 +365,7 @@ public class SystemUpdateFragment extends BaseFragment {
     }
 
     private void loadSystemUpdateHistory() {
-        if (ViewHelper.dialogIsShowing(loadingDialog)) {
+        if (ViewHelper.dialogIsShowing(getLoadingDialog())) {
             return;
         }
         final SystemUpdateHistoryAction historyAction = new SystemUpdateHistoryAction();

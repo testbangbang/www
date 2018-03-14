@@ -2,8 +2,10 @@ package com.onyx.jdread.main.common;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -17,8 +19,8 @@ import com.onyx.jdread.util.Utils;
 public class BaseFragment extends Fragment {
     private Bundle bundle;
     protected ChildViewEventCallBack viewEventCallBack = null;
-    protected LoadingDialog loadingDialog;
-    protected LoadingDialog.DialogModel loadingModel;
+    private LoadingDialog loadingDialog;
+    private LoadingDialog.DialogModel loadingModel;
 
     public interface ChildViewEventCallBack {
         void gotoView(String childClassName);
@@ -104,5 +106,15 @@ public class BaseFragment extends Fragment {
             }
             goNetWorkErrorFragment(bundle);
         }
+    }
+
+    @NonNull
+    public LoadingDialog getLoadingDialog() {
+        return loadingDialog;
+    }
+
+    @NonNull
+    public LoadingDialog.DialogModel getLoadingModel() {
+        return loadingModel;
     }
 }
