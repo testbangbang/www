@@ -53,7 +53,7 @@ public class PayByReadBeanAction extends BaseAction {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                invokeNext(rxCallback, throwable);
+                invokeError(rxCallback, throwable);
             }
         });
     }
