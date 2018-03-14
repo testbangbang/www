@@ -66,3 +66,6 @@
 # keep javabean
 -keep class com.onyx.jdread.shop.cloud.entity** { *; }
 -keep class com.onyx.jdread.personal.cloud.entity** { *; }
+
+-keepclassmembers class **.R$* {public static <fields>;}
+-keep class **.R$*
