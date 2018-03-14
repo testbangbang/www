@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.common;
 
-import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.ClientUtils;
@@ -221,15 +220,19 @@ public class CloudApiContext {
     }
 
     public static ReadContentService getServiceNoCookie(String baseUrl) {
+        return getServiceNoCookie(ReadContentService.class, baseUrl);
+    }
+
+    public static OnyxService getOnyxService(String baseUrl) {
+        return getServiceNoCookie(OnyxService.class, baseUrl);
+    }
+
+    public static <T> T getServiceNoCookie(final Class<T> service, final String baseUrl) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(CloudApiContext.getClientNoCookie())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return retrofit.create(ReadContentService.class);
-    }
-
-    public static OnyxService getOnyxService(String baseUrl) {
-        return ServiceFactory.getSpecifyService(OnyxService.class, baseUrl);
+        return retrofit.create(service);
     }
 }
