@@ -337,7 +337,7 @@
     <string name="buy_book_success">购买成功 </string>
     <string name="buy_read_vip">购买京东读书VIP</string>
     <string name="not_open_vip">还未开通京东读书VIP</string>
-    <string name="read_vip_instructions">京东读书VIP须知</string>
+    <string name="read_vip_instructions">VIP须知</string>
     <string name="read_vip_can_not_buy">不能购买京东读书VIP</string>
     <string name="read_vip_surpass_yeas">VIP剩余时长已达%d年上限，无法继续购买</string>
     <string name="ten">￥10.00</string>
@@ -447,11 +447,11 @@
     <string name="input_translate_content">请输入需要翻译的内容</string>
     <string name="uninstall_translate_app">未安装翻译客户端</string>
     <string name="not_login">未登录</string>
-    <string name="open_vip_read">开通会员</string>
-    <string name="renew_vip_read">会员续费</string>
-    <string name="vip_read_days">京东读书VIP有效天数%s天</string>
-    <string name="vip_read_notice">会员须知</string>
-    <string name="not_open_vip_read">未开通会员</string>
+    <string name="open_vip_read">开通VIP</string>
+    <string name="renew_vip_read">VIP续费</string>
+    <string name="vip_read_days">会员有效天数%s天</string>
+    <string name="vip_read_notice">VIP须知</string>
+    <string name="not_open_vip_read">还未开通京东读书VIP</string>
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">该图书已购买或者是免费书,无需购买!</string>
     <string name="empty_search_key_prompt">请输入需要搜索的内容</string>
     <string name="no_more_content">没有更多内容了</string>
