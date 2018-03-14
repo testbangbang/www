@@ -552,7 +552,6 @@ public class HomeworkListActivity extends BaseActivity {
 
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
-        showRecordFragment();
         updateViewState();
     }
 

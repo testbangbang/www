@@ -47,7 +47,7 @@
             android:layout_margin="20dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dialog_button_parent_width"
             android:layout_height="wrap_content">
 
             <TextView
