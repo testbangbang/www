@@ -35,6 +35,7 @@ import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -83,6 +84,7 @@ public class ScribbleFragment extends BaseFragment {
     private SurfaceHolder.Callback surfaceCallback;
     private Question question;
     private boolean transBackground = false;
+    public volatile static boolean systemUIOpened;
 
     public static ScribbleFragment newInstance(Question question) {
         ScribbleFragment fragment = new ScribbleFragment();
@@ -530,12 +532,14 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     protected void onSystemUIOpened() {
+        systemUIOpened = true;
         if (isRunning()) {
             flushDocument(true, false, null);
         }
     }
 
     protected void onSystemUIClosed() {
+        systemUIOpened = false;
         if (isRunning()) {
             flushDocument(true, shouldResume(), null);
         }
@@ -608,7 +612,12 @@ public class ScribbleFragment extends BaseFragment {
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
                 && !getDataBundle().isExpired()
                 && isRunning()
-                && !canNotEdit();
+                && !canNotEdit()
+                && !dialogShowing();
+    }
+
+    private boolean dialogShowing() {
+        return OnyxBaseDialog.showing || systemUIOpened;
     }
 
     private boolean canNotEdit() {
