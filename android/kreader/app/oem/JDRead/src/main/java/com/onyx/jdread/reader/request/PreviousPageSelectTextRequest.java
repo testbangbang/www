@@ -137,7 +137,12 @@ public class PreviousPageSelectTextRequest extends ReaderBaseRequest {
             if (newReaderSelectionInfo != null && newReaderSelectionInfo.getCurrentSelection() != null) {
                 currentPageReaderSelect = getReaderUserDataInfo().getHighlightResult();
                 currentPageTouchPoint = getReaderUserDataInfo().getTouchPoint();
-                currentPageAnnotation.addAll(getReaderUserDataInfo().getPageAnnotations(pageInfo.getName()));
+                List<PageAnnotation> pageAnnotations = getReaderUserDataInfo().getPageAnnotations(pageInfo.getName());
+                if(pageAnnotations != null && pageAnnotations.size() > 0) {
+                    for(PageAnnotation pageAnnotation : pageAnnotations) {
+                        currentPageAnnotation.add(pageAnnotation.copy());
+                    }
+                }
                 this.pageInfo = pageInfo;
                 return true;
             }
