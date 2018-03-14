@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.StaticLayout;
@@ -21,6 +23,7 @@ import com.onyx.android.sdk.scribble.R;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
@@ -205,6 +208,7 @@ public class BaseNoteRequest extends BaseRequest {
                 final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
                 int pagePosition = parent.getNoteDocument().getNotePagePosition(notePage);
                 drawTextView(canvas, parent, pagePosition);
+                drawBackgroundLine(canvas, parent, pagePosition);
                 notePage.render(renderContext, null);
             }
             parent.renderCursorShape(renderContext);
@@ -255,6 +259,34 @@ public class BaseNoteRequest extends BaseRequest {
             }
         }
         return 0;
+    }
+
+    private void drawBackgroundLine(final Canvas canvas, final NoteViewHelper parent, final int pagePosition) {
+        StaticLayout layout = parent.getTextLayout();
+        if (layout == null) {
+            return;
+        }
+        int pageTop = getViewportSize().height() * pagePosition;
+        int pageBottom = getViewportSize().height() * (pagePosition + 1);
+        int layoutHeight = layout.getHeight();
+        if (layoutHeight >= pageBottom) {
+            return;
+        }
+        int start = layoutHeight < pageTop ? 0 : layoutHeight - pageTop;
+        int distance = pageBottom - start;
+        int spacing = TextLayoutArgs.BACKGROUND_LINE_SPACING;
+        int count = distance / spacing;
+        Paint paint = new Paint();
+        PathEffect effects = new DashPathEffect(new float[]{5,5,5,5},1);
+        paint.setPathEffect(effects);
+        paint.setStrokeWidth(2f);
+        paint.setColor(Color.BLACK);
+        int padding = 20;
+        for (int i = 0; i < count; i++) {
+            start += spacing;
+            canvas.drawLine(padding, start, getViewportSize().width() - padding, start, paint);
+        }
+
     }
 
     private Paint preparePaint(final NoteViewHelper parent) {

@@ -115,6 +115,10 @@ public class SubmitDialog extends OnyxBaseDialog {
         });
     }
 
+    private boolean submitChoiceQuestionDraft() {
+        return getDataBundle().afterReview();
+    }
+
     private void submit() {
         if (CollectionUtils.isNullOrEmpty(questions)) {
             return;
@@ -132,7 +136,7 @@ public class SubmitDialog extends OnyxBaseDialog {
         int width = (int) getContext().getResources().getDimension(R.dimen.scribble_view_width);
         int height = (int) getContext().getResources().getDimension(R.dimen.scribble_view_height);
         Rect size =  new Rect(0, 0, width, height);
-        new MakeHomeworkPagesAnswerActionChain(fillAnswers, questions, size).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
+        new MakeHomeworkPagesAnswerActionChain(submitChoiceQuestionDraft() ? totalAnswers : fillAnswers, size).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {

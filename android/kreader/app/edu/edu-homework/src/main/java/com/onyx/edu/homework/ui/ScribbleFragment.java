@@ -148,6 +148,7 @@ public class ScribbleFragment extends BaseFragment {
 
                 @Override
                 public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
                 }
 
                 @Override
@@ -287,6 +288,12 @@ public class ScribbleFragment extends BaseFragment {
             }
 
         };
+    }
+
+    public void showCover() {
+        if (binding != null && binding.cover != null) {
+            binding.cover.setVisibility(View.VISIBLE);
+        }
     }
 
     @Subscribe
@@ -437,6 +444,9 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     protected void onBeginErasing() {
+        if (canNotEdit()) {
+            return;
+        }
         flushDocument(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -446,6 +456,9 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     protected void onErasing(final MotionEvent touchPoint) {
+        if (canNotEdit()) {
+            return;
+        }
         if (erasePoint == null) {
             return;
         }
@@ -454,6 +467,9 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     protected void onFinishErasing(TouchPointList pointList) {
+        if (canNotEdit()) {
+            return;
+        }
         erasePoint = null;
         final List<Shape> stash = getNoteViewHelper().detachStash();
         RemoveByPointListAction removeByPointListAction = new RemoveByPointListAction(pointList, stash, binding.scribbleView, transBackground);
@@ -590,7 +606,14 @@ public class ScribbleFragment extends BaseFragment {
     public boolean shouldResume() {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
-                && !getDataBundle().isDoingAndExpired()
-                && isRunning();
+                && !getDataBundle().isExpired()
+                && isRunning()
+                && !canNotEdit();
+    }
+
+    private boolean canNotEdit() {
+        return getDataBundle().isReview()
+                && !question.isChoiceQuestion()
+                && !getDataBundle().canCheckAnswer();
     }
 }

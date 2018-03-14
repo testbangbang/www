@@ -75,5 +75,10 @@ public class Homework {
 
     public void setTitle(String title) {
         this.title = title;
+
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
     }
 }

@@ -94,6 +94,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:visibility="gone"
                 android:gravity="center"
                 android:text="@string/open_draft"
                 android:padding="@dimen/homework_text_margin"
@@ -148,6 +149,7 @@
 
 
             <TextView
+                android:visibility="gone"
                 android:padding="@dimen/homework_text_margin"
                 android:background="@drawable/round_bg"
                 android:id="@+id/answer_record"
@@ -155,6 +157,7 @@
                 style="@style/homework_text" />
 
             <TextView
+                android:visibility="gone"
                 android:padding="@dimen/homework_text_margin"
                 android:background="@drawable/round_bg"
                 android:id="@+id/submit"
