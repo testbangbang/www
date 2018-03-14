@@ -243,11 +243,11 @@ public class TopUpDialog extends DialogFragment {
         binding.dialogTopUpClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isTopUpQrcodeLayoutVisible()) {
+                if (ViewHelper.isViewVisible(binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode)) {
                     setVisible(R.id.dialog_top_up_detail_layout);
-                } else if (isTopUpType() && isTopUpDetailVisible()) {
+                } else if (isTopUpType() && ViewHelper.isViewVisible(binding.dialogTopUpDetailLayout.dialogTopUpDetail)) {
                     dismiss();
-                } else if (!isTopUpType() && isTopUpDetailVisible()) {
+                } else if (!isTopUpType() && ViewHelper.isViewVisible(binding.dialogTopUpDetailLayout.dialogTopUpDetail)) {
                     setVisible(R.id.dialog_pay_order);
                 } else {
                     abortPayByCashRequest();
@@ -262,14 +262,6 @@ public class TopUpDialog extends DialogFragment {
                 setVisible(R.id.dialog_top_up_detail_layout);
             }
         });
-    }
-
-    private boolean isTopUpQrcodeLayoutVisible() {
-        return binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode.getVisibility() == View.VISIBLE;
-    }
-
-    private boolean isTopUpDetailVisible() {
-        return binding.dialogTopUpDetailLayout.dialogTopUpDetail.getVisibility() == View.VISIBLE;
     }
 
     private boolean isTopUpType() {
