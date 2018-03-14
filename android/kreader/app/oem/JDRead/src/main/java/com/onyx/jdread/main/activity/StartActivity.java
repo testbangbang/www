@@ -1,6 +1,7 @@
 package com.onyx.jdread.main.activity;
 
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
@@ -86,6 +87,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         wifiAdmin.registerReceiver();
+        wifiAdmin.setWifiEnabled(true);
         systemBarModel.registerReceiver(JDReadApplication.getInstance());
         Utils.ensureRegister(StartBundle.getInstance().getEventBus(), this);
     }
@@ -115,7 +117,14 @@ public class StartActivity extends AppCompatActivity {
         binding.startNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                next();
+                if (binding.startWelcome.startFirst.getVisibility() == View.GONE && !Utils.isNetworkConnected(StartActivity.this)
+                        || binding.startPreference.startPreference.getVisibility() == View.VISIBLE &&
+                        !Utils.isNetworkConnected(StartActivity.this)) {
+                    binding.startNext.setEnabled(false);
+                    binding.startNext.setTextColor(getResources().getColor(R.color.divider_color));
+                } else {
+                    next();
+                }
             }
         });
 
@@ -171,6 +180,16 @@ public class StartActivity extends AppCompatActivity {
         binding.startLogin.startLogin.setVisibility(binding.startWifiRecycler.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
         binding.startWifiRecycler.setVisibility(binding.startWelcome.startFirst.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
         binding.startWelcome.startFirst.setVisibility(View.GONE);
+        if (binding.startWelcome.startFirst.getVisibility() == View.GONE && !Utils.isNetworkConnected(StartActivity.this)) {
+            binding.startNext.setEnabled(false);
+            binding.startNext.setTextColor(this.getResources().getColor(R.color.divider_color));
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+        }
+        if (binding.startPreference.startPreference.getVisibility() == View.VISIBLE && !Utils.isNetworkConnected(StartActivity.this)) {
+            binding.startNext.setEnabled(false);
+            binding.startNext.setTextColor(this.getResources().getColor(R.color.divider_color));
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+        }
     }
 
     private void initCategory() {
@@ -233,6 +252,7 @@ public class StartActivity extends AppCompatActivity {
             wifiSettingAdapter.getScanResult().clear();
             wifiSettingAdapter.notifyDataSetChanged();
         }
+
     }
 
     private void updateAccessPointDetailedState(NetworkInfo.DetailedState state) {
@@ -254,6 +274,19 @@ public class StartActivity extends AppCompatActivity {
                     break;
                 }
             }
+            checkWifiState();
+        }
+    }
+
+    private void checkWifiState() {
+        ConnectivityManager connManager = (ConnectivityManager) this.getSystemService(this.CONNECTIVITY_SERVICE);
+        NetworkInfo.State state1 = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+        if (state1 == NetworkInfo.State.CONNECTED) {
+            binding.startNext.setTextColor(this.getResources().getColor(R.color.normal_black));
+            binding.startNext.setEnabled(true);
+        } else if (binding.startWelcome.startFirst.getVisibility() == View.GONE && NetworkInfo.State.DISCONNECTED == state1) {
+            binding.startNext.setEnabled(false);
+            binding.startNext.setTextColor(this.getResources().getColor(R.color.divider_color));
         }
     }
 

@@ -1,9 +1,13 @@
 package com.onyx.jdread.personal.model;
 
 import android.databinding.ObservableField;
+import android.text.TextUtils;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.event.ForgetPasswordEvent;
 import com.onyx.jdread.personal.event.HideSoftWindowEvent;
@@ -36,13 +40,12 @@ public class UserLoginViewModel {
     }
 
     public void onLoginViewClick() {
-        loginButtonEnabled.set(false);
         getEventBus().post(new HideSoftWindowEvent());
         UserLoginAction userLoginAction = new UserLoginAction(JDReadApplication.getInstance(), account.get(), password.get(), false);
         userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                getEventBus().post(new UserLoginEvent(account.get(),password.get()));
+                getEventBus().post(new UserLoginEvent(account.get(), password.get()));
             }
 
             @Override
