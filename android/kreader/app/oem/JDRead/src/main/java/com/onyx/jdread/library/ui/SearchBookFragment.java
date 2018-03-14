@@ -61,6 +61,8 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import static com.onyx.jdread.shop.common.CloudApiContext.CategoryLevel2BookList.PAGE_SIZE_DEFAULT_VALUES;
+
 /**
  * Created by hehai on 18-1-17.
  */
@@ -78,15 +80,21 @@ public class SearchBookFragment extends BaseFragment {
 
     private boolean isBookSearching = false;
     private String lastString;
+    private String hintQueryPageSize = PAGE_SIZE_DEFAULT_VALUES;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentSearchBookBinding.inflate(inflater, container, false);
+        initConfig();
         initView();
         initData();
         initEvent();
         return binding.getRoot();
+    }
+
+    private void initConfig() {
+        hintQueryPageSize = String.valueOf(ResManager.getInteger(R.integer.hint_search_size_per_page));
     }
 
     private void initView() {
@@ -97,6 +105,7 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchHintRecycler.setLayoutManager(new DisableScrollGridManager(getContext().getApplicationContext()));
         searchHintAdapter = new SearchHintAdapter();
         binding.searchHintRecycler.setAdapter(searchHintAdapter);
+        binding.searchHintRecycler.setCanTouchPageTurning(false);
 
         binding.searchResultRecycler.setLayoutManager(new DisableScrollGridManager(getContext().getApplicationContext()));
         binding.searchResultRecycler.setPageTurningCycled(true);
@@ -303,6 +312,7 @@ public class SearchBookFragment extends BaseFragment {
                 CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES,
                 CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES,
                 searchBookModel.searchKey.get(), CloudApiContext.SearchBook.FILTER_DEFAULT);
+        booksAction.setPageSize(getPageSize(submit));
         booksAction.setMapToDataModel(true);
         booksAction.setLoadCover(submit);
         booksAction.execute(ShopDataBundle.getInstance(), new RxCallback<SearchBookListAction>() {
@@ -323,6 +333,13 @@ public class SearchBookFragment extends BaseFragment {
                 invokeFinally(callback);
             }
         });
+    }
+
+    private String getPageSize(boolean submit) {
+        if (submit) {
+            return PAGE_SIZE_DEFAULT_VALUES;
+        }
+        return hintQueryPageSize;
     }
 
     private boolean isBookSearching() {

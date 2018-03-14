@@ -137,6 +137,7 @@ public class Constants {
     public static final int PAY_DIALOG_TYPE_PAY_ORDER = 1;
     public static final int PAY_DIALOG_TYPE_TOP_UP = 2;
     public static final int PAY_DIALOG_TYPE_NET_BOOK = 3;
+    public static final String PAY_BY_CASH = "pay_by_cash";
     public static final String ORDER_INFO = "order_info";
     public static final String BANNER_URL = "banner_url";
     public static final long LIMIT_TIME = 500;
