@@ -53,7 +53,7 @@
                 android:ellipsize="middle"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="@{metadata.authors}"
+                android:text="@{Utils.isEquals(metadata.authors, @string/is_null) ? null : metadata.authors}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 

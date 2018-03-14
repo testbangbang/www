@@ -99,6 +99,7 @@ public class Utils {
             case FileDownloadStatus.completed:
                 state = "";
                 break;
+            case FileDownloadStatus.error:
             case FileDownloadStatus.paused:
                 state = String.format(ResManager.getString(R.string.paused), bean.percentage) + "%";
                 break;

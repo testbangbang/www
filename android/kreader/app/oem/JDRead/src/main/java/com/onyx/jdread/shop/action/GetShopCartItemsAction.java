@@ -65,8 +65,8 @@ public class GetShopCartItemsAction extends BaseAction {
                 ShopCartModel shopCartModel = dataBundle.getShopCartModel();
                 CartDetailResultBean.DataBean resultBean = rq.getResultBean();
                 if (resultBean != null && resultBean.suit_list != null&&resultBean.suit_list.size()!=0) {
-                    String originalPrice = Utils.keepPoints(resultBean.origin_price);
-                    String cashBack = Utils.keepPoints(resultBean.re_price);
+                    String originalPrice = String.valueOf(resultBean.origin_price);
+                    String cashBack = String.valueOf(resultBean.re_price);
                     String totalAmount = resultBean.total_price;
                     shopCartModel.setOriginalPrice(originalPrice);
                     shopCartModel.setCashBack(cashBack);
