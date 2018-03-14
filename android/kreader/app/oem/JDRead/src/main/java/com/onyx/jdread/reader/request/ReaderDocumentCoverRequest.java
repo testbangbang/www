@@ -6,7 +6,9 @@ import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
+import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.jdread.reader.data.Reader;
+
 
 /**
  * Created by huxiaomao on 2018/1/25.
@@ -29,6 +31,7 @@ public class ReaderDocumentCoverRequest extends ReaderBaseRequest {
         boolean readCover = getReader().getReaderHelper().getDocument().readCover(cover.getBitmap());
         String documentPath = getReader().getDocumentInfo().getBookPath();
         if (readCover) {
+            ImageUtils.applyGammaCorrection(cover.getBitmap(), 150.0f, null);
             ThumbnailUtils.insertThumbnail(getAppContext(), ContentSdkDataUtils.getDataProvider(), documentPath, getReader().getReaderHelper().getDocumentMd5(), cover.getBitmap());
         }
         return this;
