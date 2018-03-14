@@ -2,8 +2,10 @@ package com.onyx.jdread.main.common;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -104,5 +106,15 @@ public class BaseFragment extends Fragment {
             }
             goNetWorkErrorFragment(bundle);
         }
+    }
+
+    @NonNull
+    public LoadingDialog getLoadingDialog() {
+        return loadingDialog;
+    }
+
+    @NonNull
+    public LoadingDialog.DialogModel getLoadingModel() {
+        return loadingModel;
     }
 }

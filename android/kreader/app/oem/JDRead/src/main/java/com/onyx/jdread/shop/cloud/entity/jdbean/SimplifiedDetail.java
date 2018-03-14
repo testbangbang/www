@@ -6,9 +6,9 @@ package com.onyx.jdread.shop.cloud.entity.jdbean;
 
 public class SimplifiedDetail {
     public String bookId;
-    public double jdPrice;
-    public double price;
-    public double orgJdPrice;
+    public int jdPrice;
+    public int price;
+    public int orgJdPrice;
     public long paperBookId;
     public long ebookId;
     public String logo;
