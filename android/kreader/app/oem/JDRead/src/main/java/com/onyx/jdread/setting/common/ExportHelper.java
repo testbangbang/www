@@ -14,6 +14,7 @@ import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.manager.EvernoteManager;
+import com.onyx.jdread.personal.action.DeleteFileAction;
 import com.onyx.jdread.personal.action.ExportNoteAction;
 import com.onyx.jdread.personal.action.SaveContentAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteBean;
@@ -157,11 +158,16 @@ public class ExportHelper {
                         @Override
                         public void onFinally() {
                             super.onFinally();
-                            FileUtils.deleteFile(temp, false);
+                            deleteTempFile(temp);
                         }
                     });
                 }
             }
         }
+    }
+
+    private void deleteTempFile(File file) {
+        DeleteFileAction action = new DeleteFileAction(file);
+        action.execute(PersonalDataBundle.getInstance(), null);
     }
 }
