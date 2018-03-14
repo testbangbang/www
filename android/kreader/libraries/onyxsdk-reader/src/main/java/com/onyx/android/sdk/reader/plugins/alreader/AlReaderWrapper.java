@@ -469,6 +469,10 @@ public class AlReaderWrapper {
         return position.readPositionEnd - 1;
     }
 
+    public int getSize(){
+        return bookEng.getSize();
+    }
+
     public boolean isFirstPage() {
         AlCurrentPosition position = new AlCurrentPosition();
         if (bookEng.getPageCount(position) != TAL_RESULT.OK) {

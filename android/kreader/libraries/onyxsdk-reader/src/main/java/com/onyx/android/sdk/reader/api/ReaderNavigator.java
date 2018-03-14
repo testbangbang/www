@@ -36,6 +36,8 @@ public interface ReaderNavigator {
      */
     public int getTotalPage();
 
+    public float getProgress(final String position);
+
     public int getScreenStartPageNumber();
 
     public int getScreenEndPageNumber();

@@ -107,6 +107,13 @@ public class ImagesReaderPlugin implements ReaderPlugin,
         return getExtensionFilters().contains(extension);
     }
 
+    @Override
+    public float getProgress(String position) {
+        int currentPage = PagePositionUtils.getPageNumber(position);
+        float totalPage = getTotalPage();
+        return (currentPage / totalPage) * 100;
+    }
+
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {
         documentPath = path;
         if (!pluginOptions.isLoadAllImages()) {
