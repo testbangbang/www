@@ -79,6 +79,7 @@ public class DataModelUtil {
                 model.downloadStatus.set(extraInfoBean.downLoadState);
                 model.downloadUrl.set(extraInfoBean.downloadUrl);
                 model.downLoadTaskTag = extraInfoBean.downLoadTaskTag;
+                model.isWholeBookDownLoad.set(extraInfoBean.isWholeBookDownLoad);
                 float progress = extraInfoBean.progress * 100 / extraInfoBean.totalSize;
                 model.downloadProgress.set((int) progress);
                 model.showDownloadProgress.set(extraInfoBean.downLoadState == FileDownloadStatus.paused

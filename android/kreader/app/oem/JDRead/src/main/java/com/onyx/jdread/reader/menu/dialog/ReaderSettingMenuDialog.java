@@ -171,7 +171,8 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initReaderTitleBar() {
-        binding.readerSettingTitleBar.setReaderTitleBarModel(new ReaderTitleBarModel(readerDataHolder.getEventBus(),readerDataHolder.supportFontSizeAdjustment()));
+        binding.readerSettingTitleBar.setReaderTitleBarModel(new ReaderTitleBarModel(readerDataHolder.getEventBus(),
+                readerDataHolder.supportFontSizeAdjustment(),readerDataHolder.getDocumentInfo().isWholeBookDownLoad()));
         updateBookmarkState();
     }
 
