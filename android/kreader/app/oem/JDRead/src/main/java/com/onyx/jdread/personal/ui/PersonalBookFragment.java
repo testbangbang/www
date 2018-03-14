@@ -185,7 +185,8 @@ public class PersonalBookFragment extends BaseFragment {
                 BookDetailResultBean.DetailBean detail = covert(metadata);
                 BookExtraInfoBean infoBean = detail.bookExtraInfoBean;
 
-                if (ResManager.getString(R.string.self_import).equals(binding.getFilterName()) || DownLoadHelper.isDownloaded(infoBean.downLoadState)) {
+                if (ResManager.getString(R.string.self_import).equals(binding.getFilterName()) ||
+                        DownLoadHelper.isDownloaded(infoBean.downLoadState) || StringUtils.isNullOrEmpty(metadata.getCloudId())) {
                     openBook(metadata.getNativeAbsolutePath(), detail);
                     return;
                 }
@@ -228,6 +229,8 @@ public class PersonalBookFragment extends BaseFragment {
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
+        documentInfo.setWholeBookDownLoad(detailBean.bookExtraInfoBean.isWholeBookDownLoad);
+        documentInfo.setCloudId(detailBean.ebook_id);
         OpenBookHelper.openBook(super.getContext(), documentInfo);
     }
 

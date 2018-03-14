@@ -173,7 +173,11 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchView.setCustomSearchListener(new CustomSearchView.SearchListener() {
             @Override
             public void onQuerySearch(String query) {
-                doSearchQueryOrHint(query);
+                if (StringUtils.isNullOrEmpty(query)) {
+                    doSearchQueryOrHint(query);
+                    return;
+                }
+                queryTextSubmit(getSearchQueryOrHint(query));
             }
         });
         binding.searchResultRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
@@ -516,6 +520,10 @@ public class SearchBookFragment extends BaseFragment {
         securityInfo.setRandom(model.random.get());
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
+        documentInfo.setWholeBookDownLoad(model.isWholeBookDownLoad.get());
+        if(StringUtils.isNotBlank(model.cloudId.get())) {
+            documentInfo.setCloudId(Integer.parseInt(model.cloudId.get()));
+        }
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 

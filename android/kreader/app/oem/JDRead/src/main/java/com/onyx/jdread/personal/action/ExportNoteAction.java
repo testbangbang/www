@@ -41,6 +41,12 @@ public class ExportNoteAction extends BaseAction {
                 RxCallback.invokeError(rxCallback, throwable);
                 PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), dataBundle.getEventBus());
             }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                RxCallback.invokeFinally(rxCallback);
+            }
         });
     }
 

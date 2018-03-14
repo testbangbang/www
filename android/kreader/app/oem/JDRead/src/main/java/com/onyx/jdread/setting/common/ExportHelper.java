@@ -14,7 +14,9 @@ import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.manager.EvernoteManager;
+import com.onyx.jdread.personal.action.DeleteFileAction;
 import com.onyx.jdread.personal.action.ExportNoteAction;
+import com.onyx.jdread.personal.action.SaveContentAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean;
@@ -55,12 +57,12 @@ public class ExportHelper {
     }
 
     private boolean confirmAssociate(int exportType) {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+            return false;
+        }
         switch (exportType) {
             case TYPE_EMAIL:
-                if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-                    ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
-                    return false;
-                }
                 String email = JDPreferenceManager.getStringValue(R.string.email_address_key, null);
                 if (StringUtils.isNullOrEmpty(email)) {
                     eventBus.post(new AssociatedEmailToolsEvent());
@@ -102,12 +104,16 @@ public class ExportHelper {
         }
         File file = new File(nativePath, "<<" + bean.ebook.name + ">>" +
                 ResManager.getString(R.string.read_note) + ".txt");
-        if (!file.exists()) {
-            file.delete();
-        }
-        ToastUtil.showToast(FileUtils.saveContentToFile(bean.ebook.info, file) ?
-                ResManager.getString(R.string.native_export_success) :
-                ResManager.getString(R.string.export_failed));
+
+        final SaveContentAction action = new SaveContentAction(file, bean.ebook.info);
+        action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                ToastUtil.showToast(action.getResult() ?
+                        ResManager.getString(R.string.native_export_success) :
+                        ResManager.getString(R.string.export_failed));
+            }
+        });
     }
 
     private void saveToTemp(NoteBean bean) {
@@ -117,7 +123,8 @@ public class ExportHelper {
         }
         File file = new File(tempDir, "<<" + bean.ebook.name + ">>" +
                 ResManager.getString(R.string.read_note) + ".txt");
-        FileUtils.saveContentToFile(bean.ebook.info, file);
+        SaveContentAction action = new SaveContentAction(file, bean.ebook.info);
+        action.execute(PersonalDataBundle.getInstance(), null);
     }
 
     private void sendEmail() {
@@ -140,7 +147,6 @@ public class ExportHelper {
                             ExportNoteResultBean resultBean = action.getResultBean();
                             if (resultBean.result_code == 0) {
                                 ToastUtil.showToast(ResManager.getString(R.string.email_export_success));
-                                FileUtils.deleteFile(temp, false);
                             }
                         }
 
@@ -148,9 +154,20 @@ public class ExportHelper {
                         public void onError(Throwable throwable) {
                             ToastUtil.showToast(ResManager.getString(R.string.export_failed));
                         }
+
+                        @Override
+                        public void onFinally() {
+                            super.onFinally();
+                            deleteTempFile(temp);
+                        }
                     });
                 }
             }
         }
+    }
+
+    private void deleteTempFile(File file) {
+        DeleteFileAction action = new DeleteFileAction(file);
+        action.execute(PersonalDataBundle.getInstance(), null);
     }
 }

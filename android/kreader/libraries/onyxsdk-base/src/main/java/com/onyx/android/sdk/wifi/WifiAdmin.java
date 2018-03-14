@@ -225,10 +225,11 @@ public class WifiAdmin {
 
     public WifiConfiguration getWifiConfiguration(ScanResult result) {
         WifiConfiguration wifiConfiguration = null;
-        if (wifiManager.getConfiguredNetworks() == null) {
+        List<WifiConfiguration> configuredNetworks = wifiManager.getConfiguredNetworks();
+        if (configuredNetworks == null) {
             return null;
         }
-        for (WifiConfiguration configuration : wifiManager.getConfiguredNetworks()) {
+        for (WifiConfiguration configuration : configuredNetworks) {
             if (WifiUtil.isSameSSID(configuration.SSID, result.SSID)) {
                 wifiConfiguration = configuration;
                 break;
