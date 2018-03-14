@@ -8,9 +8,8 @@ import java.util.List;
  * Created by hehai on 17-3-31.
  */
 
-public class CategoryListResultBean {
-    public int result_Code;
-    public String message;
+public class CategoryListResultBean extends BaseResultBean{
+
     public List<CategoryBeanLevelOne> data;
 
     public static class CategoryBeanLevelOne {

@@ -472,7 +472,7 @@
     <string name="payment_order">订单支付</string>
     <string name="book_detail_add_cart_tip_the_book_already_add_cart">图书已经加入到购物车</string>
     <string name="pay_dialog_insufficient_balance">余额不足，去充值</string>
-    <string name="pay_success">支付成功</string>
+    <string name="pay_success">支付成功!</string>
     <string name="pay_failed">支付失败</string>
     <string name="password_find">密码找回</string>
     <string name="psw_success_to_unlock">获取成功，去解锁</string>
@@ -534,6 +534,7 @@
     <string name="not_existent">不存在的书籍</string>
     <string name="input_special_characters">输入含有特殊字符</string>
     <string name="no_results">暂无</string>
+    <string name="filter_free">免费</string>
     <string name="jd_loading">loading</string>
     <string name="update_time">更新时间</string>
     <string name="without_result">没有搜索结果</string>

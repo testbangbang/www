@@ -77,6 +77,7 @@ public class SearchBookListFragment extends BaseFragment {
             paginator.setCurrentPage(getCurrentPage());
             gotoPage(getCurrentPage());
         }
+        checkWifi(keyWord);
     }
 
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType, String keyWord) {
@@ -110,7 +111,6 @@ public class SearchBookListFragment extends BaseFragment {
             }
         });
         viewAllBinding.setViewModel(getViewAllViewModel());
-        checkWifi(keyWord);
     }
 
     private void initPageIndicator() {

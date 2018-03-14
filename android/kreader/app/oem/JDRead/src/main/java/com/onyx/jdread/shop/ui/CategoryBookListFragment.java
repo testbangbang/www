@@ -63,7 +63,7 @@ public class CategoryBookListFragment extends BaseFragment {
     private String currentCatName;
     private int sortkey = CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES;
     private int sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES;
-    private boolean typeFree;
+    private int levelTwoPosition;
     private int catLevel;
     private int catTwoId;
 
@@ -89,7 +89,7 @@ public class CategoryBookListFragment extends BaseFragment {
             catLevel = bundle.getInt(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, 0);
             catTwoId = bundle.getInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, 0);
             currentCatName = bundle.getString(Constants.SP_KEY_CATEGORY_NAME, "");
-            typeFree = bundle.getBoolean(Constants.SP_KEY_CATEGORY_ISFREE, false);
+            levelTwoPosition = bundle.getInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_POSITION, 0);
             getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
             getCategoryBookListViewModel().getTitleBarViewModel().showRightText2 = true;
             getCategoryBookListViewModel().getTitleBarViewModel().showRightText3 = true;
@@ -98,8 +98,9 @@ public class CategoryBookListFragment extends BaseFragment {
             initDefaultParams();
             hideOptionLayout();
             getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
-            setCategoryV2Data();
+            setCategoryV3Data();
         }
+        checkWifi(currentCatName);
     }
 
     private void initDefaultParams() {
@@ -112,8 +113,7 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType) {
-        boolean justShowVip = categoryBookListBinding.subjectListShowVip.isChecked();
-        int filter = justShowVip ? CloudApiContext.SearchBook.FILTER_VIP : CloudApiContext.SearchBook.FILTER_DEFAULT;
+        int filter = getFilter();
         final SearchBookListAction booksAction = new SearchBookListAction(catid, currentPage, sortKey, sortType, "", filter);
         booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
             @Override
@@ -128,10 +128,23 @@ public class CategoryBookListFragment extends BaseFragment {
         });
     }
 
-    private void setCategoryV2Data() {
+    private int getFilter() {
+        boolean justShowVip = categoryBookListBinding.subjectListShowVip.isChecked();
+        boolean justShowFree = categoryBookListBinding.subjectListShowFree.isChecked();
+        int filter = CloudApiContext.SearchBook.FILTER_DEFAULT;
+        if (justShowVip) {
+            filter = CloudApiContext.SearchBook.FILTER_VIP;
+        } else if (justShowFree) {
+            filter = CloudApiContext.SearchBook.FILTER_FREE;
+        }
+        return filter;
+    }
+
+    private void setCategoryV3Data() {
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
-        getCategoryBookListViewModel().setCategoryItems(allCategoryItems);
-        getCategoryBookListViewModel().isFree.set(typeFree);
+        if (CollectionUtils.getSize(allCategoryItems) > levelTwoPosition) {
+            getCategoryBookListViewModel().setCategoryItems(allCategoryItems.get(levelTwoPosition).sub_category);
+        }
     }
 
     private void initView() {
@@ -178,11 +191,19 @@ public class CategoryBookListFragment extends BaseFragment {
         categoryBookListBinding.subjectListShowVip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                categoryBookListBinding.subjectListShowFree.setChecked(false);
                 getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
                 showOrCloseAllCatButton();
             }
         });
-        checkWifi(currentCatName);
+        categoryBookListBinding.subjectListShowFree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                categoryBookListBinding.subjectListShowVip.setChecked(false);
+                getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
+                showOrCloseAllCatButton();
+            }
+        });
     }
 
     private void hideOptionLayout() {
@@ -304,10 +325,8 @@ public class CategoryBookListFragment extends BaseFragment {
         this.catTwoId = categoryBean.id;
         this.currentCatName = categoryBean.name;
         this.currentPage = 1;
+        this.catLevel = categoryBean.level;
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
-        Bundle bundle = getBundle();
-        bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
-        bundle.putString(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
     }
 

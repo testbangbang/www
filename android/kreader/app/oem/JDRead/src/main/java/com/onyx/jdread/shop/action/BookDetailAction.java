@@ -12,6 +12,7 @@ import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookDetail;
+import com.onyx.jdread.shop.utils.ViewHelper;
 
 /**
  * Created by jackdeng on 2017/12/13.
@@ -49,6 +50,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onSubscribe() {
                 super.onSubscribe();
+                bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
                 showLoadingDialog(shopDataBundle, R.string.loading);
             }
 
@@ -66,6 +68,9 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
                     if (!TextUtils.isEmpty(data.info)) {
                         bookDetailResultBean.data.info = CommonUtils.removeBlank(data.info);
                     }
+                    if (ViewHelper.isNetBook(data.book_type)) {
+                        bookDetailResultBean.data.isbn = "";
+                    }
                 }
                 bookDetailViewModel.setBookDetailResultBean(bookDetailResultBean);
                 if (rxCallback != null) {
@@ -76,6 +81,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
                 }

@@ -95,7 +95,7 @@ public class CloudApiContext {
     }
 
     public static class BookRankList {
-        public static final String RANK_LIST_TIME_TYPE = "week";
+        public static final String RANK_LIST_TIME_TYPE = "mouth";
     }
 
     public static class SearchBook {
