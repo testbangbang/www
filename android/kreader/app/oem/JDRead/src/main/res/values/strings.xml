@@ -568,4 +568,6 @@
     <string name="is_null" translatable="false">null</string>
     <string name="jd_loading">loading</string>
     <string name="update_time">Update Time</string>
+    <string name="preload_books_key">preload_books_key</string>
+    <string name="without_result">Without result</string>
 </resources>

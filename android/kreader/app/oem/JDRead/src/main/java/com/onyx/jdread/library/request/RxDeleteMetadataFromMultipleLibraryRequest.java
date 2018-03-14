@@ -1,5 +1,6 @@
 package com.onyx.jdread.library.request;
 
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -52,7 +53,9 @@ public class RxDeleteMetadataFromMultipleLibraryRequest extends RxBaseDBRequest 
         database.endTransaction();
 
         for (Metadata metadata : list) {
-            FileUtils.deleteFile(metadata.getNativeAbsolutePath());
+            if (!metadata.getNativeAbsolutePath().startsWith(Constant.SYSTEM_PRE_BOOKS_DIR)) {
+                FileUtils.deleteFile(metadata.getNativeAbsolutePath());
+            }
         }
     }
 }

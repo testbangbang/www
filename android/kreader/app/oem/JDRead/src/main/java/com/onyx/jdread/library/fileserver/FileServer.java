@@ -131,6 +131,6 @@ public class FileServer extends NanoHTTPD {
     }
 
     public String checkFileExists(String filename) {
-        return FileUtils.fileExist(Constants.WIFI_PASS_BOOK_DIR + filename) ? "true" : "false";
+        return FileUtils.fileExist(Constants.JD_BOOKS_DIR + filename) ? "true" : "false";
     }
 }

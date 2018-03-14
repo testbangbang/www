@@ -147,7 +147,7 @@ public class Constants {
     public static final int BOOK_DETAIL_TYPE_NET = 1;
     public static final int BOOK_DETAIL_TYPE_PUBLISH = 0;
     public static final String WHOLE_BOOK_DOWNLOAD_TAG = "whole_book";
-    public static final String WIFI_PASS_BOOK_DIR = Device.currentDevice.getExternalStorageDirectory() + "/Books/";
+    public static final String JD_BOOKS_DIR = Device.currentDevice.getExternalStorageDirectory() + "/Books/";
     public static final String MANUAL_FAQ_URL = "https://jdread-api.jd.com/faq";
     public static final int NET_BOOK_STATUS_DOWN = 1;
     public static final String NATIVIE_DIR = EnvironmentUtil.getExternalStorageDirectory() + File.separator + "Notes";

@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.rxrequest.data.db;
 
 import com.onyx.android.sdk.data.BookFilter;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
@@ -35,7 +36,9 @@ public class RxSingleLibraryDeleteRequest extends RxBaseDBRequest {
             List<Metadata> metadataList = getDataProvider().findMetadataByQueryArgs(getAppContext(), queryArgs);
             for (Metadata metadata : metadataList) {
                 getDataProvider().removeMetadata(getAppContext(), metadata);
-                FileUtils.deleteFile(metadata.getNativeAbsolutePath());
+                if (!metadata.getNativeAbsolutePath().startsWith(Constant.SYSTEM_PRE_BOOKS_DIR)) {
+                    FileUtils.deleteFile(metadata.getNativeAbsolutePath());
+                }
             }
         }
         Library library = getDataProvider().loadLibrary(libraryId);
