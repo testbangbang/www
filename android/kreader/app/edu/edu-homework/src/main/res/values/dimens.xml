@@ -32,4 +32,5 @@
     <dimen name="tool_bar_height">52dp</dimen>
     <dimen name="score_page_image_size">40dp</dimen>
     <dimen name="score_page_list_margin">20dp</dimen>
+    <dimen name="dialog_button_parent_width">640dp</dimen>
 </resources>
