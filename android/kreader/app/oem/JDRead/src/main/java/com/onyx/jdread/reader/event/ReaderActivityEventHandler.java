@@ -116,6 +116,11 @@ public class ReaderActivityEventHandler {
         Log.d(getClass().getSimpleName(), "onDocumentLoadSuccessResultEvent");
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDocumentLoadFailedResultEvent(DocumentLoadFailedEvent event) {
+        Log.d(getClass().getSimpleName(), "onDocumentLoadFailedResultEvent");
+    }
+
     @Subscribe
     public void onMenuAreaEvent(MenuAreaEvent event) {
         new ShowSettingMenuAction().execute(readerViewModel.getReaderDataHolder(), null);
