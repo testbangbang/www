@@ -23,6 +23,7 @@ import com.onyx.android.sdk.scribble.R;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
@@ -273,7 +274,7 @@ public class BaseNoteRequest extends BaseRequest {
         }
         int start = layoutHeight < pageTop ? 0 : layoutHeight - pageTop;
         int distance = pageBottom - start;
-        int spacing = getViewportSize().height() / 10;
+        int spacing = TextLayoutArgs.BACKGROUND_LINE_SPACING;
         int count = distance / spacing;
         Paint paint = new Paint();
         PathEffect effects = new DashPathEffect(new float[]{5,5,5,5},1);

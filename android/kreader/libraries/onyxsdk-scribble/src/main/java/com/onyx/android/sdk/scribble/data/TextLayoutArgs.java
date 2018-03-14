@@ -15,6 +15,8 @@ public class TextLayoutArgs {
 
     public static final float DRAW_FILL_TEXT_SPACING_ADD = 15f;
 
+    public static final int BACKGROUND_LINE_SPACING = 76;
+
     public String text;
     public int textSize = DRAW_DEFAULT_TEXT_SIZE;
     public int textPadding = DRAW_DEFAULT_TEXT_PADDING;
