@@ -20,9 +20,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:drawableLeft="@mipmap/ic_read_back"
+            android:drawablePadding="@dimen/title_bar_drawable_padding"
             android:onClick="@{()->titleModel.backSetting()}"
             android:text="@{titleModel.title}"
-            android:drawablePadding="@dimen/title_bar_drawable_padding"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_one_heading_font" />
 
@@ -33,12 +33,12 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/setting_title_bar_switch_margin_right"
             android:layout_toLeftOf="@+id/setting_title_add"
+            android:switchMinWidth="@dimen/switch_track_width"
+            android:textColor="@android:color/white"
             android:textOff="@string/off"
             android:textOn="@string/on"
             android:thumb="@drawable/thumb_selector"
             android:track="@drawable/gray_track"
-            android:textColor="@android:color/white"
-            android:switchMinWidth="@dimen/switch_track_width"
             android:visibility="gone" />
 
         <FrameLayout
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/toggle_selector"
                 android:button="@null"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -71,7 +71,7 @@
                     android:gravity="center"
                     android:text="@string/on"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/level_three_heading_font" />
+                    android:textSize="@dimen/level_four_heading_font" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -80,7 +80,7 @@
                     android:gravity="center"
                     android:text="@string/off"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/level_three_heading_font" />
+                    android:textSize="@dimen/level_four_heading_font" />
             </LinearLayout>
         </FrameLayout>
 
