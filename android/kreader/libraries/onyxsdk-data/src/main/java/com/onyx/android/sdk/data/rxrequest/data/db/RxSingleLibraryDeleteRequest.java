@@ -35,7 +35,9 @@ public class RxSingleLibraryDeleteRequest extends RxBaseDBRequest {
             List<Metadata> metadataList = getDataProvider().findMetadataByQueryArgs(getAppContext(), queryArgs);
             for (Metadata metadata : metadataList) {
                 getDataProvider().removeMetadata(getAppContext(), metadata);
-                FileUtils.deleteFile(metadata.getNativeAbsolutePath());
+                if (!metadata.getNativeAbsolutePath().startsWith("/system/media/prebooks/")) {
+                    FileUtils.deleteFile(metadata.getNativeAbsolutePath());
+                }
             }
         }
         Library library = getDataProvider().loadLibrary(libraryId);

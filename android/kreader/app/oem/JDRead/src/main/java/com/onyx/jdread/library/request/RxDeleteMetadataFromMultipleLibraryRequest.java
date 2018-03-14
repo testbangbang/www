@@ -7,6 +7,7 @@ import com.onyx.android.sdk.data.rxrequest.data.db.RxBaseDBRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.main.common.Constants;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
@@ -52,7 +53,9 @@ public class RxDeleteMetadataFromMultipleLibraryRequest extends RxBaseDBRequest 
         database.endTransaction();
 
         for (Metadata metadata : list) {
-            FileUtils.deleteFile(metadata.getNativeAbsolutePath());
+            if (!metadata.getNativeAbsolutePath().startsWith(Constants.SYSTEM_PRE_BOOKS_DIR)) {
+                FileUtils.deleteFile(metadata.getNativeAbsolutePath());
+            }
         }
     }
 }

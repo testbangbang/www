@@ -25,6 +25,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.StartBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
+import com.onyx.jdread.main.action.LoadPreBooksAction;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
@@ -104,6 +105,13 @@ public class StartActivity extends AppCompatActivity {
         initLogin();
         initCategory();
         initListener();
+        loadPreBooks();
+    }
+
+
+    private void loadPreBooks() {
+        LoadPreBooksAction action = new LoadPreBooksAction();
+        action.execute(MainBundle.getInstance(), null);
     }
 
     private void initSystemBar() {

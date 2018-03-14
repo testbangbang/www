@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.main.action.LoadPreBooksAction;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
-import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.manager.ManagerActivityUtils;
 
 /**
@@ -26,12 +24,6 @@ public class PreloadActivity extends ReaderActivity {
         if (StringUtils.isNullOrEmpty(flag)) {
             setGuide(true);
             ManagerActivityUtils.startStartActivity(this);
-            loadPreBooks();
         }
-    }
-
-    private void loadPreBooks() {
-        LoadPreBooksAction action = new LoadPreBooksAction();
-        action.execute(MainBundle.getInstance(), null);
     }
 }
