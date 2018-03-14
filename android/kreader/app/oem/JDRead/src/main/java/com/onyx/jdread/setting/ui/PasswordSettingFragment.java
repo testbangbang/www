@@ -196,13 +196,13 @@ public class PasswordSettingFragment extends BaseFragment {
                 if (request.isSucceed()) {
                     onBackToDeviceConfigEvent(new BackToDeviceConfigEvent());
                 } else {
-                    ToastUtil.showToast(R.string.password_setting_failed);
+                    ToastUtil.showToast(R.string.network_or_server_error);
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
-                ToastUtil.showToast(R.string.password_setting_failed);
+                ToastUtil.showToast(R.string.network_or_server_error);
             }
 
             @Override

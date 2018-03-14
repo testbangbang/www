@@ -21,8 +21,8 @@ public class ReaderConfig {
 
     public static class Typeface {
         public static final String TYPEFACE_ONE = TYPEFACE_ROOT_PATH + "FZHei-B01.TTF";
-        public static final String TYPEFACE_TWO = TYPEFACE_ROOT_PATH + "FZNewKai_GB18030-Z03.ttf";
-        public static final String TYPEFACE_THREE = TYPEFACE_ROOT_PATH + "FZNewShuSong_GB18030-Z10.ttf";
+        public static final String TYPEFACE_TWO = TYPEFACE_ROOT_PATH + "FZNewShuSong_GB18030-Z10.ttf";
+        public static final String TYPEFACE_THREE = TYPEFACE_ROOT_PATH + "FZNewKai_GB18030-Z03.ttf";
         public static final String TYPEFACE_FOUR = TYPEFACE_ROOT_PATH + "FZYouH_507R.ttf";
         public static final String DEFAULT_TYPEFACE = TYPEFACE_ONE;
     }
@@ -68,7 +68,7 @@ public class ReaderConfig {
     public static final String SETTING_STYLE_KEY = "setting_style_key";
 
     public static Map<Integer, ReaderTextStyle> presetStyle = new HashMap<>();
-    public static final int DEFAULT_PRESET_STYLE = SETTING_THREE_STYLE_KEY;
+    public static final int DEFAULT_PRESET_STYLE = SETTING_TWO_STYLE_KEY;
 
     public static final int FONT_SIZE_X_SMALL = 20;
     public static final int FONT_SIZE_SMALL = 23;
@@ -77,13 +77,16 @@ public class ReaderConfig {
     public static final int FONT_SIZE_X_LARGE = 34;
     public static final int FONT_SIZE_XX_LARGE = 40;
 
+    public static final int DEFAULT_MARGIN_LEFT = 12;
+    public static final int DEFAULT_MARGIN_RIGHT = 12;
+
     static {
-        presetStyle.put(SETTING_ONE_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_X_SMALL, 135, 50));
-        presetStyle.put(SETTING_TWO_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_SMALL, 140, 60));
-        presetStyle.put(SETTING_THREE_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_MEDIUM, 130, 60));
-        presetStyle.put(SETTING_FOUR_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_LARGE, 130, 60));
-        presetStyle.put(SETTING_FIVE_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_X_LARGE, 130, 60));
-        presetStyle.put(SETTING_SIX_STYLE_KEY, new ReaderTextStyle(6, 6, 14, 24, FONT_SIZE_XX_LARGE, 130, 60));
+        presetStyle.put(SETTING_ONE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_X_SMALL, 135, 50));
+        presetStyle.put(SETTING_TWO_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_SMALL, 140, 60));
+        presetStyle.put(SETTING_THREE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_MEDIUM, 130, 60));
+        presetStyle.put(SETTING_FOUR_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_LARGE, 130, 60));
+        presetStyle.put(SETTING_FIVE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_X_LARGE, 130, 60));
+        presetStyle.put(SETTING_SIX_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_XX_LARGE, 130, 60));
         presetStyle.put(CUSTOM_STYLE_KEY, new ReaderTextStyle(0, 0, 0, 0, 0, 0, 0));
     }
 
@@ -288,7 +291,7 @@ public class ReaderConfig {
         customSixLeftAndRightMargin.put(SETTING_THREE_STYLE_KEY, new LeftAndRight(6, 6));
         customSixLeftAndRightMargin.put(SETTING_FOUR_STYLE_KEY, new LeftAndRight(10, 10));
         customSixLeftAndRightMargin.put(SETTING_FIVE_STYLE_KEY, new LeftAndRight(14, 14));
-        customSixLeftAndRightMargin.put(SETTING_SIX_STYLE_KEY, new LeftAndRight(18, 18));
+        customSixLeftAndRightMargin.put(SETTING_SIX_STYLE_KEY, new LeftAndRight(28, 28));
     }
 
     public static void saveCustomLeftAndRightMargin(final int customLeftAndRightMargin){
