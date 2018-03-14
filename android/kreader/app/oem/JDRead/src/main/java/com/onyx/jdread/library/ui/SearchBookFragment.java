@@ -516,6 +516,10 @@ public class SearchBookFragment extends BaseFragment {
         securityInfo.setRandom(model.random.get());
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
+        documentInfo.setWholeBookDownLoad(model.isWholeBookDownLoad.get());
+        if(StringUtils.isNotBlank(model.cloudId.get())) {
+            documentInfo.setCloudId(Integer.parseInt(model.cloudId.get()));
+        }
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 
