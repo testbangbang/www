@@ -117,10 +117,13 @@ public class StartActivity extends AppCompatActivity {
         binding.startNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isTrasformGray()|| binding.startPreference.startPreference.getVisibility() == View.VISIBLE &&
-                        !Utils.isNetworkConnected(StartActivity.this)) {
-                    binding.startNext.setEnabled(false);
-                    binding.startNext.setTextColor(getResources().getColor(R.color.divider_color));
+                if (!Utils.isNetworkConnected(StartActivity.this)) {
+                    if (binding.startWelcome.startFirst.getVisibility() == View.VISIBLE) {
+                        next();
+                    }
+                    if (isCanClick()) {
+                        setNextUnEnabled();
+                    }
                 } else {
                     next();
                 }
@@ -161,10 +164,6 @@ public class StartActivity extends AppCompatActivity {
         });
     }
 
-    private boolean isTrasformGray() {
-        return binding.startWelcome.startFirst.getVisibility() == View.GONE && !Utils.isNetworkConnected(StartActivity.this);
-    }
-
     private void next() {
         if (binding.startWifiRecycler.getVisibility() == View.VISIBLE && !Utils.isNetworkConnected(StartActivity.this)) {
             ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
@@ -183,16 +182,16 @@ public class StartActivity extends AppCompatActivity {
         binding.startLogin.startLogin.setVisibility(binding.startWifiRecycler.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
         binding.startWifiRecycler.setVisibility(binding.startWelcome.startFirst.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
         binding.startWelcome.startFirst.setVisibility(View.GONE);
-        if (isTrasformGray()) {
-            binding.startNext.setEnabled(false);
-            binding.startNext.setTextColor(this.getResources().getColor(R.color.divider_color));
-            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+        if (!Utils.isNetworkConnected(StartActivity.this)) {
+            if (isCanClick()) {
+                setNextUnEnabled();
+                ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+            }
         }
-        if (binding.startPreference.startPreference.getVisibility() == View.VISIBLE && !Utils.isNetworkConnected(StartActivity.this)) {
-            binding.startNext.setEnabled(false);
-            binding.startNext.setTextColor(this.getResources().getColor(R.color.divider_color));
-            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
-        }
+    }
+
+    private boolean isCanClick() {
+        return binding.startWelcome.startFirst.getVisibility() == View.GONE || binding.startPreference.startPreference.getVisibility() == View.VISIBLE;
     }
 
     private void initCategory() {
@@ -288,9 +287,13 @@ public class StartActivity extends AppCompatActivity {
             binding.startNext.setTextColor(this.getResources().getColor(R.color.normal_black));
             binding.startNext.setEnabled(true);
         } else if (binding.startWelcome.startFirst.getVisibility() == View.GONE && NetworkInfo.State.DISCONNECTED == state1) {
-            binding.startNext.setEnabled(false);
-            binding.startNext.setTextColor(this.getResources().getColor(R.color.divider_color));
+            setNextUnEnabled();
         }
+    }
+
+    private void setNextUnEnabled() {
+        binding.startNext.setEnabled(false);
+        binding.startNext.setTextColor(this.getResources().getColor(R.color.divider_color));
     }
 
     private void showSaveDialog(final AccessPoint accessPoint) {
