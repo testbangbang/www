@@ -55,7 +55,7 @@ public class HandlerManager {
     private static final int TOUCH_HORIZONTAL_PART = 3;
     private static final int TOUCH_VERTICAL_PART = 2;
 
-    private static final int READER_TOUCH_INTERVAL_TIME = 500;
+    public static final int READER_TOUCH_INTERVAL_TIME = 500;
 
     private String activeProviderName;
     private Map<String, BaseHandler> providerMap = new HashMap<String, BaseHandler>();

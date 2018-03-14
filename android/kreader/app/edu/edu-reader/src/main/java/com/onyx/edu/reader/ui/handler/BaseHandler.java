@@ -61,6 +61,7 @@ public abstract class BaseHandler {
     private boolean pinchZooming = false;
     private boolean scrolling = false;
     private boolean disablePinchZoom = true;
+    private long lastTouchTime;
 
     public boolean isSingleTapUp() {
         return singleTapUp;
@@ -234,11 +235,20 @@ public abstract class BaseHandler {
 
     public boolean onActionUp(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
         if (isLongPress()) {
-        } else if (isScrolling() && !isPinchZooming()) {
+        } else if (isScrolling() && !isPinchZooming() && canTouchUp()) {
             panFinished(readerDataHolder,(int) (getStartPoint().x - endX), (int) (getStartPoint().y - endY));
         }
         resetState();
         return true;
+    }
+
+    private boolean canTouchUp(){
+        long currentTime = System.currentTimeMillis();
+        if(currentTime - lastTouchTime > HandlerManager.READER_TOUCH_INTERVAL_TIME){
+            lastTouchTime = currentTime;
+            return true;
+        }
+        return false;
     }
 
     public boolean onActionCancel(ReaderDataHolder readerDataHolder, final float startX, final float startY, final float endX, final float endY) {
