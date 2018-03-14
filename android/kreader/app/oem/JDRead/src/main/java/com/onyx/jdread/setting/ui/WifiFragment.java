@@ -17,6 +17,7 @@ import com.onyx.android.libsetting.view.dialog.WifiLoginDialog;
 import com.onyx.android.libsetting.view.dialog.WifiSavedDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.wifi.AccessPoint;
 import com.onyx.android.sdk.wifi.WifiAdmin;
 import com.onyx.android.sdk.wifi.WifiUtil;
@@ -206,12 +207,12 @@ public class WifiFragment extends BaseFragment {
     }
 
     private void initWifi() {
+        updateUI(NetworkUtil.isWifiEnabled(JDReadApplication.getInstance()));
         wifiAdmin = new WifiAdmin(JDReadApplication.getInstance(), new WifiAdmin.Callback() {
             @Override
             public void onWifiStateChange(boolean isWifiEnable, int wifiExtraState) {
                 if (wifiExtraState != WifiManager.WIFI_STATE_ENABLING) {
                     updateUI(isWifiEnable);
-                    binding.wifiTitleBar.settingTitleCheck.setVisibility(View.VISIBLE);
                 }
             }
 
