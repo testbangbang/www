@@ -80,15 +80,15 @@ public class BaseFragment extends Fragment {
     }
 
     public boolean isWifiDisconnected() {
-        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
-            return true;
-        }
-        return false;
+        return !Utils.isNetworkConnected(JDReadApplication.getInstance());
     }
 
-    public boolean isWifiDisconnectedNoToast() {
-        return !Utils.isNetworkConnected(JDReadApplication.getInstance());
+    public boolean checkWifiDisconnected() {
+        boolean wifiDisconnected = isWifiDisconnected();
+        if (wifiDisconnected) {
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+        }
+        return wifiDisconnected;
     }
 
     public void goNetWorkErrorFragment(Bundle bundle){
@@ -96,7 +96,7 @@ public class BaseFragment extends Fragment {
     }
 
     public void checkWifi(String title) {
-        if (isWifiDisconnectedNoToast()) {
+        if (isWifiDisconnected()) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.NET_ERROR_TITLE, title);
             if (StringUtils.isNullOrEmpty(title)) {

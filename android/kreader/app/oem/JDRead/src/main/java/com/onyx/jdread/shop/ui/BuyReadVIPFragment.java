@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -14,7 +13,6 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.BuyReadVipBinding;
-import com.onyx.jdread.databinding.DialogVipNoticeBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
@@ -24,7 +22,6 @@ import com.onyx.jdread.personal.action.UserInfoAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.dialog.TopUpDialog;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.GetVipGoodListAction;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
@@ -37,7 +34,6 @@ import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.VipButtonClickEvent;
 import com.onyx.jdread.shop.event.VipGoodItemClickEvent;
 import com.onyx.jdread.shop.model.BuyReadVipModel;
-import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.BookInfoDialog;
@@ -140,7 +136,7 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipButtonClickEvent(VipButtonClickEvent event) {
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         showVipNoticeDialog();
@@ -150,33 +146,15 @@ public class BuyReadVIPFragment extends BaseFragment {
         if (ViewHelper.dialogIsShowing(vipNoticeDialog)) {
             return;
         }
-        final DialogVipNoticeBinding infoBinding = DialogVipNoticeBinding.inflate(LayoutInflater.from(getActivity()), null, false);
-        final DialogBookInfoViewModel infoViewModel = new DialogBookInfoViewModel();
-        infoViewModel.title.set(ResManager.getString(R.string.read_vip_instructions));
-        infoBinding.setViewModel(infoViewModel);
-        vipNoticeDialog = new BookInfoDialog(JDReadApplication.getInstance());
-        vipNoticeDialog.setView(infoBinding.getRoot());
-        HTMLReaderWebView pagedWebView = infoBinding.infoWebView;
-        pagedWebView.setCallParentPageFinishedMethod(false);
-        pagedWebView.loadUrl(ResManager.getUriOfRawName("joyread_notice.html"));
-        WebSettings settings = pagedWebView.getSettings();
-        settings.setSupportZoom(false);
-        settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
-        pagedWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
-            @Override
-            public void onPageChanged(int totalPage, int curPage) {
-                infoViewModel.currentPage.set(curPage);
-                infoViewModel.totalPage.set(totalPage);
-            }
-        });
-        infoBinding.setListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ViewHelper.dismissDialog(vipNoticeDialog);
-                vipNoticeDialog = null;
-            }
-        });
-        vipNoticeDialog.show();
+        vipNoticeDialog = ViewHelper.showNoticeDialog(getActivity(),
+                ResManager.getString(R.string.read_vip_instructions),
+                ResManager.getUriOfRawName("joyread_notice.html"), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ViewHelper.dismissDialog(vipNoticeDialog);
+                        vipNoticeDialog = null;
+                    }
+                });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -204,19 +182,46 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     private void updateVipStatus(UserInfo info) {
         if (info != null) {
-            PersonalDataBundle.getInstance().getUserInfo().vip_remain_days = info.vip_remain_days;
+            getUserInfo().vip_remain_days = info.vip_remain_days;
             getBuyReadVipModel().getVipUserInfoViewModel().vipStatus.set(String.format(
                     ResManager.getString(R.string.vip_read_days), info.vip_remain_days));
         }
     }
 
+    private UserInfo getUserInfo() {
+        return PersonalDataBundle.getInstance().getUserInfo();
+    }
+
+    private int getUserVipRemainDays() {
+        if (getUserInfo() == null) {
+            return 0;
+        }
+        return getUserInfo().vip_remain_days;
+    }
+
     private boolean checkVipGoodCanBuy(GetVipGoodsListResultBean.DataBean dataBean) {
-        return dataBean != null && dataBean.can_buy;
+        if (dataBean == null) {
+            ToastUtil.showToast(R.string.read_vip_can_not_buy);
+            return false;
+        }
+        if (!dataBean.can_buy) {
+            String message;
+            int maxYears = ResManager.getInteger(R.integer.read_vip_max_year);
+            int vipRemainDays = getUserVipRemainDays();
+            if (vipRemainDays / 365 >= maxYears) {
+                message = String.format(ResManager.getString(R.string.read_vip_surpass_yeas), maxYears);
+            } else {
+                message = ResManager.getString(R.string.read_vip_can_not_buy);
+            }
+            ToastUtil.showToast(message);
+            return false;
+        }
+        return true;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipGoodItemClickEvent(VipGoodItemClickEvent event) {
-        if (isWifiDisconnected()) {
+        if (checkWifiDisconnected()) {
             return;
         }
         if (!checkVipGoodCanBuy(event.dataBean)) {
@@ -257,6 +262,7 @@ public class BuyReadVIPFragment extends BaseFragment {
             Bundle bundle = new Bundle();
             bundle.putInt(Constants.PAY_DIALOG_TYPE, Constants.PAY_DIALOG_TYPE_PAY_ORDER);
             bundle.putSerializable(Constants.ORDER_INFO, orderData);
+            bundle.putBoolean(Constants.PAY_BY_CASH, true);
             topUpDialog.setArguments(bundle);
             topUpDialog.show(getActivity().getFragmentManager(), "");
         }

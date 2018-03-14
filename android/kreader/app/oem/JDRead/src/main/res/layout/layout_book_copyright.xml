@@ -5,6 +5,7 @@
     <data>
 
         <import type="com.onyx.jdread.main.common.CommonUtils" />
+        <import type="com.onyx.jdread.shop.utils.ViewHelper" />
 
         <variable
             name="bookDetailViewModel"
@@ -65,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.name}"
+                    android:text="@{ViewHelper.friendlyShowCopyRightInfo(bookDetailViewModel.bookDetailResultBean.data.name)}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
@@ -89,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.format}"
+                    android:text="@{ViewHelper.friendlyShowCopyRightInfo(bookDetailViewModel.bookDetailResultBean.data.format)}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
@@ -113,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{@string/copyright_book_size_value(bookDetailViewModel.bookDetailResultBean.data.file_size)}"
+                    android:text="@{ViewHelper.formatFileSize(bookDetailViewModel.bookDetailResultBean.data.file_size)}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
@@ -161,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.edition}"
+                    android:text="@{ViewHelper.friendlyShowCopyRightInfo(bookDetailViewModel.bookDetailResultBean.data.edition)}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
@@ -185,7 +186,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.publish_time}"
+                    android:text="@{ViewHelper.friendlyShowCopyRightInfo(bookDetailViewModel.bookDetailResultBean.data.publish_time)}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
@@ -209,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.publisher}"
+                    android:text="@{ViewHelper.friendlyShowCopyRightInfo(bookDetailViewModel.bookDetailResultBean.data.publisher)}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 
@@ -233,7 +234,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{bookDetailViewModel.bookDetailResultBean.data.isbn}"
+                    android:text="@{ViewHelper.friendlyShowCopyRightInfo(bookDetailViewModel.bookDetailResultBean.data.isbn)}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_three_heading_font" />
 

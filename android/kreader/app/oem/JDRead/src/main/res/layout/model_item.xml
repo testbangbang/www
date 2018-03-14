@@ -45,8 +45,8 @@
                     items="@{model.childList}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/rectangle_stroke"
-                    android:padding="@dimen/rectangle_stroke_width"
+                    android:background="@drawable/rectangle_stroke_gray"
+                    android:padding="@dimen/libraryCover_recycler_padding"
                     android:visibility="@{StringUtils.isNotBlank(model.childCount)?View.VISIBLE:View.GONE}" />
             </com.onyx.jdread.library.view.NonClickableRelativeLayout>
 

@@ -51,6 +51,8 @@ public class ToastUtil {
             View view = toast.getView();
             setBackground(view, getDrawable(appContext, R.drawable.rectangle_stroke));
             TextView textView = (TextView) view.findViewById(android.R.id.message);
+            textView.setEllipsize(TextUtils.TruncateAt.END);
+            textView.setMaxLines(20);
             textView.setTextColor(Color.BLACK);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             textView.setGravity(Gravity.CENTER);

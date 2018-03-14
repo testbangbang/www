@@ -3,7 +3,7 @@
     <dimen name="model_item_cover_width">152dp</dimen>
     <dimen name="model_item_cover_height">203dp</dimen>
     <dimen name="page_indicator_layout_margin">20dp</dimen>
-    <dimen name="rectangle_stroke_width">1dp</dimen>
+    <dimen name="rectangle_stroke_width">2px</dimen>
     <dimen name="rectangle_corner_common_radius">2dp</dimen>
     <dimen name="function_bar_text_size">18sp</dimen>
     <dimen name="level_large_heading_font">26sp</dimen>
@@ -228,12 +228,12 @@
     <dimen name="reader_text_setting_font_size_padding_bottom">10dp</dimen>
     <dimen name="reader_text_setting_format_padding_top">10dp</dimen>
     <dimen name="reader_text_setting_format_padding_bottom">10dp</dimen>
-    <dimen name="reader_text_setting_layout_padding_left">10dp</dimen>
-    <dimen name="reader_text_setting_layout_padding_right">20dp</dimen>
+    <dimen name="reader_text_setting_layout_padding_left">33dp</dimen>
+    <dimen name="reader_text_setting_layout_padding_right">38dp</dimen>
     <dimen name="reader_customize_format_layout_padding_top">10dp</dimen>
     <dimen name="reader_customize_format_layout_padding_bottom">10dp</dimen>
-    <dimen name="reader_customize_format_layout_padding_left">20dp</dimen>
-    <dimen name="reader_customize_format_layout_padding_right">20dp</dimen>
+    <dimen name="reader_customize_format_layout_padding_left">35dp</dimen>
+    <dimen name="reader_customize_format_layout_padding_right">35dp</dimen>
     <dimen name="reader_customize_format_title_margin_right">10dp</dimen>
     <dimen name="reader_customize_minus_style_padding">15dp</dimen>
     <dimen name="reader_customize_minus_style_margin_right">15dp</dimen>
@@ -429,7 +429,7 @@
     <dimen name="reader_dictionary_window_height">220dp</dimen>
     <dimen name="reader_popup_select_menu_height">60dp</dimen>
     <dimen name="search_layout_margin_top">10dp</dimen>
-    <dimen name="library_cover_space">5dp</dimen>
+    <dimen name="library_cover_space">4dp</dimen>
     <dimen name="reader_note_padding_left">20dp</dimen>
     <dimen name="reader_note_padding_right">20dp</dimen>
     <dimen name="reader_note_padding_top">10dp</dimen>
@@ -506,7 +506,7 @@
     <dimen name="dialog_system_update_progress_padding">10dp</dimen>
     <dimen name="clear_search_history_padding">5dp</dimen>
     <dimen name="device_config_update_record_margin_right">24dp</dimen>
-    <dimen name="subject_list_just_vip_margin_left">50dp</dimen>
+    <dimen name="subject_list_just_vip_margin_left">30dp</dimen>
     <dimen name="reader_toast_view_padding_left_and_right">20dp</dimen>
     <dimen name="reader_toast_view_padding_top_and_bottom">3dp</dimen>
     <dimen name="default_page_left_margin">20dp</dimen>
@@ -587,4 +587,9 @@
     <dimen name="custom_search_view_padding">10dp</dimen>
     <dimen name="custom_search_view_drawable_padding">20dp</dimen>
     <dimen name="network_error_tip_margin_top">6dp</dimen>
+    <dimen name="libraryCover_recycler_padding">6dp</dimen>
+    <dimen name="image_manage_button_margin">6dp</dimen>
+    <dimen name="loading_dialog_text_margin_left">14dp</dimen>
+    <dimen name="build_library_edit_padding">5dp</dimen>
+    <dimen name="build_library_edit_margin">15dp</dimen>
 </resources>

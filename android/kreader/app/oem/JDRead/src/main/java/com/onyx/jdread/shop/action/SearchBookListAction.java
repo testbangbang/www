@@ -3,7 +3,6 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -37,13 +36,19 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
     private boolean mapToDataModel = false;
     private boolean loadCover = false;
 
+    private String pageSize = PAGE_SIZE_DEFAULT_VALUES;
+
     public SearchBookListAction(String catId, int currentPage, int sortKey, int sortType, String keyWord, int filter) {
         this.currentPage = currentPage;
         this.catId = catId;
         this.sortType = sortType;
         this.sortKey = sortKey;
-        this.keyWord = CommonUtils.removeSymbol(keyWord);
+        this.keyWord = keyWord;
         this.filter = filter;
+    }
+
+    public void setPageSize(String pageSize) {
+        this.pageSize = pageSize;
     }
 
     @Override
@@ -57,7 +62,7 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
         queryArgs.put(CloudApiContext.SearchBook.FILTER, String.valueOf(filter));
         queryArgs.put(CloudApiContext.SearchBook.SORT, sortKey + "_" + sortType);
         queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, String.valueOf(currentPage));
-        queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, PAGE_SIZE_DEFAULT_VALUES);
+        queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, pageSize);
         appBaseInfo.addRequestParams(queryArgs);
         appBaseInfo.setSign(appBaseInfo.getSignValue(CloudApiContext.BookShopURI.SEARCH_URI));
         requestBean.setAppBaseInfo(appBaseInfo);

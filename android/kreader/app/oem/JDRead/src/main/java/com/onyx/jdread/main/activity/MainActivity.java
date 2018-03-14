@@ -44,6 +44,7 @@ import com.onyx.jdread.main.event.ShowBackTabEvent;
 import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
 import com.onyx.jdread.main.event.TabLongClickedEvent;
+import com.onyx.jdread.main.event.UpdateTimeFormatEvent;
 import com.onyx.jdread.main.event.UsbDisconnectedEvent;
 import com.onyx.jdread.main.event.WifiStateChangeEvent;
 import com.onyx.jdread.main.model.FragmentBarModel;
@@ -248,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.main_content_view, baseFragment).commitNowAllowingStateLoss();
         processEpdGcOnce();
         saveChildViewInfo(baseFragment);
-        systemBarModel.updateTime();
     }
 
     private void processEpdGcOnce() {
@@ -550,5 +550,10 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideSoftWindowEvent(HideSoftWindowEvent event) {
         Utils.hideSoftWindow(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateTimeFormatEvent(UpdateTimeFormatEvent event) {
+        binding.mainSystemBar.onyxDigitalClock.setFormat();
     }
 }

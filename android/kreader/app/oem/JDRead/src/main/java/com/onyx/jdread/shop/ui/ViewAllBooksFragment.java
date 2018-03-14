@@ -1,6 +1,5 @@
 package com.onyx.jdread.shop.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import com.onyx.jdread.databinding.FragmentViewAllBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.shop.action.BookModelAction;
 import com.onyx.jdread.shop.action.BookRankListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
@@ -70,15 +68,18 @@ public class ViewAllBooksFragment extends BaseFragment {
     }
 
     private void initData() {
-        getTitleBarViewModel().leftText = JDPreferenceManager.getStringValue(Constants.SP_KEY_SUBJECT_NAME, "");
-        int bookListType = JDPreferenceManager.getIntValue(Constants.SP_KEY_BOOK_LIST_TYPE, -1);
-        if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_MODEL) {
-            modelId = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
-            modelType = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
-            getBookModelData(currentPage);
-        } else if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_RANK) {
-            int rankType = JDPreferenceManager.getIntValue(Constants.SP_KEY_SUBJECT_RANK_TYPE, -1);
-            getBookRankData(rankType, currentPage);
+        Bundle bundle = getBundle();
+        if (bundle != null) {
+            getTitleBarViewModel().leftText = bundle.getString(Constants.SP_KEY_SUBJECT_NAME, "");
+            int bookListType = bundle.getInt(Constants.SP_KEY_BOOK_LIST_TYPE, -1);
+            if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_MODEL) {
+                modelId = bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_ID, -1);
+                modelType = bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
+                getBookModelData(currentPage);
+            } else if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_RANK) {
+                int rankType = bundle.getInt(Constants.SP_KEY_SUBJECT_RANK_TYPE, -1);
+                getBookRankData(rankType, currentPage);
+            }
         }
     }
 
@@ -184,10 +185,6 @@ public class ViewAllBooksFragment extends BaseFragment {
 
     private EventBus getEventBus() {
         return getShopDataBundle().getEventBus();
-    }
-
-    private Context getContextJD() {
-        return JDReadApplication.getInstance().getApplicationContext();
     }
 
     @Override

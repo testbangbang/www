@@ -26,6 +26,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private int height;
     private GammaInfo gammaInfo;
     private SettingInfo settingInfo;
+    private ReaderTextStyle style;
 
     public InitFirstPageViewRequest(Reader reader) {
         super(reader);
@@ -44,6 +45,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         restoreLayout();
         restoreReaderTextStyle();
         getReader().getReaderViewHelper().updatePageView(getReader(), getReaderUserDataInfo(), getReaderViewInfo());
+        getReader().getReaderSelectionHelper().getCurrentFontSizeChooseIcon(style);
         updateSetting(getReader());
         return this;
     }
@@ -129,7 +131,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
         String fontFace = getFontFace();
         settingInfo.settingType = ReaderConfig.getSettingType();
         settingInfo.settingStyle = ReaderConfig.getSettingStyle();
-        ReaderTextStyle style = ReaderConfig.presetStyle.get(settingInfo.settingStyle);
+        style = ReaderConfig.presetStyle.get(settingInfo.settingStyle);
         style.setFontFace(fontFace);
         if (settingInfo.settingType != ReaderConfig.SETTING_TYPE_PRESET) {
             ReaderTextStyle customStyle = ReaderConfig.presetStyle.get(ReaderConfig.CUSTOM_STYLE_KEY);

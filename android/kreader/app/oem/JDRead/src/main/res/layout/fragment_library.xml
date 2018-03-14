@@ -77,6 +77,8 @@
                     android:layout_height="wrap_content"
                     android:onClick="@{()->libraryModel.onManageClick()}"
                     android:padding="@dimen/library_manage_layout_padding"
+                    android:layout_marginLeft="@dimen/image_manage_button_margin"
+                    android:layout_marginRight="@dimen/image_manage_button_margin"
                     android:src="@{libraryModel.count == 0?@drawable/ic_manage_gray:@drawable/ic_manage}" />
 
                 <ImageView
@@ -101,9 +103,9 @@
 
             <TextView
                 android:id="@+id/empty_library_prompt"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:clickable="true"
                 android:textSize="@dimen/level_two_heading_font"
                 android:visibility="@{libraryModel.count == 0?View.VISIBLE:View.GONE}" />
