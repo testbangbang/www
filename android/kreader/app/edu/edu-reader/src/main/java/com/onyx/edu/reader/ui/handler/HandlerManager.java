@@ -55,6 +55,8 @@ public class HandlerManager {
     private static final int TOUCH_HORIZONTAL_PART = 3;
     private static final int TOUCH_VERTICAL_PART = 2;
 
+    private static final int READER_TOUCH_INTERVAL_TIME = 500;
+
     private String activeProviderName;
     private Map<String, BaseHandler> providerMap = new HashMap<String, BaseHandler>();
     private PointF touchStartPosition;
@@ -63,6 +65,7 @@ public class HandlerManager {
     static private boolean enableScrollAfterLongPress = false;
     private DeviceConfig deviceConfig;
     private ReaderDataHolder readerDataHolder;
+    private long lastTouchTime;
 
     public HandlerManager(final ReaderDataHolder holder) {
         super();
@@ -451,6 +454,9 @@ public class HandlerManager {
         if (StringUtils.isNullOrEmpty(action)) {
             return false;
         }
+        if (!canSingleTapUp()) {
+            return false;
+        }
         if (action.equals(TouchAction.NEXT_PAGE)) {
             nextScreen(readerDataHolder);
         }else if (action.equals(TouchAction.PREV_PAGE)) {
@@ -477,6 +483,15 @@ public class HandlerManager {
             return false;
         }
         return true;
+    }
+
+    private boolean canSingleTapUp(){
+        long currentTime = System.currentTimeMillis();
+        if(currentTime - lastTouchTime > READER_TOUCH_INTERVAL_TIME){
+            lastTouchTime = currentTime;
+            return true;
+        }
+        return false;
     }
 
     private void toggleAnimationUpdate(final ReaderDataHolder readerDataHolder) {
