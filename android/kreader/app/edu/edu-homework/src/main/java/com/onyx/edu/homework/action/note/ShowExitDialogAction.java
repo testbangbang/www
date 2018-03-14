@@ -25,9 +25,9 @@ public class ShowExitDialogAction extends BaseAction {
                 DataBundle.getInstance().post(new ExitEvent());
                 System.exit(0);
             }
-        }, new DialogInterface.OnClickListener() {
+        }, null).addOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onDismiss(DialogInterface dialog) {
                 DataBundle.getInstance().post(new ResumeNoteEvent());
             }
         }).show();
