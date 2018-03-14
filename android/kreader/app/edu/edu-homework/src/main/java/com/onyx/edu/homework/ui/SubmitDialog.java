@@ -94,8 +94,7 @@ public class SubmitDialog extends OnyxBaseDialog {
             }
         }
         int notAnswerCount = questions.size() - hasAnswerCount;
-        binding.hasAnswer.setText(getContext().getString(R.string.has_answer, hasAnswerCount));
-        binding.notAnswer.setText(getContext().getString(R.string.not_answer, notAnswerCount));
+        binding.hasAnswer.setText(getContext().getString(R.string.has_answer, hasAnswerCount, notAnswerCount));
     }
 
     private void prepareSubmit() {

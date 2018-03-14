@@ -23,14 +23,12 @@
             <TextView
                 android:id="@+id/total"
                 style="@style/submit_text"
+                android:text="@string/total"
                 android:textSize="@dimen/submit_text_size"/>
 
             <TextView
                 android:id="@+id/has_answer"
-                style="@style/submit_text" />
-
-            <TextView
-                android:id="@+id/not_answer"
+                android:text="@string/has_answer"
                 style="@style/submit_text" />
 
         </LinearLayout>
