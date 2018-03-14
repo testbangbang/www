@@ -46,14 +46,23 @@ public class SubmitDialog extends OnyxBaseDialog {
         initView();
     }
 
+    @Override
+    public void onBackPressed() {
+        continueAnswer();
+    }
+
+    private void continueAnswer() {
+        dismiss();
+        DataBundle.getInstance().post(new ReloadQuestionViewEvent());
+    }
+
     private void initView() {
         binding.message.setText(R.string.submit_tips);
         binding.action0.setText(R.string.continue_answer);
         binding.action0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DataBundle.getInstance().post(new ReloadQuestionViewEvent());
-                dismiss();
+                continueAnswer();
             }
         });
         binding.action1.setText(R.string.submit);
@@ -66,8 +75,8 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.tvAction2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                DataBundle.getInstance().post(new ShowRecordFragmentEvent());
                 dismiss();
+                DataBundle.getInstance().post(new ShowRecordFragmentEvent());
             }
         });
         checkQuestionAnswer();

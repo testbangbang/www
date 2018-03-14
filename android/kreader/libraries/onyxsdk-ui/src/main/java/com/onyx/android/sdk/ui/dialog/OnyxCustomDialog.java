@@ -128,8 +128,8 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
             btnOk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClick(OnyxCustomDialog.this, BUTTON_POSITIVE);
                     dismiss();
+                    listener.onClick(OnyxCustomDialog.this, BUTTON_POSITIVE);
                 }
             });
         }
@@ -142,8 +142,8 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
             btnCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClick(OnyxCustomDialog.this, BUTTON_NEGATIVE);
                     dismiss();
+                    listener.onClick(OnyxCustomDialog.this, BUTTON_NEGATIVE);
                 }
             });
         }
