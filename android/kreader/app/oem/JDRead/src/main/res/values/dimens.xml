@@ -592,4 +592,5 @@
     <dimen name="loading_dialog_text_margin_left">14dp</dimen>
     <dimen name="build_library_edit_padding">5dp</dimen>
     <dimen name="build_library_edit_margin">15dp</dimen>
+    <dimen name="loading_dialog_padding">20dp</dimen>
 </resources>
