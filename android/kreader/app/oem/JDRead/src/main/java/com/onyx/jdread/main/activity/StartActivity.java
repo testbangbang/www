@@ -184,7 +184,7 @@ public class StartActivity extends AppCompatActivity {
 
     private void initLogin() {
         UserLoginViewModel userLoginViewModel = StartBundle.getInstance().getPersonalViewModel().getUserLoginViewModel();
-        userLoginViewModel.isShowPassword.set(false);
+        userLoginViewModel.isShowPassword.set(true);
         binding.startLogin.setLoginViewModel(userLoginViewModel);
     }
 
