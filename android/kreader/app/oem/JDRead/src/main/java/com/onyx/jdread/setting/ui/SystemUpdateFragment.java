@@ -22,7 +22,6 @@ import com.onyx.jdread.library.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.main.event.NetworkConnectedEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
 import com.onyx.jdread.main.model.TitleBarModel;
@@ -30,6 +29,7 @@ import com.onyx.jdread.setting.action.CheckApkUpdateAction;
 import com.onyx.jdread.setting.action.DownloadPackageAction;
 import com.onyx.jdread.setting.action.LocalUpdateSystemAction;
 import com.onyx.jdread.setting.action.OnlineCheckSystemUpdateAction;
+import com.onyx.jdread.setting.action.SystemUpdateHistoryAction;
 import com.onyx.jdread.setting.dialog.CheckUpdateLoadingDialog;
 import com.onyx.jdread.setting.dialog.SystemUpdateDialog;
 import com.onyx.jdread.setting.dialog.SystemUpdateTipDialog;
@@ -42,6 +42,8 @@ import com.onyx.jdread.setting.model.SettingUpdateModel;
 import com.onyx.jdread.setting.model.SystemUpdateData;
 import com.onyx.jdread.setting.request.RxFirmwareLocalUpdateRequest;
 import com.onyx.jdread.setting.utils.UpdateUtil;
+import com.onyx.jdread.shop.utils.ViewHelper;
+import com.onyx.jdread.shop.view.BookInfoDialog;
 import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
 
@@ -67,6 +69,8 @@ public class SystemUpdateFragment extends BaseFragment {
     private SettingUpdateModel settingUpdateModel;
     private CheckApkUpdateAction apkUpdateAction;
     private DownloadPackageAction downloadPackageAction;
+
+    private BookInfoDialog updateHistoryDialog;
 
     @Nullable
     @Override
@@ -357,7 +361,54 @@ public class SystemUpdateFragment extends BaseFragment {
 
     @Subscribe
     public void onTitleBarRightTitleEvent(TitleBarRightTitleEvent event) {
-        // TODO: 18-1-8
+        loadSystemUpdateHistory();
+    }
+
+    private void loadSystemUpdateHistory() {
+        if (ViewHelper.dialogIsShowing(loadingDialog)) {
+            return;
+        }
+        final SystemUpdateHistoryAction historyAction = new SystemUpdateHistoryAction();
+        historyAction.execute(SettingBundle.getInstance(), new RxCallback() {
+
+            @Override
+            public void onNext(Object o) {
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                hideLoadingDialog();
+                showUpdateHistoryDialog(historyAction.getContent(), R.string.network_or_server_error);
+            }
+
+            @Override
+            public void onComplete() {
+                hideLoadingDialog();
+                showUpdateHistoryDialog(historyAction.getContent(), R.string.update_history_empty);
+            }
+        });
+        showLoadingDialog(ResManager.getString(R.string.loading));
+    }
+
+    private void showUpdateHistoryDialog(String content, int emptyTipId) {
+        if (ViewHelper.dialogIsShowing(updateHistoryDialog)) {
+            return;
+        }
+        if (StringUtils.isNullOrEmpty(content)) {
+            ToastUtil.showToast(emptyTipId);
+            return;
+        }
+        updateHistoryDialog = new BookInfoDialog(JDReadApplication.getInstance());
+        updateHistoryDialog.setTitle(ResManager.getString(R.string.view_history_version));
+        updateHistoryDialog.setContent(content);
+        updateHistoryDialog.setCloseListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewHelper.dismissDialog(updateHistoryDialog);
+                updateHistoryDialog = null;
+            }
+        });
+        updateHistoryDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -369,6 +420,7 @@ public class SystemUpdateFragment extends BaseFragment {
 
     private void hideAllDialog() {
         hideCheckUpdateLoadingDialog();
+        ViewHelper.dismissDialog(updateHistoryDialog);
     }
 
     private void hideCheckUpdateLoadingDialog() {

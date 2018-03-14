@@ -17,8 +17,8 @@ import com.onyx.jdread.util.Utils;
 public class BaseFragment extends Fragment {
     private Bundle bundle;
     protected ChildViewEventCallBack viewEventCallBack = null;
-    private LoadingDialog loadingDialog;
-    private LoadingDialog.DialogModel loadingModel;
+    protected LoadingDialog loadingDialog;
+    protected LoadingDialog.DialogModel loadingModel;
 
     public interface ChildViewEventCallBack {
         void gotoView(String childClassName);
