@@ -19,12 +19,17 @@ import java.util.Map;
  */
 
 public class GetUnlimitedAction extends BaseAction {
+    private int current;
     private List<PersonalBookBean> unlimitedBooks;
+
+    public GetUnlimitedAction(int currentUnLimitedPage) {
+        this.current = currentUnLimitedPage;
+    }
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
-        baseInfo.setDefaultPage();
+        baseInfo.setPageSize(current + "", null);
         Map<String, String> map = new HashMap<>();
         map.put(Constants.SEARCH_TYPE, Constants.TYPE_UNLIMITED);
         baseInfo.addRequestParams(map);

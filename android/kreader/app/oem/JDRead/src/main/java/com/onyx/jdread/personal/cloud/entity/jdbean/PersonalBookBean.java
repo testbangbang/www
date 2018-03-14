@@ -12,4 +12,6 @@ import com.onyx.android.sdk.data.model.Metadata;
 public class PersonalBookBean {
     public Metadata metadata;
     public CloseableReference<Bitmap> bitmap;
+    public long total;
+    public int total_page;
 }

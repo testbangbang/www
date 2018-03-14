@@ -9,6 +9,7 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.CommonUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 import okhttp3.MediaType;
@@ -28,7 +29,7 @@ import retrofit2.Response;
 
 public class EnhancedCall<T> {
     private Call<T> mCall;
-    private Class dataClassName;
+    private Type dataClassName;
     // Whether to use cache
     private boolean mUseCache = true;
 
@@ -36,7 +37,7 @@ public class EnhancedCall<T> {
         this.mCall = call;
     }
 
-    public EnhancedCall<T> dataClassName(Class className) {
+    public EnhancedCall<T> dataClassName(Type className) {
         dataClassName = className;
         return this;
     }
@@ -139,7 +140,7 @@ public class EnhancedCall<T> {
         return t;
     }
 
-    public T execute(Call<T> call, Class clazz) {
+    public T execute(Call<T> call, Type clazz) {
         if (Constants.isUseCache) {
             EnhancedCall<T> enhancedCall = new EnhancedCall<>(call);
             return enhancedCall.useCache(true)

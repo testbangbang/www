@@ -18,7 +18,7 @@ public class ShopCartItemData extends BaseObservable implements Comparable<ShopC
     public boolean checked;
     public boolean hasPromotion;
     public PromotionalEntityBean promotionalEntity;
-    public double reAmount;
+    public int reAmount;
     public int shopNum;
     public int sort;
 
@@ -62,7 +62,7 @@ public class ShopCartItemData extends BaseObservable implements Comparable<ShopC
         return reAmount;
     }
 
-    public void setReAmount(double reAmount) {
+    public void setReAmount(int reAmount) {
         this.reAmount = reAmount;
         notifyChange();
     }
