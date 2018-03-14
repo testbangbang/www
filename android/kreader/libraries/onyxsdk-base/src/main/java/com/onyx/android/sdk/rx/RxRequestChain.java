@@ -10,6 +10,7 @@ import java.util.Objects;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -43,23 +44,22 @@ public class RxRequestChain {
             .subscribe(new Consumer<RxRequest>() {
                 @Override
                 public void accept(RxRequest request) throws Exception {
-                    if (callback != null) {
-                        callback.onNext(request);
-                    }
+                    RxCallback.invokeNext(callback, request);
                 }
             }, new Consumer<Throwable>() {
                 @Override
                 public void accept(Throwable throwable) throws Exception {
-                    if (callback != null) {
-                        callback.onError(throwable);
-                    }
+                    RxCallback.invokeError(callback, throwable);
                 }
             }, new Action() {
                 @Override
                 public void run() throws Exception {
-                    if (callback != null) {
-                        callback.onComplete();
-                    }
+                    RxCallback.invokeComplete(callback);
+                }
+            }, new Consumer<Disposable>() {
+                @Override
+                public void accept(Disposable disposable) throws Exception {
+                    RxCallback.invokeSubscribe(callback);
                 }
             });
     }

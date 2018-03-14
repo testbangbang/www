@@ -83,6 +83,8 @@ public class RxGetBoughtAndUnlimitedRequest extends RxBaseCloudRequest {
                     metadata.setIdString(String.valueOf(bean.ebook_id));
                     metadata.setType(bean.format);
                     bookBean.metadata = metadata;
+                    bookBean.total = data.total;
+                    bookBean.total_page = data.total_page;
                     boughtBooks.add(bookBean);
                 }
             }

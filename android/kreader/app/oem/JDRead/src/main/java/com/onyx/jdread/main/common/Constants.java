@@ -156,4 +156,5 @@ public class Constants {
     public static final String IS_GUIDE = "is_guide";
     public static final String NET_ERROR_TITLE = "net_error_title";
     public static final String NET_ERROR_SHOW_TITLE_BAR = "net_error_show_title_bar";
+    public static final String NEW_LINE = "\r\n";
 }

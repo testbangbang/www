@@ -77,7 +77,7 @@ public class BaseOptions {
     public static float defaultFontSize = fallbackFontSize;
 
     transient private static int noGamma = 100;
-    transient private static int globalDefaultGamma = 100;
+    transient private static int globalDefaultGamma = 150;
     transient private static int globalDefaultTextGamma = 150;
     public static final float INVALID_FLOAT_VALUE = - 1;
     public static final int INVALID_INT_VALUE = - 1;

@@ -21,6 +21,7 @@
     <string name="refresh_mode">Speed refresh mode</string>
     <string name="refresh_mode_tips">Greatly improved the page speed, but the shadow was more obvious.</string>
     <string name="view_history_version">View history version</string>
+    <string name="update_history_empty">Version update history is empty</string>
     <string name="updatable_version">Updatable version: </string>
     <string name="current_version">Current version: </string>
     <string name="system_update">System update</string>
@@ -190,7 +191,7 @@
     <string name="top_up">Top-up</string>
     <string name="consumption_record">Records of consumption</string>
     <string name="paid_record">Records of payment</string>
-    <string name="read_vip">JoyRead VIP</string>
+    <string name="read_vip">JDRead VIP</string>
     <string name="points_for">Points for</string>
     <string name="top_up_tips">1 yuan =100 reading beans, and the first recharging equivalent voucher</string>
     <string name="current_balance">Current balance: %1$d read bean | %2$d vouchers</string>
@@ -324,7 +325,7 @@
     <string name="subject_list_sort_type_price">Price</string>
     <string name="subject_list_sort_type_newest">Newest</string>
     <string name="subject_list_filter">Filter</string>
-    <string name="subject_list_just_vip">JoyRead VIP</string>
+    <string name="subject_list_just_vip">JDRead VIP</string>
     <string name="downloading_progress">Downloading %d</string>
     <string name="paused">Paused %d</string>
     <string name="started">Start</string>
@@ -470,7 +471,7 @@
     <string name="not_login">not login</string>
     <string name="open_vip_read">Open Vip</string>
     <string name="renew_vip_read">Renew Vip</string>
-    <string name="vip_read_days">The remaining days of the JoyRead Vip %s days</string>
+    <string name="vip_read_days">The remaining days of the JDRead VIP %s days</string>
     <string name="vip_read_notice">Vip Notice</string>
     <string name="not_open_vip_read">Do not open Vip</string>
     <string name="format_rmb">¥%s</string>
@@ -564,5 +565,7 @@
     <string name="not_existent">book do not exist</string>
     <string name="input_special_characters">Input contains special characters</string>
     <string name="no_results">no results</string>
+    <string name="is_null" translatable="false">null</string>
     <string name="jd_loading">loading</string>
+    <string name="update_time">Update Time</string>
 </resources>
