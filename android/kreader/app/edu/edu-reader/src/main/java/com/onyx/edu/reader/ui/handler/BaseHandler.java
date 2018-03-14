@@ -62,7 +62,6 @@ public abstract class BaseHandler {
     private boolean scrolling = false;
     private boolean disablePinchZoom = true;
 
-
     public boolean isSingleTapUp() {
         return singleTapUp;
     }
