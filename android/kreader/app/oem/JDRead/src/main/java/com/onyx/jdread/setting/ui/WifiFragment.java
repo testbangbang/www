@@ -61,8 +61,8 @@ public class WifiFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = (WifiBinding) DataBindingUtil.inflate(inflater, R.layout.fragment_wifi, container, false);
         initView();
-        initData();
         initWifi();
+        initData();
         initListener();
         return binding.getRoot();
     }
@@ -73,7 +73,7 @@ public class WifiFragment extends BaseFragment {
             public void onItemClick(int position) {
                 if (wifiSettingAdapter.getScanResult() != null) {
                     AccessPoint accessPoint = wifiSettingAdapter.getScanResult().get(position);
-                    if(accessPoint.getSecurity() == 0) {
+                    if (accessPoint.getSecurity() == 0) {
                         wifiAdmin.connectWifi(accessPoint);
                     } else if (accessPoint.getWifiInfo() != null) {
                         showConnectDialog(accessPoint);
@@ -211,6 +211,7 @@ public class WifiFragment extends BaseFragment {
             public void onWifiStateChange(boolean isWifiEnable, int wifiExtraState) {
                 if (wifiExtraState != WifiManager.WIFI_STATE_ENABLING) {
                     updateUI(isWifiEnable);
+                    binding.wifiTitleBar.settingTitleCheck.setVisibility(View.VISIBLE);
                 }
             }
 

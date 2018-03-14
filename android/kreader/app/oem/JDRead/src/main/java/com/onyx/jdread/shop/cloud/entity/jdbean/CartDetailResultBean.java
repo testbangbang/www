@@ -12,8 +12,8 @@ public class CartDetailResultBean {
     public String message;
 
     public static class DataBean {
-        public double re_price;
-        public double origin_price;
+        public int re_price;
+        public int origin_price;
         public String total_price;
         public List<SuitEntityListBean> suit_list;
     }

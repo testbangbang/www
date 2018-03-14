@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.action;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -46,6 +47,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
 
     @Override
     public void execute(ShopDataBundle dataBundle, RxCallback rxCallback) {
+
         if (StringUtils.isNullOrEmpty(url)) {
             ToastUtil.showToast(context, R.string.download_link_invalid);
             return;
@@ -83,11 +85,11 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
                 if (infoModel.totalBytes > 0) {
                     infoModel.progress = infoModel.soFarBytes / infoModel.totalBytes;
                 }
-                dataBundle.getEventBus().post(new DownloadingEvent(tag, infoModel));
                 BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(tag);
-                if (task != null && DownLoadHelper.isPause(task.getStatus())) {
+                if (task != null && DownLoadHelper.canInsertBookDetail(task.getStatus())) {
                     updateDownloadInfo(task);
                 }
+                dataBundle.getEventBus().post(new DownloadingEvent(tag, infoModel));
                 if (downLoadCallback != null) {
                     downLoadCallback.progress(tag, infoModel);
                 }
@@ -95,13 +97,13 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void done(BaseRequest request, Throwable e) {
-                DownloadFinishEvent downloadFinishEvent = new DownloadFinishEvent(tag);
-                downloadFinishEvent.setThrowable(e);
-                dataBundle.getEventBus().post(downloadFinishEvent);
                 BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(tag);
                 if (task != null) {
                     updateDownloadInfo(task);
                 }
+                DownloadFinishEvent downloadFinishEvent = new DownloadFinishEvent(tag);
+                downloadFinishEvent.setThrowable(e);
+                dataBundle.getEventBus().post(downloadFinishEvent);
                 if (downLoadCallback != null) {
                     downLoadCallback.done(tag);
                 }
@@ -171,6 +173,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
         extraInfoBean.localPath = task.getPath();
         extraInfoBean.progress = task.getSmallFileSoFarBytes();
         extraInfoBean.totalSize = task.getSmallFileTotalBytes();
+        extraInfoBean.downLoadTaskTag = task.getTag();
         if (extraInfoBean.progress != 0) {
             extraInfoBean.percentage = (int) ((extraInfoBean.progress * 100 / extraInfoBean.totalSize));
         }

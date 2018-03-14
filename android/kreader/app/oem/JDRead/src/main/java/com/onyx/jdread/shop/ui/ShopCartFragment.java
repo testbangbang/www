@@ -261,8 +261,8 @@ public class ShopCartFragment extends BaseFragment {
 
     private void setAmount() {
         int selected = 0;
-        double cashBack = 0;
-        double original = 0;
+        int cashBack = 0;
+        int original = 0;
         List<ShopCartItemData> data = shopCartAdapter.getData();
         for (int i = 0; i < data.size(); i++) {
             ShopCartItemData itemData = data.get(i);
@@ -273,9 +273,9 @@ public class ShopCartFragment extends BaseFragment {
             }
         }
         shopCartModel.setSize(selected + "");
-        shopCartModel.setTotalAmount(Utils.keepPoints(original - cashBack));
-        shopCartModel.setOriginalPrice(Utils.keepPoints(original));
-        shopCartModel.setCashBack(Utils.keepPoints(cashBack));
+        shopCartModel.setTotalAmount(String.valueOf(original - cashBack));
+        shopCartModel.setOriginalPrice(String.valueOf(original));
+        shopCartModel.setCashBack(String.valueOf(cashBack));
         shopCartModel.setSelectedAll(selected == data.size());
         shopCartModel.setSettlementEnable(selected == 0 ? false : true);
     }
