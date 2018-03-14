@@ -174,6 +174,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
         extraInfoBean.progress = task.getSmallFileSoFarBytes();
         extraInfoBean.totalSize = task.getSmallFileTotalBytes();
         extraInfoBean.downLoadTaskTag = task.getTag();
+        extraInfoBean.isWholeBookDownLoad = DownLoadHelper.isCurrentDownWholeBook((String) task.getTag());
         if (extraInfoBean.progress != 0) {
             extraInfoBean.percentage = (int) ((extraInfoBean.progress * 100 / extraInfoBean.totalSize));
         }
