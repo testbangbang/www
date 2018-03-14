@@ -173,7 +173,11 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchView.setCustomSearchListener(new CustomSearchView.SearchListener() {
             @Override
             public void onQuerySearch(String query) {
-                doSearchQueryOrHint(query);
+                if (StringUtils.isNullOrEmpty(query)) {
+                    doSearchQueryOrHint(query);
+                    return;
+                }
+                queryTextSubmit(getSearchQueryOrHint(query));
             }
         });
         binding.searchResultRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
