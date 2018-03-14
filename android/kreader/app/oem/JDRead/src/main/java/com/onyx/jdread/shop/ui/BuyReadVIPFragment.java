@@ -262,6 +262,7 @@ public class BuyReadVIPFragment extends BaseFragment {
             Bundle bundle = new Bundle();
             bundle.putInt(Constants.PAY_DIALOG_TYPE, Constants.PAY_DIALOG_TYPE_PAY_ORDER);
             bundle.putSerializable(Constants.ORDER_INFO, orderData);
+            bundle.putBoolean(Constants.PAY_BY_CASH, true);
             topUpDialog.setArguments(bundle);
             topUpDialog.show(getActivity().getFragmentManager(), "");
         }

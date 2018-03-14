@@ -46,6 +46,7 @@
                 android:textSize="@dimen/font_size_17" />
 
             <TextView
+                android:id="@+id/pay_order_balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dialog_pay_order_item_margin_top"

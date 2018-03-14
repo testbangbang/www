@@ -77,6 +77,8 @@
                     android:layout_height="wrap_content"
                     android:onClick="@{()->libraryModel.onManageClick()}"
                     android:padding="@dimen/library_manage_layout_padding"
+                    android:layout_marginLeft="@dimen/image_manage_button_margin"
+                    android:layout_marginRight="@dimen/image_manage_button_margin"
                     android:src="@{libraryModel.count == 0?@drawable/ic_manage_gray:@drawable/ic_manage}" />
 
                 <ImageView

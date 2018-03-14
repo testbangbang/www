@@ -1,5 +1,6 @@
 package com.onyx.jdread.library.ui;
 
+import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -209,11 +210,17 @@ public class LibraryFragment extends BaseFragment {
         contentPageView.setOnChangePageListener(new SinglePageRecyclerView.OnChangePageListener() {
             @Override
             public void prev() {
+                if (isDialogShowing(singleItemManageDialog)) {
+                    return;
+                }
                 prevPage();
             }
 
             @Override
             public void next() {
+                if (isDialogShowing(singleItemManageDialog)) {
+                    return;
+                }
                 nextPage();
             }
         });
@@ -524,7 +531,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void showSingleMangeDialog(DataModel currentChosenModel) {
-        if (singleItemManageDialog != null && singleItemManageDialog.isShowing()) {
+        if (isDialogShowing(singleItemManageDialog)) {
             return;
         }
         SingleItemManageDialog.DialogModel dialogModel = new SingleItemManageDialog.DialogModel(libraryDataBundle.getEventBus());
@@ -532,6 +539,10 @@ public class LibraryFragment extends BaseFragment {
         SingleItemManageDialog.Builder builder = new SingleItemManageDialog.Builder(JDReadApplication.getInstance(), dialogModel);
         singleItemManageDialog = builder.create();
         singleItemManageDialog.show();
+    }
+
+    private boolean isDialogShowing(Dialog dialog) {
+        return dialog != null && dialog.isShowing();
     }
 
     @Subscribe
