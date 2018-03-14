@@ -332,7 +332,7 @@ public class HomeworkListActivity extends BaseActivity {
 
     private void updateHomeworkFromIntent(HomeworkIntent intent) {
         getDataBundle().updateHomeworkFromIntent(intent);
-        new UpdateHomeworkModelAction(getDataBundle().getHomework()).execute(HomeworkListActivity.this, null);
+        new UpdateHomeworkModelAction(getDataBundle().getHomework(), getDataBundle().getPersonalHomeworkId()).execute(HomeworkListActivity.this, null);
     }
 
     private void initOnyxNotificationReceiver() {
