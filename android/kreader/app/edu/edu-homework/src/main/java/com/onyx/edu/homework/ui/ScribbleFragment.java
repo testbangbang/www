@@ -612,7 +612,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private boolean canNotEdit() {
-        return getDataBundle().isSubmittedBeforeReview()
+        return getDataBundle().isReview()
                 && !question.isChoiceQuestion()
                 && !getDataBundle().canCheckAnswer();
     }

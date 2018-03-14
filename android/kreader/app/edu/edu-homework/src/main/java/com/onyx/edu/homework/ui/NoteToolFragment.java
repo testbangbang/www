@@ -369,8 +369,8 @@ public class NoteToolFragment extends BaseFragment {
     public List<Integer> buildMainMenuIds() {
         List<Integer> functionMenuIds = new ArrayList<>();
         if (getDataBundle().beforeReview()) {
-            functionMenuIds.add(MenuId.ADD_PAGE);
             functionMenuIds.add(MenuId.DELETE_PAGE);
+            functionMenuIds.add(MenuId.ADD_PAGE);
         }
 
         functionMenuIds.add(MenuId.PEN_STYLE);
@@ -394,6 +394,12 @@ public class NoteToolFragment extends BaseFragment {
 
         menuIds.add(MenuId.THICKNESS_ULTRA_BOLD);
         menuIds.add(MenuId.THICKNESS_CUSTOM_BOLD);
+
+        if (canNotEdit()) {
+            menuIds.add(MenuId.ERASER);
+            menuIds.add(MenuId.DELETE_PAGE);
+            menuIds.add(MenuId.ADD_PAGE);
+        }
         return menuIds;
     }
 
@@ -576,7 +582,7 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private boolean canNotEdit() {
-        return getDataBundle().isSubmittedBeforeReview()
+        return getDataBundle().isReview()
                 && !question.isChoiceQuestion()
                 && !getDataBundle().canCheckAnswer();
     }

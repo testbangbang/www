@@ -556,7 +556,6 @@ public class HomeworkListActivity extends BaseActivity {
         updateViewState();
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowRecordFragmentEvent(ShowRecordFragmentEvent event) {
         showRecordFragment();
