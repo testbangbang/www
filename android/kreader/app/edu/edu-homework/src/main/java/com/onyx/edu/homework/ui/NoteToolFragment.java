@@ -26,6 +26,7 @@ import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.android.sdk.ui.data.MenuItem;
 import com.onyx.android.sdk.ui.data.MenuManager;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.edu.homework.BR;
 import com.onyx.edu.homework.DataBundle;
@@ -578,7 +579,12 @@ public class NoteToolFragment extends BaseFragment {
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
                 && !getDataBundle().isExpired()
                 && isRunning()
-                && !canNotEdit();
+                && !canNotEdit()
+                && !dialogShowing();
+    }
+
+    private boolean dialogShowing() {
+        return OnyxBaseDialog.showing || ScribbleFragment.systemUIOpened;
     }
 
     private boolean canNotEdit() {
