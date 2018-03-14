@@ -99,7 +99,7 @@ public class LoginHelper {
         PersonalDataBundle.getInstance().setTargetView(targetView);
         final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(JDReadApplication.getInstance()), null, false);
         userLoginBinding.setLoginViewModel(userLoginViewModel);
-        userLoginViewModel.isShowPassword.set(false);
+        userLoginViewModel.isShowPassword.set(true);
         EncryptHelper.getSaltValue(PersonalDataBundle.getInstance(), null);
         loginDialog = new LoginDialog(context);
         loginDialog.setView(userLoginBinding.getRoot());
@@ -107,6 +107,7 @@ public class LoginHelper {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 userLoginViewModel.cleanInput();
+                userLoginViewModel.loginButtonEnabled.set(true);
             }
         });
         userLoginBinding.setListener(new View.OnClickListener() {

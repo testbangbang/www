@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.widget.PopupWindow;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -467,6 +468,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe
     public void onSystemBarClickedEvent(SystemBarClickedEvent event) {
+        Utils.hideSoftWindow(MainActivity.this);
         if (systemBarPopupWindowModel == null) {
             systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
         } else {

@@ -140,13 +140,18 @@ public class ExportHelper {
                             ExportNoteResultBean resultBean = action.getResultBean();
                             if (resultBean.result_code == 0) {
                                 ToastUtil.showToast(ResManager.getString(R.string.email_export_success));
-                                FileUtils.deleteFile(temp, false);
                             }
                         }
 
                         @Override
                         public void onError(Throwable throwable) {
                             ToastUtil.showToast(ResManager.getString(R.string.export_failed));
+                        }
+
+                        @Override
+                        public void onFinally() {
+                            super.onFinally();
+                            FileUtils.deleteFile(temp, false);
                         }
                     });
                 }

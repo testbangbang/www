@@ -55,6 +55,8 @@ public class WifiLoginDialog extends OnyxAlertDialog {
                         TextView tvSecurity = (TextView) customView.findViewById(R.id.text_view_security);
                         editTextPassword = (EditText) customView.findViewById(R.id.edit_text_password);
                         CheckBox showPasswordCheck = (CheckBox) customView.findViewById(R.id.cb_show_password);
+                        showPasswordCheck.setChecked(true);
+                        editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                         tvSignalLevel.setText(signalLevel);
                         tvSecurity.setText(securityMode);
                         showPasswordCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
@@ -62,6 +63,7 @@ public class PasswordSettingFragment extends BaseFragment {
         final boolean encrypted = passwordSettingBinding.getPswSettingModel().encrypted.get();
         final EditText focusView = encrypted ? passwordSettingBinding.passwordUnEncryptEdit : passwordSettingBinding.passwordEncryptEdit;
         focusView.requestFocus();
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         showPopupWindow(focusView, encrypted, getKeyboardListener());
     }
 
