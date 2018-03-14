@@ -444,9 +444,9 @@
     <dimen name="reader_dict_title_padding_right">10dp</dimen>
     <dimen name="reader_dict_title_padding_top">15dp</dimen>
     <dimen name="reader_dict_title_padding_bottom">15dp</dimen>
-    <dimen name="reader_time_margin_left">20dp</dimen>
+    <dimen name="reader_time_margin_left">38dp</dimen>
     <dimen name="reader_time_margin_bottom">0dp</dimen>
-    <dimen name="reader_page_number_margin_right">20dp</dimen>
+    <dimen name="reader_page_number_margin_right">38dp</dimen>
     <dimen name="reader_page_number_margin_bottom">0dp</dimen>
     <dimen name="reader_page_translate_window_margin_bottom">10dp</dimen>
     <dimen name="book_format_margin_top">24dp</dimen>
