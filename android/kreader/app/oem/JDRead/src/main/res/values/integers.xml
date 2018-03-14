@@ -194,5 +194,6 @@
 
     <integer name="net_error_tip_goto_setting_start">3</integer>
     <integer name="net_error_tip_goto_setting_end">9</integer>
+    <integer name="personal_book_dropdown_menu">770</integer>
 
 </resources>
