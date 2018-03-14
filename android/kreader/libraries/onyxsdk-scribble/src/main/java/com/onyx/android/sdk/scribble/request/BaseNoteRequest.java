@@ -243,7 +243,8 @@ public class BaseNoteRequest extends BaseRequest {
             return;
         }
         canvas.save();
-        canvas.translate(parent.getTextLayoutArgs().textPadding, -getTextTop(sl, pageTop));
+        int padding = parent.getTextLayoutArgs().textPadding;
+        canvas.translate(padding, -getTextTop(sl, pageTop) + padding);
         sl.draw(canvas);
         canvas.restore();
     }

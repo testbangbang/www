@@ -46,14 +46,23 @@ public class SubmitDialog extends OnyxBaseDialog {
         initView();
     }
 
+    @Override
+    public void onBackPressed() {
+        continueAnswer();
+    }
+
+    private void continueAnswer() {
+        dismiss();
+        DataBundle.getInstance().post(new ReloadQuestionViewEvent());
+    }
+
     private void initView() {
         binding.message.setText(R.string.submit_tips);
         binding.action0.setText(R.string.continue_answer);
         binding.action0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DataBundle.getInstance().post(new ReloadQuestionViewEvent());
-                dismiss();
+                continueAnswer();
             }
         });
         binding.action1.setText(R.string.submit);
@@ -66,8 +75,8 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.tvAction2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                DataBundle.getInstance().post(new ShowRecordFragmentEvent());
                 dismiss();
+                DataBundle.getInstance().post(new ShowRecordFragmentEvent());
             }
         });
         checkQuestionAnswer();
@@ -94,8 +103,7 @@ public class SubmitDialog extends OnyxBaseDialog {
             }
         }
         int notAnswerCount = questions.size() - hasAnswerCount;
-        binding.hasAnswer.setText(getContext().getString(R.string.has_answer, hasAnswerCount));
-        binding.notAnswer.setText(getContext().getString(R.string.not_answer, notAnswerCount));
+        binding.hasAnswer.setText(getContext().getString(R.string.has_answer, hasAnswerCount, notAnswerCount));
     }
 
     private void prepareSubmit() {
@@ -194,8 +202,7 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.action1.setVisibility(View.GONE);
         binding.action0.setText(R.string.close);
         binding.action0.setVisibility(View.VISIBLE);
-        binding.tvAction2.setVisibility(View.GONE);
-        dismiss();
+        binding.tvAction2.setVisibility(View.VISIBLE);
         DataBundle.getInstance().post(new SubmitEvent());
     }
 }

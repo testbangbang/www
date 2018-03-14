@@ -23,14 +23,12 @@
             <TextView
                 android:id="@+id/total"
                 style="@style/submit_text"
+                android:text="@string/total"
                 android:textSize="@dimen/submit_text_size"/>
 
             <TextView
                 android:id="@+id/has_answer"
-                style="@style/submit_text" />
-
-            <TextView
-                android:id="@+id/not_answer"
+                android:text="@string/has_answer"
                 style="@style/submit_text" />
 
         </LinearLayout>
@@ -47,7 +45,7 @@
             android:layout_margin="20dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dialog_button_parent_width"
             android:layout_height="wrap_content">
 
             <TextView

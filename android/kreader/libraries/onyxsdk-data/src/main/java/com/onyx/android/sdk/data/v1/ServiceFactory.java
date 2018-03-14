@@ -1,15 +1,21 @@
 package com.onyx.android.sdk.data.v1;
 
+import android.app.Application;
+
 import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.data.v2.TokenHeaderInterceptor;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.Utils;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import okhttp3.Authenticator;
+import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -22,6 +28,8 @@ public class ServiceFactory {
     private static ConcurrentHashMap<String, OkHttpClient> clientMap = new ConcurrentHashMap<>();
     private static InetSocketAddress inetSocketAddress;
     private static boolean openProxy;
+    private static final long cacheSize = 10 * 1024 * 1024; // 10 MB
+    private static final String cacheDirName = "okhttp";
 
     private static Retrofit getRetrofit(String baseUrl) {
         if (!retrofitMap.containsKey(baseUrl)) {
@@ -43,7 +51,7 @@ public class ServiceFactory {
             return clientMap.get(baseUrl);
         }
         OkHttpClient client =
-                setProxy(new OkHttpClient().newBuilder())
+                configOkhttp(new OkHttpClient().newBuilder())
                         .build();
         clientMap.put(baseUrl, client);
         return client;
@@ -159,7 +167,7 @@ public class ServiceFactory {
             removeInterceptors(builder, TokenHeaderInterceptor.class);
         }
         builder.addInterceptor(new TokenHeaderInterceptor(tokenKey, token));
-        setProxy(builder);
+        configOkhttp(builder);
         okHttpClient = builder.build();
         Retrofit retrofit = getBaseRetrofitBuilder(baseUrl).client(okHttpClient).build();
         retrofitMap.put(baseUrl, retrofit);
@@ -174,6 +182,15 @@ public class ServiceFactory {
         clientMap.put(baseUrl, builder.build());
     }
 
+    public static void setInetSocketAddress(InetSocketAddress inetSocketAddress) {
+        ServiceFactory.inetSocketAddress = inetSocketAddress;
+    }
+
+    public static void setOpenProxy(boolean openProxy) {
+        ServiceFactory.openProxy = openProxy;
+    }
+
+
     private static OkHttpClient.Builder setProxy(OkHttpClient.Builder builder){
         if (openProxy && null != inetSocketAddress) {
             return builder.proxy(new Proxy(Proxy.Type.HTTP, inetSocketAddress));
@@ -182,11 +199,20 @@ public class ServiceFactory {
         }
     }
 
-    public static void setInetSocketAddress(InetSocketAddress inetSocketAddress) {
-        ServiceFactory.inetSocketAddress = inetSocketAddress;
+    private static OkHttpClient.Builder setCache(OkHttpClient.Builder builder) {
+        Application app = Utils.getApp();
+        if (null != app) {
+            File cacheDir = new File(app.getCacheDir(), cacheDirName);
+            Cache cache = new Cache(cacheDir, cacheSize);
+            return builder.cache(cache);
+        } else {
+            Debug.i("Utils don't init application, okhttp cannot set cache");
+            return builder;
+        }
     }
 
-    public static void setOpenProxy(boolean openProxy) {
-        ServiceFactory.openProxy = openProxy;
+    private static OkHttpClient.Builder configOkhttp(OkHttpClient.Builder builder) {
+        setProxy(builder);
+        return setCache(builder);
     }
 }

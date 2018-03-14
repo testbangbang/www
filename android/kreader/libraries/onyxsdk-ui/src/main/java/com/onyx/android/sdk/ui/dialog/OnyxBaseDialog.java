@@ -11,6 +11,8 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 
 public class OnyxBaseDialog extends Dialog {
 
+    public volatile static boolean showing;
+
     public OnyxBaseDialog(Context context) {
         super(context);
     }
@@ -26,17 +28,26 @@ public class OnyxBaseDialog extends Dialog {
     @Override
     public void show() {
         EpdController.disableRegal();
+        showing = true;
         super.show();
     }
 
     @Override
     public void dismiss() {
         EpdController.enableRegal();
+        showing = false;
         super.dismiss();
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        showing = false;
+    }
+
+    @Override
     public void hide() {
+        showing = false;
         EpdController.enableRegal();
         super.hide();
     }

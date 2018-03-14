@@ -80,34 +80,16 @@ public class Question implements Serializable {
     }
 
     public HomeworkSubmitAnswer createAnswer() {
-        if (isSingleChoiceQuestion()) {
-            return createSingleAnswer();
-        }
-        if (isMultipleChoiceQuestion()) {
-            return createMultipleAnswers();
-        }
-        return createFillAnswer();
+        return isChoiceQuestion() ? createChoiceAnswer() : createFillAnswer();
     }
 
-    public HomeworkSubmitAnswer createSingleAnswer() {
+    private HomeworkSubmitAnswer createChoiceAnswer() {
         HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
+        answer.setQuestion(getQuestionId());
+        answer.setUniqueId(getUniqueId());
         for (QuestionOption option : options) {
             if (option.checked) {
-                answer.setQuestion(getQuestionId());
                 answer.addValue(option._id);
-                answer.setUniqueId(getUniqueId());
-            }
-        }
-        return answer;
-    }
-
-    public HomeworkSubmitAnswer createMultipleAnswers() {
-        HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
-        for (QuestionOption option : options) {
-            if (option.checked) {
-                answer.setQuestion(getQuestionId());
-                answer.addValue(option._id);
-                answer.setUniqueId(getUniqueId());
             }
         }
         return answer;

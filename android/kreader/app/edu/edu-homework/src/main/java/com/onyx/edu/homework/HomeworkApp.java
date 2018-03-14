@@ -8,6 +8,7 @@ import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.PackageUtils;
+import com.onyx.android.sdk.utils.Utils;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.data.BuglyConfig;
 import com.onyx.edu.homework.data.EduProxy;
@@ -33,6 +34,7 @@ public class HomeworkApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        Utils.init(this);
         BaseNoteAction.setAppContext(this);
         initContentProvider(this);
         initDataProvider();
