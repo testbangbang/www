@@ -124,8 +124,7 @@ public class HomeworkListActivity extends BaseActivity {
         });
         binding.totalScore.setText(getString(R.string.total_score, 0f));
         binding.singleScore.setText(getString(R.string.single_score, 0f));
-        binding.hasAnswer.setText(getString(R.string.has_answer, 0));
-        binding.notAnswer.setText(getString(R.string.not_answer, 0));
+        binding.hasAnswer.setText(getString(R.string.has_answer, 0, 0));
         binding.submit.setText(R.string.submit_homework);
         binding.answerRecord.setText(R.string.answer_record);
         binding.getResult.setText(R.string.get_result);
@@ -505,8 +504,7 @@ public class HomeworkListActivity extends BaseActivity {
             }
         }
         int notAnswerCount = questions.size() - hasAnswerCount;
-        binding.hasAnswer.setText(getString(R.string.has_answer, hasAnswerCount));
-        binding.notAnswer.setText(getString(R.string.not_answer, notAnswerCount));
+        binding.hasAnswer.setText(getString(R.string.has_answer, hasAnswerCount, notAnswerCount));
     }
 
     @Nullable
@@ -609,7 +607,6 @@ public class HomeworkListActivity extends BaseActivity {
         ViewUtils.setGone(binding.getResultLayout, getDataBundle().isSubmitted());
         ViewUtils.setGone(binding.newMessage, getDataBundle().canGetReview());
         ViewUtils.setGone(binding.hasAnswer, !getDataBundle().isReview());
-        ViewUtils.setGone(binding.notAnswer, !getDataBundle().isReview());
         ViewUtils.setGone(binding.totalScore, false);
         ViewUtils.setGone(binding.singleScore, getDataBundle().isReview() && recordFragment == null);
         ViewUtils.setGone(binding.scoreRank, getDataBundle().isReview());

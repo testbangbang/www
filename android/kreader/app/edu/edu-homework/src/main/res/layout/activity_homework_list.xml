@@ -64,11 +64,6 @@
                 style="@style/homework_text" />
 
             <TextView
-                android:id="@+id/not_answer"
-                tools:text="@string/not_answer"
-                style="@style/homework_text" />
-
-            <TextView
                 android:visibility="gone"
                 android:id="@+id/total_score"
                 tools:text="@string/total_score"
