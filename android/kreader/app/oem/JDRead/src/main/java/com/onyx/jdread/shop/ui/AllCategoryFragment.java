@@ -281,6 +281,7 @@ public class AllCategoryFragment extends BaseFragment {
             Bundle bundle = new Bundle();
             bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, categoryBean.id);
             bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, categoryBean.level);
+            bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_POSITION, event.getPosition());
             bundle.putString(Constants.SP_KEY_CATEGORY_NAME, categoryBean.name);
             getViewEventCallBack().gotoView(CategoryBookListFragment.class.getName(), bundle);
         }

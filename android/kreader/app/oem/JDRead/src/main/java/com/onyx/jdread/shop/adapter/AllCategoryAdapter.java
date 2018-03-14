@@ -38,7 +38,7 @@ public class AllCategoryAdapter extends CategoryBookListAdapter {
         int position = (int) tag;
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelTwoList = getItemVMList();
         if (eventBus != null && levelTwoList != null) {
-            eventBus.post(new CategoryItemClickEvent(levelTwoList.get(position)));
+            eventBus.post(new CategoryItemClickEvent(levelTwoList.get(position), position));
         }
     }
 }
