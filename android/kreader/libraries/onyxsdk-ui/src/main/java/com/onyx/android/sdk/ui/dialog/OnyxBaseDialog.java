@@ -40,7 +40,14 @@ public class OnyxBaseDialog extends Dialog {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        showing = false;
+    }
+
+    @Override
     public void hide() {
+        showing = false;
         EpdController.enableRegal();
         super.hide();
     }
