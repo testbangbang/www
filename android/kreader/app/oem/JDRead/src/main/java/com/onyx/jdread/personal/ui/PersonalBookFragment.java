@@ -91,6 +91,7 @@ public class PersonalBookFragment extends BaseFragment {
     private int currentId;
     private long total;
     private int offset;
+    private int currentPage;
 
     @Nullable
     @Override
@@ -214,10 +215,26 @@ public class PersonalBookFragment extends BaseFragment {
         binding.personalBookRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
-                setPage(position / pageSize + 1);
-                getBoughtBooks();
+                currentPage = position / pageSize + 1;
+                receiveData(itemCount / pageSize);
             }
         });
+
+        binding.personalBookRecycler.setOnArrayEndPageListener(new PageRecyclerView.OnArrayEndPageListener() {
+            @Override
+            public void onArrayEndPage() {
+                if (currentPage == pages((int) total)) {
+                    binding.personalBookRecycler.gotoPage(0);
+                }
+            }
+        });
+    }
+
+    private void receiveData(int pages) {
+        setPage(currentPage);
+        if (currentPage == pages) {
+            getBoughtBooks();
+        }
     }
 
     private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean) {
