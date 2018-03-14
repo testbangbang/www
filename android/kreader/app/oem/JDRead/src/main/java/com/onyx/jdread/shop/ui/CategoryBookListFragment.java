@@ -100,6 +100,7 @@ public class CategoryBookListFragment extends BaseFragment {
             getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
             setCategoryV3Data();
         }
+        checkWifi(currentCatName);
     }
 
     private void initDefaultParams() {
@@ -203,7 +204,6 @@ public class CategoryBookListFragment extends BaseFragment {
                 showOrCloseAllCatButton();
             }
         });
-        checkWifi(currentCatName);
     }
 
     private void hideOptionLayout() {

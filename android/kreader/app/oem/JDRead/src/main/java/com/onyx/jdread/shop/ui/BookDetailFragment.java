@@ -766,7 +766,7 @@ public class BookDetailFragment extends BaseFragment {
             public void onError(Throwable throwable) {
                 super.onError(throwable);
                 ToastUtil.showToast(ResManager.getString(R.string.download_fail));
-                upDataButtonDown(buyBookButton, true, FileDownloadStatus.error);
+                upDataButtonDown(nowReadButton, true, FileDownloadStatus.error);
             }
         });
     }

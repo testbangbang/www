@@ -50,6 +50,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onSubscribe() {
                 super.onSubscribe();
+                bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
                 showLoadingDialog(shopDataBundle, R.string.loading);
             }
 
@@ -80,6 +81,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
                 }
