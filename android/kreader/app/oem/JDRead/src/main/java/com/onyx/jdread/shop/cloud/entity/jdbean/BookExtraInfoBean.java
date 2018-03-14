@@ -5,7 +5,7 @@ package com.onyx.jdread.shop.cloud.entity.jdbean;
  */
 
 public class BookExtraInfoBean {
-    public boolean isWholeBookDownLoad;
+    public boolean isWholeBookDownLoad = true;
     public int percentage;
     public int downLoadState;
     public String localPath;

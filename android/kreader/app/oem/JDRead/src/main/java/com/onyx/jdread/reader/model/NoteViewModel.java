@@ -172,7 +172,7 @@ public class NoteViewModel {
 
     public void saveClick() {
         if (isCreateNote) {
-            getEventBus().post(new AddNoteEvent(newNote.get(),srcNote.get(),getSrcNoteSate()));
+            getEventBus().post(new AddNoteEvent(newNote.get(),srcEditNote.get(),getSrcNoteSate()));
         } else {
             getEventBus().post(new UpdateNoteEvent(annotation,newNote.get(),srcEditNote.get(),getSrcNoteSate()));
         }
