@@ -193,18 +193,18 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     return;
                 }
                 final GObject temp = view.getData();
-                syncWithCallback(true, false, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        int category = ScribbleMenuCategory.translate(GAdapterUtil.getUniqueIdAsIntegerType(temp));
-                        if (digestionSpanMenu(category)) {
-                            return;
-                        }
-                        if (!invokeMainMeuItem(category)) {
+                final int category = ScribbleMenuCategory.translate(GAdapterUtil.getUniqueIdAsIntegerType(temp));
+                if (!invokeMainMeuItem(category)) {
+                    syncWithCallback(true, false, new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            if (digestionSpanMenu(category)) {
+                                return;
+                            }
                             getScribbleSubMenu().show(category, isLineLayoutMode());
                         }
-                    }
-                });
+                    });
+                }
             }
         });
 
