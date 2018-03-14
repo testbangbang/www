@@ -588,9 +588,9 @@
     <dimen name="custom_search_view_padding">10dp</dimen>
     <dimen name="custom_search_view_drawable_padding">20dp</dimen>
     <dimen name="network_error_tip_margin_top">6dp</dimen>
-    <dimen name="pay_order_by_cash_relative_layout_height">230dp</dimen>
+    <dimen name="pay_order_by_cash_relative_layout_height">235dp</dimen>
     <dimen name="pay_by_cash_qrcode_container_margin_top">25dp</dimen>
-    <dimen name="pay_by_cash_payment_tips_margin_top">25dp</dimen>
+    <dimen name="pay_by_cash_payment_tips_margin_top">22dp</dimen>
     <dimen name="libraryCover_recycler_padding">6dp</dimen>
     <dimen name="image_manage_button_margin">6dp</dimen>
     <dimen name="loading_dialog_text_margin_left">14dp</dimen>

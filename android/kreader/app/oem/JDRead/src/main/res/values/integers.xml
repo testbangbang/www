@@ -196,4 +196,7 @@
     <integer name="net_error_tip_goto_setting_end">9</integer>
     <integer name="read_vip_max_year">5</integer>
     <integer name="hint_search_size_per_page">5</integer>
+    <item name="radio_crop_width" type="integer" format="float">0.66</item>
+    <item name="no_crop_percent" type="integer" format="float">0.92</item>
+    <item name="two_point_zero" type="integer" format="float">2.0</item>
 </resources>
