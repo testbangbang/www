@@ -159,7 +159,8 @@ public class TopUpDialog extends DialogFragment {
                             setPayOrderView(false);
                             changePayButtonState(!getPayOrderViewModel().getOrderInfo().need_recharge);
                         } else {
-                            changePayButtonState(true);
+                            setPayOrderView(true);
+                            payByCash();
                         }
                     }
                 });
@@ -324,8 +325,6 @@ public class TopUpDialog extends DialogFragment {
                 } else {
                     payByReadBean();
                 }
-            } else {
-                payByCash();
             }
         }
     }
@@ -340,7 +339,6 @@ public class TopUpDialog extends DialogFragment {
         String encryptUrl = getPayByCashUrl();
         Bitmap qrImage = QRCodeUtil.createQRImage(encryptUrl, ResManager.getDimens(
                 R.dimen.top_up_qr_code_height), ResManager.getDimens(R.dimen.top_up_qr_code_height));
-        setPayOrderView(true);
         binding.payOrder.topUpQrCode.setImageBitmap(qrImage);
         payByCashRequest = new RxGetPayResultByCashRequest(getPayOrderViewModel().getOrderInfo().token);
         payByCashRequest.execute(new RxCallback<RxGetPayResultByCashRequest>() {

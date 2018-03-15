@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.BookCommentsRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
@@ -80,6 +81,7 @@ public class BookCommentListAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onError(Throwable throwable) {
                 bookDetailViewModel.setCommentItems(new ArrayList<CommentEntity>());
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), shopDataBundle.getEventBus());
                 invokeError(rxCallback, throwable);
             }
 

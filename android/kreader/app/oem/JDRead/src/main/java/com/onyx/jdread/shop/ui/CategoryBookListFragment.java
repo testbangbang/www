@@ -327,6 +327,9 @@ public class CategoryBookListFragment extends BaseFragment {
         this.currentPage = 1;
         this.catLevel = categoryBean.level;
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
+        Bundle bundle = getBundle();
+        bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
+        bundle.putString(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
     }
 

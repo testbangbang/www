@@ -404,6 +404,7 @@
     <string name="user_info_book">%s本</string>
     <string name="user_info_article">%s条</string>
     <string name="network_exception">网络异常</string>
+    <string name="network_connection_time_out">网络连接超时</string>
     <string name="reader_input_keyword">请输入关键字</string>
     <string name="notes_size">%d条笔记</string>
     <string name="top_up_money">¥%s元</string>

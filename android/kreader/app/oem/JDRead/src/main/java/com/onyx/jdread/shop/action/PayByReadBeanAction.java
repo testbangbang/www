@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.cloud.entity.PayCommonRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
@@ -30,7 +31,7 @@ public class PayByReadBeanAction extends BaseAction {
     }
 
     @Override
-    public void execute(ShopDataBundle dataBundle, final RxCallback rxCallback) {
+    public void execute(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         PayCommonRequestBean requestBean = new PayCommonRequestBean();
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
         Map<String, String> queryArgs = new HashMap<>();
@@ -53,6 +54,7 @@ public class PayByReadBeanAction extends BaseAction {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), dataBundle.getEventBus());
                 invokeError(rxCallback, throwable);
             }
         });
