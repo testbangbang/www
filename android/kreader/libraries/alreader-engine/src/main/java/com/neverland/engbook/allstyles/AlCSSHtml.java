@@ -1236,13 +1236,14 @@ public class AlCSSHtml extends AlCSSStyles {
                     } else if ("normal".contentEquals(valS)) {
                         internalCSSValue.m0 |= AlOneCSS.RAZR_MASK;
                     } else {
-                        internalCSSValue.m0 |= AlOneCSS.RAZR_MASK;
-                        vv.setLength(0);
-                        vv.append(valS.toString().trim());
-                        AlOneCSSNumberValue.scan(adouble[0], vv);
-                        if (adouble[0].dval >= 0.5) {
-                            internalCSSValue.v0 |= AlOneCSS.RAZR_MASK;
-                        }
+                        //jdread delete "letter-spacing"
+//                        internalCSSValue.m0 |= AlOneCSS.RAZR_MASK;
+//                        vv.setLength(0);
+//                        vv.append(valS.toString().trim());
+//                        AlOneCSSNumberValue.scan(adouble[0], vv);
+//                        if (adouble[0].dval >= 0.5) {
+//                            internalCSSValue.v0 |= AlOneCSS.RAZR_MASK;
+//                        }
                     }
                 }
                 break;
