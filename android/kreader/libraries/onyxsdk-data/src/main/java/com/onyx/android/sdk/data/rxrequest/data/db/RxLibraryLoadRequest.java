@@ -10,12 +10,15 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
+import com.raizlabs.android.dbflow.sql.language.SQLOperator;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -77,18 +80,18 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         libraryList.clear();
         libraryCount = getDataProvider().libraryCount(queryArgs.libraryUniqueId);
         totalCount = getDataProvider().count(getAppContext(), queryArgs) + getDataProvider().libraryCount(queryArgs.libraryUniqueId);
-        allBookCount = getDataProvider().count(getAppContext(), new QueryArgs());
+        getBooksCount();
         setQueryOffsetBounds();
-        DataManagerHelper.loadLibraryList(getDataProvider(), libraryList, queryArgs);
+        DataManagerHelper.loadLibraryList(getDataProvider(), libraryList, this.queryArgs);
         loadLibraryCover();
 
-        if (loadMetadata && libraryList.size() < queryArgs.limit) {
-            queryArgs.offset = (int) (queryArgs.offset - getDataProvider().libraryCount(queryArgs.libraryUniqueId));
-            int limit = queryArgs.limit;
-            queryArgs.limit = queryArgs.limit - libraryList.size();
+        if (loadMetadata && libraryList.size() < this.queryArgs.limit) {
+            this.queryArgs.offset = (int) (this.queryArgs.offset - getDataProvider().libraryCount(this.queryArgs.libraryUniqueId));
+            int limit = this.queryArgs.limit;
+            this.queryArgs.limit = this.queryArgs.limit - libraryList.size();
             List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getAppContext(), getDataManager(),
-                    queryArgs, loadFromCache);
-            queryArgs.limit = limit;
+                    this.queryArgs, loadFromCache);
+            this.queryArgs.limit = limit;
             if (!CollectionUtils.isNullOrEmpty(metadataList)) {
                 bookList.addAll(metadataList);
                 loadBitmaps(getAppContext(), getDataManager());
@@ -103,6 +106,18 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         }
 
         return this;
+    }
+
+    private void getBooksCount() {
+        QueryArgs booksQueryArgs = new QueryArgs();
+        List<SQLOperator> conditions = queryArgs.conditionGroup.getConditions();
+        for (SQLOperator condition : conditions) {
+            if (condition.toString().contains(Metadata_Table.fetchSource.getCursorKey())) {
+                booksQueryArgs.conditionGroup = OperatorGroup.clause()
+                        .and(Metadata_Table.fetchSource.isNot(Metadata.FetchSource.CLOUD));
+            }
+        }
+        allBookCount = getDataProvider().count(getAppContext(), booksQueryArgs);
     }
 
     private void setQueryOffsetBounds() {
