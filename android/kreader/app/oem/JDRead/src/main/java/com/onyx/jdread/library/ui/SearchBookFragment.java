@@ -206,7 +206,7 @@ public class SearchBookFragment extends BaseFragment {
             return false;
         }
         if (!InputUtils.isHaveAvailableCharacters(query)) {
-            ToastUtil.showToast(R.string.input_special_characters);
+            checkResultView(false);
             return false;
         }
         return true;
@@ -263,7 +263,9 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void checkSearchResult() {
-        if (isEmptySearchResults()) {
+        boolean empty = isEmptySearchResults();
+        checkResultView(!empty);
+        if (empty) {
             checkWifi(getSearchBookModel().searchKey.get());
         }
     }
@@ -365,8 +367,13 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchHotHistoryLayout.setVisibility(StringUtils.isNullOrEmpty(searchBookModel.searchKey.get()) ? View.VISIBLE : View.GONE);
         binding.searchHintLayout.setVisibility(searchBookModel.showHintList() ? View.VISIBLE : View.GONE);
         binding.searchResultLayout.setVisibility(searchBookModel.showResult() ? View.VISIBLE : View.GONE);
-        binding.emptyResultLayout.setVisibility(searchBookModel.showEmptyResult() ? View.VISIBLE : View.GONE);
+        binding.emptyResultLayout.setVisibility(View.GONE);
         updatePageIndicator();
+    }
+
+    private void checkResultView(boolean show) {
+        binding.searchResultLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+        binding.emptyResultLayout.setVisibility(!show ? View.VISIBLE : View.GONE);
     }
 
     private void initData() {
