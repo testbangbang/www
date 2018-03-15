@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        JDReadApplication.getInstance().automaticLogin();
+        JDReadApplication.getInstance().lockScreen();
         binding.setMainViewModel(new MainViewModel());
         initSystemBar();
         initFunctionBar();
@@ -354,6 +354,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        JDReadApplication.getInstance().automaticLogin();
         DeviceUtils.setFullScreenOnResume(this, true);
         setFunctionAdapter(getFunctionBarRecycler());
     }
