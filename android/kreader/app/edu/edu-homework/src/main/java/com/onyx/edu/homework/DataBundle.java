@@ -193,6 +193,10 @@ public class DataBundle {
         return !isReview() && getHomework().hasReview();
     }
 
+    public boolean hasReview() {
+        return getHomework().hasReview();
+    }
+
     public boolean isCorrectingAnswer() {
         return isSubmittedAfterReview() || isReview();
     }

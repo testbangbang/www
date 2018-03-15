@@ -26,6 +26,7 @@ import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DateTimeUtil;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
@@ -345,6 +346,7 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void handleOnyxNotification(NotificationType type, String data) {
+        Debug.d("handleOnyxNotification  type" + type + "data" + data);
         HomeworkIntent homework = JSONObject.parseObject(data, HomeworkIntent.class);
         if (homework._id.equals(getDataBundle().getPersonalHomeworkId())) {
             updateHomeworkFromIntent(homework);
