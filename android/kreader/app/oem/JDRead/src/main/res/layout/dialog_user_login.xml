@@ -17,129 +17,153 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rectangle_stroke"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/dialog_user_login_pading_bottom"
-        android:paddingLeft="@dimen/book_copyright_contain_padding"
-        android:paddingRight="@dimen/book_copyright_contain_padding">
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="@dimen/book_copyright_cancel_button_width_and_height"
             android:layout_height="@dimen/book_copyright_cancel_button_width_and_height"
             android:layout_gravity="right"
+            android:layout_marginRight="@dimen/book_copyright_cancel_button_margin_top"
             android:layout_marginTop="@dimen/book_copyright_cancel_button_margin_top"
             android:onClick="@{(view)->listener.onClick(view)}"
             android:padding="@dimen/cancel_button_padding"
             android:src="@mipmap/ic_cancel" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/user_login_jd_account"
-            android:textSize="@dimen/level_two_heading_font"
-            android:textColor="@android:color/black"
-            android:textStyle="bold" />
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/user_login_account_contain_margin_top"
-            android:background="@drawable/rectangle_stroke">
-
-            <ImageView
-                android:id="@+id/user_login_account_edit_text_delete_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/user_login_edit_text_delete_button_margin"
-                android:layout_marginRight="@dimen/user_login_edit_text_delete_button_margin"
-                android:onClick="@{()->loginViewModel.onDeleteAccountViewClick()}"
-                android:padding="@dimen/user_login_widget_padding"
-                android:src="@mipmap/ic_cancel" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/user_login_account_edit_text_delete_button"
-                android:background="@null"
-                android:cursorVisible="true"
-                android:textCursorDrawable="@null"
-                android:hint="@string/edit_text_account_hint"
-                android:inputType="textVisiblePassword"
-                android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
-                android:singleLine="true"
-                android:text="@={loginViewModel.account}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/user_login_password_contain_margin_top"
-            android:background="@drawable/rectangle_stroke">
-
-            <ImageView
-                android:id="@+id/user_login_password_edit_text_visibility_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/user_login_edit_text_delete_button_margin"
-                android:layout_marginRight="@dimen/user_login_edit_text_delete_button_margin"
-                android:onClick="@{()->loginViewModel.onChangePasswordVisibleViewClick()}"
-                android:padding="@dimen/user_login_widget_padding"
-                android:src="@mipmap/ic_password_invisible"
-                bind:backgroundImage="@{loginViewModel.isShowPassword}" />
-
-            <EditText
-                android:id="@+id/user_login_password_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/user_login_password_edit_text_visibility_button"
-                android:background="@null"
-                android:cursorVisible="true"
-                android:textCursorDrawable="@null"
-                android:hint="@string/password_edit_hint"
-                android:inputType="textPassword"
-                android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
-                android:singleLine="true"
-                android:text="@={loginViewModel.password}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_three_heading_font"
-                bind:isShowPassword="@{loginViewModel.isShowPassword}" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/user_login_register_contain_margin"
-            android:layout_marginTop="@dimen/user_login_register_contain_margin">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/book_copyright_contain_padding"
+            android:paddingRight="@dimen/book_copyright_contain_padding">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:onClick="@{()->loginViewModel.onRegisterViewClick()}"
-                android:padding="@dimen/user_login_register_button_padding"
-                android:text="@string/register"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/login_title_margin_top"
+                android:text="@string/user_login_jd_account"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/user_login_account_contain_margin_top"
+                android:background="@drawable/shop_search_book_edit_text_background">
+
+                <ImageView
+                    android:id="@+id/user_login_account_edit_text_delete_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/user_login_edit_text_delete_button_margin"
+                    android:layout_marginRight="@dimen/user_login_edit_text_delete_button_margin"
+                    android:onClick="@{()->loginViewModel.onDeleteAccountViewClick()}"
+                    android:padding="@dimen/user_login_widget_padding"
+                    android:src="@mipmap/ic_cancel" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/user_login_account_edit_text_delete_button"
+                    android:background="@null"
+                    android:cursorVisible="true"
+                    android:hint="@string/edit_text_account_hint"
+                    android:inputType="textVisiblePassword"
+                    android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
+                    android:singleLine="true"
+                    android:text="@={loginViewModel.account}"
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null"
+                    android:textSize="@dimen/level_three_heading_font" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/user_login_password_contain_margin_top"
+                android:background="@drawable/shop_search_book_edit_text_background">
+
+                <ImageView
+                    android:id="@+id/user_login_password_edit_text_visibility_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/user_login_edit_text_delete_button_margin"
+                    android:layout_marginRight="@dimen/user_login_edit_text_delete_button_margin"
+                    android:onClick="@{()->loginViewModel.onChangePasswordVisibleViewClick()}"
+                    android:padding="@dimen/user_login_widget_padding"
+                    android:src="@mipmap/ic_password_invisible"
+                    bind:backgroundImage="@{loginViewModel.isShowPassword}" />
+
+                <EditText
+                    android:id="@+id/user_login_password_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/user_login_password_edit_text_visibility_button"
+                    android:background="@null"
+                    android:cursorVisible="true"
+                    android:hint="@string/password_edit_hint"
+                    android:inputType="textPassword"
+                    android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
+                    android:singleLine="true"
+                    android:text="@={loginViewModel.password}"
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null"
+                    android:textSize="@dimen/level_three_heading_font"
+                    bind:isShowPassword="@{loginViewModel.isShowPassword}" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/login_error_tips_height"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@{loginViewModel.errorMessage}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
-        </RelativeLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_stroke"
+                android:enabled="@{loginViewModel.loginButtonEnabled}"
+                android:gravity="center"
+                android:onClick="@{()->loginViewModel.onLoginViewClick()}"
+                android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
+                android:text="@string/login"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_stroke"
-            android:enabled="@{loginViewModel.loginButtonEnabled}"
-            android:gravity="center"
-            android:onClick="@{()->loginViewModel.onLoginViewClick()}"
-            android:padding="@dimen/user_login_edit_text_pading_top_and_bottom"
-            android:text="@string/login"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/user_login_register_contain_margin">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bottom_line"
+                    android:onClick="@{()->loginViewModel.onForgetPasswordClick()}"
+                    android:text="@string/forgot_psw"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/bottom_line"
+                    android:onClick="@{()->loginViewModel.onRegisterViewClick()}"
+                    android:text="@string/register"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_three_heading_font" />
+            </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 </layout>

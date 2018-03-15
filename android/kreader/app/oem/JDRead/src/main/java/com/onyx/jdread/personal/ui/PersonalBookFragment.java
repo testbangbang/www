@@ -91,7 +91,9 @@ public class PersonalBookFragment extends BaseFragment {
     private int currentId;
     private long total;
     private int offset;
+    private int localTimes;
     private int currentPage;
+    private final static int UNLIMITED_TYPE = 2;
 
     @Nullable
     @Override
@@ -132,6 +134,7 @@ public class PersonalBookFragment extends BaseFragment {
         currentBoughtPage = 1;
         currentUnLimitedPage = 1;
         offset = 0;
+        localTimes = 0;
         super.onDestroy();
     }
 
@@ -191,7 +194,7 @@ public class PersonalBookFragment extends BaseFragment {
                     openBook(metadata.getNativeAbsolutePath(), detail);
                     return;
                 }
-                if (metadata.getOrdinal() != 0 && userInfo != null && userInfo.vip_remain_days <= 0) {
+                if (metadata.getOrdinal() == UNLIMITED_TYPE && userInfo != null && userInfo.vip_remain_days <= 0) {
                     ToastUtil.showToast(ResManager.getString(R.string.membership_expired));
                     return;
                 }
@@ -383,7 +386,8 @@ public class PersonalBookFragment extends BaseFragment {
                     PersonalBookBean bookBean = localBooks.get(0);
                     localTotal = bookBean.total;
                     if (localBooks.size() < localTotal) {
-                        offset = personalBookModel.getOffset();
+                        localTimes++;
+                        offset = localTimes * paginator.itemsPerPage();
                     }
                 }
                 compareLocalMetadata(null, false);
@@ -541,6 +545,7 @@ public class PersonalBookFragment extends BaseFragment {
         detail.file_size = metadata.getSize();
         detail.downLoadUrl = StringUtils.isNotBlank(metadata.getLocation()) ? metadata.getLocation() : null;
         detail.format = metadata.getType();
+        detail.downLoadType = metadata.getOrdinal();
         String downloadInfo = metadata.getDownloadInfo();
 
         BookExtraInfoBean infoBean = null;

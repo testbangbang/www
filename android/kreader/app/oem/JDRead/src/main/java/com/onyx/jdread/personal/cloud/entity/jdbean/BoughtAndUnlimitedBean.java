@@ -14,6 +14,7 @@ public class BoughtAndUnlimitedBean {
     public static class DataBean {
         public int total;
         public int total_page;
+        public int user_product_type;
         public List<BoughtAndUnlimitedItemBean> items;
     }
 }
