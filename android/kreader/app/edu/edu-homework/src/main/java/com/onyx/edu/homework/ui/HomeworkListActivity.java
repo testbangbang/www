@@ -601,7 +601,7 @@ public class HomeworkListActivity extends BaseActivity {
         ViewUtils.setGone(binding.answerIcon, getDataBundle().isReview() && recordFragment == null);
         ViewUtils.setGone(binding.answerRecord, recordFragment != null);
         ViewUtils.setGone(binding.submit, true);
-        binding.submit.setText(getDataBundle().isSubmittedAfterReview() || getDataBundle().isReview() ?
+        binding.submit.setText(getDataBundle().isCorrectingAnswer() ?
                 R.string.correct_homework : R.string.submit_homework);
         ViewUtils.setGone(binding.getResultLayout, getDataBundle().isSubmitted());
         ViewUtils.setGone(binding.newMessage, getDataBundle().canGetReview());
