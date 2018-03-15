@@ -126,9 +126,6 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void updateProgress(int readProgress){
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(readProgress);
-        float total = binding.readerSettingPageInfoBar.readerPageInfoMenuReadProgress.getMax();
-        float progress = (readProgress / total) * 100.0f;
-        binding.readerSettingPageInfoBar.getReaderPageInfoModel().setReadProgress((Math.round(progress * 100)) / 100 + "%");
     }
 
     private void initSystemBar() {

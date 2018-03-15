@@ -2,6 +2,8 @@ package com.onyx.jdread.reader.common;
 
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 /**
@@ -29,5 +31,14 @@ public class ReaderPageInfoFormat {
     public static String getChapterName(ReaderDataHolder readerDataHolder) {
         String bookName = readerDataHolder.getReaderViewInfo().getChapterName();
         return bookName;
+    }
+
+    public static String getReadProgress(ReaderViewInfo readerViewInfo){
+        String readProgress = ResManager.getString(R.string.reader_loading);
+        if(readerViewInfo.isLoadComplete()) {
+            float progress = readerViewInfo.getProgress();
+            readProgress = String.format("%.2f", progress) + "%";
+        }
+        return readProgress;
     }
 }

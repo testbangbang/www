@@ -570,6 +570,7 @@
     <string name="filter_free">Free</string>
     <string name="jd_loading">loading</string>
     <string name="update_time">Update Time</string>
+    <string name="reader_loading">加载中...</string>
     <string name="the_book_not_download">This book is not available for download</string>
     <string name="preload_books_key">preload_books_key</string>
     <string name="without_result">Without result</string>

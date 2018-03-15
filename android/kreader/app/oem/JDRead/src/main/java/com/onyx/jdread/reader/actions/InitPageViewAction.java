@@ -44,14 +44,15 @@ public class InitPageViewAction extends BaseReaderAction {
                 if (request.getAbort()) {
                     return;
                 }
-
+                readerDataHolder.setInitViewPage(true);
                 readerDataHolder.setSettingInfo(request.getSettingInfo());
                 readerDataHolder.setGammaInfo(request.getGammaInfo());
                 readerDataHolder.getEventBus().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
-
-                PreloadNextScreenRequest preloadNextScreenRequest = new PreloadNextScreenRequest(readerDataHolder.getReader());
-                preloadNextScreenRequest.execute(null);
+                if(!readerDataHolder.isPreload()) {
+                    PreloadNextScreenRequest preloadNextScreenRequest = new PreloadNextScreenRequest(readerDataHolder.getReader());
+                    preloadNextScreenRequest.execute(null);
+                }
             }
 
             @Override

@@ -114,6 +114,9 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDocumentLoadSuccessResultEvent(DocumentLoadSuccessEvent event) {
         Log.d(getClass().getSimpleName(), "onDocumentLoadSuccessResultEvent");
+        if(readerViewModel.getReaderDataHolder().isInitViewPage() && !readerViewModel.getReaderDataHolder().isPreload()){
+            new UpdateViewPageAction().execute(readerViewModel.getReaderDataHolder(),null);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

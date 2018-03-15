@@ -538,6 +538,7 @@
     <string name="filter_free">免费</string>
     <string name="jd_loading">loading</string>
     <string name="update_time">更新时间</string>
+    <string name="reader_loading">加载中...</string>
     <string name="without_result">没有搜索结果</string>
     <string name="the_book_not_download">图书未下载</string>
 </resources>
