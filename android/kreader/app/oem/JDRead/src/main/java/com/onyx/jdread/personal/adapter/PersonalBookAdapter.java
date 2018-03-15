@@ -52,7 +52,7 @@ public class PersonalBookAdapter extends PageRecyclerView.PageAdapter implements
             viewHolder.getBinding().personalBookImage.setImageBitmap(personalBookBean.bitmap.get());
         } else {
             ManageImageCache.loadUrl(personalBookBean.metadata.getCoverUrl(), viewHolder.getBinding()
-                    .personalBookImage, R.mipmap.ic_shelf_cover);
+                    .personalBookImage, R.mipmap.ic_cloud_default_cover);
         }
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
