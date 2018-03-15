@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 public class JDTempFileManager extends DefaultTempFileManager {
-    private final File tmpdir = new File(Constants.WIFI_PASS_BOOK_DIR);
+    private final File tmpdir = new File(Constants.JD_BOOKS_DIR);
     private final List<ITempFile> tempFiles;
 
     public JDTempFileManager() {

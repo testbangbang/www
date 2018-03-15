@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.ui;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +13,11 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ShopCartBinding;
 import com.onyx.jdread.main.common.BaseFragment;
-import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
@@ -28,10 +29,14 @@ import com.onyx.jdread.shop.action.GetShopCartItemsAction;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCartBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateBean;
+import com.onyx.jdread.shop.event.BuyBookSuccessEvent;
 import com.onyx.jdread.shop.event.CartBookItemClickEvent;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.shop.model.ShopCartItemData;
 import com.onyx.jdread.shop.model.ShopCartModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -52,6 +57,8 @@ public class ShopCartFragment extends BaseFragment {
     private GPaginator paginator;
     private int defaultCurrent = 1;
     private int pages;
+    private TopUpDialog topUpDialog;
+    private boolean isBuying = false;
 
     @Nullable
     @Override
@@ -78,24 +85,14 @@ public class ShopCartFragment extends BaseFragment {
         shopCartModel = ShopDataBundle.getInstance().getShopCartModel();
         shopCartModel.setSettlementEnable(false);
         shopCartModel.setCheckAllEnable(false);
+        shopCartModel.setSelectedAll(false);
         shopCartModel.setTotalAmount("0");
         shopCartModel.setOriginalPrice("0");
         shopCartModel.setCashBack("0");
         shopCartModel.setSize("0");
         binding.setModel(shopCartModel);
-        final AddOrDeleteCartAction getShopCartIdsAction = new AddOrDeleteCartAction(null, Constants.CART_TYPE_GET);
-        getShopCartIdsAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                UpdateBean data = getShopCartIdsAction.getData();
-                if (data != null) {
-                    List<BookCartBean> ebooks = data.ebooks;
-                    if (ebooks != null && ebooks.size() > 0) {
-                        getCartItems(ebooks);
-                    }
-                }
-            }
-        });
+        binding.amountLayout.setVisibility(View.INVISIBLE);
+        updateShopCartStatus(null, Constants.CART_TYPE_GET);
     }
 
     @Override
@@ -115,17 +112,24 @@ public class ShopCartFragment extends BaseFragment {
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                List<ShopCartItemData> datas = shopCartModel.getDatas();
-                if (datas != null) {
-                    shopCartModel.setSize(datas.size() + "");
-                    shopCartModel.setSelectedAll(true);
-                    shopCartAdapter.setData(datas);
-                    binding.shopCartRecycler.notifyDataSetChanged();
-                    pages = paginator.pages();
-                    shopCartModel.setPageSize(paginator.getProgressText());
-                }
+                updateShopCartView(shopCartModel.getDatas());
             }
         });
+    }
+
+    private void updateShopCartView(List<ShopCartItemData> datas) {
+        if (datas == null) {
+            return;
+        }
+        int size = datas.size();
+        shopCartModel.setSize(size + "");
+        shopCartModel.setSelectedAll(size > 0);
+        shopCartModel.setCheckAllEnable(size > 0);
+        shopCartAdapter.setData(datas);
+        shopCartAdapter.notifyDataSetChanged();
+        pages = paginator.pages();
+        shopCartModel.setPageSize(paginator.getProgressText());
+        binding.amountLayout.setVisibility(size > 0 ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void initListener() {
@@ -175,88 +179,90 @@ public class ShopCartFragment extends BaseFragment {
         });
     }
 
-    private void settlement() {
-        if (shopCartAdapter == null) {
-            return;
+    @Nullable
+    private List<String> getSelectedBookIds() {
+        if (shopCartAdapter == null || CollectionUtils.isNullOrEmpty(shopCartAdapter.getData())) {
+            return null;
         }
-        List<ShopCartItemData> data = shopCartAdapter.getData();
-        if (data != null && data.size() > 0) {
-            List<String> ids = new ArrayList<>();
-            for (ShopCartItemData item : data) {
-                if (item.isChecked()) {
-                    ids.add(item.detail.bookId + "");
-                }
+        List<String> ids = new ArrayList<>();
+        for (ShopCartItemData item : shopCartAdapter.getData()) {
+            if (item.isChecked()) {
+                ids.add(item.detail.bookId + "");
             }
-            if (ids.size() == 0) {
-                ToastUtil.showToast(ResManager.getString(R.string.no_selected));
-                return;
-            }
-
-            String[] bookIds = new String[ids.size()];
-            for (int i = 0; i < ids.size(); i++) {
-                bookIds[i] = ids.get(i);
-            }
-            getOrderInfo(bookIds);
         }
+        return ids;
     }
 
-    private void getOrderInfo(String[] bookIds) {
-        if (bookIds != null) {
-            GetOrderInfoAction action = new GetOrderInfoAction(bookIds);
-            action.execute(ShopDataBundle.getInstance(), new RxCallback<GetOrderInfoAction>() {
-                @Override
-                public void onNext(GetOrderInfoAction getOrderInfoAction) {
-                    GetOrderInfoResultBean.DataBean dataBean = getOrderInfoAction.getDataBean();
-                    if (dataBean != null) {
-                        TopUpDialog dialog = new TopUpDialog();
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(Constants.PAY_DIALOG_TYPE, Constants.PAY_DIALOG_TYPE_PAY_ORDER);
-                        bundle.putSerializable(Constants.ORDER_INFO, dataBean);
-                        dialog.setArguments(bundle);
-                        dialog.show(getActivity().getFragmentManager(), "");
-                    }
-                }
+    private void settlement() {
+        List<String> ids = getSelectedBookIds();
+        if (CollectionUtils.isNullOrEmpty(ids)) {
+            ToastUtil.showToast(ResManager.getString(R.string.no_selected));
+            return;
+        }
+        if (!checkWifi(ResManager.getString(R.string.cart))) {
+            return;
+        }
+        getOrderInfo(ids.toArray(new String[0]));
+    }
 
-                @Override
-                public void onError(Throwable throwable) {
-                    super.onError(throwable);
-                }
-            });
+    private void getOrderInfo(@NonNull String[] bookIds) {
+        if (ViewHelper.dialogIsShowing(topUpDialog) || isBuying()) {
+            return;
+        }
+        setBuying(true);
+        GetOrderInfoAction action = new GetOrderInfoAction(bookIds);
+        action.execute(ShopDataBundle.getInstance(), new RxCallback<GetOrderInfoAction>() {
+            @Override
+            public void onNext(GetOrderInfoAction getOrderInfoAction) {
+                showTopUpDialog(getOrderInfoAction.getDataBean());
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+
+            @Override
+            public void onFinally() {
+                setBuying(false);
+            }
+        });
+    }
+
+    private void showTopUpDialog(GetOrderInfoResultBean.DataBean orderData) {
+        if (orderData != null) {
+            ViewHelper.dismissDialog(topUpDialog);
+            topUpDialog = new TopUpDialog();
+            Bundle bundle = new Bundle();
+            bundle.putInt(Constants.PAY_DIALOG_TYPE, Constants.PAY_DIALOG_TYPE_PAY_ORDER);
+            bundle.putSerializable(Constants.ORDER_INFO, orderData);
+            topUpDialog.setArguments(bundle);
+            topUpDialog.show(getActivity().getFragmentManager(), "");
         }
     }
 
     private void deleteItems() {
-        if (shopCartAdapter == null) {
+        List<String> ids = getSelectedBookIds();
+        if (CollectionUtils.isNullOrEmpty(ids)) {
+            ToastUtil.showToast(ResManager.getString(R.string.no_selected));
             return;
         }
-        List<ShopCartItemData> data = shopCartAdapter.getData();
-        if (data != null && data.size() > 0) {
-            StringBuilder sb = new StringBuilder();
-            for (ShopCartItemData item : data) {
-                if (item.isChecked()) {
-                    sb.append(item.detail.bookId + ",");
-                }
-            }
-            if (sb.length() == 0) {
-                ToastUtil.showToast(ResManager.getString(R.string.no_selected));
-                return;
-            }
-            String s = sb.deleteCharAt(sb.length() - 1).toString();
-            String[] ids = CommonUtils.string2Arr(s);
-            final AddOrDeleteCartAction addOrDeleteCartAction = new AddOrDeleteCartAction(ids, Constants.CART_TYPE_DEL);
-            addOrDeleteCartAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
-                @Override
-                public void onNext(Object o) {
-                    UpdateBean updateBean = addOrDeleteCartAction.getData();
-                    if (updateBean != null) {
-                        List<BookCartBean> ebooks = updateBean.ebooks;
-                        if (ebooks != null) {
-                            getCartItems(ebooks);
-                        }
+        updateShopCartStatus(ids.toArray(new String[0]), Constants.CART_TYPE_DEL);
+    }
+
+    private void updateShopCartStatus(@Nullable String[] bookIds, @NonNull String cartType) {
+        final AddOrDeleteCartAction action = new AddOrDeleteCartAction(bookIds, cartType);
+        action.execute(ShopDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                UpdateBean updateBean = action.getData();
+                if (updateBean != null) {
+                    if (!CollectionUtils.isNullOrEmpty(updateBean.ebooks)) {
+                        getCartItems(updateBean.ebooks);
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
     private void setAmount() {
@@ -277,7 +283,7 @@ public class ShopCartFragment extends BaseFragment {
         shopCartModel.setOriginalPrice(String.valueOf(original));
         shopCartModel.setCashBack(String.valueOf(cashBack));
         shopCartModel.setSelectedAll(selected == data.size());
-        shopCartModel.setSettlementEnable(selected == 0 ? false : true);
+        shopCartModel.setSettlementEnable(selected != 0);
     }
 
     private void selectedAll(boolean checked) {
@@ -293,6 +299,27 @@ public class ShopCartFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoadingDialogEvent(LoadingDialogEvent event) {
+        if (isAdded()) {
+            showLoadingDialog(getString(event.getResId()));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBuyBookSuccessEvent(BuyBookSuccessEvent event) {
+        List<String> ids = getSelectedBookIds();
+        if (CollectionUtils.isNullOrEmpty(ids)) {
+            return;
+        }
+        updateShopCartStatus(ids.toArray(new String[0]), Constants.CART_TYPE_DEL);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookClickEvent(CartBookItemClickEvent event) {
         gotoBookDetailPage(Long.parseLong(event.getBookBean().getDetail().bookId));
     }
@@ -301,5 +328,24 @@ public class ShopCartFragment extends BaseFragment {
         Bundle bundle = new Bundle();
         bundle.putLong(Constants.SP_KEY_BOOK_ID, ebookId);
         getViewEventCallBack().gotoView(BookDetailFragment.class.getName(), bundle);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        hideAllDialog();
+    }
+
+    private void hideAllDialog() {
+        hideLoadingDialog();
+        ViewHelper.dismissDialog(topUpDialog);
+    }
+
+    private void setBuying(boolean buying) {
+        this.isBuying = buying;
+    }
+
+    private boolean isBuying() {
+        return isBuying;
     }
 }

@@ -173,7 +173,11 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchView.setCustomSearchListener(new CustomSearchView.SearchListener() {
             @Override
             public void onQuerySearch(String query) {
-                doSearchQueryOrHint(query);
+                if (StringUtils.isNullOrEmpty(query)) {
+                    doSearchQueryOrHint(query);
+                    return;
+                }
+                queryTextSubmit(getSearchQueryOrHint(query));
             }
         });
         binding.searchResultRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
@@ -361,6 +365,7 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchHotHistoryLayout.setVisibility(StringUtils.isNullOrEmpty(searchBookModel.searchKey.get()) ? View.VISIBLE : View.GONE);
         binding.searchHintLayout.setVisibility(searchBookModel.showHintList() ? View.VISIBLE : View.GONE);
         binding.searchResultLayout.setVisibility(searchBookModel.showResult() ? View.VISIBLE : View.GONE);
+        binding.emptyResultLayout.setVisibility(searchBookModel.showEmptyResult() ? View.VISIBLE : View.GONE);
         updatePageIndicator();
     }
 

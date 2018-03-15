@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.GetVipGoodListRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -57,6 +58,7 @@ public class GetVipGoodListAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), shopDataBundle.getEventBus());
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
                 }

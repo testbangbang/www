@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableField;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
@@ -21,6 +22,9 @@ import com.onyx.jdread.databinding.LoadingDialogLayoutBinding;
  */
 
 public class LoadingDialog extends AlertDialog {
+
+    private static AnimationDrawable animation;
+
     private LoadingDialog(Context context) {
         super(context);
     }
@@ -45,6 +49,8 @@ public class LoadingDialog extends AlertDialog {
                     super.onCreate(savedInstanceState);
                     LoadingDialogLayoutBinding bind = DataBindingUtil.bind(View.inflate(context, R.layout.loading_dialog_layout, null));
                     bind.setLoadingModel(model);
+                    animation = (AnimationDrawable) context.getResources().getDrawable(R.drawable.loading_animation);
+                    bind.imageLoading.setBackgroundDrawable(animation);
                     setContentView(bind.getRoot());
                 }
             };
@@ -66,9 +72,20 @@ public class LoadingDialog extends AlertDialog {
 
     @Override
     public void show() {
+        if (animation != null && !animation.isRunning()) {
+            animation.start();
+        }
         Window window = getWindow();
         window.setGravity(Gravity.CENTER);
         window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         super.show();
+    }
+
+    @Override
+    public void dismiss() {
+        if (animation != null && animation.isRunning()) {
+            animation.stop();
+        }
+        super.dismiss();
     }
 }

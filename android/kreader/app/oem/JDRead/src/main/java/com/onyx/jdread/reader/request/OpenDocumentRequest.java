@@ -7,6 +7,7 @@ import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.event.DocumentLoadFailedEvent;
 import com.onyx.jdread.reader.event.DocumentLoadSuccessEvent;
 import com.onyx.jdread.reader.exception.FileFormatErrorException;
 
@@ -59,6 +60,13 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
                 reader.getReaderHelper().setLoadComplete(true);
                 if (eventBus != null) {
                     eventBus.post(new DocumentLoadSuccessEvent());
+                }
+            }
+
+            @Override
+            public void onDocumentLoadFailed() {
+                if (eventBus != null) {
+                    eventBus.post(new DocumentLoadFailedEvent());
                 }
             }
         });

@@ -87,7 +87,7 @@ public class CategoryBookListAdapter extends PageAdapter<PageRecyclerView.ViewHo
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelTwoList = getItemVMList();
         if (eventBus != null && levelTwoList != null) {
             changeItemState(position, levelTwoList);
-            eventBus.post(new CategoryItemClickEvent(levelTwoList.get(position)));
+            eventBus.post(new CategoryItemClickEvent(levelTwoList.get(position), position));
         }
     }
 

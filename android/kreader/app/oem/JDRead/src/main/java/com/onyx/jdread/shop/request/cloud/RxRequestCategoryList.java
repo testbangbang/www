@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
@@ -49,21 +50,7 @@ public class RxRequestCategoryList extends RxBaseCloudRequest {
 
     private void checkQuestResult() {
         if (categoryListResultBean != null) {
-            if (categoryListResultBean.result_Code == 0) {
-                List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> adjustLevelTwoList = new ArrayList<>();
-                for (int i = 0; i < categoryListResultBean.data.size(); i++) {
-                    adjustLevelTwoList.clear();
-                    CategoryListResultBean.CategoryBeanLevelOne categoryBeanLevelOne = categoryListResultBean.data.get(i);
-                    for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo : categoryBeanLevelOne.sub_category) {
-                        for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelThree : categoryBeanLevelTwo.sub_category) {
-                            adjustLevelTwoList.add(categoryBeanLevelThree);
-                        }
-                    }
-                    if (adjustLevelTwoList.size() > 0) {
-                        categoryBeanLevelOne.sub_category.clear();
-                        categoryBeanLevelOne.sub_category.addAll(adjustLevelTwoList);
-                    }
-                }
+            if (BaseResultBean.checkSuccess(categoryListResultBean)) {
                 getCateTwo(categoryListResultBean.data);
             } else {
                 ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(categoryListResultBean.message));

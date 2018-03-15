@@ -8,13 +8,19 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 
 public class CategoryItemClickEvent {
 
+    private int position;
     private CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean;
 
-    public CategoryItemClickEvent(CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean) {
+    public CategoryItemClickEvent(CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBean, int position) {
         this.categoryBean = categoryBean;
+        this.position = position;
     }
 
     public CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo getCategoryBean() {
         return categoryBean;
+    }
+
+    public int getPosition() {
+        return position;
     }
 }

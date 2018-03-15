@@ -97,7 +97,7 @@ public class BaseFragment extends Fragment {
         getViewEventCallBack().gotoView(NetWorkErrorFragment.class.getName(), bundle);
     }
 
-    public void checkWifi(String title) {
+    public boolean checkWifi(String title) {
         if (isWifiDisconnected()) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.NET_ERROR_TITLE, title);
@@ -105,7 +105,9 @@ public class BaseFragment extends Fragment {
                 bundle.putBoolean(Constants.NET_ERROR_SHOW_TITLE_BAR, false);
             }
             goNetWorkErrorFragment(bundle);
+            return false;
         }
+        return true;
     }
 
     @NonNull

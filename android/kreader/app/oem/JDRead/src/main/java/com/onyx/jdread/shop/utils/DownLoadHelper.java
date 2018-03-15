@@ -6,6 +6,7 @@ import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -114,5 +115,10 @@ public class DownLoadHelper {
 
     public static boolean showProgress(int downloadStatus) {
         return isDownloading(downloadStatus) || isPause(downloadStatus) || isStarted(downloadStatus);
+    }
+
+
+    public static boolean isCurrentDownWholeBook(String tag) {
+        return tag != null && tag.endsWith(Constants.WHOLE_BOOK_DOWNLOAD_TAG);
     }
 }

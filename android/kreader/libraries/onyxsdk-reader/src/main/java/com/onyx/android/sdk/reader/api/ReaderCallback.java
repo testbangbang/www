@@ -7,5 +7,6 @@ package com.onyx.android.sdk.reader.api;
 public interface ReaderCallback {
 
     void onDocumentLoadSuccess();
+    void onDocumentLoadFailed();
 
 }

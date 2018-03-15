@@ -180,7 +180,7 @@
     <string name="check_user_name">The login account cannot be empty!</string>
     <string name="login_resutl_params_error">params error</string>
     <string name="login_resutl_no_function">no function</string>
-    <string name="login_resutl_not_login">The account is not login, please login again</string>
+    <string name="login_resutl_not_login">The account is not login</string>
     <string name="login_resutl_unknown_error">unknown error</string>
     <string name="the_book_unsupported_try_read">The book unsupported probation</string>
     <string name="the_book_unsupported_fluent_read">The book unsupported fluent read</string>
@@ -423,6 +423,7 @@
     <string name="user_info_book">%s books</string>
     <string name="user_info_article">%s articles</string>
     <string name="network_exception">Network exception</string>
+    <string name="network_connection_time_out">Network connection timeout</string>
     <string name="reader_input_keyword">Please enter the keyword</string>
     <string name="menu_pop_width">0.25</string>
     <string name="notes_size">%d notes</string>
@@ -499,7 +500,7 @@
     <string name="payment_order">Payment Order</string>
     <string name="book_detail_add_cart_tip_the_book_already_add_cart">the book already add to cart</string>
     <string name="pay_dialog_insufficient_balance">insufficient balance,go charge</string>
-    <string name="pay_success">pay success</string>
+    <string name="pay_success">pay success!</string>
     <string name="pay_failed">pay failed</string>
     <string name="password_find">Password find</string>
     <string name="psw_success_to_unlock">Get success to unlock</string>
@@ -566,7 +567,11 @@
     <string name="input_special_characters">Input contains special characters</string>
     <string name="no_results">no results</string>
     <string name="is_null" translatable="false">null</string>
+    <string name="filter_free">Free</string>
     <string name="jd_loading">loading</string>
     <string name="update_time">Update Time</string>
     <string name="reader_loading">加载中...</string>
+    <string name="the_book_not_download">This book is not available for download</string>
+    <string name="preload_books_key">preload_books_key</string>
+    <string name="without_result">Without result</string>
 </resources>

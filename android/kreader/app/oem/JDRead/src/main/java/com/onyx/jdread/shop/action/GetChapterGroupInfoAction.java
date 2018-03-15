@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.GetChapterGroupInfoRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BatchDownloadResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -75,6 +76,7 @@ public class GetChapterGroupInfoAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), shopDataBundle.getEventBus());
                 invokeError(rxCallback, throwable);
             }
 

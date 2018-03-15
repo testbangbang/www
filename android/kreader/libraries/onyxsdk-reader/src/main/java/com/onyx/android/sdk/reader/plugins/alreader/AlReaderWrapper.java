@@ -234,9 +234,12 @@ public class AlReaderWrapper {
             @Override
             public void engBookGetMessage(EngBookMyType.TAL_NOTIFY_ID id, EngBookMyType.TAL_NOTIFY_RESULT res) {
                 if (callback != null) {
-                    if (id == EngBookMyType.TAL_NOTIFY_ID.PARSER_AFTER &&
-                            res == EngBookMyType.TAL_NOTIFY_RESULT.OK) {
-                        callback.onDocumentLoadSuccess();
+                    if (id == EngBookMyType.TAL_NOTIFY_ID.PARSER_AFTER) {
+                        if (res == EngBookMyType.TAL_NOTIFY_RESULT.OK) {
+                            callback.onDocumentLoadSuccess();
+                        } else {
+                            callback.onDocumentLoadFailed();
+                        }
                     }
                 }
             }
