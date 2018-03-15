@@ -161,6 +161,7 @@ public class TopUpDialog extends DialogFragment {
                         if (R.id.payment_read_bean == checkedId) {
                             setPayOrderView(false);
                             changePayButtonState(!getPayOrderViewModel().getOrderInfo().need_recharge);
+                            abortPayByCashRequest();
                         } else {
                             setPayOrderView(true);
                             payByCash();
