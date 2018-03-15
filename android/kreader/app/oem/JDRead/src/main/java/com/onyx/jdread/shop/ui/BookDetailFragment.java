@@ -289,6 +289,7 @@ public class BookDetailFragment extends BaseFragment {
                             getBookDetailViewModel().updateTimeInfo.set(ViewHelper.getNetBookUpdateTimeInfo(bookDetailBean.modified));
                         }
                     }
+                    getBookDetailViewModel().showAllButton.set(true);
 
                     if (shouldDownloadWholeBook) {
                         smoothDownload();
@@ -429,9 +430,6 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
-        if (checkWifiDisconnected()) {
-            return;
-        }
         if (!JDReadApplication.getInstance().getLogin()) {
             LoginHelper.showUserLoginDialog(getUserLoginViewModel(), getActivity());
         } else {
@@ -711,6 +709,9 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void addToCart(long ebookId) {
+        if (checkWifiDisconnected()) {
+            return;
+        }
         final AddOrDeleteCartAction addOrDeleteCartAction = new AddOrDeleteCartAction(new String[]{String.valueOf(ebookId)}, Constants.CART_TYPE_ADD);
         addOrDeleteCartAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
