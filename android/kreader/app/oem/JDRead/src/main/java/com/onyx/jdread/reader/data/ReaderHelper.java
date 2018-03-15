@@ -138,14 +138,18 @@ public class ReaderHelper {
 
     public ReaderDocument openDocument(final String path, final BaseOptions baseOptions, final ReaderPluginOptions pluginOptions) throws Exception {
         this.documentOptions = baseOptions;
-        //jeb(epub)
         ReaderDocumentOptionsImpl readerDocumentOptions = documentOptions.documentOptions();
-        readerDocumentOptions.setDocumentKey(documentInfo.getSecurityInfo().getKey());
-        readerDocumentOptions.setDocumentDeviceUUID(documentInfo.getSecurityInfo().getUuId());
-        readerDocumentOptions.setDocumentRandom(documentInfo.getSecurityInfo().getRandom());
-        //jeb(pdf)
-        readerDocumentOptions.setDocumentPassword(getJebPassword(documentInfo.getSecurityInfo().getKey(),
-                documentInfo.getSecurityInfo().getUuId(),documentInfo.getSecurityInfo().getRandom()));
+
+        if (NeoPdfReaderPlugin.isJEB(path)) {
+            //jeb(epub)
+            readerDocumentOptions.setDocumentKey(documentInfo.getSecurityInfo().getKey());
+            readerDocumentOptions.setDocumentDeviceUUID(documentInfo.getSecurityInfo().getUuId());
+            readerDocumentOptions.setDocumentRandom(documentInfo.getSecurityInfo().getRandom());
+            //jeb(pdf)
+            readerDocumentOptions.setDocumentPassword(getJebPassword(documentInfo.getSecurityInfo().getKey(),
+                    documentInfo.getSecurityInfo().getUuId(), documentInfo.getSecurityInfo().getRandom()));
+        }
+
         return plugin.open(path,readerDocumentOptions , pluginOptions);
     }
 

@@ -57,6 +57,11 @@ public class PayByReadBeanAction extends BaseAction {
                 PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), dataBundle.getEventBus());
                 invokeError(rxCallback, throwable);
             }
+
+            @Override
+            public void onFinally() {
+                invokeFinally(rxCallback);
+            }
         });
     }
 }

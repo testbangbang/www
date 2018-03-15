@@ -121,9 +121,9 @@ public class CustomSearchView extends LinearLayout implements TextWatcher, Actio
             etInput.setSelection(etInput.getText().length());
         }
         if (onQueryTextListener != null) {
-            onQueryTextListener.onQueryTextChange(s.toString());
+            onQueryTextListener.onQueryTextChange(etInput.getText().toString());
         }
-        showClearButton(StringUtils.isNotBlank(s.toString()));
+        showClearButton(StringUtils.isNotBlank(etInput.getText().toString()));
     }
 
     private void showClearButton(boolean show) {

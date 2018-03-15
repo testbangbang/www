@@ -19,7 +19,11 @@ public class ReaderPageInfoFormat {
     public static float calculateReadingProgress(int currentPage,int totalPage){
         float total = totalPage - 1;
         float progress = (currentPage / total) * 100;
-        return (float) (Math.round(progress * 100)) / 100;
+        progress = (float) (Math.round(progress * 100)) / 100.0f;
+        if(progress > 100.0f){
+            progress = 100;
+        }
+        return progress;
     }
 
     public static String getChapterName(ReaderDataHolder readerDataHolder) {

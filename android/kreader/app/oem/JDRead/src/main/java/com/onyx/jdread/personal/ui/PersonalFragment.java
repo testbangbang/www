@@ -85,6 +85,10 @@ public class PersonalFragment extends BaseFragment {
         binding.personalLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+                    ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+                    return;
+                }
                 LoginOutAction loginOutAction = new LoginOutAction(binding);
                 loginOutAction.execute(PersonalDataBundle.getInstance(), null);
             }

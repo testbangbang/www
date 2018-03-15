@@ -148,5 +148,21 @@
                 layout="@layout/page_indicator_layout"
                 app:model="@{indicatorModel}" />
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/empty_result_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:drawablePadding="@dimen/empty_result_padding"
+                android:drawableTop="@mipmap/ic_none"
+                android:text="@string/without_result"
+                android:textSize="@dimen/level_two_heading_font" />
+        </RelativeLayout>
     </LinearLayout>
 </layout>

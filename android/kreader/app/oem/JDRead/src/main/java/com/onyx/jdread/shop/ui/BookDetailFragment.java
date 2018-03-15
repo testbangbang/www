@@ -470,15 +470,12 @@ public class BookDetailFragment extends BaseFragment {
         if (!checkDownloadCurrentBook(tag)) {
             return;
         }
-        isWholeBookDownLoad = isCurrentDownWholeBook(tag);
+        isWholeBookDownLoad = DownLoadHelper.isCurrentDownWholeBook(tag);
         if (isWholeBookDownLoad) {
             changeBuyBookButtonState();
         }
     }
 
-    private boolean isCurrentDownWholeBook(String tag) {
-        return tag != null && tag.endsWith(Constants.WHOLE_BOOK_DOWNLOAD_TAG);
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadFinishEvent(DownloadFinishEvent event) {
@@ -538,7 +535,7 @@ public class BookDetailFragment extends BaseFragment {
         }
         bookDetailBean.bookExtraInfoBean.downLoadState = downloadTaskState;
         bookDetailBean.bookExtraInfoBean.downLoadTaskTag = task.getTag();
-        bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = isCurrentDownWholeBook((String) task.getTag());
+        bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = DownLoadHelper.isCurrentDownWholeBook((String) task.getTag());
         if (DownLoadHelper.isDownloaded(downloadTaskState)) {
             percentage = DownLoadHelper.DOWNLOAD_PERCENT_FINISH;
         }
@@ -657,6 +654,7 @@ public class BookDetailFragment extends BaseFragment {
         nowReadButton.setEnabled(false);
         showShopCartView(false);
         changeBuyBookButtonState();
+        bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = true;
         BookDownloadUtils.download(bookDetailBean, getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -758,6 +756,7 @@ public class BookDetailFragment extends BaseFragment {
         nowReadButton.setEnabled(false);
         buyBookButton.setEnabled(false);
         nowReadButton.setText(ResManager.getString(R.string.book_detail_downloading));
+        bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = false;
         download(bookDetailBean);
         ToastUtil.showToast(JDReadApplication.getInstance(), bookDetailBean.name + ResManager.getString(R.string.book_detail_tip_book_add_to_bookself));
     }

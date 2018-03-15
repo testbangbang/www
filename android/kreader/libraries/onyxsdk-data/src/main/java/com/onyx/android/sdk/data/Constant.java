@@ -12,8 +12,8 @@ public class Constant {
     public static final String DEFAULT_API_BASE = "http://store.onyx-international.com:9000/api/1/";
     public static final String DEFAULT_CLOUD_STORAGE = "oss";
 
-    public static final String CN_HOST_BASE = "http://dev.onyx-international.cn";
-    public static final String CN_API_BASE = "http://dev.onyx-international.cn/api/1/";
+    public static final String CN_HOST_BASE = "http://oa.o-in.me:9066/";
+    public static final String CN_API_BASE = CN_HOST_BASE + "api/";
 
     public static final String STATISTICS_API_BASE = "http://192.168.11.111/api/1/";
 
@@ -76,4 +76,6 @@ public class Constant {
 
     public static final String JUMP_FROM_DOCUMENT_PATH_TAG = "jump_from_document_path";
     public static final int PRE_LOAD_THUMBNAI_COUNT = 20;
+
+    public static final String SYSTEM_PRE_BOOKS_DIR = "/system/media/prebooks/";
 }

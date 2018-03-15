@@ -444,9 +444,9 @@
     <dimen name="reader_dict_title_padding_right">10dp</dimen>
     <dimen name="reader_dict_title_padding_top">15dp</dimen>
     <dimen name="reader_dict_title_padding_bottom">15dp</dimen>
-    <dimen name="reader_time_margin_left">20dp</dimen>
+    <dimen name="reader_time_margin_left">38dp</dimen>
     <dimen name="reader_time_margin_bottom">0dp</dimen>
-    <dimen name="reader_page_number_margin_right">20dp</dimen>
+    <dimen name="reader_page_number_margin_right">38dp</dimen>
     <dimen name="reader_page_number_margin_bottom">0dp</dimen>
     <dimen name="reader_page_translate_window_margin_bottom">10dp</dimen>
     <dimen name="book_format_margin_top">24dp</dimen>
@@ -596,4 +596,7 @@
     <dimen name="loading_dialog_text_margin_left">14dp</dimen>
     <dimen name="build_library_edit_padding">5dp</dimen>
     <dimen name="build_library_edit_margin">15dp</dimen>
+    <dimen name="loading_dialog_padding">20dp</dimen>
+    <dimen name="reader_ratingbar_light_settings_margin">22dp</dimen>
+    <dimen name="empty_result_padding">5dp</dimen>
 </resources>

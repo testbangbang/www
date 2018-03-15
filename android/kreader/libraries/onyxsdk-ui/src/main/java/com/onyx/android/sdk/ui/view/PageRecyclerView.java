@@ -43,6 +43,7 @@ public class PageRecyclerView extends RecyclerView {
     private int itemDecorationHeight = 0;
     private boolean pageTurningCycled = false;
     private boolean canTouchPageTurning = true;
+    private OnArrayEndPageListener onArrayEndPageListener;
 
     public interface OnPagingListener {
         void onPageChange(int position,int itemCount,int pageSize);
@@ -50,6 +51,10 @@ public class PageRecyclerView extends RecyclerView {
 
     public interface OnChangeFocusListener {
         void onFocusChange(int prev, int current);
+    }
+
+    public interface OnArrayEndPageListener {
+        void onArrayEndPage();
     }
 
     public PageRecyclerView(Context context) {
@@ -137,6 +142,10 @@ public class PageRecyclerView extends RecyclerView {
 
     public void setOnChangeFocusListener(OnChangeFocusListener onChangeFocusListener) {
         this.onChangeFocusListener = onChangeFocusListener;
+    }
+
+    public void setOnArrayEndPageListener(OnArrayEndPageListener onArrayEndPageListener) {
+        this.onArrayEndPageListener = onArrayEndPageListener;
     }
 
     @Override
@@ -340,6 +349,10 @@ public class PageRecyclerView extends RecyclerView {
 
         if (pageTurningCycled && paginator.pages() > 1 && paginator.isLastPage()) {
             gotoPage(0);
+        }
+
+        if (onArrayEndPageListener != null) {
+            onArrayEndPageListener.onArrayEndPage();
         }
     }
 
