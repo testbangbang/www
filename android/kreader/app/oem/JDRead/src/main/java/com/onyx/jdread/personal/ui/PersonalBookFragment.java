@@ -312,11 +312,6 @@ public class PersonalBookFragment extends BaseFragment {
                 metadata.setTags(tag);
                 metadata.setNativeAbsolutePath(info.localPath);
                 personalBookAdapter.notifyItem(i);
-                if (DownLoadHelper.canInsertBookDetail(info.downLoadState)) {
-                    BookDetailResultBean.DetailBean detail = covert(metadata);
-                    BookshelfInsertAction action = new BookshelfInsertAction(detail, info.localPath);
-                    action.execute(ShopDataBundle.getInstance(), null);
-                }
             }
         }
 

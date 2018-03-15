@@ -302,8 +302,12 @@ public abstract class EpdController
         return Device.currentDevice().inSystemFastMode();
     }
 
-    public static void appliGcOnce() {
+    public static void applyGcOnce() {
         Device.currentDevice().applyGCOnce();
+    }
+
+    public static void mergeDisplayByCount(int count, UpdateMode mode) {
+        Device.currentDevice().mergeDisplayByCount(count, mode);
     }
 
 }

@@ -30,7 +30,7 @@ public class SettingDataBindingUtil {
     @BindingAdapter({"cover"})
     public static void setImageResource(ImageView imageView, String imageUrl) {
         if (imageUrl != null) {
-            ManageImageCache.loadUrl(imageUrl, imageView, R.drawable.book_default_cover);
+            ManageImageCache.loadUrl(imageUrl, imageView, R.mipmap.ic_cloud_default_cover);
         }
     }
 

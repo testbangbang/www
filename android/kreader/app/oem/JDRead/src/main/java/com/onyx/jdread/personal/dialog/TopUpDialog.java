@@ -172,15 +172,19 @@ public class TopUpDialog extends DialogFragment {
                 orderInfo.voucher_amount = payParamsBean.voucher;
                 orderInfo.yuedou_amount = payParamsBean.yuedou;
                 orderInfo.desc = payParamsBean.bookName;
+                orderInfo.need_recharge = isNeedRecharge(payParamsBean);
                 payOrderViewModel.setOrderInfo(orderInfo);
-                getPayOrderViewModel().getOrderInfo().need_recharge = false;
                 getPayOrderViewModel().title.set("");
-                changePayButtonState(true);
+                changePayButtonState(!getPayOrderViewModel().getOrderInfo().need_recharge);
                 binding.setOrderModel(payOrderViewModel);
             } else {
                 gotoTopUpPage();
             }
         }
+    }
+
+    private boolean isNeedRecharge(NetBookPayParamsBean payParamsBean) {
+        return payParamsBean != null && (payParamsBean.voucher + payParamsBean.yuedou) < payParamsBean.jd_price;
     }
 
     private boolean isPayByCash() {
