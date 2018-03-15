@@ -9,6 +9,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.shop.utils.CutBitmapTransformation;
 
 /**
  * Created by huxiaomao on 2017/1/14.
@@ -17,6 +18,11 @@ import com.onyx.jdread.JDReadApplication;
 public class ManageImageCache {
     public static void loadUrl(final String url, final ImageView imageView, final int defaultImage) {
         Glide.with(JDReadApplication.getInstance().getApplicationContext()).load(url).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(defaultImage).error(defaultImage).into(imageView);
+    }
+
+    public static void loadUrlWithCut(final String url, final ImageView imageView, final int defaultImage) {
+        Glide.with(JDReadApplication.getInstance().getApplicationContext()).load(url).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(defaultImage).error(defaultImage)
+                .transform(CutBitmapTransformation.getInstance(JDReadApplication.getInstance().getApplicationContext())).into(imageView);
     }
 
     public static void loadUrl(final int resourceID, final ImageView imageView, final int defaultImage) {

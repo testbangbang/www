@@ -132,6 +132,7 @@ public class TopUpDialog extends DialogFragment {
         ss.setSpan(styleSpan, 2, 5, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         ss.setSpan(styleSpan2, 8, 12, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         binding.dialogTopUpQrCodeLayout.payWay.setText(ss);
+        binding.payOrder.payWay.setText(ss);
         if (isPayByCash()) {
             binding.payOrder.payOrderBalance.setVisibility(View.GONE);
             binding.payOrder.paymentReadBean.setVisibility(View.GONE);
@@ -155,6 +156,7 @@ public class TopUpDialog extends DialogFragment {
                     @Override
                     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                         if (R.id.payment_read_bean == checkedId) {
+                            setPayOrderView(false);
                             changePayButtonState(!getPayOrderViewModel().getOrderInfo().need_recharge);
                         } else {
                             changePayButtonState(true);
@@ -241,12 +243,16 @@ public class TopUpDialog extends DialogFragment {
         binding.dialogTopUpClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isPayByCash() || binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode.getVisibility() != View.VISIBLE) {
+                if (ViewHelper.isViewVisible(binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode)) {
+                    setVisible(R.id.dialog_top_up_detail_layout);
+                } else if (isTopUpType() && ViewHelper.isViewVisible(binding.dialogTopUpDetailLayout.dialogTopUpDetail)) {
                     dismiss();
-                    return;
+                } else if (!isTopUpType() && ViewHelper.isViewVisible(binding.dialogTopUpDetailLayout.dialogTopUpDetail)) {
+                    setVisible(R.id.dialog_pay_order);
+                } else {
+                    abortPayByCashRequest();
+                    dismiss();
                 }
-                abortPayByCashRequest();
-                setVisible(R.id.dialog_top_up_detail_layout);
             }
         });
 
@@ -256,6 +262,10 @@ public class TopUpDialog extends DialogFragment {
                 setVisible(R.id.dialog_top_up_detail_layout);
             }
         });
+    }
+
+    private boolean isTopUpType() {
+        return Constants.PAY_DIALOG_TYPE_TOP_UP == payDialogType;
     }
 
     private void getQRCode(int packageId) {
@@ -330,8 +340,8 @@ public class TopUpDialog extends DialogFragment {
         String encryptUrl = getPayByCashUrl();
         Bitmap qrImage = QRCodeUtil.createQRImage(encryptUrl, ResManager.getDimens(
                 R.dimen.top_up_qr_code_height), ResManager.getDimens(R.dimen.top_up_qr_code_height));
-        setVisible(R.id.dialog_top_up_qr_code_layout);
-        binding.dialogTopUpQrCodeLayout.topUpQrCode.setImageBitmap(qrImage);
+        setPayOrderView(true);
+        binding.payOrder.topUpQrCode.setImageBitmap(qrImage);
         payByCashRequest = new RxGetPayResultByCashRequest(getPayOrderViewModel().getOrderInfo().token);
         payByCashRequest.execute(new RxCallback<RxGetPayResultByCashRequest>() {
             @Override
@@ -341,6 +351,11 @@ public class TopUpDialog extends DialogFragment {
                 }
             }
         });
+    }
+
+    private void setPayOrderView(boolean isPayByCash) {
+        binding.payOrder.confirmPay.setVisibility(isPayByCash ? View.GONE : View.VISIBLE);
+        binding.payOrder.payByCashView.setVisibility(isPayByCash ? View.VISIBLE : View.GONE);
     }
 
     private String getPayByCashUrl() {
@@ -356,6 +371,9 @@ public class TopUpDialog extends DialogFragment {
     }
 
     private void payByReadBean() {
+        abortPayByCashRequest();
+        setPayOrderView(false);
+        clickableConfirmButton(false);
         String token = getPayOrderViewModel().getOrderInfo().token;
         PayByReadBeanAction payByReadBeanAction = new PayByReadBeanAction(token);
         payByReadBeanAction.execute(ShopDataBundle.getInstance(), new RxCallback<PayByReadBeanAction>() {
@@ -369,7 +387,19 @@ public class TopUpDialog extends DialogFragment {
             public void onError(Throwable throwable) {
                 super.onError(throwable);
             }
+
+            @Override
+            public void onFinally() {
+                clickableConfirmButton(true);
+            }
         });
+    }
+
+    private void clickableConfirmButton(boolean clickable) {
+        if (binding == null || binding.payOrder == null) {
+            return;
+        }
+        binding.payOrder.confirmPay.setClickable(clickable);
     }
 
     private void checkPayResult(BaseResultBean resultBean, boolean isNetBook) {
@@ -390,9 +420,9 @@ public class TopUpDialog extends DialogFragment {
     }
 
     private void onPaySuccess(boolean isNetBook) {
-        getPayOrderViewModel().confirmButtonText.set(ResManager.getString(R.string.pay_success));
-        binding.payOrder.confirmPay.setBackgroundDrawable(null);
-        binding.payOrder.confirmPay.setEnabled(false);
+        binding.payOrder.paySuccess.setVisibility(View.VISIBLE);
+        binding.payOrder.paySuccess.setText(ResManager.getString(R.string.pay_success));
+        binding.payOrder.confirmPay.setVisibility(View.GONE);
         dismissDialog(new BuyBookSuccessEvent("", isNetBook));
     }
 

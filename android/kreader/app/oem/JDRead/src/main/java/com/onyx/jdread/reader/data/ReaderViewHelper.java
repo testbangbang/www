@@ -449,7 +449,9 @@ public class ReaderViewHelper {
             // if can't next screen, then we are at last position of document
             currentPage = totalPage;
         }
-        String page = currentPage + "/" + totalPage;
+
+        float progress = reader.getReaderHelper().getNavigator().getProgress(reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition());
+        String page = String.format("%.2f",progress) + "%";
         PointF timePoint = ReaderViewConfig.getPageNumberPoint(contentView);
 
         float textWidth = paint.measureText(page);

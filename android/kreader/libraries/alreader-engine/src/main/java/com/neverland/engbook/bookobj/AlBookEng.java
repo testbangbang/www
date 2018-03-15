@@ -5534,6 +5534,13 @@ public class AlBookEng{
 		return pos;
 	}
 
+	public int getSize(){
+		if(isBookOpened()){
+			return format.getSize();
+		}
+		return 1;
+	}
+
     /**
      * получение номера текущей страницы, общего количества страниц и актуальной позиции чтения.
      * @param position - обьект, содержащий минимально необходимую информацию о положении чтения

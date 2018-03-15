@@ -231,4 +231,8 @@ public class ViewHelper {
         dialog.show();
         return dialog;
     }
+
+    public static boolean isViewVisible(View view) {
+        return view != null && view.getVisibility() == View.VISIBLE;
+    }
 }

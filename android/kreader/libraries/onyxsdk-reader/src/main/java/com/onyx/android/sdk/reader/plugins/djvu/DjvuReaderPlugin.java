@@ -316,6 +316,13 @@ public class DjvuReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public float getProgress(String position) {
+        int currentPage = PagePositionUtils.getPageNumber(position);
+        float totalPage = getTotalPage();
+        return (currentPage / totalPage) * 100;
+    }
+
+    @Override
     public ReaderDocument open(String path, ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) throws ReaderException {
         if (!getPluginImpl().open(path)) {
             return null;

@@ -47,12 +47,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/ratingbar_light_settings_margin"
-                android:layout_marginRight="@dimen/ratingbar_light_settings_margin"
+                android:layout_marginLeft="@dimen/reader_ratingbar_light_settings_margin"
+                android:layout_marginRight="@dimen/reader_ratingbar_light_settings_margin"
                 android:max="@{brightnessModel.maxLight}"
                 android:numStars="@{brightnessModel.numStar}"
                 android:progress="@{brightnessModel.progress}"
-                android:progressDrawable="@drawable/light_bar_step"
+                android:progressDrawable="@drawable/reader_light_bar_step"
                 android:stepSize="1.0" />
 
             <TextView

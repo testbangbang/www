@@ -30,6 +30,7 @@ public class Constants {
     public static final String SP_KEY_LIST_PIN = "listPin";
     public static final String SP_KEY_SHOW_PASSWORD = "show_password";
     public static final String SP_KEY_CATEGORY_LEVEL_ONE_ID = "category_level_one_id";
+    public static final String SP_KEY_CATEGORY_LEVEL_TWO_POSITION = "category_level_two_position";
     public static final String SP_KEY_CATEGORY_LEVEL_TWO_ID = "category_level_two_id";
     public static final String SP_KEY_CATEGORY_LEVEL_VALUE = "category_level_value";
     public static final String SP_KEY_CATEGORY_NAME = "category_name";
@@ -147,7 +148,7 @@ public class Constants {
     public static final int BOOK_DETAIL_TYPE_NET = 1;
     public static final int BOOK_DETAIL_TYPE_PUBLISH = 0;
     public static final String WHOLE_BOOK_DOWNLOAD_TAG = "whole_book";
-    public static final String WIFI_PASS_BOOK_DIR = Device.currentDevice.getExternalStorageDirectory() + "/Books/";
+    public static final String JD_BOOKS_DIR = Device.currentDevice.getExternalStorageDirectory() + "/Books/";
     public static final String MANUAL_FAQ_URL = "https://jdread-api.jd.com/faq";
     public static final int NET_BOOK_STATUS_DOWN = 1;
     public static final String NATIVIE_DIR = EnvironmentUtil.getExternalStorageDirectory() + File.separator + "Notes";

@@ -81,6 +81,7 @@ public class ViewAllBooksFragment extends BaseFragment {
                 getBookRankData(rankType, currentPage);
             }
         }
+        checkWifi(getTitleBarViewModel().leftText);
     }
 
     private void getBookModelData(int currentPage) {
@@ -123,7 +124,6 @@ public class ViewAllBooksFragment extends BaseFragment {
         });
         viewAllBinding.setViewModel(getViewAllViewModel());
         initPageIndicator();
-        checkWifi(getTitleBarViewModel().leftText);
     }
 
     private void initPageIndicator() {

@@ -8,18 +8,23 @@
             type="com.onyx.jdread.main.common.LoadingDialog.DialogModel" />
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minHeight="@dimen/loading_dialog_small_min_height"
-        android:minWidth="@dimen/loading_dialog_small_min_width">
+        android:orientation="horizontal"
+        android:padding="@dimen/loading_dialog_padding">
+
+        <ImageView
+            android:id="@+id/image_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@{loadingModel.getLoadingText()}"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_two_heading_font" />
-    </RelativeLayout>
+            android:layout_marginLeft="@dimen/loading_dialog_text_margin_left"
+            android:text="@string/jd_loading"
+            android:textColor="@color/normal_black"
+            android:textSize="@dimen/level_one_heading_font" />
+    </LinearLayout>
 </layout>
