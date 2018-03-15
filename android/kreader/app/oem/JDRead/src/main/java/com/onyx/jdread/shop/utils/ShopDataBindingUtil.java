@@ -39,14 +39,14 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"bannerCover"})
     public static void setBannerCover(ImageView imageView, String imageUrl) {
         if (imageUrl != null) {
-            ManageImageCache.loadUrl(imageUrl, imageView, R.drawable.book_default_cover);
+            ManageImageCache.loadUrl(imageUrl, imageView, R.mipmap.ic_cloud_default_cover);
         }
     }
 
     @BindingAdapter({"cover"})
     public static void setImageResource(ImageView imageView, String imageUrl) {
         if (imageUrl != null) {
-            ManageImageCache.loadUrlWithCut(imageUrl, imageView, R.drawable.book_default_cover);
+            ManageImageCache.loadUrlWithCut(imageUrl, imageView, R.mipmap.ic_cloud_default_cover);
         }
     }
 

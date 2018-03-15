@@ -36,6 +36,7 @@ public class RxRequestUpdateDownloadInfo extends RxBaseDBRequest {
                 findExtraInfoBean.progress = extraInfo.progress;
                 findExtraInfoBean.percentage = extraInfo.percentage;
                 findExtraInfoBean.downLoadState = extraInfo.downLoadState;
+                findExtraInfoBean.totalSize = extraInfo.totalSize;
                 findMeta.setDownloadInfo(JSONObjectParseUtils.toJson(findExtraInfoBean));
                 findMeta.setSize((long) extraInfo.totalSize);
                 getDataProvider().updateMetadata(getAppContext(), findMeta);
