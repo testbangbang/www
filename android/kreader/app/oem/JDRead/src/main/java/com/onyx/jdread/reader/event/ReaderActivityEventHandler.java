@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.DialogMessage;
 import com.onyx.jdread.R;
