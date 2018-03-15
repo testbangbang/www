@@ -51,7 +51,7 @@ public class HomeworkSubmitRequest extends BaseCloudRequest {
             if (model == null) {
                 model = HomeworkModel.create(personalHomeworkId);
             }
-            if (model.getState() == HomeworkState.REVIEW.ordinal()) {
+            if (model.getState() >= HomeworkState.REVIEW.ordinal()) {
                 model.setState(HomeworkState.SUBMITTED_AFTER_REVIEW.ordinal());
             } else {
                 model.setState(HomeworkState.SUBMITTED.ordinal());

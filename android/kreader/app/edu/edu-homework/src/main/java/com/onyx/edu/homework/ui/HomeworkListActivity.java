@@ -26,6 +26,7 @@ import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DateTimeUtil;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
@@ -86,7 +87,6 @@ public class HomeworkListActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFormat(PixelFormat.TRANSLUCENT);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_homework_list);
         DataBundle.getInstance().register(this);
         initView();
@@ -346,6 +346,7 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void handleOnyxNotification(NotificationType type, String data) {
+        Debug.d("handleOnyxNotification  type" + type + "data" + data);
         HomeworkIntent homework = JSONObject.parseObject(data, HomeworkIntent.class);
         if (homework._id.equals(getDataBundle().getPersonalHomeworkId())) {
             updateHomeworkFromIntent(homework);
@@ -602,7 +603,7 @@ public class HomeworkListActivity extends BaseActivity {
         ViewUtils.setGone(binding.answerIcon, getDataBundle().isReview() && recordFragment == null);
         ViewUtils.setGone(binding.answerRecord, recordFragment != null);
         ViewUtils.setGone(binding.submit, true);
-        binding.submit.setText(getDataBundle().isSubmittedAfterReview() || getDataBundle().isReview() ?
+        binding.submit.setText(getDataBundle().isCorrectingAnswer() ?
                 R.string.correct_homework : R.string.submit_homework);
         ViewUtils.setGone(binding.getResultLayout, getDataBundle().isSubmitted());
         ViewUtils.setGone(binding.newMessage, getDataBundle().canGetReview());

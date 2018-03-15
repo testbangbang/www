@@ -1,11 +1,13 @@
 package com.onyx.edu.homework.request;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.homework.HomeworkReviewResult;
 import com.onyx.android.sdk.data.model.homework.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.homework.Question;
+import com.onyx.android.sdk.data.model.homework.QuestionOption;
 import com.onyx.android.sdk.data.model.homework.QuestionReview;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
@@ -13,6 +15,7 @@ import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
 import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.data.ShapeState;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.db.DBDataProvider;
 import com.onyx.edu.homework.db.HomeworkModel;
@@ -47,9 +50,6 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
         }
         int state = model.getState();
         currentState = HomeworkState.getHomeworkState(state);
-        if (currentState == HomeworkState.BEFORE_SUBMIT) {
-            return;
-        }
         Response<HomeworkReviewResult> response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).getAnwsers(publicHomeworkId));
         if (response.isSuccessful()) {
             HomeworkReviewResult result = response.body();
@@ -93,6 +93,7 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
         if (questions == null) {
             return;
         }
+        Debug.i("question size = " + questions.size());
         for (Question question : questions) {
             QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());
             if (model == null) {
@@ -100,6 +101,7 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
                         personalHomeworkId);
             }
             setQuestionReview(question, model, reviews);
+            Debug.i("model values: " + model.getValues());
             DBDataProvider.saveQuestion(model);
         }
     }
@@ -108,15 +110,27 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
         if (reviews == null || reviews.isEmpty()) {
             return;
         }
-        QuestionReview review = findReview(reviews, question.getUniqueId());
+        HomeworkSubmitAnswer answer = findReview(reviews, question.getQuestionId());
+        QuestionReview review = null;
+        if (answer != null) {
+            review = QuestionReview.create(answer);
+        }
+        Debug.i("answer = " + answer);
         model.setReview(review);
+        if (CollectionUtils.isNullOrEmpty(model.getValues()) && null != answer) {
+            model.setValues(answer.value);
+            loadUserSelectOption(question, model);
+            Debug.i("answer.value = " + answer.value);
+        }
         question.setReview(review);
     }
 
-    private QuestionReview findReview(@NonNull List<HomeworkSubmitAnswer> reviews, String questionUniqueId) {
+    @Nullable
+    private HomeworkSubmitAnswer findReview(@NonNull List<HomeworkSubmitAnswer> reviews, String questionId) {
+        Debug.i("questionId = " + questionId);
         for (HomeworkSubmitAnswer review : reviews) {
-            if (review.uniqueId.equals(questionUniqueId)) {
-                return QuestionReview.create(review);
+            if (review.question.equals(questionId)) {
+                return review;
             }
         }
         return null;
@@ -125,5 +139,31 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
 
     public HomeworkState getCurrentState() {
         return currentState;
+    }
+
+    private void loadUserSelectOption(Question question, QuestionModel model) {
+        List<String> values = model.getValues();
+        if (values == null) {
+            return;
+        }
+        List<QuestionOption> options = question.options;
+        if (options == null) {
+            return;
+        }
+        for (String value : values) {
+            QuestionOption option = findQuestionOption(options, value);
+            if (option != null) {
+                option.setChecked(true);
+            }
+        }
+    }
+
+    private QuestionOption findQuestionOption(@NonNull List<QuestionOption> options, String optionId) {
+        for (QuestionOption option : options) {
+            if (option._id.equals(optionId)) {
+                return option;
+            }
+        }
+        return null;
     }
 }

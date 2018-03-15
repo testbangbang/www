@@ -22,6 +22,7 @@ public class HomeworkSubmitAnswer {
     public int correct;
     public String comment;
     public float score;
+    public int QuesType;
 
     public void setAttachment(List<String> attachment) {
         this.attachment = attachment;
@@ -44,5 +45,9 @@ public class HomeworkSubmitAnswer {
 
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
+    }
+
+    public void setQuesType(int quesType) {
+        QuesType = quesType;
     }
 }

@@ -40,7 +40,7 @@ public class MakeHomeworkPagesAnswerActionChain extends BaseNoteAction {
             docIds.add(answer.uniqueId);
         }
         NoteActionChain chain = new NoteActionChain(true);
-        boolean filterUnRedoingDocId = DataBundle.getInstance().afterReview();
+        boolean filterUnRedoingDocId = DataBundle.getInstance().afterReview() || DataBundle.getInstance().hasReview();
         GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds).setFilterUnRedoingDocId(filterUnRedoingDocId);
         final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(),
                 size,
