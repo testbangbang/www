@@ -11,6 +11,7 @@ import android.widget.RatingBar;
 import android.widget.SeekBar;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -40,7 +41,7 @@ import com.onyx.jdread.setting.model.BrightnessModel;
  * Created by huxiaomao on 17/5/10.
  */
 
-public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingViewBack{
+public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSettingViewBack{
     private static final String TAG = ReaderSettingMenuDialog.class.getSimpleName();
     private ReaderSettingMenuBinding binding;
     private ReaderDataHolder readerDataHolder;
