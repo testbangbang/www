@@ -164,8 +164,7 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         }, row,node.hasChildren);
 
         if (readerDocumentTableOfContent != null && hasChildren(readerDocumentTableOfContent.getRootEntry())) {
-            ReaderDocumentTableOfContentEntry entry = locateEntry(readerDocumentTableOfContent.getRootEntry().getChildren(),
-                    PagePositionUtils.getPosition(getCurrentPagePosition()));
+            ReaderDocumentTableOfContentEntry entry = locateEntry(node,PagePositionUtils.getPosition(getCurrentPagePosition()));
             TreeRecyclerView.TreeNode treeNode = findTreeNodeByTag(node.nodes, entry);
             if (treeNode != null) {
                 binding.bookInfoCatalogContent.setCurrentNode(treeNode);
@@ -268,6 +267,9 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
                 }
             }
         }
+        if(nodeList.size() > 0){
+            return nodeList.get(0);
+        }
         return null;
     }
 
@@ -284,6 +286,23 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         int startEntryPosition = getDocumentTableOfContentEntryPosition(entries, 0);
         ReaderDocumentTableOfContentEntry current = entries.get(pagePosition < startEntryPosition ? 0 : entries.size() - 1);
         return locateEntryWithChildren(current, pagePosition);
+    }
+
+    private ReaderDocumentTableOfContentEntry locateEntry(ReaderBookInfoDialogConfig.Node node, int pagePosition) {
+        for (int i = 0; i < node.nodes.size() - 1; i++) {
+            TreeRecyclerView.TreeNode startNode = node.nodes.get(i);
+            ReaderDocumentTableOfContentEntry startEntry = (ReaderDocumentTableOfContentEntry) startNode.getTag();
+            int currentPagePosition = PagePositionUtils.getPosition(startEntry.getPosition());
+
+            TreeRecyclerView.TreeNode endNode = node.nodes.get(i + 1);
+            ReaderDocumentTableOfContentEntry endEntry = (ReaderDocumentTableOfContentEntry)endNode.getTag();
+
+            int nextPagePosition = PagePositionUtils.getPosition(endEntry.getPosition());
+            if (currentPagePosition <= pagePosition && pagePosition < nextPagePosition) {
+                return startEntry;
+            }
+        }
+        return null;
     }
 
     private int getDocumentTableOfContentEntryPosition(final List<ReaderDocumentTableOfContentEntry> entries, final int index) {

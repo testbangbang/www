@@ -368,6 +368,16 @@ public class AlReaderPlugin implements ReaderPlugin,
     }
 
     @Override
+    public float getProgress(String position) {
+        int currentPosition = getPluginImpl().getScreenEndPosition();
+        if(isFirstPage()){
+            currentPosition = getPluginImpl().getScreenStartPosition();
+        }
+        float total = getPluginImpl().getSize();
+        return (currentPosition / total) * 100;
+    }
+
+    @Override
     public int getScreenStartPageNumber() {
         return getPluginImpl().getScreenStartPage();
     }
