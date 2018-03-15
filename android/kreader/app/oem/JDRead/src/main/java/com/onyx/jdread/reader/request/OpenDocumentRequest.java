@@ -52,9 +52,11 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
     }
 
     private boolean openDocument() throws Exception {
-        getReader().getReaderHelper().getPlugin().setReaderCallback(new ReaderCallback() {
+        final Reader reader = getReader();
+        reader.getReaderHelper().getPlugin().setReaderCallback(new ReaderCallback() {
             @Override
             public void onDocumentLoadSuccess() {
+                reader.getReaderHelper().setLoadComplete(true);
                 if (eventBus != null) {
                     eventBus.post(new DocumentLoadSuccessEvent());
                 }

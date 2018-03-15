@@ -154,6 +154,8 @@ public class LayoutProviderUtils {
         readerViewInfo.canGoForward = layoutManager.canGoForward();
         readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());
         readerViewInfo.setFirstVisiblePagePosition(layoutManager.getCurrentPagePosition());
+        readerViewInfo.setLoadComplete(reader.getReaderHelper().isLoadComplete());
+        readerViewInfo.setProgress(reader.getReaderHelper().getNavigator().getProgress(reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition()));
         if (layoutManager.getCropRect() != null) {
             RectF rect = new RectF(layoutManager.getCropRect());
             PageUtils.translateCoordinates(rect, readerViewInfo.viewportInDoc);

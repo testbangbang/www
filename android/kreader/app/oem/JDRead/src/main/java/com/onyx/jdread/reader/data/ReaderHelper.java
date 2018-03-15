@@ -76,10 +76,19 @@ public class ReaderHelper {
     private BitmapReferenceLruCache bitmapCache;
     private ReaderBitmapReferenceImpl currentPageBitmap;
     private Context context;
+    private boolean isLoadComplete = false;
 
     public ReaderHelper(Context context,DocumentInfo documentInfo) {
         this.context = context;
         this.documentInfo = documentInfo;
+    }
+
+    public boolean isLoadComplete() {
+        return isLoadComplete;
+    }
+
+    public void setLoadComplete(boolean loadComplete) {
+        isLoadComplete = loadComplete;
     }
 
     public DocumentInfo getDocumentInfo() {

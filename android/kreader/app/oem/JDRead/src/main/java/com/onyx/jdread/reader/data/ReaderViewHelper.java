@@ -450,8 +450,11 @@ public class ReaderViewHelper {
             currentPage = totalPage;
         }
 
-        float progress = reader.getReaderHelper().getNavigator().getProgress(reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition());
-        String page = String.format("%.2f",progress) + "%";
+        String page = ResManager.getString(R.string.reader_loading);
+        if(readerViewInfo.isLoadComplete()) {
+            float progress = readerViewInfo.getProgress();
+            page = String.format("%.2f", progress) + "%";
+        }
         PointF timePoint = ReaderViewConfig.getPageNumberPoint(contentView);
 
         float textWidth = paint.measureText(page);
