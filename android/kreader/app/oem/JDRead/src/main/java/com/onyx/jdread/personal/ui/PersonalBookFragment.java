@@ -249,6 +249,8 @@ public class PersonalBookFragment extends BaseFragment {
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
+        documentInfo.setWholeBookDownLoad(detailBean.bookExtraInfoBean.isWholeBookDownLoad);
+        documentInfo.setCloudId(detailBean.ebook_id);
         OpenBookHelper.openBook(super.getContext(), documentInfo);
     }
 
@@ -313,11 +315,6 @@ public class PersonalBookFragment extends BaseFragment {
                 metadata.setTags(tag);
                 metadata.setNativeAbsolutePath(info.localPath);
                 personalBookAdapter.notifyItem(i);
-                if (DownLoadHelper.canInsertBookDetail(info.downLoadState)) {
-                    BookDetailResultBean.DetailBean detail = covert(metadata);
-                    BookshelfInsertAction action = new BookshelfInsertAction(detail, info.localPath);
-                    action.execute(ShopDataBundle.getInstance(), null);
-                }
             }
         }
 

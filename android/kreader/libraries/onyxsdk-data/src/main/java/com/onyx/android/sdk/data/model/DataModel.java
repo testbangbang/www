@@ -53,6 +53,7 @@ public class DataModel extends BaseObservable {
     public final ObservableInt downloadStatus = new ObservableInt(FileDownloadStatus.completed);
     public final ObservableInt downloadProgress = new ObservableInt();
     public final ObservableBoolean showDownloadProgress = new ObservableBoolean(false);
+    public final ObservableBoolean isWholeBookDownLoad = new ObservableBoolean(true);
     public final ObservableList<DataModel> childList = new ObservableArrayList<>();
     public Object downLoadTaskTag;
     private EventBus eventBus;

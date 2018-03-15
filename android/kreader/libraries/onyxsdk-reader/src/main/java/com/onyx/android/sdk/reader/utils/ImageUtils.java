@@ -90,6 +90,9 @@ public class ImageUtils {
                 array[i * 4 + 3] = regions.get(i).bottom;
             }
         }
+        if (array == null) {
+            array = new float[] { 0, 0, bmp.getWidth(), bmp.getHeight() };
+        }
         return gammaCorrection(bmp, gamma, array);
     }
 }

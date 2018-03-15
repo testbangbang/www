@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.DialogMessage;
 import com.onyx.jdread.R;
@@ -114,6 +116,14 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDocumentLoadSuccessResultEvent(DocumentLoadSuccessEvent event) {
         Log.d(getClass().getSimpleName(), "onDocumentLoadSuccessResultEvent");
+        if(readerViewModel.getReaderDataHolder().isInitViewPage() && !readerViewModel.getReaderDataHolder().isPreload()){
+            new UpdateViewPageAction().execute(readerViewModel.getReaderDataHolder(),null);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDocumentLoadFailedResultEvent(DocumentLoadFailedEvent event) {
+        Log.d(getClass().getSimpleName(), "onDocumentLoadFailedResultEvent");
     }
 
     @Subscribe

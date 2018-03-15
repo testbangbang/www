@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.CommonUtils;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -12,6 +13,7 @@ import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookDetail;
+import com.onyx.jdread.shop.utils.ViewHelper;
 
 /**
  * Created by jackdeng on 2017/12/13.
@@ -49,6 +51,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onSubscribe() {
                 super.onSubscribe();
+                bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
                 showLoadingDialog(shopDataBundle, R.string.loading);
             }
 
@@ -66,6 +69,9 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
                     if (!TextUtils.isEmpty(data.info)) {
                         bookDetailResultBean.data.info = CommonUtils.removeBlank(data.info);
                     }
+                    if (ViewHelper.isNetBook(data.book_type)) {
+                        bookDetailResultBean.data.isbn = "";
+                    }
                 }
                 bookDetailViewModel.setBookDetailResultBean(bookDetailResultBean);
                 if (rxCallback != null) {
@@ -75,7 +81,8 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void onError(Throwable throwable) {
-                super.onError(throwable);
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), shopDataBundle.getEventBus());
+                bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
                 }

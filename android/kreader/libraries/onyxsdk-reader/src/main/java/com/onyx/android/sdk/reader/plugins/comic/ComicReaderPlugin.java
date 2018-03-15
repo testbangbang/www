@@ -408,6 +408,13 @@ public class ComicReaderPlugin implements ReaderPlugin,
         readerCallback = callback;
     }
 
+    @Override
+    public float getProgress(String position) {
+        int currentPage = PagePositionUtils.getPageNumber(position);
+        float totalPage = getTotalPage() - 1;
+        return (currentPage / totalPage) * 100;
+    }
+
     /**
      * Try to open the document specified by the path.
      *

@@ -42,12 +42,21 @@ public class ReaderDataHolder {
     private SettingInfo settingInfo;
     private EventBus eventBus = EventBus.getDefault();
     private boolean isPreload = false;
+    private boolean isInitViewPage = false;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
         setAppContext(appContext);
         initRequestAppContext(appContext);
         initView(appContext);
+    }
+
+    public boolean isInitViewPage() {
+        return isInitViewPage;
+    }
+
+    public void setInitViewPage(boolean initViewPage) {
+        isInitViewPage = initViewPage;
     }
 
     public boolean isPreload() {

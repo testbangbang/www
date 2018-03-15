@@ -173,7 +173,11 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchView.setCustomSearchListener(new CustomSearchView.SearchListener() {
             @Override
             public void onQuerySearch(String query) {
-                doSearchQueryOrHint(query);
+                if (StringUtils.isNullOrEmpty(query)) {
+                    doSearchQueryOrHint(query);
+                    return;
+                }
+                queryTextSubmit(getSearchQueryOrHint(query));
             }
         });
         binding.searchResultRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
@@ -202,7 +206,7 @@ public class SearchBookFragment extends BaseFragment {
             return false;
         }
         if (!InputUtils.isHaveAvailableCharacters(query)) {
-            ToastUtil.showToast(R.string.input_special_characters);
+            checkResultView(false);
             return false;
         }
         return true;
@@ -259,7 +263,9 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void checkSearchResult() {
-        if (isEmptySearchResults()) {
+        boolean empty = isEmptySearchResults();
+        checkResultView(!empty);
+        if (empty) {
             checkWifi(getSearchBookModel().searchKey.get());
         }
     }
@@ -361,7 +367,13 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchHotHistoryLayout.setVisibility(StringUtils.isNullOrEmpty(searchBookModel.searchKey.get()) ? View.VISIBLE : View.GONE);
         binding.searchHintLayout.setVisibility(searchBookModel.showHintList() ? View.VISIBLE : View.GONE);
         binding.searchResultLayout.setVisibility(searchBookModel.showResult() ? View.VISIBLE : View.GONE);
+        binding.emptyResultLayout.setVisibility(View.GONE);
         updatePageIndicator();
+    }
+
+    private void checkResultView(boolean show) {
+        binding.searchResultLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+        binding.emptyResultLayout.setVisibility(!show ? View.VISIBLE : View.GONE);
     }
 
     private void initData() {
@@ -516,6 +528,10 @@ public class SearchBookFragment extends BaseFragment {
         securityInfo.setRandom(model.random.get());
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setSecurityInfo(securityInfo);
+        documentInfo.setWholeBookDownLoad(model.isWholeBookDownLoad.get());
+        if(StringUtils.isNotBlank(model.cloudId.get())) {
+            documentInfo.setCloudId(Integer.parseInt(model.cloudId.get()));
+        }
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 

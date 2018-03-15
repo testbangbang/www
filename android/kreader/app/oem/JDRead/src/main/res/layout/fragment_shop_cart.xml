@@ -87,6 +87,7 @@
             android:background="@color/divider_color" />
 
         <LinearLayout
+            android:id="@+id/amount_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/shop_cart_original_amount_margin_top"

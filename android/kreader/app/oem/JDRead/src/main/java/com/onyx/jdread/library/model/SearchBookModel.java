@@ -58,7 +58,11 @@ public class SearchBookModel extends Observable {
     }
 
     public boolean showResult() {
-        return !isInputting.get() && StringUtils.isNotBlank(searchKey.get());
+        return !isInputting.get() && StringUtils.isNotBlank(searchKey.get()) && searchResult.size() != 0;
+    }
+
+    public boolean showEmptyResult() {
+        return !isInputting.get() && StringUtils.isNotBlank(searchKey.get()) && searchResult.size() == 0;
     }
 
     public void reAddHotWords(List<String> list) {

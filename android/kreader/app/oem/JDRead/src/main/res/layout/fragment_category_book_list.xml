@@ -127,25 +127,51 @@
                     android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
                     android:layout_weight="1" />
 
-                <CheckBox
-                    android:id="@+id/subject_list_show_vip"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginTop="@dimen/subject_list_just_vip_margin_top_and_bottom"
                     android:layout_marginBottom="@dimen/subject_list_just_vip_margin_top_and_bottom"
-                    android:layout_marginLeft="@dimen/subject_list_just_vip_margin_left"
-                    android:background="@drawable/text_stroke_background"
-                    android:button="@null"
-                    android:checked="false"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
-                    android:paddingLeft="@dimen/category_book_list_selected_button_padding_left_and_right"
-                    android:paddingRight="@dimen/category_book_list_selected_button_padding_left_and_right"
-                    android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
-                    android:text="@string/subject_list_just_vip"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/font_size_15" />
+                    android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+                    android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+                    android:layout_marginTop="@dimen/subject_list_just_vip_margin_top_and_bottom"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/subject_list_show_vip"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/text_stroke_background"
+                        android:button="@null"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:text="@string/vip"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_size_17" />
+
+                    <CheckBox
+                        android:id="@+id/subject_list_show_free"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/text_stroke_background"
+                        android:button="@null"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:text="@string/filter_free"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_size_17" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2" />
+
+                </LinearLayout>
 
                 <include layout="@layout/layout_line" />
 

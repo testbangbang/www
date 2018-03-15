@@ -20,7 +20,7 @@
             android:layout_width="@dimen/banner_subject_model_item_width"
             android:layout_height="@dimen/banner_subject_model_item_height"
             android:scaleType="fitXY"
-            bind:cover="@{advBean.pic_address}" />
+            bind:bannerCover="@{advBean.pic_address}" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
 

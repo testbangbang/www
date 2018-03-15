@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void processEpdGcOnce() {
         if (tabCheckedCount >= ResManager.getInteger(R.integer.refresh_count)) {
-            EpdController.appliGcOnce();
+            EpdController.applyGcOnce();
             tabCheckedCount = 0;
         } else {
             tabCheckedCount++;

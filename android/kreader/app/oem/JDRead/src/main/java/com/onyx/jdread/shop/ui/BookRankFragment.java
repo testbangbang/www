@@ -32,6 +32,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by jackdeng on 2018/1/4.
  */
@@ -40,6 +43,9 @@ public class BookRankFragment extends BaseFragment {
     private FragmentBookRankBinding bookRankBinding;
     private int space = ResManager.getInteger(R.integer.custom_recycle_view_space);
     private CustomRecycleView recyclerView;
+
+    private Map<Integer, Integer> pageIndexMap = new HashMap<>();
+    private int pageIndex = 0;
 
     @Nullable
     @Override
@@ -62,11 +68,7 @@ public class BookRankFragment extends BaseFragment {
         rankAction.execute(getShopDataBundle(), new RxCallback<BookRankAction>() {
             @Override
             public void onNext(BookRankAction rankAction) {
-                bookRankBinding.scrollBar.setTotal(getRankViewModel().getTotalPages());
-                if (recyclerView != null) {
-                    recyclerView.setTotalPages(getRankViewModel().getTotalPages());
-                }
-                scrollToTop();
+                scrollToCurrentPage();
             }
 
             @Override
@@ -74,6 +76,33 @@ public class BookRankFragment extends BaseFragment {
                 super.onError(throwable);
             }
         });
+    }
+
+    private void scrollToCurrentPage() {
+        if (recyclerView == null) {
+            return;
+        }
+        int totalPage = getRankViewModel().getTotalPages();
+        pageIndex = recyclerView.getCurPageIndex();
+        pageIndexMap = recyclerView.getPageIndexMap();
+        if (pageIndex >= totalPage || pageIndexMap.keySet().size() >= totalPage) {
+            pageIndexMap.clear();
+            pageIndex = 0;
+        }
+        recyclerView.gotoPage(pageIndex, getPagePosition(pageIndexMap, pageIndex));
+        bookRankBinding.scrollBar.setTotal(totalPage);
+        bookRankBinding.scrollBar.setFocusPosition(pageIndex);
+    }
+
+    private int getPagePosition(Map<Integer, Integer> pageIndexMap, int pageIndex) {
+        return pageIndexMap.containsKey(pageIndex) ? pageIndexMap.get(pageIndex) : 0;
+    }
+
+    private void updateScrollbarPageIndex(int curIndex) {
+        pageIndex = curIndex;
+        if (bookRankBinding.scrollBar != null) {
+            bookRankBinding.scrollBar.setFocusPosition(curIndex);
+        }
     }
 
     private void scrollToTop() {
@@ -96,10 +125,12 @@ public class BookRankFragment extends BaseFragment {
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(new SpaceItemDecoration(space));
         recyclerView.setAdapter(adapter);
+        recyclerView.updatePageIndexMap(pageIndexMap);
+        recyclerView.updateCurPage(pageIndex);
         recyclerView.setOnPagingListener(new CustomRecycleView.OnPagingListener() {
             @Override
             public void onPageChange(int position) {
-                bookRankBinding.scrollBar.setFocusPosition(position);
+                updateScrollbarPageIndex(position);
             }
         });
     }
@@ -154,7 +185,7 @@ public class BookRankFragment extends BaseFragment {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
             bundle.putInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_RANK);
-            bundle.putInt(Constants.SP_KEY_SUBJECT_RANK_TYPE, modulesBean.rank_type);
+            bundle.putInt(Constants.SP_KEY_SUBJECT_RANK_TYPE, modulesBean.module_type);
             if (getViewEventCallBack() != null) {
                 getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName(), bundle);
             }

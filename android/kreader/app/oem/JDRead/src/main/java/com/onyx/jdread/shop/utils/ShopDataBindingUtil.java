@@ -10,7 +10,6 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
-import com.onyx.jdread.reader.ui.view.AutoPagedWebView;
 import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
@@ -37,10 +36,17 @@ import java.util.List;
 
 public class ShopDataBindingUtil {
 
+    @BindingAdapter({"bannerCover"})
+    public static void setBannerCover(ImageView imageView, String imageUrl) {
+        if (imageUrl != null) {
+            ManageImageCache.loadUrl(imageUrl, imageView, R.mipmap.ic_cloud_default_cover);
+        }
+    }
+
     @BindingAdapter({"cover"})
     public static void setImageResource(ImageView imageView, String imageUrl) {
         if (imageUrl != null) {
-            ManageImageCache.loadUrl(imageUrl, imageView, R.drawable.book_default_cover);
+            ManageImageCache.loadUrlWithCut(imageUrl, imageView, R.mipmap.ic_cloud_default_cover);
         }
     }
 

@@ -9,7 +9,7 @@
 
         <import type="com.onyx.jdread.shop.utils.ViewHelper" />
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
 
     </data>
 
@@ -31,9 +31,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@{orderModel.orderInfo.desc}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_size_15" />
+                android:textSize="@dimen/font_size_17" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -41,7 +43,7 @@
                 android:layout_marginTop="@dimen/dialog_pay_order_item_margin_top"
                 android:text="@{@string/dialog_pay_order_book_price(orderModel.orderInfo.pay_amount)}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_size_15" />
+                android:textSize="@dimen/font_size_17" />
 
             <TextView
                 android:id="@+id/pay_order_balance"
@@ -50,22 +52,23 @@
                 android:layout_marginTop="@dimen/dialog_pay_order_item_margin_top"
                 android:text="@{@string/dialog_pay_order_cur_balance(orderModel.orderInfo.yuedou_amount,orderModel.orderInfo.voucher_amount)}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_size_15" />
+                android:textSize="@dimen/font_size_17" />
 
             <LinearLayout
-                android:visibility="@{orderModel.showPaymentLinearLayout ? View.VISIBLE : View.INVISIBLE}"
                 android:id="@+id/payment_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dialog_pay_order_payment_item_margin_top"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="@{orderModel.showPaymentLinearLayout ? View.VISIBLE : View.INVISIBLE}">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dialog_pay_order_pay_type"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/font_size_15" />
+                    android:textSize="@dimen/font_size_17" />
 
                 <RadioGroup
                     android:id="@+id/payment_radio_group"
@@ -81,7 +84,7 @@
                         android:checked="true"
                         android:text="@string/read_bean"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_size_15" />
+                        android:textSize="@dimen/font_size_17" />
 
                     <RadioButton
                         android:id="@+id/payment_cash"
@@ -90,27 +93,66 @@
                         android:layout_marginLeft="@dimen/dialog_pay_order_payment_cash_margin_left"
                         android:text="@string/dialog_pay_order_cash"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_size_15" />
+                        android:textSize="@dimen/font_size_17" />
 
                 </RadioGroup>
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/confirm_pay"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dialog_pay_order_confirm_pay_margin_bottom"
-                android:layout_marginLeft="@dimen/dialog_pay_order_confirm_pay_margin_left"
-                android:layout_marginRight="@dimen/dialog_pay_order_confirm_pay_margin_left"
-                android:layout_marginTop="@dimen/dialog_pay_order_confirm_pay_margin_top"
-                android:background="@drawable/rectangle_stroke_round"
-                android:gravity="center"
-                android:onClick="@{()->orderModel.onConfirmPayClick()}"
-                android:padding="@dimen/dialog_pay_order_confirm_pay_padding"
-                android:text="@{orderModel.confirmButtonText}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/font_size_15" />
+                android:layout_height="@dimen/pay_order_by_cash_relative_layout_height">
+
+                <TextView
+                    android:id="@+id/pay_success"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/font_size_17"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/confirm_pay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dialog_pay_order_confirm_pay_margin_top"
+                    android:background="@drawable/rectangle_stroke_round"
+                    android:gravity="center"
+                    android:onClick="@{()->orderModel.onConfirmPayClick()}"
+                    android:padding="@dimen/dialog_pay_order_confirm_pay_padding"
+                    android:text="@{orderModel.confirmButtonText}"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/font_size_17" />
+
+                <LinearLayout
+                    android:id="@+id/pay_by_cash_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/pay_by_cash_qrcode_container_margin_top"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/top_up_qr_code"
+                        android:layout_width="@dimen/top_up_qr_code_height"
+                        android:layout_height="@dimen/top_up_qr_code_height"
+                        android:layout_centerHorizontal="true"
+                        android:scaleType="centerCrop" />
+
+                    <TextView
+                        android:id="@+id/pay_way"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/pay_by_cash_payment_tips_margin_top"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_size_19" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </LinearLayout>
 

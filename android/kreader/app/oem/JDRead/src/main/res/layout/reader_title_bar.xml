@@ -51,7 +51,7 @@
                     style="@style/ReaderTitleBarStyle"
                     android:onClick="@{()->readerTitleBarModel.buyBookClick()}"
                     android:src="@mipmap/ic_read_buy"
-                    android:visibility="@{readerTitleBarModel.isBuy?View.VISIBLE:View.GONE}" />
+                    android:visibility="@{readerTitleBarModel.isBuy?View.GONE:View.VISIBLE}" />
 
                 <ImageView
                     style="@style/ReaderTitleBarStyle"

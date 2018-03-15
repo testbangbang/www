@@ -85,7 +85,7 @@ public class AllCategoryTopAdapter extends PageAdapter<PageRecyclerView.ViewHold
         }
         int position = (int) tag;
         if (eventBus != null && getItemVMList() != null) {
-            eventBus.post(new CategoryItemClickEvent(getItemVMList().get(position)));
+            eventBus.post(new CategoryItemClickEvent(getItemVMList().get(position), position));
         }
     }
 
