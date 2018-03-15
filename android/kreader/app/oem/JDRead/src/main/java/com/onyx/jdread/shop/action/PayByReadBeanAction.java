@@ -55,6 +55,11 @@ public class PayByReadBeanAction extends BaseAction {
                 super.onError(throwable);
                 invokeNext(rxCallback, throwable);
             }
+
+            @Override
+            public void onFinally() {
+                invokeFinally(rxCallback);
+            }
         });
     }
 }
