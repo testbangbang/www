@@ -5,21 +5,9 @@
 
     </data>
 
-    <FrameLayout
+    <SurfaceView
+        android:id="@+id/scribble_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <SurfaceView
-            android:id="@+id/scribble_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <View
-            android:visibility="gone"
-            android:id="@+id/cover"
-            android:background="@android:color/white"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
+        android:layout_height="match_parent"/>
 
 </layout>
