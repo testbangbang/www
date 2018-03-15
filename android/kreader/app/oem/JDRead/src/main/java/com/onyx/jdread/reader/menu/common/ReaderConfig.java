@@ -81,12 +81,12 @@ public class ReaderConfig {
     public static final int DEFAULT_MARGIN_RIGHT = 12;
 
     static {
-        presetStyle.put(SETTING_ONE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_X_SMALL, 135, 50));
-        presetStyle.put(SETTING_TWO_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_SMALL, 140, 60));
-        presetStyle.put(SETTING_THREE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_MEDIUM, 130, 60));
-        presetStyle.put(SETTING_FOUR_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_LARGE, 130, 60));
-        presetStyle.put(SETTING_FIVE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_X_LARGE, 130, 60));
-        presetStyle.put(SETTING_SIX_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_XX_LARGE, 130, 60));
+        presetStyle.put(SETTING_ONE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_X_SMALL, 135, 50));
+        presetStyle.put(SETTING_TWO_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_SMALL, 140, 60));
+        presetStyle.put(SETTING_THREE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_MEDIUM, 130, 60));
+        presetStyle.put(SETTING_FOUR_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_LARGE, 130, 60));
+        presetStyle.put(SETTING_FIVE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_X_LARGE, 130, 60));
+        presetStyle.put(SETTING_SIX_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_XX_LARGE, 130, 60));
         presetStyle.put(CUSTOM_STYLE_KEY, new ReaderTextStyle(0, 0, 0, 0, 0, 0, 0));
     }
 
@@ -151,12 +151,12 @@ public class ReaderConfig {
     }
 
     static {
-        customOneTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 11));
-        customOneTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(4, 13));
-        customOneTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(9, 17));
-        customOneTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(13, 20));
-        customOneTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(18, 23));
-        customOneTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(23, 26));
+        customOneTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 0));
+        customOneTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(4, 4));
+        customOneTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(9, 9));
+        customOneTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(13, 13));
+        customOneTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(18, 18));
+        customOneTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(23, 23));
     }
 
     static {
