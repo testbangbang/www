@@ -411,7 +411,7 @@ public class ComicReaderPlugin implements ReaderPlugin,
     @Override
     public float getProgress(String position) {
         int currentPage = PagePositionUtils.getPageNumber(position);
-        float totalPage = getTotalPage();
+        float totalPage = getTotalPage() - 1;
         return (currentPage / totalPage) * 100;
     }
 

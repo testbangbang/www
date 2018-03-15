@@ -30,6 +30,7 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
+import com.onyx.jdread.reader.common.ReaderPageInfoFormat;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.common.ReaderViewConfig;
 import com.onyx.jdread.reader.common.SignNoteInfo;
@@ -443,29 +444,19 @@ public class ReaderViewHelper {
         int textColor = paint.getColor();
         paint.setColor(0xff808080);
         paint.setTextSize(ReaderViewConfig.getPageNumberFontSize());
-        int currentPage = PagePositionUtils.getPageNumber(readerViewInfo.getFirstVisiblePage().getName()) + 1;
-        int totalPage = readerViewInfo.getTotalPage();
-        if (!readerViewInfo.canNextScreen) {
-            // if can't next screen, then we are at last position of document
-            currentPage = totalPage;
-        }
 
-        String page = ResManager.getString(R.string.reader_loading);
-        if(readerViewInfo.isLoadComplete()) {
-            float progress = readerViewInfo.getProgress();
-            page = String.format("%.2f", progress) + "%";
-        }
+        String readProgress = ReaderPageInfoFormat.getReadProgress(readerViewInfo);
         PointF timePoint = ReaderViewConfig.getPageNumberPoint(contentView);
 
-        float textWidth = paint.measureText(page);
+        float textWidth = paint.measureText(readProgress);
 
         Rect bounds = new Rect();
 
-        paint.getTextBounds(page, 0, page.length(), bounds);
+        paint.getTextBounds(readProgress, 0, readProgress.length(), bounds);
 
         float x = timePoint.x - textWidth;
         float y = timePoint.y - bounds.height();
-        canvas.drawText(page, x, y, paint);
+        canvas.drawText(readProgress, x, y, paint);
         paint.setTextSize(textSize);
         paint.setColor(textColor);
     }
