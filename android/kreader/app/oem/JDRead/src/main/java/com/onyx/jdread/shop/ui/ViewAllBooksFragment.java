@@ -51,6 +51,8 @@ public class ViewAllBooksFragment extends BaseFragment {
     private int modelId;
     private int modelType;
 
+    private ViewAllViewModel viewAllViewModel;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -176,7 +178,10 @@ public class ViewAllBooksFragment extends BaseFragment {
     }
 
     private ViewAllViewModel getViewAllViewModel() {
-        return getShopDataBundle().getViewAllViewModel();
+        if (viewAllViewModel == null) {
+            viewAllViewModel = new ViewAllViewModel(getEventBus());
+        }
+        return viewAllViewModel;
     }
 
     private TitleBarViewModel getTitleBarViewModel() {
