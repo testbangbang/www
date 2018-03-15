@@ -544,9 +544,6 @@ public class BookDetailFragment extends BaseFragment {
         bookDetailBean.bookExtraInfoBean.downloadUrl = task.getUrl();
         bookDetailBean.bookExtraInfoBean.progress = task.getSmallFileSoFarBytes();
         bookDetailBean.bookExtraInfoBean.totalSize = task.getSmallFileTotalBytes();
-        if (DownLoadHelper.canInsertBookDetail(downloadTaskState)) {
-            insertBookDetail(bookDetailBean, localPath);
-        }
     }
 
     private void insertBookDetail(BookDetailResultBean.DetailBean bookDetailBean, String localPath) {
