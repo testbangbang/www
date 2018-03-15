@@ -8,6 +8,9 @@ import com.onyx.jdread.reader.data.SettingInfo;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.Typeface.TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_ONE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.Typeface.TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_TWO;
+
 /**
  * Created by huxiaomao on 2018/1/6.
  */
@@ -25,6 +28,8 @@ public class ReaderConfig {
         public static final String TYPEFACE_THREE = TYPEFACE_ROOT_PATH + "FZNewKai_GB18030-Z03.ttf";
         public static final String TYPEFACE_FOUR = TYPEFACE_ROOT_PATH + "FZYouH_507R.ttf";
         public static final String DEFAULT_TYPEFACE = TYPEFACE_ONE;
+        public static final int TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_ONE = 28;
+        public static final int TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_TWO = 27;
     }
 
     public static class TypefaceColorDepth {
@@ -369,5 +374,19 @@ public class ReaderConfig {
 
     public static int getSettingStyle(){
         return JDPreferenceManager.getIntValue(ReaderConfig.SETTING_STYLE_KEY,DEFAULT_PRESET_STYLE);
+    }
+
+    public static ReaderTextStyle.Percentage getTypefaceFourSpacingLine(int styleIndex){
+        ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
+        int spacing = getTypefaceFourExtendHeight(styleIndex);
+        return ReaderTextStyle.Percentage.create(presetStyle.getLineSpacing().getPercent() + spacing);
+    }
+
+    public static int getTypefaceFourExtendHeight(int styleIndex){
+        int spacing = TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_ONE;
+        if(styleIndex == ReaderConfig.SETTING_SIX_STYLE_KEY){
+            spacing = TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_TWO;
+        }
+        return spacing;
     }
 }

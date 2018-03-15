@@ -166,7 +166,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingTypefaceEvent(ReaderSettingTypefaceEvent event) {
-        new SettingTypefaceAction(readerDataHolder.getStyleCopy(), event.typeFace).execute(readerDataHolder,null);
+        new SettingTypefaceAction(readerDataHolder.getStyleCopy(), event.typeFace,event.styleIndex).execute(readerDataHolder,null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -212,7 +212,7 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingLineSpacingEvent(SettingLineSpacingEvent event) {
-        new SettingLineSpacingAction(readerDataHolder.getStyleCopy(), event.margin).execute(readerDataHolder,null);
+        new SettingLineSpacingAction(readerDataHolder.getStyleCopy(), event.margin,event.styleIndex).execute(readerDataHolder,null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

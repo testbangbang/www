@@ -467,8 +467,8 @@ public class AlBookEng{
 
         if (prof.interline < -50)
             prof.interline = -50;
-        if (prof.interline > 50)
-            prof.interline = 50;
+        if (prof.interline > 100)
+            prof.interline = 100;
         profiles.font_interline[0] = prof.interline;
 
 		profiles.paragraphSpacing = prof.paragraphSpacing;
