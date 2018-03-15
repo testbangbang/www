@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.GetChapterGroupInfoRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetChapterStartIdResult;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -59,6 +60,7 @@ public class GetChapterStartIdAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), shopDataBundle.getEventBus());
                 invokeError(rxCallback, throwable);
             }
 

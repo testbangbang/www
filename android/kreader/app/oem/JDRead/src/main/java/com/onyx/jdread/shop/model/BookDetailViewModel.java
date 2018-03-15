@@ -16,6 +16,7 @@ import com.onyx.jdread.shop.event.DownloadWholeBookEvent;
 import com.onyx.jdread.shop.event.GoShopingCartEvent;
 import com.onyx.jdread.shop.event.RecommendNextPageEvent;
 import com.onyx.jdread.shop.event.ViewCommentEvent;
+import com.onyx.jdread.shop.event.ViewDirectoryEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -118,7 +119,7 @@ public class BookDetailViewModel extends BaseObservable {
     }
 
     public void onViewDirectoryClick() {
-
+        getEventBus().post(new ViewDirectoryEvent());
     }
 
     public void onInfoClick() {

@@ -89,6 +89,7 @@ import com.onyx.jdread.shop.event.RecommendItemClickEvent;
 import com.onyx.jdread.shop.event.RecommendNextPageEvent;
 import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.ViewCommentEvent;
+import com.onyx.jdread.shop.event.ViewDirectoryEvent;
 import com.onyx.jdread.shop.model.BookBatchDownloadViewModel;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
@@ -349,6 +350,15 @@ public class BookDetailFragment extends BaseFragment {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onViewDirectoryEvent(ViewDirectoryEvent event) {
+        if (fileIsExists(localPath)) {
+            openBook(localPath, bookDetailBean);
+        } else {
+            ToastUtil.showToast(R.string.the_book_not_download);
+        }
+    }
+
     private void initButton() {
         resetNowReadButton();
         resetBuyBookButton();
@@ -572,6 +582,11 @@ public class BookDetailFragment extends BaseFragment {
             openBook(localPath, bookDetailBean);
             return;
         }
+
+        if (checkWifiDisconnected()) {
+            return;
+        }
+
         if (PersonalDataBundle.getInstance().isUserVip()) {
             if (bookDetailBean.can_read) {
                 bookDetailBean.downLoadType = CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ;

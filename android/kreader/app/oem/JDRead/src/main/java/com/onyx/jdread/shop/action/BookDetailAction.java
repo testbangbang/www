@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.CommonUtils;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -80,7 +81,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void onError(Throwable throwable) {
-                super.onError(throwable);
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), shopDataBundle.getEventBus());
                 bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
