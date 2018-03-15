@@ -373,6 +373,7 @@ public class TopUpDialog extends DialogFragment {
     private void payByReadBean() {
         abortPayByCashRequest();
         setPayOrderView(false);
+        clickableConfirmButton(false);
         String token = getPayOrderViewModel().getOrderInfo().token;
         PayByReadBeanAction payByReadBeanAction = new PayByReadBeanAction(token);
         payByReadBeanAction.execute(ShopDataBundle.getInstance(), new RxCallback<PayByReadBeanAction>() {
@@ -386,7 +387,19 @@ public class TopUpDialog extends DialogFragment {
             public void onError(Throwable throwable) {
                 super.onError(throwable);
             }
+
+            @Override
+            public void onFinally() {
+                clickableConfirmButton(true);
+            }
         });
+    }
+
+    private void clickableConfirmButton(boolean clickable) {
+        if (binding == null || binding.payOrder == null) {
+            return;
+        }
+        binding.payOrder.confirmPay.setClickable(clickable);
     }
 
     private void checkPayResult(BaseResultBean resultBean, boolean isNetBook) {
