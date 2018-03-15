@@ -12,7 +12,7 @@ public class Constant {
     public static final String DEFAULT_API_BASE = "http://store.onyx-international.com:9000/api/1/";
     public static final String DEFAULT_CLOUD_STORAGE = "oss";
 
-    public static final String CN_HOST_BASE = "http://oa.o-in.me:9066/";
+    public static final String CN_HOST_BASE = "http://120.76.75.225/";
     public static final String CN_API_BASE = CN_HOST_BASE + "api/";
 
     public static final String STATISTICS_API_BASE = "http://192.168.11.111/api/1/";
