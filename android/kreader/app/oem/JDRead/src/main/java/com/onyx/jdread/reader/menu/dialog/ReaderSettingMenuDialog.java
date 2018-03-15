@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.menu.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
@@ -112,11 +114,14 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                Drawable drawable = readerDataHolder.getAppContext().getResources().getDrawable(R.drawable.seekbar_thumb_transparent);
+                seekBar.setThumb(drawable);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                Drawable drawable = readerDataHolder.getAppContext().getResources().getDrawable(R.drawable.seekbar_thumb);
+                seekBar.setThumb(drawable);
                 updateProgress(seekBar.getProgress());
                 GotoPageEvent event = new GotoPageEvent(seekBar.getProgress());
                 readerDataHolder.getEventBus().post(event);
