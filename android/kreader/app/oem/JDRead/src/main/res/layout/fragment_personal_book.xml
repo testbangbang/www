@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:orientation="horizontal"
-                android:paddingRight="@dimen/personal_book_title_padding">
+                android:layout_marginRight="@dimen/setting_title_bar_padding">
 
                 <ImageView
                     android:id="@+id/personal_book_search"
@@ -63,7 +63,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="@dimen/personal_book_recycler_padding">
+            android:paddingLeft="@dimen/fragment_content_padding"
+            android:paddingRight="@dimen/fragment_content_padding"
+            android:paddingBottom="@dimen/fragment_content_padding_bottom">
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/personal_book_recycler"
