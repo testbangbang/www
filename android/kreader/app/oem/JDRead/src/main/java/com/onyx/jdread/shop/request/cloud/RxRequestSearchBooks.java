@@ -12,7 +12,6 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
@@ -136,7 +135,7 @@ public class RxRequestSearchBooks extends RxBaseCloudRequest {
             return Glide.with(getAppContext())
                     .load(url)
                     .asBitmap()
-                    .transform(CutBitmapTransformation.getInstance(JDReadApplication.getInstance().getApplicationContext()))
+                    .transform(CutBitmapTransformation.getInstance(getAppContext()))
                     .into(ViewTarget.SIZE_ORIGINAL, ViewTarget.SIZE_ORIGINAL)
                     .get();
         } catch (Exception e) {
