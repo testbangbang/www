@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.jdread.R;
@@ -24,6 +25,8 @@ public class UnlockFragment extends BaseFragment {
 
     private FragmentUnlockBinding dataBinding;
     private NumberKeyboardPopWindow keyboardPopupWindow;
+    private LockScreenModel lockScreenModel;
+    private TextView[] textViews;
 
 
     @Nullable
@@ -40,13 +43,16 @@ public class UnlockFragment extends BaseFragment {
 
     private void initView(LayoutInflater inflater, @Nullable ViewGroup container) {
         dataBinding = FragmentUnlockBinding.inflate(inflater, container, false);
-        dataBinding.setScreenLockModel(new LockScreenModel(SettingBundle.getInstance().getEventBus()));
+        lockScreenModel = new LockScreenModel(SettingBundle.getInstance().getEventBus());
+        dataBinding.setScreenLockModel(lockScreenModel);
         ViewCompatUtil.disableEditShowSoftInput(dataBinding.passwordUnEncryptEdit);
         dataBinding.passwordUnEncryptEdit.requestFocus();
+        textViews = new TextView[]{dataBinding.unlockPasswordOne, dataBinding.unlockPasswordTwo
+        ,dataBinding.unlockPasswordThree, dataBinding.unlockPasswordFour};
     }
 
-    private NumberKeyboardPopWindow showPopupWindow(EditText focusView) {
-        return showPopupWindow(focusView, new NumberKeyboardView.OnKeyboardListener() {
+    private NumberKeyboardPopWindow showPopupWindow(TextView[] textViews) {
+        return showPopupWindow(textViews, new NumberKeyboardView.OnKeyboardListener() {
             @Override
             public void onInsertKeyEvent(String text) {
             }
@@ -59,6 +65,11 @@ public class UnlockFragment extends BaseFragment {
             public void onCustomKeyEvent() {
                 processPasswordForgot();
             }
+
+            @Override
+            public void onFinishEvent(String password) {
+                lockScreenModel.unlockScreen(password);
+            }
         });
     }
 
@@ -67,9 +78,9 @@ public class UnlockFragment extends BaseFragment {
         dismissKeyboardPopupWindow();
     }
 
-    private NumberKeyboardPopWindow showPopupWindow(EditText focusView, NumberKeyboardView.OnKeyboardListener listener) {
+    private NumberKeyboardPopWindow showPopupWindow(TextView[] textViews, NumberKeyboardView.OnKeyboardListener listener) {
         if (keyboardPopupWindow == null) {
-            keyboardPopupWindow = new NumberKeyboardPopWindow(getContext(), focusView, listener);
+            keyboardPopupWindow = new NumberKeyboardPopWindow(getContext(), listener, textViews);
         }
         keyboardPopupWindow.getKeyboardView().setCustomText(getString(R.string.forgot_psw));
         keyboardPopupWindow.showAtBottomCenter(dataBinding.getRoot());
@@ -91,8 +102,7 @@ public class UnlockFragment extends BaseFragment {
         dataBinding.passwordUnEncryptEdit.post(new Runnable() {
             @Override
             public void run() {
-                dataBinding.passwordUnEncryptEdit.requestFocus();
-                showPopupWindow(dataBinding.passwordUnEncryptEdit);
+                showPopupWindow(textViews);
             }
         });
     }

@@ -7,7 +7,6 @@ import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -124,6 +123,8 @@ public class ToastUtil {
             errorMsg = ResManager.getString(R.string.login_resutl_params_error);
         } else if (Constants.RESULT_CODE_PARAMS_FORMAT_ERRO.equals(errorCode)) {
             errorMsg = ResManager.getString(R.string.login_resutl_params_error);
+        } else if (Constants.RESULT_CODE_ERROR.equals(errorCode)) {
+            errorMsg = ResManager.getString(R.string.down_book_server_error);
         }
         return errorMsg;
     }

@@ -158,7 +158,7 @@
     <dimen name="book_detail_button_padding">10dp</dimen>
     <dimen name="book_detail_button_margin">10dp</dimen>
     <dimen name="book_comment_indicator_padding">5dp</dimen>
-    <dimen name="book_copyright_contain_padding">23dp</dimen>
+    <dimen name="book_copyright_contain_padding">40dp</dimen>
     <dimen name="book_copyright_contain_padding_bottom">58dp</dimen>
     <dimen name="book_info_contain_padding_bottom">20dp</dimen>
     <dimen name="book_copyright_item_margin_top">20dp</dimen>
@@ -177,10 +177,10 @@
     <dimen name="dialog_button_padding_left">80dp</dimen>
     <dimen name="user_login_edit_text_pading_top_and_bottom">8dp</dimen>
     <dimen name="user_login_edit_text_delete_button_margin">8dp</dimen>
-    <dimen name="user_login_account_contain_margin_top">20dp</dimen>
-    <dimen name="user_login_password_contain_margin_top">15dp</dimen>
+    <dimen name="user_login_account_contain_margin_top">60dp</dimen>
+    <dimen name="user_login_password_contain_margin_top">25dp</dimen>
     <dimen name="dialog_user_login_pading_bottom">40dp</dimen>
-    <dimen name="user_login_register_contain_margin">20dp</dimen>
+    <dimen name="user_login_register_contain_margin">25dp</dimen>
     <dimen name="user_login_register_button_padding">5dp</dimen>
     <dimen name="user_login_widget_padding">2dp</dimen>
     <dimen name="item_top_up_padding">10dp</dimen>
@@ -453,7 +453,7 @@
     <dimen name="book_format_margin_right">20dp</dimen>
     <dimen name="library_cover_child_format_margin_top">10dp</dimen>
     <dimen name="library_cover_child_format_margin_left">25dp</dimen>
-    <dimen name="reader_content_view_bottom_state_bar_height">68dp</dimen>
+    <dimen name="reader_content_view_bottom_state_bar_height">35dp</dimen>
     <dimen name="library_cover_child_format_margin_right">8dp</dimen>
     <dimen name="top_menu_brightness_layout_height">90dp</dimen>
     <dimen name="top_menu_setting_layout_height">90dp</dimen>
@@ -522,7 +522,7 @@
     <dimen name="personal_sign_width">77dp</dimen>
     <dimen name="personal_sign_height">25dp</dimen>
     <dimen name="keyboard_custom_text_size">21sp</dimen>
-    <dimen name="book_detail_info_margin_top">8dp</dimen>
+    <dimen name="book_detail_info_margin_top">7dp</dimen>
     <dimen name="book_detail_button_layout_min_height">56dp</dimen>
     <dimen name="book_detail_cart_button_margin_right">20dp</dimen>
     <dimen name="book_detail_buy_book_button_cart_button_space">44dp</dimen>
@@ -596,6 +596,12 @@
     <dimen name="loading_dialog_text_margin_left">14dp</dimen>
     <dimen name="build_library_edit_padding">5dp</dimen>
     <dimen name="build_library_edit_margin">15dp</dimen>
+    <dimen name="unlock_margin_top">166dp</dimen>
+    <dimen name="unlock_input_margin_top">48dp</dimen>
+    <dimen name="unlock_input_number_width">45dp</dimen>
+    <dimen name="unlock_input_number_margin_left">40dp</dimen>
+    <dimen name="login_title_margin_top">10dp</dimen>
+    <dimen name="login_error_tips_height">60dp</dimen>
     <dimen name="loading_dialog_padding">20dp</dimen>
     <dimen name="reader_ratingbar_light_settings_margin">22dp</dimen>
     <dimen name="empty_result_padding">5dp</dimen>

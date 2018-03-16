@@ -62,7 +62,7 @@
     <string name="outOfRangRerror">Out of Range</string>
     <string name="illegalInput">Illegal Input</string>
 
-    <string name="loading">Loading…</string>
+    <string name="loading">loading</string>
     <string name="loading_more">Loading more…</string>
     <string name="submitting">Submitting…</string>
 

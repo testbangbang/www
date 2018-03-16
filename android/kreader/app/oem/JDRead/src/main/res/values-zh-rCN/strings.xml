@@ -315,7 +315,7 @@
     <string name="paused">已暂停 %d</string>
     <string name="started">开始下载</string>
     <string name="total_book">共%d本书</string>
-    <string name="password_setting_hint">请输入4-12位数字密码</string>
+    <string name="password_setting_hint">请输入4位数字密码</string>
     <string name="password_setting_phone_hint">请输入手机号</string>
     <string name="password">密码</string>
     <string name="reader_book_info_bookmark">书签</string>
@@ -536,8 +536,9 @@
     <string name="input_special_characters">输入含有特殊字符</string>
     <string name="no_results">暂无</string>
     <string name="filter_free">免费</string>
-    <string name="jd_loading">loading</string>
+    <string name="jd_loading">@string/loading</string>
     <string name="update_time">更新时间</string>
+    <string name="input_password">请输入密码</string>
     <string name="reader_loading">加载中...</string>
     <string name="without_result">没有搜索结果</string>
     <string name="the_book_not_download">图书未下载</string>

@@ -35,8 +35,10 @@ public class BookDetailResultBean {
         public float jd_price;
         public String isbn;
         public int second_catid1;
+        public int second_cat_level;
         public String second_catid1_str;
         public int third_catid1;
+        public int third_cat_level;
         public String third_catid1_str;
         public String promotion;
         public String catalog;

@@ -106,7 +106,7 @@
     <item name="export_dialog_width_rate" type="integer" format="float">0.8</item>
     <item name="export_dialog_height_rate" type="integer" format="float">0.3</item>
     <item name="login_dialog_width_rate" type="integer" format="float">0.8</item>
-    <item name="login_dialog_height_rate" type="integer" format="float">0.5</item>
+    <item name="login_dialog_height_rate" type="integer" format="float">0.55</item>
     <integer name="book_info_dialog_mark_row">5</integer>
     <integer name="book_info_dialog_catalog_row">8</integer>
     <integer name="book_info_dialog_note_row">5</integer>

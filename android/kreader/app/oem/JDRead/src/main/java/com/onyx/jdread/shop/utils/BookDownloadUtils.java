@@ -47,6 +47,7 @@ public class BookDownloadUtils {
                             bookDetailBean.downLoadUrl = data.content_url;
                             downloadBook(dataBundle, bookDetailBean, rxCallback);
                         } else {
+                            invokeError(rxCallback, null);
                             ToastUtil.showToastErrorMsgForDownBook(String.valueOf(resultBean.result_code));
                         }
                     } else {

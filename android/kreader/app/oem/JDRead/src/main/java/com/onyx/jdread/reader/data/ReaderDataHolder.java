@@ -77,7 +77,7 @@ public class ReaderDataHolder {
 
     private void initView(Context context){
         float readerBottomStateBarHeight = context.getResources().getDimension(R.dimen.reader_content_view_bottom_state_bar_height);
-        ReaderViewConfig.setReaderBottomStateBarHeight(0);
+        ReaderViewConfig.setReaderBottomStateBarHeight(readerBottomStateBarHeight);
 
         float fontSize = context.getResources().getDimension(R.dimen.level_two_heading_font);
         ReaderViewConfig.setTimeFontSize(fontSize);

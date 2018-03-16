@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
@@ -53,6 +54,10 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
                 CategoryListResultBean categoryListResultBean = request.getCategoryListResultBean();
                 if (categoryListResultBean != null) {
                     levelOneData = categoryListResultBean.data;
+                    if (!CollectionUtils.isNullOrEmpty(levelOneData)) {
+                        shopDataBundle.getShopViewModel().getAllCategoryViewModel().setLevelOneData(levelOneData);
+                        shopDataBundle.getShopViewModel().getAllCategoryViewModel().setTitleList(getTitleList());
+                    }
                 }
                 if (rxCallback != null) {
                     rxCallback.onNext(BookCategoryAction.this);
