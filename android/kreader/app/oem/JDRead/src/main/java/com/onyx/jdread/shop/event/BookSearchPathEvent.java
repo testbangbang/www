@@ -6,8 +6,10 @@ package com.onyx.jdread.shop.event;
 
 public class BookSearchPathEvent {
     public String catId;
+    public String catName;
 
-    public BookSearchPathEvent(String catId) {
+    public BookSearchPathEvent(String catId, String catName) {
         this.catId = catId;
+        this.catName = catName;
     }
 }

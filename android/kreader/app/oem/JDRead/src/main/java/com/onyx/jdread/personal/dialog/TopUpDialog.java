@@ -61,6 +61,7 @@ import com.onyx.jdread.util.Utils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -398,6 +399,11 @@ public class TopUpDialog extends DialogFragment {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                if (throwable instanceof IOException) {
+                    ToastUtil.showToast(ResManager.getString(R.string.network_exception));
+                } else {
+                    ToastUtil.showToast(ResManager.getString(R.string.pay_failed));
+                }
             }
 
             @Override

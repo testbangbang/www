@@ -1,8 +1,11 @@
 package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
@@ -39,6 +42,7 @@ public class BookDetailViewModel extends BaseObservable {
     private DialogBookInfoViewModel dialogBookInfoViewModel;
     public final ObservableField<String> updateTimeInfo = new ObservableField<>();
     public final ObservableField<ArrayList<String>> netBookIds = new ObservableField<>();
+    public final ObservableBoolean showAllButton = new ObservableBoolean();
 
     public DialogBookInfoViewModel getDialogBookInfoViewModel() {
         if (dialogBookInfoViewModel == null) {
@@ -136,13 +140,15 @@ public class BookDetailViewModel extends BaseObservable {
 
     public void onCategoryPathLevelTwoClick() {
         if (bookDetailResultBean != null && bookDetailResultBean.data != null) {
-            getEventBus().post(new BookSearchPathEvent(String.valueOf(bookDetailResultBean.data.second_catid1)));
+            BookDetailResultBean.DetailBean data = bookDetailResultBean.data;
+            getEventBus().post(new BookSearchPathEvent(data.second_catid1 + ResManager.getString(R.string.underline) + data.second_cat_level, data.second_catid1_str));
         }
     }
 
     public void onCategoryPathLevelThreeClick() {
         if (bookDetailResultBean != null && bookDetailResultBean.data != null) {
-            getEventBus().post(new BookSearchPathEvent(bookDetailResultBean.data.second_catid1 + "_" + bookDetailResultBean.data.third_catid1));
+            BookDetailResultBean.DetailBean data = bookDetailResultBean.data;
+            getEventBus().post(new BookSearchPathEvent(data.third_catid1 + ResManager.getString(R.string.underline) + data.third_cat_level, data.third_catid1_str));
         }
     }
 

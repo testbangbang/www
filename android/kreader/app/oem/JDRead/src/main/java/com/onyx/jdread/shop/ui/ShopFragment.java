@@ -14,6 +14,7 @@ import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
@@ -75,6 +76,7 @@ public class ShopFragment extends BaseFragment {
             checkWifi("");
         }
         getShopMainConfigData();
+        preLoadAllCategoryData();
     }
 
     private void initView() {
@@ -133,6 +135,13 @@ public class ShopFragment extends BaseFragment {
                 super.onError(throwable);
             }
         });
+    }
+
+    public void preLoadAllCategoryData() {
+        if (CollectionUtils.isNullOrEmpty(getBookShopViewModel().getAllCategoryViewModel().getLevelOneData())) {
+            BookCategoryAction bookCategoryAction = new BookCategoryAction();
+            bookCategoryAction.execute(getShopDataBundle(), null);
+        }
     }
 
     private void scrollToCurrentPage() {
@@ -233,7 +242,7 @@ public class ShopFragment extends BaseFragment {
             } else if (advBean.relate_type == Constants.RELATE_TYPE_LINK) {
                 if (getViewEventCallBack() != null) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(Constants.BANNER_URL,advBean.relate_link);
+                    bundle.putString(Constants.BANNER_URL, advBean.relate_link);
                     getViewEventCallBack().gotoView(BannerWebFragment.class.getName(), bundle);
                 }
             } else if (advBean.relate_type == Constants.RELATE_TYPE_BOOK_DETAIL) {

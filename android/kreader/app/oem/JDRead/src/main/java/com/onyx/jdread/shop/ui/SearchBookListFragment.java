@@ -11,6 +11,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentViewAllBinding;
@@ -71,7 +72,11 @@ public class SearchBookListFragment extends BaseFragment {
         catId = getBundle().getString(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, "");
         getTitleBarViewModel().leftText = keyWord;
         if (CollectionUtils.isNullOrEmpty(getViewAllViewModel().getBookList())) {
-            getBooksData(catId, currentPage, CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES, CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES, keyWord);
+            String realKeyWord = "";
+            if (StringUtils.isNullOrEmpty(catId)) {
+                realKeyWord = keyWord;
+            }
+            getBooksData(catId, currentPage, CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES, CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES, realKeyWord);
         } else {
             paginator.resize(row, col, CollectionUtils.getSize(getViewAllViewModel().getBookList()));
             paginator.setCurrentPage(getCurrentPage());

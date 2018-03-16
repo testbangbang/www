@@ -187,7 +187,8 @@
                 android:layout_marginTop="@dimen/book_detail_common_margin_top"
                 android:gravity="center"
                 android:minHeight="@dimen/book_detail_button_layout_min_height"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="@{bookDetailViewModel.showAllButton ? View.VISIBLE : View.INVISIBLE}">
 
                 <LinearLayout
                     android:layout_width="0dp"
