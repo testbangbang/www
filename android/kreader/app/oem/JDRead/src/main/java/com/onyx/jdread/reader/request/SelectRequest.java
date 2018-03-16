@@ -36,9 +36,10 @@ public class SelectRequest extends ReaderBaseRequest {
     private PageInfo pageInfo;
     private List<PageAnnotation> currentPageAnnotation;
     private boolean selectType;
+    private boolean showSelectionCursor;
 
     public SelectRequest(Reader reader, final String pagePosition, final PointF startPoint, final PointF endPoint, final PointF touchPoint,
-                         final ReaderHitTestOptions hitTestOptions,PageInfo pageInfo,boolean selectType) {
+                         final ReaderHitTestOptions hitTestOptions,PageInfo pageInfo,boolean selectType,boolean showSelectionCursor) {
         super(reader);
         start.set(startPoint.x, startPoint.y);
         end.set(endPoint.x, endPoint.y);
@@ -47,6 +48,7 @@ public class SelectRequest extends ReaderBaseRequest {
         this.hitTestOptions = hitTestOptions;
         this.pageInfo = pageInfo;
         this.selectType = selectType;
+        this.showSelectionCursor = showSelectionCursor;
     }
 
     public PointF getstart() {
@@ -96,7 +98,7 @@ public class SelectRequest extends ReaderBaseRequest {
                 getReader().getReaderHelper().getReaderLayoutManager().getTextStyleManager().getStyle(),
                 currentPageAnnotation);
         readerSelectionManager.updateDisplayPosition(pagePosition);
-        readerSelectionManager.setEnable(pagePosition, true);
+        readerSelectionManager.setEnable(pagePosition, showSelectionCursor);
     }
 
     public static List<PageAnnotation> getPageAnnotations(ReaderViewInfo readerViewInfo,ReaderUserDataInfo readerUserDataInfo) {
