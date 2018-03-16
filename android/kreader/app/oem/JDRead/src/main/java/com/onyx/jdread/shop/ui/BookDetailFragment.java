@@ -132,6 +132,7 @@ public class BookDetailFragment extends BaseFragment {
     private BookInfoDialog batchDownloadDialog;
     private BookBatchDownloadViewModel batchDownloadViewModel;
     private String start_chapter;
+    private boolean hasDoLogin;
 
     @Nullable
     @Override
@@ -412,6 +413,7 @@ public class BookDetailFragment extends BaseFragment {
             }
             if (!JDReadApplication.getInstance().getLogin() && !LoginHelper.loginDialogIsShowing()) {
                 LoginHelper.showUserLoginDialog(getUserLoginViewModel(), getActivity());
+                hasDoLogin = true;
             } else {
                 smoothDownload();
             }
@@ -959,7 +961,8 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
-        if (ResManager.getString(R.string.login_success).equals(event.getMessage())) {
+        if (hasDoLogin && ResManager.getString(R.string.login_success).equals(event.getMessage())) {
+            hasDoLogin = false;
             getBookDetailData(true);
         }
     }
