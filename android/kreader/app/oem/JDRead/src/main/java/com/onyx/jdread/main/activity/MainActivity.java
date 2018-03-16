@@ -56,10 +56,13 @@ import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.event.BackToLoginEvent;
+import com.onyx.jdread.personal.event.ForgetPasswordEvent;
 import com.onyx.jdread.personal.event.HideSoftWindowEvent;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
+import com.onyx.jdread.personal.event.UserRegisterJDAccountEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
@@ -496,8 +499,26 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } else {
-            ToastUtil.showToast(this, event.getMessage());
+            getUserLoginViewModel().errorMessage.set(event.getMessage());
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserRegisterJDAccountEvent(UserRegisterJDAccountEvent event) {
+        UserLoginViewModel userLoginViewModel = getUserLoginViewModel();
+        userLoginViewModel.register();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackToLoginEvent(BackToLoginEvent event) {
+        UserLoginViewModel userLoginViewModel = getUserLoginViewModel();
+        userLoginViewModel.backToLogin();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onForgetPasswordEvent(ForgetPasswordEvent event) {
+        UserLoginViewModel userLoginViewModel = getUserLoginViewModel();
+        userLoginViewModel.retrievePassword();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -96,7 +96,7 @@ public class PswSettingModel extends Observable {
     private boolean checkPasswordValid(String password) {
         if (StringUtils.isNullOrEmpty(password) || (password.length() < Constants.PASSWORD_MIN_LENGTH)
                 || password.length() > Constants.PASSWORD_MAX_LENGTH) {
-            ToastUtil.showToast(String.format(ResManager.getString(R.string.password_format_error), Constants.PASSWORD_MIN_LENGTH, Constants.PASSWORD_MAX_LENGTH));
+            ToastUtil.showToast(String.format(ResManager.getString(R.string.password_format_error), Constants.PASSWORD_MIN_LENGTH));
             return false;
         }
 

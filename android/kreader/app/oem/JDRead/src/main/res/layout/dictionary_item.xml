@@ -25,10 +25,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/rectangle_stroke"
+            android:background="@drawable/rectangle_stroke_grey_corners"
             android:padding="@dimen/dictionary_status_item_padding"
             android:text="@string/installed"
-            android:textColor="@android:color/black"
+            android:textColor="@color/text_gray_color"
             android:textSize="@dimen/level_two_heading_font" />
     </RelativeLayout>
 

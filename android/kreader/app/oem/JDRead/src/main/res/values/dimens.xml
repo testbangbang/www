@@ -605,6 +605,11 @@
     <dimen name="loading_dialog_padding">20dp</dimen>
     <dimen name="reader_ratingbar_light_settings_margin">22dp</dimen>
     <dimen name="empty_result_padding">5dp</dimen>
+    <dimen name="register_margin_top">50dp</dimen>
+    <dimen name="register_code_height">140dp</dimen>
+    <dimen name="register_tips_margin_top">32dp</dimen>
+    <dimen name="register_back_login_margin_top">26dp</dimen>
+    <dimen name="dictionary_recycler_height">100dp</dimen>
     <dimen name="book_title_line_space">2dp</dimen>
     <dimen name="item_personal_book_padding">20dp</dimen>
     <dimen name="fragment_content_padding_bottom">10dp</dimen>
