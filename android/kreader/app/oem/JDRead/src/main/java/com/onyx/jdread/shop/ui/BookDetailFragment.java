@@ -132,6 +132,7 @@ public class BookDetailFragment extends BaseFragment {
     private BookInfoDialog batchDownloadDialog;
     private BookBatchDownloadViewModel batchDownloadViewModel;
     private String start_chapter;
+    private boolean hasDoLogin;
 
     @Nullable
     @Override
@@ -412,6 +413,7 @@ public class BookDetailFragment extends BaseFragment {
             }
             if (!JDReadApplication.getInstance().getLogin() && !LoginHelper.loginDialogIsShowing()) {
                 LoginHelper.showUserLoginDialog(getUserLoginViewModel(), getActivity());
+                hasDoLogin = true;
             } else {
                 smoothDownload();
             }
@@ -561,8 +563,8 @@ public class BookDetailFragment extends BaseFragment {
         } else if (DownLoadHelper.isDownloaded(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_button_now_read));
             ToastUtil.showToast(ResManager.getString(R.string.download_finished));
-        } else if (DownLoadHelper.isError(downLoadState)) {
-            button.setText(ResManager.getString(R.string.book_detail_tip_try_again));
+        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState) ) {
+            button.setText(ResManager.getString(R.string.book_detail_tip_download_pause));
         }
     }
 
@@ -768,6 +770,7 @@ public class BookDetailFragment extends BaseFragment {
         String localPath = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.name + Constants.BOOK_FORMAT;
         String downloadTag = bookDetailBean.ebook_id + "";
         bookDetailBean.bookExtraInfoBean.downLoadTaskTag = downloadTag;
+        bookDetailBean.bookExtraInfoBean.localPath = localPath;
         insertBookDetail(bookDetailBean, localPath);
         DownloadAction downloadAction = new DownloadAction(getContext(), tryDownLoadUrl, localPath, downloadTag);
         downloadAction.execute(getShopDataBundle(), new RxCallback() {
@@ -959,7 +962,8 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
-        if (ResManager.getString(R.string.login_success).equals(event.getMessage())) {
+        if (hasDoLogin && ResManager.getString(R.string.login_success).equals(event.getMessage())) {
+            hasDoLogin = false;
             getBookDetailData(true);
         }
     }

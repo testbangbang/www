@@ -166,7 +166,7 @@
     <string name="book_detail_button_try_read">Try read</string>
     <string name="book_detail_empty_introduce">NO introduction</string>
     <string name="book_detail_button_try_again">Try Again</string>
-    <string name="book_detail_tip_try_again">download error,try again later</string>
+    <string name="book_detail_tip_download_pause">Paused</string>
     <string name="book_detail_tip_book_add_to_bookself">has add to bookshelf</string>
     <string name="download_finished">download finished</string>
     <string name="login_success">login success</string>
