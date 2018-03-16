@@ -93,7 +93,6 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
         if (questions == null) {
             return;
         }
-        Debug.i("question size = " + questions.size());
         for (Question question : questions) {
             QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());
             if (model == null) {
@@ -101,7 +100,6 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
                         personalHomeworkId);
             }
             setQuestionReview(question, model, reviews);
-            Debug.i("model values: " + model.getValues());
             DBDataProvider.saveQuestion(model);
         }
     }
@@ -115,19 +113,16 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
         if (answer != null) {
             review = QuestionReview.create(answer);
         }
-        Debug.i("answer = " + answer);
         model.setReview(review);
         if (CollectionUtils.isNullOrEmpty(model.getValues()) && null != answer) {
             model.setValues(answer.value);
             loadUserSelectOption(question, model);
-            Debug.i("answer.value = " + answer.value);
         }
         question.setReview(review);
     }
 
     @Nullable
     private HomeworkSubmitAnswer findReview(@NonNull List<HomeworkSubmitAnswer> reviews, String questionId) {
-        Debug.i("questionId = " + questionId);
         for (HomeworkSubmitAnswer review : reviews) {
             if (review.question.equals(questionId)) {
                 return review;
