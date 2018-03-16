@@ -1,7 +1,6 @@
 package com.onyx.jdread.reader.highlight;
 
 import android.graphics.PointF;
-import android.util.Log;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.reader.api.ReaderHitTestArgs;
@@ -155,7 +154,6 @@ public class HitTestTextHelper {
 
     public static boolean checkSign(ReaderSelection currentSelection){
         String text = currentSelection.getText();
-        Log.i("hxm","text:" + text);
         Pattern pattern =
                 Pattern.compile("[℃±×÷•°©£€®℉_™’\\+√\\-\\-\"%`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]");
         Matcher matcher = pattern.matcher(text);
