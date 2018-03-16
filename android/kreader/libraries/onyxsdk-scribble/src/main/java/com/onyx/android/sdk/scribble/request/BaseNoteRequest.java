@@ -208,9 +208,9 @@ public class BaseNoteRequest extends BaseRequest {
                 int pagePosition = parent.getNoteDocument().getNotePagePosition(notePage);
                 drawTextView(canvas, parent, pagePosition);
                 drawBackgroundLine(canvas, parent, pagePosition);
+                onDraw(canvas);
                 notePage.render(renderContext, null);
             }
-            onDraw(canvas);
             parent.renderCursorShape(renderContext);
             parent.drawLineLayoutBackground(renderContext);
 
