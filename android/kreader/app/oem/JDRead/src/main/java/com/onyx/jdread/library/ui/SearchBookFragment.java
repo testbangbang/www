@@ -118,21 +118,12 @@ public class SearchBookFragment extends BaseFragment {
         binding.searchHistoryRecycler.setAdapter(searchHistoryAdapter);
         binding.searchView.setMaxByte(ResManager.getInteger(R.integer.search_word_key_max_length));
         initPageIndicator();
-        hideSearchViewLine();
+        initSearchView();
     }
 
-    private void hideSearchViewLine() {
-        if (binding.searchView != null) {
-            try {
-                Class<?> argClass = binding.searchView.getClass();
-                Field ownField = argClass.getDeclaredField("mSearchPlate");
-                ownField.setAccessible(true);
-                View mView = (View) ownField.get(binding.searchView);
-                mView.setBackgroundColor(Color.TRANSPARENT);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    private void initSearchView() {
+        binding.searchView.requestFocus();
+        Utils.showSoftWindow(binding.searchView);
     }
 
     private void initPageIndicator() {
@@ -435,6 +426,7 @@ public class SearchBookFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         hideLoadingDialog();
+        hideWindow();
     }
 
     @Override
