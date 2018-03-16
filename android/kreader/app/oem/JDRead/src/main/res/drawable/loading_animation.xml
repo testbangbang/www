@@ -5,8 +5,4 @@
     <item android:drawable="@mipmap/ic_jd_loading_2" android:duration="500"></item>
     <item android:drawable="@mipmap/ic_jd_loading_3" android:duration="500"></item>
     <item android:drawable="@mipmap/ic_jd_loading_4" android:duration="500"></item>
-    <item android:drawable="@mipmap/ic_jd_loading_5" android:duration="500"></item>
-    <item android:drawable="@mipmap/ic_jd_loading_6" android:duration="500"></item>
-    <item android:drawable="@mipmap/ic_jd_loading_7" android:duration="500"></item>
-    <item android:drawable="@mipmap/ic_jd_loading_8" android:duration="500"></item>
 </animation-list>
