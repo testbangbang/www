@@ -61,6 +61,9 @@ public class WifiAdmin {
     public static final int DISABLED_DHCP_FAILURE = 2;
     public static final int DISABLED_AUTH_FAILURE = 3;
 
+    private static final String CONFIGURED_NETWORKS_CHANGED_ACTION = "android.net.wifi.CONFIGURED_NETWORKS_CHANGE";
+    private static final String LINK_CONFIGURATION_CHANGED_ACTION = "android.net.wifi.LINK_CONFIGURATION_CHANGED";
+
     private static final int[] STATE_SECURED = {
             R.attr.state_encrypted
     };
@@ -99,6 +102,8 @@ public class WifiAdmin {
         wifiStateFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         wifiStateFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
         wifiStateFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        wifiStateFilter.addAction(CONFIGURED_NETWORKS_CHANGED_ACTION);
+        wifiStateFilter.addAction(LINK_CONFIGURATION_CHANGED_ACTION);
         wifiStateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -121,6 +126,12 @@ public class WifiAdmin {
                     case WifiManager.NETWORK_STATE_CHANGED_ACTION:
                         NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                         callback.onNetworkConnectionChange(info.getDetailedState());
+                        break;
+                    case LINK_CONFIGURATION_CHANGED_ACTION:
+                        callback.onScanResultReady(buildResultList(wifiManager.getScanResults()));
+                        break;
+                    case CONFIGURED_NETWORKS_CHANGED_ACTION:
+                        callback.onScanResultReady(buildResultList(wifiManager.getScanResults()));
                         break;
                 }
             }
