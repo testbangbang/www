@@ -10,6 +10,8 @@ import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.RawDrawingRenderEnabledEvent;
 import com.onyx.android.sdk.pen.data.TouchPoint;
 import com.onyx.android.sdk.pen.data.TouchPointList;
+import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.rx.SingleThreadScheduler;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -18,10 +20,19 @@ import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -30,10 +41,9 @@ import io.reactivex.schedulers.Schedulers;
 
 public class EraseOverlayHandler extends BaseHandler {
 
-    private static long SYNC_ERASE_TOUCH_POINT_SIZE = 50;
-    private TouchPointList erasePoints;
-    private FlowableEmitter<TouchPoint> emitter;
-    private Subscription subscription;
+    private Disposable disposable;
+    private List<Disposable> actionDisposables = new ArrayList<>();
+    private ObservableEmitter<TouchPoint> eraseOverlayEmitter;
 
     public EraseOverlayHandler(@NonNull EventBus eventBus, NoteManager noteManager) {
         super(eventBus, noteManager);
@@ -54,42 +64,26 @@ public class EraseOverlayHandler extends BaseHandler {
     @Override
     public void onBeginRawDraw(boolean shortcutDrawing, final TouchPoint point) {
         super.onBeginRawDraw(shortcutDrawing, point);
-        erasePoints = new TouchPointList();
-        Flowable.create(new FlowableOnSubscribe<TouchPoint>() {
+        disposable = Observable.create(new ObservableOnSubscribe<TouchPoint>() {
 
             @Override
-            public void subscribe(FlowableEmitter<TouchPoint> e) throws Exception {
-                emitter = e;
-                emitter.onNext(point);
+            public void subscribe(ObservableEmitter<TouchPoint> e) throws Exception {
+                eraseOverlayEmitter = e;
+                eraseOverlayEmitter.onNext(point);
             }
 
-        }, BackpressureStrategy.BUFFER)
-                .observeOn(Schedulers.io())
-                .subscribe(new Subscriber<TouchPoint>() {
+        })
+                .buffer(20)
+                .observeOn(SingleThreadScheduler.scheduler())
+                .subscribeOn(SingleThreadScheduler.scheduler())
+                .subscribe(new Consumer<List<TouchPoint>>() {
                     @Override
-                    public void onSubscribe(Subscription s) {
-                        subscription = s;
-                        subscription.request(SYNC_ERASE_TOUCH_POINT_SIZE);
-                    }
-
-                    @Override
-                    public void onNext(TouchPoint touchPoint) {
-                        erasePoints.add(touchPoint);
-                        if (erasePoints.size() == SYNC_ERASE_TOUCH_POINT_SIZE) {
-                            renderToBitmap(erasePoints);
-                            erasePoints = new TouchPointList();
-                            subscription.request(SYNC_ERASE_TOUCH_POINT_SIZE);
+                    public void accept(List<TouchPoint> touchPoints) throws Exception {
+                        TouchPointList pointList = new TouchPointList();
+                        for (TouchPoint point : touchPoints) {
+                            pointList.add(point);
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                        renderToBitmap(pointList);
                     }
                 });
     }
@@ -97,14 +91,15 @@ public class EraseOverlayHandler extends BaseHandler {
     @Override
     public void onRawDrawingPointsMoveReceived(TouchPoint point) {
         super.onRawDrawingPointsMoveReceived(point);
-        if (emitter != null) {
-            emitter.onNext(point);
+        if (eraseOverlayEmitter != null) {
+            eraseOverlayEmitter.onNext(point);
         }
     }
 
     @Override
     public void onRawDrawingPointsReceived(TouchPointList pointList) {
         super.onRawDrawingPointsReceived(pointList);
+        disposeAction();
         new AddShapesAction(getNoteManager())
                 .setShape(createEraseShape(pointList))
                 .execute(null);
@@ -113,16 +108,28 @@ public class EraseOverlayHandler extends BaseHandler {
     @Override
     public void onEndRawDrawing(boolean outLimitRegion, TouchPoint point) {
         super.onEndRawDrawing(outLimitRegion, point);
-        emitter.onNext(point);
-        subscription.cancel();
+        eraseOverlayEmitter.onNext(point);
+        disposable.dispose();
     }
 
     private void renderToBitmap(TouchPointList touchPointList) {
+        disposeAction();
         new RenderToBitmapAction(getNoteManager())
                 .setShape(createEraseShape(touchPointList))
                 .setPauseRawDraw(false)
                 .setRenderToScreen(true)
-                .execute(null);
+                .execute(new RxCallback() {
+                    @Override
+                    public void onNext(@NonNull Object o) {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        super.onSubscribe(d);
+                        actionDisposables.add(d);
+                    }
+                });
     }
 
     private Shape createEraseShape(TouchPointList touchPointList) {
@@ -130,8 +137,15 @@ public class EraseOverlayHandler extends BaseHandler {
         Shape shape = ShapeFactory.createShape(ShapeFactory.SHAPE_ERASE_OVERLAY);
         shape.setStrokeWidth(drawingArgs.strokeWidth);
         shape.setColor(Color.TRANSPARENT);
-        shape.setLayoutType(ShapeFactory.POSITION_FREE);
+        shape.setLayoutType(ShapeFactory.LayoutType.FREE.ordinal());
         shape.addPoints(touchPointList);
         return shape;
+    }
+
+    private void disposeAction() {
+        for (Disposable d : actionDisposables) {
+            d.dispose();
+        }
+        actionDisposables = new ArrayList<>();
     }
 }

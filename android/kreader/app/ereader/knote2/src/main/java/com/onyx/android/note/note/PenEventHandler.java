@@ -55,7 +55,7 @@ public class PenEventHandler {
     }
 
     private boolean inRawNotRenderProvider() {
-        return getHandlerManager().inEpdShapeProvider() ||
+        return getHandlerManager().inEraseOverlayProvider() ||
                 getHandlerManager().inNormalShapeProvider();
     }
 
@@ -67,6 +67,7 @@ public class PenEventHandler {
     @Subscribe
     public void onPenWidthChange(PenWidthChangeEvent event) {
         resumeRawDrawing(event.isResumePen());
+        setRawDrawingRenderEnabled(event.isRawRenderEnable());
     }
 
     @Subscribe

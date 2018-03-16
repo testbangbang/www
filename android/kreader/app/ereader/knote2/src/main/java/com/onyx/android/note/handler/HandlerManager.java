@@ -61,4 +61,8 @@ public class HandlerManager {
     public boolean inNormalShapeProvider() {
         return activeProvider.equals(NORMAL_SHAPE_PROVIDER);
     }
+
+    public boolean inEraseOverlayProvider() {
+        return activeProvider.equals(ERASE_OVERLAY_PROVIDER);
+    }
 }

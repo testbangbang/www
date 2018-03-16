@@ -44,7 +44,7 @@ public class EpdShapeHandler extends BaseHandler {
     public void onRawDrawingPointsReceived(TouchPointList pointList) {
         super.onRawDrawingPointsReceived(pointList);
         NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawingArgs();
-        Shape shape = DrawUtils.createShape(drawingArgs, ShapeFactory.POSITION_FREE);
+        Shape shape = DrawUtils.createShape(drawingArgs, ShapeFactory.LayoutType.FREE.ordinal());
         shape.addPoints(pointList);
         new AddShapesBackgroundAction(getNoteManager()).setShape(shape).execute(null);
     }

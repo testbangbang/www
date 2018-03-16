@@ -31,7 +31,7 @@ public class SpanTextHandler extends BaseHandler {
     public void onRawDrawingPointsReceived(TouchPointList pointList) {
         super.onRawDrawingPointsReceived(pointList);
         NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawingArgs();
-        Shape shape = DrawUtils.createShape(drawingArgs, ShapeFactory.POSITION_LINE_LAYOUT);
+        Shape shape = DrawUtils.createShape(drawingArgs, ShapeFactory.LayoutType.LINE.ordinal());
         dirtyStash.add(shape);
     }
 

@@ -18,6 +18,7 @@ import com.onyx.android.note.common.base.BaseViewModel;
 import com.onyx.android.note.handler.HandlerManager;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.note.NoteManager;
+import com.onyx.android.sdk.note.data.ScribbleMode;
 import com.onyx.android.sdk.pen.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
