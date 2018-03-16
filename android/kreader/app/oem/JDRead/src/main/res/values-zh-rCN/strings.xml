@@ -544,4 +544,5 @@
     <string name="reader_loading">加载中...</string>
     <string name="without_result">没有搜索结果</string>
     <string name="the_book_not_download">图书未下载</string>
+    <string name="rank_show_name_sale_new_book_list">出版新书榜</string>
 </resources>
