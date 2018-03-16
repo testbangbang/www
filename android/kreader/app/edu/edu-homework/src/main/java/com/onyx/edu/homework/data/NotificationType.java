@@ -8,7 +8,7 @@ import com.onyx.edu.homework.receiver.OnyxNotificationReceiver;
 
 public enum NotificationType {
 
-    OTHER, HOMEWORK, HOMEWORK_READER_ACTIVE, HOMEWORK_END_TIME;
+    OTHER, HOMEWORK, HOMEWORK_READER_ACTIVE, HOMEWORK_END_TIME, HOMEWORK_CHECKED;
 
     public static NotificationType getNotificationType(String type) {
         switch (type) {
@@ -18,6 +18,8 @@ public enum NotificationType {
                 return HOMEWORK_READER_ACTIVE;
             case OnyxNotificationReceiver.TYPE_NOTIFY_HOMEWORK_END_TIME:
                 return HOMEWORK_END_TIME;
+            case OnyxNotificationReceiver.TYPE_NOTIFY_HOMEWORK_CHECKED:
+                return HOMEWORK_CHECKED;
         }
         return OTHER;
     }
