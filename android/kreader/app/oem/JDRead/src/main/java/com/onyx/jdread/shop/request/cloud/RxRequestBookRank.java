@@ -1,13 +1,16 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.common.RankListComparator;
 import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -15,6 +18,7 @@ import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.utils.ViewHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -74,6 +78,17 @@ public class RxRequestBookRank extends RxBaseCloudRequest {
         for (int i = 0; i < data.modules.size(); i++) {
             parseSubjectDataList(data, i);
         }
+        for (BaseSubjectViewModel viewModel : rankDataList) {
+            BookModelConfigResultBean.DataBean.ModulesBean modelBean = viewModel.getModelBean();
+            if (modelBean.rank_type == Constants.RANK_TYPE_PUBLISH) {
+                if (Constants.SHOP_RANK_MODEL_TYPE_SALE_NEW_BOOK_LIST == modelBean.module_type) {
+                    modelBean.show_name = ResManager.getString(R.string.rank_show_name_sale_new_book_list);
+                } else {
+                    modelBean.show_name = ResManager.getString(R.string.category_publish) + modelBean.show_name;
+                }
+            }
+        }
+        Collections.sort(rankDataList, new RankListComparator());
 
         int totalPage = ViewHelper.calculateTotalPages(rankDataList, Constants.COMMOM_SUBJECT_RECYCLE_HEIGHT);
         ShopDataBundle.getInstance().getRankViewModel().setTotalPages(Math.max(totalPage, 1));
