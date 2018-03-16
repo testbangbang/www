@@ -290,7 +290,6 @@ public class BookDetailFragment extends BaseFragment {
                             getBookDetailViewModel().updateTimeInfo.set(ViewHelper.getNetBookUpdateTimeInfo(bookDetailBean.modified));
                         }
                     }
-                    getBookDetailViewModel().showAllButton.set(true);
 
                     if (shouldDownloadWholeBook) {
                         smoothDownload();
@@ -318,7 +317,7 @@ public class BookDetailFragment extends BaseFragment {
             public void onNext(SearchBookListAction action) {
                 BookModelBooksResultBean booksResultBean = action.getBooksResultBean();
                 if (booksResultBean != null && booksResultBean.data != null) {
-                    if (booksResultBean.data.items != null && booksResultBean.data.items.size() > 0) {
+                    if (booksResultBean.data.items != null && booksResultBean.data.items.size() > Constants.SHOP_MAIN_INDEX_ONE) {
                         bookDetailBinding.bookDetailInfo.bookDetailAuthor.setEnabled(true);
                         bookDetailBinding.bookDetailInfo.bookDetailAuthor.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
                     }

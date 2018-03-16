@@ -540,7 +540,9 @@
     <string name="annotation_repeat">Cannot be added repeatedly</string>
     <string name="reboot">Reboot</string>
     <string name="shutdown">Shutdown</string>
-    <string name="please_check_wifi">Please check the wireless network and try again.</string>
+    <string name="please_check_wifi_left_part">Please check </string>
+    <string name="please_check_wifi_middle_part"> the wireless network </string>
+    <string name="please_check_wifi_right_part"> and try again.</string>
     <string name="free_for_a_limited_time">free for a limited time</string>
     <string name="net_book_price_and_status">%1$s Read Bean/K word (%2$s)</string>
     <string name="net_book_status_down">Finished</string>
