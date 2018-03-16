@@ -7,9 +7,15 @@ package com.onyx.jdread.personal.event;
 public class UserLoginResultEvent {
     private String message;
     private String targetView;
+    private int resultCode;
 
     public UserLoginResultEvent(String message) {
         this.message = message;
+    }
+
+    public UserLoginResultEvent(String message, int resultCode) {
+        this.message = message;
+        this.resultCode = resultCode;
     }
 
     public UserLoginResultEvent(String message, String targetView) {
@@ -23,5 +29,13 @@ public class UserLoginResultEvent {
 
     public String getTargetView() {
         return targetView;
+    }
+
+    public int getResultCode() {
+        return resultCode;
+    }
+
+    public void setResultCode(int resultCode) {
+        this.resultCode = resultCode;
     }
 }

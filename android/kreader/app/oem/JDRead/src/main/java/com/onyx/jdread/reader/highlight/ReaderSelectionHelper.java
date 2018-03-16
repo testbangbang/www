@@ -185,6 +185,8 @@ public class ReaderSelectionHelper {
         if (rects == null || rects.size() <= 0) {
             return false;
         }
+        rects = RectUtils.mergeRectanglesByBaseLine(rects);
+
         if (getCurrentFontSizeChooseIcon(style) || readerSelectionInfo.getCursors().size() <= 0) {
             readerSelectionInfo.getCursors().clear();
             readerSelectionInfo.getCursors().add(new HighlightCursor(context, chooseLeftIcon, chooseRightIcon, HighlightCursor.Type.BEGIN_CURSOR));

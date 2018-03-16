@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.model.LogCollection;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -20,8 +22,9 @@ public class BroadcastHelper {
     public static void sendFeedbackBroadcast(Context context, Throwable throwable) {
         Writer result = new StringWriter();
         throwable.printStackTrace(new PrintWriter(result));
-
-        sendFeedbackBroadcast(context, result.toString());
+        LogCollection logCollection = new LogCollection();
+        logCollection.desc = result.toString();
+        sendFeedbackBroadcast(context, JSONObjectParseUtils.toJson(logCollection));
     }
 
     public static void sendFeedbackBroadcast(Context context, String data) {

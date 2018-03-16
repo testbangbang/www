@@ -166,7 +166,7 @@
     <string name="book_detail_button_try_read">Try read</string>
     <string name="book_detail_empty_introduce">NO introduction</string>
     <string name="book_detail_button_try_again">Try Again</string>
-    <string name="book_detail_tip_try_again">download error,try again later</string>
+    <string name="book_detail_tip_download_pause">Paused</string>
     <string name="book_detail_tip_book_add_to_bookself">has add to bookshelf</string>
     <string name="download_finished">download finished</string>
     <string name="login_success">login success</string>
@@ -540,7 +540,9 @@
     <string name="annotation_repeat">Cannot be added repeatedly</string>
     <string name="reboot">Reboot</string>
     <string name="shutdown">Shutdown</string>
-    <string name="please_check_wifi">Please check the wireless network and try again.</string>
+    <string name="please_check_wifi_left_part">Please check </string>
+    <string name="please_check_wifi_middle_part"> the wireless network </string>
+    <string name="please_check_wifi_right_part"> and try again.</string>
     <string name="free_for_a_limited_time">free for a limited time</string>
     <string name="net_book_price_and_status">%1$s Read Bean/K word (%2$s)</string>
     <string name="net_book_status_down">Finished</string>
@@ -568,7 +570,7 @@
     <string name="no_results">no results</string>
     <string name="is_null" translatable="false">null</string>
     <string name="filter_free">Free</string>
-    <string name="jd_loading">loading</string>
+    <string name="jd_loading">@string/loading</string>
     <string name="update_time">Update Time</string>
     <string name="input_password">Input password</string>
     <string name="reader_loading">Loading...</string>
@@ -581,4 +583,8 @@
     <string name="register_jd_account">Registered jd account</string>
     <string name="retrieve_password">Retrieve password</string>
     <string name="kingsoft_dictionary">Kingsoft dictionary</string>
+    <string name="login_success_key">login_success_key</string>
+    <string name="underline">_</string>
+    <string name="is_24_hour_key">is_24_hour_key</string>
+    <string name="rank_show_name_sale_new_book_list">publish new book list</string>
 </resources>

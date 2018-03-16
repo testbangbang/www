@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
@@ -60,6 +61,7 @@ import com.onyx.jdread.util.Utils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +83,9 @@ public class TopUpDialog extends DialogFragment {
     private TopUpAdapter topUpAdapter;
     private GetRechargePollEvent getRechargePollEvent;
     private static final int DEFAULT_POLL_TIME = 300;
+    private static final int DEFAULT_QRCODE_INVALID_MINUTES = 5;
     private Disposable countDownDisposable;
+    private Disposable qrCodeInvalidDisposable;
     private RxGetPayResultByCashRequest payByCashRequest;
     private int payDialogType;
     private NetBookPayParamsBean payParamsBean;
@@ -158,10 +162,12 @@ public class TopUpDialog extends DialogFragment {
                         if (R.id.payment_read_bean == checkedId) {
                             setPayOrderView(false);
                             changePayButtonState(!getPayOrderViewModel().getOrderInfo().need_recharge);
+                            abortPayByCashRequest();
                         } else {
                             setPayOrderView(true);
                             payByCash();
                         }
+                        invalidQrCodeTiming(R.id.payment_cash == checkedId);
                     }
                 });
             } else if (isBuyNetBook()) {
@@ -258,12 +264,15 @@ public class TopUpDialog extends DialogFragment {
                     abortPayByCashRequest();
                     dismiss();
                 }
+                invalidQrCodeTiming(ViewHelper.isViewVisible(binding.dialogTopUpQrCodeLayout.dialogTopUpQrCode) ||
+                        ViewHelper.isViewVisible(binding.payOrder.topUpQrCode));
             }
         });
 
         binding.dialogTopUpSuccessLayout.topUpContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                invalidQrCodeTiming(false);
                 setVisible(R.id.dialog_top_up_detail_layout);
             }
         });
@@ -284,6 +293,7 @@ public class TopUpDialog extends DialogFragment {
                 binding.dialogTopUpQrCodeLayout.topUpQrCode.setImageBitmap(qrImage);
                 getRechargePollEvent = new GetRechargePollEvent(data.trade_num);
                 getRechargePollEvent.startPoll(DEFAULT_POLL_TIME);
+                invalidQrCodeTiming(true);
             }
         });
     }
@@ -358,6 +368,7 @@ public class TopUpDialog extends DialogFragment {
     private void setPayOrderView(boolean isPayByCash) {
         binding.payOrder.confirmPay.setVisibility(isPayByCash ? View.GONE : View.VISIBLE);
         binding.payOrder.payByCashView.setVisibility(isPayByCash ? View.VISIBLE : View.GONE);
+        binding.payOrder.topUpQrCode.setVisibility(isPayByCash ? View.VISIBLE : View.INVISIBLE);
     }
 
     private String getPayByCashUrl() {
@@ -388,6 +399,11 @@ public class TopUpDialog extends DialogFragment {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                if (throwable instanceof IOException) {
+                    ToastUtil.showToast(ResManager.getString(R.string.network_exception));
+                } else {
+                    ToastUtil.showToast(ResManager.getString(R.string.pay_failed));
+                }
             }
 
             @Override
@@ -430,7 +446,7 @@ public class TopUpDialog extends DialogFragment {
 
     private void dismissDialog(final Object event) {
         int delayTime = ResManager.getInteger(R.integer.delay_pay_success_close_pay_dialog);
-        Observable<Long> timer = Observable.timer(delayTime, TimeUnit.SECONDS);
+        Observable<Long> timer = Observable.interval(delayTime, TimeUnit.SECONDS);
         countDownDisposable = timer.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Long>() {
@@ -442,12 +458,48 @@ public class TopUpDialog extends DialogFragment {
                 });
     }
 
+    private void invalidQrCodeTiming(boolean invalid) {
+        if (qrCodeInvalidDisposable != null) {
+            qrCodeInvalidDisposable.dispose();
+            qrCodeInvalidDisposable = null;
+        }
+        if (invalid) {
+            qrCodeInvalidDisposable = Observable.timer(DEFAULT_QRCODE_INVALID_MINUTES, TimeUnit.MINUTES)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Long>() {
+                        @Override
+                        public void accept(Long aLong) throws Exception {
+                            invalidQrCode();
+                        }
+                    });
+        }
+    }
+
+    private void invalidQrCode() {
+        if (binding == null || binding.payOrder.topUpQrCode == null || binding.dialogTopUpQrCodeLayout == null) {
+            return;
+        }
+        ImageView view = null;
+        if (ViewHelper.isViewVisible(binding.payOrder.topUpQrCode)) {
+            view = binding.payOrder.topUpQrCode;
+        } else if (ViewHelper.isViewVisible(binding.dialogTopUpQrCodeLayout.topUpQrCode)) {
+            view = binding.dialogTopUpQrCodeLayout.topUpQrCode;
+        }
+        if (view == null) {
+            return;
+        }
+        view.setImageResource(R.drawable.transparent_rectangle);
+        view.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         if (countDownDisposable != null) {
             countDownDisposable.dispose();
         }
+        invalidQrCodeTiming(false);
         abortPayByCashRequest();
     }
 

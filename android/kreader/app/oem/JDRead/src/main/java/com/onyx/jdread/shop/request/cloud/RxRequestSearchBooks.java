@@ -20,6 +20,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.CutBitmapTransformation;
 import com.onyx.jdread.util.DataModelTranslateUtils;
 
 import java.util.ArrayList;
@@ -134,6 +135,7 @@ public class RxRequestSearchBooks extends RxBaseCloudRequest {
             return Glide.with(getAppContext())
                     .load(url)
                     .asBitmap()
+                    .transform(CutBitmapTransformation.getInstance(getAppContext()))
                     .into(ViewTarget.SIZE_ORIGINAL, ViewTarget.SIZE_ORIGINAL)
                     .get();
         } catch (Exception e) {

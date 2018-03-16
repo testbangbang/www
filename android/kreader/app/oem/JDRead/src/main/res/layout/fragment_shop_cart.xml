@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/shop_cart_title"
-                android:text="@{@string/braces(model.datas.size())}"
+                android:text="@{@string/braces(model.size)}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
 

@@ -60,6 +60,7 @@ public class Constants {
     public static final String RESULT_CODE_PARAMS_LENGTH_ERROR = "5";
     public static final String RESULT_CODE_PARAMS_LACK = "6";
     public static final String RESULT_CODE_PARAMS_FORMAT_ERRO = "7";
+    public static final String RESULT_CODE_ERROR = "8";
     public static final String RESULT_CODE_BOOK_NO_READ_VIP = "100";
     public static final String RESULT_CODE_BOOK_CAN_NOT_READ = "104";
     public static final String RESULT_CODE_BOOK_NOT_FOUND = "300";
@@ -162,4 +163,7 @@ public class Constants {
     public static final int TIPS_SUB_MIDDLE = 5;
     public static final int TIPS_MIDDLE = 8;
     public static final int TIPS_END = 11;
+    public static final int SHOP_RANK_MODEL_TYPE_SOARING_LIST = 6;
+    public static final int SHOP_RANK_MODEL_TYPE_SALE_NEW_BOOK_LIST = 2;
+    public static final int RANK_TYPE_PUBLISH = 1;
 }

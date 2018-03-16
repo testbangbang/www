@@ -57,7 +57,6 @@ public class AllCategoryFragment extends BaseFragment {
     private static final int TYPE_INDEX_ONE = 1;
     private static final int TYPE_INDEX_TWO = 2;
     private int currentType = TYPE_INDEX_ZERO;
-    private BookCategoryAction bookCategoryAction;
     private PageRecyclerView topRecyclerView;
     private List<CategoryListResultBean.CategoryBeanLevelOne> categoryBeanLevelOneList;
 
@@ -83,18 +82,27 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     private void getCategoryData() {
-        bookCategoryAction = new BookCategoryAction();
-        bookCategoryAction.execute(getShopDataBundle(), new RxCallback<BookCategoryAction>() {
-            @Override
-            public void onNext(BookCategoryAction bookCategoryAction) {
-                categoryBeanLevelOneList = bookCategoryAction.getCategoryBeanLevelOneList();
-                List<String> titleList = bookCategoryAction.getTitleList();
-                getAllCategoryViewModel().titleOne.set(titleList.get(Constants.SHOP_MAIN_INDEX_ZERO));
-                getAllCategoryViewModel().titleTwo.set(titleList.get(Constants.SHOP_MAIN_INDEX_ONE));
-                getAllCategoryViewModel().titleThree.set(titleList.get(Constants.SHOP_MAIN_INDEX_TWO));
-                changeCategorySelection(getCurCategoryLevelOneIndex());
-            }
-        });
+        categoryBeanLevelOneList = getAllCategoryViewModel().getLevelOneData();
+        if (CollectionUtils.isNullOrEmpty(categoryBeanLevelOneList)) {
+            BookCategoryAction bookCategoryAction = new BookCategoryAction();
+            bookCategoryAction.execute(getShopDataBundle(), new RxCallback<BookCategoryAction>() {
+                @Override
+                public void onNext(BookCategoryAction bookCategoryAction) {
+                    setResult();
+                }
+            });
+        } else {
+            setResult();
+        }
+    }
+
+    private void setResult() {
+        categoryBeanLevelOneList = getAllCategoryViewModel().getLevelOneData();
+        List<String> titleList = getAllCategoryViewModel().getTitleList();
+        getAllCategoryViewModel().titleOne.set(titleList.get(Constants.SHOP_MAIN_INDEX_ZERO));
+        getAllCategoryViewModel().titleTwo.set(titleList.get(Constants.SHOP_MAIN_INDEX_ONE));
+        getAllCategoryViewModel().titleThree.set(titleList.get(Constants.SHOP_MAIN_INDEX_TWO));
+        changeCategorySelection(getCurCategoryLevelOneIndex());
     }
 
     private void changeData(int index) {

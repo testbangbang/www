@@ -5,6 +5,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 
@@ -15,15 +16,18 @@ import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 public class SettingTypefaceAction extends BaseReaderAction {
     private String typefacePath;
     private ReaderTextStyle style;
+    private int styleIndex;
 
-    public SettingTypefaceAction(ReaderTextStyle style, String typefacePath) {
+    public SettingTypefaceAction(ReaderTextStyle style, String typefacePath,int styleIndex) {
         this.typefacePath = typefacePath;
         this.style = style;
+        this.styleIndex = styleIndex;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         style.setFontFace(typefacePath);
+        style.setLineSpacing(ReaderConfig.getAdditionalSpacing(style.getFontFace(),styleIndex));
 
         final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(), style,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {

@@ -85,7 +85,7 @@ public class UserLoginAction extends BaseAction {
                 try {
                     UserLoginResultErrorBean resultErrorBean = JSONObjectParseUtils.parseObject(errorJson, UserLoginResultErrorBean.class);
                     if (resultErrorBean != null) {
-                        dataBundle.getEventBus().post(new UserLoginResultEvent(resultErrorBean.errMsg));
+                        dataBundle.getEventBus().post(new UserLoginResultEvent(resultErrorBean.errMsg, resultErrorBean.errorCode));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -95,13 +95,13 @@ public class UserLoginAction extends BaseAction {
             @Override
             public void onFail(FailResult failResult, PicDataInfo picDataInfo) {
                 RxCallback.invokeFinally(rxCallback);
-                dataBundle.getEventBus().post(new UserLoginResultEvent(failResult.getMessage()));
+                dataBundle.getEventBus().post(new UserLoginResultEvent(failResult.getMessage(), failResult.getReplyCode()));
             }
 
             @Override
             public void onFail(FailResult failResult, JumpResult jumpResult, PicDataInfo picDataInfo) {
                 RxCallback.invokeFinally(rxCallback);
-                dataBundle.getEventBus().post(new UserLoginResultEvent(failResult.getMessage()));
+                dataBundle.getEventBus().post(new UserLoginResultEvent(failResult.getMessage(), failResult.getReplyCode()));
             }
         });
     }
@@ -132,17 +132,21 @@ public class UserLoginAction extends BaseAction {
 
     private void onSyncLoginInfo(PersonalDataBundle dataBundle, SyncLoginInfoBean syncLoginInfoBean) {
         String code = syncLoginInfoBean.getCode();
+        UserLoginResultEvent userLoginResultEvent;
         if (Constants.RESULT_CODE_SUCCESS.equals(code)) {
             LoginHelper.getUserInfo(dataBundle);
             autoSign();
-            dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success), dataBundle.getTargetView()));
+            userLoginResultEvent = new UserLoginResultEvent(ResManager.getString(R.string.login_success), dataBundle.getTargetView());
+            userLoginResultEvent.setResultCode(Integer.valueOf(Constants.RESULT_CODE_SUCCESS));
+            dataBundle.getEventBus().post(userLoginResultEvent);
             if (rxCallback != null) {
                 rxCallback.onNext(UserLoginAction.class);
             }
         } else {
             String errorMsg = ToastUtil.getErrorMsgByCode(code);
-            dataBundle.getEventBus().post(new UserLoginResultEvent(errorMsg));
+            userLoginResultEvent = new UserLoginResultEvent(errorMsg, Integer.valueOf(code));
         }
+        dataBundle.getEventBus().post(userLoginResultEvent);
     }
 
     private void autoSign() {

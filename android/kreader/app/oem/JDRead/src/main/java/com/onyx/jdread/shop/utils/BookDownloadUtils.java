@@ -47,6 +47,7 @@ public class BookDownloadUtils {
                             bookDetailBean.downLoadUrl = data.content_url;
                             downloadBook(dataBundle, bookDetailBean, rxCallback);
                         } else {
+                            invokeError(rxCallback, null);
                             ToastUtil.showToastErrorMsgForDownBook(String.valueOf(resultBean.result_code));
                         }
                     } else {
@@ -76,6 +77,7 @@ public class BookDownloadUtils {
         }
         bookDetailBean.bookExtraInfoBean.downLoadTaskTag = bookDetailBean.ebook_id + Constants.WHOLE_BOOK_DOWNLOAD_TAG;
         bookDetailBean.bookExtraInfoBean.downloadUrl = bookDetailBean.downLoadUrl;
+        bookDetailBean.bookExtraInfoBean.localPath = localPath;
         insert(bookDetailBean, localPath);
         DownloadAction downloadAction = new DownloadAction(getAppContext(), bookDetailBean.downLoadUrl, localPath, bookDetailBean.ebook_id + Constants.WHOLE_BOOK_DOWNLOAD_TAG);
         downloadAction.setBookDetailBean(bookDetailBean);

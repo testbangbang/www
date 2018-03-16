@@ -185,7 +185,7 @@ public class BookRankFragment extends BaseFragment {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.SP_KEY_SUBJECT_NAME, modulesBean.show_name);
             bundle.putInt(Constants.SP_KEY_BOOK_LIST_TYPE, Constants.BOOK_LIST_TYPE_BOOK_RANK);
-            bundle.putInt(Constants.SP_KEY_SUBJECT_RANK_TYPE, modulesBean.module_type);
+            bundle.putInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, modulesBean.module_type);
             if (getViewEventCallBack() != null) {
                 getViewEventCallBack().gotoView(ViewAllBooksFragment.class.getName(), bundle);
             }

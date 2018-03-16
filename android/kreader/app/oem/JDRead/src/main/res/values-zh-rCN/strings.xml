@@ -163,7 +163,7 @@
     <string name="book_detail_button_try_read">试读</string>
     <string name="book_detail_empty_introduce">暂无简介</string>
     <string name="book_detail_button_try_again">重试</string>
-    <string name="book_detail_tip_try_again">下载出错,请稍后重试</string>
+    <string name="book_detail_tip_download_pause">已暂停</string>
     <string name="book_detail_tip_book_add_to_bookself">已加入书架</string>
     <string name="download_finished">下载完成</string>
     <string name="login_success">登录成功</string>
@@ -510,7 +510,9 @@
     <string name="annotation_repeat">不能重复添加</string>
     <string name="reboot">重启</string>
     <string name="shutdown">关机</string>
-    <string name="please_check_wifi">请查看无线网络设置后重试</string>
+    <string name="please_check_wifi_left_part">请查看</string>
+    <string name="please_check_wifi_middle_part">无线网络设置</string>
+    <string name="please_check_wifi_right_part">后重试</string>
     <string name="free_for_a_limited_time">限时免费</string>
     <string name="net_book_price_and_status">%1$s阅豆/千字(%2$s)</string>
     <string name="net_book_status_down">已完结</string>
@@ -536,7 +538,7 @@
     <string name="input_special_characters">输入含有特殊字符</string>
     <string name="no_results">暂无</string>
     <string name="filter_free">免费</string>
-    <string name="jd_loading">loading</string>
+    <string name="jd_loading">@string/loading</string>
     <string name="update_time">更新时间</string>
     <string name="input_password">请输入密码</string>
     <string name="reader_loading">加载中...</string>
@@ -548,4 +550,5 @@
     <string name="register_jd_account">注册京东账号</string>
     <string name="retrieve_password">找回密码</string>
     <string name="kingsoft_dictionary">金山词典</string>
+    <string name="rank_show_name_sale_new_book_list">出版新书榜</string>
 </resources>
