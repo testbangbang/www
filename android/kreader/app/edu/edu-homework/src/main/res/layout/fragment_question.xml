@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <!--if update layout, please update layout_objective_question.xml-->
             <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
                 android:padding="10dp"
                 android:layout_weight="1"

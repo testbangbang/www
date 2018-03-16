@@ -27,7 +27,6 @@ import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -209,6 +208,7 @@ public class BaseNoteRequest extends BaseRequest {
                 int pagePosition = parent.getNoteDocument().getNotePagePosition(notePage);
                 drawTextView(canvas, parent, pagePosition);
                 drawBackgroundLine(canvas, parent, pagePosition);
+                onDraw(canvas);
                 notePage.render(renderContext, null);
             }
             parent.renderCursorShape(renderContext);
@@ -461,5 +461,12 @@ public class BaseNoteRequest extends BaseRequest {
 
     public String getIdentifier() {
         return identifier;
+    }
+
+    /**
+     * called by the method {@link #renderVisiblePages(NoteViewHelper)}
+     */
+    public void onDraw(Canvas canvas) {
+
     }
 }
