@@ -536,7 +536,7 @@
     <string name="input_special_characters">输入含有特殊字符</string>
     <string name="no_results">暂无</string>
     <string name="filter_free">免费</string>
-    <string name="jd_loading">loading</string>
+    <string name="jd_loading">@string/loading</string>
     <string name="update_time">更新时间</string>
     <string name="input_password">请输入密码</string>
     <string name="reader_loading">加载中...</string>
