@@ -8,6 +8,10 @@ import com.onyx.android.sdk.utils.StringUtils;
  */
 public class PagePositionUtils {
 
+    public static float getProgress(int currentPage, int totalPage) {
+        return ((currentPage + 1) / (float)totalPage) * 100;
+    }
+
     public static int getPageNumber(final String pageName) {
         return Integer.parseInt(pageName);
     }
