@@ -28,7 +28,7 @@ public class PenWidthChangeAction extends BaseNoteAction {
 
     @Override
     public void execute(RxCallback rxCallback) {
-        NoteDataBundle.getInstance().getDrawDataHolder().setStrokeWidth(penWidth);
+        NoteDataBundle.getInstance().getDrawingArgs().setStrokeWidth(penWidth);
         PenWidthChangeRequest request = new PenWidthChangeRequest(getNoteManager())
                 .setPenWidth(penWidth);
         getNoteManager().getRxManager().enqueue(request, new RxCallback<PenWidthChangeRequest>() {

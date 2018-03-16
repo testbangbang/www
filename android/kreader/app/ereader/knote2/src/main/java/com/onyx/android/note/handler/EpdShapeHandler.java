@@ -29,7 +29,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by lxm on 2018/2/25.
  */
 
-public class EpdShapeHandler extends BaseEraseHandler {
+public class EpdShapeHandler extends BaseHandler {
 
     EpdShapeHandler(@NonNull EventBus eventBus, NoteManager noteManager) {
         super(eventBus, noteManager);
@@ -43,10 +43,14 @@ public class EpdShapeHandler extends BaseEraseHandler {
     @Override
     public void onRawDrawingPointsReceived(TouchPointList pointList) {
         super.onRawDrawingPointsReceived(pointList);
-        NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawDataHolder().getDrawingArgs();
+        NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawingArgs();
         Shape shape = DrawUtils.createShape(drawingArgs, ShapeFactory.POSITION_FREE);
         shape.addPoints(pointList);
         new AddShapesBackgroundAction(getNoteManager()).setShape(shape).execute(null);
     }
 
+    @Override
+    public boolean useDrawErase() {
+        return true;
+    }
 }

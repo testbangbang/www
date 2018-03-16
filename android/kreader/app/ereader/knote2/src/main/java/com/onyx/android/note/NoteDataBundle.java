@@ -1,9 +1,9 @@
 package com.onyx.android.note;
 
 import com.onyx.android.note.handler.HandlerManager;
-import com.onyx.android.note.note.DrawDataHolder;
-import com.onyx.android.note.note.PenManager;
+import com.onyx.android.note.note.PenEventHandler;
 import com.onyx.android.sdk.note.NoteManager;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,8 +25,8 @@ public class NoteDataBundle {
     private EventBus eventBus;
     private HandlerManager handlerManager;
     private NoteManager noteManager;
-    private PenManager penManager;
-    private DrawDataHolder drawDataHolder;
+    private PenEventHandler penEventHandler;
+    private NoteDrawingArgs drawingArgs;
 
     public EventBus getEventBus() {
         if (eventBus == null) {
@@ -53,17 +53,17 @@ public class NoteDataBundle {
         return noteManager;
     }
 
-    public PenManager getPenManager() {
-        if (penManager == null) {
-            penManager = new PenManager(getEventBus());
+    public PenEventHandler getPenEventHandler() {
+        if (penEventHandler == null) {
+            penEventHandler = new PenEventHandler(getEventBus());
         }
-        return penManager;
+        return penEventHandler;
     }
 
-    public DrawDataHolder getDrawDataHolder() {
-        if (drawDataHolder == null) {
-            drawDataHolder = new DrawDataHolder(getEventBus());
+    public NoteDrawingArgs getDrawingArgs() {
+        if (drawingArgs == null) {
+            drawingArgs = new NoteDrawingArgs();
         }
-        return drawDataHolder;
+        return drawingArgs;
     }
 }

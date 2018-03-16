@@ -13,7 +13,6 @@ import com.onyx.android.note.common.base.BaseFragment;
 import com.onyx.android.note.databinding.FragmentNoteBinding;
 import com.onyx.android.note.note.menu.NoteMenuFragment;
 import com.onyx.android.note.note.scribble.ScribbleFragment;
-import com.onyx.android.sdk.note.*;
 import com.onyx.android.sdk.note.NoteManager;
 
 /**
@@ -34,8 +33,7 @@ public class NoteFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getNoteBundle().getPenManager().subscribe();
-        getNoteBundle().getDrawDataHolder().subscribe();
+        getNoteBundle().getPenEventHandler().subscribe();
     }
 
     @Nullable
@@ -49,8 +47,7 @@ public class NoteFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         getNoteBundle().getHandlerManager().quit();
-        getNoteBundle().getPenManager().unSubscribe();
-        getNoteBundle().getDrawDataHolder().unSubscribe();
+        getNoteBundle().getPenEventHandler().unSubscribe();
         super.onDestroy();
     }
 

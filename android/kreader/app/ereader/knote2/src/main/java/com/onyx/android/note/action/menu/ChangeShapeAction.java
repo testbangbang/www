@@ -19,7 +19,7 @@ public class ChangeShapeAction extends BaseNoteAction {
 
     @Override
     public void execute(RxCallback rxCallback) {
-        NoteDataBundle.getInstance().getDrawDataHolder().setCurrentShapeType(shapeType);
+        NoteDataBundle.getInstance().getDrawingArgs().setCurrentShapeType(shapeType);
 
     }
 }

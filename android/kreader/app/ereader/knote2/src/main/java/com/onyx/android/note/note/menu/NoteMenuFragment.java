@@ -30,7 +30,6 @@ import java.util.List;
 public class NoteMenuFragment extends BaseFragment {
 
     private FragmentNoteMenuBinding binding;
-    private NoteMenuHandler noteMenuHandler;
 
     public static NoteMenuFragment newInstance() {
         return new NoteMenuFragment();
@@ -47,8 +46,6 @@ public class NoteMenuFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_note_menu, container, false);
         binding.setModel(getUIBundle().getNoteMenuModel());
-        noteMenuHandler = new NoteMenuHandler(getNoteBundle().getEventBus());
-        noteMenuHandler.subscribe();
         return binding.getRoot();
     }
 
@@ -101,7 +98,6 @@ public class NoteMenuFragment extends BaseFragment {
 
     @Override
     public void onDestroy() {
-        noteMenuHandler.unSubscribe();
         getNoteBundle().getEventBus().unregister(this);
         super.onDestroy();
     }
