@@ -57,6 +57,7 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableBoolean showBottomMenu = new ObservableBoolean(false);
     public final ObservableBoolean haveSelected = new ObservableBoolean(false);
     public final ObservableBoolean isSelectAll = new ObservableBoolean(false);
+    public final ObservableBoolean canSelectAll = new ObservableBoolean(false);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
     private List<DataModel> librarySelected = new ArrayList<>();
     private int queryLimit = 6;
@@ -351,6 +352,7 @@ public class LibraryViewDataModel extends Observable {
 
     private void setSelectAllBtnText() {
         isSelectAll.set(isSelectAll());
+        canSelectAll.set(count.get() > libraryCount.get());
         checkHaveSelected();
     }
 
