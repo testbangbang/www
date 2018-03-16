@@ -16,9 +16,10 @@
 
     <LinearLayout
         android:id="@+id/cover_panel"
+        android:padding="1dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -143,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/book_name_margin_top"
             android:ellipsize="end"
-            android:lineSpacingExtra="5dp"
+            android:lineSpacingExtra="@dimen/book_title_line_space"
             android:lines="2"
             android:maxLines="2"
             android:text="@{model.title}"

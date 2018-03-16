@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.menu.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.RatingBar;
 import android.widget.SeekBar;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -19,6 +21,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
@@ -40,7 +43,7 @@ import com.onyx.jdread.setting.model.BrightnessModel;
  * Created by huxiaomao on 17/5/10.
  */
 
-public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingViewBack{
+public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSettingViewBack{
     private static final String TAG = ReaderSettingMenuDialog.class.getSimpleName();
     private ReaderSettingMenuBinding binding;
     private ReaderDataHolder readerDataHolder;
@@ -112,11 +115,14 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                Drawable drawable = readerDataHolder.getAppContext().getResources().getDrawable(R.drawable.seekbar_thumb_transparent);
+                seekBar.setThumb(drawable);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                Drawable drawable = readerDataHolder.getAppContext().getResources().getDrawable(R.drawable.seekbar_thumb);
+                seekBar.setThumb(drawable);
                 updateProgress(seekBar.getProgress());
                 GotoPageEvent event = new GotoPageEvent(seekBar.getProgress());
                 readerDataHolder.getEventBus().post(event);
@@ -126,9 +132,6 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void updateProgress(int readProgress){
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setCurrentPage(readProgress);
-        float total = binding.readerSettingPageInfoBar.readerPageInfoMenuReadProgress.getMax();
-        float progress = (readProgress / total) * 100.0f;
-        binding.readerSettingPageInfoBar.getReaderPageInfoModel().setReadProgress((Math.round(progress * 100)) / 100 + "%");
     }
 
     private void initSystemBar() {

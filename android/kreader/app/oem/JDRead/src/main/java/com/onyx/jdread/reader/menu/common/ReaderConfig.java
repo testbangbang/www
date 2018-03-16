@@ -8,6 +8,9 @@ import com.onyx.jdread.reader.data.SettingInfo;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.Typeface.TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_ONE;
+import static com.onyx.jdread.reader.menu.common.ReaderConfig.Typeface.TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_TWO;
+
 /**
  * Created by huxiaomao on 2018/1/6.
  */
@@ -25,6 +28,8 @@ public class ReaderConfig {
         public static final String TYPEFACE_THREE = TYPEFACE_ROOT_PATH + "FZNewKai_GB18030-Z03.ttf";
         public static final String TYPEFACE_FOUR = TYPEFACE_ROOT_PATH + "FZYouH_507R.ttf";
         public static final String DEFAULT_TYPEFACE = TYPEFACE_ONE;
+        public static final int TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_ONE = 28;
+        public static final int TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_TWO = 27;
     }
 
     public static class TypefaceColorDepth {
@@ -81,12 +86,12 @@ public class ReaderConfig {
     public static final int DEFAULT_MARGIN_RIGHT = 12;
 
     static {
-        presetStyle.put(SETTING_ONE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_X_SMALL, 135, 50));
-        presetStyle.put(SETTING_TWO_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_SMALL, 140, 60));
-        presetStyle.put(SETTING_THREE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_MEDIUM, 130, 60));
-        presetStyle.put(SETTING_FOUR_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_LARGE, 130, 60));
-        presetStyle.put(SETTING_FIVE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_X_LARGE, 130, 60));
-        presetStyle.put(SETTING_SIX_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 24, FONT_SIZE_XX_LARGE, 130, 60));
+        presetStyle.put(SETTING_ONE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_X_SMALL, 135, 50));
+        presetStyle.put(SETTING_TWO_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_SMALL, 140, 60));
+        presetStyle.put(SETTING_THREE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_MEDIUM, 130, 60));
+        presetStyle.put(SETTING_FOUR_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_LARGE, 130, 60));
+        presetStyle.put(SETTING_FIVE_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_X_LARGE, 130, 60));
+        presetStyle.put(SETTING_SIX_STYLE_KEY, new ReaderTextStyle(DEFAULT_MARGIN_LEFT, DEFAULT_MARGIN_RIGHT, 14, 5, FONT_SIZE_XX_LARGE, 130, 60));
         presetStyle.put(CUSTOM_STYLE_KEY, new ReaderTextStyle(0, 0, 0, 0, 0, 0, 0));
     }
 
@@ -151,12 +156,12 @@ public class ReaderConfig {
     }
 
     static {
-        customOneTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 11));
-        customOneTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(4, 13));
-        customOneTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(9, 17));
-        customOneTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(13, 20));
-        customOneTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(18, 23));
-        customOneTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(23, 26));
+        customOneTopAndBottomMargin.put(SETTING_ONE_STYLE_KEY, new TopAndBottom(0, 0));
+        customOneTopAndBottomMargin.put(SETTING_TWO_STYLE_KEY, new TopAndBottom(4, 4));
+        customOneTopAndBottomMargin.put(SETTING_THREE_STYLE_KEY, new TopAndBottom(9, 9));
+        customOneTopAndBottomMargin.put(SETTING_FOUR_STYLE_KEY, new TopAndBottom(13, 13));
+        customOneTopAndBottomMargin.put(SETTING_FIVE_STYLE_KEY, new TopAndBottom(18, 18));
+        customOneTopAndBottomMargin.put(SETTING_SIX_STYLE_KEY, new TopAndBottom(23, 23));
     }
 
     static {
@@ -369,5 +374,19 @@ public class ReaderConfig {
 
     public static int getSettingStyle(){
         return JDPreferenceManager.getIntValue(ReaderConfig.SETTING_STYLE_KEY,DEFAULT_PRESET_STYLE);
+    }
+
+    public static ReaderTextStyle.Percentage getTypefaceFourSpacingLine(int styleIndex){
+        ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
+        int spacing = getTypefaceFourExtendHeight(styleIndex);
+        return ReaderTextStyle.Percentage.create(presetStyle.getLineSpacing().getPercent() + spacing);
+    }
+
+    public static int getTypefaceFourExtendHeight(int styleIndex){
+        int spacing = TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_ONE;
+        if(styleIndex == ReaderConfig.SETTING_SIX_STYLE_KEY){
+            spacing = TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_TWO;
+        }
+        return spacing;
     }
 }

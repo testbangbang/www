@@ -186,6 +186,7 @@ public class ReaderTextModel {
     public void setTypeface(String typeface) {
         ReaderSettingTypefaceEvent event = new ReaderSettingTypefaceEvent();
         event.typeFace = typeface;
+        event.styleIndex = currentFontSize.get();
         eventBus.post(event);
     }
 

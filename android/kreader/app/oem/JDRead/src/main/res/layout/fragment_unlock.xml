@@ -13,7 +13,7 @@
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/password_setting_content_margin_top"
+        android:layout_marginTop="@dimen/unlock_margin_top"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_horizontal"
@@ -21,10 +21,60 @@
         tools:context=".setting.ui.UnlockFragment">
 
         <TextView
-            style="@style/PasswordEditTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/level_one_heading_font"
             android:background="@null"
             android:gravity="center"
-            android:text="@string/password" />
+            android:textColor="@android:color/black"
+            android:text="@string/input_password" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unlock_input_margin_top"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/unlock_password_one"
+                android:layout_width="@dimen/unlock_input_number_width"
+                android:layout_height="@dimen/unlock_input_number_width"
+                android:background="@drawable/rectangle_stroke"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:textSize="@dimen/level_three_heading_font"/>
+
+            <TextView
+                android:id="@+id/unlock_password_two"
+                android:layout_width="@dimen/unlock_input_number_width"
+                android:layout_height="@dimen/unlock_input_number_width"
+                android:background="@drawable/rectangle_stroke"
+                android:textColor="@android:color/black"
+                android:layout_marginLeft="@dimen/unlock_input_number_margin_left"
+                android:gravity="center"
+                android:textSize="@dimen/level_three_heading_font"/>
+
+            <TextView
+                android:id="@+id/unlock_password_three"
+                android:layout_width="@dimen/unlock_input_number_width"
+                android:layout_height="@dimen/unlock_input_number_width"
+                android:background="@drawable/rectangle_stroke"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_marginLeft="@dimen/unlock_input_number_margin_left"
+                android:textSize="@dimen/level_three_heading_font"/>
+
+            <TextView
+                android:id="@+id/unlock_password_four"
+                android:layout_width="@dimen/unlock_input_number_width"
+                android:layout_height="@dimen/unlock_input_number_width"
+                android:background="@drawable/rectangle_stroke"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_marginLeft="@dimen/unlock_input_number_margin_left"
+                android:textSize="@dimen/level_three_heading_font"/>
+        </LinearLayout>
 
         <EditText
             android:id="@+id/password_un_encrypt_edit"
@@ -33,7 +83,8 @@
             android:hint="@string/input_number_un_encrypt"
             android:imeOptions="actionNone"
             android:inputType="numberPassword"
-            android:text="@={screenLockModel.passwordEdit}" />
+            android:text="@={screenLockModel.passwordEdit}"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_width="@dimen/password_setting_confirm_width"
@@ -44,7 +95,7 @@
             android:onClick="@{()->screenLockModel.unlockScreen()}"
             android:padding="@dimen/edit_text_padding"
             android:text="@string/confirm"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:visibility="gone"/>
     </LinearLayout>
-
 </layout>

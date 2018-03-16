@@ -42,6 +42,24 @@ public class ReaderViewInfo {
     private List<ChapterInfo> readTocChapterNodeList;
     private boolean isLoadToc = true;
     private String firstVisiblePagePosition;
+    private boolean isLoadComplete = false;
+    private float progress;
+
+    public float getProgress() {
+        return progress;
+    }
+
+    public void setProgress(float progress) {
+        this.progress = progress;
+    }
+
+    public boolean isLoadComplete() {
+        return isLoadComplete;
+    }
+
+    public void setLoadComplete(boolean loadComplete) {
+        isLoadComplete = loadComplete;
+    }
 
     public String getFirstVisiblePagePosition() {
         return firstVisiblePagePosition;

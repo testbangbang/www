@@ -17,15 +17,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/item_personal_book_padding"
+        android:paddingTop="@dimen/item_personal_book_padding">
 
         <ImageView
             android:id="@+id/personal_book_image"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="@dimen/personal_book_image_padding"
-            android:scaleType="centerCrop"
+            android:scaleType="centerInside"
             android:src="@mipmap/ic_shelf_cover" />
 
         <LinearLayout

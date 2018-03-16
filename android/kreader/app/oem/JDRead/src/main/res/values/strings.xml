@@ -330,7 +330,7 @@
     <string name="paused">Paused %d</string>
     <string name="started">Start</string>
     <string name="total_book">Total%d</string>
-    <string name="password_setting_hint">Please enter the 4-12 digit password</string>
+    <string name="password_setting_hint">Please enter the 4 digit password</string>
     <string name="password_setting_phone_hint">Please enter phone number</string>
     <string name="reader_book_info_bookmark">Bookmark</string>
     <string name="reader_book_info_note">Note</string>
@@ -568,8 +568,10 @@
     <string name="no_results">no results</string>
     <string name="is_null" translatable="false">null</string>
     <string name="filter_free">Free</string>
-    <string name="jd_loading">loading</string>
+    <string name="jd_loading">@string/loading</string>
     <string name="update_time">Update Time</string>
+    <string name="input_password">Input password</string>
+    <string name="reader_loading">Loading...</string>
     <string name="the_book_not_download">This book is not available for download</string>
     <string name="preload_books_key">preload_books_key</string>
     <string name="without_result">Without result</string>

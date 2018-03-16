@@ -67,7 +67,6 @@ public class JDReadApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         initConfig();
-        lockScreen();
     }
 
     public void lockScreen() {

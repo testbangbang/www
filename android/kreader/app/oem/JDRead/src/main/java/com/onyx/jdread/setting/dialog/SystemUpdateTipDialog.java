@@ -26,10 +26,15 @@ import org.greenrobot.eventbus.ThreadMode;
 public class SystemUpdateTipDialog extends DialogFragment {
     private DialogUpdateTipBinding binding;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CustomDialogStyle);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().setCanceledOnTouchOutside(false);
         binding = (DialogUpdateTipBinding) DataBindingUtil.inflate(inflater, R.layout.dialog_system_update_layout, container, false);
         return binding.getRoot();

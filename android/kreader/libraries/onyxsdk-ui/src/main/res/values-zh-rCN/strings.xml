@@ -89,7 +89,7 @@
     <string name="warm_light">暖光</string>
     <string name="reader_layer_menu_note_side_note">分屏手写</string>
 
-    <string name="loading">正在加载…</string>
+    <string name="loading">loading</string>
     <string name="loading_more">正在加载更多内容…</string>
     <string name="submitting">提交中…</string>
 </resources>

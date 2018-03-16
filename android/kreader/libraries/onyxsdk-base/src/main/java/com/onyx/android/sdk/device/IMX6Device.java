@@ -164,7 +164,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodEnableScreenUpdate = null;
     private static Method sMethodSetDisplayScheme = null;
     private static Method sMethodWaitForUpdateFinished = null;
-
+    private static Method sMethodMergeDisplayByCount = null;
 
     private static Method sMethodOpenFrontLight;
     private static Method sMethodCloseFrontLight;
@@ -813,6 +813,7 @@ public class IMX6Device extends BaseDevice {
             sMethodGetViewDefaultUpdateMode = ReflectUtil.getMethodSafely(cls, "getDefaultUpdateMode");
             sMethodResetViewUpdateMode = ReflectUtil.getMethodSafely(cls, "resetUpdateMode");
             sMethodApplyGcOnce = ReflectUtil.getMethodSafely(cls, "applyGCOnce");
+            sMethodMergeDisplayByCount = ReflectUtil.getMethodSafely(cls, "mergeDisplayByCount", int.class, int.class);
 
             // signature of "public void invalidate(int updateMode)"
             sMethodGetSystemDefaultUpdateMode = ReflectUtil.getMethodSafely(cls, "getGlobalUpdateMode");
@@ -828,6 +829,7 @@ public class IMX6Device extends BaseDevice {
             sMethodEnableScreenUpdate = ReflectUtil.getMethodSafely(cls, "enableScreenUpdate", boolean.class);
             sMethodSetDisplayScheme = ReflectUtil.getMethodSafely(cls, "setDisplayScheme", int.class);
             sMethodWaitForUpdateFinished = ReflectUtil.getMethodSafely(cls, "waitForUpdateFinished");
+
 
             sMethodSetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "setVCom", Context.class, int.class, String.class);
             sMethodGetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "getVCom", String.class);
@@ -1216,5 +1218,10 @@ public class IMX6Device extends BaseDevice {
     @Override
     public void applyGCOnce() {
         ReflectUtil.invokeMethodSafely(sMethodApplyGcOnce, null);
+    }
+
+    @Override
+    public void mergeDisplayByCount(int count, UpdateMode mode) {
+        ReflectUtil.invokeMethodSafely(sMethodMergeDisplayByCount, null, count, getUpdateMode(mode));
     }
 }
