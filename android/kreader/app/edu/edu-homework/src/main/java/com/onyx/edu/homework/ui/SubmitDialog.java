@@ -58,7 +58,7 @@ public class SubmitDialog extends OnyxBaseDialog {
 
     private void initView() {
         binding.message.setText(R.string.submit_tips);
-        binding.action0.setText(R.string.continue_answer);
+        binding.action0.setText(getDataBundle().isCorrectingAnswer() ? R.string.continue_correct : R.string.continue_answer);
         binding.action0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +72,7 @@ public class SubmitDialog extends OnyxBaseDialog {
                 prepareSubmit();
             }
         });
+        binding.tvAction2.setVisibility(getDataBundle().isCorrectingAnswer() ? View.GONE : View.VISIBLE);
         binding.tvAction2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {

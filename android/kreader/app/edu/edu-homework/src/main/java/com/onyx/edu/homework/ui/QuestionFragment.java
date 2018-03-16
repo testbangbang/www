@@ -232,9 +232,6 @@ public class QuestionFragment extends BaseFragment {
             reviewFragment = null;
         }
         if (scribbleFragment != null) {
-            if(Build.VERSION.SDK_INT <= 19) {
-                scribbleFragment.showCover();
-            }
             getChildFragmentManager().beginTransaction().remove(scribbleFragment).commit();
             scribbleFragment = null;
         }

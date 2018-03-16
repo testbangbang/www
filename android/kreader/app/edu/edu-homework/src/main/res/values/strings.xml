@@ -16,6 +16,7 @@
     <string name="has_answer" formatted="false">已答：%d 未答：%d</string>
     <string name="submit_tips">确认提交吗？</string>
     <string name="continue_answer">继续答题</string>
+    <string name="continue_correct">继续改正</string>
     <string name="submit">提交</string>
     <string name="submit_homework">提交作业</string>
     <string name="submit_success">提交作业成功</string>

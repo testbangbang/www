@@ -46,6 +46,8 @@ import com.onyx.android.sdk.utils.Base64ImageParser;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.text.Html.FROM_HTML_MODE_COMPACT;
+
 /**
  * Created by zhuzeng on 6/16/16.
  * View delegate, connect ShapeManager and view.

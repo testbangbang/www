@@ -292,12 +292,6 @@ public class ScribbleFragment extends BaseFragment {
         };
     }
 
-    public void showCover() {
-        if (binding != null && binding.cover != null) {
-            binding.cover.setVisibility(View.VISIBLE);
-        }
-    }
-
     @Subscribe
     public void onRequestFinishedEvent(RequestFinishedEvent event) {
         updateDataInfo(event.request);

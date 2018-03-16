@@ -10,7 +10,9 @@ public class HomeworkIntent {
 
     public String _id;
     public HomeworkDetail child;
+    //review
     public boolean checked;
+    //publish answer
     public boolean readActive;
     public Date beginTime;
     public Date endTime;

@@ -84,9 +84,7 @@ public class Question implements Serializable {
     }
 
     private HomeworkSubmitAnswer createChoiceAnswer() {
-        HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
-        answer.setQuestion(getQuestionId());
-        answer.setUniqueId(getUniqueId());
+        HomeworkSubmitAnswer answer = createSubmitAnswer();
         for (QuestionOption option : options) {
             if (option.checked) {
                 answer.addValue(option._id);
@@ -95,10 +93,15 @@ public class Question implements Serializable {
         return answer;
     }
 
-    public HomeworkSubmitAnswer createFillAnswer() {
+    private HomeworkSubmitAnswer createFillAnswer() {
+        return createSubmitAnswer();
+    }
+
+    private HomeworkSubmitAnswer createSubmitAnswer() {
         HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
         answer.setQuestion(getQuestionId());
         answer.setUniqueId(getUniqueId());
+        answer.setQuesType(QuesType);
         return answer;
     }
 }
