@@ -10,6 +10,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SignForVoucherBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
@@ -135,7 +136,7 @@ public class UserLoginAction extends BaseAction {
         if (Constants.RESULT_CODE_SUCCESS.equals(code)) {
             LoginHelper.getUserInfo(dataBundle);
             autoSign();
-            userLoginResultEvent = new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success), dataBundle.getTargetView());
+            userLoginResultEvent = new UserLoginResultEvent(ResManager.getString(R.string.login_success), dataBundle.getTargetView());
             userLoginResultEvent.setResultCode(Integer.valueOf(Constants.RESULT_CODE_SUCCESS));
             dataBundle.getEventBus().post(userLoginResultEvent);
             if (rxCallback != null) {
