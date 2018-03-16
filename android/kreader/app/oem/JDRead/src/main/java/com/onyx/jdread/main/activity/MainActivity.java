@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.widget.PopupWindow;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -74,6 +73,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -535,6 +536,11 @@ public class MainActivity extends AppCompatActivity {
     public void onPersonalErrorEvent(PersonalErrorEvent event) {
         String[] errors = PersonalErrorEvent.getThrowableStringRep(event.throwable);
         PersonalErrorEvent.printThrowable(errors);
+        if (event.throwable instanceof SocketTimeoutException) {
+            ToastUtil.showToast(ResManager.getString(R.string.network_connection_time_out));
+        } else if (event.throwable instanceof IOException && !isNetWorkFragment(currentFragment.getClass().getName())) {
+            ToastUtil.showToast(ResManager.getString(R.string.network_exception));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

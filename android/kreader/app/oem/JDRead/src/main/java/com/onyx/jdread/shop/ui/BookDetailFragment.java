@@ -989,7 +989,7 @@ public class BookDetailFragment extends BaseFragment {
         if (getViewEventCallBack() != null) {
             Bundle bundle = new Bundle();
             bundle.putString(Constants.SP_KEY_SEARCH_BOOK_CAT_ID, event.catId);
-            bundle.putString(Constants.SP_KEY_KEYWORD, "");
+            bundle.putString(Constants.SP_KEY_KEYWORD, event.catName);
             getViewEventCallBack().gotoView(SearchBookListFragment.class.getName(), bundle);
         }
     }
