@@ -510,7 +510,9 @@
     <string name="annotation_repeat">不能重复添加</string>
     <string name="reboot">重启</string>
     <string name="shutdown">关机</string>
-    <string name="please_check_wifi">请查看无线网络设置后重试</string>
+    <string name="please_check_wifi_left_part">请查看</string>
+    <string name="please_check_wifi_middle_part">无线网络设置</string>
+    <string name="please_check_wifi_right_part">后重试</string>
     <string name="free_for_a_limited_time">限时免费</string>
     <string name="net_book_price_and_status">%1$s阅豆/千字(%2$s)</string>
     <string name="net_book_status_down">已完结</string>

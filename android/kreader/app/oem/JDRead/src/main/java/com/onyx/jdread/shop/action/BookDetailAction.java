@@ -59,6 +59,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
             public void onFinally() {
                 super.onFinally();
                 hideLoadingDialog(shopDataBundle);
+                shopDataBundle.getBookDetailViewModel().showAllButton.set(true);
             }
 
             @Override
