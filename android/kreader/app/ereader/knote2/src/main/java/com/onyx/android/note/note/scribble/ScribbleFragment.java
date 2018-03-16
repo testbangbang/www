@@ -11,8 +11,10 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.SpannableStringBuilder;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -24,16 +26,26 @@ import com.onyx.android.note.R;
 import com.onyx.android.note.action.CreateDocumentAction;
 import com.onyx.android.note.common.base.BaseFragment;
 import com.onyx.android.note.databinding.FragmentScribbleBinding;
+import com.onyx.android.note.event.BuildSpanTextShapeEvent;
+import com.onyx.android.note.event.SpanViewEnableEvent;
+import com.onyx.android.note.event.SpanViewEvent;
 import com.onyx.android.note.handler.HandlerManager;
+import com.onyx.android.note.handler.SpanTextHandler;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.PauseRawDrawingEvent;
+import com.onyx.android.sdk.note.widget.LinedEditText;
 import com.onyx.android.sdk.pen.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.Background;
 import com.onyx.android.sdk.scribble.data.DocumentOptionArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -52,6 +64,7 @@ public class ScribbleFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getNoteManager().getEventBus().register(this);
     }
 
     @Nullable
@@ -70,11 +83,78 @@ public class ScribbleFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        getNoteManager().getEventBus().unregister(this);
     }
 
     private void setup() {
         getNoteBundle().getHandlerManager().activeProvider(HandlerManager.EPD_SHAPE_PROVIDER);
         initSurfaceView();
+        initSpanView();
+    }
+
+    @Subscribe
+    public void onSpanViewEnable(SpanViewEnableEvent event) {
+        binding.spanTextView.setVisibility(event.enable ? View.VISIBLE : View.GONE);
+        if (event.enable) {
+            getNoteManager().post(new SpanViewEvent(binding.spanTextView));
+        }
+    }
+
+    private void initSpanView() {
+        binding.spanTextView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DEL:
+//                            setKeyboardInput(true);
+//                            onDelete(false);
+                            return true;
+                        case KeyEvent.KEYCODE_ENTER:
+//                            onCloseKeyBoard();
+                            return false;
+                        case KeyEvent.KEYCODE_1:
+                        case KeyEvent.KEYCODE_2:
+                        case KeyEvent.KEYCODE_3:
+                        case KeyEvent.KEYCODE_4:
+                        case KeyEvent.KEYCODE_5:
+                        case KeyEvent.KEYCODE_6:
+                        case KeyEvent.KEYCODE_7:
+                        case KeyEvent.KEYCODE_8:
+                        case KeyEvent.KEYCODE_9:
+                        case KeyEvent.KEYCODE_0:
+                            char displayLabel = keyEvent.getDisplayLabel();
+                            buildTextShape(String.valueOf(displayLabel));
+                            return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        binding.spanTextView.setOnKeyPreImeListener(new LinedEditText.OnKeyPreImeListener() {
+            @Override
+            public void onKeyPreIme(int keyCode, KeyEvent event) {
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_BACK:
+//                        if (isKeyboardInput()) {
+//                            onCloseKeyBoard();
+//                        }
+                        break;
+                }
+            }
+        });
+
+        binding.spanTextView.setInputConnectionListener(new LinedEditText.InputConnectionListener() {
+            @Override
+            public void commitText(CharSequence text, int newCursorPosition) {
+                buildTextShape(text.toString());
+            }
+        });
+    }
+
+    private void buildTextShape(String text) {
+        getNoteManager().post(new BuildSpanTextShapeEvent(text));
     }
 
     private void initSurfaceView() {

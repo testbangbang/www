@@ -4,7 +4,9 @@ import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.event.AddShapesEvent;
 import com.onyx.android.note.event.ClearAllFreeShapesEvent;
 import com.onyx.android.note.event.OpenDocumentEvent;
+import com.onyx.android.note.event.PageSpanShapesEvent;
 import com.onyx.android.note.event.RefreshDrawScreenEvent;
+import com.onyx.android.note.event.SpannableEvent;
 import com.onyx.android.note.event.menu.BackgroundChangeEvent;
 import com.onyx.android.note.event.menu.PenWidthChangeEvent;
 import com.onyx.android.note.event.menu.TopMenuChangeEvent;
@@ -100,6 +102,16 @@ public class PenEventHandler {
     public void onAddShapes(AddShapesEvent event) {
         resumeRawDrawing(event.isResumePen());
         setRawDrawingRenderEnabled(event.isRawRenderEnable());
+    }
+
+    @Subscribe
+    public void onSpannable(SpannableEvent event) {
+        resumeRawDrawing(event.isResumePen());
+    }
+
+    @Subscribe
+    public void onPageSpanShapes(PageSpanShapesEvent event) {
+        resumeRawDrawing(event.isResumePen());
     }
 
     private void setRawDrawingRenderEnabled(boolean enabled) {

@@ -60,5 +60,10 @@
             android:onClick="@{model::onCircleShape}"
             style="@style/note_menu_text"
             android:text="circle" />
+
+        <TextView
+            android:onClick="@{model::onSpanMode}"
+            style="@style/note_menu_text"
+            android:text="矢量" />
     </LinearLayout>
 </layout>
