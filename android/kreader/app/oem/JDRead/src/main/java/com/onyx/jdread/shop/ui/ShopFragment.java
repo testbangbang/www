@@ -21,6 +21,7 @@ import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelConfigResultBean;
 import com.onyx.jdread.shop.event.BannerItemClickEvent;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
@@ -268,7 +269,7 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
-        if (hasDoLogin && ResManager.getString(R.string.login_success).equals(event.getMessage())) {
+        if (hasDoLogin && BaseResultBean.checkSuccess(event.getResultCode())) {
             hasDoLogin = false;
             gotoShopCartFragment();
         }
