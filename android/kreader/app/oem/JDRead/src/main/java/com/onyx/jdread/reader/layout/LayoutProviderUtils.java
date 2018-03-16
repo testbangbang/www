@@ -186,7 +186,11 @@ public class LayoutProviderUtils {
             if(readerViewInfo.supportScalable) {
                 readerViewInfo.setChapterName(reader.getDocumentInfo().getBookName());
             }else{
-                readerViewInfo.setChapterName(ResManager.getString(R.string.reader_loading));
+                if (reader.getReaderHelper().isLoadComplete()) {
+                    readerViewInfo.setChapterName(reader.getDocumentInfo().getBookName());
+                } else {
+                    readerViewInfo.setChapterName(ResManager.getString(R.string.reader_loading));
+                }
             }
             return;
         }

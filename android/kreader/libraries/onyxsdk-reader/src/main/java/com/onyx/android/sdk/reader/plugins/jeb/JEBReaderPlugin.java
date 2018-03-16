@@ -364,6 +364,10 @@ public class JEBReaderPlugin implements ReaderPlugin,
 
     @Override
     public float getProgress(String position) {
+        if (isLastPage()) {
+            return 100.0f;
+        }
+
         int currentPosition = getPluginImpl().getScreenEndPosition();
         if(isFirstPage()){
             currentPosition = getPluginImpl().getScreenStartPosition();
