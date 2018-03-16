@@ -8,12 +8,16 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookShopBinding;
 import com.onyx.jdread.library.ui.SearchBookFragment;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.event.UserLoginResultEvent;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.action.ShopMainConfigAction;
 import com.onyx.jdread.shop.adapter.ShopMainConfigAdapter;
@@ -54,6 +58,7 @@ public class ShopFragment extends BaseFragment {
 
     private Map<Integer, Integer> pageIndexMap = new HashMap<>();
     private int pageIndex = 0;
+    private boolean hasDoLogin;
 
     @Nullable
     @Override
@@ -253,7 +258,24 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoShopingCartEvent(GoShopingCartEvent event) {
-        getViewEventCallBack().gotoView(ShopCartFragment.class.getName(), null);
+        if (!JDReadApplication.getInstance().getLogin()) {
+            LoginHelper.showUserLoginDialog(PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel(), getActivity());
+            hasDoLogin = true;
+        } else {
+            gotoShopCartFragment();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginResultEvent(UserLoginResultEvent event) {
+        if (hasDoLogin && ResManager.getString(R.string.login_success).equals(event.getMessage())) {
+            hasDoLogin = false;
+            gotoShopCartFragment();
+        }
+    }
+
+    private void gotoShopCartFragment() {
+        getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -563,8 +563,8 @@ public class BookDetailFragment extends BaseFragment {
         } else if (DownLoadHelper.isDownloaded(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_button_now_read));
             ToastUtil.showToast(ResManager.getString(R.string.download_finished));
-        } else if (DownLoadHelper.isError(downLoadState)) {
-            button.setText(ResManager.getString(R.string.book_detail_tip_try_again));
+        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState) ) {
+            button.setText(ResManager.getString(R.string.book_detail_tip_download_pause));
         }
     }
 
