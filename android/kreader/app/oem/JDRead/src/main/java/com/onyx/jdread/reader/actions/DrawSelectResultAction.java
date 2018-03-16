@@ -11,9 +11,15 @@ import com.onyx.jdread.reader.request.DrawSelectResultRequest;
  */
 
 public class DrawSelectResultAction extends BaseReaderAction {
+    private boolean showSelectionCursor;
+
+    public DrawSelectResultAction(boolean showSelectionCursor) {
+        this.showSelectionCursor = showSelectionCursor;
+    }
+
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        final DrawSelectResultRequest request = new DrawSelectResultRequest(readerDataHolder.getReader());
+        final DrawSelectResultRequest request = new DrawSelectResultRequest(readerDataHolder.getReader(),showSelectionCursor);
         request.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

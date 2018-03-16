@@ -173,6 +173,7 @@ public class WordSelectionHandler extends BaseHandler {
     public void onReleaseClick() {
         setReleaseClick(true);
         updateHighLightRect();
+        drawSelectResult();
     }
 
     private void onShowPopupMenu() {
@@ -315,7 +316,7 @@ public class WordSelectionHandler extends BaseHandler {
                 new PointF(x1, y1),
                 new PointF(x2, y2),
                 new PointF(x2, y2));
-        SelectWordAction action = new SelectWordAction(info);
+        SelectWordAction action = new SelectWordAction(info,showSelectionCursor);
         action.execute(getReaderDataHolder(), selectActionCallBack);
     }
 
@@ -332,7 +333,7 @@ public class WordSelectionHandler extends BaseHandler {
                 highLightBeginTop,
                 highLightEndBottom,
                 touchPoint);
-        SelectTextAction action = new SelectTextAction(info);
+        SelectTextAction action = new SelectTextAction(info,showSelectionCursor);
         action.execute(getReaderDataHolder(), selectActionCallBack);
     }
 
@@ -413,8 +414,8 @@ public class WordSelectionHandler extends BaseHandler {
 
         @Override
         public void onFinally() {
-            updateCursorSelected();
             updateHighLightRect();
+            updateCursorSelected();
             drawSelectResult();
         }
     };
@@ -439,7 +440,7 @@ public class WordSelectionHandler extends BaseHandler {
 
     private void drawSelectResult(){
         if(drawSelectResultCount >= MAX_DRAW_SELECT_RESULT_COUNT || getReaderDataHolder().getReaderSelectionInfo().getMoveSelectCount() <= 0) {
-            DrawSelectResultAction action = new DrawSelectResultAction();
+            DrawSelectResultAction action = new DrawSelectResultAction(showSelectionCursor);
             action.execute(getReaderDataHolder(), null);
             drawSelectResultCount = 0;
             return;

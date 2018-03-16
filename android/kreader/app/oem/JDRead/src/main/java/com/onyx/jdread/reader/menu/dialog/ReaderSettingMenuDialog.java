@@ -124,7 +124,7 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
                 Drawable drawable = readerDataHolder.getAppContext().getResources().getDrawable(R.drawable.seekbar_thumb);
                 seekBar.setThumb(drawable);
                 updateProgress(seekBar.getProgress());
-                GotoPageEvent event = new GotoPageEvent(seekBar.getProgress());
+                GotoPageEvent event = new GotoPageEvent(Math.max(seekBar.getProgress() - 1, 0));
                 readerDataHolder.getEventBus().post(event);
             }
         });

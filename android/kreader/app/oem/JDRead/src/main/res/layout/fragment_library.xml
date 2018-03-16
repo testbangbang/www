@@ -75,10 +75,10 @@
                     android:id="@+id/image_manage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{()->libraryModel.onManageClick()}"
-                    android:padding="@dimen/library_manage_layout_padding"
                     android:layout_marginLeft="@dimen/image_manage_button_margin"
                     android:layout_marginRight="@dimen/image_manage_button_margin"
+                    android:onClick="@{()->libraryModel.onManageClick()}"
+                    android:padding="@dimen/library_manage_layout_padding"
                     android:src="@{libraryModel.count == 0?@drawable/ic_manage_gray:@drawable/ic_manage}" />
 
                 <ImageView
@@ -136,9 +136,22 @@
                 android:drawablePadding="@dimen/function_bar_item_name_margin"
                 android:drawableTop="@{libraryModel.isSelectAll?@drawable/ic_shelf_check_all_finish:@drawable/ic_shelf_check_all}"
                 android:onClick="@{()->libraryModel.selectAll()}"
-                android:text="@{libraryModel.isSelectAll?@string/cancel:@string/select_all}"
+                android:text="@string/select_all"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_size_14" />
+                android:textSize="@dimen/font_size_14"
+                android:visibility="@{libraryModel.canSelectAll?View.VISIBLE:View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/function_bar_item_image_margin"
+                android:clickable="false"
+                android:drawablePadding="@dimen/function_bar_item_name_margin"
+                android:drawableTop="@mipmap/ic_shelf_check_all_gray"
+                android:text="@string/select_all"
+                android:textColor="@color/text_gray_color"
+                android:textSize="@dimen/font_size_14"
+                android:visibility="@{libraryModel.canSelectAll?View.GONE:View.VISIBLE}" />
 
             <TextView
                 android:layout_width="wrap_content"

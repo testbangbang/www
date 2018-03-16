@@ -151,6 +151,7 @@ public class JDReadApplication extends MultiDexApplication {
 
     public void setLogin(boolean isUserLogin) {
         this.isUserLogin = isUserLogin;
+        JDPreferenceManager.setBooleanValue(R.string.login_success_key, isUserLogin);
     }
 
     public boolean getLogin() {

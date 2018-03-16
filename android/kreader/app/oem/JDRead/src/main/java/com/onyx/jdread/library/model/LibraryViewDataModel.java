@@ -31,6 +31,7 @@ import com.onyx.jdread.library.event.SearchBookEvent;
 import com.onyx.jdread.library.event.SortByNameEvent;
 import com.onyx.jdread.library.event.SortByTimeEvent;
 import com.onyx.jdread.library.event.WifiPassBookEvent;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,6 +57,7 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableBoolean showBottomMenu = new ObservableBoolean(false);
     public final ObservableBoolean haveSelected = new ObservableBoolean(false);
     public final ObservableBoolean isSelectAll = new ObservableBoolean(false);
+    public final ObservableBoolean canSelectAll = new ObservableBoolean(false);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
     private List<DataModel> librarySelected = new ArrayList<>();
     private int queryLimit = 6;
@@ -177,7 +179,7 @@ public class LibraryViewDataModel extends Observable {
         args.libraryUniqueId = libraryId;
         generateQueryArgs(args);
         QueryBuilder.andWith(args.conditionGroup, QueryBuilder.storageIdCondition(getSdcardCid()));
-        if (!JDReadApplication.getInstance().getLogin()) {
+        if (!JDPreferenceManager.getBooleanValue(R.string.login_success_key, false)) {
             QueryBuilder.andWith(args.conditionGroup, hideUserBought());
         }
         return generateMetadataInQueryArgs(args);
@@ -350,6 +352,7 @@ public class LibraryViewDataModel extends Observable {
 
     private void setSelectAllBtnText() {
         isSelectAll.set(isSelectAll());
+        canSelectAll.set(count.get() > libraryCount.get());
         checkHaveSelected();
     }
 

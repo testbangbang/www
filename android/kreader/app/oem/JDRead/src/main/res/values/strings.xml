@@ -575,5 +575,7 @@
     <string name="the_book_not_download">This book is not available for download</string>
     <string name="preload_books_key">preload_books_key</string>
     <string name="without_result">Without result</string>
+    <string name="login_success_key">login_success_key</string>
     <string name="underline">_</string>
+    <string name="is_24_hour_key">is_24_hour_key</string>
 </resources>

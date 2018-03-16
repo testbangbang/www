@@ -27,11 +27,7 @@ public class SettingLineSpacingAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         ReaderTextStyle.Percentage oldLineSpacing = style.getLineSpacing();
-        if(style.getFontFace().equals(ReaderConfig.Typeface.TYPEFACE_FOUR)){
-            int typefaceFourExtendHeight = ReaderConfig.getTypefaceFourExtendHeight(styleIndex);
-            lineSpacing += typefaceFourExtendHeight;
-        }
-        oldLineSpacing.setPercent(lineSpacing);
+        style.setLineSpacing(ReaderConfig.getAdditionalSpacing(style.getFontFace(),styleIndex,lineSpacing));
         final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(),style,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {
             @Override

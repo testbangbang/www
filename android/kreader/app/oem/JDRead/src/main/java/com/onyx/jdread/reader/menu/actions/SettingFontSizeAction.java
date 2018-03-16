@@ -25,12 +25,7 @@ public class SettingFontSizeAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
-        if(style.getFontFace().equals(ReaderConfig.Typeface.TYPEFACE_FOUR)){
-            ReaderTextStyle.Percentage lineSpacing = ReaderConfig.getTypefaceFourSpacingLine(styleIndex);
-            style.setLineSpacing(lineSpacing);
-        }else {
-            style.setLineSpacing(presetStyle.getLineSpacing());
-        }
+        style.setLineSpacing(ReaderConfig.getAdditionalSpacing(style.getFontFace(),styleIndex));
         style.setFontSize(presetStyle.getFontSize());
         style.setPageMargin(presetStyle.getPageMargin());
         style.setParagraphSpacing(presetStyle.getParagraphSpacing());

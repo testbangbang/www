@@ -13,9 +13,11 @@ import com.onyx.jdread.reader.request.SelectRequest;
  */
 public class SelectWordAction extends BaseReaderAction {
     private SelectWordInfo selectWordInfo;
+    private boolean showSelectionCursor;
 
-    public SelectWordAction(SelectWordInfo selectWordInfo) {
+    public SelectWordAction(SelectWordInfo selectWordInfo,boolean showSelectionCursor) {
         this.selectWordInfo = selectWordInfo;
+        this.showSelectionCursor = showSelectionCursor;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class SelectWordAction extends BaseReaderAction {
                 selectWordInfo.endPoint,
                 selectWordInfo.touchPoint,
                 ReaderHitTestOptionsImpl.create(true),
-                readerDataHolder.getReaderViewInfo().getPageInfo(selectWordInfo.pagePosition),true);
+                readerDataHolder.getReaderViewInfo().getPageInfo(selectWordInfo.pagePosition),true,showSelectionCursor);
 
         final String pagePosition = readerDataHolder.getCurrentPagePosition();
         readerDataHolder.getReaderSelectionInfo().increaseSelectCount();
