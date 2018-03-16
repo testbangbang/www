@@ -178,50 +178,29 @@ public class ReaderPageInfoModel {
     }
 
     public static int getChapterPositionByPage(int pagePosition, boolean back, List<ChapterInfo> tocChapterNodeList) {
+        if (tocChapterNodeList.size() <= 0) {
+            return pagePosition;
+        }
+
+        int i;
         int size = tocChapterNodeList.size();
-        int i = 0;
+
         for (i = 0; i < size; i++) {
-            ChapterInfo chapterInfo = tocChapterNodeList.get(i);
-            if (pagePosition < chapterInfo.getPosition()) {
-                if (back) {
-                    int index = i - 1;
-                    if (index < 0) {
-                        return 0;
-                    }
-                    chapterInfo = tocChapterNodeList.get(Math.max(0, index));
-                    int position = chapterInfo.getPosition();
-                    if (position < pagePosition) {
-                        return position;
-                    } else {
-                        return getChapterPositionByPage(pagePosition - 1, back, tocChapterNodeList);
-                    }
-                } else {
-                    chapterInfo = tocChapterNodeList.get(i);
-                    int position = chapterInfo.getPosition();
-                    if (position > pagePosition) {
-                        return position;
-                    } else {
-                        return getChapterPositionByPage(pagePosition + 1, back, tocChapterNodeList);
-                    }
+            ChapterInfo nextChapter = tocChapterNodeList.get(i);
+            if (pagePosition < nextChapter.getPosition()) {
+                if (!back) {
+                    return nextChapter.getPosition();
                 }
+
+                int index = i - 2; // goto previous chapter
+                if (index <= 0) {
+                    return 0;
+                }
+                return tocChapterNodeList.get(index).getPosition();
             }
         }
 
-        if (back) {
-            if(i == size){
-                int index = i - 1;
-                if(index > 0){
-                    ChapterInfo chapterInfo = tocChapterNodeList.get(index);
-                    if(pagePosition >= chapterInfo.getPosition()){
-                        chapterInfo = tocChapterNodeList.get(index - 1);
-                        return chapterInfo.getPosition();
-                    }
-                }
-            }
-            return pagePosition - 1;
-        } else {
-            return pagePosition + 1;
-        }
+        return pagePosition;
     }
 
     private void gotoPosition(final ReaderDataHolder readerDataHolder, Object object, final boolean abortPendingTasks) {

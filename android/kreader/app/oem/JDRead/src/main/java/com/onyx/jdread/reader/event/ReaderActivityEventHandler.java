@@ -214,7 +214,9 @@ public class ReaderActivityEventHandler {
     public void onUpdateReaderViewInfoEvent(UpdateReaderViewInfoEvent event) {
         readerViewModel.getReaderDataHolder().setReaderViewInfo(event.getReaderViewInfo());
         readerViewModel.getReaderDataHolder().setStyle(event.getStyle());
-        readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
+        if (event.getSettings() != null) {
+            readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
+        }
         readerViewModel.getReaderDataHolder().setReaderUserDataInfo(event.getReaderUserDataInfo());
         if (readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()) {
             readerSettingMenuDialog.updateBookmarkState();
