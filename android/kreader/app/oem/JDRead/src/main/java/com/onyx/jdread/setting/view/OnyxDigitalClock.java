@@ -12,6 +12,9 @@ import android.provider.Settings;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 
+import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.util.TimeUtils;
 
@@ -49,7 +52,7 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
         mFormatChangeObserver = new FormatChangeObserver();
         getContext().getContentResolver().registerContentObserver(
                 Settings.System.CONTENT_URI, true, mFormatChangeObserver);
-
+        format = JDPreferenceManager.getBooleanValue(R.string.is_24_hour_key, true) ? m24 : m12;
         setText(DateFormat.format(format, mCalendar));
         Intent intent = new Intent(ScreenStateReceive.EXTRA_ALARM_ACTION);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
@@ -109,7 +112,7 @@ public class OnyxDigitalClock extends android.support.v7.widget.AppCompatTextVie
     }
 
     public void setFormat() {
-        format = TimeUtils.is24Hour() ? m24 : m12;
+        format = JDPreferenceManager.getBooleanValue(R.string.is_24_hour_key, true) ? m24 : m12;
         mCalendar.setTimeInMillis(System.currentTimeMillis());
         setText(DateFormat.format(format, mCalendar));
         invalidate();
