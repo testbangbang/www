@@ -248,8 +248,7 @@ public class FakeReader implements ReaderDocument,
     @Override
     public float getProgress(String position) {
         int currentPage = PagePositionUtils.getPageNumber(position);
-        float totalPage = getTotalPage() - 1;
-        return (currentPage / totalPage) * 100;
+        return PagePositionUtils.getProgress(currentPage, getTotalPage());
     }
 
     @Override
