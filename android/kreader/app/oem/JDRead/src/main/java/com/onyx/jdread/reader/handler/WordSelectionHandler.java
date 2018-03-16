@@ -39,9 +39,9 @@ public class WordSelectionHandler extends BaseHandler {
 
     private static final String TAG = WordSelectionHandler.class.getSimpleName();
     private static final int MAX_WORD_CHINESE_COUNT = 10;
-    private static final int MAX_DRAW_SELECT_RESULT_COUNT = 25;
+    private static final int MAX_DRAW_SELECT_RESULT_COUNT = 28;
 
-    private int moveRangeAfterLongPress = 28;
+    private int moveRangeAfterLongPress = 25;
 
     private float movePointOffsetHeight;
     private Point lastMovedPoint = null;
