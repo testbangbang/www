@@ -78,8 +78,11 @@ public class Utils {
         return decimalFormat.format(value);
     }
 
-    public static String bookSizeFormat(long size) {
-        return keepPoints(size * 1f / 1000 / 1000) + "MB";
+    public static String bookSizeFormat(String fileSize, long size) {
+        if (StringUtils.isNotBlank(fileSize)) {
+            return fileSize + "MB";
+        }
+        return keepPoints(size * 1f / 1024 / 1024) + "MB";
     }
 
     public static boolean hasDownload(String extraAttributes) {

@@ -15,4 +15,5 @@ public class BoughtAndUnlimitedItemBean {
     public int second_catid2;
     public float file_size;
     public String format;
+    public int user_product_type;
 }

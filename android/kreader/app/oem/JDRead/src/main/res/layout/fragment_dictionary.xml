@@ -22,8 +22,7 @@
             android:id="@+id/dictionary_recycler"
             android:padding="@dimen/fragment_content_padding"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            items="@{model.list}"
-            android:layout_weight="1" />
+            android:layout_height="@dimen/dictionary_recycler_height"
+            items="@{model.list}" />
     </LinearLayout>
 </layout>

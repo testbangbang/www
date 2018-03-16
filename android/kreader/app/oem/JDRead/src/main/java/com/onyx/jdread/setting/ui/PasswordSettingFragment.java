@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
@@ -38,8 +37,6 @@ public class PasswordSettingFragment extends BaseFragment {
 
     private FragmentPasswordSettingsBinding passwordSettingBinding;
     private NumberKeyboardPopWindow keyboardPopupWindow;
-    private TextView[] textViews;
-    private PswSettingModel pswSettingModel;
 
     @Nullable
     @Override
@@ -64,9 +61,7 @@ public class PasswordSettingFragment extends BaseFragment {
 
     private void showInputKeyboard() {
         final boolean encrypted = passwordSettingBinding.getPswSettingModel().encrypted.get();
-        textViews = new TextView[]{passwordSettingBinding.unlockPasswordOne, passwordSettingBinding.unlockPasswordTwo
-                , passwordSettingBinding.unlockPasswordThree, passwordSettingBinding.unlockPasswordFour};
-        final EditText focusView = passwordSettingBinding.passwordEncryptEdit;
+        final EditText focusView = encrypted ? passwordSettingBinding.passwordUnEncryptEdit : passwordSettingBinding.passwordEncryptEdit;
         focusView.requestFocus();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         showPopupWindow(focusView, encrypted, getKeyboardListener());
@@ -89,7 +84,7 @@ public class PasswordSettingFragment extends BaseFragment {
 
             @Override
             public void onFinishEvent(String password) {
-                pswSettingModel.unLockPassword(password);
+
             }
         };
     }
@@ -119,15 +114,17 @@ public class PasswordSettingFragment extends BaseFragment {
 
     private void initBinding(LayoutInflater inflater, @Nullable ViewGroup container) {
         passwordSettingBinding = FragmentPasswordSettingsBinding.inflate(inflater, container, false);
-        pswSettingModel = new PswSettingModel(SettingBundle.getInstance().getEventBus());
+        PswSettingModel pswSettingModel = new PswSettingModel(SettingBundle.getInstance().getEventBus());
         passwordSettingBinding.passwordSettingsTitle.setTitleModel(pswSettingModel.titleBarModel);
         passwordSettingBinding.setPswSettingModel(pswSettingModel);
         initView();
     }
 
     private void initView() {
-        ViewCompatUtil.disableEditShowSoftInput(passwordSettingBinding.passwordEncryptEdit, passwordSettingBinding.phoneEdit);
+        ViewCompatUtil.disableEditShowSoftInput(passwordSettingBinding.passwordEncryptEdit,
+                passwordSettingBinding.passwordUnEncryptEdit, passwordSettingBinding.phoneEdit);
         setEditOnFocusChangeListener(passwordSettingBinding.passwordEncryptEdit);
+        setEditOnFocusChangeListener(passwordSettingBinding.passwordUnEncryptEdit);
         setEditOnFocusChangeListener(passwordSettingBinding.phoneEdit);
     }
 
@@ -154,13 +151,10 @@ public class PasswordSettingFragment extends BaseFragment {
         }
         if (encrypted) {
             keyboardPopupWindow.getKeyboardView().setCustomText(getString(R.string.forgot_psw));
-            keyboardPopupWindow.setTextViews(textViews);
-            keyboardPopupWindow.bindTextViews(textViews, listener);
         } else {
             keyboardPopupWindow.getKeyboardView().setCustomDrawable(getResources().getDrawable(R.drawable.enter_icon));
-            keyboardPopupWindow.bindEdit(focusView, listener);
         }
-
+        keyboardPopupWindow.bindEdit(focusView, listener);
         keyboardPopupWindow.showAtBottomCenter(passwordSettingBinding.getRoot());
         return keyboardPopupWindow;
     }

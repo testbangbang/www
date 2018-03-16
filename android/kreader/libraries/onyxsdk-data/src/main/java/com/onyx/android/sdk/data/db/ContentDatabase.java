@@ -19,7 +19,7 @@ import com.raizlabs.android.dbflow.sql.migration.IndexMigration;
 public class ContentDatabase {
 
     public static final String NAME = "ContentDatabase";
-    public static final int VERSION = 5;
+    public static final int VERSION = 6;
 
     @Migration(version = 2, database = ContentDatabase.class)
     public static class Version2Migration extends AlterTableMigration<Metadata> {
@@ -71,6 +71,20 @@ public class ContentDatabase {
         @Override
         public void onPreMigrate() {
             addColumn(SQLiteType.TEXT, Metadata_Table.downloadInfo.getNameAlias().name());
+        }
+    }
+
+    @Migration(version = 6, database = ContentDatabase.class)
+    public static class Version6Migration extends AlterTableMigration<Metadata> {
+        public Version6Migration(Class<Metadata> table) {
+            super(table);
+        }
+
+        @Override
+        public void onPreMigrate() {
+            addColumn(SQLiteType.TEXT, Metadata_Table.fileSize.getNameAlias().name());
+            addColumn(SQLiteType.TEXT, Metadata_Table.extension.getNameAlias().name());
+            addColumn(SQLiteType.TEXT, Metadata_Table.extraReadAttributes.getNameAlias().name());
         }
     }
 

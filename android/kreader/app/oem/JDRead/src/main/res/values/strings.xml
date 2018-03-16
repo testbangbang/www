@@ -291,7 +291,7 @@
     <string name="password_key">password_key</string>
     <string name="password_fail_data_key" translatable="false">password_fail_data_key</string>
     <string name="phone_key" translatable="false">phone_key</string>
-    <string name="password_format_error">The password is wrongly formatted. Please enter %1$d-%2$d digits</string>
+    <string name="password_format_error">The password is wrongly formatted. Please enter %1$d digits</string>
     <string name="wrong_password">Wrong password</string>
     <string name="reading_tools">Reading tools</string>
     <string name="dictionary">Dictionary</string>
@@ -575,4 +575,10 @@
     <string name="the_book_not_download">This book is not available for download</string>
     <string name="preload_books_key">preload_books_key</string>
     <string name="without_result">Without result</string>
+    <string name="register_with_qrcode">Use jingdong or WeChat scan code for account registration</string>
+    <string name="find_password_with_qrcode">Use jingdong or WeChat scan code for password retrieval</string>
+    <string name="back_to_login">Back to login</string>
+    <string name="register_jd_account">Registered jd account</string>
+    <string name="retrieve_password">Retrieve password</string>
+    <string name="kingsoft_dictionary">Kingsoft dictionary</string>
 </resources>

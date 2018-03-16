@@ -276,7 +276,7 @@
     <string name="confirm_password">确认加密</string>
     <string name="encrypted">已加密</string>
     <string name="unlock_the_password">解除加密</string>
-    <string name="password_format_error">密码格式错误,请输入%1$d-%2$d位数字</string>
+    <string name="password_format_error">密码格式错误,请输入%1$d位数字</string>
     <string name="wrong_password">密码有误</string>
     <string name="reading_tools">阅读工具</string>
     <string name="dictionary">词典</string>
@@ -542,4 +542,10 @@
     <string name="reader_loading">加载中...</string>
     <string name="without_result">没有搜索结果</string>
     <string name="the_book_not_download">图书未下载</string>
+    <string name="register_with_qrcode">使用 京东 或 微信 扫码进行账号注册</string>
+    <string name="find_password_with_qrcode">使用 京东 或 微信 扫码进行密码找回</string>
+    <string name="back_to_login">返回登录</string>
+    <string name="register_jd_account">注册京东账号</string>
+    <string name="retrieve_password">找回密码</string>
+    <string name="kingsoft_dictionary">金山词典</string>
 </resources>

@@ -545,7 +545,7 @@ public class PersonalBookFragment extends BaseFragment {
         detail.file_size = metadata.getSize();
         detail.downLoadUrl = StringUtils.isNotBlank(metadata.getLocation()) ? metadata.getLocation() : null;
         detail.format = metadata.getType();
-        detail.downLoadType = metadata.getOrdinal();
+        detail.downLoadType = metadata.getOrdinal() - 1;
         String downloadInfo = metadata.getDownloadInfo();
 
         BookExtraInfoBean infoBean = null;

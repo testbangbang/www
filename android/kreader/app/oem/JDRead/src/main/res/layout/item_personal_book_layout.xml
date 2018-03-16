@@ -64,7 +64,7 @@
                 android:ellipsize="middle"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="@{Utils.bookSizeFormat(metadata.size)}"
+                android:text="@{Utils.bookSizeFormat(metadata.fileSize, metadata.size)}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
         </LinearLayout>
