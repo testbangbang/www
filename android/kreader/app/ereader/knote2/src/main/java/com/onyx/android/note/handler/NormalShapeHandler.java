@@ -1,12 +1,6 @@
 package com.onyx.android.note.handler;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.view.SurfaceView;
 
 import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.action.AddShapesAction;
@@ -14,12 +8,10 @@ import com.onyx.android.note.action.RenderVarietyShapesAction;
 import com.onyx.android.note.utils.DrawUtils;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.RawDrawingRenderEnabledEvent;
-import com.onyx.android.sdk.note.utils.RendererUtils;
 import com.onyx.android.sdk.pen.data.TouchPoint;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.rx.SingleThreadScheduler;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
@@ -31,10 +23,8 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by lxm on 2018/2/25.
@@ -88,8 +78,8 @@ public class NormalShapeHandler extends BaseHandler {
 
         })
                 .buffer(10)
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.io())
+                .observeOn(SingleThreadScheduler.scheduler())
+                .subscribeOn(SingleThreadScheduler.scheduler())
                 .subscribe(new Consumer<List<TouchPoint>>() {
                     @Override
                     public void accept(List<TouchPoint> touchPoints) throws Exception {
@@ -97,7 +87,6 @@ public class NormalShapeHandler extends BaseHandler {
                         for (TouchPoint point : touchPoints) {
                             shape.onMove(point, point);
                         }
-//                        render(shape);
                         renderVarietyShape(shape);
                     }
                 });
@@ -106,7 +95,6 @@ public class NormalShapeHandler extends BaseHandler {
     @Override
     public void onRawDrawingPointsMoveReceived(TouchPoint point) {
         super.onRawDrawingPointsMoveReceived(point);
-        Log.e(TAG, "onRawDrawingPointsMoveReceived: ");
         if (drawEmitter != null) {
             drawEmitter.onNext(point);
         }
@@ -129,7 +117,6 @@ public class NormalShapeHandler extends BaseHandler {
 
     private void renderVarietyShape(Shape shape) {
         disposeAction();
-        Log.d(TAG, "renderVarietyShape: x:" + shape.getCurrentPoint().x + "----y:" + shape.getCurrentPoint().y);
         new RenderVarietyShapesAction(getNoteManager(), shape).execute(new RxCallback() {
             @Override
             public void onNext(@NonNull Object o) {
@@ -141,28 +128,6 @@ public class NormalShapeHandler extends BaseHandler {
                 actionDisposables.add(d);
             }
         });
-    }
-
-    private void render(Shape shape) {
-        Log.d(TAG, "render: start---" + Thread.currentThread().getName());
-        SurfaceView surfaceView = getNoteManager().getNoteView();
-        Rect rect = RendererUtils.checkSurfaceView(surfaceView);
-        if (rect == null) {
-            return;
-        }
-        Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
-        if (canvas == null) {
-            return;
-        }
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
-        RendererUtils.clearBackground(canvas, paint, rect);
-        canvas.drawBitmap(getNoteManager().getRenderContext().bitmap, 0, 0, paint);
-        RenderContext context = RenderContext.create(canvas, paint, null);
-        shape.render(context);
-        surfaceView.getHolder().unlockCanvasAndPost(canvas);
-        Log.d(TAG, "render: end");
     }
 
     private void disposeAction() {

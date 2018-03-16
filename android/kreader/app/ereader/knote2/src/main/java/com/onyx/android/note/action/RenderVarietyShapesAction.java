@@ -1,5 +1,7 @@
 package com.onyx.android.note.action;
 
+import android.util.Log;
+
 import com.onyx.android.note.common.base.BaseNoteAction;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.request.RenderVarietyShapesRequest;
@@ -34,7 +36,7 @@ public class RenderVarietyShapesAction extends BaseNoteAction {
     @Override
     public void execute(RxCallback rxCallback) {
         RenderVarietyShapesRequest request = new RenderVarietyShapesRequest(getNoteManager(), shapes);
-        request.setPauseRawDrawing(false);
+        request.setPauseRawDrawing(false).setRenderToScreen(false);
         getNoteManager().getRxManager().enqueue(request, rxCallback);
     }
 }
