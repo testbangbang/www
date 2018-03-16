@@ -307,9 +307,12 @@ public class DialogSearch extends OnyxBaseDialog implements DialogSearchViewCall
         Pattern patPunc =
                 Pattern.compile("[℃±×÷•°©£€®℉_™’\\+√\\-\\-\"%`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]");
         Matcher matcher = patPunc.matcher(searchText);
-        searchText = matcher.replaceAll("");
-        if (StringUtils.isNullOrEmpty(searchText)) {
-            ToastMessage.showMessageCenter(readerDataHolder.getAppContext(), ResManager.getString(R.string.search_view_hint));
+        String text = matcher.replaceAll("");
+        if (StringUtils.isNullOrEmpty(text)) {
+            stopSearch();
+
+            reset();
+            binding.getDialogSearchModel().setIsEmpty(true);
             return;
         }
         dialogSearchModel.setSearchHistory(false);

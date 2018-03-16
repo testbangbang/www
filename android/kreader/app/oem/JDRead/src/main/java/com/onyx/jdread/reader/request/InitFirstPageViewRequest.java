@@ -156,6 +156,11 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
             style = customStyle;
         }
 
+        if(style.getFontFace().equals(ReaderConfig.Typeface.TYPEFACE_FOUR)){
+            ReaderTextStyle.Percentage lineSpacing = ReaderConfig.getTypefaceFourSpacingLine(settingInfo.settingStyle);
+            style.setLineSpacing(lineSpacing);
+        }
+
         getReader().getReaderHelper().getReaderLayoutManager().setStyle(style);
         restoreContrast();
         setChineseConvertType();
