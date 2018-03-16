@@ -382,6 +382,23 @@ public class ReaderConfig {
         return ReaderTextStyle.Percentage.create(presetStyle.getLineSpacing().getPercent() + spacing);
     }
 
+    public static ReaderTextStyle.Percentage getAdditionalSpacing(String faceType,int styleIndex){
+        if(faceType.equals(ReaderConfig.Typeface.TYPEFACE_FOUR)){
+            return ReaderConfig.getTypefaceFourSpacingLine(styleIndex);
+        }else {
+            ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
+            return presetStyle.getLineSpacing();
+        }
+    }
+
+    public static ReaderTextStyle.Percentage getAdditionalSpacing(String faceType,int styleIndex,int spacing){
+        if(faceType.equals(ReaderConfig.Typeface.TYPEFACE_FOUR)){
+            int typefaceFourExtendHeight = ReaderConfig.getTypefaceFourExtendHeight(styleIndex);
+            spacing += typefaceFourExtendHeight;
+        }
+        return ReaderTextStyle.Percentage.create(spacing);
+    }
+
     public static int getTypefaceFourExtendHeight(int styleIndex){
         int spacing = TYPEFACE_FOUR_SPACING_LINE_EXTEND_HEIGHT_ONE;
         if(styleIndex == ReaderConfig.SETTING_SIX_STYLE_KEY){
