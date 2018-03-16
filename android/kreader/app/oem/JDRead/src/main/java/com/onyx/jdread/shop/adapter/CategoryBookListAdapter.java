@@ -98,7 +98,7 @@ public class CategoryBookListAdapter extends PageAdapter<PageRecyclerView.ViewHo
         CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo categoryBeanLevelTwo = levelTwoList.get(position);
         if (canSelected) {
             categoryBeanLevelTwo.isSelect = true;
-            notifyItemChanged(position);
+            notifyDataSetChanged();
         }
     }
 
