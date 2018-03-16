@@ -21,6 +21,7 @@ public class GotoPageRequest extends ReaderBaseRequest {
         if (!getReader().getReaderHelper().getReaderLayoutManager().gotoPage(page)) {
             throw ReaderException.outOfRange();
         }
+        getReader().getReaderEpdHelper().increaseRefreshCount();
         getReader().getReaderViewHelper().updatePageView(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
         updateSetting(getReader());
         saveReaderOptions(getReader());
