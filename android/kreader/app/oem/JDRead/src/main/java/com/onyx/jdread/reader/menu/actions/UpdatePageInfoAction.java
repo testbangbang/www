@@ -27,8 +27,8 @@ public class UpdatePageInfoAction extends BaseReaderAction {
         String bookName = ReaderPageInfoFormat.getChapterName(readerDataHolder);
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setBookName(bookName);
 
-        int currentPage = readerDataHolder.getCurrentPage();
-        int total = readerViewInfo.getTotalPage() - 1;
+        int currentPage = readerDataHolder.getCurrentPage() + 1;
+        int total = readerViewInfo.getTotalPage();
         String readProgress = ReaderPageInfoFormat.getReadProgress(readerViewInfo);
         binding.readerSettingPageInfoBar.getReaderPageInfoModel().setReadProgress(readProgress);
         if(isInit) {
