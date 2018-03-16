@@ -85,8 +85,12 @@ public class ReaderEpdHelper {
         }
     }
 
+    public void increaseRefreshCount(){
+        refreshCount++;
+    }
+
     public void applyWithGCIntervalWitRegal(View view) {
-        if (refreshCount++ >= gcInterval) {
+        if (refreshCount >= gcInterval) {
             refreshCount = 0;
             applyGCUpdate(view);
         } else {
