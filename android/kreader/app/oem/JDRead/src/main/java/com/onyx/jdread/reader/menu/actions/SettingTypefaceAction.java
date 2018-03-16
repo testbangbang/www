@@ -27,13 +27,7 @@ public class SettingTypefaceAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         style.setFontFace(typefacePath);
-        if(typefacePath.equals(ReaderConfig.Typeface.TYPEFACE_FOUR)){
-            ReaderTextStyle.Percentage lineSpacing = ReaderConfig.getTypefaceFourSpacingLine(styleIndex);
-            style.setLineSpacing(lineSpacing);
-        }else {
-            ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
-            style.setLineSpacing(presetStyle.getLineSpacing());
-        }
+        style.setLineSpacing(ReaderConfig.getAdditionalSpacing(style.getFontFace(),styleIndex));
 
         final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(), style,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {
