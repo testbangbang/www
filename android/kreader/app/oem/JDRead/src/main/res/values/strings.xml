@@ -568,7 +568,7 @@
     <string name="no_results">no results</string>
     <string name="is_null" translatable="false">null</string>
     <string name="filter_free">Free</string>
-    <string name="jd_loading">loading</string>
+    <string name="jd_loading">@string/loading</string>
     <string name="update_time">Update Time</string>
     <string name="input_password">Input password</string>
     <string name="reader_loading">Loading...</string>
