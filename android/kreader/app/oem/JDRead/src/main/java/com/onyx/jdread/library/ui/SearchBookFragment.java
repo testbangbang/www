@@ -374,6 +374,8 @@ public class SearchBookFragment extends BaseFragment {
     private void checkResultView(boolean show) {
         binding.searchResultLayout.setVisibility(show ? View.VISIBLE : View.GONE);
         binding.emptyResultLayout.setVisibility(!show ? View.VISIBLE : View.GONE);
+        binding.searchHotHistoryLayout.setVisibility(View.GONE);
+        binding.searchHintLayout.setVisibility(View.GONE);
     }
 
     private void initData() {
