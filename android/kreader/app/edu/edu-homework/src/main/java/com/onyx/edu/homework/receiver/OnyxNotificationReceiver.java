@@ -21,6 +21,7 @@ public class OnyxNotificationReceiver extends BroadcastReceiver {
     public static final String TYPE_NOTIFY_HOMEWORK = "homework";
     public static final String TYPE_NOTIFY_HOMEWORK_READ_ACTIVE = "homework_readActive";
     public static final String TYPE_NOTIFY_HOMEWORK_END_TIME = "homework_endTime";
+    public static final String TYPE_NOTIFY_HOMEWORK_CHECKED = "homework_checked";
 
     public static abstract class OnyxNotificationListener {
         public abstract void onHomeworkNotificationReceive(NotificationType type, String data);
