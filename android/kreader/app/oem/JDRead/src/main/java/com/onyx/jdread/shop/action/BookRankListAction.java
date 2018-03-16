@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.BookRankListRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 public class BookRankListAction extends BaseAction<ShopDataBundle> {
 
-    private int rankId;
+    private int modelType;
     private int currentPage;
     private RecommendListResultBean bookModelResultBean;
 
@@ -27,8 +28,8 @@ public class BookRankListAction extends BaseAction<ShopDataBundle> {
         return bookModelResultBean;
     }
 
-    public BookRankListAction(int rankId, int currentPage) {
-        this.rankId = rankId;
+    public BookRankListAction(int modelType, int currentPage) {
+        this.modelType = modelType;
         this.currentPage = currentPage;
     }
 
@@ -36,13 +37,13 @@ public class BookRankListAction extends BaseAction<ShopDataBundle> {
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         BookRankListRequestBean requestBean = new BookRankListRequestBean();
         JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
-        requestBean.setModuleType(rankId);
+        requestBean.setModuleType(modelType);
         requestBean.setType(CloudApiContext.BookRankList.RANK_LIST_TIME_TYPE);
         Map<String, String> queryArgs = new HashMap();
         queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, Constants.BOOK_PAGE_SIZE);
         queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, String.valueOf(currentPage));
         appBaseInfo.addRequestParams(queryArgs);
-        String sign = String.format(CloudApiContext.BookShopURI.BOOK_RANK_LIST_URI, String.valueOf(rankId), CloudApiContext.BookRankList.RANK_LIST_TIME_TYPE);
+        String sign = String.format(CloudApiContext.BookShopURI.BOOK_RANK_LIST_URI, String.valueOf(modelType), CloudApiContext.BookRankList.RANK_LIST_TIME_TYPE);
         appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         requestBean.setAppBaseInfo(appBaseInfo);
         RxRequestBookRankList request = new RxRequestBookRankList();
@@ -72,6 +73,7 @@ public class BookRankListAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), shopDataBundle.getEventBus());
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
                 }

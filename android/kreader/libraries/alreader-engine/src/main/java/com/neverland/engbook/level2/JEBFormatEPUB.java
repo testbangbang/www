@@ -285,9 +285,7 @@ public class JEBFormatEPUB extends AlFormatBaseHTML {
         if (noUseCover || coverName == null || imageFIRST == null || coverName.contentEquals(imageFIRST)) {
             if (imageFIRST != null && par0.size() > 1)
                 par0.get(1).paragraph |= AlStyles.SL_COVER;
-            //don't remove cover, it will cause deviation in toc entry position
-            size -= (par0.get(0).length + par0.get(1).length);
-            //removeCover();
+            removeCover();
         }
 
         if (imageFIRST != null) {

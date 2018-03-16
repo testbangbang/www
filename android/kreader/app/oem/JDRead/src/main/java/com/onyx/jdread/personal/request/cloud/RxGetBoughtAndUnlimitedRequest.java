@@ -71,10 +71,7 @@ public class RxGetBoughtAndUnlimitedRequest extends RxBaseCloudRequest {
                 for (BoughtAndUnlimitedItemBean bean : items) {
                     PersonalBookBean bookBean = new PersonalBookBean();
                     Metadata metadata = new Metadata();
-                    String type = baseInfo.getRequestParamsMap().get(Constants.SEARCH_TYPE);
-                    if (StringUtils.isNotBlank(type)) {
-                        metadata.setOrdinal(Constants.TYPE_BOUGHT.equals(type) ? 0 : 1);
-                    }
+                    metadata.setOrdinal(data.user_product_type);
                     metadata.setName(bean.name);
                     metadata.setAuthors(bean.author);
                     metadata.setCloudId(String.valueOf(bean.ebook_id));

@@ -69,6 +69,14 @@ public class PswSettingModel extends Observable {
 
     public void unlockPassword() {
         String unlockPassword = unlockPasswordEdit.get();
+        unlock(unlockPassword);
+    }
+
+    public void unLockPassword(String password) {
+        unlock(password);
+    }
+
+    private void unlock(String psw) {
         if (StringUtils.isNullOrEmpty(password)) {
             password = JDPreferenceManager.getStringValue(R.string.password_key, null);
         }
@@ -76,7 +84,7 @@ public class PswSettingModel extends Observable {
         if (!valid) {
             return;
         }
-        if (StringUtils.isNotBlank(unlockPassword) && FileUtils.computeMD5(unlockPassword).equals(password)) {
+        if (StringUtils.isNotBlank(psw) && FileUtils.computeMD5(psw).equals(password)) {
             JDPreferenceManager.setStringValue(R.string.password_key, "");
             pswFailModel.saveUnlockFailData(null);
             encrypted.set(false);

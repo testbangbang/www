@@ -15,6 +15,9 @@ import com.onyx.jdread.reader.data.ReaderViewHelper;
 import com.onyx.jdread.reader.layout.LayoutProviderUtils;
 import com.onyx.jdread.reader.request.SelectRequest;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by huxiaomao on 2018/1/16.
  */
@@ -46,13 +49,23 @@ public class HitTestTextHelper {
                                                      ReaderHitTestManager hitTestManager,
                                                      ReaderUserDataInfo readerUserDataInfo) {
         SelectionInfo readerSelectionInfo;
+        PointF selectStart = null;
         for (float y = newPageStartPosition.y; y < newPageEndPosition.y; y += step) {
             for (float x = newPageStartPosition.x; x < newPageEndPosition.x; x += step) {
                 PointF start = new PointF(x, y);
                 PointF end = new PointF(x, y);
                 readerSelectionInfo = selectOnScreen(start, end, pagePosition, pageInfo, hitTestManager, readerUserDataInfo);
                 if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection().getRectangles().size() > 0) {
-                    readerSelectionInfo.setHighLightBeginTop(start);
+                    if(selectStart == null){
+                        selectStart = start;
+                    }
+                    if(!checkSign(readerSelectionInfo.getCurrentSelection())){
+                        continue;
+                    }
+
+                    readerSelectionInfo = selectOnScreen(selectStart, end, pagePosition, pageInfo, hitTestManager, readerUserDataInfo);
+
+                    readerSelectionInfo.setHighLightBeginTop(selectStart);
                     readerSelectionInfo.setHighLightEndBottom(end);
                     readerSelectionInfo.pageInfo = pageInfo;
                     return readerSelectionInfo;
@@ -70,14 +83,24 @@ public class HitTestTextHelper {
                                                      ReaderHitTestManager hitTestManager,
                                                      ReaderUserDataInfo readerUserDataInfo) {
         SelectionInfo readerSelectionInfo;
+        PointF selectEnd = null;
         for (float y = newPageStartPosition.y; y > newPageEndPosition.y; y += step) {
             for (float x = newPageStartPosition.x; x > newPageEndPosition.x; x += step) {
                 PointF start = new PointF(x, y);
                 PointF end = new PointF(x, y);
                 readerSelectionInfo = selectOnScreen(start, end, pagePosition, pageInfo, hitTestManager, readerUserDataInfo);
                 if (readerSelectionInfo != null && readerSelectionInfo.getCurrentSelection().getRectangles().size() > 0) {
+                    if(selectEnd == null){
+                        selectEnd = end;
+                    }
+                    if(!checkSign(readerSelectionInfo.getCurrentSelection())){
+                        continue;
+                    }
+
+                    readerSelectionInfo = selectOnScreen(start, selectEnd, pagePosition, pageInfo, hitTestManager, readerUserDataInfo);
+
                     readerSelectionInfo.setHighLightBeginTop(start);
-                    readerSelectionInfo.setHighLightEndBottom(end);
+                    readerSelectionInfo.setHighLightEndBottom(selectEnd);
                     return readerSelectionInfo;
                 }
             }
@@ -127,5 +150,16 @@ public class HitTestTextHelper {
 
             }
         }
+    }
+
+    public static boolean checkSign(ReaderSelection currentSelection){
+        String text = currentSelection.getText();
+        Pattern pattern =
+                Pattern.compile("[℃±×÷•°©£€®℉_™’\\+√\\-\\-\"%`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]");
+        Matcher matcher = pattern.matcher(text);
+        if(matcher.find()){
+            return true;
+        }
+        return false;
     }
 }

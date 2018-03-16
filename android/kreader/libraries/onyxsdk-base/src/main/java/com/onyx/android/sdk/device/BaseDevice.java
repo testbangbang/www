@@ -504,4 +504,6 @@ public class BaseDevice {
     public void shutdown(){}
 
     public void applyGCOnce() {}
+
+    public void mergeDisplayByCount(int count, UpdateMode mode) {}
 }

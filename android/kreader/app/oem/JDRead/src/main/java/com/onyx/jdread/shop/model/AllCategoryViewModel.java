@@ -29,11 +29,29 @@ public class AllCategoryViewModel extends BaseObservable{
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems;
     public List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> topCategoryItems;
     public CategoryBookListViewModel categoryBookListViewModel;
+    private List<CategoryListResultBean.CategoryBeanLevelOne> levelOneData;
+    private List<String> titleList;
 
     public AllCategoryViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
         titleBarViewModel = new TitleBarViewModel();
         titleBarViewModel.setEventBus(eventBus);
+    }
+
+    public List<String> getTitleList() {
+        return titleList;
+    }
+
+    public void setTitleList(List<String> titleList) {
+        this.titleList = titleList;
+    }
+
+    public List<CategoryListResultBean.CategoryBeanLevelOne> getLevelOneData() {
+        return levelOneData;
+    }
+
+    public void setLevelOneData(List<CategoryListResultBean.CategoryBeanLevelOne> levelOneData) {
+        this.levelOneData = levelOneData;
     }
 
     public TitleBarViewModel getTitleBarViewModel() {

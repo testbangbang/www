@@ -33,26 +33,19 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                if (rxCallback != null) {
-                    rxCallback.onNext(BookshelfInsertAction.this);
-                    rxCallback.onComplete();
-                }
+                invokeNext(rxCallback, BookshelfInsertAction.this);
             }
 
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                if (rxCallback != null) {
-                    rxCallback.onError(throwable);
-                }
+                invokeError(rxCallback, throwable);
             }
 
             @Override
             public void onComplete() {
                 super.onComplete();
-                if (rxCallback != null) {
-                    rxCallback.onComplete();
-                }
+                invokeComplete(rxCallback);
             }
         });
 

@@ -28,6 +28,6 @@ public interface OnyxService {
     @GET("firmware/history")
     Call<List<Firmware>> getFirmwareHistoryList(@Query(Constant.WHERE_TAG) final String params);
 
-    @GET("apps/history")
+    @GET("app/history")
     Call<List<ApplicationUpdate>> getAppsHistoryList(@Query(Constant.WHERE_TAG) final String params);
 }

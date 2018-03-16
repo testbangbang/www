@@ -25,6 +25,7 @@ public class UserLoginViewModel {
     public final ObservableField<String> password = new ObservableField<>();
     public final ObservableField<Boolean> isShowPassword = new ObservableField<>();
     public final ObservableField<Boolean> loginButtonEnabled = new ObservableField<>(true);
+    public final ObservableField<String> errorMessage = new ObservableField<>();
     private EventBus eventBus;
 
     public void setEventBus(EventBus eventBus) {

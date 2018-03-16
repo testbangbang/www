@@ -278,5 +278,7 @@ public class NumberKeyboardView extends KeyboardView implements KeyboardView.OnK
         void onDeleteKeyEvent();
 
         void onCustomKeyEvent();
+
+        void onFinishEvent(String password);
     }
 }

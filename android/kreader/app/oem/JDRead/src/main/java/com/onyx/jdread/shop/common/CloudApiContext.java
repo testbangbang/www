@@ -29,7 +29,7 @@ public class CloudApiContext {
     public static final String JD_BOOK_ORDER_URL = "https://order-e.jd.com/";
     public static final String JD_BOOK_BASE_URI = "/eink/api/";
 
-    public static final String ONYX_EINK_HOST = "http://oa.o-in.me:9066/";
+    public static final String ONYX_EINK_HOST = "http://120.76.75.225/";
     public static final String ONYX_EINK_API = ONYX_EINK_HOST + "api/";
 
     public static final String DEFAULT_COVER_PRE_FIX = "https://img10.360buyimg.com/n12/s350x350_";

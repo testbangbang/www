@@ -152,8 +152,7 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
     @Override
     public float getProgress(String position) {
         int currentPage = PagePositionUtils.getPageNumber(position);
-        float totalPage = getTotalPage();
-        return (currentPage / totalPage) * 100;
+        return PagePositionUtils.getProgress(currentPage, getTotalPage());
     }
 
     public ReaderDocument open(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws ReaderException {

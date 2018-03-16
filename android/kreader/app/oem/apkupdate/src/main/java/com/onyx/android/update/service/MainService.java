@@ -36,7 +36,12 @@ public class MainService extends Service {
 
     private void processFeedback(Intent intent) {
         String content = intent.getStringExtra(Constant.ARGS_TAG);
-        LogReportAction action = new LogReportAction(JSONObjectParseUtils.parseObject(content, LogCollection.class));
+        LogCollection logCollection = JSONObjectParseUtils.parseObject(content, LogCollection.class);
+        if (logCollection == null) {
+            logCollection = new LogCollection();
+            logCollection.desc = content;
+        }
+        LogReportAction action = new LogReportAction(logCollection);
         action.execute(getApplicationContext(), null);
     }
 

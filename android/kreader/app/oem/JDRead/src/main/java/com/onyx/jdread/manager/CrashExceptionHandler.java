@@ -51,8 +51,6 @@ public class CrashExceptionHandler implements Thread.UncaughtExceptionHandler {
     }
 
     private void submitFeedback(Throwable e) {
-        LogCollection logCollection = new LogCollection();
-        logCollection.desc = e.toString();
-        BroadcastHelper.sendFeedbackBroadcast(appContext, JSONObjectParseUtils.toJson(logCollection));
+        BroadcastHelper.sendFeedbackBroadcast(appContext, e);
     }
 }

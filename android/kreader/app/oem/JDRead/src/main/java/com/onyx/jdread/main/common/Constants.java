@@ -60,6 +60,7 @@ public class Constants {
     public static final String RESULT_CODE_PARAMS_LENGTH_ERROR = "5";
     public static final String RESULT_CODE_PARAMS_LACK = "6";
     public static final String RESULT_CODE_PARAMS_FORMAT_ERRO = "7";
+    public static final String RESULT_CODE_ERROR = "8";
     public static final String RESULT_CODE_BOOK_NO_READ_VIP = "100";
     public static final String RESULT_CODE_BOOK_CAN_NOT_READ = "104";
     public static final String RESULT_CODE_BOOK_NOT_FOUND = "300";

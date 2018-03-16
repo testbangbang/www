@@ -26,6 +26,8 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.data.Reader;
 
 import java.util.List;
@@ -130,18 +132,6 @@ public class LayoutProviderUtils {
         if (!reader.getReaderHelper().getRendererFeatures().supportScale()) {
             updateVisiblePagesForFlowDocument(reader, readerViewInfo, layoutManager);
         }
-        String pagePosition = layoutManager.getCurrentLayoutProvider().getCurrentPagePosition();
-        if(readerViewInfo.isLoadToc()) {
-            setChapterName(reader, readerViewInfo, pagePosition);
-        }else {
-            readerViewInfo.chapterName = reader.getDocumentInfo().getBookName();
-        }
-
-        final List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
-        for (PageInfo pageInfo : visiblePages) {
-            pageInfo.setChapterName(readerViewInfo.chapterName);
-            readerViewInfo.copyPageInfo(pageInfo);
-        }
         readerViewInfo.isFixedDocument = layoutManager.getReaderRendererFeatures().supportScale();
         readerViewInfo.canPrevScreen = layoutManager.getCurrentLayoutProvider().canPrevScreen();
         readerViewInfo.canNextScreen = layoutManager.getCurrentLayoutProvider().canNextScreen();
@@ -153,7 +143,22 @@ public class LayoutProviderUtils {
         readerViewInfo.canGoBack = layoutManager.canGoBack();
         readerViewInfo.canGoForward = layoutManager.canGoForward();
         readerViewInfo.viewportInDoc.set(layoutManager.getViewportRect());
+        String pagePosition = layoutManager.getCurrentLayoutProvider().getCurrentPagePosition();
+        if(readerViewInfo.isLoadToc()) {
+            setChapterName(reader, readerViewInfo, pagePosition);
+        }else {
+            readerViewInfo.chapterName = ResManager.getString(R.string.reader_loading);
+        }
+
+        final List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
+        for (PageInfo pageInfo : visiblePages) {
+            pageInfo.setChapterName(readerViewInfo.chapterName);
+            readerViewInfo.copyPageInfo(pageInfo);
+        }
+
         readerViewInfo.setFirstVisiblePagePosition(layoutManager.getCurrentPagePosition());
+        readerViewInfo.setLoadComplete(reader.getReaderHelper().isLoadComplete());
+        readerViewInfo.setProgress(reader.getReaderHelper().getNavigator().getProgress(reader.getReaderHelper().getReaderLayoutManager().getCurrentPagePosition()));
         if (layoutManager.getCropRect() != null) {
             RectF rect = new RectF(layoutManager.getCropRect());
             PageUtils.translateCoordinates(rect, readerViewInfo.viewportInDoc);
@@ -178,7 +183,15 @@ public class LayoutProviderUtils {
         reader.getReaderHelper().getDocument().readTableOfContent(toc);
         boolean hasToc = toc != null && !toc.isEmpty();
         if (!hasToc) {
-            readerViewInfo.setChapterName(reader.getDocumentInfo().getBookName());
+            if(readerViewInfo.supportScalable) {
+                readerViewInfo.setChapterName(reader.getDocumentInfo().getBookName());
+            }else{
+                if (reader.getReaderHelper().isLoadComplete()) {
+                    readerViewInfo.setChapterName(reader.getDocumentInfo().getBookName());
+                } else {
+                    readerViewInfo.setChapterName(ResManager.getString(R.string.reader_loading));
+                }
+            }
             return;
         }
 

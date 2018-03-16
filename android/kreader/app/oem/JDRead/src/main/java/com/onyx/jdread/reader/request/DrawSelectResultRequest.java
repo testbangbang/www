@@ -10,14 +10,17 @@ import com.onyx.jdread.reader.layout.LayoutProviderUtils;
  */
 
 public class DrawSelectResultRequest extends ReaderBaseRequest {
-
-    public DrawSelectResultRequest(Reader reader) {
+    private boolean showSelectionCursor;
+    public DrawSelectResultRequest(Reader reader,boolean showSelectionCursor) {
         super(reader);
+        this.showSelectionCursor = showSelectionCursor;
     }
 
     @Override
     public DrawSelectResultRequest call() throws Exception {
         ReaderSelectionHelper readerSelectionHelper = getReader().getReaderSelectionHelper();
+        String pagePosition = getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
+        readerSelectionHelper.setEnable(pagePosition, showSelectionCursor);
         LayoutProviderUtils.updateReaderViewInfo(getReader(), getReaderViewInfo(), getReader().getReaderHelper().getReaderLayoutManager());
         ReaderViewHelper.loadUserData(getReader(),getReaderUserDataInfo(),getReaderViewInfo());
         getReader().getReaderEpdHelper().setUseDefaultUpdate(true);

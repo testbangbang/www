@@ -5,10 +5,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.api.device.epd.UpdateScheme;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.DialogMessage;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.MainActivity;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.dialog.ExportDialog;
@@ -114,6 +118,9 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDocumentLoadSuccessResultEvent(DocumentLoadSuccessEvent event) {
         Log.d(getClass().getSimpleName(), "onDocumentLoadSuccessResultEvent");
+        if(readerViewModel.getReaderDataHolder().isInitViewPage() && !readerViewModel.getReaderDataHolder().isPreload()){
+            new UpdateViewPageAction().execute(readerViewModel.getReaderDataHolder(),null);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -191,6 +198,9 @@ public class ReaderActivityEventHandler {
             startMainActivity();
             readerViewBack.getContext().finish();
         }else {
+            if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
+                EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+            }
             new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
         }
     }
@@ -204,7 +214,9 @@ public class ReaderActivityEventHandler {
     public void onUpdateReaderViewInfoEvent(UpdateReaderViewInfoEvent event) {
         readerViewModel.getReaderDataHolder().setReaderViewInfo(event.getReaderViewInfo());
         readerViewModel.getReaderDataHolder().setStyle(event.getStyle());
-        readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
+        if (event.getSettings() != null) {
+            readerViewModel.getReaderDataHolder().setSettings(event.getSettings());
+        }
         readerViewModel.getReaderDataHolder().setReaderUserDataInfo(event.getReaderUserDataInfo());
         if (readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()) {
             readerSettingMenuDialog.updateBookmarkState();

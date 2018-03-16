@@ -9,14 +9,14 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.library.event.WifiPassBookErrorEvent;
-import com.onyx.jdread.library.model.LibraryDataBundle;
-import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentWifiPassBookBinding;
 import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
+import com.onyx.jdread.library.event.WifiPassBookErrorEvent;
 import com.onyx.jdread.library.fileserver.FileServer;
 import com.onyx.jdread.library.model.FileServerModel;
+import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.request.RxFileServerAddressRequest;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 
@@ -47,19 +47,23 @@ public class WiFiPassBookFragment extends BaseFragment {
         fileServerModel = new FileServerModel();
         passBookBinding.wifiPassTitleBar.setTitleModel(fileServerModel.titleBarModel);
         passBookBinding.setFileServerModel(fileServerModel);
+        startServer();
         return passBookBinding.getRoot();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        LibraryDataBundle.getInstance().getEventBus().register(this);
+    private void startServer() {
         try {
             server.start();
             loadData();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        LibraryDataBundle.getInstance().getEventBus().register(this);
     }
 
     private void loadData() {
@@ -75,14 +79,19 @@ public class WiFiPassBookFragment extends BaseFragment {
     @Override
     public void onStop() {
         super.onStop();
-        server.stop();
         LibraryDataBundle.getInstance().getEventBus().unregister(this);
-        ToastUtil.showOffsetToast(ResManager.getString(R.string.quit_wifi_pass_book), ResManager.getInteger(R.integer.pass_book_toast_offset_y));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        server.stop();
     }
 
     @Subscribe
     public void onBackToLibraryFragment(BackToLibraryFragmentEvent event) {
         viewEventCallBack.viewBack();
+        ToastUtil.showOffsetToast(ResManager.getString(R.string.quit_wifi_pass_book), ResManager.getInteger(R.integer.pass_book_toast_offset_y));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

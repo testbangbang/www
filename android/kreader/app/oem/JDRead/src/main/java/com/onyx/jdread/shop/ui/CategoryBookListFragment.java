@@ -143,7 +143,15 @@ public class CategoryBookListFragment extends BaseFragment {
     private void setCategoryV3Data() {
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
         if (CollectionUtils.getSize(allCategoryItems) > levelTwoPosition) {
-            getCategoryBookListViewModel().setCategoryItems(allCategoryItems.get(levelTwoPosition).sub_category);
+            List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelThreeDatas = allCategoryItems.get(levelTwoPosition).sub_category;
+            resetLevelThreeData(levelThreeDatas);
+            getCategoryBookListViewModel().setCategoryItems(levelThreeDatas);
+        }
+    }
+
+    private void resetLevelThreeData(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelThreeDatas) {
+        for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo cateBean: levelThreeDatas){
+            cateBean.isSelect = false;
         }
     }
 
@@ -327,6 +335,10 @@ public class CategoryBookListFragment extends BaseFragment {
         this.currentPage = 1;
         this.catLevel = categoryBean.level;
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
+        Bundle bundle = getBundle();
+        bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
+        bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, catLevel);
+        bundle.putString(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
     }
 

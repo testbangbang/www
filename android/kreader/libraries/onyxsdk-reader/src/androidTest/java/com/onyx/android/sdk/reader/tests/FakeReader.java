@@ -246,6 +246,12 @@ public class FakeReader implements ReaderDocument,
     }
 
     @Override
+    public float getProgress(String position) {
+        int currentPage = PagePositionUtils.getPageNumber(position);
+        return PagePositionUtils.getProgress(currentPage, getTotalPage());
+    }
+
+    @Override
     public boolean isFirstPage() {
         return false;
     }

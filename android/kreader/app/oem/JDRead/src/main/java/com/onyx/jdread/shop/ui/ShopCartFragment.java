@@ -56,7 +56,6 @@ public class ShopCartFragment extends BaseFragment {
     private ShopCartModel shopCartModel;
     private GPaginator paginator;
     private int defaultCurrent = 1;
-    private int pages;
     private TopUpDialog topUpDialog;
     private boolean isBuying = false;
 
@@ -127,7 +126,8 @@ public class ShopCartFragment extends BaseFragment {
         shopCartModel.setCheckAllEnable(size > 0);
         shopCartAdapter.setData(datas);
         shopCartAdapter.notifyDataSetChanged();
-        pages = paginator.pages();
+        paginator.resize(shopCartAdapter.getRowCount(), shopCartAdapter.getColumnCount(), size);
+        paginator.setCurrentPage(0);
         shopCartModel.setPageSize(paginator.getProgressText());
         binding.amountLayout.setVisibility(size > 0 ? View.VISIBLE : View.INVISIBLE);
     }
@@ -153,7 +153,7 @@ public class ShopCartFragment extends BaseFragment {
         binding.shopCartRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
-                shopCartModel.setPageSize((position / pageSize + 1) + "/" + pages);
+                shopCartModel.setPageSize((position / pageSize + 1) + "/" + paginator.pages());
             }
         });
 

@@ -51,6 +51,8 @@ public class ViewAllBooksFragment extends BaseFragment {
     private int modelId;
     private int modelType;
 
+    private ViewAllViewModel viewAllViewModel;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,8 +79,8 @@ public class ViewAllBooksFragment extends BaseFragment {
                 modelType = bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
                 getBookModelData(currentPage);
             } else if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_RANK) {
-                int rankType = bundle.getInt(Constants.SP_KEY_SUBJECT_RANK_TYPE, -1);
-                getBookRankData(rankType, currentPage);
+                int modelType = bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
+                getBookRankData(modelType, currentPage);
             }
         }
         checkWifi(getTitleBarViewModel().leftText);
@@ -95,8 +97,8 @@ public class ViewAllBooksFragment extends BaseFragment {
         });
     }
 
-    private void getBookRankData(int rankId, int currentPage) {
-        BookRankListAction booksAction = new BookRankListAction(rankId, currentPage);
+    private void getBookRankData(int modelType, int currentPage) {
+        BookRankListAction booksAction = new BookRankListAction(modelType, currentPage);
         booksAction.execute(getShopDataBundle(), new RxCallback<BookRankListAction>() {
             @Override
             public void onNext(BookRankListAction booksAction) {
@@ -176,7 +178,10 @@ public class ViewAllBooksFragment extends BaseFragment {
     }
 
     private ViewAllViewModel getViewAllViewModel() {
-        return getShopDataBundle().getViewAllViewModel();
+        if (viewAllViewModel == null) {
+            viewAllViewModel = new ViewAllViewModel(getEventBus());
+        }
+        return viewAllViewModel;
     }
 
     private TitleBarViewModel getTitleBarViewModel() {

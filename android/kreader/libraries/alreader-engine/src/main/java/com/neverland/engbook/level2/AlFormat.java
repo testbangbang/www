@@ -627,7 +627,6 @@ public abstract class AlFormat {
             par0.get(1).ptext[par0.get(1).length++] = 0x00;
             par0.get(1).ptext[par0.get(1).length++] = 0x00;
             par0.get(1).ptext[par0.get(1).length++] = 0x00;
-            size -= par0.get(1).length;
 
             par0.remove(0);
         }

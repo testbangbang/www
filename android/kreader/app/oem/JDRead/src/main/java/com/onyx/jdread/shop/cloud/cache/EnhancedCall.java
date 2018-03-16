@@ -5,8 +5,10 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.CommonUtils;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.personal.event.PersonalErrorEvent;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -104,6 +106,7 @@ public class EnhancedCall<T> {
             Response<T> response = mCall.execute();
             t = response.body();
         } catch (IOException e) {
+            PersonalErrorEvent.onErrorHandle(e, getClass().getSimpleName(), ShopDataBundle.getInstance().getEventBus());
             if (mUseCache && !CommonUtils.isNetworkConnected(JDReadApplication.getInstance())) {
                 Request request = mCall.request();
                 String url = request.url().toString();

@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemDeviceConfigBinding;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.event.UpdateTimeFormatEvent;
 import com.onyx.jdread.main.model.MainBundle;
@@ -66,7 +67,7 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
         DeviceConfigData deviceConfigData = data.get(position);
-        boolean is24Hour = TimeUtils.is24Hour();
+        boolean is24Hour = JDPreferenceManager.getBooleanValue(R.string.is_24_hour_key, true);
         deviceConfigData.setTimeFormat(is24Hour ? FORMAT_24 : FORMAT_12);
         viewHolder.getBinding().itemDataFormatCheck.setChecked(is24Hour);
         viewHolder.getBinding().itemDataFormatCheck.setOnCheckedChangeListener(this);
@@ -100,7 +101,7 @@ public class DeviceConfigAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        TimeUtils.setFormat(new SimpleDateFormat(isChecked ? TimeUtils.DATA_TIME_24 : TimeUtils.DATA_TIME_12));
+        JDPreferenceManager.setBooleanValue(R.string.is_24_hour_key, isChecked);
         eventBus.post(new UpdateTimeFormatEvent());
         data.get(0).setTimeFormat(isChecked ? FORMAT_24 : FORMAT_12);
     }
