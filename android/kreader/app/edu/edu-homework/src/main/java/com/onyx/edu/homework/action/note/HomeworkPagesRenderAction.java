@@ -96,6 +96,7 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
                 size,
                 textLayoutArgs,
                 saveAsFile);
+        renderRequest.setQuestion(question);
         noteViewHelper.submit(getAppContext(), renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
