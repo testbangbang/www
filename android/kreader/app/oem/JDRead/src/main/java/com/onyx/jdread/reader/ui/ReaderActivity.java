@@ -80,9 +80,6 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
             finish();
             return;
         }
-        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
-            EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
-        }
         final ParserOpenDocumentInfoAction parserOpenDocumentInfoAction = new ParserOpenDocumentInfoAction(getIntent());
         parserOpenDocumentInfoAction.execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
             @Override
