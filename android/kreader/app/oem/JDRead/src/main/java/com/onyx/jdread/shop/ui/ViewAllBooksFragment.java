@@ -93,7 +93,10 @@ public class ViewAllBooksFragment extends BaseFragment {
             @Override
             public void onNext(BookModelAction booksAction) {
                 BookModelBooksResultBean bookModelResultBean = booksAction.getBookModelResultBean();
-                updateContentView(bookModelResultBean.data.items);
+                if (bookModelResultBean != null && bookModelResultBean.data != null) {
+                    List<ResultBookBean> data = bookModelResultBean.data.items;
+                    setResult(data);
+                }
             }
         });
     }
@@ -103,9 +106,17 @@ public class ViewAllBooksFragment extends BaseFragment {
         booksAction.execute(getShopDataBundle(), new RxCallback<BookRankListAction>() {
             @Override
             public void onNext(BookRankListAction booksAction) {
-                updateContentView(booksAction.getBookModelResultBean().data);
+                if (booksAction.getBookModelResultBean() != null) {
+                    List<ResultBookBean> data = booksAction.getBookModelResultBean().data;
+                    setResult(data);
+                }
             }
         });
+    }
+
+    private void setResult(List<ResultBookBean> data) {
+        checkContentEmpty(data);
+        updateContentView(data);
     }
 
     private void initView() {

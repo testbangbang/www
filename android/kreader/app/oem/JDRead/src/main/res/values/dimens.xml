@@ -623,4 +623,5 @@
     <dimen name="dash_Line_length">2dp</dimen>
     <dimen name="dash_space_length">2dp</dimen>
     <dimen name="rectangle_stroke_radius">3dp</dimen>
+    <dimen name="book_detail_content_introduction_height">42dp</dimen>
 </resources>
