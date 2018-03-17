@@ -17,6 +17,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ShopCartBinding;
+import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
@@ -160,8 +161,7 @@ public class ShopCartFragment extends BaseFragment {
         binding.shopCartDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                deleteItems();
+                showDeleteDialog();
             }
         });
 
@@ -178,6 +178,28 @@ public class ShopCartFragment extends BaseFragment {
                 viewEventCallBack.viewBack();
             }
         });
+    }
+
+    private void showDeleteDialog() {
+        LibraryDeleteDialog.DialogModel dialogModel = new LibraryDeleteDialog.DialogModel();
+        dialogModel.message.set(ResManager.getString(R.string.Delete_selected_book_from_shopp_cart) + "?");
+        LibraryDeleteDialog.Builder builder = new LibraryDeleteDialog.Builder(getContext(), dialogModel);
+        final LibraryDeleteDialog libraryDeleteDialog = builder.create();
+        libraryDeleteDialog.show();
+        dialogModel.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                deleteItems();
+                libraryDeleteDialog.dismiss();
+            }
+        });
+        dialogModel.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                libraryDeleteDialog.dismiss();
+            }
+        });
+
     }
 
     @Nullable
