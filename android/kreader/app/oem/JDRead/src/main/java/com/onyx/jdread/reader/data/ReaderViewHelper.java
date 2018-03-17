@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.data.PageInfo;
@@ -22,7 +21,8 @@ import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
-import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.reader.plugins.jeb.JEBReaderPlugin;
+import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
@@ -104,12 +104,54 @@ public class ReaderViewHelper {
             if (searchResults != null) {
                 readerUserDataInfo.saveSearchResults(translateToScreen(reader, readerViewInfo, searchResults));
             }
+
+            if (renderCoverForJEBBook(reader, readerViewInfo)) {
+                return;
+            }
+
             renderAll(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo, readerViewInfo, readerSelectionManager);
 
             reader.getReaderHelper().saveToCache(context.renderingBitmap);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean renderCoverForJEBBook(Reader reader, ReaderViewInfo readerViewInfo) {
+        if (!readerViewInfo.canPrevScreen && JEBReaderPlugin.isJEB(reader.getDocumentInfo().getBookPath()) &&
+                !NeoPdfReaderPlugin.isJDPDF(reader.getDocumentInfo().getBookPath())) {
+            return renderCover(reader);
+        }
+        return false;
+    }
+
+    public boolean renderCover(Reader reader) {
+        if (contentView == null) {
+            return false;
+        }
+
+        Bitmap cover = Bitmap.createBitmap(contentView.getWidth(), contentView.getHeight(), Bitmap.Config.ARGB_8888);
+        boolean succ = reader.getReaderHelper().getDocument().readCover(cover);
+        if (!succ) {
+            cover.recycle();
+            return false;
+        }
+
+        paint.setDither(true);
+        applyEpdUpdate(reader, contentView);
+        Canvas canvas = contentView.getHolder().lockCanvas();
+        if(canvas == null){
+            return false;
+        }
+
+        try {
+            canvas.drawColor(Color.WHITE);
+            canvas.drawBitmap(cover, 0, 0, paint);
+        } finally {
+            contentView.getHolder().unlockCanvasAndPost(canvas);
+        }
+
+        return true;
     }
 
     private List<ReaderSelection> translateToScreen(final Reader reader, ReaderViewInfo readerViewInfo, final List<ReaderSelection> list) {
