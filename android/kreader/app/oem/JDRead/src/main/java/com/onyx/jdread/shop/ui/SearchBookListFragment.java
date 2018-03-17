@@ -21,6 +21,7 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.CloudApiContext.CategoryLevel2BookList;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
@@ -35,6 +36,8 @@ import com.onyx.jdread.util.Utils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 /**
  * Created by jackdeng on 2017/12/30.
@@ -91,10 +94,18 @@ public class SearchBookListFragment extends BaseFragment {
             @Override
             public void onNext(SearchBookListAction booksAction) {
                 BookModelBooksResultBean booksResultBean = booksAction.getBooksResultBean();
-                getViewAllViewModel().setBookList(booksResultBean.data.items);
-                updateContentView();
+                if (booksResultBean != null && booksResultBean.data != null) {
+                    List<ResultBookBean> data = booksResultBean.data.items;
+                    setResult(data);
+                }
             }
         });
+    }
+
+    private void setResult(List<ResultBookBean> data) {
+        checkContentEmpty(data);
+        getViewAllViewModel().setBookList(data);
+        updateContentView();
     }
 
     private void initView() {

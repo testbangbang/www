@@ -612,4 +612,5 @@
     <dimen name="radio_button_size">20dp</dimen>
     <dimen name="radio_button_inside_margin">5dp</dimen>
     <dimen name="radio_button_inside_size">7dp</dimen>
+    <dimen name="book_detail_content_introduction_height">42dp</dimen>
 </resources>
