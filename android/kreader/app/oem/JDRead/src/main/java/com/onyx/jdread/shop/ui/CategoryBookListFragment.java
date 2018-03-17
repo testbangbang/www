@@ -19,6 +19,7 @@ import com.onyx.jdread.databinding.FragmentCategoryBookListBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.CategoryBookListAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
@@ -53,10 +54,10 @@ import java.util.List;
 public class CategoryBookListFragment extends BaseFragment {
 
     private FragmentCategoryBookListBinding categoryBookListBinding;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_col);
-    private int catRow = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_category_recycle_viw_row);
-    private int catCol = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_category_recycle_viw_col);
+    private int row = ResManager.getInteger(R.integer.subject_list_recycle_viw_row);
+    private int col = ResManager.getInteger(R.integer.subject_list_recycle_viw_col);
+    private int catRow = ResManager.getInteger(R.integer.subject_list_category_recycle_viw_row);
+    private int catCol = ResManager.getInteger(R.integer.subject_list_category_recycle_viw_col);
     private PageRecyclerView recyclerView;
     private GPaginator paginator;
     private int currentPage = 1;

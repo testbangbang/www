@@ -34,8 +34,8 @@ public class DashLineItemDivider extends RecyclerView.ItemDecoration {
             Path path = new Path();
             path.moveTo(left, top);
             path.lineTo(right, top);
-            PathEffect effects = new DashPathEffect(new float[]{JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.dash_Line_length),
-                    JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.dash_space_length)}, 0);
+            PathEffect effects = new DashPathEffect(new float[]{ResManager.getDimensionPixelSize(R.dimen.dash_Line_length),
+                    ResManager.getDimensionPixelSize(R.dimen.dash_space_length)}, 0);
             paint.setPathEffect(effects);
             c.drawPath(path, paint);
         }

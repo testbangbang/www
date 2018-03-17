@@ -11,6 +11,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemBuyReadVipBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
 import com.onyx.jdread.shop.event.VipGoodItemClickEvent;
 
@@ -32,12 +33,12 @@ public class BuyReadVipAdapter extends PageAdapter<PageRecyclerView.ViewHolder, 
 
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.buy_read_vip_adapter_row);
+        return ResManager.getInteger(R.integer.buy_read_vip_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.buy_read_vip_adapter_col);
+        return ResManager.getInteger(R.integer.buy_read_vip_adapter_col);
     }
 
     @Override

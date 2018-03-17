@@ -24,10 +24,10 @@ public class ToastUtil {
 
     private static String oldMsg;
     private static Toast toast = null;
-    private static int left = JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.toast_view_padding_left_and_right);
-    private static int top = JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.toast_view_padding_top_and_bottom);
-    private static int right = JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.toast_view_padding_left_and_right);
-    private static int bottom = JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.toast_view_padding_top_and_bottom);
+    private static int left = ResManager.getDimensionPixelSize(R.dimen.toast_view_padding_left_and_right);
+    private static int top = ResManager.getDimensionPixelSize(R.dimen.toast_view_padding_top_and_bottom);
+    private static int right = ResManager.getDimensionPixelSize(R.dimen.toast_view_padding_left_and_right);
+    private static int bottom = ResManager.getDimensionPixelSize(R.dimen.toast_view_padding_top_and_bottom);
     private static float radius = ResManager.getInteger(R.integer.toast_view_shadow_radius);
     private static float dx = ResManager.getInteger(R.integer.toast_view_shadow_dx);
     private static float dy = ResManager.getInteger(R.integer.toast_view_shadow_dy);

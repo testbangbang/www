@@ -4,6 +4,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.event.DeviceConfigEvent;
 import com.onyx.jdread.setting.event.DeviceInformationEvent;
 import com.onyx.jdread.setting.event.PasswordEvent;
@@ -25,11 +26,11 @@ public class DeviceConfigModel {
     private List<DeviceConfigData> deviceConfigDataList = new ArrayList<>();
     private Map<String, DeviceConfigEvent> configEvents = new HashMap<String, DeviceConfigEvent>() {
         {
-            put(JDReadApplication.getInstance().getResources().getString(R.string.screen_saver), new ScreenSaverEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.password_setting), new PasswordEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.read_tool), new ReadToolEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.device_information), new DeviceInformationEvent());
-            put(JDReadApplication.getInstance().getResources().getString(R.string.system_update), new SystemUpdateEvent());
+            put(ResManager.getString(R.string.screen_saver), new ScreenSaverEvent());
+            put(ResManager.getString(R.string.password_setting), new PasswordEvent());
+            put(ResManager.getString(R.string.read_tool), new ReadToolEvent());
+            put(ResManager.getString(R.string.device_information), new DeviceInformationEvent());
+            put(ResManager.getString(R.string.system_update), new SystemUpdateEvent());
         }
     };
 
@@ -45,7 +46,7 @@ public class DeviceConfigModel {
         if (deviceConfigDataList != null && deviceConfigDataList.size() > 0) {
             deviceConfigDataList.clear();
         }
-        String[] configs = JDReadApplication.getInstance().getResources().getStringArray(R.array.device_configs);
+        String[] configs = ResManager.getStringArray(R.array.device_configs);
         for (int i = 0; i < configs.length; i++) {
             DeviceConfigData deviceConfigData = new DeviceConfigData();
             deviceConfigData.setConfigName(configs[i]);

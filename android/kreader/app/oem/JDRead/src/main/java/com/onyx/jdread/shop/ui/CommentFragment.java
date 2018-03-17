@@ -50,7 +50,7 @@ import static com.onyx.jdread.main.common.Constants.PAGE_STEP;
 public class CommentFragment extends BaseFragment {
 
     private FragmentBookCommentBinding bookCommentBinding;
-    private int bookDetailSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_detail_recycle_view_space);
+    private int bookDetailSpace = ResManager.getInteger(R.integer.book_detail_recycle_view_space);
     private DashLineItemDivider itemDecoration;
     private long ebookId;
     private PageRecyclerView recyclerViewComments;

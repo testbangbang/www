@@ -10,6 +10,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.AllCategoryImageItemBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.CategoryItemClickEvent;
 
@@ -24,8 +25,8 @@ import java.util.List;
 public class AllCategoryTopAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo, CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> {
 
     private EventBus eventBus;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_top_recycle_view_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_top_recycle_view_col);
+    private int row = ResManager.getInteger(R.integer.all_category_top_recycle_view_row);
+    private int col = ResManager.getInteger(R.integer.all_category_top_recycle_view_col);
 
     public AllCategoryTopAdapter(EventBus eventBus) {
         this.eventBus = eventBus;

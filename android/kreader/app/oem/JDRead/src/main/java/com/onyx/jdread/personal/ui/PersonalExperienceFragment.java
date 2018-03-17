@@ -17,6 +17,7 @@ import com.onyx.jdread.databinding.PersonalExperienceBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.RecommendUserAction;
 import com.onyx.jdread.personal.adapter.PersonalExperienceAdapter;
@@ -64,7 +65,7 @@ public class PersonalExperienceFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.personal_experience));
+        titleModel.title.set(ResManager.getString(R.string.personal_experience));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.experienceTitleBar.setTitleModel(titleModel);
 

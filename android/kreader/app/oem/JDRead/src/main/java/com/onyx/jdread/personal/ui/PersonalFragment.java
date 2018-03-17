@@ -86,7 +86,7 @@ public class PersonalFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-                    ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+                    ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
                     return;
                 }
                 LoginOutAction loginOutAction = new LoginOutAction(binding);
@@ -172,7 +172,7 @@ public class PersonalFragment extends BaseFragment {
 
     private void showLogin(String name) {
         if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {

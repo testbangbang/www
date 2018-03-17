@@ -107,7 +107,7 @@ public class AssociatedEmailDialog extends Dialog {
         Window window = getWindow();
         WindowManager.LayoutParams attributes = window.getAttributes();
         attributes.width = getContext().getResources().getInteger(R.integer.move_to_library_list_dialog_width);
-        attributes.height = JDReadApplication.getInstance().getResources().getInteger(R.integer.dialog_associated_width);
+        attributes.height = ResManager.getInteger(R.integer.dialog_associated_width);
         window.setAttributes(attributes);
         super.show();
     }
