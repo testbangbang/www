@@ -1,39 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="model"
+            type="com.onyx.android.note.note.menu.NoteMenuModel"/>
     </data>
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.onyx.android.sdk.note.widget.LinedEditText
-            android:visibility="gone"
-            android:background="@android:color/white"
-            android:id="@+id/span_text_view"
-            android:layout_width="match_parent"
+
+        <include
+            bind:model="@{model}"
+            android:layout_below="@+id/expand"
+            android:layout_width="@dimen/top_menu_size"
             android:layout_height="match_parent"
-            android:textSize="50sp"
-            android:inputType="textMultiLine"
-            android:focusable="true"
-            android:clickable="false"
-            android:enabled="false"
-            android:maxLines="12"
-            android:minLines="5"
-            android:gravity="top"
-            android:lineSpacingMultiplier="1.5"
-            android:scrollHorizontally="false"
-            android:singleLine="false"
-            android:scrollbars="none"
-            android:textColor="@android:color/black"/>
+            android:id="@+id/left_menu"
+            layout="@layout/layout_note_menu1"/>
 
-        <SurfaceView
-            android:id="@+id/surface_view"
+        <include
+            bind:model="@{model}"
+            android:layout_toRightOf="@+id/expand"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="@dimen/top_menu_size"
+            android:id="@+id/top_menu"
+            layout="@layout/layout_note_menu2"/>
 
-    </FrameLayout>
+        <FrameLayout
+            android:id="@+id/work_layout"
+            android:layout_below="@+id/top_menu"
+            android:layout_toRightOf="@+id/left_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.onyx.android.sdk.note.widget.LinedEditText
+                android:visibility="gone"
+                android:background="@android:color/white"
+                android:id="@+id/span_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="50sp"
+                android:inputType="textMultiLine"
+                android:focusable="true"
+                android:clickable="false"
+                android:enabled="false"
+                android:maxLines="12"
+                android:minLines="5"
+                android:gravity="top"
+                android:lineSpacingMultiplier="1.5"
+                android:scrollHorizontally="false"
+                android:singleLine="false"
+                android:scrollbars="none"
+                android:textColor="@android:color/black"/>
+
+            <SurfaceView
+                android:id="@+id/surface_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <TextView
+            android:background="@android:color/white"
+            android:onClick="@{model::onToggle}"
+            style="@style/note_menu_text"
+            android:id="@+id/expand"
+            android:text=" x " />
+    </RelativeLayout>
 
 </layout>

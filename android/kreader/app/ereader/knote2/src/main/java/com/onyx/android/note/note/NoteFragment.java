@@ -52,10 +52,8 @@ public class NoteFragment extends BaseFragment {
     }
 
     private void initChildFragment() {
-        menuFragment = NoteMenuFragment.newInstance();
         scribbleFragment = ScribbleFragment.newInstance();
         getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
-        getChildFragmentManager().beginTransaction().replace(R.id.menu_layout, menuFragment).commit();
     }
 
     private NoteDataBundle getNoteBundle() {

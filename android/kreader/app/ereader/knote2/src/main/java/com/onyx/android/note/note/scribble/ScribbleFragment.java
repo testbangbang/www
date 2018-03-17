@@ -14,8 +14,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.onyx.android.note.NoteDataBundle;
+import com.onyx.android.note.NoteUIBundle;
 import com.onyx.android.note.R;
 import com.onyx.android.note.action.CreateDocumentAction;
 import com.onyx.android.note.common.base.BaseFragment;
@@ -23,19 +25,24 @@ import com.onyx.android.note.databinding.FragmentScribbleBinding;
 import com.onyx.android.note.event.BuildSpanTextShapeEvent;
 import com.onyx.android.note.event.SpanViewEnableEvent;
 import com.onyx.android.note.event.SpanViewEvent;
+import com.onyx.android.note.event.menu.CheckMenuRectEvent;
 import com.onyx.android.note.event.menu.CloseKeyboardEvent;
 import com.onyx.android.note.event.menu.DeleteSpanShapeEvent;
 import com.onyx.android.note.handler.HandlerManager;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.PauseRawDrawingEvent;
+import com.onyx.android.sdk.note.event.SetDrawExcludeRectEvent;
 import com.onyx.android.sdk.note.widget.LinedEditText;
 import com.onyx.android.sdk.scribble.data.Background;
 import com.onyx.android.sdk.scribble.data.DocumentOptionArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -55,12 +62,14 @@ public class ScribbleFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getNoteManager().getEventBus().register(this);
+        getNoteBundle().getPenEventHandler().subscribe();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scribble, container, false);
+        binding.setModel(getUIBundle().getNoteMenuModel());
         return binding.getRoot();
     }
 
@@ -74,12 +83,48 @@ public class ScribbleFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         getNoteManager().getEventBus().unregister(this);
+        getNoteBundle().getPenEventHandler().unSubscribe();
     }
 
     private void setup() {
         getNoteBundle().getHandlerManager().activeProvider(HandlerManager.EPD_SHAPE_PROVIDER);
         initSurfaceView();
         initSpanView();
+    }
+
+    @Subscribe
+    public void onCheckMenuRectEvent(CheckMenuRectEvent event) {
+        binding.workLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                TreeObserverUtils.removeGlobalOnLayoutListener(binding.workLayout.getViewTreeObserver(), this);
+                updateDrawLimitRect();
+                postDrawMenuExcludeRect();
+            }
+        });
+    }
+
+    private void postDrawMenuExcludeRect() {
+        List<Rect> rectList = new ArrayList<>();
+        addExcludeRect(rectList, binding.expand);
+        getNoteBundle().post(new SetDrawExcludeRectEvent(rectList));
+    }
+
+    private void addExcludeRect(List<Rect> rectList, View view) {
+        if (view.getVisibility() != View.VISIBLE) {
+            return;
+        }
+        Rect rect = new Rect();
+        view.getGlobalVisibleRect(rect);
+        rectList.add(rect);
+    }
+
+    private void updateDrawLimitRect() {
+        Rect rect = new Rect();
+        binding.surfaceView.getGlobalVisibleRect(rect);
+        List<Rect> rectList = new ArrayList<>();
+        rectList.add(rect);
+        getNoteManager().getTouchHelper().setLimitRect(rectList);
     }
 
     @Subscribe
@@ -163,6 +208,7 @@ public class ScribbleFragment extends BaseFragment {
                 public void surfaceDestroyed(SurfaceHolder holder) {
                     holder.removeCallback(surfaceCallback);
                     surfaceCallback = null;
+
                 }
             };
         }
@@ -225,5 +271,9 @@ public class ScribbleFragment extends BaseFragment {
 
     private NoteManager getNoteManager() {
         return getNoteBundle().getNoteManager();
+    }
+
+    private NoteUIBundle getUIBundle() {
+        return NoteUIBundle.getInstance();
     }
 }

@@ -43,7 +43,7 @@ public class HandlerManager {
         providerMap.put(NORMAL_SHAPE_PROVIDER, new NormalShapeHandler(getEventBus(), getNoteManager()));
         providerMap.put(ERASE_OVERLAY_PROVIDER, new EraseOverlayHandler(getEventBus(), getNoteManager()));
         providerMap.put(SELECTION_PROVIDER, new SelectionHandler(getEventBus(), getNoteManager()));
-        providerMap.put(SPAN_TEXT_PROVIDER, new SpanTextHandler(getEventBus(), getNoteManager()));
+        providerMap.put(SPAN_TEXT_PROVIDER, new SpanHandler(getEventBus(), getNoteManager()));
     }
 
     public void activeProvider(String providerName) {

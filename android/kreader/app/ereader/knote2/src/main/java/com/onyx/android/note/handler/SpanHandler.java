@@ -55,7 +55,7 @@ import static android.os.Looper.getMainLooper;
  * Created by lxm on 2018/2/5.
  */
 
-public class SpanTextHandler extends BaseHandler {
+public class SpanHandler extends BaseHandler {
 
     private List<Shape> dirtyStash = new ArrayList<>();
 
@@ -70,7 +70,7 @@ public class SpanTextHandler extends BaseHandler {
     private boolean buildingSpan = false;
     private EditText spanView;
 
-    public SpanTextHandler(@NonNull EventBus eventBus, NoteManager noteManager) {
+    public SpanHandler(@NonNull EventBus eventBus, NoteManager noteManager) {
         super(eventBus, noteManager);
         handler = new Handler(getMainLooper());
     }
@@ -233,7 +233,7 @@ public class SpanTextHandler extends BaseHandler {
 
     private boolean checkTouchPoint(final TouchPoint touchPoint) {
         Rect rect = new Rect();
-        spanView.getGlobalVisibleRect(rect);
+        spanView.getLocalVisibleRect(rect);
         return rect.contains((int) touchPoint.x, (int) touchPoint.y);
     }
 
@@ -292,7 +292,7 @@ public class SpanTextHandler extends BaseHandler {
         if (isBuildingSpan()) {
             return;
         }
-        buildTextShape(SPACE_TEXT, SpanTextHandler.SPACE_WIDTH);
+        buildTextShape(SPACE_TEXT, SpanHandler.SPACE_WIDTH);
     }
 
     @Subscribe
