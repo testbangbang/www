@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.LockScreenActivity;
@@ -79,11 +78,8 @@ public class ManagerActivityUtils {
     }
 
     public static void reset(Context context) {
-        Log.e(TAG, "reset: ==================================================");
-        Intent intent = new Intent("com.android.internal.os.storage.FORMAT_ONLY");
-        ComponentName componentName = new ComponentName("android", "com.android.internal.os.storage.ExternalStorageFormatter");
-        intent.setComponent(componentName);
+        Intent intent = new Intent();
+        intent.setAction(ACTION_MASTER_CLEAR);
         context.sendBroadcast(intent);
-        Log.e(TAG, "reset: ==================================================1");
     }
 }
