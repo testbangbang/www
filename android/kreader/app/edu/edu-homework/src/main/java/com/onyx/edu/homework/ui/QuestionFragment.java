@@ -5,7 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -206,7 +205,7 @@ public class QuestionFragment extends BaseFragment {
         if (getDataBundle().isExpired()) {
             return false;
         }
-        if (getDataBundle().isReview()) {
+        if (getDataBundle().afterReview()) {
             return false;
         }
         return true;

@@ -23,6 +23,7 @@ import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityAnswerBinding;
 import com.onyx.edu.homework.event.CloseScribbleEvent;
 import com.onyx.edu.homework.event.SaveNoteEvent;
+import com.onyx.edu.homework.utils.ViewUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -84,6 +85,7 @@ public class DraftActivity extends BaseActivity {
                 showAnalysisDialog();
             }
         } );
+        ViewUtils.setGone(binding.analysis, getDataBundle().canCheckAnswer());
     }
 
     private DataBundle getDataBundle() {

@@ -353,7 +353,8 @@ public class HomeworkListActivity extends BaseActivity {
             updateViewState();
             setEndTimeText();
             boolean reload = type == NotificationType.HOMEWORK_READER_ACTIVE
-                    || type == NotificationType.HOMEWORK_END_TIME;
+                    || type == NotificationType.HOMEWORK_END_TIME
+                    || type == NotificationType.HOMEWORK_CHECKED;
             if (reload && visible) {
                 reloadQuestionFragment(currentPage);
             }
