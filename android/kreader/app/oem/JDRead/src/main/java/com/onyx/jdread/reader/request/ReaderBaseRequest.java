@@ -28,6 +28,9 @@ public abstract class ReaderBaseRequest extends RxRequest {
 
     public ReaderBaseRequest(Reader reader) {
         this.reader = reader;
+        if(this.reader != null) {
+            this.reader.updateReadingTime();
+        }
     }
 
     public Reader getReader() {
