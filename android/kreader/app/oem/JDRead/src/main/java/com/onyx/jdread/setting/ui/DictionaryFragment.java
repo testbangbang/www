@@ -58,10 +58,11 @@ public class DictionaryFragment extends BaseFragment {
             @Override
             public void onNext(Object o) {
                 if (dictionaryModel.list == null || dictionaryModel.list.size() == 0) {
-                    ToastUtil.showToast(ResManager.getString(R.string.uninstall_translate_app));
+                    DictionaryModel.DictionaryItem item = new DictionaryModel.DictionaryItem(ResManager.getString(R.string.kingsoft_dictionary), null);
+                    dictionaryModel.list.add(item);
+                    dictionaryListAdapter.notifyDataSetChanged();
                     return;
                 }
-                dictionaryListAdapter.notifyDataSetChanged();
             }
         });
     }

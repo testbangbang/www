@@ -159,6 +159,10 @@ public class Constants {
     public static final String NET_ERROR_TITLE = "net_error_title";
     public static final String NET_ERROR_SHOW_TITLE_BAR = "net_error_show_title_bar";
     public static final String NEW_LINE = "\r\n";
+    public static final int TIPS_START = 2;
+    public static final int TIPS_SUB_MIDDLE = 5;
+    public static final int TIPS_MIDDLE = 8;
+    public static final int TIPS_END = 11;
     public static final int SHOP_RANK_MODEL_TYPE_SOARING_LIST = 6;
     public static final int SHOP_RANK_MODEL_TYPE_SALE_NEW_BOOK_LIST = 2;
     public static final int RANK_TYPE_PUBLISH = 1;

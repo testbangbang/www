@@ -6,8 +6,4 @@ package com.onyx.jdread.shop.cloud.entity.jdbean;
 
 public class PromotionalEntityBean {
     public String name;
-    public double need_price;
-    public String price_show;
-    public double total_price;
-    public double re_price;
 }
