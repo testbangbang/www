@@ -29,41 +29,37 @@ public class BookDownloadUtils {
     private static final String TAG = BookDownloadUtils.class.getSimpleName();
 
     public static void download(final BookDetailResultBean.DetailBean bookDetailBean, final ShopDataBundle dataBundle, final RxCallback rxCallback) {
-        if (StringUtils.isNullOrEmpty(bookDetailBean.downLoadUrl)) {
-            int downLoadType = CloudApiContext.BookDownLoad.TYPE_ORDER;
-            if (bookDetailBean.downLoadType == CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ) {
-                downLoadType = CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ;
-            }
-            DownLoadWholeBookAction action = new DownLoadWholeBookAction(bookDetailBean.ebook_id, downLoadType);
-            action.execute(dataBundle, new RxCallback<DownLoadWholeBookAction>() {
-                @Override
-                public void onNext(DownLoadWholeBookAction action) {
-                    DownLoadWholeBookResultBean resultBean = action.getResultBean();
-                    if (resultBean != null) {
-                        if (BaseResultBean.checkSuccess(resultBean)) {
-                            DownLoadWholeBookResultBean.DataBean data = resultBean.data;
-                            bookDetailBean.key = data.key;
-                            bookDetailBean.random = data.random;
-                            bookDetailBean.downLoadUrl = data.content_url;
-                            downloadBook(dataBundle, bookDetailBean, rxCallback);
-                        } else {
-                            invokeError(rxCallback, null);
-                            ToastUtil.showToastErrorMsgForDownBook(String.valueOf(resultBean.result_code));
-                        }
+        int downLoadType = CloudApiContext.BookDownLoad.TYPE_ORDER;
+        if (bookDetailBean.downLoadType == CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ) {
+            downLoadType = CloudApiContext.BookDownLoad.TYPE_SMOOTH_READ;
+        }
+        DownLoadWholeBookAction action = new DownLoadWholeBookAction(bookDetailBean.ebook_id, downLoadType);
+        action.execute(dataBundle, new RxCallback<DownLoadWholeBookAction>() {
+            @Override
+            public void onNext(DownLoadWholeBookAction action) {
+                DownLoadWholeBookResultBean resultBean = action.getResultBean();
+                if (resultBean != null) {
+                    if (BaseResultBean.checkSuccess(resultBean)) {
+                        DownLoadWholeBookResultBean.DataBean data = resultBean.data;
+                        bookDetailBean.key = data.key;
+                        bookDetailBean.random = data.random;
+                        bookDetailBean.downLoadUrl = data.content_url;
+                        downloadBook(dataBundle, bookDetailBean, rxCallback);
                     } else {
                         invokeError(rxCallback, null);
+                        ToastUtil.showToastErrorMsgForDownBook(String.valueOf(resultBean.result_code));
                     }
+                } else {
+                    invokeError(rxCallback, null);
                 }
+            }
 
-                @Override
-                public void onError(Throwable throwable) {
-                    super.onError(throwable);
-                    invokeError(rxCallback, throwable);
-                }
-            });
-        } else {
-            downloadBook(dataBundle, bookDetailBean, rxCallback);
-        }
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                invokeError(rxCallback, throwable);
+            }
+        });
     }
 
     private static void downloadBook(ShopDataBundle dataBundle, BookDetailResultBean.DetailBean bookDetailBean, final RxCallback rxCallback) {
