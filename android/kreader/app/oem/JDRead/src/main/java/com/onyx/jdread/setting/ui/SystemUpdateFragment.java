@@ -154,7 +154,7 @@ public class SystemUpdateFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = new TitleBarModel(SettingBundle.getInstance().getEventBus());
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.system_update));
+        titleModel.title.set(ResManager.getString(R.string.system_update));
         titleModel.rightTitle.set(getString(R.string.view_history_version));
         titleModel.backEvent.set(new BackToDeviceConfigFragment());
         binding.systemUpdateSettingBar.setTitleModel(titleModel);
@@ -171,12 +171,12 @@ public class SystemUpdateFragment extends BaseFragment {
         if (StringUtils.isNotBlank(deviceConfigDataList.get(deviceConfigDataList.size() - 1).getUpdateRecord())) {
             checkSystemUpdate();
             systemUpdateData.setShowDownloaded(true);
-            systemUpdateData.setUpdateDes(JDReadApplication.getInstance().getResources().getString(R.string.upgrade_immediately));
-            systemUpdateData.setVersionTitle(JDReadApplication.getInstance().getResources().getString(R.string.updatable_version));
+            systemUpdateData.setUpdateDes(ResManager.getString(R.string.upgrade_immediately));
+            systemUpdateData.setVersionTitle(ResManager.getString(R.string.updatable_version));
         } else {
             systemUpdateData.setShowDownloaded(false);
-            systemUpdateData.setUpdateDes(JDReadApplication.getInstance().getResources().getString(R.string.check_update));
-            systemUpdateData.setVersionTitle(JDReadApplication.getInstance().getResources().getString(R.string.current_version));
+            systemUpdateData.setUpdateDes(ResManager.getString(R.string.check_update));
+            systemUpdateData.setVersionTitle(ResManager.getString(R.string.current_version));
         }
         systemUpdateData.setVersion(settingUpdateModel.getDownloadVersion());
         systemUpdateData.setShowProgress(false);
@@ -203,7 +203,7 @@ public class SystemUpdateFragment extends BaseFragment {
                     downloadPath = UpdateUtil.getUpdateZipFile().getAbsolutePath();
                     tag = UpdateUtil.SYSTEM_UPDATE_TAG;
                     systemUpdateData.setUpdateDes(isUpdateZipExist() ? ResManager.getString(R.string.upgrade_immediately) : ResManager.getString(R.string.download_update_package));
-                    systemUpdateData.setVersionTitle(JDReadApplication.getInstance().getResources().getString(R.string.updatable_version));
+                    systemUpdateData.setVersionTitle(ResManager.getString(R.string.updatable_version));
                     String fingerprint = resultFirmware.fingerprint;
                     Log.i(TAG, "checkSystemUpdate: " + fingerprint);
                     String[] split = fingerprint.split("/");
@@ -264,7 +264,7 @@ public class SystemUpdateFragment extends BaseFragment {
                     downloadPath = UpdateUtil.getApkUpdateFile();
                     tag = UpdateUtil.APK_UPDATE_TAG;
                     systemUpdateData.setUpdateDes(isApkExist() ? ResManager.getString(R.string.upgrade_immediately) : ResManager.getString(R.string.download_update_package));
-                    systemUpdateData.setVersionTitle(JDReadApplication.getInstance().getResources().getString(R.string.updatable_version));
+                    systemUpdateData.setVersionTitle(ResManager.getString(R.string.updatable_version));
                     Log.i(TAG, "checkApkUpdate: " + applicationUpdate.versionName);
                     String versionTime = applicationUpdate.versionName.substring(applicationUpdate.versionName.lastIndexOf("-") + 1, applicationUpdate.versionName.length());
                     Log.i(TAG, "apk current version: " + settingUpdateModel.getDownloadVersion());

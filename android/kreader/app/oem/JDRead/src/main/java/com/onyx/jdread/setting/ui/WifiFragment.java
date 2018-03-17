@@ -27,6 +27,7 @@ import com.onyx.jdread.databinding.WifiBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.adapter.WifiSettingAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -268,7 +269,7 @@ public class WifiFragment extends BaseFragment {
 
     private void initData() {
         SettingTitleModel titleModel = SettingBundle.getInstance().getTitleModel();
-        titleModel.setTitle(JDReadApplication.getInstance().getResources().getString(R.string.wireless_network));
+        titleModel.setTitle(ResManager.getString(R.string.wireless_network));
         titleModel.setToggle(true);
         titleModel.setViewHistory(false);
         binding.wifiTitleBar.setTitleModel(titleModel);

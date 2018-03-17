@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 
 /**
@@ -29,14 +30,14 @@ public class ToastMessage {
         Toast toast = Toast.makeText(context,message,Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER,0,0);
         View view = toast.getView();
-        final float textSize = JDReadApplication.getInstance().getResources().getDimension(R.dimen.level_three_heading_font);
-        final int left = JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.reader_toast_view_padding_left_and_right);
-        final int top = JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.reader_toast_view_padding_top_and_bottom);
-        final int right = JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.reader_toast_view_padding_left_and_right);
-        final int bottom = JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.reader_toast_view_padding_top_and_bottom);
-        final float radius = JDReadApplication.getInstance().getResources().getInteger(R.integer.toast_view_shadow_radius);
-        final float dx = JDReadApplication.getInstance().getResources().getInteger(R.integer.toast_view_shadow_dx);
-        final float dy = JDReadApplication.getInstance().getResources().getInteger(R.integer.toast_view_shadow_dy);
+        final float textSize = ResManager.getDimension(R.dimen.level_three_heading_font);
+        final int left = ResManager.getDimensionPixelSize(R.dimen.reader_toast_view_padding_left_and_right);
+        final int top = ResManager.getDimensionPixelSize(R.dimen.reader_toast_view_padding_top_and_bottom);
+        final int right = ResManager.getDimensionPixelSize(R.dimen.reader_toast_view_padding_left_and_right);
+        final int bottom = ResManager.getDimensionPixelSize(R.dimen.reader_toast_view_padding_top_and_bottom);
+        final float radius = ResManager.getInteger(R.integer.toast_view_shadow_radius);
+        final float dx = ResManager.getInteger(R.integer.toast_view_shadow_dx);
+        final float dy = ResManager.getInteger(R.integer.toast_view_shadow_dy);
         setBackground(view, getDrawable(context, R.drawable.rectangle_stroke));
         TextView textView = (TextView) view.findViewById(android.R.id.message);
         textView.setTextColor(Color.BLACK);

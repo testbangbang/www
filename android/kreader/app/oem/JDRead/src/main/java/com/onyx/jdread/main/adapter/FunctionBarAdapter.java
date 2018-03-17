@@ -11,6 +11,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FunctionBarItemBinding;
 import com.onyx.jdread.main.common.PageAdapter;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.FunctionBarItem;
 
 import java.util.List;
@@ -20,8 +21,8 @@ import java.util.List;
  */
 
 public class FunctionBarAdapter extends PageAdapter<FunctionBarAdapter.ViewHolder, FunctionBarItem, FunctionBarItem> implements View.OnLongClickListener {
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.function_bar_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.function_bar_col);
+    private int row = ResManager.getInteger(R.integer.function_bar_row);
+    private int col = ResManager.getInteger(R.integer.function_bar_col);
 
     public void setRowAndCol(int row, int col) {
         this.row = row;

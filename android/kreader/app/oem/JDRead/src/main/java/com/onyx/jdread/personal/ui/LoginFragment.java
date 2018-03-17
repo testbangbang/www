@@ -21,6 +21,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.LoginBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.event.ForgetPasswordEvent;
@@ -69,7 +70,7 @@ public class LoginFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.login));
+        titleModel.title.set(ResManager.getString(R.string.login));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.loginTitleBar.setTitleModel(titleModel);
 

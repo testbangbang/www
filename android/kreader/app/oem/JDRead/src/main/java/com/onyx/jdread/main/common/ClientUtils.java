@@ -21,7 +21,7 @@ public class ClientUtils {
         if (null == clientInfo) {
             clientInfo = new ClientInfo();
             clientInfo.setDwAppID(APP_ID);
-            clientInfo.setAppName(JDReadApplication.getInstance().getResources().getString(R.string.app_name));
+            clientInfo.setAppName(ResManager.getString(R.string.app_name));
             clientInfo.setClientType("android");
             clientInfo.setUuid(AppInformationUtils.readDeviceUUID());
             clientInfo.setArea("SHA");

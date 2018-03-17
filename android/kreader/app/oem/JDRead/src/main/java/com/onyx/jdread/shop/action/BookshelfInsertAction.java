@@ -5,11 +5,14 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.db.RxRequestBookshelfInsert;
 import com.onyx.jdread.shop.request.db.RxSaveCloudBookThumbnailRequest;
+
+import jd.wjlogin_sdk.common.WJLoginHelper;
 
 /**
  * Created by jackdeng on 2017/12/21.
@@ -74,6 +77,10 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
             metadata.setSize((long) extraInfo.totalSize);
             metadata.setDownloadInfo(JSONObjectParseUtils.toJson(extraInfo));
             metadata.setFetchSource(extraInfo.isWholeBookDownLoad ? Metadata.FetchSource.CLOUD : Metadata.FetchSource.CLOUD_TRY_READ);
+            if (extraInfo.isWholeBookDownLoad) {
+                WJLoginHelper wjLoginHelper = ClientUtils.getWJLoginHelper();
+                metadata.setExtension(wjLoginHelper.getPin());
+            }
         }
         metadata.setIdString(localPath);
         return metadata;

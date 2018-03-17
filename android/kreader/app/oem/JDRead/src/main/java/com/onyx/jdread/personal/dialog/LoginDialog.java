@@ -17,7 +17,7 @@ import com.onyx.jdread.util.Utils;
 
 public class LoginDialog extends Dialog {
     public LoginDialog(@NonNull Context context) {
-        this(context, 0);
+        this(context, R.style.CustomDialog);
     }
 
     public LoginDialog(@NonNull Context context, int themeResId) {
