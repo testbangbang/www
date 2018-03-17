@@ -107,9 +107,9 @@ public class ReaderViewHelper {
 
             if (renderCoverForJEBBook(reader, readerViewInfo)) {
                 return;
+            } else {
+                renderAll(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo, readerViewInfo, readerSelectionManager);
             }
-
-            renderAll(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo, readerViewInfo, readerSelectionManager);
 
             reader.getReaderHelper().saveToCache(context.renderingBitmap);
         } catch (Exception e) {
