@@ -27,6 +27,7 @@ import com.onyx.jdread.databinding.WifiBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.adapter.WifiSettingAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -74,10 +75,10 @@ public class WifiFragment extends BaseFragment {
             public void onItemClick(int position) {
                 if (wifiSettingAdapter.getScanResult() != null) {
                     AccessPoint accessPoint = wifiSettingAdapter.getScanResult().get(position);
-                    if (accessPoint.getSecurity() == 0) {
-                        wifiAdmin.connectWifi(accessPoint);
-                    } else if (accessPoint.getWifiInfo() != null) {
+                    if (accessPoint.getWifiInfo() != null) {
                         showConnectDialog(accessPoint);
+                    } else if (accessPoint.getSecurity() == 0) {
+                        wifiAdmin.connectWifi(accessPoint);
                     } else if (accessPoint.getWifiConfiguration() == null) {
                         showLoginDialog(accessPoint);
                     } else {
@@ -219,6 +220,7 @@ public class WifiFragment extends BaseFragment {
             @Override
             public void onScanResultReady(List<AccessPoint> scanResult) {
                 wifiSettingAdapter.setScanResult(scanResult);
+                wifiSettingAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -268,7 +270,7 @@ public class WifiFragment extends BaseFragment {
 
     private void initData() {
         SettingTitleModel titleModel = SettingBundle.getInstance().getTitleModel();
-        titleModel.setTitle(JDReadApplication.getInstance().getResources().getString(R.string.wireless_network));
+        titleModel.setTitle(ResManager.getString(R.string.wireless_network));
         titleModel.setToggle(true);
         titleModel.setViewHistory(false);
         binding.wifiTitleBar.setTitleModel(titleModel);

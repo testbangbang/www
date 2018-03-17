@@ -10,6 +10,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SubjectListBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
 
@@ -24,8 +25,8 @@ import java.util.List;
 public class SubjectListAdapter extends PageAdapter<PageRecyclerView.ViewHolder, ResultBookBean, ResultBookBean> {
 
     private EventBus eventBus;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_col);
+    private int row = ResManager.getInteger(R.integer.subject_list_recycle_viw_row);
+    private int col = ResManager.getInteger(R.integer.subject_list_recycle_viw_col);
 
     public SubjectListAdapter(EventBus eventBus) {
         this.eventBus = eventBus;

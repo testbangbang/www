@@ -98,8 +98,8 @@ public class LibraryFragment extends BaseFragment {
     private FragmentLibraryBinding libraryBinding;
     private SinglePageRecyclerView contentView;
     private ModelAdapter modelAdapter;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
+    private int row = ResManager.getInteger(R.integer.library_view_type_thumbnail_row);
+    private int col = ResManager.getInteger(R.integer.library_view_type_thumbnail_col);
     private GPaginator pagination;
     private PageIndicatorModel pageIndicatorModel;
     private SingleItemManageDialog singleItemManageDialog;
@@ -447,7 +447,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void checkLogin(String name) {
         if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {

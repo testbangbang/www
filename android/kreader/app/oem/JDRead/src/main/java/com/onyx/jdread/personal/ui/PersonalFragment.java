@@ -1,7 +1,6 @@
 package com.onyx.jdread.personal.ui;
 
 import android.databinding.DataBindingUtil;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -32,6 +30,7 @@ import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.event.VerifySignEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalModel;
+import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -86,7 +85,7 @@ public class PersonalFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-                    ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+                    ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
                     return;
                 }
                 LoginOutAction loginOutAction = new LoginOutAction(binding);
@@ -111,8 +110,9 @@ public class PersonalFragment extends BaseFragment {
 
     private void initView() {
         binding.personalRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        OnyxPageDividerItemDecoration decoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
-        decoration.setDivider(new ColorDrawable(ResManager.getColor(R.color.divider_color_setting)));
+        DividerItemDecoration decoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
+        decoration.setColor(ResManager.getColor(R.color.divider_color));
+        decoration.setDrawLine(true);
         binding.personalRecycler.addItemDecoration(decoration);
         personalAdapter = new PersonalAdapter(PersonalDataBundle.getInstance().getEventBus());
         binding.personalRecycler.setAdapter(personalAdapter);
@@ -172,7 +172,7 @@ public class PersonalFragment extends BaseFragment {
 
     private void showLogin(String name) {
         if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
             return;
         }
         if (!JDReadApplication.getInstance().getLogin()) {

@@ -15,6 +15,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.LockScreenBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.setting.adapter.LockScreenAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -64,7 +65,7 @@ public class LockScreenFragment extends BaseFragment {
 
     private void initData() {
         SettingTitleModel titleModel = SettingBundle.getInstance().getTitleModel();
-        titleModel.setTitle(JDReadApplication.getInstance().getResources().getString(R.string.interest_rates_screen_time));
+        titleModel.setTitle(ResManager.getString(R.string.interest_rates_screen_time));
         titleModel.setToggle(false);
         titleModel.setViewHistory(false);
         binding.lockScreenTitleBar.setTitleModel(titleModel);

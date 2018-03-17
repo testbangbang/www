@@ -16,6 +16,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ConsumptionRecordBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.ReadBeanRecordAction;
 import com.onyx.jdread.personal.adapter.ConsumptionRecordAdapter;
@@ -62,7 +63,7 @@ public class TopUpRecordFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.paid_record));
+        titleModel.title.set(ResManager.getString(R.string.paid_record));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.consumptionRecordTitle.setTitleModel(titleModel);
 

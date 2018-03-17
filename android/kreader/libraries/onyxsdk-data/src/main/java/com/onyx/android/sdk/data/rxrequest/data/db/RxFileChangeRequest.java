@@ -40,15 +40,18 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
         Debug.setDebug(true);
         DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
-        for (String path : pathList) {
-            File file = new File(path);
-            if (!extensionFilterSet.contains(FileUtils.getFileExtension(file))) {
-                continue;
+        try {
+            for (String path : pathList) {
+                File file = new File(path);
+                if (!extensionFilterSet.contains(FileUtils.getFileExtension(file))) {
+                    continue;
+                }
+                modifyMetadataByPath(file);
             }
-            modifyMetadataByPath(file);
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
         }
-        database.setTransactionSuccessful();
-        database.endTransaction();
         benchmark.report("===============RxFileChangeRequest");
         return this;
     }

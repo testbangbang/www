@@ -17,7 +17,7 @@ public class AlCSSHtml extends AlCSSStyles {
             "h3, h4, h5, h6 {font-size:1.1rem; text-indent:0; text-align:center; margin-left:5%; margin-right:5%;}" +
             "q, blockquote, cite, .cite {font-size:0.92rem; text-align:justify; margin-left:5%; margin-right:5%;}" +
             "pre, code, tt {font-family:monospace; text-indent:0; font-size:0.83rem; text-align:left; white-space:pre; hyphens:none;}" +
-            ".author, .text-author, .date {font-size:69%; text-indent:0; text-align:right; margin-right:10%;}" +
+            ".author, .text-author, .date {font-size:69%; text-indent:0; text-align:right; margin-right:0%;}" +
             "annotation {font-size:0.83rem; font-style:italic; text-align:left; margin-left:45%; margin-right:5%;}" +
             ".epigraph, .epigraf {font-size:0.83rem; text-align:right; text-indent:0; margin-left:55%;}" +
             ".poem, .stanza, .v {font-size:1rem; text-align:left; text-indent:0; --alreader-align-poem:1;}" +

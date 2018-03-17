@@ -135,7 +135,7 @@ public class FeedbackRecordFragment extends BaseFragment {
 
     private void initTitleData() {
         TitleBarModel titleBarModel = new TitleBarModel(SettingBundle.getInstance().getEventBus());
-        titleBarModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.feedback_history));
+        titleBarModel.title.set(ResManager.getString(R.string.feedback_history));
         titleBarModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.feedbackRecordTitle.setTitleModel(titleBarModel);
     }

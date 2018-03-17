@@ -44,19 +44,22 @@ public class RxLoadPreBooksRequest extends RxBaseDBRequest {
             List<PreBookBean> beans = JSONObject.parseArray(s, PreBookBean.class);
             DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
             database.beginTransaction();
-            for (PreBookBean bean : beans) {
-                String filePath = preBooksPath + bean.fileName;
-                if (FileUtils.fileExist(filePath)) {
-                    Metadata metadata = Metadata.createFromFile(filePath);
-                    metadata.setName(bean.name);
-                    getDataProvider().saveMetadata(getAppContext(), metadata);
-                    Bitmap bitmap = Glide.with(getAppContext()).load(new File(preBooksPath + bean.cover)).asBitmap().into(
-                            ResManager.getInteger(R.integer.cloud_book_cover_width), ResManager.getInteger(R.integer.cloud_book_cover_height)).get();
-                    ThumbnailUtils.insertThumbnail(getAppContext(), getDataProvider(), metadata.getNativeAbsolutePath(), metadata.getAssociationId(), bitmap);
+            try {
+                for (PreBookBean bean : beans) {
+                    String filePath = preBooksPath + bean.fileName;
+                    if (FileUtils.fileExist(filePath)) {
+                        Metadata metadata = Metadata.createFromFile(filePath);
+                        metadata.setName(bean.name);
+                        getDataProvider().saveMetadata(getAppContext(), metadata);
+                        Bitmap bitmap = Glide.with(getAppContext()).load(new File(preBooksPath + bean.cover)).asBitmap().into(
+                                ResManager.getInteger(R.integer.cloud_book_cover_width), ResManager.getInteger(R.integer.cloud_book_cover_height)).get();
+                        ThumbnailUtils.insertThumbnail(getAppContext(), getDataProvider(), metadata.getNativeAbsolutePath(), metadata.getAssociationId(), bitmap);
+                    }
                 }
+                database.setTransactionSuccessful();
+            } finally {
+                database.endTransaction();
             }
-            database.setTransactionSuccessful();
-            database.endTransaction();
         }
         return this;
     }

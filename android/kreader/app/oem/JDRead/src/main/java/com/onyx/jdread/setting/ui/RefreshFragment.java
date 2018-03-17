@@ -66,7 +66,7 @@ public class RefreshFragment extends BaseFragment {
         SettingTitleModel titleModel = SettingBundle.getInstance().getTitleModel();
         titleModel.setToggle(false);
         titleModel.setViewHistory(false);
-        titleModel.setTitle(JDReadApplication.getInstance().getResources().getString(R.string.page_refresh));
+        titleModel.setTitle(ResManager.getString(R.string.page_refresh));
         binding.refreshTitleBar.setTitleModel(titleModel);
 
         settingRefreshModel = SettingBundle.getInstance().getSettingRefreshModel();
