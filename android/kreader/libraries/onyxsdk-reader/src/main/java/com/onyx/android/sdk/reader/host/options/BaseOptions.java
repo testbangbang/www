@@ -72,6 +72,7 @@ public class BaseOptions {
     transient static public final String RESET_SCALE = "reset_scale";
     transient static public final String ORIENTATION = "orientation";
     transient static public final String MD5 = "md5";
+    transient static public final String READ_PROGRESS = "readProgress";
 
     private static final float fallbackFontSize = 36.0f;
     public static float defaultFontSize = fallbackFontSize;
@@ -149,6 +150,14 @@ public class BaseOptions {
             return zipPassword;
         }
         return "";
+    }
+
+    public float getReadProgress(){
+        return backend.getFloat(READ_PROGRESS)
+    }
+
+    public void setReadProgress(float progress){
+        backend.putFloat(READ_PROGRESS,progress);
     }
 
     public void setZipPassword(final String zipPassword) {
