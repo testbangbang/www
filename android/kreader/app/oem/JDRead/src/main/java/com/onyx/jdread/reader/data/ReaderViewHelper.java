@@ -129,27 +129,31 @@ public class ReaderViewHelper {
         }
 
         Bitmap cover = Bitmap.createBitmap(contentView.getWidth(), contentView.getHeight(), Bitmap.Config.ARGB_8888);
-        boolean succ = reader.getReaderHelper().getDocument().readCover(cover);
-        if (!succ) {
-            cover.recycle();
-            return false;
-        }
-
-        paint.setDither(true);
-        applyEpdUpdate(reader, contentView);
-        Canvas canvas = contentView.getHolder().lockCanvas();
-        if(canvas == null){
-            return false;
-        }
 
         try {
-            canvas.drawColor(Color.WHITE);
-            canvas.drawBitmap(cover, 0, 0, paint);
-        } finally {
-            contentView.getHolder().unlockCanvasAndPost(canvas);
-        }
+            boolean succ = reader.getReaderHelper().getDocument().readCover(cover);
+            if (!succ) {
+                return false;
+            }
 
-        return true;
+            paint.setDither(true);
+            applyEpdUpdate(reader, contentView);
+            Canvas canvas = contentView.getHolder().lockCanvas();
+            if (canvas == null) {
+                return false;
+            }
+
+            try {
+                canvas.drawColor(Color.WHITE);
+                canvas.drawBitmap(cover, 0, 0, paint);
+            } finally {
+                contentView.getHolder().unlockCanvasAndPost(canvas);
+            }
+
+            return true;
+        } finally {
+            cover.recycle();
+        }
     }
 
     private List<ReaderSelection> translateToScreen(final Reader reader, ReaderViewInfo readerViewInfo, final List<ReaderSelection> list) {
