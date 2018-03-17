@@ -14,7 +14,7 @@
         android:visibility="@{model.menuExpanded ? View.VISIBLE : View.GONE}"
         android:id="@+id/note_menu1"
         android:orientation="vertical"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/top_menu_size"
         android:layout_height="match_parent">
 
         <TextView
@@ -60,5 +60,10 @@
             android:onClick="@{model::onCircleShape}"
             style="@style/note_menu_text"
             android:text="circle" />
+
+        <TextView
+            android:onClick="@{model::onSpanMode}"
+            style="@style/note_menu_text"
+            android:text="矢量" />
     </LinearLayout>
 </layout>

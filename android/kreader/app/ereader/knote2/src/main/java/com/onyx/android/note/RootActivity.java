@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.onyx.android.note.databinding.ActivityRootBinding;
-import com.onyx.android.note.note.NoteFragment;
+import com.onyx.android.note.note.scribble.ScribbleFragment;
 import com.onyx.android.sdk.utils.DeviceUtils;
 
 import me.yokeyword.fragmentation.SupportActivity;
@@ -25,7 +25,7 @@ public class RootActivity extends SupportActivity {
         DeviceUtils.setFullScreenOnCreate(this, fullScreen);
         hideActionBar();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_root);
-        loadRootFragment(R.id.root_view, NoteFragment.newInstance());
+        loadRootFragment(R.id.root_view, ScribbleFragment.newInstance());
     }
 
     private void hideActionBar() {

@@ -22,12 +22,12 @@
             android:onClick="@{model::onToggle}"
             style="@style/note_menu_text"
             android:id="@+id/expand"
-            android:text="expand" />
+            android:text=" x " />
 
         <include
             bind:model="@{model}"
             android:layout_below="@+id/expand"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/top_menu_size"
             android:layout_height="wrap_content"
             android:id="@+id/menu1_layout"
             layout="@layout/layout_note_menu1"/>
@@ -35,7 +35,7 @@
         <include
             bind:model="@{model}"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/top_menu_size"
             android:layout_toRightOf="@+id/expand"
             android:id="@+id/menu2_layout"
             layout="@layout/layout_note_menu2"/>

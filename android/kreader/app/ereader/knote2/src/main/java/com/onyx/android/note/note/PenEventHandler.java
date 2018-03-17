@@ -4,7 +4,9 @@ import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.event.AddShapesEvent;
 import com.onyx.android.note.event.ClearAllFreeShapesEvent;
 import com.onyx.android.note.event.OpenDocumentEvent;
+import com.onyx.android.note.event.PageSpanShapesEvent;
 import com.onyx.android.note.event.RefreshDrawScreenEvent;
+import com.onyx.android.note.event.SpannableEvent;
 import com.onyx.android.note.event.menu.BackgroundChangeEvent;
 import com.onyx.android.note.event.menu.PenWidthChangeEvent;
 import com.onyx.android.note.event.menu.TopMenuChangeEvent;
@@ -24,7 +26,8 @@ import org.greenrobot.eventbus.Subscribe;
 public class PenEventHandler {
 
     private EventBus eventBus;
-    private boolean dialogShowed = false;
+    public static boolean dialogShowing;
+    public static boolean keyboardShowing;
 
     public PenEventHandler(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -42,12 +45,20 @@ public class PenEventHandler {
         getEventBus().unregister(this);
     }
 
-    private boolean isDialogShowed() {
-        return dialogShowed;
+    private boolean isDialogShowing() {
+        return dialogShowing;
+    }
+
+    public static void setKeyboardShowing(boolean keyboardShowing) {
+        PenEventHandler.keyboardShowing = keyboardShowing;
+    }
+
+    public static boolean isKeyboardShowing() {
+        return keyboardShowing;
     }
 
     private boolean shouldResume(boolean resumePen) {
-        return resumePen && !isDialogShowed();
+        return resumePen && !isDialogShowing();
     }
 
     private boolean shouldRawRender(boolean render) {
@@ -55,7 +66,7 @@ public class PenEventHandler {
     }
 
     private boolean inRawNotRenderProvider() {
-        return getHandlerManager().inEpdShapeProvider() ||
+        return getHandlerManager().inEraseOverlayProvider() ||
                 getHandlerManager().inNormalShapeProvider();
     }
 
@@ -67,6 +78,7 @@ public class PenEventHandler {
     @Subscribe
     public void onPenWidthChange(PenWidthChangeEvent event) {
         resumeRawDrawing(event.isResumePen());
+        setRawDrawingRenderEnabled(event.isRawRenderEnable());
     }
 
     @Subscribe
@@ -99,6 +111,16 @@ public class PenEventHandler {
     public void onAddShapes(AddShapesEvent event) {
         resumeRawDrawing(event.isResumePen());
         setRawDrawingRenderEnabled(event.isRawRenderEnable());
+    }
+
+    @Subscribe
+    public void onSpannable(SpannableEvent event) {
+        resumeRawDrawing(event.isResumePen());
+    }
+
+    @Subscribe
+    public void onPageSpanShapes(PageSpanShapesEvent event) {
+        resumeRawDrawing(event.isResumePen());
     }
 
     private void setRawDrawingRenderEnabled(boolean enabled) {

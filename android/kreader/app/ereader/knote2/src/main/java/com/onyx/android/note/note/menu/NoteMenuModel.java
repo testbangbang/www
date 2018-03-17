@@ -18,6 +18,7 @@ import com.onyx.android.note.common.base.BaseViewModel;
 import com.onyx.android.note.handler.HandlerManager;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.note.NoteManager;
+import com.onyx.android.sdk.note.data.ScribbleMode;
 import com.onyx.android.sdk.pen.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
@@ -97,8 +98,13 @@ public class NoteMenuModel extends BaseViewModel {
     }
 
     public void onCircleShape(View view) {
-        NoteDataBundle.getInstance().getDrawingArgs().setCurrentShapeType(ShapeFactory.SHAPE_RECTANGLE);
+        NoteDataBundle.getInstance().getDrawingArgs().setCurrentShapeType(ShapeFactory.SHAPE_CIRCLE);
         getNoteBundle().getHandlerManager().activeProvider(HandlerManager.NORMAL_SHAPE_PROVIDER);
+    }
+
+    public void onSpanMode(View view) {
+        getNoteManager().setCurrentMode(ScribbleMode.SPAN);
+        getNoteBundle().getHandlerManager().activeProvider(HandlerManager.SPAN_TEXT_PROVIDER);
     }
 
     private NoteManager getNoteManager() {

@@ -34,7 +34,6 @@ public class NormalShapeHandler extends BaseHandler {
 
     private static final String TAG = "NormalShapeHandler";
 
-    private Shape renderShape;
     private Disposable disposable;
     private List<Disposable> actionDisposables = new ArrayList<>();
     private ObservableEmitter<TouchPoint> drawEmitter;
@@ -58,7 +57,7 @@ public class NormalShapeHandler extends BaseHandler {
 
     private Shape createShape(TouchPoint downPoint) {
         NoteDrawingArgs drawingArgs = NoteDataBundle.getInstance().getDrawingArgs();
-        Shape shape = DrawUtils.createShape(drawingArgs, ShapeFactory.POSITION_FREE);
+        Shape shape = DrawUtils.createShape(drawingArgs, ShapeFactory.LayoutType.FREE.ordinal());
         shape.onDown(downPoint, downPoint);
         return shape;
     }
@@ -67,7 +66,6 @@ public class NormalShapeHandler extends BaseHandler {
     public void onBeginRawDraw(boolean shortcutDrawing, final TouchPoint point) {
         super.onBeginRawDraw(shortcutDrawing, point);
         downPoint = point;
-        renderShape = createShape(downPoint);
         disposable = Observable.create(new ObservableOnSubscribe<TouchPoint>() {
 
             @Override
@@ -98,7 +96,6 @@ public class NormalShapeHandler extends BaseHandler {
         if (drawEmitter != null) {
             drawEmitter.onNext(point);
         }
-
     }
 
     @Override
@@ -108,6 +105,7 @@ public class NormalShapeHandler extends BaseHandler {
             disposable.dispose();
         }
         drawEmitter.onNext(point);
+        Shape renderShape = createShape(downPoint);
         renderShape.onUp(point, point);
         disposeAction();
         new AddShapesAction(getNoteManager())

@@ -17,6 +17,7 @@ public class HandlerManager {
     public static final String NORMAL_SHAPE_PROVIDER = "normal_shape";
     public static final String ERASE_OVERLAY_PROVIDER = "erase_overlay";
     public static final String SELECTION_PROVIDER = "selection";
+    public static final String SPAN_TEXT_PROVIDER = "span_text";
 
     private EventBus eventBus;
     private NoteManager noteManager;
@@ -42,6 +43,7 @@ public class HandlerManager {
         providerMap.put(NORMAL_SHAPE_PROVIDER, new NormalShapeHandler(getEventBus(), getNoteManager()));
         providerMap.put(ERASE_OVERLAY_PROVIDER, new EraseOverlayHandler(getEventBus(), getNoteManager()));
         providerMap.put(SELECTION_PROVIDER, new SelectionHandler(getEventBus(), getNoteManager()));
+        providerMap.put(SPAN_TEXT_PROVIDER, new SpanHandler(getEventBus(), getNoteManager()));
     }
 
     public void activeProvider(String providerName) {
@@ -60,5 +62,9 @@ public class HandlerManager {
 
     public boolean inNormalShapeProvider() {
         return activeProvider.equals(NORMAL_SHAPE_PROVIDER);
+    }
+
+    public boolean inEraseOverlayProvider() {
+        return activeProvider.equals(ERASE_OVERLAY_PROVIDER);
     }
 }
