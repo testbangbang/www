@@ -62,13 +62,12 @@ public class UserLoginViewModel {
     }
 
     public void onLoginViewClick() {
-        loginButtonEnabled.set(false);
         getEventBus().post(new HideSoftWindowEvent());
         UserLoginAction userLoginAction = new UserLoginAction(JDReadApplication.getInstance(), account.get(), password.get(), false);
         userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                getEventBus().post(new UserLoginEvent(account.get(),password.get()));
+                getEventBus().post(new UserLoginEvent(account.get(), password.get()));
             }
 
             @Override

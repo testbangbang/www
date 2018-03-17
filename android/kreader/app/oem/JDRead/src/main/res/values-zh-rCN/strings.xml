@@ -175,6 +175,7 @@
     <string name="login">登录</string>
     <string name="check_password">您输入的密码小于6位!</string>
     <string name="check_user_name">登录账号不能为空</string>
+    <string name="check_user_password">登录密码不能为空</string>
     <string name="login_resutl_params_error">参数错误</string>
     <string name="login_resutl_no_function">接口不存在</string>
     <string name="login_resutl_not_login">账号未登录</string>
@@ -337,7 +338,7 @@
     <string name="buy_book_success">购买成功 </string>
     <string name="buy_read_vip">购买京东读书VIP</string>
     <string name="not_open_vip">还未开通京东读书VIP</string>
-    <string name="read_vip_instructions">京东读书VIP须知</string>
+    <string name="read_vip_instructions">VIP须知</string>
     <string name="read_vip_can_not_buy">不能购买京东读书VIP</string>
     <string name="read_vip_surpass_yeas">VIP剩余时长已达%d年上限，无法继续购买</string>
     <string name="ten">￥10.00</string>
@@ -367,7 +368,7 @@
     <string name="encryption_success">加密成功</string>
     <string name="total">总计：</string>
     <string name="bosom">组内：</string>
-    <string name="vip">会员</string>
+    <string name="vip">VIP</string>
     <string name="error_content_author_unknown">作者未知</string>
     <string name="related_books">相关图书</string>
     <string name="search_history">历史搜索</string>
@@ -448,11 +449,11 @@
     <string name="input_translate_content">请输入需要翻译的内容</string>
     <string name="uninstall_translate_app">未安装翻译客户端</string>
     <string name="not_login">未登录</string>
-    <string name="open_vip_read">开通会员</string>
-    <string name="renew_vip_read">会员续费</string>
-    <string name="vip_read_days">京东读书VIP有效天数%s天</string>
-    <string name="vip_read_notice">会员须知</string>
-    <string name="not_open_vip_read">未开通会员</string>
+    <string name="open_vip_read">开通VIP</string>
+    <string name="renew_vip_read">VIP续费</string>
+    <string name="vip_read_days">VIP有效天数%s天</string>
+    <string name="vip_read_notice">VIP须知</string>
+    <string name="not_open_vip_read">还未开通京东读书VIP</string>
     <string name="book_detail_add_cart_tip_the_book_not_can_buy">该图书已购买或者是免费书,无需购买!</string>
     <string name="empty_search_key_prompt">请输入需要搜索的内容</string>
     <string name="no_more_content">没有更多内容了</string>
@@ -544,6 +545,7 @@
     <string name="reader_loading">加载中...</string>
     <string name="without_result">没有搜索结果</string>
     <string name="the_book_not_download">图书未下载</string>
+    <string name="Delete_selected_book_from_shopp_cart">是否从购物车删除所选图书</string>
     <string name="register_with_qrcode">使用 京东 或 微信 扫码进行账号注册</string>
     <string name="find_password_with_qrcode">使用 京东 或 微信 扫码进行密码找回</string>
     <string name="back_to_login">返回登录</string>

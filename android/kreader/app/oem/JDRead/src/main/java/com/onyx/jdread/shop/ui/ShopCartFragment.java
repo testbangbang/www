@@ -160,6 +160,7 @@ public class ShopCartFragment extends BaseFragment {
         binding.shopCartDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 deleteItems();
             }
         });
