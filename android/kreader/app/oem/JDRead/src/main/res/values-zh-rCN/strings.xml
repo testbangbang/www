@@ -553,4 +553,10 @@
     <string name="retrieve_password">找回密码</string>
     <string name="kingsoft_dictionary">金山词典</string>
     <string name="rank_show_name_sale_new_book_list">出版新书榜</string>
+    <string name="a_month">一个月</string>
+    <string name="three_months">三个月</string>
+    <string name="one_year">一年</string>
+    <string name="monthly_vip">月度会员</string>
+    <string name="quarter_vip">季度会员</string>
+    <string name="year_vip">年度会员</string>
 </resources>

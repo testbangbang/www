@@ -8,6 +8,7 @@
             type="com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean.DataBean" />
 
         <import type="com.onyx.jdread.shop.utils.ViewHelper" />
+        <import type="com.onyx.jdread.shop.utils.TextConversionUtils" />
 
     </data>
 
@@ -21,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@{data.service_desc}"
+            android:text="@{TextConversionUtils.changeText(data.service_desc)}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_one_heading_font" />
 
