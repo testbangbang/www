@@ -586,6 +586,7 @@
     <string name="login_success_key">login_success_key</string>
     <string name="underline">_</string>
     <string name="is_24_hour_key">is_24_hour_key</string>
+    <string name="export">Export</string>
     <string name="rank_show_name_sale_new_book_list">publish new book list</string>
     <string name="empty_result">The result is empty</string>
 </resources>

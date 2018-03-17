@@ -132,7 +132,7 @@ public class ReaderBookInfoModel {
         setBookmarksTotalPage(this.bookmarks.size());
     }
 
-    public void setNotes(List<Annotation> annotationList) {
+    public int setNotes(List<Annotation> annotationList) {
         String content = ResManager.getString(R.string.reader_content);
         String note = ResManager.getString(R.string.reader_note);
         String none = ResManager.getString(R.string.security_none);
@@ -152,6 +152,7 @@ public class ReaderBookInfoModel {
             this.notes.add(noteModel);
         }
         setNotesTotalPage(this.notes.size());
+        return this.notes.size();
     }
 
     public void onTabCatalogClick() {
