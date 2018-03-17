@@ -8,12 +8,15 @@ import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookDetail;
 import com.onyx.jdread.shop.utils.ViewHelper;
+
+import java.util.ArrayList;
 
 /**
  * Created by jackdeng on 2017/12/13.
@@ -52,6 +55,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
             public void onSubscribe() {
                 super.onSubscribe();
                 bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
+                bookDetailViewModel.setRecommendList(new ArrayList<ResultBookBean>());
                 showLoadingDialog(shopDataBundle, R.string.loading);
             }
 
