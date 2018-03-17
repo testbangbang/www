@@ -57,7 +57,7 @@ public class UserLoginAction extends BaseAction {
 
     private void checkLoginInfo(PersonalDataBundle dataBundle) {
         if (StringUtils.isNullOrEmpty(account)) {
-            ToastUtil.showToast(JDReadApplication.getInstance(), JDReadApplication.getInstance().getString(R.string.check_user_name));
+            dataBundle.getEventBus().post(new UserLoginResultEvent(ResManager.getString(R.string.check_user_name)));
             RxCallback.invokeFinally(rxCallback);
             return;
         }
@@ -67,7 +67,7 @@ public class UserLoginAction extends BaseAction {
             return;
         }
         if (password == null || password.length() < Constants.PASSWORD_MIN_LENGTH) {
-            ToastUtil.showToast(JDReadApplication.getInstance(), JDReadApplication.getInstance().getString(R.string.check_password));
+            dataBundle.getEventBus().post(new UserLoginResultEvent(ResManager.getString(R.string.check_password)));
             RxCallback.invokeFinally(rxCallback);
             return;
         }

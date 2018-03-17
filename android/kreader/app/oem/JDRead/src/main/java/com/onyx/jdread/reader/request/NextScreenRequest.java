@@ -14,6 +14,7 @@ public class NextScreenRequest extends ReaderBaseRequest {
 
     @Override
     public NextScreenRequest call() throws Exception {
+        getReader().getReaderEpdHelper().increaseRefreshCount();
         getReader().getReaderHelper().nextScreen();
         updateSetting(getReader());
         getReader().getReaderViewHelper().updatePageView(getReader(),getReaderUserDataInfo(),getReaderViewInfo());

@@ -123,6 +123,15 @@ public class Metadata extends BaseData {
     @Column
     private String downloadInfo;
 
+    @Column
+    private String fileSize;
+
+    @Column
+    private String extension;
+
+    @Column
+    private String extraReadAttributes;
+
     @ColumnIgnore
     private Map<String, String> bookCovers = new HashMap<>();
 
@@ -479,5 +488,29 @@ public class Metadata extends BaseData {
 
     public boolean isNew() {
         return readingStatus == ReadingStatus.NEW;
+    }
+
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    public String getExtraReadAttributes() {
+        return extraReadAttributes;
+    }
+
+    public void setExtraReadAttributes(String extraReadAttributes) {
+        this.extraReadAttributes = extraReadAttributes;
     }
 }

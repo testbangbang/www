@@ -74,7 +74,7 @@
                         android:text="@{itemData.promotionalEntity.name}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font"
-                        android:visibility="@{itemData.hasPromotion ? View.VISIBLE : View.GONE}" />
+                        android:visibility="@{StringUtils.isNotBlank(itemData.promotionalEntity.name) ? View.VISIBLE : View.GONE}" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
