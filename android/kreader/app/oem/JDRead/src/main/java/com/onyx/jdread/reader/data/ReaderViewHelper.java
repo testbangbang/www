@@ -105,9 +105,7 @@ public class ReaderViewHelper {
                 readerUserDataInfo.saveSearchResults(translateToScreen(reader, readerViewInfo, searchResults));
             }
 
-            if (renderCoverForJEBBook(reader, readerViewInfo)) {
-                return;
-            } else {
+            if (!renderCoverForJEBBook(reader, readerViewInfo)) {
                 renderAll(reader, context.renderingBitmap.getBitmap(), readerUserDataInfo, readerViewInfo, readerSelectionManager);
             }
 
