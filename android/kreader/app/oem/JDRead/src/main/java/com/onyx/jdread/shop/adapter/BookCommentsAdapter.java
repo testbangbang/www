@@ -10,6 +10,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.CommentItemBinding;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.event.BookDetailViewInfoEvent;
 
@@ -24,8 +25,8 @@ import java.util.List;
 public class BookCommentsAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CommentEntity, CommentEntity> {
 
     private EventBus eventBus;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_comment_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_comment_col);
+    private int row = ResManager.getInteger(R.integer.book_shop_comment_row);
+    private int col = ResManager.getInteger(R.integer.book_shop_comment_col);
 
     public BookCommentsAdapter(EventBus eventBus) {
         this.eventBus = eventBus;

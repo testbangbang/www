@@ -18,9 +18,11 @@ import com.onyx.jdread.databinding.FragmentViewAllBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.CloudApiContext.CategoryLevel2BookList;
 import com.onyx.jdread.shop.event.BookItemClickEvent;
@@ -36,6 +38,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
+
 /**
  * Created by jackdeng on 2017/12/30.
  */
@@ -43,8 +47,8 @@ import org.greenrobot.eventbus.ThreadMode;
 public class SearchBookListFragment extends BaseFragment {
 
     private FragmentViewAllBinding viewAllBinding;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_col);
+    private int row = ResManager.getInteger(R.integer.subject_list_recycle_viw_row);
+    private int col = ResManager.getInteger(R.integer.subject_list_recycle_viw_col);
     private PageRecyclerView recyclerView;
     private GPaginator paginator;
     private int currentPage = 1;
@@ -91,10 +95,18 @@ public class SearchBookListFragment extends BaseFragment {
             @Override
             public void onNext(SearchBookListAction booksAction) {
                 BookModelBooksResultBean booksResultBean = booksAction.getBooksResultBean();
-                getViewAllViewModel().setBookList(booksResultBean.data.items);
-                updateContentView();
+                if (booksResultBean != null && booksResultBean.data != null) {
+                    List<ResultBookBean> data = booksResultBean.data.items;
+                    setResult(data);
+                }
             }
         });
+    }
+
+    private void setResult(List<ResultBookBean> data) {
+        checkContentEmpty(data);
+        getViewAllViewModel().setBookList(data);
+        updateContentView();
     }
 
     private void initView() {

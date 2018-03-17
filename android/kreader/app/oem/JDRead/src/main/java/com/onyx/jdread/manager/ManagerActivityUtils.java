@@ -1,5 +1,6 @@
 package com.onyx.jdread.manager;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;

@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class BookRankListAction extends BaseAction<ShopDataBundle> {
 
-    private int rankId;
+    private int modelType;
     private int currentPage;
     private RecommendListResultBean bookModelResultBean;
 
@@ -28,8 +28,8 @@ public class BookRankListAction extends BaseAction<ShopDataBundle> {
         return bookModelResultBean;
     }
 
-    public BookRankListAction(int rankId, int currentPage) {
-        this.rankId = rankId;
+    public BookRankListAction(int modelType, int currentPage) {
+        this.modelType = modelType;
         this.currentPage = currentPage;
     }
 
@@ -37,13 +37,19 @@ public class BookRankListAction extends BaseAction<ShopDataBundle> {
     public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         BookRankListRequestBean requestBean = new BookRankListRequestBean();
         JDAppBaseInfo appBaseInfo = new JDAppBaseInfo();
-        requestBean.setModuleType(rankId);
-        requestBean.setType(CloudApiContext.BookRankList.RANK_LIST_TIME_TYPE);
+        requestBean.setModuleType(modelType);
+        String timeType;
+        if (modelType == Constants.SHOP_RANK_MODEL_TYPE_SOARING_LIST) {
+             timeType = CloudApiContext.BookRankList.RANK_LIST_TIME_TYPE_WEEK;
+        } else {
+             timeType = CloudApiContext.BookRankList.RANK_LIST_TIME_TYPE_MOUTH;
+        }
+        requestBean.setType(timeType);
         Map<String, String> queryArgs = new HashMap();
         queryArgs.put(CloudApiContext.SearchBook.PAGE_SIZE, Constants.BOOK_PAGE_SIZE);
         queryArgs.put(CloudApiContext.SearchBook.CURRENT_PAGE, String.valueOf(currentPage));
         appBaseInfo.addRequestParams(queryArgs);
-        String sign = String.format(CloudApiContext.BookShopURI.BOOK_RANK_LIST_URI, String.valueOf(rankId), CloudApiContext.BookRankList.RANK_LIST_TIME_TYPE);
+        String sign = String.format(CloudApiContext.BookShopURI.BOOK_RANK_LIST_URI, String.valueOf(modelType), timeType);
         appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         requestBean.setAppBaseInfo(appBaseInfo);
         RxRequestBookRankList request = new RxRequestBookRankList();

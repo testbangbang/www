@@ -7,20 +7,18 @@ import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.support.annotation.NonNull;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.wifi.WifiAdmin;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogAddWifiBinding;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
-import com.onyx.jdread.main.common.ResManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,18 +56,11 @@ public class AddWIFIConfigurationDialog extends Dialog {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     model.type.set(model.getWifiTypeList().get(position));
-                    if (model.type.get() == WifiAdmin.SECURITY_NONE) {
-                        model.sureEnable.set(TextUtils.isEmpty(binding.etSsid.getText().toString()) ? false : true);
-                    } else {
-                        model.sureEnable.set((TextUtils.isEmpty(binding.etSsid.getText().toString())
-                                || TextUtils.isEmpty(binding.etPwd.getText().toString())) ?
-                                false : true);
-                    }
+                    model.sureEnable.set(isPositiveButtonLegal(model.ssid.get(), model.password.get()));
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
-
                 }
             });
             dialog.setContentView(binding.getRoot());
@@ -85,18 +76,22 @@ public class AddWIFIConfigurationDialog extends Dialog {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    if (model.type.get() == WifiAdmin.SECURITY_NONE) {
-                        model.sureEnable.set(TextUtils.isEmpty(binding.etSsid.getText().toString()) ? false : true);
-                    } else {
-                        model.sureEnable.set((TextUtils.isEmpty(binding.etSsid.getText().toString())
-                                || TextUtils.isEmpty(binding.etPwd.getText().toString())) ?
-                                false : true);
-                    }
+                    model.ssid.set(binding.etSsid.getText().toString());
+                    model.password.set(binding.etPwd.getText().toString());
+                    model.sureEnable.set(isPositiveButtonLegal(model.ssid.get(), model.password.get()));
                 }
             };
             binding.etSsid.addTextChangedListener(textWatcher);
             binding.etPwd.addTextChangedListener(textWatcher);
             return dialog;
+        }
+
+        private boolean isPositiveButtonLegal(String ssid, String password) {
+            if (model.type.get() <= WifiAdmin.SECURITY_NONE) {
+                return StringUtils.isNotBlank(ssid);
+            } else {
+                return StringUtils.isNotBlank(ssid) && StringUtils.isNotBlank(password) && password.length() >= 5;
+            }
         }
     }
 

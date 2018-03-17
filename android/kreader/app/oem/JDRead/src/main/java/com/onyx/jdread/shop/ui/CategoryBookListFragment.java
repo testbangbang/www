@@ -19,6 +19,7 @@ import com.onyx.jdread.databinding.FragmentCategoryBookListBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.CategoryBookListAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
@@ -53,10 +54,10 @@ import java.util.List;
 public class CategoryBookListFragment extends BaseFragment {
 
     private FragmentCategoryBookListBinding categoryBookListBinding;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_col);
-    private int catRow = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_category_recycle_viw_row);
-    private int catCol = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_category_recycle_viw_col);
+    private int row = ResManager.getInteger(R.integer.subject_list_recycle_viw_row);
+    private int col = ResManager.getInteger(R.integer.subject_list_recycle_viw_col);
+    private int catRow = ResManager.getInteger(R.integer.subject_list_category_recycle_viw_row);
+    private int catCol = ResManager.getInteger(R.integer.subject_list_category_recycle_viw_col);
     private PageRecyclerView recyclerView;
     private GPaginator paginator;
     private int currentPage = 1;
@@ -118,6 +119,11 @@ public class CategoryBookListFragment extends BaseFragment {
         booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
             @Override
             public void onNext(SearchBookListAction action) {
+                BookModelBooksResultBean booksResultBean = action.getBooksResultBean();
+                if (booksResultBean != null && booksResultBean.data != null) {
+                    BookModelBooksResultBean.DataBean data = booksResultBean.data;
+                    checkContentEmpty(data.items);
+                }
             }
 
             @Override
@@ -143,7 +149,15 @@ public class CategoryBookListFragment extends BaseFragment {
     private void setCategoryV3Data() {
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
         if (CollectionUtils.getSize(allCategoryItems) > levelTwoPosition) {
-            getCategoryBookListViewModel().setCategoryItems(allCategoryItems.get(levelTwoPosition).sub_category);
+            List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelThreeDatas = allCategoryItems.get(levelTwoPosition).sub_category;
+            resetLevelThreeData(levelThreeDatas);
+            getCategoryBookListViewModel().setCategoryItems(levelThreeDatas);
+        }
+    }
+
+    private void resetLevelThreeData(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelThreeDatas) {
+        for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo cateBean: levelThreeDatas){
+            cateBean.isSelect = false;
         }
     }
 
@@ -329,6 +343,7 @@ public class CategoryBookListFragment extends BaseFragment {
         getCategoryBookListViewModel().getTitleBarViewModel().leftText = currentCatName;
         Bundle bundle = getBundle();
         bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_TWO_ID, catTwoId);
+        bundle.putInt(Constants.SP_KEY_CATEGORY_LEVEL_VALUE, catLevel);
         bundle.putString(Constants.SP_KEY_CATEGORY_NAME, currentCatName);
         getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
     }

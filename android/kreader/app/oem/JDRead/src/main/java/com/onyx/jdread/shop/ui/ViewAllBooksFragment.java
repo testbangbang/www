@@ -17,6 +17,7 @@ import com.onyx.jdread.databinding.FragmentViewAllBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.BookModelAction;
 import com.onyx.jdread.shop.action.BookRankListAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
@@ -43,8 +44,8 @@ import java.util.List;
 public class ViewAllBooksFragment extends BaseFragment {
 
     private FragmentViewAllBinding viewAllBinding;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_col);
+    private int row = ResManager.getInteger(R.integer.subject_list_recycle_viw_row);
+    private int col = ResManager.getInteger(R.integer.subject_list_recycle_viw_col);
     private PageRecyclerView recyclerView;
     private GPaginator paginator;
     private int currentPage = 1;
@@ -79,8 +80,8 @@ public class ViewAllBooksFragment extends BaseFragment {
                 modelType = bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
                 getBookModelData(currentPage);
             } else if (bookListType == Constants.BOOK_LIST_TYPE_BOOK_RANK) {
-                int rankType = bundle.getInt(Constants.SP_KEY_SUBJECT_RANK_TYPE, -1);
-                getBookRankData(rankType, currentPage);
+                int modelType = bundle.getInt(Constants.SP_KEY_SUBJECT_MODEL_TYPE, -1);
+                getBookRankData(modelType, currentPage);
             }
         }
         checkWifi(getTitleBarViewModel().leftText);
@@ -92,19 +93,30 @@ public class ViewAllBooksFragment extends BaseFragment {
             @Override
             public void onNext(BookModelAction booksAction) {
                 BookModelBooksResultBean bookModelResultBean = booksAction.getBookModelResultBean();
-                updateContentView(bookModelResultBean.data.items);
+                if (bookModelResultBean != null && bookModelResultBean.data != null) {
+                    List<ResultBookBean> data = bookModelResultBean.data.items;
+                    setResult(data);
+                }
             }
         });
     }
 
-    private void getBookRankData(int rankId, int currentPage) {
-        BookRankListAction booksAction = new BookRankListAction(rankId, currentPage);
+    private void getBookRankData(int modelType, int currentPage) {
+        BookRankListAction booksAction = new BookRankListAction(modelType, currentPage);
         booksAction.execute(getShopDataBundle(), new RxCallback<BookRankListAction>() {
             @Override
             public void onNext(BookRankListAction booksAction) {
-                updateContentView(booksAction.getBookModelResultBean().data);
+                if (booksAction.getBookModelResultBean() != null) {
+                    List<ResultBookBean> data = booksAction.getBookModelResultBean().data;
+                    setResult(data);
+                }
             }
         });
+    }
+
+    private void setResult(List<ResultBookBean> data) {
+        checkContentEmpty(data);
+        updateContentView(data);
     }
 
     private void initView() {

@@ -32,8 +32,7 @@
                 android:maxLines="1"
                 android:text="@{accessPoint.getScanResult().SSID}"
                 android:textSize="@dimen/level_two_heading_font"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/wifi_setting_setting"

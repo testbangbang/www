@@ -68,7 +68,7 @@ public class GiftCenterFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.gift_center));
+        titleModel.title.set(ResManager.getString(R.string.gift_center));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.giftCenterTitleBar.setTitleModel(titleModel);
 

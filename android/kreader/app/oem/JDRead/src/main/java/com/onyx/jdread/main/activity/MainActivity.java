@@ -30,6 +30,7 @@ import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.main.action.ChangeFunctionBarAction;
+import com.onyx.jdread.main.action.ClearNotBelongsToMyBooksAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -56,10 +57,13 @@ import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.event.BackToLoginEvent;
+import com.onyx.jdread.personal.event.ForgetPasswordEvent;
 import com.onyx.jdread.personal.event.HideSoftWindowEvent;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
+import com.onyx.jdread.personal.event.UserRegisterJDAccountEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
@@ -237,14 +241,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchCurrentFragment(@NonNull BaseFragment baseFragment, @Nullable Bundle bundle) {
-        if (StringUtils.isNotBlank(currentChildViewName) && currentChildViewName.equals(
-                baseFragment.getClass().getName())) {
-            return;
-        }
-        if (StringUtils.isNotBlank(currentChildViewName) && currentChildViewName.equals(
-                baseFragment.getClass().getName())) {
-            return;
-        }
         initFragmentManager();
         notifyChildViewChangeWindow();
         baseFragment.setBundle(bundle);
@@ -451,6 +447,9 @@ public class MainActivity extends AppCompatActivity {
         if (model.getBaseFragment() == null) {
             model.setBaseFragment(getPageView(model.getName()));
         }
+        if (currentFragment.getClass().getName().equals(event.getStackList().getLast().getName())) {
+            return;
+        }
         switchCurrentFragment(model.getBaseFragment(), model.getBaseFragment().getBundle());
     }
 
@@ -486,6 +485,7 @@ public class MainActivity extends AppCompatActivity {
         if (getResources().getString(R.string.login_success).equals(event.getMessage())) {
             JDReadApplication.getInstance().setLogin(true);
             clearInput();
+            clearNotBelongsToMyBooks();
             LoginHelper.dismissUserLoginDialog();
             if (StringUtils.isNotBlank(event.getTargetView())) {
                 childViewEventCallBack.gotoView(event.getTargetView());
@@ -496,8 +496,31 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } else {
-            ToastUtil.showToast(this, event.getMessage());
+            getUserLoginViewModel().errorMessage.set(event.getMessage());
         }
+    }
+
+    private void clearNotBelongsToMyBooks() {
+        ClearNotBelongsToMyBooksAction action = new ClearNotBelongsToMyBooksAction();
+        action.execute(MainBundle.getInstance(),null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserRegisterJDAccountEvent(UserRegisterJDAccountEvent event) {
+        UserLoginViewModel userLoginViewModel = getUserLoginViewModel();
+        userLoginViewModel.register();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackToLoginEvent(BackToLoginEvent event) {
+        UserLoginViewModel userLoginViewModel = getUserLoginViewModel();
+        userLoginViewModel.backToLogin();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onForgetPasswordEvent(ForgetPasswordEvent event) {
+        UserLoginViewModel userLoginViewModel = getUserLoginViewModel();
+        userLoginViewModel.retrievePassword();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

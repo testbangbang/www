@@ -83,12 +83,15 @@ public class RxSelectedMetadataFromMultipleLibraryRequest extends RxBaseDBReques
         }
         DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
-        for (DataModel dataModel : modelList) {
-            Metadata metadata = getDataProvider().findMetadataByIdString(getAppContext(), dataModel.idString.get());
-            list.add(metadata);
+        try {
+            for (DataModel dataModel : modelList) {
+                Metadata metadata = getDataProvider().findMetadataByIdString(getAppContext(), dataModel.idString.get());
+                list.add(metadata);
+                database.setTransactionSuccessful();
+            }
+        } finally {
+            database.endTransaction();
         }
-        database.setTransactionSuccessful();
-        database.endTransaction();
     }
 
     public Map<String, List<Metadata>> getChosenItemsMap() {

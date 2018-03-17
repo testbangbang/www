@@ -47,10 +47,10 @@ import java.util.List;
 public class AllCategoryFragment extends BaseFragment {
 
     private FragmentBookAllCategoryBinding allCategoryBinding;
-    private int space = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_recycle_view_space);
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_recycle_view_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_recycle_view_col);
-    private int topCol = JDReadApplication.getInstance().getResources().getInteger(R.integer.all_category_top_recycle_view_col);
+    private int space = ResManager.getInteger(R.integer.all_category_recycle_view_space);
+    private int row = ResManager.getInteger(R.integer.all_category_recycle_view_row);
+    private int col = ResManager.getInteger(R.integer.all_category_recycle_view_col);
+    private int topCol = ResManager.getInteger(R.integer.all_category_top_recycle_view_col);
     private PageRecyclerView recyclerView;
     private GPaginator paginator;
     private static final int TYPE_INDEX_ZERO = 0;

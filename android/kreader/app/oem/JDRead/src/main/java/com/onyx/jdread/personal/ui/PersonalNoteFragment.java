@@ -85,7 +85,7 @@ public class PersonalNoteFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.personal_notes));
+        titleModel.title.set(ResManager.getString(R.string.personal_notes));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.personalNoteTitle.setTitleModel(titleModel);
         exportHelper = new ExportHelper(getActivity(), PersonalDataBundle.getInstance().getEventBus());
