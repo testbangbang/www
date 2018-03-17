@@ -153,7 +153,7 @@ public class BaseOptions {
     }
 
     public float getReadProgress(){
-        return backend.getFloat(READ_PROGRESS)
+        return backend.getFloat(READ_PROGRESS);
     }
 
     public void setReadProgress(float progress){
