@@ -77,7 +77,7 @@ public class ReadPreferenceFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.my_read_preference));
+        titleModel.title.set(ResManager.getString(R.string.my_read_preference));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.readPreferenceTitle.setTitleModel(titleModel);
         getPreferences();

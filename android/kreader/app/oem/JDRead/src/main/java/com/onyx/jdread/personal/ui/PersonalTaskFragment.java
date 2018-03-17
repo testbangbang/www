@@ -77,7 +77,7 @@ public class PersonalTaskFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.personal_task));
+        titleModel.title.set(ResManager.getString(R.string.personal_task));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.personalTaskTitle.setTitleModel(titleModel);
 

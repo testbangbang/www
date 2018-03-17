@@ -15,6 +15,7 @@ import com.onyx.jdread.databinding.PointsForBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.adapter.PointsForAdapter;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
@@ -59,7 +60,7 @@ public class PointsForFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.points_for));
+        titleModel.title.set(ResManager.getString(R.string.points_for));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.pointsForTitleBar.setTitleModel(titleModel);
 
@@ -85,7 +86,7 @@ public class PointsForFragment extends BaseFragment {
                     PointsForData pointsForData = pointsForModel.getList().get(position);
                     LibraryDeleteDialog.DialogModel dialogModel = new LibraryDeleteDialog.DialogModel();
                     final LibraryDeleteDialog dialog = new LibraryDeleteDialog.Builder(JDReadApplication.getInstance(), dialogModel).create();
-                    String tips = JDReadApplication.getInstance().getResources().getString(R.string.points_for_tips);
+                    String tips = ResManager.getString(R.string.points_for_tips);
                     dialogModel.message.set(String.format(tips, pointsForData.getDays(), pointsForData.getPoints()));
                     dialogModel.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
                         @Override

@@ -1,9 +1,7 @@
 package com.onyx.android.sdk.data.rxrequest.data.db;
 
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.db.ContentDatabase;
-import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -12,7 +10,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -42,14 +39,17 @@ public class RxMetadataDeleteRequest extends RxBaseDBRequest {
         }
         DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
-        for (Metadata metadata : list) {
-            getDataProvider().removeMetadata(getAppContext(), metadata);
-            if (StringUtils.isNotBlank(libraryId)) {
-                getDataProvider().deleteMetadataCollection(getAppContext(), libraryId, metadata.getIdString());
+        try {
+            for (Metadata metadata : list) {
+                getDataProvider().removeMetadata(getAppContext(), metadata);
+                if (StringUtils.isNotBlank(libraryId)) {
+                    getDataProvider().deleteMetadataCollection(getAppContext(), libraryId, metadata.getIdString());
+                }
             }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
         }
-        database.setTransactionSuccessful();
-        database.endTransaction();
 
         for (Metadata metadata : list) {
             FileUtils.deleteFile(metadata.getNativeAbsolutePath());

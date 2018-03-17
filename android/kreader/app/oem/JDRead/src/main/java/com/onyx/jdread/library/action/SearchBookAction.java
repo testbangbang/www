@@ -3,15 +3,22 @@ package com.onyx.jdread.library.action;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.R;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.request.RxSaveSearchHistoryRequest;
 import com.onyx.jdread.library.request.RxSearchBookRequest;
 import com.onyx.jdread.main.action.BaseAction;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.util.InputUtils;
+import com.raizlabs.android.dbflow.sql.language.OperatorGroup;
+
+import java.util.concurrent.locks.Condition;
 
 /**
  * Created by hehai on 18-1-18.
@@ -34,7 +41,11 @@ public class SearchBookAction extends BaseAction<LibraryDataBundle> {
         if (StringUtils.isNullOrEmpty(key)) {
             return;
         }
-        QueryArgs queryArgs = QueryBuilder.searchQuery(key, SortBy.None, SortOrder.Asc);
+        QueryArgs queryArgs = new QueryArgs(SortBy.Name, SortOrder.Asc);
+        queryArgs.conditionGroup = OperatorGroup.clause().and(QueryBuilder.orSearchCondition(key));
+        if (!JDPreferenceManager.getBooleanValue(R.string.login_success_key, false)) {
+            queryArgs.conditionGroup.and(Metadata_Table.fetchSource.isNot(Metadata.FetchSource.CLOUD));
+        }
         RxSearchBookRequest request = new RxSearchBookRequest(libraryDataBundle.getDataManager(), queryArgs, libraryDataBundle.getEventBus());
         request.execute(new RxCallback<RxSearchBookRequest>() {
             @Override

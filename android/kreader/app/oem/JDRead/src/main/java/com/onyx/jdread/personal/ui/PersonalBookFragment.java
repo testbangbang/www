@@ -149,7 +149,7 @@ public class PersonalBookFragment extends BaseFragment {
 
     private void initData() {
         TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.personal_books));
+        titleModel.title.set(ResManager.getString(R.string.personal_books));
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.personalBookTitle.setTitleModel(titleModel);
         personalBookModel = PersonalDataBundle.getInstance().getPersonalBookModel();
@@ -166,7 +166,7 @@ public class PersonalBookFragment extends BaseFragment {
                 if (menus != null && menus.size() > 0) {
                     popupWindow.showPopupWindow(binding.personalBookFilter, menus, JDReadApplication
                                     .getInstance().getResources().getInteger(R.integer.personal_book_filter_x),
-                            JDReadApplication.getInstance().getResources().getInteger(R.integer.personal_book_filter_y));
+                            ResManager.getInteger(R.integer.personal_book_filter_y));
                 }
 
             }

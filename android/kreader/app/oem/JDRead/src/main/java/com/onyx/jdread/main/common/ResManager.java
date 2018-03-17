@@ -34,7 +34,7 @@ public class ResManager {
         return context.getResources().getDimensionPixelSize(resId);
     }
 
-    public static int getColor(int res){
+    public static int getColor(int res) {
         return context.getResources().getColor(res);
     }
 
@@ -44,5 +44,13 @@ public class ResManager {
 
     static public String getUriOfRawName(String rawName) {
         return "file:///android_res/raw/" + rawName;
+    }
+
+    public static float getDimension(int resId) {
+        return context.getResources().getDimension(resId);
+    }
+
+    public static int getDimensionPixelSize(int resId) {
+        return context.getResources().getDimensionPixelSize(resId);
     }
 }
