@@ -30,6 +30,7 @@ import com.onyx.jdread.library.event.BackToRootFragment;
 import com.onyx.jdread.library.model.LibraryDataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.main.action.ChangeFunctionBarAction;
+import com.onyx.jdread.main.action.ClearNotBelongsToMyBooksAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
@@ -489,6 +490,7 @@ public class MainActivity extends AppCompatActivity {
         if (getResources().getString(R.string.login_success).equals(event.getMessage())) {
             JDReadApplication.getInstance().setLogin(true);
             clearInput();
+            clearNotBelongsToMyBooks();
             LoginHelper.dismissUserLoginDialog();
             if (StringUtils.isNotBlank(event.getTargetView())) {
                 childViewEventCallBack.gotoView(event.getTargetView());
@@ -501,6 +503,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getUserLoginViewModel().errorMessage.set(event.getMessage());
         }
+    }
+
+    private void clearNotBelongsToMyBooks() {
+        ClearNotBelongsToMyBooksAction action = new ClearNotBelongsToMyBooksAction();
+        action.execute(MainBundle.getInstance(),null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

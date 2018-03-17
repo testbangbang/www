@@ -40,18 +40,20 @@ public class RxDeleteMetadataFromMultipleLibraryRequest extends RxBaseDBRequest 
         }
         DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
-        for (Metadata metadata : list) {
-            getDataProvider().removeMetadata(getAppContext(), metadata);
-            if (StringUtils.isNotBlank(libraryId)) {
-                getDataProvider().deleteMetadataCollection(getAppContext(), libraryId, metadata.getIdString());
+        try {
+            for (Metadata metadata : list) {
+                getDataProvider().removeMetadata(getAppContext(), metadata);
+                if (StringUtils.isNotBlank(libraryId)) {
+                    getDataProvider().deleteMetadataCollection(getAppContext(), libraryId, metadata.getIdString());
+                }
             }
+            if (StringUtils.isNotBlank(libraryId) && getDataProvider().libraryMetadataCount(libraryId) == 0) {
+                getDataProvider().deleteLibrary(libraryId);
+            }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
         }
-        if (StringUtils.isNotBlank(libraryId) && getDataProvider().libraryMetadataCount(libraryId) == 0) {
-            getDataProvider().deleteLibrary(libraryId);
-        }
-        database.setTransactionSuccessful();
-        database.endTransaction();
-
         for (Metadata metadata : list) {
             if (!metadata.getNativeAbsolutePath().startsWith(Constant.SYSTEM_PRE_BOOKS_DIR)) {
                 FileUtils.deleteFile(metadata.getNativeAbsolutePath());

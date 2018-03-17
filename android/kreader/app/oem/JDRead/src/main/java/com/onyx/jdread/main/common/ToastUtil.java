@@ -31,7 +31,7 @@ public class ToastUtil {
     private static float radius = JDReadApplication.getInstance().getResources().getInteger(R.integer.toast_view_shadow_radius);
     private static float dx = JDReadApplication.getInstance().getResources().getInteger(R.integer.toast_view_shadow_dx);
     private static float dy = JDReadApplication.getInstance().getResources().getInteger(R.integer.toast_view_shadow_dy);
-    private static float textSize = JDReadApplication.getInstance().getResources().getDimension(R.dimen.level_three_heading_font);
+    private static float textSize = JDReadApplication.getInstance().getResources().getDimension(R.dimen.level_one_heading_font);
 
     public static void showOffsetToast(String message, int offsetY) {
         showToast(JDReadApplication.getInstance(), message, offsetY);
@@ -50,14 +50,15 @@ public class ToastUtil {
             View view = toast.getView();
             setBackground(view, getDrawable(appContext, R.drawable.rectangle_stroke));
             TextView textView = (TextView) view.findViewById(android.R.id.message);
+            textView.setHeight(JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.toast_height));
             textView.setEllipsize(TextUtils.TruncateAt.END);
             textView.setMaxLines(20);
             textView.setTextColor(Color.BLACK);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             textView.setGravity(Gravity.CENTER);
-            textView.setPadding(left, top, right, bottom);
+            textView.setPadding(left, 0, right, 0);
             textView.setShadowLayer(radius, dx, dy, Color.TRANSPARENT);
-            setGravity(offset);
+            toast.setGravity(Gravity.TOP, 0, JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.toast_offset_y));
             toast.show();
         } else {
             if (message.equals(oldMsg)) {
@@ -76,7 +77,7 @@ public class ToastUtil {
 
     private static void setGravity(int offset) {
         if (offset != 0) {
-            toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, offset);
+            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, JDReadApplication.getInstance().getResources().getDimensionPixelSize(R.dimen.toast_offset_y));
         } else {
             toast.setGravity(ResManager.getInteger(R.integer.default_toast_gravity),
                     0, ResManager.getDimens(R.dimen.default_toast_y_offset));

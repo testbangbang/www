@@ -73,8 +73,6 @@
     <integer name="read_preference_col">4</integer>
     <integer name="reading_tools_row">4</integer>
     <integer name="reading_tools_col">1</integer>
-    <integer name="dash_Line_length">7</integer>
-    <integer name="dash_space_length">5</integer>
     <integer name="personal_note_row">5</integer>
     <integer name="personal_note_col">1</integer>
     <integer name="personal_task_row">2</integer>

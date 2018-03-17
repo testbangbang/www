@@ -28,7 +28,7 @@ import io.reactivex.Scheduler;
  */
 public class RxSearchBookRequest extends RxBaseDBRequest {
 
-    private boolean loadFromCache = true;
+    private boolean loadFromCache = false;
     private QueryArgs queryArgs;
     private Map<String, CloseableReference<Bitmap>> thumbnailMap = new HashMap<>();
 

@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:onClick="@{()->libraryModel.onSearchClick()}"
                     android:padding="@dimen/library_manage_layout_padding"
-                    android:src="@mipmap/ic_search" />
+                    android:src="@mipmap/ic_shelf_search" />
 
                 <ImageView
                     android:id="@+id/image_manage"
@@ -79,7 +79,7 @@
                     android:layout_marginRight="@dimen/image_manage_button_margin"
                     android:onClick="@{()->libraryModel.onManageClick()}"
                     android:padding="@dimen/library_manage_layout_padding"
-                    android:src="@{libraryModel.count == 0?@drawable/ic_manage_gray:@drawable/ic_manage}" />
+                    android:src="@{libraryModel.count == 0?@drawable/ic_shelf_manage_gray:@drawable/ic_shelf_manage}" />
 
                 <ImageView
                     android:id="@+id/image_menu"
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:onClick="@{()->libraryModel.onMenuClick()}"
                     android:padding="@dimen/library_manage_layout_padding"
-                    android:src="@mipmap/ic_menu" />
+                    android:src="@mipmap/ic_shelf_menu" />
             </LinearLayout>
         </RelativeLayout>
 

@@ -2,6 +2,7 @@ package com.onyx.jdread.main.model;
 
 import android.content.Context;
 
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.jdread.JDReadApplication;
 
 import org.greenrobot.eventbus.EventBus;
@@ -15,6 +16,7 @@ public class MainBundle {
     private Context appContext;
     private EventBus eventBus = new EventBus();
     private SystemBarModel systemBarModel;
+    private DataManager dataManager= new DataManager();
 
     public static MainBundle getInstance() {
         if (bundle == null) {
@@ -40,5 +42,9 @@ public class MainBundle {
             systemBarModel = new SystemBarModel();
         }
         return systemBarModel;
+    }
+
+    public DataManager getDataManager() {
+        return dataManager;
     }
 }
