@@ -1,7 +1,5 @@
 package com.onyx.jdread.main.model;
 
-import com.onyx.android.sdk.utils.CollectionUtils;
-
 import java.util.LinkedList;
 
 /**
@@ -51,5 +49,9 @@ public class StackList<T> {
 
     public String toString(){
         return stack.toString();
+    }
+
+    public T getLast() {
+        return stack.getLast();
     }
 }
