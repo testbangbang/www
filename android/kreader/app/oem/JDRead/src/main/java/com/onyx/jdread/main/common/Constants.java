@@ -166,4 +166,7 @@ public class Constants {
     public static final int SHOP_RANK_MODEL_TYPE_SOARING_LIST = 6;
     public static final int SHOP_RANK_MODEL_TYPE_SALE_NEW_BOOK_LIST = 2;
     public static final int RANK_TYPE_PUBLISH = 1;
+    public static final String MONTHLY_VIP = "月度会员";
+    public static final String QUARTER_VIP = "季度会员";
+    public static final String YEAR_VIP = "年度会员";
 }
