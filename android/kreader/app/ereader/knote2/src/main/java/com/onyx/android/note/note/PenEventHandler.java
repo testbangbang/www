@@ -26,7 +26,8 @@ import org.greenrobot.eventbus.Subscribe;
 public class PenEventHandler {
 
     private EventBus eventBus;
-    private boolean dialogShowed = false;
+    public static boolean dialogShowing;
+    public static boolean keyboardShowing;
 
     public PenEventHandler(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -44,12 +45,20 @@ public class PenEventHandler {
         getEventBus().unregister(this);
     }
 
-    private boolean isDialogShowed() {
-        return dialogShowed;
+    private boolean isDialogShowing() {
+        return dialogShowing;
+    }
+
+    public static void setKeyboardShowing(boolean keyboardShowing) {
+        PenEventHandler.keyboardShowing = keyboardShowing;
+    }
+
+    public static boolean isKeyboardShowing() {
+        return keyboardShowing;
     }
 
     private boolean shouldResume(boolean resumePen) {
-        return resumePen && !isDialogShowed();
+        return resumePen && !isDialogShowing();
     }
 
     private boolean shouldRawRender(boolean render) {

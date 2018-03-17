@@ -1,19 +1,13 @@
 package com.onyx.android.note.note.scribble;
 
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.SpannableStringBuilder;
 import android.util.SparseArray;
-import android.util.SparseIntArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -29,23 +23,19 @@ import com.onyx.android.note.databinding.FragmentScribbleBinding;
 import com.onyx.android.note.event.BuildSpanTextShapeEvent;
 import com.onyx.android.note.event.SpanViewEnableEvent;
 import com.onyx.android.note.event.SpanViewEvent;
+import com.onyx.android.note.event.menu.CloseKeyboardEvent;
+import com.onyx.android.note.event.menu.DeleteSpanShapeEvent;
 import com.onyx.android.note.handler.HandlerManager;
-import com.onyx.android.note.handler.SpanTextHandler;
 import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.PauseRawDrawingEvent;
 import com.onyx.android.sdk.note.widget.LinedEditText;
-import com.onyx.android.sdk.pen.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.Background;
 import com.onyx.android.sdk.scribble.data.DocumentOptionArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
-import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -107,11 +97,10 @@ public class ScribbleFragment extends BaseFragment {
                 if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_DEL:
-//                            setKeyboardInput(true);
-//                            onDelete(false);
+                            getNoteBundle().post(new DeleteSpanShapeEvent());
                             return true;
                         case KeyEvent.KEYCODE_ENTER:
-//                            onCloseKeyBoard();
+                            getNoteBundle().post(new CloseKeyboardEvent());
                             return false;
                         case KeyEvent.KEYCODE_1:
                         case KeyEvent.KEYCODE_2:
@@ -137,9 +126,7 @@ public class ScribbleFragment extends BaseFragment {
             public void onKeyPreIme(int keyCode, KeyEvent event) {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_BACK:
-//                        if (isKeyboardInput()) {
-//                            onCloseKeyBoard();
-//                        }
+                        getNoteBundle().post(new CloseKeyboardEvent());
                         break;
                 }
             }

@@ -1,28 +1,34 @@
 package com.onyx.android.note.handler;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.text.Layout;
 import android.text.SpannableStringBuilder;
-import android.view.KeyEvent;
-import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.onyx.android.note.NoteDataBundle;
+import com.onyx.android.note.R;
 import com.onyx.android.note.action.PageSpanShapesAction;
+import com.onyx.android.note.action.RemoveShapesByGroupIdAction;
 import com.onyx.android.note.action.RenderToBitmapAction;
 import com.onyx.android.note.action.SpannableAction;
 import com.onyx.android.note.event.BuildSpanTextShapeEvent;
 import com.onyx.android.note.event.SpanViewEnableEvent;
 import com.onyx.android.note.event.SpanViewEvent;
+import com.onyx.android.note.event.menu.DeleteSpanShapeEvent;
+import com.onyx.android.note.event.menu.CloseKeyboardEvent;
+import com.onyx.android.note.event.menu.NewlineSpanEvent;
+import com.onyx.android.note.event.menu.ShowKeyboardEvent;
+import com.onyx.android.note.event.menu.SpaceSpanShapeEvent;
+import com.onyx.android.note.note.PenEventHandler;
 import com.onyx.android.note.utils.DrawUtils;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.request.PageSpanShapesRequest;
 import com.onyx.android.sdk.note.request.SpannableRequest;
-import com.onyx.android.sdk.note.widget.LinedEditText;
 import com.onyx.android.sdk.pen.data.TouchPoint;
 import com.onyx.android.sdk.pen.data.TouchPointList;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -33,7 +39,9 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
+import org.apache.commons.collections4.MapUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -89,7 +97,7 @@ public class SpanTextHandler extends BaseHandler {
             @Override
             public void onNext(@NonNull PageSpanShapesRequest request) {
                 pageSpanShapesMap = request.getPageSpanShapesMap();
-                spannableRequest(pageSpanShapesMap, null);
+                spannableAction(pageSpanShapesMap, null);
             }
         });
     }
@@ -142,10 +150,10 @@ public class SpanTextHandler extends BaseHandler {
         for (Shape shape : newAddShapeList) {
             shape.setGroupId(groupId);
         }
-        spannableRequest(pageSpanShapesMap, newAddShapeList);
+        spannableAction(pageSpanShapesMap, newAddShapeList);
     }
 
-    private void spannableRequest(final Map<String, List<Shape>> pageSpanTextShapeMap, final List<Shape> newAddShapeList) {
+    private void spannableAction(final Map<String, List<Shape>> pageSpanTextShapeMap, final List<Shape> newAddShapeList) {
         new SpannableAction(getNoteManager(), pageSpanTextShapeMap, newAddShapeList).execute(new RxCallback<SpannableRequest>() {
             @Override
             public void onNext(@NonNull SpannableRequest request) {
@@ -185,7 +193,11 @@ public class SpanTextHandler extends BaseHandler {
             return;
         }
 
-        new RenderToBitmapAction(getNoteManager()).setShapes(lineLayoutShapes).execute(new RxCallback() {
+        updateLineLayoutCursor();
+        new RenderToBitmapAction(getNoteManager())
+                .setShapes(lineLayoutShapes)
+                .setRenderToScreen(true)
+                .execute(new RxCallback() {
             @Override
             public void onNext(@NonNull Object o) {
                 setBuildingSpan(false);
@@ -226,11 +238,15 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     private void showOutOfRangeTips() {
-        Toast.makeText(getNoteManager().getAppContext(), "", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getNoteManager().getAppContext(), R.string.shape_out_of_range, Toast.LENGTH_SHORT).show();
     }
 
     private void setBuildingSpan(boolean buildingSpan) {
         this.buildingSpan = buildingSpan;
+    }
+
+    public boolean isBuildingSpan() {
+        return buildingSpan;
     }
 
     @Subscribe
@@ -250,13 +266,92 @@ public class SpanTextHandler extends BaseHandler {
         buildTextShape(event.text, (int) spanView.getPaint().measureText(event.text));
     }
 
+    private String getLastGroupId() {
+        String groupId;
+        if (MapUtils.isEmpty(pageSpanShapesMap)) {
+            return null;
+        }
+        groupId = (String) pageSpanShapesMap.keySet().toArray()[pageSpanShapesMap.size() - 1];
+        return groupId;
+    }
+
+    @Subscribe
+    public void onDeleteSpanShape(DeleteSpanShapeEvent event) {
+        if (isBuildingSpan()) {
+            return;
+        }
+        String groupId = getLastGroupId();
+        if (StringUtils.isNullOrEmpty(groupId)) {
+            return;
+        }
+        new RemoveShapesByGroupIdAction(getNoteManager(), groupId).execute(null);
+    }
+
+    @Subscribe
+    public void onSpaceSpanShape(SpaceSpanShapeEvent event) {
+        if (isBuildingSpan()) {
+            return;
+        }
+        buildTextShape(SPACE_TEXT, SpanTextHandler.SPACE_WIDTH);
+    }
+
+    @Subscribe
+    public void onNewlineSpan(NewlineSpanEvent event) {
+        if (isBuildingSpan()) {
+            return;
+        }
+        float spaceWidth = (int) spanView.getPaint().measureText(SPACE_TEXT);
+        int pos = spanView.getSelectionStart();
+        Layout layout = spanView.getLayout();
+        int line = layout.getLineForOffset(pos);
+        int lineCount = getNoteManager().getRenderContext().lineLayoutArgs.getLineCount();
+        if (line == (lineCount - 1)) {
+            showOutOfRangeTips();
+            return;
+        }
+        int width = spanView.getMeasuredWidth();
+        float x = layout.getPrimaryHorizontal(pos) - spaceWidth;
+        x = x >= width ? 0 : x;
+        if (isBuildingSpan()) {
+            return;
+        }
+        buildTextShape(SPACE_TEXT, (int) Math.ceil(spanView.getMeasuredWidth() - x) - 2 * ShapeSpan.SHAPE_SPAN_MARGIN);
+    }
+
+    @Subscribe
+    public void onShowKeyboard(ShowKeyboardEvent event) {
+        if (PenEventHandler.isKeyboardShowing()) {
+            return;
+        }
+        InputMethodManager inputManager = (InputMethodManager)spanView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputManager == null) {
+            return;
+        }
+        PenEventHandler.setKeyboardShowing(true);
+        inputManager.showSoftInput(spanView, 0);
+    }
+
+    @Subscribe
+    public void onCloseKeyboard(CloseKeyboardEvent event) {
+        if (!PenEventHandler.isKeyboardShowing()) {
+            return;
+        }
+        InputMethodManager inputManager = (InputMethodManager)spanView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputManager == null) {
+            return;
+        }
+        PenEventHandler.setKeyboardShowing(false);
+        inputManager.hideSoftInputFromWindow(spanView.getWindowToken(), 0);
+    }
+
+
     private void buildTextShape(String text, int width) {
         Shape spaceShape = createTextShape(text);
         addShapePoints(spaceShape, width, getSpanTextFontHeight());
 
         List<Shape> newAddShapeList = new ArrayList<>();
         newAddShapeList.add(spaceShape);
-        spannableRequest(pageSpanShapesMap, newAddShapeList);
+        spannableAction(pageSpanShapesMap, newAddShapeList);
     }
 
     private Shape createTextShape(String text) {
@@ -288,18 +383,37 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     private void updateLineLayoutArgs() {
-        int height = spanView.getHeight();
-        int lineHeight = spanView.getLineHeight();
-        int lineCount = spanView.getLineCount();
-        int count = height / lineHeight;
-        if (lineCount <= count) {
-            lineCount = count;
-        }
-        Rect r = new Rect();
-        spanView.getLineBounds(0, r);
-        int baseLine = r.bottom;
-        LineLayoutArgs args = LineLayoutArgs.create(baseLine, lineCount, lineHeight);
-        args.backgroundType = NoteBackgroundType.LINE;
+        LineLayoutArgs args = new LineLayoutArgs();
+        args.updateLineLayoutArgs(spanView);
+        args.setBackgroundType(NoteBackgroundType.LINE);
         getNoteManager().getRenderContext().setLineLayoutArgs(args);
+    }
+
+    private void updateLineLayoutCursor() {
+        int pos = spanView.getSelectionStart();
+        Layout layout = spanView.getLayout();
+        int line = layout.getLineForOffset(pos);
+        int x = (int) layout.getPrimaryHorizontal(pos);
+        LineLayoutArgs args = getNoteManager().getRenderContext().lineLayoutArgs;
+        int top = args.getLineTop(line);
+        int bottom = args.getLineBottom(line);
+        args.setCursorShape(createCursorShape(x, top + 1 , x, bottom));
+    }
+
+    private Shape createCursorShape(final int left, final int top, final int right, final int bottom) {
+        Shape shape = ShapeFactory.createShape(ShapeFactory.SHAPE_LINE);
+        shape.setStrokeWidth(2f);
+        shape.setLayoutType(ShapeFactory.LayoutType.LINE.ordinal());
+
+        TouchPointList touchPointList = new TouchPointList();
+        TouchPoint downPoint = new TouchPoint();
+        downPoint.offset(left, top);
+        TouchPoint currentPoint = new TouchPoint();
+        currentPoint.offset(right, bottom);
+        touchPointList.add(downPoint);
+        touchPointList.add(currentPoint);
+
+        shape.addPoints(touchPointList);
+        return shape;
     }
 }

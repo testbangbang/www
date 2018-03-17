@@ -30,6 +30,7 @@ public class SpannableAction extends BaseNoteAction {
     @Override
     public void execute(final RxCallback rxCallback) {
         SpannableRequest request = new SpannableRequest(getNoteManager(), pageSpanTextShapeMap, newAddShapes);
+        request.setRenderToScreen(false);
         getNoteManager().getRxManager().enqueue(request, new RxCallback<SpannableRequest>() {
             @Override
             public void onNext(@NonNull SpannableRequest request) {
