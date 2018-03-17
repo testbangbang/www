@@ -578,4 +578,5 @@
     <string name="login_success_key">login_success_key</string>
     <string name="underline">_</string>
     <string name="is_24_hour_key">is_24_hour_key</string>
+    <string name="export">Export</string>
 </resources>

@@ -20,7 +20,6 @@ import com.onyx.android.sdk.ui.view.TreeRecyclerView;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderBookInfoBinding;
-import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.reader.actions.GetDocumentInfoAction;
 import com.onyx.jdread.reader.actions.GotoPositionAction;
 import com.onyx.jdread.reader.catalog.adapter.BookmarkAdapter;
@@ -29,6 +28,7 @@ import com.onyx.jdread.reader.catalog.event.BookmarkItemClickEvent;
 import com.onyx.jdread.reader.catalog.event.ReaderBookInfoDialogHandler;
 import com.onyx.jdread.reader.catalog.event.ReaderBookInfoTitleBackEvent;
 import com.onyx.jdread.reader.catalog.model.ReaderBookInfoModel;
+import com.onyx.jdread.reader.catalog.model.BookTitleModel;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.EditNoteClickEvent;
@@ -97,10 +97,10 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     }
 
     private void initTitleBar() {
-        TitleBarModel titleBarModel = new TitleBarModel(EventBus.getDefault());
+        BookTitleModel titleBarModel = new BookTitleModel(EventBus.getDefault());
         titleBarModel.backEvent.set(new ReaderBookInfoTitleBackEvent());
         titleBarModel.title.set(readerBookInfoDialogHandler.getReaderDataHolder().getBookName());
-        binding.readerBookInfoTitleBar.setTitleModel(titleBarModel);
+        binding.readerBookInfoTitleBar.setBookTitleModel(titleBarModel);
     }
 
     @Override
@@ -224,7 +224,10 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         NoteAdapter adapter = new NoteAdapter();
         binding.bookInfoNoteContent.setPageTurningCycled(true);
         binding.bookInfoNoteContent.setAdapter(adapter);
-        binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotationList());
+        int size = binding.getReaderBookInfoModel().setNotes(readerUserDataInfo.getAnnotationList());
+        if(size > 0){
+            binding.readerBookInfoTitleBar.getBookTitleModel().setIsShowExport(true);
+        }
         binding.bookInfoNoteContent.setOnPagingListener(this);
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -348,8 +351,6 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
             int currentPage = Math.max(pageRecyclerView.getPaginator().getCurrentPage() + 1, 1);
             String format = String.format("%d/%d", currentPage, totalPage);
             binding.getReaderBookInfoModel().setPageInfo(format);
-            binding.readerBookInfoTitleBar.titleSave.setVisibility(currentMode == ReaderBookInfoDialogConfig.NOTE_MODE ?
-                    View.VISIBLE : View.GONE);
         }
     }
 
