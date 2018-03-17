@@ -67,11 +67,15 @@
                 android:src="@mipmap/ic_setting_more" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_width"
+            android:background="@color/divider_color"/>
+
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/setting_recycler"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/setting_device_detail_setting_height"
-            android:background="@drawable/light_rectangle_stroke" />
+            android:layout_height="@dimen/setting_device_detail_setting_height" />
 
         <LinearLayout
             android:layout_width="match_parent"
