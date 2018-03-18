@@ -258,7 +258,9 @@ public class BookDetailFragment extends BaseFragment {
                         bookDetailBean = bookDetailResultBean.data;
                     }
 
-                    queryMetadata();
+                    if (!shouldDownloadWholeBook) {
+                        queryMetadata();
+                    }
 
                     if (!ViewHelper.isCanNowRead(bookDetailBean)) {
                         hideNowReadButton();
