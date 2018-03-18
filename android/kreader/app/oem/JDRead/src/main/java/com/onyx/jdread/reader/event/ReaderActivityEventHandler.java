@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.event;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -15,6 +16,7 @@ import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.personal.dialog.ExportDialog;
 import com.onyx.jdread.personal.event.ExportToEmailEvent;
 import com.onyx.jdread.personal.event.ExportToImpressionEvent;
@@ -53,6 +55,7 @@ import com.onyx.jdread.reader.menu.event.SearchContentEvent;
 import com.onyx.jdread.reader.menu.event.ToggleBookmarkSuccessEvent;
 import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.model.ReaderViewModel;
+import com.onyx.jdread.reader.receiver.ReaderScreenStateReceive;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 import com.onyx.jdread.setting.common.AssociateDialogHelper;
 import com.onyx.jdread.setting.common.ExportHelper;
@@ -75,6 +78,7 @@ public class ReaderActivityEventHandler {
     private CloseDocumentDialog closeDocumentDialog;
     private ReaderBookInfoDialog readerBookInfoDialog;
     private ExportHelper exportHelper;
+    private ReaderScreenStateReceive readerScreenStateReceive;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -87,12 +91,32 @@ public class ReaderActivityEventHandler {
         if (!readerViewModel.getEventBus().isRegistered(this)) {
             readerViewModel.getEventBus().register(this);
         }
+        registerScreenReceive();
+    }
+
+    private void registerScreenReceive() {
+        readerScreenStateReceive = new ReaderScreenStateReceive(readerViewModel.getEventBus());
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ScreenStateReceive.SCREEN_ON);
+        intentFilter.addAction(ScreenStateReceive.SCREEN_OFF);
+        readerViewModel.getReaderDataHolder().getAppContext().registerReceiver(readerScreenStateReceive, intentFilter);
     }
 
     public void unregisterListener() {
         if (readerViewModel.getEventBus().isRegistered(this)) {
             readerViewModel.getEventBus().unregister(this);
         }
+        readerViewModel.getReaderDataHolder().getAppContext().unregisterReceiver(readerScreenStateReceive);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScreenOnEvent(ScreenOnEvent event){
+        readerViewModel.getReaderDataHolder().setTimestamp();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScreenOffEvent(ScreenOffEvent event){
+        readerViewModel.getReaderDataHolder().updateReadingTime();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
