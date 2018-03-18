@@ -187,7 +187,7 @@ public class StartActivity extends AppCompatActivity {
         }
         binding.startWifiAdd.setVisibility(binding.startWelcome.startFirst.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
         binding.startPreference.startPreference.setVisibility(binding.startLogin.startLogin.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
-        binding.startLogin.startLogin.setVisibility(binding.startWifiRecycler.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
+        isLoginShow();
         binding.startWifiRecycler.setVisibility(binding.startWelcome.startFirst.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
         binding.startWelcome.startFirst.setVisibility(View.GONE);
         if (!Utils.isNetworkConnected(StartActivity.this)) {
@@ -196,6 +196,10 @@ public class StartActivity extends AppCompatActivity {
                 ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
             }
         }
+    }
+
+    private void isLoginShow() {
+        binding.startLogin.startLogin.setVisibility(binding.startWifiRecycler.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
     }
 
     private boolean isCanClick() {
@@ -404,7 +408,8 @@ public class StartActivity extends AppCompatActivity {
             JDReadApplication.getInstance().setLogin(true);
             clearInput();
             ToastUtil.showToast(ResManager.getString(R.string.login_success));
-            next();
+            binding.startPreference.startPreference.setVisibility(View.VISIBLE);
+            binding.startLogin.startLogin.setVisibility(binding.startWifiRecycler.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
             getCategory();
         } else {
             ToastUtil.showToast(event.getMessage());
