@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 
@@ -51,6 +52,7 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
     private BrightnessModel brightnessModel;
     private FunctionBarAdapter functionBarAdapter;
     private ReaderSettingMenuDialogHandler readerSettingMenuDialogHandler;
+    private boolean inSystemBar = false;
 
     public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
@@ -250,4 +252,17 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
     public Dialog getContent() {
         return this;
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            inSystemBar = event.getY() < binding.readerSettingSystemBar.getRoot().getHeight();
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_MOVE && inSystemBar) {
+            event.setAction(MotionEvent.ACTION_UP);
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
 }

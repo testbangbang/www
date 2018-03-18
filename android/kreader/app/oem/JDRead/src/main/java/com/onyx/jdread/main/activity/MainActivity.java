@@ -347,13 +347,13 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
     @Override
     protected void onResume() {
         super.onResume();
         JDReadApplication.getInstance().automaticLogin();
         DeviceUtils.setFullScreenOnResume(this, true);
         setFunctionAdapter(getFunctionBarRecycler());
+        updateTimeFormat();
     }
 
     @Override
@@ -586,6 +586,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTimeFormatEvent(UpdateTimeFormatEvent event) {
+        updateTimeFormat();
+    }
+
+    private void updateTimeFormat() {
         binding.mainSystemBar.onyxDigitalClock.setFormat();
     }
 }

@@ -213,6 +213,9 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         addSurfaceViewCallback();
         super.onResume();
         DeviceUtils.setFullScreenOnResume(this,true);
+        if (readerActivityEventHandler != null) {
+            readerActivityEventHandler.updateTimeFormat();
+        }
     }
 
     @Override

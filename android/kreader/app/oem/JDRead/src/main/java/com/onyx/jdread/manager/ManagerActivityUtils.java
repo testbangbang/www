@@ -1,6 +1,5 @@
 package com.onyx.jdread.manager;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import com.onyx.jdread.main.activity.LockScreenActivity;
 import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.activity.StartActivity;
 import com.onyx.jdread.reader.ui.PreloadActivity;
+import com.onyx.jdread.reader.ui.SettingsActivity;
 import com.onyx.jdread.shop.event.MenuWifiSettingEvent;
 import com.onyx.jdread.shop.view.CustomDialog;
 
@@ -81,5 +81,11 @@ public class ManagerActivityUtils {
         Intent intent = new Intent();
         intent.setAction(ACTION_MASTER_CLEAR);
         context.sendBroadcast(intent);
+    }
+
+    public static void startSettingsActivity(Context context) {
+        Intent intent = new Intent(context, SettingsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 }
