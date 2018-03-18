@@ -6,10 +6,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jingdong.app.reader.data.DrmTools;
 import com.liulishuo.filedownloader.BaseDownloadTask;
@@ -32,6 +34,7 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastTool;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.dialog.TopUpDialog;
@@ -568,8 +571,8 @@ public class BookDetailFragment extends BaseFragment {
             button.setText(percentage + "%" + ResManager.getString(R.string.book_detail_downloading));
         } else if (DownLoadHelper.isDownloaded(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_button_now_read));
-            ToastUtil.showToast(ResManager.getString(R.string.download_finished));
-        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState) ) {
+            ToastTool.showToast(JDReadApplication.getInstance(), ResManager.getString(R.string.download_finished), 0).show();
+        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_tip_download_pause));
         }
     }
@@ -854,7 +857,7 @@ public class BookDetailFragment extends BaseFragment {
         LayoutBookBatchDownloadBinding batchDownloadBinding = LayoutBookBatchDownloadBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         batchDownloadBinding.setViewModel(getBookBatchDownloadViewModel());
         if (batchDownloadDialog == null) {
-            batchDownloadDialog = new BookInfoDialog(JDReadApplication.getInstance(),R.style.CustomDialogStyle);
+            batchDownloadDialog = new BookInfoDialog(JDReadApplication.getInstance(), R.style.CustomDialogStyle);
             batchDownloadDialog.setView(batchDownloadBinding.getRoot());
             batchDownloadBinding.closeDialog.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -882,7 +885,7 @@ public class BookDetailFragment extends BaseFragment {
         LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         copyrightBinding.setBookDetailViewModel(getBookDetailViewModel());
         if (copyRightDialog == null) {
-            copyRightDialog = new BookInfoDialog(JDReadApplication.getInstance(),R.style.CustomDialogStyle);
+            copyRightDialog = new BookInfoDialog(JDReadApplication.getInstance(), R.style.CustomDialogStyle);
             copyRightDialog.setView(copyrightBinding.getRoot());
         }
         if (!ViewHelper.dialogIsShowing(copyRightDialog)) {
@@ -1088,7 +1091,7 @@ public class BookDetailFragment extends BaseFragment {
         dialogBookInfoViewModel.content.set(content);
         dialogBookInfoViewModel.title.set(ResManager.getString(R.string.book_detail_text_view_content_introduce));
         infoBinding.setViewModel(dialogBookInfoViewModel);
-        infoDialog = new BookInfoDialog(JDReadApplication.getInstance(),R.style.CustomDialogStyle);
+        infoDialog = new BookInfoDialog(JDReadApplication.getInstance(), R.style.CustomDialogStyle);
         infoDialog.setView(infoBinding.getRoot());
         PageTextView pagedWebView = infoBinding.bookInfoWebView;
         pagedWebView.setOnPagingListener(new PageTextView.OnPagingListener() {
