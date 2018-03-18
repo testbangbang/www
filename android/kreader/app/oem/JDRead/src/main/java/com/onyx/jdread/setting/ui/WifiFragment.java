@@ -6,6 +6,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.onyx.android.libsetting.view.dialog.WifiSavedDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.wifi.AccessPoint;
 import com.onyx.android.sdk.wifi.WifiAdmin;
 import com.onyx.android.sdk.wifi.WifiUtil;
@@ -28,6 +30,7 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.setting.adapter.WifiSettingAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -54,9 +57,15 @@ import static com.onyx.android.libsetting.util.Constant.ARGS_SSID;
  */
 
 public class WifiFragment extends BaseFragment {
+    private static final int ADD_WIFI_TYPE = 0;
+    private static final int LOGIN_WIFI_TYPE = 1;
+
     private WifiBinding binding;
     private WifiSettingAdapter wifiSettingAdapter;
     private WifiAdmin wifiAdmin;
+
+    private int connectWifiType = -1;
+    private String connectWifiKey = null;
 
     @Nullable
     @Override
@@ -117,9 +126,7 @@ public class WifiFragment extends BaseFragment {
         dialogModel.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
             @Override
             public void onClicked() {
-                WifiConfiguration wifiConfiguration = wifiAdmin.createWifiConfiguration(dialogModel.ssid.get(), dialogModel.password.get(), dialogModel.type.get());
-                wifiAdmin.addNetwork(wifiConfiguration);
-                updateUI(true);
+                addWifiImpl(dialogModel.ssid.get(), dialogModel.password.get(), dialogModel.type.get());
                 dialog.dismiss();
             }
         });
@@ -142,7 +149,7 @@ public class WifiFragment extends BaseFragment {
 
             @Override
             public void onConnectToAccessPoint() {
-                wifiAdmin.connectWifi(accessPoint);
+                loginWifiImpl(accessPoint);
             }
         });
         wifiSavedDialog.show(getActivity().getFragmentManager());
@@ -159,7 +166,7 @@ public class WifiFragment extends BaseFragment {
             @Override
             public void onConnectToAccessPoint(String password) {
                 accessPoint.setPassword(password);
-                wifiAdmin.connectWifi(accessPoint);
+                loginWifiImpl(accessPoint);
             }
         });
         wifiLoginDialog.show(getActivity().getFragmentManager());
@@ -244,6 +251,7 @@ public class WifiFragment extends BaseFragment {
                 if (config == null) {
                     continue;
                 }
+                checkAccessPointFailStatus(accessPoint);
                 if (accessPoint.getWifiConfiguration().networkId ==
                         wifiAdmin.getCurrentConnectionInfo().getNetworkId()) {
                     accessPoint.setDetailedState(state);
@@ -287,5 +295,70 @@ public class WifiFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
         viewEventCallBack.viewBack();
+    }
+
+    private int getNetworkId(@NonNull AccessPoint accessPoint) {
+        if (accessPoint.getWifiConfiguration() == null) {
+            return -1;
+        }
+        return accessPoint.getWifiConfiguration().networkId;
+    }
+
+    private String getWifiAddKey(AccessPoint accessPoint) {
+        return accessPoint.getScanResult().SSID + accessPoint.getSecurity();
+    }
+
+    private String getWifiConnectKey(AccessPoint accessPoint) {
+        String key = accessPoint.getScanResult().SSID + accessPoint.getScanResult().BSSID +
+                accessPoint.getSecurity();
+        if (getNetworkId(accessPoint) >= 0) {
+            key += getNetworkId(accessPoint);
+        }
+        return key;
+    }
+
+    private void addWifiImpl(String ssid, String password, int securityType) {
+        setConnectWifi(ssid + securityType, ADD_WIFI_TYPE);
+        wifiAdmin.addNetwork(wifiAdmin.createWifiConfiguration(ssid, password, securityType));
+        updateUI(true);
+    }
+
+    private void loginWifiImpl(AccessPoint accessPoint) {
+        setConnectWifi(getWifiConnectKey(accessPoint), LOGIN_WIFI_TYPE);
+        wifiAdmin.connectWifi(accessPoint);
+    }
+
+    private void checkAccessPointFailStatus(AccessPoint accessPoint) {
+        if (connectWifiType < 0 || StringUtils.isNullOrEmpty(connectWifiKey)) {
+            return;
+        }
+        if (accessPoint.getScanResult() == null || accessPoint.getDisableReason() != WifiAdmin.DISABLED_AUTH_FAILURE) {
+            return;
+        }
+        String key = "";
+        switch (connectWifiType) {
+            case ADD_WIFI_TYPE:
+                key = getWifiAddKey(accessPoint);
+                break;
+            case LOGIN_WIFI_TYPE:
+                key = getWifiConnectKey(accessPoint);
+                break;
+        }
+        if (StringUtils.getBlankStr(key).equals(connectWifiKey)) {
+            if (ResManager.getString(R.string.wifi_disabled_password_failure).equals(accessPoint.getSecurityString())) {
+                ToastUtil.showToast(R.string.password_wrong);
+                resetConnectWifi();
+            }
+        }
+    }
+
+    private void resetConnectWifi() {
+        connectWifiType = -1;
+        connectWifiKey = null;
+    }
+
+    private void setConnectWifi(String key, int type) {
+        connectWifiType = type;
+        connectWifiKey = key;
     }
 }
