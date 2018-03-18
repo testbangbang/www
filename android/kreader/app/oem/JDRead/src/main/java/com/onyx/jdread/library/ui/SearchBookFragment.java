@@ -303,13 +303,15 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void searchBookFromCloud(final boolean submit, final RxCallback callback) {
+        final String searchKey = searchBookModel.searchKey.get();
         SearchBookListAction booksAction = new SearchBookListAction("", 1,
                 CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES,
                 CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES,
-                searchBookModel.searchKey.get(), CloudApiContext.SearchBook.FILTER_DEFAULT);
+                searchKey, CloudApiContext.SearchBook.FILTER_DEFAULT);
         booksAction.setPageSize(getPageSize(submit));
         booksAction.setMapToDataModel(true);
         booksAction.setLoadCover(submit);
+        booksAction.setShowLoadingDialog(submit);
         booksAction.execute(ShopDataBundle.getInstance(), new RxCallback<SearchBookListAction>() {
 
             @Override
@@ -324,8 +326,10 @@ public class SearchBookFragment extends BaseFragment {
                     LibraryDataBundle.getInstance().getSearchBookModel().searchResult.addAll(action.getDataModelList());
                     searchResultAdapter.notifyDataSetChanged();
                 } else {
-                    LibraryDataBundle.getInstance().getSearchBookModel().searchHint.addAll(action.getDataModelList());
-                    searchHintAdapter.notifyDataSetChanged();
+                    if (StringUtils.getBlankStr(searchKey).equals(getSearchBookModel().searchKey.get())) {
+                        LibraryDataBundle.getInstance().getSearchBookModel().searchHint.addAll(action.getDataModelList());
+                        searchHintAdapter.notifyDataSetChanged();
+                    }
                 }
                 RxCallback.invokeNext(callback, action);
             }

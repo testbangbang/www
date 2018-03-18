@@ -37,8 +37,12 @@ public class ReaderPageInfoFormat {
         String readProgress = ResManager.getString(R.string.reader_loading);
         if(readerViewInfo.isLoadComplete()) {
             float progress = readerViewInfo.getProgress();
-            readProgress = String.format("%.2f", progress) + "%";
+            readProgress = formatReadProgress(progress);
         }
         return readProgress;
+    }
+
+    public static String formatReadProgress(final float progress){
+        return String.format("%.2f", progress) + "%";
     }
 }

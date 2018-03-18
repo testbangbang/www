@@ -114,7 +114,7 @@
     <integer name="search_reader_adapter_col">1</integer>
     <integer name="search_reader_adapter_row">6</integer>
     <integer name="buy_read_vip_adapter_col">1</integer>
-    <integer name="buy_read_vip_adapter_row">6</integer>
+    <integer name="buy_read_vip_adapter_row">3</integer>
     <integer name="dictionary_list_row">1</integer>
     <integer name="dictionary_list_col">1</integer>
     <integer name="feedback_record_adapter_row">6</integer>

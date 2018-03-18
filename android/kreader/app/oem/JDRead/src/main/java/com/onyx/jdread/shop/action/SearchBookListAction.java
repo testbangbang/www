@@ -37,6 +37,7 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
     private boolean loadCover = false;
 
     private String pageSize = PAGE_SIZE_DEFAULT_VALUES;
+    private boolean showLoadingDialog = true;
 
     public SearchBookListAction(String catId, int currentPage, int sortKey, int sortType, String keyWord, int filter) {
         this.currentPage = currentPage;
@@ -49,6 +50,10 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
 
     public void setPageSize(String pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public void setShowLoadingDialog(boolean show) {
+        this.showLoadingDialog = show;
     }
 
     @Override
@@ -75,12 +80,18 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onSubscribe() {
                 super.onSubscribe();
+                if (showLoadingDialog) {
+                    showLoadingDialog(shopDataBundle, R.string.loading);
+                }
                 invokeSubscribe(rxCallback);
             }
 
             @Override
             public void onFinally() {
                 super.onFinally();
+                if (showLoadingDialog) {
+                    hideLoadingDialog(shopDataBundle);
+                }
                 invokeFinally(rxCallback);
             }
 

@@ -935,7 +935,7 @@ public class BookDetailFragment extends BaseFragment {
         LayoutBookBatchDownloadBinding batchDownloadBinding = LayoutBookBatchDownloadBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         batchDownloadBinding.setViewModel(getBookBatchDownloadViewModel());
         if (batchDownloadDialog == null) {
-            batchDownloadDialog = new BookInfoDialog(JDReadApplication.getInstance());
+            batchDownloadDialog = new BookInfoDialog(JDReadApplication.getInstance(),R.style.CustomDialogStyle);
             batchDownloadDialog.setView(batchDownloadBinding.getRoot());
             batchDownloadBinding.closeDialog.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -963,7 +963,7 @@ public class BookDetailFragment extends BaseFragment {
         LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         copyrightBinding.setBookDetailViewModel(getBookDetailViewModel());
         if (copyRightDialog == null) {
-            copyRightDialog = new BookInfoDialog(JDReadApplication.getInstance());
+            copyRightDialog = new BookInfoDialog(JDReadApplication.getInstance(),R.style.CustomDialogStyle);
             copyRightDialog.setView(copyrightBinding.getRoot());
         }
         if (!ViewHelper.dialogIsShowing(copyRightDialog)) {
@@ -1169,7 +1169,7 @@ public class BookDetailFragment extends BaseFragment {
         dialogBookInfoViewModel.content.set(content);
         dialogBookInfoViewModel.title.set(ResManager.getString(R.string.book_detail_text_view_content_introduce));
         infoBinding.setViewModel(dialogBookInfoViewModel);
-        infoDialog = new BookInfoDialog(JDReadApplication.getInstance());
+        infoDialog = new BookInfoDialog(JDReadApplication.getInstance(),R.style.CustomDialogStyle);
         infoDialog.setView(infoBinding.getRoot());
         PageTextView pagedWebView = infoBinding.bookInfoWebView;
         pagedWebView.setOnPagingListener(new PageTextView.OnPagingListener() {
