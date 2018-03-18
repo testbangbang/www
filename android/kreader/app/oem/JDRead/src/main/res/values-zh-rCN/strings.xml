@@ -545,6 +545,7 @@
     <string name="reader_loading">加载中...</string>
     <string name="without_result">没有搜索结果</string>
     <string name="the_book_not_download">图书未下载</string>
+    <string name="export">导出</string>
     <string name="Delete_selected_book_from_shopp_cart">是否从购物车删除所选图书</string>
     <string name="register_with_qrcode">使用 京东 或 微信 扫码进行账号注册</string>
     <string name="find_password_with_qrcode">使用 京东 或 微信 扫码进行密码找回</string>
@@ -559,4 +560,5 @@
     <string name="monthly_vip">月度会员</string>
     <string name="quarter_vip">季度会员</string>
     <string name="year_vip">年度会员</string>
+    <string name="empty_result">没有内容</string>
 </resources>

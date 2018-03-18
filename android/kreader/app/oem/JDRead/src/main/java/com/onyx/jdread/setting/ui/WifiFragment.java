@@ -75,10 +75,10 @@ public class WifiFragment extends BaseFragment {
             public void onItemClick(int position) {
                 if (wifiSettingAdapter.getScanResult() != null) {
                     AccessPoint accessPoint = wifiSettingAdapter.getScanResult().get(position);
-                    if (accessPoint.getSecurity() == 0) {
-                        wifiAdmin.connectWifi(accessPoint);
-                    } else if (accessPoint.getWifiInfo() != null) {
+                    if (accessPoint.getWifiInfo() != null) {
                         showConnectDialog(accessPoint);
+                    } else if (accessPoint.getSecurity() == 0) {
+                        wifiAdmin.connectWifi(accessPoint);
                     } else if (accessPoint.getWifiConfiguration() == null) {
                         showLoginDialog(accessPoint);
                     } else {
@@ -220,6 +220,7 @@ public class WifiFragment extends BaseFragment {
             @Override
             public void onScanResultReady(List<AccessPoint> scanResult) {
                 wifiSettingAdapter.setScanResult(scanResult);
+                wifiSettingAdapter.notifyDataSetChanged();
             }
 
             @Override

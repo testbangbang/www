@@ -115,6 +115,7 @@ public class JEBReaderWrapper {
         bookOpt.codePageDefault = documentOptions.getCodePageFallback();
         bookOpt.formatOptions = 0;
         bookOpt.readPosition = 0;
+        bookOpt.needCoverData = true;
         bookOpt.password = documentOptions.getDocumentPassword();
         JEBFilesZIP.key = documentOptions.getDocumentKey();
         JEBFilesZIP.deviceUUID = documentOptions.getDocumentDeviceUUID();

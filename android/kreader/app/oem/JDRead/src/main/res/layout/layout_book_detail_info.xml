@@ -264,7 +264,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/book_detail_content_introduction_height"
                 android:layout_marginTop="@dimen/book_detail_common_margin_top"
                 android:onClick="@{()->bookDetailViewModel.onInfoClick()}">
 
