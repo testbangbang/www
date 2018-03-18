@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="bookDetailViewModel"
+            type="com.onyx.jdread.shop.model.BookDetailViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/fragment_book_detail_margin_top_and_bottom"
+        android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+        android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+        android:layout_marginTop="@dimen/fragment_book_detail_margin_top_and_bottom"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/book_details_back_layout"
+            layout="@layout/layout_title_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            bind:titleBarViewModel="@{bookDetailViewModel.titleBarViewModel}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.onyx.jdread.reader.ui.view.PageTextView
+                android:id="@+id/page_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_directory_page_text_view_height"
+                android:layout_marginLeft="@dimen/view_directory_page_text_view_margin_right"
+                android:layout_marginTop="@dimen/book_detail_margin"
+                android:clickable="true"
+                android:maxLines="@integer/view_directory_page_text_view_max_lines"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_directory_page_text_view_indicator_margin_top"
+                android:gravity="right"
+                android:text="@{@string/book_comment_indicator_value(bookDetailViewModel.currentPage,bookDetailViewModel.totalPage)}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_15" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>

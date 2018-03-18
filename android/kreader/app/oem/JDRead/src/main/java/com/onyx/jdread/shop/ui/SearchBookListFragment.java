@@ -92,6 +92,19 @@ public class SearchBookListFragment extends BaseFragment {
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType, String keyWord) {
         SearchBookListAction booksAction = new SearchBookListAction(catid, currentPage, sortKey, sortType, keyWord, CloudApiContext.SearchBook.FILTER_DEFAULT);
         booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                showLoadingDialog(ResManager.getString(R.string.loading));
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog();
+            }
+
             @Override
             public void onNext(SearchBookListAction booksAction) {
                 BookModelBooksResultBean booksResultBean = booksAction.getBooksResultBean();

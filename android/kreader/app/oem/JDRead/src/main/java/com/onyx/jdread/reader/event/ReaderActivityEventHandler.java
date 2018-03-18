@@ -41,6 +41,7 @@ import com.onyx.jdread.reader.actions.UpdateViewPageAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.catalog.event.AnnotationItemClickEvent;
 import com.onyx.jdread.reader.catalog.event.ExportReadNoteEvent;
+import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -471,6 +472,9 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenDocumentSuccessEvent(OpenDocumentSuccessEvent event) {
         readerViewModel.getReaderDataHolder().setDocumentOpenState();
+        if(readerViewModel.getReaderDataHolder().getDocumentInfo().getOpenType() == DocumentInfo.OPEN_BOOK_CATALOG){
+            readerViewModel.getReaderDataHolder().getEventBus().post(new ShowReaderCatalogMenuEvent());
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
