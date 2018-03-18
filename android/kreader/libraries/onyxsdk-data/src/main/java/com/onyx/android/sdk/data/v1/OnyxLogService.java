@@ -12,6 +12,6 @@ import retrofit2.http.POST;
  */
 public interface OnyxLogService {
 
-    @POST("http://47.90.54.36:8000/api/reports")
+    @POST("http://140.143.24.126/api/reports")
     Call<ResponseBody> reportLogCollection(@Body final LogCollection model);
 }
