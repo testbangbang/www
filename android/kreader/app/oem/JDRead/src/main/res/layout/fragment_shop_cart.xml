@@ -55,21 +55,21 @@
                     android:text="@string/select_all"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_one_heading_font"
-                    bind:setCheckAllEnable="@{model.checkAllEnable}"
-                    bind:setCheckAll="@{model.selectedAll}"/>
+                    bind:setCheckAll="@{model.selectedAll}"
+                    bind:setCheckAllEnable="@{model.checkAllEnable}" />
 
                 <TextView
                     android:id="@+id/shop_cart_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@mipmap/ic_shelf_delete_book"
                     android:layout_marginLeft="@dimen/shop_cart_delete_margin_left"
+                    android:drawableLeft="@mipmap/ic_shelf_delete_book"
                     android:drawablePadding="@dimen/personal_note_export_drawable_padding"
                     android:gravity="center_vertical"
                     android:text="@string/delete"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_one_heading_font"
-                    bind:setDeleteEnable="@{model.settlementEnable}"/>
+                    bind:setDeleteEnable="@{model.settlementEnable}" />
 
             </LinearLayout>
         </RelativeLayout>
@@ -129,21 +129,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="@{@string/combine(model.totalAmount)}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:textSize="@dimen/font_size_23" />
 
             <TextView
                 android:id="@+id/shop_cart_settlement"
-                android:layout_width="@dimen/shop_cart_settlement_width"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/shop_cart_settlement_weight"
+                android:layout_height="@dimen/switch_track_height"
                 android:background="@drawable/rectangle_stroke_disable"
                 android:gravity="center"
-                android:padding="@dimen/shop_cart_settlement_padding"
                 android:text="@{@string/settlement(model.size)}"
                 android:textColor="@color/cart_shop_settlement_disable"
-                android:textSize="@dimen/level_one_heading_font"
-                bind:settlementEnable="@{model.settlementEnable}"/>
+                android:textSize="@dimen/font_size_19"
+                bind:settlementEnable="@{model.settlementEnable}" />
         </LinearLayout>
     </LinearLayout>
 </layout>
