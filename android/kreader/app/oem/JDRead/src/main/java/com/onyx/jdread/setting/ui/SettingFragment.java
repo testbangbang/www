@@ -1,7 +1,6 @@
 package com.onyx.jdread.setting.ui;
 
 import android.databinding.DataBindingUtil;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SettingBinding;
@@ -27,6 +25,7 @@ import com.onyx.jdread.setting.event.ToDeviceConfigEvent;
 import com.onyx.jdread.setting.event.WireLessEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingDataModel;
+import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
 
@@ -77,9 +76,10 @@ public class SettingFragment extends BaseFragment {
 
     private void initView() {
         binding.settingRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
-        dividerItemDecoration.setDivider(new ColorDrawable(ResManager.getColor(R.color.divider_color_setting)));
-        binding.settingRecycler.addItemDecoration(dividerItemDecoration);
+        DividerItemDecoration decoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
+        decoration.setColor(ResManager.getColor(R.color.divider_color));
+        decoration.setDrawLine(true);
+        binding.settingRecycler.addItemDecoration(decoration);
         settingAdapter = new SettingAdapter(SettingBundle.getInstance().getEventBus());
         binding.settingRecycler.setAdapter(settingAdapter);
     }

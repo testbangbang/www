@@ -125,11 +125,17 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Drawable drawable = readerDataHolder.getAppContext().getResources().getDrawable(R.drawable.seekbar_thumb);
                 seekBar.setThumb(drawable);
-                updateProgress(seekBar.getProgress());
-                GotoPageEvent event = new GotoPageEvent(Math.max(seekBar.getProgress() - 1, 0));
-                readerDataHolder.getEventBus().post(event);
+                gotoPage(seekBar.getProgress());
             }
         });
+    }
+
+    private void gotoPage(int progress){
+        if(readerDataHolder.getReaderViewInfo().isLoadComplete()) {
+            updateProgress(progress);
+            GotoPageEvent event = new GotoPageEvent(Math.max(progress - 1, 0));
+            readerDataHolder.getEventBus().post(event);
+        }
     }
 
     private void updateProgress(int readProgress){

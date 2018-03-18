@@ -24,5 +24,6 @@ public class CloseDocumentAction extends BaseReaderAction {
 
         final CloseDocumentRequest request = new CloseDocumentRequest(readerDataHolder.getReader(), saveOption);
         request.execute(baseCallback);
+        long readingTime = readerDataHolder.updateReadingTime();
     }
 }

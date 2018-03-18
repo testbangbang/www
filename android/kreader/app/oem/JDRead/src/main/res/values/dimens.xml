@@ -17,6 +17,7 @@
     <dimen name="font_size_15">15sp</dimen>
     <dimen name="font_size_17">17sp</dimen>
     <dimen name="font_size_19">19sp</dimen>
+    <dimen name="font_size_23">23sp</dimen>
     <dimen name="line_width">1dp</dimen>
     <dimen name="wifi_view_item_padding_top">9dp</dimen>
     <dimen name="wifi_view_item_margin_left">10dp</dimen>
@@ -623,4 +624,6 @@
     <dimen name="dash_Line_length">2dp</dimen>
     <dimen name="dash_space_length">2dp</dimen>
     <dimen name="rectangle_stroke_radius">3dp</dimen>
+    <dimen name="shop_cart_settlement_weight">155dp</dimen>
+    <dimen name="book_detail_content_introduction_height">42dp</dimen>
 </resources>

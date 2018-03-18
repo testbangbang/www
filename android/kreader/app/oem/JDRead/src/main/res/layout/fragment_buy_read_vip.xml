@@ -91,12 +91,11 @@
                 android:id="@+id/buy_vip_recycle_view"
                 goodList="@{viewModel.goodsList}"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
 
             <View
                 style="@style/book_detail_dot_line_Style"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="@dimen/vip_user_info_container_padding" />
+                android:layout_alignParentBottom="true" />
 
         </LinearLayout>
 

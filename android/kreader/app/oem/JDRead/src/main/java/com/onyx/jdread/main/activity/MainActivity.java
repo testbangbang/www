@@ -241,14 +241,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchCurrentFragment(@NonNull BaseFragment baseFragment, @Nullable Bundle bundle) {
-        if (StringUtils.isNotBlank(currentChildViewName) && currentChildViewName.equals(
-                baseFragment.getClass().getName())) {
-            return;
-        }
-        if (StringUtils.isNotBlank(currentChildViewName) && currentChildViewName.equals(
-                baseFragment.getClass().getName())) {
-            return;
-        }
         initFragmentManager();
         notifyChildViewChangeWindow();
         baseFragment.setBundle(bundle);
@@ -454,6 +446,9 @@ public class MainActivity extends AppCompatActivity {
                 event.getStackList().peek();
         if (model.getBaseFragment() == null) {
             model.setBaseFragment(getPageView(model.getName()));
+        }
+        if (currentFragment.getClass().getName().equals(event.getStackList().getLast().getName())) {
+            return;
         }
         switchCurrentFragment(model.getBaseFragment(), model.getBaseFragment().getBundle());
     }

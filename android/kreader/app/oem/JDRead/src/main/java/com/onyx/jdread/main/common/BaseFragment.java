@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import com.onyx.android.sdk.ui.dialog.DialogLoading;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.ui.NetWorkErrorFragment;
 import com.onyx.jdread.util.Utils;
+
+import java.util.List;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -108,6 +110,14 @@ public class BaseFragment extends Fragment {
             return false;
         }
         return true;
+    }
+
+    public boolean checkContentEmpty(List data) {
+        boolean contentIsEmpty = CollectionUtils.isNullOrEmpty(data);
+        if (contentIsEmpty) {
+            ToastUtil.showToast(ResManager.getString(R.string.empty_result));
+        }
+        return contentIsEmpty;
     }
 
     @NonNull
