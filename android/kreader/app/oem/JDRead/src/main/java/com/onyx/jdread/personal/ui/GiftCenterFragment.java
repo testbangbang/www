@@ -83,6 +83,9 @@ public class GiftCenterFragment extends BaseFragment {
                     giftPackageModel.loadGifts();
                     giftCenterAdapter.setData(data.gift ? giftPackageModel.getGiftBeans() : null);
                 }
+                if (data == null || !data.gift) {
+                    ToastUtil.showToast(R.string.gift_no_package);
+                }
             }
         });
     }
