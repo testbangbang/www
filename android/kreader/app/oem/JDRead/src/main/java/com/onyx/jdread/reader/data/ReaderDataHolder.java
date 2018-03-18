@@ -19,6 +19,8 @@ import com.onyx.jdread.reader.model.SelectMenuModel;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Date;
+
 /**
  * Created by huxiaomao on 2017/12/20.
  */
@@ -43,12 +45,30 @@ public class ReaderDataHolder {
     private EventBus eventBus = EventBus.getDefault();
     private boolean isPreload = false;
     private boolean isInitViewPage = false;
+    private long readingTime = 0;
+    private long timestamp = 0;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
         setAppContext(appContext);
         initRequestAppContext(appContext);
         initView(appContext);
+    }
+
+    public long getReadingTime() {
+        return readingTime;
+    }
+
+    public void setTimestamp() {
+        this.timestamp = (new Date()).getTime();
+        updateReadingTime();
+    }
+
+    public long updateReadingTime() {
+        long currentTime = (new Date()).getTime();
+        this.readingTime += currentTime - timestamp;
+        this.timestamp = currentTime;
+        return this.readingTime;
     }
 
     public boolean isInitViewPage() {
