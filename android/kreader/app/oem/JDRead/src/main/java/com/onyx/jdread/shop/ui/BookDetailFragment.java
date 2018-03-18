@@ -101,6 +101,7 @@ import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.BookInfoDialog;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.shop.view.SubjectBookItemSpaceItemDecoration;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -148,9 +149,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void initLibrary() {
-        if (!getEventBus().isRegistered(this)) {
-            getEventBus().register(this);
-        }
+        Utils.ensureRegister(getEventBus(), this);
     }
 
     private void initData() {
@@ -248,7 +247,7 @@ public class BookDetailFragment extends BaseFragment {
     @Override
     public void onStop() {
         super.onStop();
-        getEventBus().unregister(this);
+        Utils.ensureUnregister(getEventBus(), this);
     }
 
     private BookDetailViewModel getBookDetailViewModel() {
@@ -395,11 +394,27 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewDirectoryEvent(ViewDirectoryEvent event) {
-        if (fileIsExists(localPath)) {
-            openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
-        } else {
-            ToastUtil.showToast(R.string.the_book_not_download);
+        if (JDReadApplication.getInstance().getLogin()) {
+            if (DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+                openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
+                return;
+            }
         }
+        if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+            openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
+        } else if (bookDetailBean != null) {
+            if (ViewHelper.isCanNowRead(bookDetailBean)){
+                tryDownload(bookDetailBean, true);
+            } else if (!StringUtils.isNullOrEmpty(bookDetailBean.format) && Constants.BOOK_FORMAT_EPUB_.equals(bookDetailBean.format.trim()) ){
+                goViewDirectoryFragment(bookDetailBean.catalog);
+            }
+        }
+    }
+
+    private void goViewDirectoryFragment(String content) {
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.KEY_DIRECTORY_CONTENT, content);
+        getViewEventCallBack().gotoView(ViewDirectoryFragment.class.getName(), bundle);
     }
 
     private void initButton() {
@@ -498,10 +513,7 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailReadNowEvent(BookDetailReadNowEvent event) {
         if (bookDetailBean != null) {
-            if (bookDetailBean.bookExtraInfoBean == null) {
-                bookDetailBean.bookExtraInfoBean = new BookExtraInfoBean();
-            }
-            tryDownload(bookDetailBean);
+            tryDownload(bookDetailBean, false);
         }
     }
 
@@ -780,12 +792,15 @@ public class BookDetailFragment extends BaseFragment {
         getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
     }
 
-    private void tryDownload(BookDetailResultBean.DetailBean bookDetailBean) {
+    private void tryDownload(BookDetailResultBean.DetailBean bookDetailBean, boolean isViewDirectory) {
         if (bookDetailBean == null) {
             return;
         }
+        if (bookDetailBean.bookExtraInfoBean == null) {
+            bookDetailBean.bookExtraInfoBean = new BookExtraInfoBean();
+        }
         if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
-            openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK);
+            openBook(localPath, bookDetailBean, isViewDirectory ? DocumentInfo.OPEN_BOOK_CATALOG : DocumentInfo.OPEN_BOOK);
             return;
         }
 
@@ -805,11 +820,11 @@ public class BookDetailFragment extends BaseFragment {
         buyBookButton.setEnabled(false);
         nowReadButton.setText(ResManager.getString(R.string.book_detail_downloading));
         bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = false;
-        download(bookDetailBean);
+        download(bookDetailBean, isViewDirectory);
         ToastUtil.showToast(JDReadApplication.getInstance(), bookDetailBean.name + ResManager.getString(R.string.book_detail_tip_book_add_to_bookself));
     }
 
-    private void download(final BookDetailResultBean.DetailBean bookDetailBean) {
+    private void download(final BookDetailResultBean.DetailBean bookDetailBean, final boolean isViewDirectory) {
         final String tryDownLoadUrl = bookDetailBean.try_url;
         if (StringUtils.isNullOrEmpty(tryDownLoadUrl)) {
             ToastUtil.showToast(getContext(), ResManager.getString(R.string.empty_url));
@@ -821,7 +836,7 @@ public class BookDetailFragment extends BaseFragment {
             fileDeleteAction.execute(getShopDataBundle(), new RxCallback() {
                 @Override
                 public void onNext(Object o) {
-                    startTryDownload(bookDetailBean, tryDownLoadUrl, localPath);
+                    startTryDownload(bookDetailBean, tryDownLoadUrl, localPath, isViewDirectory);
                 }
 
                 @Override
@@ -831,11 +846,11 @@ public class BookDetailFragment extends BaseFragment {
                 }
             });
         } else {
-            startTryDownload(bookDetailBean, tryDownLoadUrl, localPath);
+            startTryDownload(bookDetailBean, tryDownLoadUrl, localPath, isViewDirectory);
         }
     }
 
-    private void startTryDownload(BookDetailResultBean.DetailBean bookDetailBean, String tryDownLoadUrl, String localPath) {
+    private void startTryDownload(final BookDetailResultBean.DetailBean bookDetailBean, String tryDownLoadUrl, String localPath, final boolean isViewDirectory) {
         String downloadTag = bookDetailBean.ebook_id + "";
         bookDetailBean.bookExtraInfoBean.downLoadTaskTag = downloadTag;
         bookDetailBean.bookExtraInfoBean.localPath = localPath;
@@ -852,6 +867,23 @@ public class BookDetailFragment extends BaseFragment {
                 super.onError(throwable);
                 ToastUtil.showToast(ResManager.getString(R.string.download_fail));
                 upDataButtonDown(nowReadButton, true, FileDownloadStatus.error);
+            }
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                if (isViewDirectory) {
+                    showLoadingDialog(ResManager.getString(R.string.book_detail_downloading));
+                }
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                if (isViewDirectory) {
+                    hideLoadingDialog();
+                }
+                tryDownload(bookDetailBean, true);
             }
         });
     }

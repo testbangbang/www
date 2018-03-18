@@ -624,4 +624,7 @@
     <dimen name="dash_space_length">2dp</dimen>
     <dimen name="rectangle_stroke_radius">3dp</dimen>
     <dimen name="book_detail_content_introduction_height">42dp</dimen>
+    <dimen name="view_directory_page_text_view_height">538dp</dimen>
+    <dimen name="view_directory_page_text_view_indicator_margin_top">22dp</dimen>
+    <dimen name="view_directory_page_text_view_margin_right">20dp</dimen>
 </resources>

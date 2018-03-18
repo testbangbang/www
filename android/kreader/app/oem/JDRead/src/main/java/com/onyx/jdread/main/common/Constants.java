@@ -166,4 +166,6 @@ public class Constants {
     public static final int SHOP_RANK_MODEL_TYPE_SOARING_LIST = 6;
     public static final int SHOP_RANK_MODEL_TYPE_SALE_NEW_BOOK_LIST = 2;
     public static final int RANK_TYPE_PUBLISH = 1;
+    public static final String BOOK_FORMAT_EPUB_ = "epub";
+    public static String KEY_DIRECTORY_CONTENT = "directory_content";
 }
