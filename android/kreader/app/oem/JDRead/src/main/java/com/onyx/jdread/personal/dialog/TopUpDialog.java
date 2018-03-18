@@ -137,11 +137,6 @@ public class TopUpDialog extends DialogFragment {
         ss.setSpan(styleSpan2, 8, 12, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         binding.dialogTopUpQrCodeLayout.payWay.setText(ss);
         binding.payOrder.payWay.setText(ss);
-        if (isPayByCash()) {
-            binding.payOrder.payOrderBalance.setVisibility(View.GONE);
-            binding.payOrder.paymentReadBean.setVisibility(View.GONE);
-            binding.payOrder.paymentCash.setChecked(true);
-        }
     }
 
     private void initData() {
@@ -186,6 +181,11 @@ public class TopUpDialog extends DialogFragment {
             } else {
                 gotoTopUpPage();
             }
+        }
+        if (isPayByCash()) {
+            binding.payOrder.payOrderBalance.setVisibility(View.GONE);
+            binding.payOrder.paymentReadBean.setVisibility(View.GONE);
+            binding.payOrder.paymentRadioGroup.check(binding.payOrder.paymentCash.getId());
         }
     }
 

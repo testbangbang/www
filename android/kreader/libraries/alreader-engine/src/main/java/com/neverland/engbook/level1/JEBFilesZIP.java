@@ -391,7 +391,7 @@ public class JEBFilesZIP extends AlFiles {
                     if (external_infl == null)
                         external_infl = new Inflater(true);
                     external_infl.reset();
-                    int bufferSize = cnt * 2;
+                    int bufferSize = fileList.get(num).uSize;
 
                     int total_out, in_buff_size, out_buff_size, tmp, unzip_out_buff_size;
 

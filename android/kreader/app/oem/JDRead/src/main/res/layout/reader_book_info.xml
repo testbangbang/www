@@ -20,7 +20,7 @@
 
         <include
             android:id="@+id/reader_book_info_title_bar"
-            layout="@layout/title_bar"
+            layout="@layout/reader_book_title_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

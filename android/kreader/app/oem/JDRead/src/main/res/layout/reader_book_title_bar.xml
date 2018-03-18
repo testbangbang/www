@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+        <import type="com.onyx.jdread.util.Utils"/>
+
+        <variable
+            name="bookTitleModel"
+            type="com.onyx.jdread.reader.catalog.model.BookTitleModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/setting_title_bar_padding"
+        android:paddingBottom="@dimen/setting_title_bar_padding"
+        android:paddingLeft="@dimen/setting_title_bar_padding_left"
+        android:paddingRight="@dimen/setting_title_bar_padding_left">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:onClick="@{()->bookTitleModel.back()}"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/back_icon_width_and_height"
+                android:layout_height="@dimen/back_icon_width_and_height"
+                android:src="@mipmap/ic_read_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/title_bar_drawable_padding"
+                android:text="@{bookTitleModel.title}"
+                android:textColor="@color/normal_black"
+                android:textSize="@dimen/level_one_heading_font" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:clickable="true"
+            android:drawablePadding="5dp"
+            android:drawableLeft="@mipmap/ic_read_export"
+            android:onClick="@{()->bookTitleModel.exportNoteClicked()}"
+            android:text="@string/export"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font"
+            android:layout_marginRight="20dp"
+            android:visibility="@{bookTitleModel.isShowExport ? View.VISIBLE : View.GONE}" />
+
+    </RelativeLayout>
+</layout>
