@@ -2,7 +2,6 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.R;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
@@ -76,14 +75,12 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onSubscribe() {
                 super.onSubscribe();
-                showLoadingDialog(shopDataBundle, R.string.loading);
                 invokeSubscribe(rxCallback);
             }
 
             @Override
             public void onFinally() {
                 super.onFinally();
-                hideLoadingDialog(shopDataBundle);
                 invokeFinally(rxCallback);
             }
 

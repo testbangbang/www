@@ -2,7 +2,6 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.R;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.db.RxRequestMetadataQuery;
 
@@ -27,37 +26,31 @@ public class MetadataQueryAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onSubscribe() {
                 super.onSubscribe();
-                showLoadingDialog(dataBundle, R.string.loading);
+                invokeSubscribe(rxCallback);
             }
 
             @Override
             public void onFinally() {
                 super.onFinally();
-                hideLoadingDialog(dataBundle);
+                invokeFinally(rxCallback);
             }
 
             @Override
             public void onNext(RxRequestMetadataQuery request) {
                 metadataResult = request.getMetadataResult();
-                if (rxCallback != null) {
-                    rxCallback.onNext(MetadataQueryAction.this);
-                }
+                invokeNext(rxCallback, MetadataQueryAction.this);
             }
 
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                if (rxCallback != null) {
-                    rxCallback.onError(throwable);
-                }
+                invokeError(rxCallback, throwable);
             }
 
             @Override
             public void onComplete() {
                 super.onComplete();
-                if (rxCallback != null) {
-                    rxCallback.onComplete();
-                }
+                invokeComplete(rxCallback);
             }
         });
     }

@@ -134,6 +134,8 @@ public class BookDetailFragment extends BaseFragment {
     private BookBatchDownloadViewModel batchDownloadViewModel;
     private String start_chapter;
     private boolean hasDoLogin;
+    private boolean bookDetailLoadingFinished;
+    private boolean metadataLoadingFinished;
 
     @Nullable
     @Override
@@ -177,7 +179,27 @@ public class BookDetailFragment extends BaseFragment {
                     }
                 }
             }
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                metadataLoadingFinished = false;
+                showLoadingDialog(ResManager.getString(R.string.loading));
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                metadataLoadingFinished = true;
+                safeCloseLoadingDialog();
+            }
         });
+    }
+
+    public void safeCloseLoadingDialog(){
+        if (bookDetailLoadingFinished && metadataLoadingFinished) {
+            hideLoadingDialog();
+        }
     }
 
     private void cleanData() {
@@ -299,6 +321,23 @@ public class BookDetailFragment extends BaseFragment {
                     }
                 }
             }
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                bookDetailLoadingFinished = false;
+                showLoadingDialog(ResManager.getString(R.string.loading));
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                if (shouldDownloadWholeBook) {
+                    metadataLoadingFinished = true;
+                }
+                bookDetailLoadingFinished = true;
+                safeCloseLoadingDialog();
+            }
         });
     }
 
@@ -357,7 +396,7 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewDirectoryEvent(ViewDirectoryEvent event) {
         if (fileIsExists(localPath)) {
-            openBook(localPath, bookDetailBean);
+            openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
         } else {
             ToastUtil.showToast(R.string.the_book_not_download);
         }
@@ -584,7 +623,7 @@ public class BookDetailFragment extends BaseFragment {
         }
 
         if (isWholeBookAlreadyDownload()) {
-            openBook(localPath, bookDetailBean);
+            openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK);
             return;
         }
 
@@ -675,7 +714,7 @@ public class BookDetailFragment extends BaseFragment {
         });
     }
 
-    private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean) {
+    private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean, int openType) {
         DocumentInfo documentInfo = new DocumentInfo();
         DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
         if (detailBean.bookExtraInfoBean != null && detailBean.bookExtraInfoBean.isWholeBookDownLoad) {
@@ -683,6 +722,7 @@ public class BookDetailFragment extends BaseFragment {
             securityInfo.setRandom(detailBean.bookExtraInfoBean.random);
         }
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
+        documentInfo.setOpenType(openType);
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
         documentInfo.setBookName(detailBean.name);
@@ -745,7 +785,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
         if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
-            openBook(localPath, bookDetailBean);
+            openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK);
             return;
         }
 

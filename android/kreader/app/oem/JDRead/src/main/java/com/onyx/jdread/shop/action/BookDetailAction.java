@@ -3,7 +3,6 @@ package com.onyx.jdread.shop.action;
 import android.text.TextUtils;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
@@ -56,14 +55,14 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
                 super.onSubscribe();
                 bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
                 bookDetailViewModel.setRecommendList(new ArrayList<ResultBookBean>());
-                showLoadingDialog(shopDataBundle, R.string.loading);
+                invokeSubscribe(rxCallback);
             }
 
             @Override
             public void onFinally() {
                 super.onFinally();
-                hideLoadingDialog(shopDataBundle);
                 shopDataBundle.getBookDetailViewModel().showAllButton.set(true);
+                invokeFinally(rxCallback);
             }
 
             @Override
@@ -79,26 +78,20 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
                     }
                 }
                 bookDetailViewModel.setBookDetailResultBean(bookDetailResultBean);
-                if (rxCallback != null) {
-                    rxCallback.onNext(BookDetailAction.this);
-                }
+                invokeNext(rxCallback, BookDetailAction.this);
             }
 
             @Override
             public void onError(Throwable throwable) {
                 PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), shopDataBundle.getEventBus());
                 bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
-                if (rxCallback != null) {
-                    rxCallback.onError(throwable);
-                }
+                invokeError(rxCallback, throwable);
             }
 
             @Override
             public void onComplete() {
                 super.onComplete();
-                if (rxCallback != null) {
-                    rxCallback.onComplete();
-                }
+                invokeComplete(rxCallback);
             }
         });
     }
