@@ -15,6 +15,10 @@ import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
+import com.onyx.jdread.main.event.SystemBarClickedEvent;
+import com.onyx.jdread.main.view.SystemBarPopupWindow;
+import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.personal.dialog.ExportDialog;
 import com.onyx.jdread.personal.event.ExportToEmailEvent;
 import com.onyx.jdread.personal.event.ExportToImpressionEvent;
@@ -57,6 +61,7 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
 import com.onyx.jdread.setting.common.AssociateDialogHelper;
 import com.onyx.jdread.setting.common.ExportHelper;
 import com.onyx.jdread.setting.event.BindEmailEvent;
+import com.onyx.jdread.setting.view.OnyxDigitalClock;
 import com.onyx.jdread.util.BroadcastHelper;
 import com.onyx.jdread.util.Utils;
 
@@ -75,6 +80,7 @@ public class ReaderActivityEventHandler {
     private CloseDocumentDialog closeDocumentDialog;
     private ReaderBookInfoDialog readerBookInfoDialog;
     private ExportHelper exportHelper;
+    private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -485,6 +491,23 @@ public class ReaderActivityEventHandler {
         showSingleLineDialog(event,activity);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSystemBarClickedEvent(SystemBarClickedEvent event) {
+        if (systemBarPopupWindowModel == null) {
+            systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
+        } else {
+            systemBarPopupWindowModel.brightnessModel.updateLight();
+            systemBarPopupWindowModel.updateRefreshMode();
+        }
+        SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(readerViewBack.getContext(), systemBarPopupWindowModel);
+        systemBarPopupWindow.show(readerSettingMenuDialog.findViewById(R.id.reader_setting_system_bar));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSystemBarBackToSettingEvent(SystemBarBackToSettingEvent event) {
+        ManagerActivityUtils.startSettingsActivity(readerViewBack.getContext());
+    }
+
     private void showSingleLineDialog(ShowSignMessageEvent event,Activity activity){
         SingleLineDialog singleLineDialog = new SingleLineDialog(activity, event.signNoteInfo.note,
                 readerViewModel.getEventBus(),event.signNoteInfo.rect,
@@ -492,5 +515,14 @@ public class ReaderActivityEventHandler {
                 readerViewModel.getReaderDataHolder().getReaderTouchHelper().getContentWidth());
         singleLineDialog.show();
         singleLineDialog.setCanceledOnTouchOutside(true);
+    }
+
+    public void updateTimeFormat() {
+        if (readerSettingMenuDialog != null && readerSettingMenuDialog.findViewById(R.id.reader_setting_system_bar) != null) {
+            OnyxDigitalClock onyxDigitalClock = (OnyxDigitalClock) readerSettingMenuDialog.findViewById(R.id.reader_setting_system_bar).findViewById(R.id.onyx_digital_clock);
+            if (onyxDigitalClock != null) {
+                onyxDigitalClock.setFormat();
+            }
+        }
     }
 }

@@ -72,6 +72,10 @@
             android:theme="@style/ActivityFullscreen"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+        <activity
+            android:name=".reader.ui.SettingsActivity"
+            android:theme="@style/ActivityFullscreen" />
+
         <activity android:name ="com.evernote.client.android.EvernoteOAuthActivity"/>
         <activity android:name ="com.evernote.client.android.login.EvernoteLoginActivity"/>
 
