@@ -187,7 +187,7 @@ public class StartActivity extends AppCompatActivity {
         }
         binding.startWifiAdd.setVisibility(binding.startWelcome.startFirst.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
         binding.startPreference.startPreference.setVisibility(binding.startLogin.startLogin.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
-        isLoginShow();
+        updateLoginView();
         binding.startWifiRecycler.setVisibility(binding.startWelcome.startFirst.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
         binding.startWelcome.startFirst.setVisibility(View.GONE);
         if (!Utils.isNetworkConnected(StartActivity.this)) {
@@ -198,7 +198,7 @@ public class StartActivity extends AppCompatActivity {
         }
     }
 
-    private void isLoginShow() {
+    private void updateLoginView() {
         binding.startLogin.startLogin.setVisibility(binding.startWifiRecycler.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
     }
 
@@ -298,7 +298,7 @@ public class StartActivity extends AppCompatActivity {
         if (state1 == NetworkInfo.State.CONNECTED) {
             binding.startNext.setTextColor(this.getResources().getColor(R.color.normal_black));
             binding.startNext.setEnabled(true);
-        } else if (binding.startWelcome.startFirst.getVisibility() == View.GONE && NetworkInfo.State.DISCONNECTED == state1) {
+        } else if (binding.startWelcome.startFirst.getVisibility() == View.GONE && NetworkInfo.State.CONNECTED != state1) {
             setNextUnEnabled();
         }
     }
@@ -409,7 +409,7 @@ public class StartActivity extends AppCompatActivity {
             clearInput();
             ToastUtil.showToast(ResManager.getString(R.string.login_success));
             binding.startPreference.startPreference.setVisibility(View.VISIBLE);
-            binding.startLogin.startLogin.setVisibility(binding.startWifiRecycler.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
+            updateLoginView();
             getCategory();
         } else {
             ToastUtil.showToast(event.getMessage());
