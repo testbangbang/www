@@ -137,6 +137,7 @@ public class BookDetailFragment extends BaseFragment {
     private boolean hasDoLogin;
     private boolean bookDetailLoadingFinished;
     private boolean metadataLoadingFinished;
+    private boolean isViewDirectoryTryDownload;
 
     @Nullable
     @Override
@@ -405,7 +406,7 @@ public class BookDetailFragment extends BaseFragment {
         } else if (bookDetailBean != null) {
             if (ViewHelper.isCanNowRead(bookDetailBean)){
                 tryDownload(bookDetailBean, true);
-            } else if (!StringUtils.isNullOrEmpty(bookDetailBean.format) && Constants.BOOK_FORMAT_EPUB_.equals(bookDetailBean.format.trim()) ){
+            } else if (!StringUtils.isNullOrEmpty(bookDetailBean.format) && Constants.BOOK_FORMAT_PDF.equals(bookDetailBean.format.trim()) ){
                 goViewDirectoryFragment(bookDetailBean.catalog);
             }
         }
@@ -572,7 +573,9 @@ public class BookDetailFragment extends BaseFragment {
                     DownLoadHelper.stopDownloadingTask(task.getTag());
                 }
             } else {
-                upDataButtonDown(nowReadButton, false, bookDetailBean.bookExtraInfoBean.downLoadState);
+                if (!isViewDirectoryTryDownload) {
+                    upDataButtonDown(nowReadButton, false, bookDetailBean.bookExtraInfoBean.downLoadState);
+                }
             }
         }
     }
@@ -816,12 +819,14 @@ public class BookDetailFragment extends BaseFragment {
             ToastUtil.showToast(JDReadApplication.getInstance(), ResManager.getString(R.string.book_detail_downloading));
             return;
         }
-        nowReadButton.setEnabled(false);
-        buyBookButton.setEnabled(false);
-        nowReadButton.setText(ResManager.getString(R.string.book_detail_downloading));
         bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = false;
         download(bookDetailBean, isViewDirectory);
-        ToastUtil.showToast(JDReadApplication.getInstance(), bookDetailBean.name + ResManager.getString(R.string.book_detail_tip_book_add_to_bookself));
+        if (!isViewDirectory) {
+            nowReadButton.setEnabled(false);
+            buyBookButton.setEnabled(false);
+            nowReadButton.setText(ResManager.getString(R.string.book_detail_downloading));
+            ToastUtil.showToast(JDReadApplication.getInstance(), bookDetailBean.name + ResManager.getString(R.string.book_detail_tip_book_add_to_bookself));
+        }
     }
 
     private void download(final BookDetailResultBean.DetailBean bookDetailBean, final boolean isViewDirectory) {
@@ -873,6 +878,7 @@ public class BookDetailFragment extends BaseFragment {
             public void onSubscribe() {
                 super.onSubscribe();
                 if (isViewDirectory) {
+                    isViewDirectoryTryDownload = true;
                     showLoadingDialog(ResManager.getString(R.string.book_detail_downloading));
                 }
             }
@@ -881,6 +887,7 @@ public class BookDetailFragment extends BaseFragment {
             public void onFinally() {
                 super.onFinally();
                 if (isViewDirectory) {
+                    isViewDirectoryTryDownload = false;
                     hideLoadingDialog();
                 }
                 tryDownload(bookDetailBean, true);
