@@ -73,6 +73,7 @@ public class BaseOptions {
     transient static public final String ORIENTATION = "orientation";
     transient static public final String MD5 = "md5";
     transient static public final String READ_PROGRESS = "readProgress";
+    transient static public final String READING_TIME = "readingTime";
 
     private static final float fallbackFontSize = 36.0f;
     public static float defaultFontSize = fallbackFontSize;
@@ -158,6 +159,14 @@ public class BaseOptions {
 
     public void setReadProgress(float progress){
         backend.putFloat(READ_PROGRESS,progress);
+    }
+
+    public float getReadingTime(){
+        return backend.getLong(READING_TIME);
+    }
+
+    public void setReadingTime(long readingTime){
+        backend.putLong(READING_TIME,readingTime);
     }
 
     public void setZipPassword(final String zipPassword) {
