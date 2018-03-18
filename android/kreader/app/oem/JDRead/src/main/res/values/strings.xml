@@ -96,6 +96,7 @@
     <string name="read_preference">Reading preference</string>
     <string name="my_read_preference">Personal Reading preference</string>
     <string name="gift_center">Gift center</string>
+    <string name="gift_no_package">No gift package</string>
     <string name="log_out">Log out</string>
     <string name="login_immediately">Login immediately</string>
     <string name="unsigned_in">Unsigned</string>
