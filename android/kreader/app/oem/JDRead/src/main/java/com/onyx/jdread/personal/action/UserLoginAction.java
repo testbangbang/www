@@ -61,8 +61,8 @@ public class UserLoginAction extends BaseAction {
             RxCallback.invokeFinally(rxCallback);
             return;
         }
-        if (StringUtils.isNullOrEmpty(password)){
-            ToastUtil.showToast(JDReadApplication.getInstance(), JDReadApplication.getInstance().getString(R.string.check_user_password));
+        if (StringUtils.isNullOrEmpty(password)) {
+            dataBundle.getEventBus().post(new UserLoginResultEvent(ResManager.getString(R.string.check_user_password)));
             RxCallback.invokeFinally(rxCallback);
             return;
         }

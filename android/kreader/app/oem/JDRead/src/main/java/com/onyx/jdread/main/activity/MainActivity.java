@@ -17,9 +17,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.api.device.epd.UpdateMode;
-import com.onyx.android.sdk.data.model.ApplicationUpdate;
-import com.onyx.android.sdk.data.model.Firmware;
+import com.onyx.android.sdk.data.model.StatisticalData;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -59,6 +57,8 @@ import com.onyx.jdread.main.model.MainViewModel;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
+import com.onyx.jdread.personal.action.GetStatisticsAction;
+import com.onyx.jdread.personal.action.SyncReadDataAction;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.BackToLoginEvent;
 import com.onyx.jdread.personal.event.ForgetPasswordEvent;
@@ -71,14 +71,12 @@ import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.personal.ui.PersonalFragment;
+import com.onyx.jdread.reader.data.ReadingData;
+import com.onyx.jdread.reader.data.ReadingDataResultBean;
 import com.onyx.jdread.setting.action.AutoCheckUpdateAction;
-import com.onyx.jdread.setting.action.CheckApkUpdateAction;
-import com.onyx.jdread.setting.action.DownloadPackageAction;
-import com.onyx.jdread.setting.action.OnlineCheckSystemUpdateAction;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
-import com.onyx.jdread.setting.utils.UpdateUtil;
 import com.onyx.jdread.shop.ui.NetWorkErrorFragment;
 import com.onyx.jdread.util.Utils;
 
@@ -88,7 +86,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         }
         FragmentBarModel barModel = popCurrentChildView(functionBarModel.findFunctionGroup());
         switchCurrentFragment(barModel.getBaseFragment(), null);
+        checkStatistics();
     }
 
     private void initSystemBar() {
@@ -539,6 +540,10 @@ public class MainActivity extends AppCompatActivity {
         if (fragment != null) {
             fragment.keepDownload();
         }
+        List<StatisticalData> statisticList = PersonalDataBundle.getInstance().getStatisticList();
+        if (statisticList != null && statisticList.size() > 0) {
+            syncStatistics(statisticList);
+        }
         AutoCheckUpdateAction autoCheckUpdateAction = new AutoCheckUpdateAction();
         autoCheckUpdateAction.execute(SettingBundle.getInstance(), null);
     }
@@ -602,5 +607,48 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateTimeFormat() {
         binding.mainSystemBar.onyxDigitalClock.setFormat();
+    }
+
+    private void checkStatistics() {
+        final GetStatisticsAction action = new GetStatisticsAction();
+        action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                List<StatisticalData> list = action.getList();
+                if (list != null && list.size() > 0) {
+                    if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+                        PersonalDataBundle.getInstance().setStatisticList(list);
+                        return;
+                    }
+                    syncStatistics(list);
+                }
+            }
+        });
+    }
+
+    private void syncStatistics(List<StatisticalData> list) {
+        final List<ReadingData> datas = new ArrayList<>();
+        for (StatisticalData data : list) {
+            ReadingData readingData = new ReadingData();
+            readingData.ebook_id = data.cloudId;
+            readingData.length = data.length;
+            readingData.start_time = data.startReadTime;
+            readingData.end_time = data.endReadTime;
+            datas.add(readingData);
+        }
+
+        final SyncReadDataAction action = new SyncReadDataAction(datas);
+        action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                ReadingDataResultBean resultBean = action.getResultBean();
+                if (resultBean != null && resultBean.result_code == 0) {
+                    PersonalDataBundle.getInstance().setStatisticList(null);
+                    for (ReadingData readingData : datas) {
+                        PersonalDataBundle.getInstance().deleteReadingData(readingData);
+                    }
+                }
+            }
+        });
     }
 }

@@ -13,6 +13,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.action.LoginOutAction;
@@ -95,6 +96,8 @@ public class PersonalFragment extends BaseFragment {
     }
 
     private void initData() {
+        int currentReadTime = JDReadApplication.getInstance().getCurrentReadTime();
+        binding.setReadTime(String.valueOf(currentReadTime / Constants.MINUTE_STEP));
         binding.setIsLogin(JDReadApplication.getInstance().getLogin());
         binding.setIsSignToday(PersonalDataBundle.getInstance().isTodaySign());
         if (JDReadApplication.getInstance().getLogin()) {

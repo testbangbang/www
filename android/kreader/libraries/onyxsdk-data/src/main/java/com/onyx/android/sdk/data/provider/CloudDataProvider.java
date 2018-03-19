@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.data.model.SearchHistory_Table;
+import com.onyx.android.sdk.data.model.StatisticalData;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
@@ -500,6 +501,26 @@ public class CloudDataProvider implements DataProviderBase {
     @Override
     public long libraryCount(String parentUniqueId) {
         return new Select(Method.count()).from(CloudLibrary.class).where(CloudLibrary_Table.parentUniqueId.eq(parentUniqueId)).count();
+    }
+
+    @Override
+    public StatisticalData findStatisticalDataByCloudId(String cloudId) {
+        return null;
+    }
+
+    @Override
+    public List<StatisticalData> findAllStatistics() {
+        return null;
+    }
+
+    @Override
+    public void saveStatisticData(StatisticalData data) {
+
+    }
+
+    @Override
+    public void deleteStatisticDataByCloudId(String cloudId) {
+
     }
 
     private ContentService getContentService() {
