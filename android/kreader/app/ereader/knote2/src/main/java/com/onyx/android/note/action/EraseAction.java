@@ -31,6 +31,7 @@ public class EraseAction extends BaseNoteAction {
     public void execute(final RxCallback rxCallback) {
         EraseRequest request = new EraseRequest(getNoteManager(), touchPointList)
                 .setFixShape(fixShape);
+        request.setPauseRawDrawingRender(false);
         getNoteManager().getRxManager().enqueue(request, rxCallback);
     }
 }
