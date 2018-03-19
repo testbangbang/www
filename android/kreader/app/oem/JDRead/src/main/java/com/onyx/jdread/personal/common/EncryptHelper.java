@@ -7,6 +7,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.action.GetSaltAction;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,8 +36,8 @@ public class EncryptHelper {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < chars.length; i++) {
             sb.append(chars[i]);
-            if (i == 6) {
-                sb.append("eink");
+            if (i == Constants.GET_DECRYPT_KEY_POINT) {
+                sb.append(JDAppBaseInfo.APP_DEFAULT_VALUE);
                 sb.append(part);
             }
         }
