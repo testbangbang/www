@@ -330,6 +330,7 @@ public class WifiFragment extends BaseFragment {
         binding.wifiRecycler.addItemDecoration(dividerItemDecoration);
         wifiSettingAdapter = new WifiSettingAdapter();
         binding.wifiRecycler.setAdapter(wifiSettingAdapter);
+        binding.wifiTitleBar.settingTitleCheck.setVisibility(View.VISIBLE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
