@@ -43,7 +43,7 @@ public class ObjectiveQuestionBitmapUtil {
         bindQuestionOption(context, rgOption, question);
 
         int width = (int) context.getResources().getDimension(R.dimen.scribble_view_width);
-        int height = (int) context.getResources().getDimension(R.dimen.scribble_view_height);
+        int height = (int) context.getResources().getDimension(R.dimen.objective_scribble_view_height);
         view.measure(width, height);
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
         Bitmap bmp = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);

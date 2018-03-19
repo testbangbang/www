@@ -13,6 +13,7 @@ import com.onyx.android.sdk.data.model.homework.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.data.TextLayoutArgs;
 import com.onyx.edu.homework.DataBundle;
+import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.request.HomeworkPagesRenderRequest;
 import com.onyx.edu.homework.utils.TextUtils;
@@ -37,8 +38,12 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
     private int documentRenderCount = 0;
     private Rect size;
 
+    /**
+     *
+     * @param s if is null, auto init by question type
+     */
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
-                                     Rect s,
+                                     @Nullable Rect s,
                                      int pageCount,
                                      boolean saveAsFile) {
         this.pageUniqueMap = pageUniqueMap;
@@ -48,7 +53,7 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
     }
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
-                                     Rect s,
+                                     @Nullable Rect s,
                                      boolean saveAsFile) {
         this.pageUniqueMap = pageUniqueMap;
         this.saveAsFile = saveAsFile;
@@ -81,6 +86,14 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
 
         if (!question.isChoiceQuestion()) {
             textLayoutArgs = TextLayoutArgs.create(question.content, TextUtils.getTextSpacingAdd(question));
+        }
+
+        if (size == null) {
+            int width = (int) getAppContext().getResources().getDimension(R.dimen.scribble_view_width);
+            int height = (int) getAppContext().getResources().getDimension(
+                    question.isChoiceQuestion() ? R.dimen.objective_scribble_view_height :
+                            R.dimen.scribble_view_height);
+            size = new Rect(0, 0, width, height);
         }
 
         List<String> pageUniqueIds = pageUniqueMap.get(docId);
