@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.action.AddShapesAction;
+import com.onyx.android.note.action.RefreshDrawScreenAction;
 import com.onyx.android.note.action.RenderVarietyShapesAction;
 import com.onyx.android.note.utils.DrawUtils;
 import com.onyx.android.sdk.note.NoteManager;
@@ -12,6 +13,7 @@ import com.onyx.android.sdk.pen.data.TouchPoint;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.rx.SingleThreadScheduler;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
@@ -139,4 +141,5 @@ public class NormalShapeHandler extends BaseHandler {
     public boolean useDrawErase() {
         return true;
     }
+
 }

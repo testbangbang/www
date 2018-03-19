@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.R;
 import com.onyx.android.note.action.PageSpanShapesAction;
+import com.onyx.android.note.action.RefreshDrawScreenAction;
 import com.onyx.android.note.action.RemoveShapesByGroupIdAction;
 import com.onyx.android.note.action.RenderToBitmapAction;
 import com.onyx.android.note.action.SpannableAction;
@@ -36,6 +37,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
@@ -91,6 +93,14 @@ public class SpanHandler extends BaseHandler {
 
     private void start() {
         loadPageSpanShapes();
+    }
+
+    @Override
+    public void onResizeView() {
+        RenderContext renderContext = getNoteManager().getRenderContext();
+        renderContext.clearBgBitmapCache();
+        renderContext.lineLayoutArgs.updateLineLayoutArgs(spanView);
+        new RefreshDrawScreenAction(getNoteManager()).execute(null);
     }
 
     private void loadPageSpanShapes() {
@@ -344,7 +354,6 @@ public class SpanHandler extends BaseHandler {
         getNoteManager().post(new KeyboardChangeEvent(false));
         inputManager.hideSoftInputFromWindow(spanView.getWindowToken(), 0);
     }
-
 
     private void buildTextShape(String text, int width) {
         Shape spaceShape = createTextShape(text);
