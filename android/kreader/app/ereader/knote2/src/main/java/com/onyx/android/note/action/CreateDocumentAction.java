@@ -3,12 +3,10 @@ package com.onyx.android.note.action;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.note.common.base.BaseNoteAction;
-import com.onyx.android.note.event.OpenDocumentEvent;
+import com.onyx.android.note.event.PenEvent;
 import com.onyx.android.note.event.data.UpdateNoteDrawingArgsEvent;
 import com.onyx.android.sdk.note.NoteManager;
-import com.onyx.android.sdk.note.event.ResumeRawDrawingEvent;
 import com.onyx.android.sdk.note.request.CreateDocumentRequest;
-import com.onyx.android.sdk.pen.TouchHelper;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.scribble.data.DocumentOptionArgs;
 
@@ -52,7 +50,7 @@ public class CreateDocumentAction extends BaseNoteAction {
             public void onNext(@NonNull CreateDocumentRequest createDocumentRequest) {
                 RxCallback.onNext(rxCallback, createDocumentRequest);
                 getNoteManager().post(new UpdateNoteDrawingArgsEvent(createDocumentRequest.getDrawingArgs()));
-                getNoteManager().post(new OpenDocumentEvent(true));
+                getNoteManager().post(PenEvent.resumeDrawingRender());
             }
 
             @Override

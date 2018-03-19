@@ -1,18 +1,9 @@
 package com.onyx.android.note.note;
 
 import com.onyx.android.note.NoteDataBundle;
-import com.onyx.android.note.event.AddShapesEvent;
-import com.onyx.android.note.event.ClearAllFreeShapesEvent;
 import com.onyx.android.note.event.DialogChangeEvent;
 import com.onyx.android.note.event.KeyboardChangeEvent;
-import com.onyx.android.note.event.OpenDocumentEvent;
-import com.onyx.android.note.event.PageSpanShapesEvent;
-import com.onyx.android.note.event.RefreshDrawScreenEvent;
-import com.onyx.android.note.event.SpannableEvent;
-import com.onyx.android.note.event.menu.BackgroundChangeEvent;
-import com.onyx.android.note.event.menu.PenWidthChangeEvent;
-import com.onyx.android.note.event.menu.TopMenuChangeEvent;
-import com.onyx.android.note.event.menu.UndoRedoEvent;
+import com.onyx.android.note.event.PenEvent;
 import com.onyx.android.note.handler.HandlerManager;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.RawDrawingRenderEnabledEvent;
@@ -60,14 +51,9 @@ public class PenEventHandler {
     private boolean shouldResume(boolean resumePen) {
         return resumePen
                 && !isDialogShowing()
-                && !isKeyboardShowing();
-    }
-
-    private boolean shouldRawRender(boolean render) {
-        return render || (inRawRenderProvider()
-                && inRawRenderShapeType()
-                && !isDialogShowing()
-                && !isKeyboardShowing());
+                && !isKeyboardShowing()
+                && inRawRenderProvider()
+                && inRawRenderShapeType();
     }
 
     private boolean inRawRenderProvider() {
@@ -84,75 +70,25 @@ public class PenEventHandler {
     @Subscribe
     public void onKeyboardChange(KeyboardChangeEvent event) {
         keyboardShowing = event.show;
+        resumeRawDrawingRender(!keyboardShowing);
     }
 
     @Subscribe
     public void onDialogChange(DialogChangeEvent event) {
         dialogShowing = event.show;
+        resumeRawDrawingRender(!dialogShowing);
     }
 
     @Subscribe
-    public void onTopMenuChange(TopMenuChangeEvent event) {
-        resumeRawDrawing(event.isResumePen());
+    public void onPenEvent(PenEvent event) {
+        resumeRawDrawingRender(event.isResumeDrawingRender());
     }
 
-    @Subscribe
-    public void onPenWidthChange(PenWidthChangeEvent event) {
-        resumeRawDrawing(event.isResumePen());
-        setRawDrawingRenderEnabled(event.isRawRenderEnable());
-    }
-
-    @Subscribe
-    public void onBackgroundChange(BackgroundChangeEvent event) {
-        resumeRawDrawing(event.isResumePen());
-    }
-
-    @Subscribe
-    public void onClearAllFreeShapes(ClearAllFreeShapesEvent event) {
-        resumeRawDrawing(event.isResumePen());
-    }
-
-    @Subscribe
-    public void onOpenDocument(OpenDocumentEvent event) {
-        resumeRawDrawing(event.isResumePen());
-    }
-
-    @Subscribe
-    public void onUndoRedo(UndoRedoEvent event) {
-        resumeRawDrawing(event.isResumePen());
-        setRawDrawingRenderEnabled(event.isRawRenderEnable());
-    }
-
-    @Subscribe
-    public void onRefreshDrawScreen(RefreshDrawScreenEvent event) {
-        resumeRawDrawing(event.isResumePen());
-    }
-
-    @Subscribe
-    public void onAddShapes(AddShapesEvent event) {
-        resumeRawDrawing(event.isResumePen());
-        setRawDrawingRenderEnabled(event.isRawRenderEnable());
-    }
-
-    @Subscribe
-    public void onSpannable(SpannableEvent event) {
-        resumeRawDrawing(event.isResumePen());
-    }
-
-    @Subscribe
-    public void onPageSpanShapes(PageSpanShapesEvent event) {
-        resumeRawDrawing(event.isResumePen());
-    }
-
-    private void setRawDrawingRenderEnabled(boolean enabled) {
-        getNoteManager().post(new RawDrawingRenderEnabledEvent(shouldRawRender(enabled)));
-    }
-
-    private void resumeRawDrawing(boolean resumePen) {
+    private void resumeRawDrawingRender(boolean resumePen) {
         if (!shouldResume(resumePen)) {
             return;
         }
-        getEventBus().post(new ResumeRawDrawingEvent());
+        getEventBus().post(new RawDrawingRenderEnabledEvent(resumePen));
     }
 
     private NoteDataBundle getDataBundle() {

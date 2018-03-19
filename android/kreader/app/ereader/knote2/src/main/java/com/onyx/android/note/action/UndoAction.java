@@ -3,9 +3,8 @@ package com.onyx.android.note.action;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.note.common.base.BaseNoteAction;
-import com.onyx.android.note.event.menu.UndoRedoEvent;
+import com.onyx.android.note.event.PenEvent;
 import com.onyx.android.sdk.note.NoteManager;
-import com.onyx.android.sdk.note.request.RedoRequest;
 import com.onyx.android.sdk.note.request.UndoRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 
@@ -26,7 +25,7 @@ public class UndoAction extends BaseNoteAction {
             @Override
             public void onNext(@NonNull UndoRequest undoRequest) {
                 RxCallback.onNext(rxCallback, undoRequest);
-                getNoteManager().post(new UndoRedoEvent(true).setRawRenderEnable(false));
+                getNoteManager().post(PenEvent.resumeDrawingRender());
             }
         });
     }

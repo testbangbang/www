@@ -17,23 +17,15 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
 import org.greenrobot.eventbus.EventBus;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by lxm on 2018/3/5.
@@ -116,7 +108,7 @@ public class EraseOverlayHandler extends BaseHandler {
         disposeAction();
         new RenderToBitmapAction(getNoteManager())
                 .setShape(createEraseShape(touchPointList))
-                .setPauseRawDraw(false)
+                .setPauseRawDrawRender(false)
                 .setRenderToScreen(true)
                 .execute(new RxCallback() {
                     @Override

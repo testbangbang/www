@@ -3,8 +3,8 @@ package com.onyx.android.note.action.menu;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.note.common.base.BaseNoteAction;
+import com.onyx.android.note.event.PenEvent;
 import com.onyx.android.note.event.menu.CheckMenuRectEvent;
-import com.onyx.android.note.event.menu.TopMenuChangeEvent;
 import com.onyx.android.note.note.menu.NoteMenuModel;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.request.RendererToScreenRequest;
@@ -32,7 +32,7 @@ public class ToggleTopMenuAction extends BaseNoteAction {
             public void onNext(@NonNull RendererToScreenRequest rendererToScreenRequest) {
                 menuModel.toggle();
                 getNoteManager().post(new CheckMenuRectEvent());
-                getNoteManager().post(new TopMenuChangeEvent(true));
+                getNoteManager().post(PenEvent.resumeDrawingRender());
                 RxCallback.onNext(rxCallback, rendererToScreenRequest);
             }
         });
