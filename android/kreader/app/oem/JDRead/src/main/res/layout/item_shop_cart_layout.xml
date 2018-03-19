@@ -15,74 +15,93 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            bind:cover="@{itemData.detail.logo}" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="8"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/quick_back_button_explanation_margin_right"
             android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="middle"
-                android:singleLine="true"
-                android:text="@{itemData.detail.bookName}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_two_heading_font" />
+            <ImageView
+                android:id="@+id/iv_book_icon"
+                android:layout_width="@dimen/phone_edit_margin_top"
+                android:layout_height="@dimen/reader_single_line_dialog_height"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                bind:cover="@{itemData.detail.logo}" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/item_shop_cart_price_margin_top"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/default_page_left_margin"
+                android:layout_toRightOf="@+id/iv_book_icon"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:ellipsize="middle"
                     android:singleLine="true"
-                    android:text="@{@string/item_price(String.valueOf(itemData.detail.jdPrice))}"
+                    android:text="@{itemData.detail.bookName}"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/level_three_heading_font" />
+                    android:textSize="@dimen/level_two_heading_font" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_marginTop="@dimen/shop_search_book_edit_text_view_bg_height"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/rectangle_stroke"
                         android:ellipsize="middle"
-                        android:padding="@dimen/item_shop_cart_promotion_margin_padding"
                         android:singleLine="true"
-                        android:text="@{itemData.promotionalEntity.name}"
+                        android:text="@{@string/item_price(String.valueOf(itemData.detail.jdPrice))}"
                         android:textColor="@android:color/black"
-                        android:textSize="@dimen/level_three_heading_font"
-                        android:visibility="@{StringUtils.isNotBlank(itemData.promotionalEntity.name) ? View.VISIBLE : View.GONE}" />
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/shop_cart_delete_margin_left"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/shop_cart_delete_margin_left">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rectangle_small"
+                            android:ellipsize="middle"
+                            android:paddingLeft="@dimen/item_shop_cart_promotion_margin_padding"
+                            android:paddingRight="@dimen/item_shop_cart_promotion_margin_padding"
+                            android:singleLine="true"
+                            android:text="@{itemData.promotionalEntity.name}"
+                            android:textColor="@android:color/black"
+                            android:textSize="@dimen/level_three_heading_font"
+                            android:visibility="@{StringUtils.isNotBlank(itemData.promotionalEntity.name) ? View.VISIBLE : View.GONE}" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/item_shop_cart_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="@{itemData.checked}" />
+            <CheckBox
+                android:id="@+id/item_shop_cart_check"
+                android:layout_width="@dimen/start_login_margin_top"
+                android:layout_height="@dimen/start_login_margin_top"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/shop_cart_checkbox_style"
+                android:button="@null"
+                android:checked="@{itemData.checked}" />
+        </RelativeLayout>
+
+        <View
+            style="@style/book_detail_dot_line_Style"
+            android:layout_alignParentBottom="true" />
+
     </LinearLayout>
 </layout>
