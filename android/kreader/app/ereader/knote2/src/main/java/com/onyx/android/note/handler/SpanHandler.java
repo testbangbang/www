@@ -17,6 +17,7 @@ import com.onyx.android.note.action.RemoveShapesByGroupIdAction;
 import com.onyx.android.note.action.RenderToBitmapAction;
 import com.onyx.android.note.action.SpannableAction;
 import com.onyx.android.note.event.BuildSpanTextShapeEvent;
+import com.onyx.android.note.event.KeyboardChangeEvent;
 import com.onyx.android.note.event.SpanViewEnableEvent;
 import com.onyx.android.note.event.SpanViewEvent;
 import com.onyx.android.note.event.menu.DeleteSpanShapeEvent;
@@ -320,27 +321,27 @@ public class SpanHandler extends BaseHandler {
 
     @Subscribe
     public void onShowKeyboard(ShowKeyboardEvent event) {
-        if (PenEventHandler.isKeyboardShowing()) {
+        if (getPenEventHandler().isKeyboardShowing()) {
             return;
         }
         InputMethodManager inputManager = (InputMethodManager)spanView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputManager == null) {
             return;
         }
-        PenEventHandler.setKeyboardShowing(true);
+        getNoteManager().post(new KeyboardChangeEvent(true));
         inputManager.showSoftInput(spanView, 0);
     }
 
     @Subscribe
     public void onCloseKeyboard(CloseKeyboardEvent event) {
-        if (!PenEventHandler.isKeyboardShowing()) {
+        if (!getPenEventHandler().isKeyboardShowing()) {
             return;
         }
         InputMethodManager inputManager = (InputMethodManager)spanView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputManager == null) {
             return;
         }
-        PenEventHandler.setKeyboardShowing(false);
+        getNoteManager().post(new KeyboardChangeEvent(false));
         inputManager.hideSoftInputFromWindow(spanView.getWindowToken(), 0);
     }
 
@@ -415,5 +416,9 @@ public class SpanHandler extends BaseHandler {
 
         shape.addPoints(touchPointList);
         return shape;
+    }
+
+    private PenEventHandler getPenEventHandler() {
+        return NoteDataBundle.getInstance().getPenEventHandler();
     }
 }

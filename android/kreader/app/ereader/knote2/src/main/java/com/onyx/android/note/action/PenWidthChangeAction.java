@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.common.base.BaseNoteAction;
-import com.onyx.android.note.event.menu.PenWidthChangeEvent;
+import com.onyx.android.note.event.PenEvent;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.request.PenWidthChangeRequest;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -34,7 +34,7 @@ public class PenWidthChangeAction extends BaseNoteAction {
         getNoteManager().getRxManager().enqueue(request, new RxCallback<PenWidthChangeRequest>() {
             @Override
             public void onNext(@NonNull PenWidthChangeRequest penWidthChangeRequest) {
-                getNoteManager().post(new PenWidthChangeEvent(true));
+                getNoteManager().post(PenEvent.resumeDrawingRender());
             }
         });
     }

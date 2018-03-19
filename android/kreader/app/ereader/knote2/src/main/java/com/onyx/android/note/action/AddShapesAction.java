@@ -3,9 +3,8 @@ package com.onyx.android.note.action;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.note.common.base.BaseNoteAction;
-import com.onyx.android.note.event.AddShapesEvent;
+import com.onyx.android.note.event.PenEvent;
 import com.onyx.android.sdk.note.NoteManager;
-import com.onyx.android.sdk.note.request.AddShapesBackgroundRequest;
 import com.onyx.android.sdk.note.request.AddShapesRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -46,7 +45,7 @@ public class AddShapesAction extends BaseNoteAction {
             @Override
             public void onNext(@NonNull AddShapesRequest addShapesRequest) {
                 RxCallback.onNext(rxCallback, addShapesRequest);
-                getNoteManager().post(new AddShapesEvent(true).setRawRenderEnable(false));
+                getNoteManager().post(PenEvent.resumeDrawingRender());
             }
         });
     }

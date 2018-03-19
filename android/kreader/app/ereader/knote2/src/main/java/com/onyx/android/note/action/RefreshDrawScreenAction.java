@@ -3,7 +3,7 @@ package com.onyx.android.note.action;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.note.common.base.BaseNoteAction;
-import com.onyx.android.note.event.RefreshDrawScreenEvent;
+import com.onyx.android.note.event.PenEvent;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.request.RendererToScreenRequest;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -33,7 +33,7 @@ public class RefreshDrawScreenAction extends BaseNoteAction {
             @Override
             public void onNext(@NonNull RendererToScreenRequest rendererToScreenRequest) {
                 RxCallback.onNext(rxCallback, rendererToScreenRequest);
-                getNoteManager().post(new RefreshDrawScreenEvent(true));
+                getNoteManager().post(PenEvent.resumeDrawingRender());
             }
         });
     }

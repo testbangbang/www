@@ -3,7 +3,7 @@ package com.onyx.android.note.action;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.note.common.base.BaseNoteAction;
-import com.onyx.android.note.event.ClearAllFreeShapesEvent;
+import com.onyx.android.note.event.PenEvent;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.request.ClearAllFreeShapesRequest;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -24,7 +24,7 @@ public class ClearAllFreeShapesAction extends BaseNoteAction {
         getNoteManager().getRxManager().enqueue(request, new RxCallback<ClearAllFreeShapesRequest>() {
             @Override
             public void onNext(@NonNull ClearAllFreeShapesRequest clearAllFreeShapesRequest) {
-                getNoteManager().post(new ClearAllFreeShapesEvent(true));
+                getNoteManager().post(PenEvent.resumeDrawingRender());
             }
         });
     }

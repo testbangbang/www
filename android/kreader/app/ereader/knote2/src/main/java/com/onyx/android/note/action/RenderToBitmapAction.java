@@ -18,7 +18,7 @@ import java.util.List;
 public class RenderToBitmapAction extends BaseNoteAction {
 
     private List<Shape> shapes;
-    private boolean pauseRawDraw;
+    private boolean pauseRawDrawRender;
     private boolean renderToScreen;
 
     public RenderToBitmapAction(NoteManager noteManager) {
@@ -38,8 +38,8 @@ public class RenderToBitmapAction extends BaseNoteAction {
         return this;
     }
 
-    public RenderToBitmapAction setPauseRawDraw(boolean pauseRawDraw) {
-        this.pauseRawDraw = pauseRawDraw;
+    public RenderToBitmapAction setPauseRawDrawRender(boolean pauseRawDrawRender) {
+        this.pauseRawDrawRender = pauseRawDrawRender;
         return this;
     }
 
@@ -51,7 +51,7 @@ public class RenderToBitmapAction extends BaseNoteAction {
     @Override
     public void execute(RxCallback rxCallback) {
         BaseNoteRequest request = new RenderToBitmapRequest(getNoteManager(), shapes)
-                .setPauseRawDrawing(pauseRawDraw)
+                .setPauseRawDrawingRender(pauseRawDrawRender)
                 .setRenderToScreen(renderToScreen);
         getNoteManager().getRxManager().enqueue(request, rxCallback);
     }

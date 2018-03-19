@@ -3,7 +3,7 @@ package com.onyx.android.note.action;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.note.common.base.BaseNoteAction;
-import com.onyx.android.note.event.SpannableEvent;
+import com.onyx.android.note.event.PenEvent;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.request.SpannableRequest;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -35,7 +35,7 @@ public class SpannableAction extends BaseNoteAction {
             @Override
             public void onNext(@NonNull SpannableRequest request) {
                 RxCallback.onNext(rxCallback, request);
-                getNoteManager().post(new SpannableEvent(true));
+                getNoteManager().post(PenEvent.resumeDrawingRender());
             }
         });
     }

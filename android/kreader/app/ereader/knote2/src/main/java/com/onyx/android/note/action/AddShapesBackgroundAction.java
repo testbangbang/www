@@ -38,6 +38,7 @@ public class AddShapesBackgroundAction extends BaseNoteAction {
     @Override
     public void execute(RxCallback rxCallback) {
         AddShapesBackgroundRequest request = new AddShapesBackgroundRequest(getNoteManager(), shapes);
+        request.setPauseRawDrawingRender(false);
         getNoteManager().getRxManager().enqueue(request, rxCallback);
     }
 }

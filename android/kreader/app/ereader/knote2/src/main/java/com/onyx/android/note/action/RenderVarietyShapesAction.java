@@ -36,7 +36,7 @@ public class RenderVarietyShapesAction extends BaseNoteAction {
     @Override
     public void execute(RxCallback rxCallback) {
         RenderVarietyShapesRequest request = new RenderVarietyShapesRequest(getNoteManager(), shapes);
-        request.setPauseRawDrawing(false).setRenderToScreen(false);
+        request.setPauseRawDrawingRender(false).setRenderToScreen(false);
         getNoteManager().getRxManager().enqueue(request, rxCallback);
     }
 }
