@@ -117,6 +117,19 @@ public class CategoryBookListFragment extends BaseFragment {
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType) {
         final SearchBookListAction booksAction = new SearchBookListAction(catid, currentPage, sortKey, sortType, "", filter);
         booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                showLoadingDialog(ResManager.getString(R.string.loading));
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog();
+            }
+
             @Override
             public void onNext(SearchBookListAction action) {
                 BookModelBooksResultBean booksResultBean = action.getBooksResultBean();

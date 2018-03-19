@@ -1,7 +1,6 @@
 package com.onyx.jdread.shop.action;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -68,6 +67,7 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void start(BaseRequest request) {
+                RxCallback.invokeSubscribe(rxCallback);
                 dataBundle.getEventBus().post(new DownloadStartEvent(tag));
                 if (downLoadCallback != null) {
                     downLoadCallback.start(tag);
@@ -107,19 +107,18 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
                 if (downLoadCallback != null) {
                     downLoadCallback.done(tag);
                 }
-                if (rxCallback != null) {
-                    if (e != null) {
-                        if (e instanceof ConnectException || e instanceof IOException) {
-                            ToastUtil.showToast(ResManager.getString(R.string.network_exception));
-                        } else {
-                            ToastUtil.showToast(R.string.download_fail);
-                        }
-                        rxCallback.onError(e);
-                    } else {
-                        rxCallback.onNext(DownloadAction.this);
-                    }
-                }
                 removeDownloadingTask(tag);
+                if (e != null) {
+                    if (e instanceof ConnectException || e instanceof IOException) {
+                        ToastUtil.showToast(ResManager.getString(R.string.network_exception));
+                    } else {
+                        ToastUtil.showToast(R.string.download_fail);
+                    }
+                    RxCallback.invokeError(rxCallback, e);
+                } else {
+                    RxCallback.invokeNext(rxCallback, DownloadAction.this);
+                }
+                RxCallback.invokeFinally(rxCallback);
             }
 
         });

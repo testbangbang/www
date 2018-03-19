@@ -1,6 +1,5 @@
 package com.onyx.jdread.library.ui;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -58,7 +57,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.onyx.jdread.shop.common.CloudApiContext.CategoryLevel2BookList.PAGE_SIZE_DEFAULT_VALUES;
@@ -315,6 +313,13 @@ public class SearchBookFragment extends BaseFragment {
         booksAction.setLoadCover(submit);
         booksAction.setShowLoadingDialog(submit);
         booksAction.execute(ShopDataBundle.getInstance(), new RxCallback<SearchBookListAction>() {
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                showLoadingDialog(ResManager.getString(R.string.loading));
+            }
+
             @Override
             public void onNext(SearchBookListAction action) {
                 if (submit) {
@@ -331,6 +336,7 @@ public class SearchBookFragment extends BaseFragment {
 
             @Override
             public void onFinally() {
+                hideLoadingDialog();
                 invokeFinally(callback);
             }
         });
