@@ -72,8 +72,8 @@ public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implemen
     @Override
     public void onClick(View v) {
         ConnectivityManager connManager = (ConnectivityManager) JDReadApplication.getInstance().getSystemService(JDReadApplication.getInstance().CONNECTIVITY_SERVICE);
-        NetworkInfo.State state1 = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-        if (NetworkInfo.State.CONNECTED != state1) {
+        NetworkInfo.State state = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+        if (NetworkInfo.State.CONNECTED != state) {
             ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
             return;
         }
