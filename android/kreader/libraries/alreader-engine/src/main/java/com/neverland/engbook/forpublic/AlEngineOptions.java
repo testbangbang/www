@@ -85,7 +85,7 @@ public class AlEngineOptions {
 	 */
 	public boolean 								drawLinkInternal = true;
 
-	public EngBookMyType.TAL_TABLEMODE			tableMode = EngBookMyType.TAL_TABLEMODE.BOTH;
+	public EngBookMyType.TAL_TABLEMODE			tableMode = EngBookMyType.TAL_TABLEMODE.INTERNAL;
 
 
 	public boolean 								runInOneThread = false;
