@@ -50,7 +50,7 @@ public class ReaderDeviceManager {
     public static void toggleAnimationUpdate(boolean clear) {
         boolean useFastMode = !inSystemFastMode();
         if (useFastMode) {
-            EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+            EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION_QUALITY, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
         } else {
             EpdController.clearSystemUpdateModeAndScheme();
         }

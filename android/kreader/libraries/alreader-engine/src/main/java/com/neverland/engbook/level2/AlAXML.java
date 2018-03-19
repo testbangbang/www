@@ -534,6 +534,8 @@ public abstract class AlAXML extends AlFormat {
 								clearTextStyle(AlStyles.STYLE_LINK);
 							}
 
+							clearPropStyle(AlParProperty.SL2_JUST_MASK);
+
 							allState.restoreSkipped();
 						}
 

@@ -73,6 +73,8 @@ import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.reader.data.ReadingData;
 import com.onyx.jdread.reader.data.ReadingDataResultBean;
+import com.onyx.jdread.setting.action.AutoCheckUpdateAction;
+import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
 import com.onyx.jdread.shop.ui.NetWorkErrorFragment;
@@ -542,6 +544,8 @@ public class MainActivity extends AppCompatActivity {
         if (statisticList != null && statisticList.size() > 0) {
             syncStatistics(statisticList);
         }
+        AutoCheckUpdateAction autoCheckUpdateAction = new AutoCheckUpdateAction();
+        autoCheckUpdateAction.execute(SettingBundle.getInstance(), null);
     }
 
     @Subscribe
