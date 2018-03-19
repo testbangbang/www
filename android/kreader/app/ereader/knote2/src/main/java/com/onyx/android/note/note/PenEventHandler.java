@@ -3,6 +3,8 @@ package com.onyx.android.note.note;
 import com.onyx.android.note.NoteDataBundle;
 import com.onyx.android.note.event.AddShapesEvent;
 import com.onyx.android.note.event.ClearAllFreeShapesEvent;
+import com.onyx.android.note.event.DialogChangeEvent;
+import com.onyx.android.note.event.KeyboardChangeEvent;
 import com.onyx.android.note.event.OpenDocumentEvent;
 import com.onyx.android.note.event.PageSpanShapesEvent;
 import com.onyx.android.note.event.RefreshDrawScreenEvent;
@@ -26,8 +28,8 @@ import org.greenrobot.eventbus.Subscribe;
 public class PenEventHandler {
 
     private EventBus eventBus;
-    public static boolean dialogShowing;
-    public static boolean keyboardShowing;
+    private boolean dialogShowing;
+    private boolean keyboardShowing;
 
     public PenEventHandler(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -49,11 +51,7 @@ public class PenEventHandler {
         return dialogShowing;
     }
 
-    public static void setKeyboardShowing(boolean keyboardShowing) {
-        PenEventHandler.keyboardShowing = keyboardShowing;
-    }
-
-    public static boolean isKeyboardShowing() {
+    public boolean isKeyboardShowing() {
         return keyboardShowing;
     }
 
@@ -68,6 +66,16 @@ public class PenEventHandler {
     private boolean inRawNotRenderProvider() {
         return getHandlerManager().inEraseOverlayProvider() ||
                 getHandlerManager().inNormalShapeProvider();
+    }
+
+    @Subscribe
+    public void onKeyboardChange(KeyboardChangeEvent event) {
+        keyboardShowing = event.show;
+    }
+
+    @Subscribe
+    public void onDialogChange(DialogChangeEvent event) {
+        dialogShowing = event.show;
     }
 
     @Subscribe
