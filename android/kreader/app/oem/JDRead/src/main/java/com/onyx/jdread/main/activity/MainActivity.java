@@ -17,6 +17,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.data.model.ApplicationUpdate;
+import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -68,8 +71,14 @@ import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.personal.ui.PersonalFragment;
+import com.onyx.jdread.setting.action.AutoCheckUpdateAction;
+import com.onyx.jdread.setting.action.CheckApkUpdateAction;
+import com.onyx.jdread.setting.action.DownloadPackageAction;
+import com.onyx.jdread.setting.action.OnlineCheckSystemUpdateAction;
+import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
+import com.onyx.jdread.setting.utils.UpdateUtil;
 import com.onyx.jdread.shop.ui.NetWorkErrorFragment;
 import com.onyx.jdread.util.Utils;
 
@@ -502,7 +511,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void clearNotBelongsToMyBooks() {
         ClearNotBelongsToMyBooksAction action = new ClearNotBelongsToMyBooksAction();
-        action.execute(MainBundle.getInstance(),null);
+        action.execute(MainBundle.getInstance(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -530,6 +539,8 @@ public class MainActivity extends AppCompatActivity {
         if (fragment != null) {
             fragment.keepDownload();
         }
+        AutoCheckUpdateAction autoCheckUpdateAction = new AutoCheckUpdateAction();
+        autoCheckUpdateAction.execute(SettingBundle.getInstance(), null);
     }
 
     @Subscribe
