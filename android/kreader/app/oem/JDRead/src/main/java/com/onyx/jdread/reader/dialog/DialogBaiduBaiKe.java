@@ -16,7 +16,7 @@ import com.onyx.jdread.reader.model.DictViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class DialogBaiduBaiKe extends Dialog implements ViewCallBack {
+public class DialogBaiduBaiKe extends ReaderBaseDialog implements ViewCallBack {
     private static final String TAG = ReaderNoteDialog.class.getSimpleName();
     private ActivityDictBinding binding;
     private DictViewModel dictViewModel;
