@@ -3,7 +3,8 @@
     android:shape="rectangle">
     <stroke
         android:width="@dimen/rectangle_stroke_width"
-        android:color="@color/cart_shop_settlement_disable"/>
-    <solid android:color="@android:color/white"/>
+        android:color="@color/cart_shop_settlement_disable" />
+    <solid android:color="@android:color/white" />
+    <corners android:radius="5dp" />
 
 </shape>

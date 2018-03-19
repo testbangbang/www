@@ -265,4 +265,7 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
         return super.dispatchTouchEvent(event);
     }
 
+    public BrightnessModel getBrightnessModel() {
+        return brightnessModel;
+    }
 }

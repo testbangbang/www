@@ -21,6 +21,9 @@ public class ReaderConfig {
     public static final int QUOTE_STATE_MODIFY = 1;
     public static final int QUOTE_STATE_NOT_CHANGED = 2;
     public static final int READER_TOUCH_INTERVAL_TIME = 500;
+    public static final String BOOK_SINGLE_READ_TIME = "com.onyx.action.BOOK_SINGLE_READ_TIME";
+    public static final String BOOK_MD5 = "bookMd5";
+    public static final String BOOK_READING_TIME = "readingTime";
 
     public static class Typeface {
         public static final String TYPEFACE_ONE = TYPEFACE_ROOT_PATH + "FZHei-B01.TTF";

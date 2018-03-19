@@ -1,6 +1,7 @@
 package com.onyx.jdread.reader.request;
 
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 /**
  * Created by huxiaomao on 2018/1/29.
@@ -8,10 +9,12 @@ import com.onyx.jdread.reader.data.Reader;
 
 public class CloseDocumentRequest extends ReaderBaseRequest {
     private boolean saveOption;
+    private long readingTime;
 
-    public CloseDocumentRequest(Reader reader, boolean saveOption) {
+    public CloseDocumentRequest(Reader reader, boolean saveOption,long readingTime) {
         super(reader);
         this.saveOption = saveOption;
+        this.readingTime = readingTime;
     }
 
     @Override
@@ -19,7 +22,9 @@ public class CloseDocumentRequest extends ReaderBaseRequest {
         if (getReader() == null || getReader().getReaderHelper().getDocument() == null) {
             return this;
         }
+        ReaderViewUtil.updateReadingTime(getAppContext(),getReader().getReaderHelper().getDocumentMd5(),readingTime);
         if (saveOption) {
+            getReader().getReaderHelper().getDocumentOptions().setReadProgress(readingTime);
             saveReaderOptions(getReader());
         }
         getReader().getReaderHelper().closeDocument();

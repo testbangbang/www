@@ -65,6 +65,8 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
 import com.onyx.jdread.setting.common.AssociateDialogHelper;
 import com.onyx.jdread.setting.common.ExportHelper;
 import com.onyx.jdread.setting.event.BindEmailEvent;
+import com.onyx.jdread.setting.event.BrightnessChangeEvent;
+import com.onyx.jdread.setting.event.SpeedRefreshChangeEvent;
 import com.onyx.jdread.setting.view.OnyxDigitalClock;
 import com.onyx.jdread.util.BroadcastHelper;
 import com.onyx.jdread.util.Utils;
@@ -230,7 +232,7 @@ public class ReaderActivityEventHandler {
             readerViewBack.getContext().finish();
         }else {
             if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
-                EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+                EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION_QUALITY, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
             }
             new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
         }
@@ -534,6 +536,22 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSystemBarBackToSettingEvent(SystemBarBackToSettingEvent event) {
         ManagerActivityUtils.startSettingsActivity(readerViewBack.getContext());
+    }
+
+    @Subscribe
+    public void onBrightnessChangeEvent(BrightnessChangeEvent event) {
+        if (systemBarPopupWindowModel != null && systemBarPopupWindowModel.brightnessModel != null) {
+            systemBarPopupWindowModel.brightnessModel.updateLight();
+        }
+    }
+
+    @Subscribe
+    public void onSpeedRefreshChangeEvent(SpeedRefreshChangeEvent event) {
+        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false)) {
+            EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+        } else {
+            EpdController.clearSystemUpdateModeAndScheme();
+        }
     }
 
     private void showSingleLineDialog(ShowSignMessageEvent event,Activity activity){

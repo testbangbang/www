@@ -1,5 +1,7 @@
 package com.onyx.jdread.reader.utils;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,19 +10,15 @@ import android.graphics.Rect;
 import android.view.SurfaceView;
 import android.view.View;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
-import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.reader.highlight.SelectionInfo;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
 
 public class ReaderViewUtil {
     private static final String TAG = ReaderViewUtil.class.getSimpleName();
@@ -106,5 +104,13 @@ public class ReaderViewUtil {
 
     static public String getKey(String message) {
         return FileUtils.computeMD5(message);
+    }
+
+    public static void updateReadingTime(final Context context, final String md5, final long readingTime) {
+        Intent intent = new Intent();
+        intent.setAction(ReaderConfig.BOOK_SINGLE_READ_TIME);
+        intent.putExtra(ReaderConfig.BOOK_MD5, md5);
+        intent.putExtra(ReaderConfig.BOOK_READING_TIME, readingTime);
+        context.sendBroadcast(intent);
     }
 }

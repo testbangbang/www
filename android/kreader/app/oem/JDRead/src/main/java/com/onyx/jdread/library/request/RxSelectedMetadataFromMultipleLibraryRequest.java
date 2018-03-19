@@ -87,8 +87,8 @@ public class RxSelectedMetadataFromMultipleLibraryRequest extends RxBaseDBReques
             for (DataModel dataModel : modelList) {
                 Metadata metadata = getDataProvider().findMetadataByIdString(getAppContext(), dataModel.idString.get());
                 list.add(metadata);
-                database.setTransactionSuccessful();
             }
+            database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
         }

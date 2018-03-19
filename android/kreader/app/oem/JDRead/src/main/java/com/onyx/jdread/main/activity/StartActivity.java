@@ -294,11 +294,11 @@ public class StartActivity extends AppCompatActivity {
 
     private void checkWifiState() {
         ConnectivityManager connManager = (ConnectivityManager) this.getSystemService(this.CONNECTIVITY_SERVICE);
-        NetworkInfo.State state1 = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-        if (state1 == NetworkInfo.State.CONNECTED) {
+        NetworkInfo.State state = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+        if (state == NetworkInfo.State.CONNECTED) {
             binding.startNext.setTextColor(this.getResources().getColor(R.color.normal_black));
             binding.startNext.setEnabled(true);
-        } else if (binding.startWelcome.startFirst.getVisibility() == View.GONE && NetworkInfo.State.CONNECTED != state1) {
+        } else if (binding.startWelcome.startFirst.getVisibility() == View.GONE && NetworkInfo.State.CONNECTED != state) {
             setNextUnEnabled();
         }
     }

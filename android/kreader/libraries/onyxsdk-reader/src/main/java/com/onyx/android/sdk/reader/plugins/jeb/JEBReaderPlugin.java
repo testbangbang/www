@@ -161,6 +161,7 @@ public class JEBReaderPlugin implements ReaderPlugin,
             int ww = (int)(cover.getWidth() * bitmap.getHeight()/cover.getHeight());
             rect = new Rect(Math.abs((bitmap.getWidth()-ww)/2), 0, ww, bitmap.getHeight());
         }
+        rect = new Rect(0,0,bitmap.getWidth(),bitmap.getHeight());
         BitmapUtils.scaleBitmap(cover, new Rect(0, 0, cover.getWidth(), cover.getHeight()),
                 bitmap, rect);
         cover.recycle();

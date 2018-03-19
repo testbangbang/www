@@ -17,6 +17,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ShopCartBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
@@ -73,8 +74,6 @@ public class ShopCartFragment extends BaseFragment {
     private void initView() {
         binding.shopCartRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         binding.shopCartRecycler.setPageTurningCycled(true);
-        OnyxPageDividerItemDecoration decoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
-        binding.shopCartRecycler.addItemDecoration(decoration);
         shopCartAdapter = new ShopCartAdapter();
         binding.shopCartRecycler.setAdapter(shopCartAdapter);
         paginator = binding.shopCartRecycler.getPaginator();
