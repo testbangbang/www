@@ -3,7 +3,7 @@ package com.onyx.jdread.personal.action;
 import com.onyx.android.sdk.data.model.StatisticalData;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
-import com.onyx.jdread.personal.request.local.RxStatisticalRequest;
+import com.onyx.jdread.personal.request.local.RxStatisticalSaveRequest;
 
 /**
  * Created by li on 2018/3/19.
@@ -17,7 +17,7 @@ public class SaveReadTimeAction extends BaseAction {
     }
     @Override
     public void execute(PersonalDataBundle dataBundle, final RxCallback rxCallback) {
-        RxStatisticalRequest rq = new RxStatisticalRequest(dataBundle.getDataManager(), data);
+        RxStatisticalSaveRequest rq = new RxStatisticalSaveRequest(dataBundle.getDataManager(), data);
         rq.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {

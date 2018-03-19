@@ -8,10 +8,10 @@ import com.onyx.android.sdk.data.rxrequest.data.db.RxBaseDBRequest;
  * Created by li on 2018/3/19.
  */
 
-public class RxStatisticalRequest extends RxBaseDBRequest {
+public class RxStatisticalSaveRequest extends RxBaseDBRequest {
     private StatisticalData data;
 
-    public RxStatisticalRequest(DataManager dm, StatisticalData data) {
+    public RxStatisticalSaveRequest(DataManager dm, StatisticalData data) {
         super(dm);
         this.data = data;
     }
