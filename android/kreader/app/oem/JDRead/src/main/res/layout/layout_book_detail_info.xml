@@ -47,11 +47,11 @@
                     android:layout_toRightOf="@id/book_detail_cover"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.onyx.jdread.library.view.EndEllipsizeTextView
                         android:id="@+id/book_detail_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:ellipsize="middle"
+                        android:ellipsize="end"
                         android:singleLine="true"
                         android:text="@{bookDetailViewModel.bookDetailResultBean.data.name}"
                         android:textColor="@android:color/black"

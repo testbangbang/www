@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 
@@ -51,6 +52,7 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
     private BrightnessModel brightnessModel;
     private FunctionBarAdapter functionBarAdapter;
     private ReaderSettingMenuDialogHandler readerSettingMenuDialogHandler;
+    private boolean inSystemBar = false;
 
     public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
@@ -123,11 +125,17 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Drawable drawable = readerDataHolder.getAppContext().getResources().getDrawable(R.drawable.seekbar_thumb);
                 seekBar.setThumb(drawable);
-                updateProgress(seekBar.getProgress());
-                GotoPageEvent event = new GotoPageEvent(Math.max(seekBar.getProgress() - 1, 0));
-                readerDataHolder.getEventBus().post(event);
+                gotoPage(seekBar.getProgress());
             }
         });
+    }
+
+    private void gotoPage(int progress){
+        if(readerDataHolder.getReaderViewInfo().isLoadComplete()) {
+            updateProgress(progress);
+            GotoPageEvent event = new GotoPageEvent(Math.max(progress - 1, 0));
+            readerDataHolder.getEventBus().post(event);
+        }
     }
 
     private void updateProgress(int readProgress){
@@ -243,5 +251,21 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
     @Override
     public Dialog getContent() {
         return this;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            inSystemBar = event.getY() < binding.readerSettingSystemBar.getRoot().getHeight();
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_MOVE && inSystemBar) {
+            event.setAction(MotionEvent.ACTION_UP);
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    public BrightnessModel getBrightnessModel() {
+        return brightnessModel;
     }
 }

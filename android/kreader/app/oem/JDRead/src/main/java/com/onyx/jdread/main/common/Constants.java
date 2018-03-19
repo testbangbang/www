@@ -17,6 +17,8 @@ public class Constants {
     public static final String UTF_8 = "UTF-8";
     public static final String CLIENT_VERSION = "2.6.3";
     public static final int SYSTEM_SETTING_PRESS_COUNT = 6;
+    public static final long CHECK_UPDATE_INTERVAL = 24 * 60 * 60 * 1000;
+    public static final float TOAST_LOCATION = 0.55f;
     public static boolean isUseCache = true;
     public static final String POST = "POST";
     public static final String MD_5 = "MD5";
@@ -166,4 +168,6 @@ public class Constants {
     public static final int SHOP_RANK_MODEL_TYPE_SOARING_LIST = 6;
     public static final int SHOP_RANK_MODEL_TYPE_SALE_NEW_BOOK_LIST = 2;
     public static final int RANK_TYPE_PUBLISH = 1;
+    public static final String BOOK_FORMAT_PDF = "pdf";
+    public static String KEY_DIRECTORY_CONTENT = "directory_content";
 }

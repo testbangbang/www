@@ -90,6 +90,7 @@
     <string name="read_preference">阅读偏好</string>
     <string name="my_read_preference">我的阅读偏好</string>
     <string name="gift_center">礼品中心</string>
+    <string name="gift_no_package">无可领取礼包</string>
     <string name="log_out">退出登录</string>
     <string name="login_immediately">立即登录</string>
     <string name="unsigned_in">未签到</string>
@@ -561,4 +562,5 @@
     <string name="quarter_vip">季度会员</string>
     <string name="year_vip">年度会员</string>
     <string name="empty_result">没有内容</string>
+    <string name="password_wrong">密码错误</string>
 </resources>

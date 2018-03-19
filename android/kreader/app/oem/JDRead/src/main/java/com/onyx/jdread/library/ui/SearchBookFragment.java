@@ -1,6 +1,5 @@
 package com.onyx.jdread.library.ui;
 
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -58,7 +57,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.onyx.jdread.shop.common.CloudApiContext.CategoryLevel2BookList.PAGE_SIZE_DEFAULT_VALUES;
@@ -305,28 +303,40 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     private void searchBookFromCloud(final boolean submit, final RxCallback callback) {
+        final String searchKey = searchBookModel.searchKey.get();
         SearchBookListAction booksAction = new SearchBookListAction("", 1,
                 CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES,
                 CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES,
-                searchBookModel.searchKey.get(), CloudApiContext.SearchBook.FILTER_DEFAULT);
+                searchKey, CloudApiContext.SearchBook.FILTER_DEFAULT);
         booksAction.setPageSize(getPageSize(submit));
         booksAction.setMapToDataModel(true);
         booksAction.setLoadCover(submit);
+        booksAction.setShowLoadingDialog(submit);
         booksAction.execute(ShopDataBundle.getInstance(), new RxCallback<SearchBookListAction>() {
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                showLoadingDialog(ResManager.getString(R.string.loading));
+            }
+
             @Override
             public void onNext(SearchBookListAction action) {
                 if (submit) {
                     LibraryDataBundle.getInstance().getSearchBookModel().searchResult.addAll(action.getDataModelList());
                     searchResultAdapter.notifyDataSetChanged();
                 } else {
-                    LibraryDataBundle.getInstance().getSearchBookModel().searchHint.addAll(action.getDataModelList());
-                    searchHintAdapter.notifyDataSetChanged();
+                    if (StringUtils.getBlankStr(searchKey).equals(getSearchBookModel().searchKey.get())) {
+                        LibraryDataBundle.getInstance().getSearchBookModel().searchHint.addAll(action.getDataModelList());
+                        searchHintAdapter.notifyDataSetChanged();
+                    }
                 }
                 RxCallback.invokeNext(callback, action);
             }
 
             @Override
             public void onFinally() {
+                hideLoadingDialog();
                 invokeFinally(callback);
             }
         });

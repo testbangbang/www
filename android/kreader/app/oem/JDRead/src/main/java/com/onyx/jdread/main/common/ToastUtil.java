@@ -7,6 +7,8 @@ import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -46,42 +48,36 @@ public class ToastUtil {
             return;
         }
         if (toast == null) {
-            toast = Toast.makeText(appContext.getApplicationContext(), message, Toast.LENGTH_SHORT);
-            View view = toast.getView();
-            setBackground(view, getDrawable(appContext, R.drawable.rectangle_stroke));
-            TextView textView = (TextView) view.findViewById(android.R.id.message);
-            textView.setHeight(ResManager.getDimensionPixelSize(R.dimen.toast_height));
-            textView.setEllipsize(TextUtils.TruncateAt.END);
-            textView.setMaxLines(20);
-            textView.setTextColor(Color.BLACK);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-            textView.setGravity(Gravity.CENTER);
-            textView.setPadding(left, 0, right, 0);
-            textView.setShadowLayer(radius, dx, dy, Color.TRANSPARENT);
-            toast.setGravity(Gravity.TOP, 0, ResManager.getDimensionPixelSize(R.dimen.toast_offset_y));
-            toast.show();
-        } else {
-            if (message.equals(oldMsg)) {
-                if (!toast.getView().isShown()) {
-                    setGravity(offset);
-                    toast.show();
-                }
-            } else {
-                oldMsg = message;
-                toast.setText(message);
-                setGravity(offset);
-                toast.show();
-            }
+            toast = Toast.makeText(appContext.getApplicationContext(), "", Toast.LENGTH_SHORT);
         }
+        showToastMessage(appContext, message, toast);
     }
 
-    private static void setGravity(int offset) {
-        if (offset != 0) {
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, ResManager.getDimensionPixelSize(R.dimen.toast_offset_y));
-        } else {
-            toast.setGravity(ResManager.getInteger(R.integer.default_toast_gravity),
-                    0, ResManager.getDimens(R.dimen.default_toast_y_offset));
+    private static void showToastMessage(Context appContext, String message, Toast toast) {
+        View view = toast.getView();
+        setBackground(view, getDrawable(appContext, R.drawable.rectangle_stroke));
+        TextView textView = (TextView) view.findViewById(android.R.id.message);
+        textView.setHeight(ResManager.getDimensionPixelSize(R.dimen.toast_height));
+        textView.setEllipsize(TextUtils.TruncateAt.END);
+        textView.setMaxLines(20);
+        textView.setTextColor(Color.BLACK);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        textView.setGravity(Gravity.CENTER);
+        textView.setPadding(left, 0, right, 0);
+        textView.setShadowLayer(radius, dx, dy, Color.TRANSPARENT);
+        toast.setText(message);
+        DisplayMetrics displayMetrics = appContext.getResources().getDisplayMetrics();
+        int height = displayMetrics.heightPixels;
+        toast.setGravity(Gravity.TOP, 0, (int) (height * Constants.TOAST_LOCATION));
+        toast.show();
+    }
+
+    public static void showToastNoReuse(Context appContext, String message) {
+        if (TextUtils.isEmpty(message)) {
+            return;
         }
+        Toast toast = Toast.makeText(appContext.getApplicationContext(), "", Toast.LENGTH_SHORT);
+        showToastMessage(appContext, message, toast);
     }
 
     public static void showToast(int resId, Object... formatArgs) {

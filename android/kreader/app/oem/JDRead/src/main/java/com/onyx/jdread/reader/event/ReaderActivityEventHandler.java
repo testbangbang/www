@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.event;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -15,6 +16,11 @@ import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
+import com.onyx.jdread.main.event.SystemBarClickedEvent;
+import com.onyx.jdread.main.view.SystemBarPopupWindow;
+import com.onyx.jdread.manager.ManagerActivityUtils;
+import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.personal.dialog.ExportDialog;
 import com.onyx.jdread.personal.event.ExportToEmailEvent;
 import com.onyx.jdread.personal.event.ExportToImpressionEvent;
@@ -35,6 +41,7 @@ import com.onyx.jdread.reader.actions.UpdateViewPageAction;
 import com.onyx.jdread.reader.catalog.dialog.ReaderBookInfoDialog;
 import com.onyx.jdread.reader.catalog.event.AnnotationItemClickEvent;
 import com.onyx.jdread.reader.catalog.event.ExportReadNoteEvent;
+import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
@@ -53,10 +60,14 @@ import com.onyx.jdread.reader.menu.event.SearchContentEvent;
 import com.onyx.jdread.reader.menu.event.ToggleBookmarkSuccessEvent;
 import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.model.ReaderViewModel;
+import com.onyx.jdread.reader.receiver.ReaderScreenStateReceive;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
 import com.onyx.jdread.setting.common.AssociateDialogHelper;
 import com.onyx.jdread.setting.common.ExportHelper;
 import com.onyx.jdread.setting.event.BindEmailEvent;
+import com.onyx.jdread.setting.event.BrightnessChangeEvent;
+import com.onyx.jdread.setting.event.SpeedRefreshChangeEvent;
+import com.onyx.jdread.setting.view.OnyxDigitalClock;
 import com.onyx.jdread.util.BroadcastHelper;
 import com.onyx.jdread.util.Utils;
 
@@ -75,6 +86,8 @@ public class ReaderActivityEventHandler {
     private CloseDocumentDialog closeDocumentDialog;
     private ReaderBookInfoDialog readerBookInfoDialog;
     private ExportHelper exportHelper;
+    private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
+    private ReaderScreenStateReceive readerScreenStateReceive;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -87,12 +100,32 @@ public class ReaderActivityEventHandler {
         if (!readerViewModel.getEventBus().isRegistered(this)) {
             readerViewModel.getEventBus().register(this);
         }
+        registerScreenReceive();
+    }
+
+    private void registerScreenReceive() {
+        readerScreenStateReceive = new ReaderScreenStateReceive(readerViewModel.getEventBus());
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ScreenStateReceive.SCREEN_ON);
+        intentFilter.addAction(ScreenStateReceive.SCREEN_OFF);
+        readerViewModel.getReaderDataHolder().getAppContext().registerReceiver(readerScreenStateReceive, intentFilter);
     }
 
     public void unregisterListener() {
         if (readerViewModel.getEventBus().isRegistered(this)) {
             readerViewModel.getEventBus().unregister(this);
         }
+        readerViewModel.getReaderDataHolder().getAppContext().unregisterReceiver(readerScreenStateReceive);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScreenOnEvent(ScreenOnEvent event){
+        readerViewModel.getReaderDataHolder().setTimestamp();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScreenOffEvent(ScreenOffEvent event){
+        readerViewModel.getReaderDataHolder().updateReadingTime();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -199,7 +232,7 @@ public class ReaderActivityEventHandler {
             readerViewBack.getContext().finish();
         }else {
             if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
-                EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+                EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION_QUALITY, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
             }
             new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
         }
@@ -441,6 +474,9 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenDocumentSuccessEvent(OpenDocumentSuccessEvent event) {
         readerViewModel.getReaderDataHolder().setDocumentOpenState();
+        if(readerViewModel.getReaderDataHolder().getDocumentInfo().getOpenType() == DocumentInfo.OPEN_BOOK_CATALOG){
+            readerViewModel.getReaderDataHolder().getEventBus().post(new ShowReaderCatalogMenuEvent());
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -485,6 +521,39 @@ public class ReaderActivityEventHandler {
         showSingleLineDialog(event,activity);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSystemBarClickedEvent(SystemBarClickedEvent event) {
+        if (systemBarPopupWindowModel == null) {
+            systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
+        } else {
+            systemBarPopupWindowModel.brightnessModel.updateLight();
+            systemBarPopupWindowModel.updateRefreshMode();
+        }
+        SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(readerViewBack.getContext(), systemBarPopupWindowModel);
+        systemBarPopupWindow.show(readerSettingMenuDialog.findViewById(R.id.reader_setting_system_bar));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSystemBarBackToSettingEvent(SystemBarBackToSettingEvent event) {
+        ManagerActivityUtils.startSettingsActivity(readerViewBack.getContext());
+    }
+
+    @Subscribe
+    public void onBrightnessChangeEvent(BrightnessChangeEvent event) {
+        if (systemBarPopupWindowModel != null && systemBarPopupWindowModel.brightnessModel != null) {
+            systemBarPopupWindowModel.brightnessModel.updateLight();
+        }
+    }
+
+    @Subscribe
+    public void onSpeedRefreshChangeEvent(SpeedRefreshChangeEvent event) {
+        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false)) {
+            EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+        } else {
+            EpdController.clearSystemUpdateModeAndScheme();
+        }
+    }
+
     private void showSingleLineDialog(ShowSignMessageEvent event,Activity activity){
         SingleLineDialog singleLineDialog = new SingleLineDialog(activity, event.signNoteInfo.note,
                 readerViewModel.getEventBus(),event.signNoteInfo.rect,
@@ -492,5 +561,14 @@ public class ReaderActivityEventHandler {
                 readerViewModel.getReaderDataHolder().getReaderTouchHelper().getContentWidth());
         singleLineDialog.show();
         singleLineDialog.setCanceledOnTouchOutside(true);
+    }
+
+    public void updateTimeFormat() {
+        if (readerSettingMenuDialog != null && readerSettingMenuDialog.findViewById(R.id.reader_setting_system_bar) != null) {
+            OnyxDigitalClock onyxDigitalClock = (OnyxDigitalClock) readerSettingMenuDialog.findViewById(R.id.reader_setting_system_bar).findViewById(R.id.onyx_digital_clock);
+            if (onyxDigitalClock != null) {
+                onyxDigitalClock.setFormat();
+            }
+        }
     }
 }

@@ -67,6 +67,7 @@ public class CategoryBookListFragment extends BaseFragment {
     private int levelTwoPosition;
     private int catLevel;
     private int catTwoId;
+    private int filter = CloudApiContext.SearchBook.FILTER_DEFAULT;
 
     @Nullable
     @Override
@@ -114,9 +115,21 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void getBooksData(String catid, int currentPage, int sortKey, int sortType) {
-        int filter = getFilter();
         final SearchBookListAction booksAction = new SearchBookListAction(catid, currentPage, sortKey, sortType, "", filter);
         booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                showLoadingDialog(ResManager.getString(R.string.loading));
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                hideLoadingDialog();
+            }
+
             @Override
             public void onNext(SearchBookListAction action) {
                 BookModelBooksResultBean booksResultBean = action.getBooksResultBean();
@@ -150,7 +163,6 @@ public class CategoryBookListFragment extends BaseFragment {
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
         if (CollectionUtils.getSize(allCategoryItems) > levelTwoPosition) {
             List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelThreeDatas = allCategoryItems.get(levelTwoPosition).sub_category;
-            resetLevelThreeData(levelThreeDatas);
             getCategoryBookListViewModel().setCategoryItems(levelThreeDatas);
         }
     }
@@ -206,6 +218,7 @@ public class CategoryBookListFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 categoryBookListBinding.subjectListShowFree.setChecked(false);
+                saveFilterValue(categoryBookListBinding.subjectListShowVip.isChecked() ? CloudApiContext.SearchBook.FILTER_VIP : CloudApiContext.SearchBook.FILTER_DEFAULT);
                 getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
                 showOrCloseAllCatButton();
             }
@@ -214,6 +227,7 @@ public class CategoryBookListFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 categoryBookListBinding.subjectListShowVip.setChecked(false);
+                saveFilterValue(categoryBookListBinding.subjectListShowFree.isChecked() ? CloudApiContext.SearchBook.FILTER_FREE : CloudApiContext.SearchBook.FILTER_DEFAULT);
                 getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
                 showOrCloseAllCatButton();
             }
@@ -305,6 +319,7 @@ public class CategoryBookListFragment extends BaseFragment {
     public void onTopBackEvent(TopBackEvent event) {
         if (getViewEventCallBack() != null) {
             unsetContentPage();
+            resetLevelThreeData(getCategoryBookListViewModel().getCategoryItems());
             getViewEventCallBack().viewBack();
         }
     }
@@ -447,9 +462,17 @@ public class CategoryBookListFragment extends BaseFragment {
         getBundle().putInt(CloudApiContext.SearchBook.SORT_TYPE, sortType);
     }
 
+    private void saveFilterValue(int filter) {
+        this.filter  = filter;
+        getBundle().putInt(CloudApiContext.SearchBook.FILTER, filter);
+    }
+
     private void restoreSortKeyAndType() {
         sortkey = getBundle().getInt(CloudApiContext.SearchBook.SORT_KEY, sortkey);
         sortType = getBundle().getInt(CloudApiContext.SearchBook.SORT_TYPE, sortType);
+        filter = getBundle().getInt(CloudApiContext.SearchBook.FILTER, CloudApiContext.SearchBook.FILTER_DEFAULT);
+        categoryBookListBinding.subjectListShowVip.setChecked(filter == CloudApiContext.SearchBook.FILTER_VIP);
+        categoryBookListBinding.subjectListShowFree.setChecked(filter == CloudApiContext.SearchBook.FILTER_FREE);
     }
 
     @Override

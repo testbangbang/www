@@ -1,10 +1,12 @@
 package com.onyx.jdread.reader.request;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.reflow.ImageReflowSettings;
 import com.onyx.android.sdk.rx.RxRequest;
+import com.onyx.jdread.reader.common.ReaderPageInfoFormat;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.data.SettingInfo;
@@ -105,5 +107,16 @@ public abstract class ReaderBaseRequest extends RxRequest {
                 reader.getDocumentInfo().getBookPath(),
                 reader.getReaderHelper().getDocumentMd5(),
                 reader.getReaderHelper().getDocumentOptions().toJSONString());
+        saveToReadProgress();
+    }
+
+    private void saveToReadProgress(){
+        Metadata metadata = ContentSdkDataUtils.getDataProvider().findMetadataByPath(reader.getReaderHelper().getContext(), reader.getDocumentInfo().getBookPath());
+        if(metadata != null) {
+            String readProgress = ReaderPageInfoFormat.formatReadProgress(reader.getReaderHelper().getNavigator().
+                    getProgress(getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition()));
+            metadata.setProgress(readProgress);
+            ContentSdkDataUtils.getDataProvider().saveMetadata(reader.getReaderHelper().getContext(), metadata);
+        }
     }
 }

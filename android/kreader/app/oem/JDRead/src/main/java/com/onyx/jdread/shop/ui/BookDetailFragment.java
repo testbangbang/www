@@ -101,6 +101,7 @@ import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.BookInfoDialog;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 import com.onyx.jdread.shop.view.SubjectBookItemSpaceItemDecoration;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -134,6 +135,9 @@ public class BookDetailFragment extends BaseFragment {
     private BookBatchDownloadViewModel batchDownloadViewModel;
     private String start_chapter;
     private boolean hasDoLogin;
+    private boolean bookDetailLoadingFinished;
+    private boolean metadataLoadingFinished;
+    private boolean isViewDirectoryTryDownload;
 
     @Nullable
     @Override
@@ -146,9 +150,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void initLibrary() {
-        if (!getEventBus().isRegistered(this)) {
-            getEventBus().register(this);
-        }
+        Utils.ensureRegister(getEventBus(), this);
     }
 
     private void initData() {
@@ -177,7 +179,27 @@ public class BookDetailFragment extends BaseFragment {
                     }
                 }
             }
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                metadataLoadingFinished = false;
+                showLoadingDialog(ResManager.getString(R.string.loading));
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                metadataLoadingFinished = true;
+                safeCloseLoadingDialog();
+            }
         });
+    }
+
+    public void safeCloseLoadingDialog(){
+        if (bookDetailLoadingFinished && metadataLoadingFinished) {
+            hideLoadingDialog();
+        }
     }
 
     private void cleanData() {
@@ -226,7 +248,7 @@ public class BookDetailFragment extends BaseFragment {
     @Override
     public void onStop() {
         super.onStop();
-        getEventBus().unregister(this);
+        Utils.ensureUnregister(getEventBus(), this);
     }
 
     private BookDetailViewModel getBookDetailViewModel() {
@@ -258,7 +280,9 @@ public class BookDetailFragment extends BaseFragment {
                         bookDetailBean = bookDetailResultBean.data;
                     }
 
-                    queryMetadata();
+                    if (!shouldDownloadWholeBook) {
+                        queryMetadata();
+                    }
 
                     if (!ViewHelper.isCanNowRead(bookDetailBean)) {
                         hideNowReadButton();
@@ -296,6 +320,23 @@ public class BookDetailFragment extends BaseFragment {
                         smoothDownload();
                     }
                 }
+            }
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                bookDetailLoadingFinished = false;
+                showLoadingDialog(ResManager.getString(R.string.loading));
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                if (shouldDownloadWholeBook) {
+                    metadataLoadingFinished = true;
+                }
+                bookDetailLoadingFinished = true;
+                safeCloseLoadingDialog();
             }
         });
     }
@@ -354,11 +395,27 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewDirectoryEvent(ViewDirectoryEvent event) {
-        if (fileIsExists(localPath)) {
-            openBook(localPath, bookDetailBean);
-        } else {
-            ToastUtil.showToast(R.string.the_book_not_download);
+        if (JDReadApplication.getInstance().getLogin()) {
+            if (DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+                openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
+                return;
+            }
         }
+        if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+            openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
+        } else if (bookDetailBean != null) {
+            if (ViewHelper.isCanNowRead(bookDetailBean)){
+                tryDownload(bookDetailBean, true);
+            } else if (!StringUtils.isNullOrEmpty(bookDetailBean.format) && Constants.BOOK_FORMAT_PDF.equals(bookDetailBean.format.trim()) ){
+                goViewDirectoryFragment(bookDetailBean.catalog);
+            }
+        }
+    }
+
+    private void goViewDirectoryFragment(String content) {
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.KEY_DIRECTORY_CONTENT, content);
+        getViewEventCallBack().gotoView(ViewDirectoryFragment.class.getName(), bundle);
     }
 
     private void initButton() {
@@ -457,10 +514,7 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookDetailReadNowEvent(BookDetailReadNowEvent event) {
         if (bookDetailBean != null) {
-            if (bookDetailBean.bookExtraInfoBean == null) {
-                bookDetailBean.bookExtraInfoBean = new BookExtraInfoBean();
-            }
-            tryDownload(bookDetailBean);
+            tryDownload(bookDetailBean, false);
         }
     }
 
@@ -519,7 +573,9 @@ public class BookDetailFragment extends BaseFragment {
                     DownLoadHelper.stopDownloadingTask(task.getTag());
                 }
             } else {
-                upDataButtonDown(nowReadButton, false, bookDetailBean.bookExtraInfoBean.downLoadState);
+                if (!isViewDirectoryTryDownload) {
+                    upDataButtonDown(nowReadButton, false, bookDetailBean.bookExtraInfoBean.downLoadState);
+                }
             }
         }
     }
@@ -568,8 +624,8 @@ public class BookDetailFragment extends BaseFragment {
             button.setText(percentage + "%" + ResManager.getString(R.string.book_detail_downloading));
         } else if (DownLoadHelper.isDownloaded(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_button_now_read));
-            ToastUtil.showToast(ResManager.getString(R.string.download_finished));
-        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState)) {
+            ToastUtil.showToastNoReuse(getContext(), ResManager.getString(R.string.download_finished));
+        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState) ) {
             button.setText(ResManager.getString(R.string.book_detail_tip_download_pause));
         }
     }
@@ -582,7 +638,7 @@ public class BookDetailFragment extends BaseFragment {
         }
 
         if (isWholeBookAlreadyDownload()) {
-            openBook(localPath, bookDetailBean);
+            openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK);
             return;
         }
 
@@ -673,7 +729,7 @@ public class BookDetailFragment extends BaseFragment {
         });
     }
 
-    private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean) {
+    private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean, int openType) {
         DocumentInfo documentInfo = new DocumentInfo();
         DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
         if (detailBean.bookExtraInfoBean != null && detailBean.bookExtraInfoBean.isWholeBookDownLoad) {
@@ -681,6 +737,7 @@ public class BookDetailFragment extends BaseFragment {
             securityInfo.setRandom(detailBean.bookExtraInfoBean.random);
         }
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
+        documentInfo.setOpenType(openType);
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
         documentInfo.setBookName(detailBean.name);
@@ -738,12 +795,15 @@ public class BookDetailFragment extends BaseFragment {
         getViewEventCallBack().gotoView(ShopCartFragment.class.getName());
     }
 
-    private void tryDownload(BookDetailResultBean.DetailBean bookDetailBean) {
+    private void tryDownload(BookDetailResultBean.DetailBean bookDetailBean, boolean isViewDirectory) {
         if (bookDetailBean == null) {
             return;
         }
+        if (bookDetailBean.bookExtraInfoBean == null) {
+            bookDetailBean.bookExtraInfoBean = new BookExtraInfoBean();
+        }
         if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
-            openBook(localPath, bookDetailBean);
+            openBook(localPath, bookDetailBean, isViewDirectory ? DocumentInfo.OPEN_BOOK_CATALOG : DocumentInfo.OPEN_BOOK);
             return;
         }
 
@@ -759,15 +819,17 @@ public class BookDetailFragment extends BaseFragment {
             ToastUtil.showToast(JDReadApplication.getInstance(), ResManager.getString(R.string.book_detail_downloading));
             return;
         }
-        nowReadButton.setEnabled(false);
-        buyBookButton.setEnabled(false);
-        nowReadButton.setText(ResManager.getString(R.string.book_detail_downloading));
         bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = false;
-        download(bookDetailBean);
-        ToastUtil.showToast(JDReadApplication.getInstance(), bookDetailBean.name + ResManager.getString(R.string.book_detail_tip_book_add_to_bookself));
+        download(bookDetailBean, isViewDirectory);
+        if (!isViewDirectory) {
+            nowReadButton.setEnabled(false);
+            buyBookButton.setEnabled(false);
+            nowReadButton.setText(ResManager.getString(R.string.book_detail_downloading));
+            ToastUtil.showToast(JDReadApplication.getInstance(), bookDetailBean.name + ResManager.getString(R.string.book_detail_tip_book_add_to_bookself));
+        }
     }
 
-    private void download(final BookDetailResultBean.DetailBean bookDetailBean) {
+    private void download(final BookDetailResultBean.DetailBean bookDetailBean, final boolean isViewDirectory) {
         final String tryDownLoadUrl = bookDetailBean.try_url;
         if (StringUtils.isNullOrEmpty(tryDownLoadUrl)) {
             ToastUtil.showToast(getContext(), ResManager.getString(R.string.empty_url));
@@ -779,7 +841,7 @@ public class BookDetailFragment extends BaseFragment {
             fileDeleteAction.execute(getShopDataBundle(), new RxCallback() {
                 @Override
                 public void onNext(Object o) {
-                    startTryDownload(bookDetailBean, tryDownLoadUrl, localPath);
+                    startTryDownload(bookDetailBean, tryDownLoadUrl, localPath, isViewDirectory);
                 }
 
                 @Override
@@ -789,11 +851,11 @@ public class BookDetailFragment extends BaseFragment {
                 }
             });
         } else {
-            startTryDownload(bookDetailBean, tryDownLoadUrl, localPath);
+            startTryDownload(bookDetailBean, tryDownLoadUrl, localPath, isViewDirectory);
         }
     }
 
-    private void startTryDownload(BookDetailResultBean.DetailBean bookDetailBean, String tryDownLoadUrl, String localPath) {
+    private void startTryDownload(final BookDetailResultBean.DetailBean bookDetailBean, String tryDownLoadUrl, String localPath, final boolean isViewDirectory) {
         String downloadTag = bookDetailBean.ebook_id + "";
         bookDetailBean.bookExtraInfoBean.downLoadTaskTag = downloadTag;
         bookDetailBean.bookExtraInfoBean.localPath = localPath;
@@ -810,6 +872,25 @@ public class BookDetailFragment extends BaseFragment {
                 super.onError(throwable);
                 ToastUtil.showToast(ResManager.getString(R.string.download_fail));
                 upDataButtonDown(nowReadButton, true, FileDownloadStatus.error);
+            }
+
+            @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                if (isViewDirectory) {
+                    isViewDirectoryTryDownload = true;
+                    showLoadingDialog(ResManager.getString(R.string.book_detail_downloading));
+                }
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                if (isViewDirectory) {
+                    isViewDirectoryTryDownload = false;
+                    hideLoadingDialog();
+                }
+                tryDownload(bookDetailBean, true);
             }
         });
     }
