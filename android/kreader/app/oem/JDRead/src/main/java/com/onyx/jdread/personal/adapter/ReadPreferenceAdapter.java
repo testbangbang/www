@@ -1,16 +1,22 @@
 package com.onyx.jdread.personal.adapter;
 
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemReadPreferenceBinding;
+import com.onyx.jdread.main.activity.StartActivity;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
+import com.onyx.jdread.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +71,12 @@ public class ReadPreferenceAdapter extends PageRecyclerView.PageAdapter implemen
 
     @Override
     public void onClick(View v) {
+        ConnectivityManager connManager = (ConnectivityManager) JDReadApplication.getInstance().getSystemService(JDReadApplication.getInstance().CONNECTIVITY_SERVICE);
+        NetworkInfo.State state1 = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+        if (NetworkInfo.State.CONNECTED != state1) {
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+            return;
+        }
         Object tag = v.getTag();
         if (tag == null) {
             return;
