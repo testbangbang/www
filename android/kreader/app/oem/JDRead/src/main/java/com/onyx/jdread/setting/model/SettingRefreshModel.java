@@ -44,4 +44,8 @@ public class SettingRefreshModel {
     public boolean isSpeedRefresh() {
         return isSpeedRefresh;
     }
+
+    public void setSpeedRefresh(boolean speedRefresh) {
+        isSpeedRefresh = speedRefresh;
+    }
 }
