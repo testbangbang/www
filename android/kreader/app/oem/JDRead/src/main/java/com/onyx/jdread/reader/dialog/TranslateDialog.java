@@ -22,7 +22,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by huxiaomao on 2018/1/22.
  */
 
-public class TranslateDialog extends Dialog implements ViewCallBack {
+public class TranslateDialog extends ReaderBaseDialog implements ViewCallBack {
     private static final String TAG = ReaderNoteDialog.class.getSimpleName();
     private ActivityTranslateBinding binding;
     private TranslateViewModel translateViewModel;

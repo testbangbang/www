@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -22,6 +23,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
@@ -90,6 +92,9 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
     public void show() {
         super.show();
         DeviceUtils.adjustFullScreenStatus(this.getWindow(),true);
+        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false)) {
+            EpdController.applyApplicationFastMode(getClass().getSimpleName(), false, false);
+        }
     }
 
     private void initView() {
@@ -246,6 +251,9 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
     public void dismiss() {
         readerSettingMenuDialogHandler.unregisterListener();
         super.dismiss();
+        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false)) {
+            EpdController.applyApplicationFastMode(getClass().getSimpleName(), true, false);
+        }
     }
 
     @Override

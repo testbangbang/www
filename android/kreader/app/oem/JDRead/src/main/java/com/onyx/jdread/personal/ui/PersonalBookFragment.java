@@ -22,6 +22,7 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -521,6 +522,7 @@ public class PersonalBookFragment extends BaseFragment {
 
     private void setData(List<PersonalBookBean> data) {
         personalBookAdapter.setData(data);
+        binding.emptyPrompt.setVisibility(CollectionUtils.isNullOrEmpty(data) ? View.VISIBLE : View.GONE);
         binding.personalBookRecycler.resize(personalBookAdapter.getRowCount(),
                 personalBookAdapter.getColumnCount(), data.size());
         int visibleCurrentPage = paginator.getVisibleCurrentPage();

@@ -20,7 +20,7 @@ import com.onyx.jdread.R;
 /**
  * @author joy
  */
-public class DialogPassword extends Dialog {
+public class DialogPassword extends ReaderBaseDialog {
     public interface OnPasswordEnteredListener {
         void onPasswordEntered(boolean success, String password);
     }

@@ -465,7 +465,7 @@
     <string name="quit_wifi_pass_book">已退出WiFi传书</string>
     <string name="wifi_pass_book_failed">传书失败</string>
     <string name="wifi_pass_book_failed_network_exception">网络异常,传书失败</string>
-    <string name="empty_library_prompt">暂无图书, 请去 我的图书 下载</string>
+    <string name="empty_library_prompt">暂无图书</string>
     <string name="forgot_psw">忘记密码</string>
     <string name="dialog_pay_order_book_price">价格: %1$d阅豆</string>
     <string name="dialog_pay_order_cur_balance">当前余额: %1$d阅豆/%2$d代金券</string>

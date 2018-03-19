@@ -200,9 +200,6 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
 
     @Override
     protected void onDestroy() {
-        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
-            EpdController.clearSystemUpdateModeAndScheme();
-        }
         readerActivityEventHandler.unregisterListener();
         MainBundle.getInstance().getSystemBarModel().setIsShow(true);
         super.onDestroy();
@@ -212,6 +209,9 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     protected void onResume() {
         addSurfaceViewCallback();
         super.onResume();
+        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
+            EpdController.applyApplicationFastMode(getClass().getSimpleName(), true, true);
+        }
         DeviceUtils.setFullScreenOnResume(this,true);
         if (readerActivityEventHandler != null) {
             readerActivityEventHandler.updateTimeFormat();
@@ -221,6 +221,9 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     @Override
     protected void onPause() {
         super.onPause();
+        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
+            EpdController.applyApplicationFastMode(getClass().getSimpleName(), false, true);
+        }
         removeSurfaceViewCallback();
     }
 
