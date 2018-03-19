@@ -68,7 +68,10 @@ public class RxRequestGetChaptersContent extends RxBaseCloudRequest {
                         if (!FileUtils.fileExist(path)) {
                             FileUtils.mkdirs(path);
                         }
-                        FileUtils.saveContentToFile(JSONObjectParseUtils.toJson(dataBean), new File(path, dataBean.id));
+                        File file = new File(path, dataBean.id);
+                        if (!FileUtils.fileExist(path)) {
+                            FileUtils.saveContentToFile(JSONObjectParseUtils.toJson(dataBean), file);
+                        }
                     }
                 }
             } else {
