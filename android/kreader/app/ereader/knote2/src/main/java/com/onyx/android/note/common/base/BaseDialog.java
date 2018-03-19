@@ -4,8 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.google.common.eventbus.EventBus;
 import com.onyx.android.note.event.DialogChangeEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by lxm on 2018/1/30.
