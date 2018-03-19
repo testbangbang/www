@@ -44,6 +44,8 @@ public class HomeworkSubmitRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         benchmarkStart();
+        // TODO: 2018/3/19
+//        uploadFile2Oss();
         response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).submitAnswers(publicHomeworkId, body, getFilePathMap()));
         Debug.d(getClass(), "submitAnswers:" + benchmarkEnd());
         if (isSuccess()) {
@@ -60,6 +62,30 @@ public class HomeworkSubmitRequest extends BaseCloudRequest {
             DBDataProvider.saveHomework(model);
         }
         clearFileCache();
+    }
+
+    private void uploadFile2Oss() {
+        try {
+            List<HomeworkSubmitAnswer> anwsers = body.anwsers;
+            if (CollectionUtils.isNullOrEmpty(anwsers)) {
+                return;
+            }
+
+            UploadFile2OssRequest uploadFile2OssRequest;
+            for (HomeworkSubmitAnswer anwser : body.anwsers) {
+                if (CollectionUtils.isNullOrEmpty(anwser.filePaths)) {
+                    continue;
+                }
+                anwser.attachmentUrl = new ArrayList<>();
+                for (String filePath : anwser.filePaths) {
+                    uploadFile2OssRequest = new UploadFile2OssRequest(filePath);
+                    uploadFile2OssRequest.execute(null);
+                    anwser.attachmentUrl.add(uploadFile2OssRequest.uploadFileUrl);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void clearFileCache() {
