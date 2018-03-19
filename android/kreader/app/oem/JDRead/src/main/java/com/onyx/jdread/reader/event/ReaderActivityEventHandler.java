@@ -60,6 +60,7 @@ import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.receiver.ReaderScreenStateReceive;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 import com.onyx.jdread.setting.common.AssociateDialogHelper;
 import com.onyx.jdread.setting.common.ExportHelper;
 import com.onyx.jdread.setting.event.BindEmailEvent;
@@ -229,9 +230,7 @@ public class ReaderActivityEventHandler {
             startMainActivity();
             readerViewBack.getContext().finish();
         }else {
-            if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
-                EpdController.applyApplicationFastMode(getClass().getSimpleName(), true, true);
-            }
+            ReaderViewUtil.applyFastModeByConfig();
             new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
         }
     }

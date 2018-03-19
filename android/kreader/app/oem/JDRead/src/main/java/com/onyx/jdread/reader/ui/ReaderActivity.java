@@ -1,7 +1,5 @@
 package com.onyx.jdread.reader.ui;
 
-import android.app.Activity;
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,14 +11,10 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.api.device.epd.UpdateMode;
-import com.onyx.android.sdk.api.device.epd.UpdateScheme;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityReaderBinding;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.OpenDocumentAction;
@@ -32,6 +26,7 @@ import com.onyx.jdread.reader.data.PageTurningDirection;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.model.SelectMenuModel;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -209,9 +204,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     protected void onResume() {
         addSurfaceViewCallback();
         super.onResume();
-        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
-            EpdController.applyApplicationFastMode(getClass().getSimpleName(), true, true);
-        }
+        ReaderViewUtil.applyFastModeByConfig();
         DeviceUtils.setFullScreenOnResume(this,true);
         if (readerActivityEventHandler != null) {
             readerActivityEventHandler.updateTimeFormat();
@@ -221,9 +214,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     @Override
     protected void onPause() {
         super.onPause();
-        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
-            EpdController.applyApplicationFastMode(getClass().getSimpleName(), false, true);
-        }
+        ReaderViewUtil.clearFastModeByConfig();
         removeSurfaceViewCallback();
     }
 
