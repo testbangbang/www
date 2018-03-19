@@ -8,13 +8,15 @@ import com.onyx.jdread.reader.utils.ReaderViewUtil;
  */
 
 public class CloseDocumentRequest extends ReaderBaseRequest {
+    private long startTime;
     private boolean saveOption;
     private long readingTime;
 
-    public CloseDocumentRequest(Reader reader, boolean saveOption,long readingTime) {
+    public CloseDocumentRequest(Reader reader, boolean saveOption, long readingTime, long startTime) {
         super(reader);
         this.saveOption = saveOption;
         this.readingTime = readingTime;
+        this.startTime = startTime;
     }
 
     @Override
@@ -22,7 +24,8 @@ public class CloseDocumentRequest extends ReaderBaseRequest {
         if (getReader() == null || getReader().getReaderHelper().getDocument() == null) {
             return this;
         }
-        ReaderViewUtil.updateReadingTime(getAppContext(),getReader().getReaderHelper().getDocumentMd5(),readingTime);
+        ReaderViewUtil.updateReadingTime(getAppContext(),getReader().getReaderHelper().getDocumentMd5(),
+                readingTime,startTime, getReader().getReaderHelper().getDocumentInfo().getCloudId());
         if (saveOption) {
             getReader().getReaderHelper().getDocumentOptions().setReadProgress(readingTime);
             saveReaderOptions(getReader());

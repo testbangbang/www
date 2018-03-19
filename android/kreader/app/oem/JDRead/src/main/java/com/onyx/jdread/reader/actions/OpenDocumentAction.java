@@ -34,6 +34,7 @@ public class OpenDocumentAction extends BaseReaderAction {
     public void execute(ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         this.readerDataHolder = readerDataHolder;
         this.readerDataHolder.setTimestamp();
+        this.readerDataHolder.setStartTimes();
         loadDocumentOptions(readerDataHolder);
     }
 

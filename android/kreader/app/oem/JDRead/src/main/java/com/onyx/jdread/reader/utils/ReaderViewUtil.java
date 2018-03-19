@@ -106,11 +106,13 @@ public class ReaderViewUtil {
         return FileUtils.computeMD5(message);
     }
 
-    public static void updateReadingTime(final Context context, final String md5, final long readingTime) {
+    public static void updateReadingTime(final Context context, final String md5, final long readingTime, long startTime, long cloudId) {
         Intent intent = new Intent();
         intent.setAction(ReaderConfig.BOOK_SINGLE_READ_TIME);
         intent.putExtra(ReaderConfig.BOOK_MD5, md5);
-        intent.putExtra(ReaderConfig.BOOK_READING_TIME, readingTime);
+        intent.putExtra(ReaderConfig.BOOK_READING_TIME, readingTime / 1000);
+        intent.putExtra(ReaderConfig.BOOK_READING_START_TIME, startTime / 1000);
+        intent.putExtra(ReaderConfig.BOOK_READING_ID, cloudId);
         context.sendBroadcast(intent);
     }
 }
