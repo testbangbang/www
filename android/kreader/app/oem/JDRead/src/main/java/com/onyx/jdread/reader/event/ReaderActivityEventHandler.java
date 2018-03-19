@@ -232,7 +232,7 @@ public class ReaderActivityEventHandler {
             readerViewBack.getContext().finish();
         }else {
             if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
-                EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+                EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION_QUALITY, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
             }
             new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
         }
