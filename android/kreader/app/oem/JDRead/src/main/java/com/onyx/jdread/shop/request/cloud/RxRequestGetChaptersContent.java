@@ -34,7 +34,12 @@ public class RxRequestGetChaptersContent extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        ReadContentService getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
+        ReadContentService getCommonService;
+        if (requestBean.withCookie) {
+            getCommonService = CloudApiContext.getService(CloudApiContext.getJDBooxBaseUrl());
+        } else {
+            getCommonService = CloudApiContext.getServiceNoCookie(CloudApiContext.getJDBooxBaseUrl());
+        }
         Call<GetChaptersContentResultBean> call = getCall(getCommonService);
         resultBean = done(call);
         checkResult();

@@ -168,4 +168,5 @@ public class Constants {
     public static final int RANK_TYPE_PUBLISH = 1;
     public static final String BOOK_FORMAT_PDF = "pdf";
     public static String KEY_DIRECTORY_CONTENT = "directory_content";
+    public static final int INVALID_VALUE = -2;
 }

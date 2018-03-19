@@ -49,6 +49,7 @@ import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.action.BookshelfInsertAction;
 import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.action.FileDeleteAction;
+import com.onyx.jdread.shop.action.GetChapterCatalogAction;
 import com.onyx.jdread.shop.action.GetChapterGroupInfoAction;
 import com.onyx.jdread.shop.action.GetChapterStartIdAction;
 import com.onyx.jdread.shop.action.GetChaptersContentAction;
@@ -135,8 +136,8 @@ public class BookDetailFragment extends BaseFragment {
     private BookBatchDownloadViewModel batchDownloadViewModel;
     private String start_chapter;
     private boolean hasDoLogin;
-    private boolean bookDetailLoadingFinished;
-    private boolean metadataLoadingFinished;
+    private boolean bookDetailLoadingFinished = true;
+    private boolean metadataLoadingFinished = true;
     private boolean isViewDirectoryTryDownload;
 
     @Nullable
@@ -354,6 +355,7 @@ public class BookDetailFragment extends BaseFragment {
     private void getAuthorBooksData(String keyWord) {
         SearchBookListAction booksAction = new SearchBookListAction("", 1, CloudApiContext.CategoryLevel2BookList.SORT_KEY_DEFAULT_VALUES,
                 CloudApiContext.CategoryLevel2BookList.SORT_TYPE_DEFAULT_VALUES, keyWord, CloudApiContext.SearchBook.FILTER_DEFAULT);
+        booksAction.setShowLoadingDialog(false);
         booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
             @Override
             public void onNext(SearchBookListAction action) {
@@ -549,7 +551,9 @@ public class BookDetailFragment extends BaseFragment {
                 }
             } else {
                 buyBookButton.setEnabled(true);
-                upDataButtonDown(nowReadButton, true, bookDetailBean.bookExtraInfoBean.downLoadState);
+                if (!isViewDirectoryTryDownload) {
+                    upDataButtonDown(nowReadButton, true, bookDetailBean.bookExtraInfoBean.downLoadState);
+                }
             }
         }
     }
@@ -855,7 +859,7 @@ public class BookDetailFragment extends BaseFragment {
         }
     }
 
-    private void startTryDownload(final BookDetailResultBean.DetailBean bookDetailBean, String tryDownLoadUrl, String localPath, final boolean isViewDirectory) {
+    private void startTryDownload(final BookDetailResultBean.DetailBean bookDetailBean, String tryDownLoadUrl, final String localPath, final boolean isViewDirectory) {
         String downloadTag = bookDetailBean.ebook_id + "";
         bookDetailBean.bookExtraInfoBean.downLoadTaskTag = downloadTag;
         bookDetailBean.bookExtraInfoBean.localPath = localPath;
@@ -889,8 +893,8 @@ public class BookDetailFragment extends BaseFragment {
                 if (isViewDirectory) {
                     isViewDirectoryTryDownload = false;
                     hideLoadingDialog();
+                    openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
                 }
-                tryDownload(bookDetailBean, true);
             }
         });
     }
@@ -1041,12 +1045,26 @@ public class BookDetailFragment extends BaseFragment {
     public void onBuyBookSuccessEvent(BuyBookSuccessEvent event) {
         if (event.isNetBook) {
             ToastUtil.showToast(ResManager.getString(R.string.buy_book_success));
+            getNetBookDirectory();
         } else {
             String msg = ResManager.getString(R.string.buy_book_success) + bookDetailBean.name + ResManager.getString(R.string.book_detail_tip_book_add_to_bookself);
             bookDetailBean.isAlreadyBuy = true;
             ToastUtil.showToast(JDReadApplication.getInstance(), msg);
             downLoadWholeBook();
         }
+    }
+
+    public void getNetBookDirectory() {
+        GetChapterCatalogAction chapterCatalogAction = new GetChapterCatalogAction(ebookId);
+        chapterCatalogAction.execute(getShopDataBundle(), new RxCallback<GetChapterCatalogAction>() {
+            @Override
+            public void onNext(GetChapterCatalogAction catalogAction) {
+                String chapterIds = catalogAction.getChapterIds();
+                if (!StringUtils.isNullOrEmpty(chapterIds)) {
+                    getChapterContent(CloudApiContext.BookDownLoad.CHAPTER_CONTENT_TYPE_CHAPTER, chapterIds, false);
+                }
+            }
+        });
     }
 
     private void getChapterContent(String type, String ids, boolean can_try) {

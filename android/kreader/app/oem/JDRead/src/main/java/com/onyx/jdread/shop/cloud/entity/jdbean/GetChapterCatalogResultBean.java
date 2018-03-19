@@ -12,7 +12,7 @@ public class GetChapterCatalogResultBean extends BaseResultBean {
 
     public static class DataBean {
         public boolean has_volume;
-        public Object chapters;
+        public List<VolumesBean.ChaptersBean> chapters;
         public List<VolumesBean> volumes;
 
         public static class VolumesBean {
@@ -21,7 +21,7 @@ public class GetChapterCatalogResultBean extends BaseResultBean {
             public List<ChaptersBean> chapters;
 
             public static class ChaptersBean {
-                public long id;
+                public String id;
                 public String title;
                 public int words;
                 public int vip_flag;

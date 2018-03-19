@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.GetChapterGroupInfoRequestBean;
@@ -43,12 +44,14 @@ public class GetChaptersContentAction extends BaseAction<ShopDataBundle> {
         Map<String, String> params = new HashMap<>();
         params.put(CloudApiContext.BookDownLoad.CHAPTER_CONTENT_TYPE, type);
         params.put(CloudApiContext.BookDownLoad.CHAPTER_CONTENT_IDS, ids);
-        params.put(CloudApiContext.BookDownLoad.CHAPTER_CONTENT_CAN_TRY, String.valueOf(can_try));
+        String canTry = can_try ? CloudApiContext.BookDownLoad.CHAPTER_CONTENT_CAN_TRY_TRUE : CloudApiContext.BookDownLoad.CHAPTER_CONTENT_CAN_TRY_FALSE;
+        params.put(CloudApiContext.BookDownLoad.CHAPTER_CONTENT_CAN_TRY, canTry);
         appBaseInfo.addRequestParams(params);
         String sign = String.format(CloudApiContext.BookShopURI.GET_CHAPTERS_CONTENT, String.valueOf(bookID));
         appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         baseRequestBean.setBaseInfo(appBaseInfo);
         baseRequestBean.bookId = bookID;
+        baseRequestBean.withCookie = JDReadApplication.getInstance().getLogin();
         final RxRequestGetChaptersContent rq = new RxRequestGetChaptersContent();
         rq.setRequestBean(baseRequestBean);
         rq.execute(new RxCallback<RxRequestGetChaptersContent>() {

@@ -135,6 +135,10 @@ public class CloudApiContext {
         public static final String CHAPTER_CONTENT_TYPE = "type";
         public static final String CHAPTER_CONTENT_IDS = "ids";
         public static final String CHAPTER_CONTENT_CAN_TRY = "can_try";
+        public static final String CHAPTER_CONTENT_CAN_TRY_TRUE = "1";
+        public static final String CHAPTER_CONTENT_CAN_TRY_FALSE = "0";
+        public static final String CHAPTER_CONTENT_TYPE_CHAPTER = "chapter";
+        public static final String CHAPTER_CONTENT_TYPE_VOLUME = "volume";
         public static final String TYPE = "type";
         public static final String HARDWARE_ID = "hardware_id";
         public static final String IS_TOB = "is_tob"; //is Enterprise Edition
