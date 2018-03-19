@@ -19,7 +19,7 @@ import com.raizlabs.android.dbflow.sql.migration.IndexMigration;
 public class ContentDatabase {
 
     public static final String NAME = "ContentDatabase";
-    public static final int VERSION = 6;
+    public static final int VERSION = 7;
 
     @Migration(version = 2, database = ContentDatabase.class)
     public static class Version2Migration extends AlterTableMigration<Metadata> {

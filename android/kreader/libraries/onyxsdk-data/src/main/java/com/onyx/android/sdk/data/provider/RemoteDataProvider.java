@@ -25,6 +25,7 @@ import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.SearchHistory;
+import com.onyx.android.sdk.data.model.StatisticalData;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
@@ -499,6 +500,26 @@ public class RemoteDataProvider implements DataProviderBase {
     public long libraryCount(String parentUniqueId) {
         Operator condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentUniqueId);
         return ContentUtils.queryList(OnyxLibraryProvider.CONTENT_URI, Library.class, OperatorGroup.clause().and(condition), null).size();
+    }
+
+    @Override
+    public StatisticalData findStatisticalDataByCloudId(String cloudId) {
+        return null;
+    }
+
+    @Override
+    public List<StatisticalData> findAllStatistics() {
+        return null;
+    }
+
+    @Override
+    public void saveStatisticData(StatisticalData data) {
+
+    }
+
+    @Override
+    public void deleteStatisticDataByCloudId(String cloudId) {
+
     }
 
     @Override

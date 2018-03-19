@@ -173,4 +173,6 @@ public class Constants {
     public static final int INVALID_VALUE = -2;
     public static final String NET_BOOK_DECRYPT_SALT = "1513304880000";
     public static final String NET_BOOK_DIR = "/netbooks/";
+    public static final String DIVIDER = "_";
+    public static final int MINUTE_STEP = 60;
 }

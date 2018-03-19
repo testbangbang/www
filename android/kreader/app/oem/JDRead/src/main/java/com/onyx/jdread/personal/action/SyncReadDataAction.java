@@ -1,10 +1,10 @@
-package com.onyx.jdread.reader.actions;
+package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.reader.data.ReadingData;
 import com.onyx.jdread.reader.data.ReadingDataResultBean;
-import com.onyx.jdread.reader.request.RxSyncReadingDataRequest;
+import com.onyx.jdread.personal.request.cloud.RxSyncReadingDataRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by li on 2018/3/1.
  */
 
-public class SyncReadDataAction extends BaseReaderAction {
+public class SyncReadDataAction extends BaseAction {
     private List<ReadingData> list;
     private ReadingDataResultBean resultBean;
 
@@ -23,7 +23,7 @@ public class SyncReadDataAction extends BaseReaderAction {
     }
 
     @Override
-    public void execute(ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
+    public void execute(PersonalDataBundle dataBundle, final RxCallback baseCallback) {
         JDAppBaseInfo baseInfo = new JDAppBaseInfo();
         String signValue = baseInfo.getSignValue(CloudApiContext.User.READING_DATA);
         baseInfo.setSign(signValue);

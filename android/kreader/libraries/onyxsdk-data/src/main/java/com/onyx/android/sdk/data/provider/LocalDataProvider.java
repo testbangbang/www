@@ -19,8 +19,10 @@ import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.data.model.SearchHistory_Table;
+import com.onyx.android.sdk.data.model.StatisticalData;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
+import com.onyx.android.sdk.data.model.StatisticalData_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -415,5 +417,35 @@ public class LocalDataProvider implements DataProviderBase {
     public long libraryCount(String parentUniqueId) {
         Operator condition = getNullOrEqualCondition(Library_Table.parentUniqueId, parentUniqueId);
         return new Select(Method.count()).from(Library.class).where(condition).count();
+    }
+
+    @Override
+    public StatisticalData findStatisticalDataByCloudId(String cloudId) {
+        StatisticalData statisticalData = new Select().from(StatisticalData.class).where(StatisticalData_Table.cloudId.eq(cloudId)).querySingle();
+        return statisticalData;
+    }
+
+    @Override
+    public List<StatisticalData> findAllStatistics() {
+        List<StatisticalData> list = new Select().from(StatisticalData.class).where(StatisticalData_Table.cloudId.isNotNull()).queryList();
+        return list;
+    }
+
+    @Override
+    public void saveStatisticData(StatisticalData data) {
+        StatisticalData statisticalData = new Select().from(StatisticalData.class).where(StatisticalData_Table.cloudId.eq(data.cloudId)).querySingle();
+        if (statisticalData == null) {
+            data.save();
+        } else {
+            statisticalData.endReadTime = data.endReadTime;
+            statisticalData.startReadTime = data.startReadTime;
+            statisticalData.length = data.length;
+            statisticalData.update();
+        }
+    }
+
+    @Override
+    public void deleteStatisticDataByCloudId(String cloudId) {
+        new Delete().from(StatisticalData.class).where(StatisticalData_Table.cloudId.eq(cloudId)).execute();
     }
 }

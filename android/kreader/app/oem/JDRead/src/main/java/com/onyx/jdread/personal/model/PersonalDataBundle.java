@@ -1,15 +1,19 @@
 package com.onyx.jdread.personal.model;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.model.StatisticalData;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.model.TitleBarModel;
+import com.onyx.jdread.personal.action.DeleteStatisticAction;
+import com.onyx.jdread.personal.action.SaveReadTimeAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetRechargePackageBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
+import com.onyx.jdread.reader.data.ReadingData;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.util.TimeUtils;
 
@@ -41,6 +45,7 @@ public class PersonalDataBundle {
     private boolean signed;
     private boolean isTodaySign;
     private String targetView;
+    private List<StatisticalData> statisticList;
 
     private PersonalDataBundle() {
 
@@ -230,5 +235,28 @@ public class PersonalDataBundle {
 
     public void setTargetView(String targetView) {
         this.targetView = targetView;
+    }
+
+    public void deleteReadingData(ReadingData readingData) {
+        DeleteStatisticAction action = new DeleteStatisticAction(readingData.ebook_id);
+        action.execute(PersonalDataBundle.getInstance(), null);
+    }
+
+    public void saveReadingData(ReadingData readingData) {
+        StatisticalData statisticalData = new StatisticalData();
+        statisticalData.cloudId = readingData.ebook_id;
+        statisticalData.length = readingData.length;
+        statisticalData.startReadTime = readingData.start_time;
+        statisticalData.endReadTime = readingData.end_time;
+        SaveReadTimeAction action = new SaveReadTimeAction(statisticalData);
+        action.execute(PersonalDataBundle.getInstance(), null);
+    }
+
+    public void setStatisticList(List<StatisticalData> statisticList) {
+        this.statisticList = statisticList;
+    }
+
+    public List<StatisticalData> getStatisticList() {
+        return statisticList;
     }
 }

@@ -4,7 +4,6 @@ import android.support.v4.app.FragmentActivity;
 
 import com.evernote.client.android.EvernoteSession;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ZipUtils;
 import com.onyx.jdread.JDReadApplication;
@@ -22,7 +21,6 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.AssociatedEmailToolsEvent;
-import com.onyx.jdread.setting.view.AssociatedEmailDialog;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;

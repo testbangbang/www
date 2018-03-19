@@ -11,6 +11,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
@@ -30,7 +31,9 @@ import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.personal.action.AutoLoginAction;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.reader.actions.ReaderDocumentCoverAction;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
+import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -56,6 +59,7 @@ public class JDReadApplication extends MultiDexApplication {
     private JDAppBaseInfo jdAppBaseInfo;
     private EvernoteSession evernoteSession;
     private boolean notifyLibraryData;
+    private static final int SIGN_FOR_READING_MIN = 30;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -204,8 +208,22 @@ public class JDReadApplication extends MultiDexApplication {
     }
 
     public boolean canSignForRead() {
-        // TODO: 2018/3/2
-        return false;
+        int currentReadTime = getCurrentReadTime();
+        return (currentReadTime / Constants.MINUTE_STEP) >= SIGN_FOR_READING_MIN;
+    }
+
+    public int getCurrentReadTime() {
+        int current = 0;
+        String currentLength = JDPreferenceManager.getStringValue(ReaderConfig.BOOK_READING_TIME, "");
+        if (StringUtils.isNotBlank(currentLength) && currentLength.contains(Constants.DIVIDER)) {
+            int index = currentLength.lastIndexOf(Constants.DIVIDER);
+            String currentDay = currentLength.substring(0, index);
+            if (TimeUtils.getDate(System.currentTimeMillis()).equals(currentDay)) {
+                String time = currentLength.substring(index + 1);
+                current = PagePositionUtils.getPosition(time);
+            }
+        }
+        return current;
     }
 
     private List<Class<? extends DatabaseHolder>> databaseHolderList() {
