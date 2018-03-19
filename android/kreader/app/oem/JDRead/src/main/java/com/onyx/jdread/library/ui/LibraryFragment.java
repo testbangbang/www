@@ -224,16 +224,6 @@ public class LibraryFragment extends BaseFragment {
                 nextPage();
             }
         });
-
-        SpannableString spannableString = new SpannableString(ResManager.getString(R.string.empty_library_prompt));
-        spannableString.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                checkLogin(PersonalBookFragment.class.getName());
-            }
-        }, ResManager.getInteger(R.integer.empty_library_prompt_clickable_start), ResManager.getInteger(R.integer.empty_library_prompt_clickable_end), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        libraryBinding.emptyLibraryPrompt.setText(spannableString);
-        libraryBinding.emptyLibraryPrompt.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void initPageIndicator() {
