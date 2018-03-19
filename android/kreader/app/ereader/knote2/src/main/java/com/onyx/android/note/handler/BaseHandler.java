@@ -4,6 +4,8 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.note.action.EraseAction;
+import com.onyx.android.note.action.RefreshDrawScreenAction;
+import com.onyx.android.note.event.ResizeViewEvent;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.BeginRawDrawEvent;
 import com.onyx.android.sdk.note.event.BeginRawErasingEvent;
@@ -17,6 +19,7 @@ import com.onyx.android.sdk.pen.data.TouchPoint;
 import com.onyx.android.sdk.pen.data.TouchPointList;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.rx.SingleThreadScheduler;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -74,6 +77,11 @@ public class BaseHandler {
     @CallSuper
     public void onDeactivate(){
         getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void resizeView(ResizeViewEvent event) {
+        onResizeView();
     }
 
     @Subscribe
@@ -195,6 +203,12 @@ public class BaseHandler {
             d.dispose();
         }
         actionDisposables = new ArrayList<>();
+    }
+
+    public void onResizeView() {
+        RenderContext renderContext = getNoteManager().getRenderContext();
+        renderContext.clearBgBitmapCache();
+        new RefreshDrawScreenAction(getNoteManager()).execute(null);
     }
 
     public void onBeginRawDraw(boolean shortcutDrawing, TouchPoint point) {}

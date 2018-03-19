@@ -23,6 +23,7 @@ import com.onyx.android.note.action.CreateDocumentAction;
 import com.onyx.android.note.common.base.BaseFragment;
 import com.onyx.android.note.databinding.FragmentScribbleBinding;
 import com.onyx.android.note.event.BuildSpanTextShapeEvent;
+import com.onyx.android.note.event.ResizeViewEvent;
 import com.onyx.android.note.event.SpanViewEnableEvent;
 import com.onyx.android.note.event.SpanViewEvent;
 import com.onyx.android.note.event.menu.CheckMenuRectEvent;
@@ -100,6 +101,7 @@ public class ScribbleFragment extends BaseFragment {
                 TreeObserverUtils.removeGlobalOnLayoutListener(binding.workLayout.getViewTreeObserver(), this);
                 updateDrawLimitRect();
                 postDrawMenuExcludeRect();
+                getNoteBundle().post(new ResizeViewEvent());
             }
         });
     }
@@ -115,13 +117,13 @@ public class ScribbleFragment extends BaseFragment {
             return;
         }
         Rect rect = new Rect();
-        view.getGlobalVisibleRect(rect);
+        view.getLocalVisibleRect(rect);
         rectList.add(rect);
     }
 
     private void updateDrawLimitRect() {
         Rect rect = new Rect();
-        binding.surfaceView.getGlobalVisibleRect(rect);
+        binding.surfaceView.getLocalVisibleRect(rect);
         List<Rect> rectList = new ArrayList<>();
         rectList.add(rect);
         getNoteManager().getTouchHelper().setLimitRect(rectList);
