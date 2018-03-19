@@ -43,6 +43,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.SocketException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.net.wifi.WifiInfo.LINK_SPEED_UNITS;
 import static com.onyx.android.libsetting.util.Constant.ARGS_BAND;
@@ -66,6 +68,11 @@ public class WifiFragment extends BaseFragment {
 
     private int connectWifiType = -1;
     private String connectWifiKey = null;
+
+    // Combo scans can take 5-6s to complete - set to 10s.
+    private static final int WIFI_RESCAN_INTERVAL_MS = 10 * 1000;
+    private Timer scanTimer;
+    private TimerTask wifiScanTimerTask;
 
     @Nullable
     @Override
@@ -200,11 +207,43 @@ public class WifiFragment extends BaseFragment {
         wifiConnectedDialog.show(getActivity().getFragmentManager());
     }
 
+    private void buildWifiScanTimerTask() {
+        scanTimer = new Timer();
+        wifiScanTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (wifiAdmin != null) {
+                    wifiAdmin.triggerWifiScan();
+                }
+            }
+        };
+    }
+
+    private void startScanTimer() {
+        buildWifiScanTimerTask();
+        scanTimer.schedule(wifiScanTimerTask, WIFI_RESCAN_INTERVAL_MS, WIFI_RESCAN_INTERVAL_MS);
+    }
+
+    private void stopScanTimer() {
+        if (scanTimer != null) {
+            scanTimer.cancel();
+            wifiScanTimerTask.cancel();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopScanTimer();
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
         wifiAdmin.registerReceiver();
         Utils.ensureRegister(SettingBundle.getInstance().getEventBus(), this);
+        startScanTimer();
     }
 
     @Override
@@ -212,6 +251,7 @@ public class WifiFragment extends BaseFragment {
         super.onStop();
         wifiAdmin.unregisterReceiver();
         Utils.ensureUnregister(SettingBundle.getInstance().getEventBus(), this);
+        stopScanTimer();
     }
 
     private void initWifi() {
@@ -309,12 +349,7 @@ public class WifiFragment extends BaseFragment {
     }
 
     private String getWifiConnectKey(AccessPoint accessPoint) {
-        String key = accessPoint.getScanResult().SSID + accessPoint.getScanResult().BSSID +
-                accessPoint.getSecurity();
-        if (getNetworkId(accessPoint) >= 0) {
-            key += getNetworkId(accessPoint);
-        }
-        return key;
+        return accessPoint.getScanResult().SSID + accessPoint.getScanResult().BSSID + accessPoint.getSecurity();
     }
 
     private void addWifiImpl(String ssid, String password, int securityType) {
