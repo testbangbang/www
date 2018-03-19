@@ -19,13 +19,15 @@ public class GetChapterCatalogAction extends BaseAction<ShopDataBundle> {
     private long bookID;
     private GetChapterCatalogResultBean resultBean;
     private String chapterIds;
+    public String bookName;
 
     public String getChapterIds() {
         return chapterIds;
     }
 
-    public GetChapterCatalogAction(long bookID) {
+    public GetChapterCatalogAction(long bookID, String bookName) {
         this.bookID = bookID;
+        this.bookName = bookName;
     }
 
     public GetChapterCatalogResultBean getResultBean() {
@@ -40,6 +42,7 @@ public class GetChapterCatalogAction extends BaseAction<ShopDataBundle> {
         appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         baseRequestBean.setBaseInfo(appBaseInfo);
         baseRequestBean.bookId = bookID;
+        baseRequestBean.bookName = bookName;
         final RxRequestGetChapterCatalog rq = new RxRequestGetChapterCatalog();
         rq.setRequestBean(baseRequestBean);
         rq.execute(new RxCallback<RxRequestGetChapterCatalog>() {

@@ -10,6 +10,8 @@ public class GetChaptersContentResultBean extends BaseResultBean{
     public List<DataBean> data;
 
     public static class DataBean {
+        public String time;
+        public String pin;
         public String id;
         public String content;
         public int can_try;

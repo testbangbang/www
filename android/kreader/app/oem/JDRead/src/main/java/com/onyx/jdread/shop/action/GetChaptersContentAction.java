@@ -21,13 +21,15 @@ import java.util.Map;
 public class GetChaptersContentAction extends BaseAction<ShopDataBundle> {
 
     private long bookID;
+    public String bookName;
     public String type;
     public String ids;
     public boolean can_try;
     private GetChaptersContentResultBean resultBean;
 
-    public GetChaptersContentAction(long bookID, String type, String ids, boolean can_try) {
+    public GetChaptersContentAction(long bookID, String bookName, String type, String ids, boolean can_try) {
         this.bookID = bookID;
+        this.bookName = bookName;
         this.type = type;
         this.ids = ids;
         this.can_try = can_try;
@@ -51,6 +53,7 @@ public class GetChaptersContentAction extends BaseAction<ShopDataBundle> {
         appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         baseRequestBean.setBaseInfo(appBaseInfo);
         baseRequestBean.bookId = bookID;
+        baseRequestBean.bookName = bookName;
         baseRequestBean.withCookie = JDReadApplication.getInstance().getLogin();
         final RxRequestGetChaptersContent rq = new RxRequestGetChaptersContent();
         rq.setRequestBean(baseRequestBean);

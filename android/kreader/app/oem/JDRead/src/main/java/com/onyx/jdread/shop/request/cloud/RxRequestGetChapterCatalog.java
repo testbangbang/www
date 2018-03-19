@@ -1,6 +1,9 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.GetChapterGroupInfoRequestBean;
@@ -10,6 +13,7 @@ import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,11 +87,20 @@ public class RxRequestGetChapterCatalog extends RxBaseCloudRequest {
                         }
                     }
                     chapterIds = chapterIdBuffer.toString();
+                    String path = getPath();
+                    if (!FileUtils.fileExist(path)) {
+                        FileUtils.mkdirs(path);
+                    }
+                    FileUtils.saveContentToFile(JSONObjectParseUtils.toJson(data), new File(path, String.valueOf(requestBean.bookId)));
                 }
             } else {
                 ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));
             }
         }
+    }
+
+    private String getPath() {
+        return CommonUtils.getJDNetBooksPath() + requestBean.bookId + "_" + requestBean.bookName;
     }
 
     private GetChapterCatalogResultBean done(Call<GetChapterCatalogResultBean> call) {

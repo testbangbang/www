@@ -50,6 +50,10 @@ public class CommonUtils {
         return LOCAL_JDBOOKS_PATH;
     }
 
+    public static String getJDNetBooksPath() {
+        return LOCAL_JDBOOKS_PATH + Constants.NET_BOOK_DIR;
+    }
+
     public static String array2String(String[] bookIds) {
         StringBuilder stringBuilder = new StringBuilder();
         if (bookIds != null && bookIds.length > 0) {

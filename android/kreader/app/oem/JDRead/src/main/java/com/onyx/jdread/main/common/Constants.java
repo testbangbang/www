@@ -169,4 +169,6 @@ public class Constants {
     public static final String BOOK_FORMAT_PDF = "pdf";
     public static String KEY_DIRECTORY_CONTENT = "directory_content";
     public static final int INVALID_VALUE = -2;
+    public static final String NET_BOOK_DECRYPT_SALT = "1513304880000";
+    public static final String NET_BOOK_DIR = "/netbooks/";
 }

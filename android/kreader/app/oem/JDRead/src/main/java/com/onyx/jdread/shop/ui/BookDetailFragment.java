@@ -1043,7 +1043,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBuyBookSuccessEvent(BuyBookSuccessEvent event) {
-        if (event.isNetBook) {
+        if (event != null && event.isNetBook) {
             ToastUtil.showToast(ResManager.getString(R.string.buy_book_success));
             getNetBookDirectory();
         } else {
@@ -1055,7 +1055,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     public void getNetBookDirectory() {
-        GetChapterCatalogAction chapterCatalogAction = new GetChapterCatalogAction(ebookId);
+        GetChapterCatalogAction chapterCatalogAction = new GetChapterCatalogAction(ebookId, bookDetailBean.name);
         chapterCatalogAction.execute(getShopDataBundle(), new RxCallback<GetChapterCatalogAction>() {
             @Override
             public void onNext(GetChapterCatalogAction catalogAction) {
@@ -1068,7 +1068,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void getChapterContent(String type, String ids, boolean can_try) {
-        GetChaptersContentAction getChaptersContentAction = new GetChaptersContentAction(ebookId, type, ids, can_try);
+        GetChaptersContentAction getChaptersContentAction = new GetChaptersContentAction(ebookId, bookDetailBean.name, type, ids, can_try);
         getChaptersContentAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {

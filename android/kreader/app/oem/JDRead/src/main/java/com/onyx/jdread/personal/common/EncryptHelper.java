@@ -30,12 +30,31 @@ public class EncryptHelper {
         return sb.toString();
     }
 
+    public static String getNetBookDecryptKey(String part) {
+        char[] chars = Constants.NET_BOOK_DECRYPT_SALT.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
+            sb.append(chars[i]);
+            if (i == 6) {
+                sb.append("eink");
+                sb.append(part);
+            }
+        }
+        return sb.toString();
+    }
+
     public static String getEncryptParams(String key, String signStr) {
         File encryptFile = getEncryptFile();
         FileUtils.appendContentToFile(key, encryptFile);
         path = encryptFile.getParent() + File.separator;
         String atencrypting = decryptionoperation.atencrypting(signStr, path, 0);
         return atencrypting;
+    }
+
+    public static void setNetBookDecryptKeyPath(String key) {
+        File encryptFile = getEncryptFile();
+        FileUtils.appendContentToFile(key, encryptFile);
+        path = encryptFile.getParent() + File.separator;
     }
 
     public static String getDecryptContent(String encryptContent) {
