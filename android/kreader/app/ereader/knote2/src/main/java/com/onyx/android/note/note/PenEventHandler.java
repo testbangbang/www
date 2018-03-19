@@ -17,6 +17,8 @@ import com.onyx.android.note.handler.HandlerManager;
 import com.onyx.android.sdk.note.NoteManager;
 import com.onyx.android.sdk.note.event.RawDrawingRenderEnabledEvent;
 import com.onyx.android.sdk.note.event.ResumeRawDrawingEvent;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -56,16 +58,27 @@ public class PenEventHandler {
     }
 
     private boolean shouldResume(boolean resumePen) {
-        return resumePen && !isDialogShowing();
+        return resumePen
+                && !isDialogShowing()
+                && !isKeyboardShowing();
     }
 
     private boolean shouldRawRender(boolean render) {
-        return render || !inRawNotRenderProvider();
+        return render || (inRawRenderProvider()
+                && inRawRenderShapeType()
+                && !isDialogShowing()
+                && !isKeyboardShowing());
     }
 
-    private boolean inRawNotRenderProvider() {
-        return getHandlerManager().inEraseOverlayProvider() ||
-                getHandlerManager().inNormalShapeProvider();
+    private boolean inRawRenderProvider() {
+        return !getHandlerManager().inEraseOverlayProvider() &&
+                !getHandlerManager().inNormalShapeProvider();
+    }
+
+    private boolean inRawRenderShapeType() {
+        NoteDrawingArgs drawingArgs = getDataBundle().getDrawingArgs();
+        int currentShapeType = drawingArgs.getCurrentShapeType();
+        return ShapeFactory.isDFBShape(currentShapeType);
     }
 
     @Subscribe
