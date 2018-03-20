@@ -88,6 +88,22 @@
                         android:text="@string/subject_list_sort_type_newest"
                         android:textSize="@dimen/level_three_heading_font" />
 
+                    <CheckedTextView
+                        android:id="@+id/book_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/subject_list_sort_button_margin_left"
+                        android:background="@drawable/text_stroke_background"
+                        android:checked="@{viewModel.sortKeyPriceSelected}"
+                        android:onClick="@{()->viewModel.onSortKeyPriceClick()}"
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:paddingLeft="@dimen/category_book_list_selected_button_padding_left_and_right"
+                        android:paddingRight="@dimen/category_book_list_selected_button_padding_left_and_right"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:text="@string/subject_list_sort_type_price"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/level_three_heading_font"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <include layout="@layout/layout_line" />
@@ -111,6 +127,54 @@
                     android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
                     android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
                     android:layout_weight="1" />
+
+                <LinearLayout
+                    android:id="@+id/filtrate_free_vip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/subject_list_just_vip_margin_top_and_bottom"
+                    android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+                    android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+                    android:layout_marginTop="@dimen/subject_list_just_vip_margin_top_and_bottom"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <CheckBox
+                        android:id="@+id/subject_list_show_vip"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/text_stroke_background"
+                        android:button="@null"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:text="@string/vip"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_size_17" />
+
+                    <CheckBox
+                        android:id="@+id/subject_list_show_free"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/text_stroke_background"
+                        android:button="@null"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:paddingTop="@dimen/category_book_list_selected_button_padding_top_and_bottom"
+                        android:text="@string/filter_free"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/font_size_17" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2" />
+
+                </LinearLayout>
 
                 <include layout="@layout/layout_line" />
 
