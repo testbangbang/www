@@ -210,6 +210,7 @@ public class BookDetailFragment extends BaseFragment {
         ebookId = 0;
         downloadTaskState = 0;
         localPath = "";
+        setAuthorUnderline(false);
     }
 
     private void initView() {
