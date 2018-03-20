@@ -26,7 +26,6 @@ import com.onyx.jdread.reader.data.PageTurningDirection;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.model.SelectMenuModel;
-import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -204,7 +203,6 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     protected void onResume() {
         addSurfaceViewCallback();
         super.onResume();
-        ReaderViewUtil.applyFastModeByConfig();
         DeviceUtils.setFullScreenOnResume(this,true);
         if (readerActivityEventHandler != null) {
             readerActivityEventHandler.updateTimeFormat();
@@ -214,7 +212,6 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     @Override
     protected void onPause() {
         super.onPause();
-        ReaderViewUtil.clearFastModeByConfig();
         removeSurfaceViewCallback();
     }
 
