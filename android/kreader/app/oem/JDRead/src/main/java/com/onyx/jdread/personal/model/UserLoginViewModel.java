@@ -85,6 +85,7 @@ public class UserLoginViewModel {
     public void cleanInput() {
         account.set("");
         password.set("");
+        errorMessage.set("");
         backToLogin();
     }
 
