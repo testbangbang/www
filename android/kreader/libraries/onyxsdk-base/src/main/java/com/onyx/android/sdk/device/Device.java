@@ -41,7 +41,7 @@ public class Device
             return IMX7Device.createDevice();
         } else if (Build.HARDWARE.contains("freescale")) {
             return IMX6Device.createDevice();
-        } else if (Build.HARDWARE.contentEquals("rk30board") && "rk3288".equals(getBoardPlatform())) {
+        } else if (Build.HARDWARE.contentEquals("rk30board") && ("rk3288".equals(getBoardPlatform()) || "rk312x".equals(getBoardPlatform()))) {
             return RK32XXDevice.createDevice();
         } else if (Build.HARDWARE.contentEquals("rk30board")) {
             return RK3026Device.createDevice();

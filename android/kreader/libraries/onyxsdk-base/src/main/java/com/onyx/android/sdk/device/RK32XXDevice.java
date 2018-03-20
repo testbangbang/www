@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Environment;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
@@ -673,6 +674,12 @@ public class RK32XXDevice extends BaseDevice {
         } catch (Exception exception) {
         }
         return true;
+    }
+
+    @Override
+    public PowerManager.WakeLock newWakeLock(Context context, String tag) {
+        PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+        return pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, tag);
     }
 
     public boolean setDisplayScheme(int scheme) {
