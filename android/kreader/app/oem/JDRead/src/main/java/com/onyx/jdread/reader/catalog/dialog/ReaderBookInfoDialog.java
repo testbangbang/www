@@ -29,8 +29,10 @@ import com.onyx.jdread.reader.catalog.event.ReaderBookInfoDialogHandler;
 import com.onyx.jdread.reader.catalog.event.ReaderBookInfoTitleBackEvent;
 import com.onyx.jdread.reader.catalog.model.ReaderBookInfoModel;
 import com.onyx.jdread.reader.catalog.model.BookTitleModel;
+import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.event.EditNoteClickEvent;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 
@@ -111,6 +113,9 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
     @Override
     public void dismiss() {
         readerBookInfoDialogHandler.unregisterListener();
+        if(readerBookInfoDialogHandler.getReaderDataHolder().getDocumentInfo().getOpenType() == DocumentInfo.OPEN_BOOK_CATALOG){
+            eventBus.post(new CloseDocumentEvent());
+        }
         super.dismiss();
     }
 
