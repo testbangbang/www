@@ -67,12 +67,9 @@ public class NetNovelReaderPlugin implements ReaderPlugin,
     }
 
     public static boolean accept(final String path) {
-        try {
-            if (NetNovelBook.createFromJSON(FileUtils.readContentOfFile(path)) != null) {
-                return true;
-            }
-        } catch (Throwable tr) {
-
+        String string = path.toLowerCase();
+        if (string.endsWith(".jdnovel")) {
+            return true;
         }
         return false;
     }
