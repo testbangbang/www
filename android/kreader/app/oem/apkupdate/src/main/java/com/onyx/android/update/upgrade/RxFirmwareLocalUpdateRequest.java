@@ -16,6 +16,7 @@ import java.io.IOException;
 public class RxFirmwareLocalUpdateRequest extends RxBaseCloudRequest {
 
     private boolean success = false;
+    private boolean failDelete = true;
     private String failString;
     private String filePath;
 
@@ -29,6 +30,10 @@ public class RxFirmwareLocalUpdateRequest extends RxBaseCloudRequest {
 
     public String getFailString() {
         return failString;
+    }
+
+    public void setFailDelete(boolean delete) {
+        this.failDelete = delete;
     }
 
     @Override
@@ -45,6 +50,9 @@ public class RxFirmwareLocalUpdateRequest extends RxBaseCloudRequest {
         success = installPackage(new File(filePath));
         if (!success) {
             failString = getAppContext().getString(R.string.update_fail);
+            if (failDelete) {
+                FileUtils.deleteFile(filePath);
+            }
         }
     }
 

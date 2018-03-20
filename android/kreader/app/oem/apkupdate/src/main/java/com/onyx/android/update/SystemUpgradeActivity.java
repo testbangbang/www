@@ -38,6 +38,7 @@ public class SystemUpgradeActivity extends AppCompatActivity {
     private void startSystemUpgrade(final String path) {
         RxFirmwareLocalUpdateRequest.setAppContext(getApplicationContext());
         final RxFirmwareLocalUpdateRequest upgradeRequest = new RxFirmwareLocalUpdateRequest(path);
+        upgradeRequest.setFailDelete(true);
         upgradeRequest.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -46,20 +47,19 @@ public class SystemUpgradeActivity extends AppCompatActivity {
             @Override
             public void onFinally() {
                 if (!upgradeRequest.isSuccess()) {
-                    showUpgradeFailedDialog(path);
+                    showUpgradeFailedDialog();
                 }
             }
         });
     }
 
-    private void showUpgradeFailedDialog(final String filePath) {
+    private void showUpgradeFailedDialog() {
         final DialogMessage dialog = new DialogMessage(this);
         dialog.setMessage(getString(R.string.system_upgrade_fail_message));
         dialog.setPositiveAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                deleteUpgradeFile(filePath);
                 finish();
             }
         });
