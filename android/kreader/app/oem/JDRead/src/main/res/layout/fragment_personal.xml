@@ -21,6 +21,10 @@
         <variable
             name="isSignToday"
             type="boolean" />
+
+        <variable
+            name="readTime"
+            type="String"/>
     </data>
 
     <LinearLayout
@@ -63,7 +67,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/personal_read_time_margin_top"
-                        android:text="@string/the_read_time_for_today"
+                        android:text="@{@string/the_read_time_for_today(readTime)}"
                         android:textColor="@color/text_gray_color"
                         android:textSize="@dimen/level_two_heading_font" />
                 </LinearLayout>

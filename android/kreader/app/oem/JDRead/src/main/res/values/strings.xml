@@ -179,6 +179,7 @@
     <string name="login">Login</string>
     <string name="check_password">The password you entered is less than 6!</string>
     <string name="check_user_name">The login account cannot be empty!</string>
+    <string name="check_user_password">The login password cannot be empty</string>
     <string name="login_resutl_params_error">params error</string>
     <string name="login_resutl_no_function">no function</string>
     <string name="login_resutl_not_login">The account is not login</string>
@@ -490,7 +491,7 @@
     <string name="quit_wifi_pass_book">Quit wifi pass book</string>
     <string name="wifi_pass_book_failed">Pass book failed</string>
     <string name="wifi_pass_book_failed_network_exception">Network exception,Pass book failed</string>
-    <string name="empty_library_prompt">Without book,Please go to the shop to download</string>
+    <string name="empty_library_prompt">Without book</string>
     <string name="speed_refresh_key">speed_refresh_key</string>
     <string name="forgot_psw">Forgot psw</string>
     <string name="dialog_pay_order_book_price">Price: %1$d Read Bean</string>

@@ -24,7 +24,7 @@ import com.onyx.jdread.reader.model.NoteViewModel;
  * Created by huxiaomao on 17/5/10.
  */
 
-public class ReaderNoteDialog extends Dialog implements ReaderNoteViewBack {
+public class ReaderNoteDialog extends ReaderBaseDialog implements ReaderNoteViewBack {
     private static final String TAG = ReaderNoteDialog.class.getSimpleName();
     private ReaderDataHolder readerDataHolder;
     private ActivityNoteBinding binding;

@@ -446,7 +446,7 @@ public class TopUpDialog extends DialogFragment {
 
     private void dismissDialog(final Object event) {
         int delayTime = ResManager.getInteger(R.integer.delay_pay_success_close_pay_dialog);
-        Observable<Long> timer = Observable.interval(delayTime, TimeUnit.SECONDS);
+        Observable<Long> timer = Observable.timer(delayTime, TimeUnit.SECONDS);
         countDownDisposable = timer.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Long>() {

@@ -18,9 +18,16 @@ public class GetChapterCatalogAction extends BaseAction<ShopDataBundle> {
 
     private long bookID;
     private GetChapterCatalogResultBean resultBean;
+    private String chapterIds;
+    public String bookName;
 
-    public GetChapterCatalogAction(long bookID) {
+    public String getChapterIds() {
+        return chapterIds;
+    }
+
+    public GetChapterCatalogAction(long bookID, String bookName) {
         this.bookID = bookID;
+        this.bookName = bookName;
     }
 
     public GetChapterCatalogResultBean getResultBean() {
@@ -35,6 +42,7 @@ public class GetChapterCatalogAction extends BaseAction<ShopDataBundle> {
         appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         baseRequestBean.setBaseInfo(appBaseInfo);
         baseRequestBean.bookId = bookID;
+        baseRequestBean.bookName = bookName;
         final RxRequestGetChapterCatalog rq = new RxRequestGetChapterCatalog();
         rq.setRequestBean(baseRequestBean);
         rq.execute(new RxCallback<RxRequestGetChapterCatalog>() {
@@ -54,6 +62,7 @@ public class GetChapterCatalogAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onNext(RxRequestGetChapterCatalog request) {
                 resultBean = request.getResultBean();
+                chapterIds = request.getChapterIds();
                 invokeNext(rxCallback, GetChapterCatalogAction.this);
             }
 

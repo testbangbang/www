@@ -47,6 +47,7 @@ public class ReaderDataHolder {
     private boolean isInitViewPage = false;
     private long readingTime = 0;
     private long timestamp = 0;
+    private long startTimes;
 
     public ReaderDataHolder(final Context appContext) {
         this.readerTouchHelper = new ReaderTouchHelper();
@@ -56,12 +57,20 @@ public class ReaderDataHolder {
     }
 
     public long getReadingTime() {
-        return readingTime;
+        return updateReadingTime();
     }
 
     public void setTimestamp() {
         this.timestamp = (new Date()).getTime();
         updateReadingTime();
+    }
+
+    public void setStartTimes() {
+        this.startTimes = (new Date()).getTime();
+    }
+
+    public long getStartTimes() {
+        return startTimes;
     }
 
     public long updateReadingTime() {

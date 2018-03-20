@@ -74,7 +74,8 @@
 
         <activity
             android:name=".reader.ui.SettingsActivity"
-            android:theme="@style/ActivityFullscreen" />
+            android:theme="@style/ActivityFullscreen"
+            android:launchMode="singleTop"/>
 
         <activity android:name ="com.evernote.client.android.EvernoteOAuthActivity"/>
         <activity android:name ="com.evernote.client.android.login.EvernoteLoginActivity"/>
@@ -100,6 +101,12 @@
         <receiver android:name=".main.receiver.PowerOffActionReceiver">
             <intent-filter>
                 <action android:name="com.onyx.action.SHOW_POWER_OFF_DIALOG_ACTION"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".personal.receive.ReadTimeBroadcastReceive">
+            <intent-filter>
+                <action android:name="com.onyx.action.BOOK_SINGLE_READ_TIME"/>
             </intent-filter>
         </receiver>
     </application>

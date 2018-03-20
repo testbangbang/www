@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.SearchHistory;
+import com.onyx.android.sdk.data.model.StatisticalData;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
@@ -127,4 +128,12 @@ public interface DataProviderBase {
     void clearSearchHistory();
 
     long libraryCount(String parentUniqueId);
+
+    StatisticalData findStatisticalDataByCloudId(String cloudId);
+
+    List<StatisticalData> findAllStatistics();
+
+    void saveStatisticData(StatisticalData data);
+
+    void deleteStatisticDataByCloudId(String cloudId);
 }
