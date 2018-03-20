@@ -1,5 +1,6 @@
 package com.onyx.jdread.manager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.LockScreenActivity;
 import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.activity.StartActivity;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.reader.ui.PreloadActivity;
 import com.onyx.jdread.reader.ui.SettingsActivity;
 import com.onyx.jdread.shop.event.MenuWifiSettingEvent;
@@ -45,6 +47,12 @@ public class ManagerActivityUtils {
         Intent intent = new Intent(context, LockScreenActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+    }
+
+    public static void lockScreen(Activity context) {
+        Intent intent = new Intent(context, LockScreenActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivityForResult(intent, Constants.REQUEST_CODE);
     }
 
     public static void startMainActivity(Context context) {
