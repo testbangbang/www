@@ -71,16 +71,16 @@ public class HomeworkSubmitRequest extends BaseCloudRequest {
                 return;
             }
 
-            UploadFile2OssRequest uploadFile2OssRequest;
+            UploadFileToOssRequest uploadFileToOssRequest;
             for (HomeworkSubmitAnswer anwser : body.anwsers) {
                 if (CollectionUtils.isNullOrEmpty(anwser.filePaths)) {
                     continue;
                 }
                 anwser.attachmentUrl = new ArrayList<>();
                 for (String filePath : anwser.filePaths) {
-                    uploadFile2OssRequest = new UploadFile2OssRequest(filePath);
-                    uploadFile2OssRequest.execute(null);
-                    anwser.attachmentUrl.add(uploadFile2OssRequest.uploadFileUrl);
+                    uploadFileToOssRequest = new UploadFileToOssRequest(filePath);
+                    uploadFileToOssRequest.execute(null);
+                    anwser.attachmentUrl.add(uploadFileToOssRequest.uploadFileUrl);
                 }
             }
         } catch (Exception e) {

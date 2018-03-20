@@ -19,13 +19,13 @@ import java.io.FileNotFoundException;
  * </pre>
  */
 
-public class UploadFile2OssRequest extends BaseCloudRequest {
+public class UploadFileToOssRequest extends BaseCloudRequest {
 
     @NonNull
     public String uploadFileUrl;
     private String uploadFilePath;
 
-    public UploadFile2OssRequest(String uploadFilePath) {
+    public UploadFileToOssRequest(String uploadFilePath) {
         this.uploadFilePath = uploadFilePath;
     }
 
