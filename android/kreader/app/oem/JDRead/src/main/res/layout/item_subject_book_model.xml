@@ -17,11 +17,12 @@
         android:orientation="vertical">
 
         <ImageView
+            thumbnail="@{bookBean.coverBitmap}"
             android:id="@+id/image_cover"
             android:layout_width="@dimen/subject_model_item_width"
             android:layout_height="@dimen/subject_model_item_height"
             android:scaleType="fitXY"
-            bind:cover="@{bookBean.image_url}" />
+            android:src="@{bookBean.coverDefault}"/>
 
         <com.onyx.jdread.library.view.EndEllipsizeTextView
             android:id="@+id/textView_title"

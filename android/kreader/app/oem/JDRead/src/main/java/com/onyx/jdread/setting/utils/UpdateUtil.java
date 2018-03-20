@@ -29,9 +29,10 @@ import java.util.Locale;
  */
 
 public class UpdateUtil {
-    public static final String SYSTEM_UPDATE_TAG = "update.zip";
     public static final String APK_UPDATE_TAG = "JDRead-release.apk";
+    public static final String SYSTEM_UPDATE_TAG = "update.upx";
     public static final String APK_PATH = "apk_path";
+    public static final String SYSTEM_UPGRADE_PATH = "system_upgrade_path";
     public static final String VERSION_LAUNCHER = "JDR6.L.";
     public static final String VERSION_SYSTEM = "JDR6.S.";
 
@@ -93,6 +94,16 @@ public class UpdateUtil {
         intent.setClassName(packageName, className);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(APK_PATH, path);
+        context.startActivity(intent);
+    }
+
+    public static void startSystemUpgradeActivity(Context context, String path) {
+        Intent intent = new Intent();
+        String packageName = "com.onyx.android.update";
+        String className = "com.onyx.android.update.SystemUpgradeActivity";
+        intent.setClassName(packageName, className);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(SYSTEM_UPGRADE_PATH, path);
         context.startActivity(intent);
     }
 

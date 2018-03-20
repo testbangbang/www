@@ -10,4 +10,5 @@
     <string name="start_install">start install</string>
     <string name="install_complete">install complete</string>
     <string name="install_fail">install fail</string>
+    <string name="system_upgrade_fail_message">There was a problem during the upgrade. Please delete the upgrade package and download it again!</string>
 </resources>
