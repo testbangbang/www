@@ -249,6 +249,13 @@ public class ReaderActivityEventHandler {
         }
     }
 
+    public void openCatalog(){
+        if(readerViewModel.getReaderDataHolder().getDocumentInfo().getOpenType() == DocumentInfo.OPEN_BOOK_CATALOG){
+            readerViewModel.setTipMessage("");
+            readerViewModel.getReaderDataHolder().getEventBus().post(new ShowReaderCatalogMenuEvent());
+        }
+    }
+
     private void startMainActivity(){
         Intent intent = new Intent(readerViewBack.getContext(), MainActivity.class);
         readerViewBack.getContext().startActivity(intent);
@@ -485,9 +492,7 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenDocumentSuccessEvent(OpenDocumentSuccessEvent event) {
         readerViewModel.getReaderDataHolder().setDocumentOpenState();
-        if(readerViewModel.getReaderDataHolder().getDocumentInfo().getOpenType() == DocumentInfo.OPEN_BOOK_CATALOG){
-            readerViewModel.getReaderDataHolder().getEventBus().post(new ShowReaderCatalogMenuEvent());
-        }
+        openCatalog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

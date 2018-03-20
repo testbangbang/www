@@ -20,10 +20,12 @@ import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.OpenDocumentAction;
 import com.onyx.jdread.reader.actions.ParserOpenDocumentInfoAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
+import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.data.PageTurningDetector;
 import com.onyx.jdread.reader.data.PageTurningDirection;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.model.SelectMenuModel;
 
@@ -90,10 +92,28 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     }
 
     private void updateLoadingState(){
-        if(readerViewModel.getReaderDataHolder().isPreload()){
-            readerViewModel.setTipMessage(ResManager.getString(R.string.preload_loading));
-            readerViewModel.setIsShowTipMessage(true);
+        if(readerViewModel.getReaderDataHolder().isPreload() ){
+            setTimeMessage(getTimMessage());
+            return;
         }
+        if(readerViewModel.getReaderDataHolder().getDocumentInfo().getOpenType() == DocumentInfo.OPEN_BOOK_CATALOG){
+            setTimeMessage(getTimMessage());
+        }
+    }
+
+    private void setTimeMessage(String message){
+        readerViewModel.setTipMessage(message);
+        readerViewModel.setIsShowTipMessage(true);
+    }
+
+    private String getTimMessage(){
+        if(readerViewModel.getReaderDataHolder().isPreload()){
+            return ResManager.getString(R.string.preload_loading);
+        }
+        if(readerViewModel.getReaderDataHolder().getDocumentInfo().getOpenType() == DocumentInfo.OPEN_BOOK_CATALOG){
+            return ResManager.getString(R.string.catalog_loading);
+        }
+        return ResManager.getString(R.string.loading);
     }
 
     private void initLastPageView() {
