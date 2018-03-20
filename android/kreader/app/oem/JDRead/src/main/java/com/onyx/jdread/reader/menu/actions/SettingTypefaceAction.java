@@ -17,17 +17,25 @@ public class SettingTypefaceAction extends BaseReaderAction {
     private String typefacePath;
     private ReaderTextStyle style;
     private int styleIndex;
+    private int settingType;
+    private int currentLineSpacing;
 
-    public SettingTypefaceAction(ReaderTextStyle style, String typefacePath,int styleIndex) {
+    public SettingTypefaceAction(ReaderTextStyle style, String typefacePath,int styleIndex,int settingType,int currentLineSpacing) {
         this.typefacePath = typefacePath;
         this.style = style;
         this.styleIndex = styleIndex;
+        this.settingType = settingType;
+        this.currentLineSpacing = currentLineSpacing;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         style.setFontFace(typefacePath);
-        style.setLineSpacing(ReaderConfig.getAdditionalSpacing(style.getFontFace(),styleIndex));
+
+        int spacing = ReaderConfig.getAdditionalSpacing(style.getFontFace(),styleIndex,
+                currentLineSpacing,settingType);
+
+        style.setLineSpacing(ReaderTextStyle.Percentage.create(spacing));
 
         final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(), style,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {

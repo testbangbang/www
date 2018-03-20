@@ -156,7 +156,10 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
             style = customStyle;
         }
 
-        style.setLineSpacing(ReaderConfig.getAdditionalSpacing(style.getFontFace(), settingInfo.settingStyle));
+        int spacing = ReaderConfig.getAdditionalSpacing(style.getFontFace(),settingInfo.settingType,
+                style.getLineSpacing().getPercent(),settingInfo.settingType);
+
+        style.setLineSpacing(ReaderTextStyle.Percentage.create(spacing));
 
         getReader().getReaderHelper().getReaderLayoutManager().setStyle(style);
         restoreContrast();

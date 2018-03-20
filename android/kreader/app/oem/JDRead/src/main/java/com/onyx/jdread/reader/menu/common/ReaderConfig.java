@@ -381,27 +381,12 @@ public class ReaderConfig {
         return JDPreferenceManager.getIntValue(ReaderConfig.SETTING_STYLE_KEY,DEFAULT_PRESET_STYLE);
     }
 
-    public static ReaderTextStyle.Percentage getTypefaceFourSpacingLine(int styleIndex){
-        ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
-        int spacing = getTypefaceFourExtendHeight(styleIndex);
-        return ReaderTextStyle.Percentage.create(presetStyle.getLineSpacing().getPercent() + spacing);
-    }
-
-    public static ReaderTextStyle.Percentage getAdditionalSpacing(String faceType,int styleIndex){
-        if(faceType.equals(ReaderConfig.Typeface.TYPEFACE_FOUR)){
-            return ReaderConfig.getTypefaceFourSpacingLine(styleIndex);
-        }else {
-            ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
-            return presetStyle.getLineSpacing();
-        }
-    }
-
-    public static ReaderTextStyle.Percentage getAdditionalSpacing(String faceType,int styleIndex,int spacing){
+    public static int getAdditionalSpacing(String faceType,int styleIndex,int spacing,int settingType){
         if(faceType.equals(ReaderConfig.Typeface.TYPEFACE_FOUR)){
             int typefaceFourExtendHeight = ReaderConfig.getTypefaceFourExtendHeight(styleIndex);
             spacing += typefaceFourExtendHeight;
         }
-        return ReaderTextStyle.Percentage.create(spacing);
+        return spacing;
     }
 
     public static int getTypefaceFourExtendHeight(int styleIndex){

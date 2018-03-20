@@ -34,6 +34,7 @@ public class ReaderTextModel {
     private ObservableInt currentSettingType = new ObservableInt(ReaderConfig.DEFAULT_SETTING_TYPE);
     private EventBus eventBus;
     private SettingInfo settingInfo;
+    private int currentLineSpacing;
 
     public ReaderTextModel(EventBus eventBus, ReaderTextStyle style, SettingInfo settingInfo) {
         this.eventBus = eventBus;
@@ -48,6 +49,7 @@ public class ReaderTextModel {
             setDefaultTypeFace(style.getFontFace());
             setDefaultLanguage(chineseConvertType);
             this.settingInfo = settingInfo;
+            currentLineSpacing = style.getLineSpacing().getPercent();
         }
     }
 
@@ -155,6 +157,7 @@ public class ReaderTextModel {
         currentSettingType.set(settingInfo.settingType);
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
         event.styleIndex = settingInfo.settingStyle;
+        event.settingType = currentSettingType.get();
         eventBus.post(event);
     }
 
@@ -186,6 +189,8 @@ public class ReaderTextModel {
         ReaderSettingTypefaceEvent event = new ReaderSettingTypefaceEvent();
         event.typeFace = typeface;
         event.styleIndex = currentFontSize.get();
+        event.settingType = currentSettingType.get();
+        event.currentLineSpacing = currentLineSpacing;
         eventBus.post(event);
     }
 
@@ -219,6 +224,7 @@ public class ReaderTextModel {
         settingInfo.settingStyle = style;
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
         event.styleIndex = style;
+        event.settingType = currentSettingType.get();
         eventBus.post(event);
     }
 
