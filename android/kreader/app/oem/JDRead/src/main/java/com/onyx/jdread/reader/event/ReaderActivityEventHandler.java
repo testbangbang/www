@@ -551,8 +551,12 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSystemBarBackToSettingEvent(SystemBarBackToSettingEvent event) {
+        openSetting(Integer.MAX_VALUE);
+    }
+
+    public void openSetting(long id){
         setLostFocus(true);
-        ManagerActivityUtils.startSettingsActivity(readerViewBack.getContext());
+        ManagerActivityUtils.startSettingsActivity(readerViewBack.getContext(),id);
         if (readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()) {
             readerSettingMenuDialog.dismiss();
         }
@@ -587,5 +591,10 @@ public class ReaderActivityEventHandler {
                 onyxDigitalClock.setFormat();
             }
         }
+    }
+
+    @Subscribe
+    public void onOpenBookDetailEvent(OpenBookDetailEvent event){
+        openSetting(readerViewModel.getReaderDataHolder().getDocumentInfo().getCloudId());
     }
 }

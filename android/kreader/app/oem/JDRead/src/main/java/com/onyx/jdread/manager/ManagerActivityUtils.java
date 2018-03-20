@@ -91,9 +91,12 @@ public class ManagerActivityUtils {
         context.sendBroadcast(intent);
     }
 
-    public static void startSettingsActivity(Context context) {
+    public static void startSettingsActivity(Context context,long ebookId) {
         Intent intent = new Intent(context, SettingsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if(ebookId != Integer.MAX_VALUE) {
+            intent.putExtra(Constants.SP_KEY_BOOK_ID, ebookId);
+        }
         context.startActivity(intent);
     }
 }
