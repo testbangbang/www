@@ -104,18 +104,16 @@ public class OTAManager {
     }
 
     static private String getLocalSdcardPath() {
-        return EnvironmentUtil.getExternalStorageDirectory() + File.separator +
-                com.onyx.android.sdk.device.Device.currentDevice.getUpgradePackageName();
+        return EnvironmentUtil.getExternalStorageDirectory() + File.separator + "update.upx";
     }
 
     static private String getLocalExtsdPath() {
-        return EnvironmentUtil.getRemovableSDCardDirectory() + File.separator +
-                com.onyx.android.sdk.device.Device.currentDevice.getUpgradePackageName();
+        return EnvironmentUtil.getRemovableSDCardDirectory() + File.separator + "update.upx";
     }
 
     static private String getCloudSdcardPath() {
         return EnvironmentUtil.getExternalStorageDirectory() + File.separator +
-                "cloud." + com.onyx.android.sdk.device.Device.currentDevice.getUpgradePackageName();
+                "cloud." + "update.upx";
     }
 
     public static String getLocalUpdatePagePath() {
