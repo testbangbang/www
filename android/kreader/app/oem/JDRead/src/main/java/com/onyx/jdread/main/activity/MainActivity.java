@@ -425,6 +425,9 @@ public class MainActivity extends AppCompatActivity {
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
+            if (functionBarItem.getStackList().isLastOne()) {
+                return;
+            }
             FragmentBarModel barModel = popCurrentChildView(functionBarItem);
             if (isNetWorkFragment(currentFragment.getClass().getName()) || isNetWorkFragment(barModel.getName())) {
                 barModel = functionBarItem.getStackList().popChildView();
