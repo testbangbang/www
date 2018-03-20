@@ -31,7 +31,7 @@
             android:id="@+id/item_read_vip_paid"
             android:layout_width="@dimen/item_points_for_points_width"
             android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_stroke_corners"
+            android:background="@drawable/rectangle_small"
             android:gravity="center"
             android:padding="@dimen/item_points_for_points_padding"
             android:text="@{@string/format_rmb(ViewHelper.formatRMB(data.jd_price))}"

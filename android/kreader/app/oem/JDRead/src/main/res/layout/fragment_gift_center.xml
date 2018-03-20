@@ -16,20 +16,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.onyx.android.sdk.ui.view.PageRecyclerView
-            android:id="@+id/gift_center_recycler"
+        <LinearLayout
+            android:id="@+id/content_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingLeft="@dimen/gift_center_recycler_padding"
-            android:paddingRight="@dimen/gift_center_recycler_padding"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:padding="@dimen/gift_center_page_padding"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_three_heading_font" />
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/gift_center_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/gift_center_recycler_padding"
+                android:paddingRight="@dimen/gift_center_recycler_padding" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:padding="@dimen/gift_center_page_padding"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+        </LinearLayout>
+
+        <ViewStub
+            android:id="@+id/none_result_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/layout_none_result" />
+
     </LinearLayout>
 </layout>

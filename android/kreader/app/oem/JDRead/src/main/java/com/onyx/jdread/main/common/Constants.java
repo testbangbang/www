@@ -175,6 +175,9 @@ public class Constants {
     public static final String NET_BOOK_DIR = "/netbooks/";
     public static final String DIVIDER = "_";
     public static final int MINUTE_STEP = 60;
+    public static final int REQUEST_CODE = 0;
+    public static final int RESULT_CODE = 1;
     public static final int GET_DECRYPT_KEY_POINT = 6;
+    public static final int SP_KEY_CATEGORY_ID = 5272;
     public static final int TEXT_FLAG_NULL = 0;
 }

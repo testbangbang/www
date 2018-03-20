@@ -594,4 +594,11 @@
     <string name="password_wrong">Wrong Password</string>
     <string name="empty_object">object is empty</string>
     <string name="check_update_key">check_update_key</string>
+    <string name="consumption_none_record">No consumption record</string>
+    <string name="recharge_none_record">No recharge record</string>
+    <string name="feedback_none_record">No feedback record</string>
+    <string name="monthly_vip">Monthly VIP(31 days)</string>
+    <string name="quarter_vip">Quarterly VIP(91 days)</string>
+    <string name="year_vip">Annual VIP(366 days)</string>
+    <string name="catalog_loading">Loading...</string>
 </resources>
