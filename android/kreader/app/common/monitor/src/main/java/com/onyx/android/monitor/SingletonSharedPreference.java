@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 
 public class SingletonSharedPreference {
 
-    private static final int DEFAULT_INTERVAL_TIME = 5;
+    private static final int DEFAULT_INTERVAL_TIME = 1;
     public static final int GC_REFRESH_INTERVAL_TIME_MAX = 60;
     public static final int GC_REFRESH_INTERVAL_TIME_MIN = DEFAULT_INTERVAL_TIME;
 
