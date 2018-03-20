@@ -30,7 +30,7 @@ import java.util.Locale;
 
 public class UpdateUtil {
     public static final String SYSTEM_UPDATE_TAG = "update.zip";
-    public static final String APK_UPDATE_TAG = "JDRead.apk";
+    public static final String APK_UPDATE_TAG = "JDRead-release.apk";
     public static final String APK_PATH = "apk_path";
     public static final String VERSION_LAUNCHER = "JDR6.L.";
     public static final String VERSION_SYSTEM = "JDR6.S.";

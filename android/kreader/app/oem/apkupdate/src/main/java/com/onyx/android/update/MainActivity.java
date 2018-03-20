@@ -71,9 +71,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     private void installApp() {
-        String result = SilentInstall.installSilent(this, apkPath);
-        File file = new File(apkPath);
-        if (StringUtils.isNullOrEmpty(result) && file.delete()) {
+        String result = SilentInstall.installSystemApp(this, apkPath);
+        if (StringUtils.isNullOrEmpty(result)) {
             rebootDevice();
         } else {
             setUpdatingAppMessage(result, REINSTALL);
