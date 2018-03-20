@@ -70,6 +70,7 @@ public class RefreshFragment extends BaseFragment {
         binding.refreshTitleBar.setTitleModel(titleModel);
 
         settingRefreshModel = SettingBundle.getInstance().getSettingRefreshModel();
+        settingRefreshModel.setSpeedRefresh(JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false));
         int currentRefreshPage = settingRefreshModel.getCurrentRefreshPage();
         settingRefreshModel.setCurrentPageRefreshPage(currentRefreshPage);
         refreshAdapter.setCurrentPage(currentRefreshPage);

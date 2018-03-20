@@ -201,6 +201,12 @@ public class ReaderActivityEventHandler {
             public void onError(Throwable throwable) {
                 ReaderErrorEvent.onErrorHandle(throwable, this.getClass().getSimpleName(), readerViewModel.getReaderDataHolder().getEventBus());
             }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                ReaderViewUtil.clearFastModeByConfig();
+            }
         });
 
     }
@@ -239,7 +245,6 @@ public class ReaderActivityEventHandler {
             startMainActivity();
             readerViewBack.getContext().finish();
         }else {
-            ReaderViewUtil.applyFastModeByConfig();
             new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
         }
     }
@@ -550,8 +555,8 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onBrightnessChangeEvent(BrightnessChangeEvent event) {
-        if (systemBarPopupWindowModel != null && systemBarPopupWindowModel.brightnessModel != null) {
-            systemBarPopupWindowModel.brightnessModel.updateLight();
+        if (readerSettingMenuDialog != null && readerSettingMenuDialog.getBrightnessModel() != null) {
+            readerSettingMenuDialog.getBrightnessModel().updateLight();
         }
     }
 
