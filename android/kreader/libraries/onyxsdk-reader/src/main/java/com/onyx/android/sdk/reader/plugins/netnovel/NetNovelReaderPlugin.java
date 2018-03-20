@@ -162,12 +162,12 @@ public class NetNovelReaderPlugin implements ReaderPlugin,
 
     @Override
     public ReaderTextStyle getStyle() {
-        return null;
+        return getPluginImpl().getStyle();
     }
 
     @Override
     public void setStyle(ReaderTextStyle style) {
-
+        getPluginImpl().setStyle(style);
     }
 
     @Override

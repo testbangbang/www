@@ -3,13 +3,13 @@ package com.onyx.android.sdk.reader.plugins.netnovel;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderCallback;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.android.sdk.reader.api.ReaderError;
-import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.plugins.alreader.AlReaderWrapper;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -211,6 +211,14 @@ public class NetNovelReaderWrapper {
         return true;
     }
 
+    public ReaderTextStyle getStyle() {
+        return alReaderWrapper.getStyle();
+    }
+
+    public void setStyle(ReaderTextStyle style) {
+        alReaderWrapper.setStyle(style);
+    }
+
     private boolean openChapter(String chapterId) {
         if (currentChapterId != null) {
             if (currentChapterId.compareTo(chapterId) == 0) {
@@ -324,5 +332,4 @@ public class NetNovelReaderWrapper {
         }
         return openChapter(chapterList.get(getCurrentChapterIndex() - 1).id);
     }
-
 }
