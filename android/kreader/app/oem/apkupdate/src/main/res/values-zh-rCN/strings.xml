@@ -7,4 +7,5 @@
     <string name="prepare_updating_app">正在准备升级,请等待!!!</string>
     <string name="update_success">应用升级成功...</string>
     <string name="file_not_exist">文件不存在:%s</string>
+    <string name="system_upgrade_fail_message">升级过程中遇到问题，请删除升级包重新下载！</string>
 </resources>
