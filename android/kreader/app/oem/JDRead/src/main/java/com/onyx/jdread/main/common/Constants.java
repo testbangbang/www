@@ -172,4 +172,6 @@ public class Constants {
     public static String KEY_DIRECTORY_CONTENT = "directory_content";
     public static final String DIVIDER = "_";
     public static final int MINUTE_STEP = 60;
+    public static final int REQUEST_CODE = 0;
+    public static final int RESULT_CODE = 1;
 }
