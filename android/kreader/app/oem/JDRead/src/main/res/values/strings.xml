@@ -606,4 +606,5 @@
     <string name="monthly">Member monthly ( 31days )</string>
     <string name="quarterly">Member quarterly ( 91days )</string>
     <string name="annual">Membership year ( 366days )</string>
+    <string name="Delete_selected_book_from_shopp_cart">Delete the selected book from the shopping cart</string>
 </resources>
