@@ -86,4 +86,5 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
+    compile project(path: ':libraries:onyxsdk-data')
 }
