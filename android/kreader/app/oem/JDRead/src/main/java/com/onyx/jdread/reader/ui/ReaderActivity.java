@@ -209,6 +209,10 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         if (readerActivityEventHandler != null) {
             readerActivityEventHandler.updateTimeFormat();
         }
+        if (readerActivityEventHandler != null && readerActivityEventHandler.isLostFocus()) {
+            readerActivityEventHandler.setLostFocus(false);
+            readerActivityEventHandler.updatePageView();
+        }
     }
 
     @Override

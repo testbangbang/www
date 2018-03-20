@@ -87,12 +87,21 @@ public class ReaderActivityEventHandler {
     private ExportHelper exportHelper;
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
     private ReaderScreenStateReceive readerScreenStateReceive;
+    private boolean lostFocus = false;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
         this.readerViewBack = readerViewBack;
         ReaderPageInfoModel.setHasChapterInfo(true);
         exportHelper = new ExportHelper(readerViewBack.getContext(), readerViewModel.getEventBus());
+    }
+
+    public boolean isLostFocus() {
+        return lostFocus;
+    }
+
+    public void setLostFocus(boolean lostFocus) {
+        this.lostFocus = lostFocus;
     }
 
     public void registerListener() {
@@ -294,7 +303,7 @@ public class ReaderActivityEventHandler {
         });
     }
 
-    private void updatePageView(){
+    public void updatePageView(){
         UpdateViewPageAction action =new UpdateViewPageAction();
         action.execute(readerViewModel.getReaderDataHolder(),null);
     }
@@ -532,6 +541,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSystemBarBackToSettingEvent(SystemBarBackToSettingEvent event) {
+        setLostFocus(true);
         ManagerActivityUtils.startSettingsActivity(readerViewBack.getContext());
         if (readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()) {
             readerSettingMenuDialog.dismiss();
