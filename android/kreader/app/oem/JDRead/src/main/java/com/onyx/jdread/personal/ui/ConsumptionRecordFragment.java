@@ -1,11 +1,13 @@
 package com.onyx.jdread.personal.ui;
 
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -14,9 +16,11 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ConsumptionRecordBinding;
+import com.onyx.jdread.databinding.NoneResultBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.model.NoneResultModel;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.ConsumeRecordAction;
 import com.onyx.jdread.personal.adapter.ConsumptionRecordAdapter;
@@ -24,6 +28,7 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.ConsumeRecordBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.util.Utils;
+import com.onyx.jdread.util.ViewCompatUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -77,6 +82,7 @@ public class ConsumptionRecordFragment extends BaseFragment {
                     binding.consumptionRecordRecycler.resize(adapter.getRowCount(), adapter.getColumnCount(), data.size());
                     setPageSize();
                 }
+                updateContentView();
             }
         });
     }
@@ -98,6 +104,16 @@ public class ConsumptionRecordFragment extends BaseFragment {
                 setPageSize();
             }
         });
+    }
+
+    private void updateContentView() {
+        if (binding == null || binding.contentView == null) {
+            return;
+        }
+        adapter.notifyDataSetChanged();
+        binding.contentView.setVisibility(adapter.getDataCount() > 0 ? View.VISIBLE : View.GONE);
+        ViewCompatUtil.showNoneResultView(binding.noneResultView, adapter.getDataCount() <= 0,
+                new NoneResultModel(R.mipmap.ic_me_consume_none, ResManager.getString(R.string.consumption_none_record)));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

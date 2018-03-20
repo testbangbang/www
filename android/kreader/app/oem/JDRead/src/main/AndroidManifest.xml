@@ -74,7 +74,8 @@
 
         <activity
             android:name=".reader.ui.SettingsActivity"
-            android:theme="@style/ActivityFullscreen" />
+            android:theme="@style/ActivityFullscreen"
+            android:launchMode="singleTop"/>
 
         <activity android:name ="com.evernote.client.android.EvernoteOAuthActivity"/>
         <activity android:name ="com.evernote.client.android.login.EvernoteLoginActivity"/>

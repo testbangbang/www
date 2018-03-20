@@ -90,6 +90,7 @@ public class RefreshFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 JDPreferenceManager.setBooleanValue(R.string.speed_refresh_key, isChecked);
+                settingRefreshModel.setSpeedRefresh(isChecked);
                 ToastUtil.showToast(isChecked ? ResManager.getString(R.string.speed_refresh_is_opened) : ResManager.getString(R.string.speed_refresh_is_closed));
             }
         });

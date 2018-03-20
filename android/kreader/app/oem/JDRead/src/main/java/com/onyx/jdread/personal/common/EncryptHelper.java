@@ -7,6 +7,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.action.GetSaltAction;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +31,31 @@ public class EncryptHelper {
         return sb.toString();
     }
 
+    public static String getNetBookDecryptKey(String part) {
+        char[] chars = Constants.NET_BOOK_DECRYPT_SALT.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
+            sb.append(chars[i]);
+            if (i == Constants.GET_DECRYPT_KEY_POINT) {
+                sb.append(JDAppBaseInfo.APP_DEFAULT_VALUE);
+                sb.append(part);
+            }
+        }
+        return sb.toString();
+    }
+
     public static String getEncryptParams(String key, String signStr) {
         File encryptFile = getEncryptFile();
         FileUtils.appendContentToFile(key, encryptFile);
         path = encryptFile.getParent() + File.separator;
         String atencrypting = decryptionoperation.atencrypting(signStr, path, 0);
         return atencrypting;
+    }
+
+    public static void setNetBookDecryptKeyPath(String key) {
+        File encryptFile = getEncryptFile();
+        FileUtils.appendContentToFile(key, encryptFile);
+        path = encryptFile.getParent() + File.separator;
     }
 
     public static String getDecryptContent(String encryptContent) {

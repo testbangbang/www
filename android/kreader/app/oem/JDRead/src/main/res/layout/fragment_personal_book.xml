@@ -9,11 +9,11 @@
 
         <variable
             name="books"
-            type="int"/>
+            type="int" />
 
         <variable
             name="page"
-            type="String"/>
+            type="String" />
     </data>
 
     <LinearLayout
@@ -32,13 +32,13 @@
                 android:layout_height="wrap_content" />
 
             <LinearLayout
-                android:layout_marginTop="@dimen/setting_title_bar_padding"
-                android:layout_marginBottom="@dimen/setting_title_bar_padding"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:orientation="horizontal"
-                android:layout_marginRight="@dimen/setting_title_bar_padding">
+                android:layout_marginBottom="@dimen/setting_title_bar_padding"
+                android:layout_marginRight="@dimen/setting_title_bar_padding"
+                android:layout_marginTop="@dimen/setting_title_bar_padding"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/personal_book_search"
@@ -51,8 +51,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/personal_book_filter_margin_left"
-                    android:drawableRight="@mipmap/ic_down"
                     android:drawablePadding="@dimen/personal_book_title_down_padding"
+                    android:drawableRight="@mipmap/ic_down"
                     android:text="@{filterName}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
@@ -63,16 +63,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:paddingBottom="@dimen/fragment_content_padding_bottom"
             android:paddingLeft="@dimen/fragment_content_padding"
-            android:paddingRight="@dimen/fragment_content_padding"
-            android:paddingBottom="@dimen/fragment_content_padding_bottom">
+            android:paddingRight="@dimen/fragment_content_padding">
 
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/personal_book_recycler"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:paddingBottom="@dimen/personal_book_recycler_padding"/>
+                android:layout_weight="1">
+
+                <com.onyx.android.sdk.ui.view.PageRecyclerView
+                    android:id="@+id/personal_book_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/personal_book_recycler_padding" />
+
+                <TextView
+                    android:id="@+id/empty_prompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:drawableTop="@mipmap/ic_shelf_book_none"
+                    android:text="@string/empty_library_prompt"
+                    android:textSize="@dimen/level_two_heading_font" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"

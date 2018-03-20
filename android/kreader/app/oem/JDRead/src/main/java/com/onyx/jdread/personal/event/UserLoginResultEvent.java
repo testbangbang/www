@@ -1,5 +1,7 @@
 package com.onyx.jdread.personal.event;
 
+import com.onyx.jdread.main.common.Constants;
+
 /**
  * Created by jackdeng on 2017/12/26.
  */
@@ -7,7 +9,7 @@ package com.onyx.jdread.personal.event;
 public class UserLoginResultEvent {
     private String message;
     private String targetView;
-    private int resultCode;
+    private int resultCode = Constants.INVALID_VALUE;
 
     public UserLoginResultEvent(String message) {
         this.message = message;

@@ -28,7 +28,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by huxiaomao on 2018/1/22.
  */
 
-public class SingleLineDialog extends Dialog implements SinglelineViewCallBack {
+public class SingleLineDialog extends ReaderBaseDialog implements SinglelineViewCallBack {
     private static final String TAG = ReaderNoteDialog.class.getSimpleName();
     private ActivitySingleLineBinding binding;
     private SingleNoteViewModel signNoteViewModel;

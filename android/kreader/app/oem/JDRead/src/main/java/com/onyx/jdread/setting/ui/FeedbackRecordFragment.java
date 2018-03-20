@@ -24,6 +24,7 @@ import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.main.model.NoneResultModel;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.adapter.FeedbackRecordAdapter;
 import com.onyx.jdread.setting.data.database.FeedbackRecord;
@@ -32,6 +33,7 @@ import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.request.RxFeedbackRecordListLoadRequest;
 import com.onyx.jdread.util.Utils;
+import com.onyx.jdread.util.ViewCompatUtil;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -187,7 +189,17 @@ public class FeedbackRecordFragment extends BaseFragment {
             return;
         }
         feedbackRecordAdapter.addDataList(list, !loadMore);
+        updateContentView();
         updatePageIndicator();
+    }
+
+    private void updateContentView() {
+        if (binding == null || binding.contentView == null) {
+            return;
+        }
+        binding.contentView.setVisibility(feedbackRecordAdapter.getDataCount() > 0 ? View.VISIBLE : View.GONE);
+        ViewCompatUtil.showNoneResultView(binding.noneResultView, feedbackRecordAdapter.getDataCount() <= 0,
+                new NoneResultModel(R.mipmap.ic_feedback_record_none, ResManager.getString(R.string.feedback_none_record)));
     }
 
     private void updatePageIndicator() {

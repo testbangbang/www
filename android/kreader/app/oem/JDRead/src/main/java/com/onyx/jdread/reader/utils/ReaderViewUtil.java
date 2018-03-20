@@ -14,7 +14,11 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.JDPreferenceManager;
+import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.menu.common.ReaderConfig;
+import com.onyx.jdread.reader.ui.ReaderActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -114,5 +118,17 @@ public class ReaderViewUtil {
         intent.putExtra(ReaderConfig.BOOK_READING_START_TIME, startTime / 1000);
         intent.putExtra(ReaderConfig.BOOK_READING_ID, cloudId);
         context.sendBroadcast(intent);
+    }
+
+    public static void applyFastModeByConfig() {
+        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false)) {
+            EpdController.applyApplicationFastMode(ReaderActivity.class.getSimpleName(), true, true);
+        }
+    }
+
+    public static void clearFastModeByConfig() {
+        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false)) {
+            EpdController.applyApplicationFastMode(ReaderActivity.class.getSimpleName(), false, true);
+        }
     }
 }

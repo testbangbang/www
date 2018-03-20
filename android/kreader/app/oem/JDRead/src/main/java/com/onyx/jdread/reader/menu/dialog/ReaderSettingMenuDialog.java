@@ -6,7 +6,6 @@ import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.RatingBar;
@@ -22,11 +21,9 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
-import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
-import com.onyx.jdread.reader.common.ReaderPageInfoFormat;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.event.GotoPageEvent;
@@ -37,6 +34,7 @@ import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
 import com.onyx.jdread.reader.menu.model.ReaderTextModel;
 import com.onyx.jdread.reader.menu.model.ReaderTitleBarModel;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 import com.onyx.jdread.setting.model.BrightnessModel;
 
 
@@ -90,6 +88,7 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
     public void show() {
         super.show();
         DeviceUtils.adjustFullScreenStatus(this.getWindow(),true);
+        ReaderViewUtil.applyFastModeByConfig();
     }
 
     private void initView() {
@@ -246,6 +245,7 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
     public void dismiss() {
         readerSettingMenuDialogHandler.unregisterListener();
         super.dismiss();
+        ReaderViewUtil.clearFastModeByConfig();
     }
 
     @Override

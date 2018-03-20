@@ -106,8 +106,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:clickable="true"
+                android:drawableTop="@mipmap/ic_shelf_book_none"
                 android:textSize="@dimen/level_two_heading_font"
+                android:text="@string/empty_library_prompt"
                 android:visibility="@{libraryModel.count == 0?View.VISIBLE:View.GONE}" />
         </RelativeLayout>
 

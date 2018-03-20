@@ -48,16 +48,6 @@ public class RxFirmwareLocalUpdateRequest extends RxBaseCloudRequest {
             failString = getAppContext().getString(R.string.file_does_not_exist);
             return;
         }
-        success = OTAUtil.checkLocalUpdateZipLegality(updateFile.getAbsolutePath());
-        if (!success) {
-            failString = getAppContext().getString(R.string.updating_package_model_no_match);
-            return;
-        }
-        success = verifyPackage(updateFile);
-        if (!success) {
-            failString = getAppContext().getString(R.string.updating_package_parse_failed);
-            return;
-        }
         success = installPackage(updateFile);
         if (!success) {
             failString = getAppContext().getString(R.string.updating_package_install_failed);
