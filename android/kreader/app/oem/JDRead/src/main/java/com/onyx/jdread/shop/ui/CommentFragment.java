@@ -19,7 +19,6 @@ import com.onyx.jdread.databinding.FragmentBookCommentBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.ui.view.PageTextView;
 import com.onyx.jdread.shop.action.BookCommentListAction;
@@ -163,7 +162,11 @@ public class CommentFragment extends BaseFragment {
         commentListAction.execute(getShopDataBundle(), new RxCallback<BookCommentListAction>() {
             @Override
             public void onNext(BookCommentListAction action) {
-                updateContentView(action.getbookCommentsBean());
+                BookCommentsResultBean.DataBean dataBean = action.getbookCommentsBean();
+                updateContentView(dataBean);
+                if (dataBean != null) {
+                    checkContentEmpty(dataBean.comments);
+                }
             }
         });
     }
