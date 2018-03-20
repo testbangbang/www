@@ -1,8 +1,11 @@
 package com.onyx.android.libsetting.util;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.onyx.android.libsetting.R;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -130,4 +133,18 @@ public class BatteryUtil {
                 SECONDS_PER_MONTH * 1000 * ((double) DeviceUtils.getBatteryPercentLevel(context) / 100), TimeUnit.HOUR));
     }
 
+    public static boolean isPowerEnoughOrCharging(Context context, int minLimit) {
+        Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (intent == null) {
+            Log.e(BatteryUtil.class.getSimpleName(), "can't obtain battery status");
+            return false;
+        }
+        int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+        int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
+        if (level * 100 / scale >= minLimit) {
+            return true;
+        }
+        int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+        return status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL;
+    }
 }

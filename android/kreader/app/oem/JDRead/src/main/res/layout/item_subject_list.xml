@@ -16,11 +16,12 @@
         android:orientation="horizontal">
 
         <ImageView
+            thumbnail="@{bookBean.coverBitmap}"
             android:layout_width="@dimen/item_subject_list_cover_width"
             android:layout_height="@dimen/item_subject_list_cover_height"
             android:padding="@dimen/rectangle_stroke_width"
             android:scaleType="fitXY"
-            bind:cover="@{bookBean.image_url}" />
+            android:src="@{bookBean.coverDefault}"/>
 
         <LinearLayout
             android:layout_marginLeft="@dimen/item_subject_list_info_marginleft"

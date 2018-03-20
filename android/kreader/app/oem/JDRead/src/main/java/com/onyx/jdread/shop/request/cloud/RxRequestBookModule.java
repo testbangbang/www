@@ -4,10 +4,12 @@ import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BookModelRequestBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.ViewHelper;
 
 import retrofit2.Call;
 
@@ -42,8 +44,14 @@ public class RxRequestBookModule extends RxBaseCloudRequest {
     }
 
     private void checkResult() {
-        if (bookModelResultBean != null && bookModelResultBean.result_code != 0) {
-            ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(bookModelResultBean.message));
+        if (bookModelResultBean != null) {
+            if (BaseResultBean.checkSuccess(bookModelResultBean.result_code)) {
+                if (bookModelResultBean.data != null && bookModelResultBean.data.items != null) {
+                    ViewHelper.saveBitmapCover(bookModelResultBean.data.items, getAppContext());
+                }
+            } else {
+                ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(bookModelResultBean.message));
+            }
         }
     }
 

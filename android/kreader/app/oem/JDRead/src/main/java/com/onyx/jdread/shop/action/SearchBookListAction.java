@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
@@ -76,6 +77,7 @@ public class SearchBookListAction extends BaseAction<ShopDataBundle> {
         request.setRequestBean(requestBean);
         request.setMapToDataModel(mapToDataModel);
         request.setLoadCover(loadCover);
+        RxRequestSearchBooks.setAppContext(JDReadApplication.getInstance().getApplicationContext());
         request.execute(new RxCallback<RxRequestSearchBooks>() {
 
             @Override

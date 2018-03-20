@@ -53,6 +53,7 @@ public class ShopMainConfigAction extends BaseAction {
         requestBean.setCid(cid);
         RxRequestShopMainConfig request = new RxRequestShopMainConfig();
         request.setRequestBean(requestBean);
+        RxRequestShopMainConfig.setAppContext(JDReadApplication.getInstance().getApplicationContext());
         request.execute(new RxCallback<RxRequestShopMainConfig>() {
 
             @Override

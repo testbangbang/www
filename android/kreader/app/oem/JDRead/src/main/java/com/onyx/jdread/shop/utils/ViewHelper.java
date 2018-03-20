@@ -3,10 +3,18 @@ package com.onyx.jdread.shop.utils;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebSettings;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.ViewTarget;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.common.references.ResourceReleaser;
+import com.facebook.common.util.UriUtil;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.DialogVipNoticeBinding;
@@ -14,6 +22,7 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.BaseSubjectViewModel;
 import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
@@ -234,5 +243,52 @@ public class ViewHelper {
 
     public static boolean isViewVisible(View view) {
         return view != null && view.getVisibility() == View.VISIBLE;
+    }
+
+    public static void ensureCoverUrl(ResultBookBean item) {
+        if (StringUtils.isNotBlank(item.image_url) && !UriUtil.isNetworkUri(Uri.parse(item.image_url))) {
+            item.image_url = CloudApiContext.DEFAULT_COVER_PRE_FIX + item.image_url;
+        }
+    }
+
+    public static Bitmap loadCoverBitmap(String url, Context context) {
+        try {
+            return Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .transform(CutBitmapTransformation.getInstance(context))
+                    .into(ViewTarget.SIZE_ORIGINAL, ViewTarget.SIZE_ORIGINAL)
+                    .get();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static void saveBitmapCover(List<ResultBookBean> data, Context context) {
+        if (!CollectionUtils.isNullOrEmpty(data)) {
+            for (ResultBookBean resultBean : data) {
+                saveBitmapCover(resultBean, context);
+            }
+        }
+    }
+
+    public static void saveBitmapCover(ResultBookBean resultBean, Context context) {
+        if (resultBean != null) {
+            ensureCoverUrl(resultBean);
+            CloseableReference<Bitmap> refBitmap = getRefBitmap(resultBean.image_url, context);
+            if (refBitmap != null) {
+                resultBean.coverBitmap.set(refBitmap);
+            } else {
+                resultBean.coverDefault.set(R.mipmap.ic_cloud_default_cover);
+            }
+        }
+    }
+
+    public static CloseableReference<Bitmap> getRefBitmap(String imageUrl, Context context) {
+        return CloseableReference.of(ViewHelper.loadCoverBitmap(imageUrl, context), new ResourceReleaser<Bitmap>() {
+            @Override
+            public void release(Bitmap value) {
+            }
+        });
     }
 }

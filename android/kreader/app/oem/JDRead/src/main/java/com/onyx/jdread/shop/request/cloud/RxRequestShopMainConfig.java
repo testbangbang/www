@@ -144,6 +144,7 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
         for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
             if (Constants.MAIN_CONFIG_TYPE_EBOOK.equals(itemsBean.type)) {
                 ResultBookBean bookBean = dataBean.ebook.get(itemsBean.id);
+                ViewHelper.saveBitmapCover(bookBean, getAppContext());
                 bookItemList.add(bookBean);
             }
         }
@@ -174,6 +175,7 @@ public class RxRequestShopMainConfig extends RxBaseCloudRequest {
             List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
             for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
                 ResultBookBean bookBean = dataBean.ebook.get(itemsBean.id);
+                ViewHelper.saveBitmapCover(bookBean, getAppContext());
                 bookList.add(bookBean);
             }
             modulesBean.bookList = bookList;

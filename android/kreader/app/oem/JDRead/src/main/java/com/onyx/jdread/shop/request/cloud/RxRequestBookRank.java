@@ -101,6 +101,7 @@ public class RxRequestBookRank extends RxBaseCloudRequest {
             List<BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean> items = modulesBean.items;
             for (BookModelConfigResultBean.DataBean.ModulesBean.ItemsBean itemsBean : items) {
                 ResultBookBean bookBean = dataBean.ebook.get(itemsBean.id);
+                ViewHelper.saveBitmapCover(bookBean, getAppContext());
                 bookList.add(bookBean);
             }
             modulesBean.bookList = bookList;

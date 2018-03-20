@@ -602,5 +602,5 @@
     <string name="quarter_vip">Quarterly VIP ( 91 days )</string>
     <string name="year_vip">Annual VIP ( 366 days )</string>
     <string name="catalog_loading">Loading...</string>
-
+    <string name="power_too_low_to_upgrade">The power is less than %d%%, please upgrade after connecting the power supply</string>
 </resources>
