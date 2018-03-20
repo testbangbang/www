@@ -87,12 +87,21 @@ public class ReaderActivityEventHandler {
     private ExportHelper exportHelper;
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
     private ReaderScreenStateReceive readerScreenStateReceive;
+    private boolean lostFocus = false;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
         this.readerViewBack = readerViewBack;
         ReaderPageInfoModel.setHasChapterInfo(true);
         exportHelper = new ExportHelper(readerViewBack.getContext(), readerViewModel.getEventBus());
+    }
+
+    public boolean isLostFocus() {
+        return lostFocus;
+    }
+
+    public void setLostFocus(boolean lostFocus) {
+        this.lostFocus = lostFocus;
     }
 
     public void registerListener() {
@@ -192,6 +201,12 @@ public class ReaderActivityEventHandler {
             public void onError(Throwable throwable) {
                 ReaderErrorEvent.onErrorHandle(throwable, this.getClass().getSimpleName(), readerViewModel.getReaderDataHolder().getEventBus());
             }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                ReaderViewUtil.clearFastModeByConfig();
+            }
         });
 
     }
@@ -230,8 +245,14 @@ public class ReaderActivityEventHandler {
             startMainActivity();
             readerViewBack.getContext().finish();
         }else {
-            ReaderViewUtil.applyFastModeByConfig();
             new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
+        }
+    }
+
+    public void openCatalog(){
+        if(readerViewModel.getReaderDataHolder().getDocumentInfo().getOpenType() == DocumentInfo.OPEN_BOOK_CATALOG){
+            readerViewModel.setTipMessage("");
+            readerViewModel.getReaderDataHolder().getEventBus().post(new ShowReaderCatalogMenuEvent());
         }
     }
 
@@ -294,7 +315,7 @@ public class ReaderActivityEventHandler {
         });
     }
 
-    private void updatePageView(){
+    public void updatePageView(){
         UpdateViewPageAction action =new UpdateViewPageAction();
         action.execute(readerViewModel.getReaderDataHolder(),null);
     }
@@ -471,9 +492,7 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenDocumentSuccessEvent(OpenDocumentSuccessEvent event) {
         readerViewModel.getReaderDataHolder().setDocumentOpenState();
-        if(readerViewModel.getReaderDataHolder().getDocumentInfo().getOpenType() == DocumentInfo.OPEN_BOOK_CATALOG){
-            readerViewModel.getReaderDataHolder().getEventBus().post(new ShowReaderCatalogMenuEvent());
-        }
+        openCatalog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -532,6 +551,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSystemBarBackToSettingEvent(SystemBarBackToSettingEvent event) {
+        setLostFocus(true);
         ManagerActivityUtils.startSettingsActivity(readerViewBack.getContext());
         if (readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()) {
             readerSettingMenuDialog.dismiss();
@@ -540,8 +560,8 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onBrightnessChangeEvent(BrightnessChangeEvent event) {
-        if (systemBarPopupWindowModel != null && systemBarPopupWindowModel.brightnessModel != null) {
-            systemBarPopupWindowModel.brightnessModel.updateLight();
+        if (readerSettingMenuDialog != null && readerSettingMenuDialog.getBrightnessModel() != null) {
+            readerSettingMenuDialog.getBrightnessModel().updateLight();
         }
     }
 

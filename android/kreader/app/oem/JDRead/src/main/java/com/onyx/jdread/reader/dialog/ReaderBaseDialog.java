@@ -28,12 +28,12 @@ public class ReaderBaseDialog extends OnyxBaseDialog {
     @Override
     public void show() {
         super.show();
-        ReaderViewUtil.applyFastModeByConfig();
+        ReaderViewUtil.clearFastModeByConfig();
     }
 
     @Override
     public void dismiss() {
         super.dismiss();
-        ReaderViewUtil.clearFastModeByConfig();
+        ReaderViewUtil.applyFastModeByConfig();
     }
 }

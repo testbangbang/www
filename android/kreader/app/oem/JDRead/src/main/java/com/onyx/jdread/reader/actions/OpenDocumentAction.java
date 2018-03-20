@@ -9,6 +9,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.DialogReaderLoading;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
+import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.dialog.DialogPassword;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
@@ -70,7 +71,7 @@ public class OpenDocumentAction extends BaseReaderAction {
                 readerDataHolder.getEventBus().post(new CloseDocumentEvent());
             }
         });
-        if (!readerDataHolder.isPreload()) {
+        if (!readerDataHolder.isPreload() && readerDataHolder.getDocumentInfo().getOpenType() != DocumentInfo.OPEN_BOOK_CATALOG) {
             dlgLoading.show();
         }
 

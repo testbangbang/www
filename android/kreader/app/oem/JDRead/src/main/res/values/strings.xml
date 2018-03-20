@@ -600,4 +600,5 @@
     <string name="monthly_vip">Monthly VIP(31 days)</string>
     <string name="quarter_vip">Quarterly VIP(91 days)</string>
     <string name="year_vip">Annual VIP(366 days)</string>
+    <string name="catalog_loading">Loading...</string>
 </resources>

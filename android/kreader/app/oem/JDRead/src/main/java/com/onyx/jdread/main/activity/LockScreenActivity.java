@@ -1,5 +1,6 @@
 package com.onyx.jdread.main.activity;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityLockScreenBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.main.event.PasswordIsCorrectEvent;
 import com.onyx.jdread.main.model.FragmentBarModel;
@@ -134,6 +136,7 @@ public class LockScreenActivity extends AppCompatActivity {
 
     @Subscribe
     public void onPasswordIsCorrectEvent(PasswordIsCorrectEvent event) {
+        setResult(Constants.RESULT_CODE, getIntent());
         finish();
     }
 
