@@ -2,7 +2,7 @@
 <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/scribble_view_width"
-    android:layout_height="@dimen/scribble_view_height"
+    android:layout_height="@dimen/objective_scribble_view_height"
     android:padding="10dp">
 
     <TextView
