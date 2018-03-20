@@ -13,18 +13,20 @@ public class PriceConversionUtil {
     private static String THREE_MONTHS = ResManager.getString(R.string.three_months);
     private static String YEAR = ResManager.getString(R.string.year);
 
-    public static int conversionPrice(int yueDou) {
+    public static int formatRMB(int yueDou) {
         price = yueDou / 100;
         return price;
     }
 
     public static String changeText(String desc) {
-        if (desc.contains(A_MONTH)) {
-            desc = ResManager.getString(R.string.monthly);
-        } else if (desc.contains(THREE_MONTHS)) {
-            desc = ResManager.getString(R.string.quarterly);
-        } else if (desc.contains(YEAR)) {
-            desc = ResManager.getString(R.string.annual);
+        if (desc != null) {
+            if (desc.contains(A_MONTH)) {
+                desc = ResManager.getString(R.string.monthly);
+            } else if (desc.contains(THREE_MONTHS)) {
+                desc = ResManager.getString(R.string.quarterly);
+            } else if (desc.contains(YEAR)) {
+                desc = ResManager.getString(R.string.annual);
+            }
         }
         return desc;
     }
