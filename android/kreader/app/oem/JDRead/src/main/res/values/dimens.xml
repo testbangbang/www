@@ -629,4 +629,7 @@
     <dimen name="view_directory_page_text_view_height">538dp</dimen>
     <dimen name="view_directory_page_text_view_indicator_margin_top">22dp</dimen>
     <dimen name="view_directory_page_text_view_margin_right">20dp</dimen>
+    <dimen name="update_progress_margin">20dp</dimen>
+    <dimen name="update_progress_width">365dp</dimen>
+    <dimen name="update_progress_height">6dp</dimen>
 </resources>
