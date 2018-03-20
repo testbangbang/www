@@ -197,6 +197,11 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe
+    public void onLoadingEvent(LoadingEvent event){
+        ToastUtil.showToast(ResManager.getString(R.string.reader_loading));
+    }
+
+    @Subscribe
     public void onCloseDocumentEvent(CloseDocumentEvent event) {
         new CloseDocumentAction().execute(readerViewModel.getReaderDataHolder(), new RxCallback() {
             @Override
