@@ -495,8 +495,9 @@
     <string name="speed_refresh_key">speed_refresh_key</string>
     <string name="forgot_psw">Forgot psw</string>
     <string name="dialog_pay_order_book_price">Price: %1$d Read Bean</string>
+    <string name="dialog_pay_order_book_price_rmb">Price: ￥%1$d.00</string>
     <string name="dialog_pay_order_cur_balance">Balance: %1$d Read Bean/%2$d Voucher</string>
-    <string name="dialog_pay_order_pay_type">Payment:</string>
+    <string name="dialog_pay_order_pay_type">Payment</string>
     <string name="dialog_pay_order_cash">Cash</string>
     <string name="dialog_pay_order_confirm_pay">Confirm Payment</string>
     <string name="payment_order">Payment Order</string>
@@ -597,9 +598,9 @@
     <string name="consumption_none_record">No consumption record</string>
     <string name="recharge_none_record">No recharge record</string>
     <string name="feedback_none_record">No feedback record</string>
-    <string name="monthly_vip">Monthly VIP(31 days)</string>
-    <string name="quarter_vip">Quarterly VIP(91 days)</string>
-    <string name="year_vip">Annual VIP(366 days)</string>
+    <string name="monthly_vip">Monthly VIP ( 31 days )</string>
+    <string name="quarter_vip">Quarterly VIP ( 91 days )</string>
+    <string name="year_vip">Annual VIP ( 366 days )</string>
     <string name="catalog_loading">Loading...</string>
     <string name="power_too_low_to_upgrade">The power is less than %d%%, please upgrade after connecting the power supply</string>
 </resources>
