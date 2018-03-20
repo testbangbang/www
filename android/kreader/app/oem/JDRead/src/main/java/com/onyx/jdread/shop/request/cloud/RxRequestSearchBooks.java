@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.R;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
@@ -21,6 +22,7 @@ import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.CutBitmapTransformation;
+import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.util.DataModelTranslateUtils;
 
 import java.util.ArrayList;
@@ -96,12 +98,13 @@ public class RxRequestSearchBooks extends RxBaseCloudRequest {
     }
 
     private void mapResultToDataModel(BookModelBooksResultBean resultBean) {
-        if (!mapToDataModel) {
-            return;
-        }
         if (resultBean.data != null && !CollectionUtils.isNullOrEmpty(resultBean.data.items)) {
-            DataModelTranslateUtils.cloudBookMapToDataModel(ShopDataBundle.getInstance().getEventBus(),
-                    dataModelList, resultBean.data.items, loadCover(resultBean.data.items));
+            if (mapToDataModel) {
+                DataModelTranslateUtils.cloudBookMapToDataModel(ShopDataBundle.getInstance().getEventBus(),
+                        dataModelList, resultBean.data.items, loadCover(resultBean.data.items));
+            } else {
+                ViewHelper.saveBitmapCover(resultBean.data.items, getAppContext());
+            }
         }
     }
 

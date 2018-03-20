@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.action;
 import android.text.TextUtils;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
@@ -48,6 +49,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
         baseRequestBean.withCookie = withCookie;
         final RxRequestBookDetail rq = new RxRequestBookDetail();
         rq.setRequestBean(baseRequestBean);
+        RxRequestBookDetail.setAppContext(JDReadApplication.getInstance().getApplicationContext());
         rq.execute(new RxCallback<RxRequestBookDetail>() {
 
             @Override
