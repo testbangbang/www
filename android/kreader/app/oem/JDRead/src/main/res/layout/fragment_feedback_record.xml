@@ -20,17 +20,31 @@
             android:id="@+id/feedback_record_title"
             layout="@layout/title_bar" />
 
-        <com.onyx.android.sdk.ui.view.PageRecyclerView
-            android:id="@+id/feedback_record_recycler"
+        <LinearLayout
+            android:id="@+id/content_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingLeft="@dimen/fragment_content_padding"
-            android:paddingRight="@dimen/fragment_content_padding" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <include
-            layout="@layout/page_indicator_layout"
-            bind:model="@{indicatorModel}" />
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/feedback_record_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/fragment_content_padding"
+                android:paddingRight="@dimen/fragment_content_padding" />
+
+            <include
+                layout="@layout/page_indicator_layout"
+                bind:model="@{indicatorModel}" />
+
+        </LinearLayout>
+
+        <ViewStub
+            android:id="@+id/none_result_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/layout_none_result" />
 
     </LinearLayout>
 </layout>

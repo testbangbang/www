@@ -10,7 +10,7 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteResultBean;
 import com.onyx.jdread.personal.request.cloud.RxExportNoteRequest;
 import com.onyx.jdread.reader.data.ReadingData;
 import com.onyx.jdread.reader.data.ReadingDataResultBean;
-import com.onyx.jdread.reader.request.RxSyncReadingDataRequest;
+import com.onyx.jdread.personal.request.cloud.RxSyncReadingDataRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 

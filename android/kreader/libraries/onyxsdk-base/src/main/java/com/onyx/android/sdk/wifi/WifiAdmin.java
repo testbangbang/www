@@ -14,9 +14,11 @@ import android.util.Log;
 
 import com.onyx.android.sdk.R;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.ReflectUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -47,6 +49,8 @@ public class WifiAdmin {
     private IntentFilter wifiStateFilter;
     private Callback callback;
     private BroadcastReceiver wifiStateReceiver;
+
+    private static Method sMethodConnectNetwork;
 
     /**
      * These values are matched in string arrays -- changes must be kept in sync
@@ -89,11 +93,17 @@ public class WifiAdmin {
         this.context = context;
         wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         initWifiStateFilterAndReceiver();
+        initConnectMethod();
     }
 
     public WifiAdmin(Context context, Callback callback) {
         this(context);
         setCallback(callback);
+    }
+
+    private void initConnectMethod() {
+        Class<?> cls = ReflectUtil.classForName("android.net.wifi.WifiManager$ActionListener");
+        sMethodConnectNetwork = ReflectUtil.getMethodSafely(WifiManager.class, "connect", WifiConfiguration.class, cls);
     }
 
     private void initWifiStateFilterAndReceiver() {
@@ -383,17 +393,10 @@ public class WifiAdmin {
 
     public void connectWifi(AccessPoint accessPoint) {
         WifiConfiguration configuration = accessPoint.getWifiConfiguration();
-        int networkId;
-        if (configuration != null) {
-            networkId = configuration.networkId;
-        } else {
+        if (configuration == null) {
             configuration = createWifiConfiguration(accessPoint);
-            networkId = wifiManager.addNetwork(configuration);
         }
-        boolean success = wifiManager.enableNetwork(networkId, true);
-        if (success) {
-            wifiManager.saveConfiguration();
-        }
+        ReflectUtil.invokeMethodSafely(sMethodConnectNetwork, wifiManager, configuration, null);
     }
 
     public WifiConfiguration createWifiConfiguration(AccessPoint accessPoint) {
@@ -553,9 +556,8 @@ public class WifiAdmin {
         return null;
     }
 
-    public void addNetwork(WifiConfiguration wcg) {
-        int wcgID = wifiManager.addNetwork(wcg);
-        wifiManager.enableNetwork(wcgID, true);
+    public void addNetwork(WifiConfiguration configuration) {
+        ReflectUtil.invokeMethodSafely(sMethodConnectNetwork, wifiManager, configuration, null);
     }
 
     public void addNetwork(ArrayList<WifiConfiguration> wcgList) {
@@ -563,8 +565,10 @@ public class WifiAdmin {
             return;
         }
         for (WifiConfiguration config : wcgList) {
-            int wcgID = wifiManager.addNetwork(config);
-            wifiManager.enableNetwork(wcgID, true);
+            if (config == null) {
+                continue;
+            }
+            ReflectUtil.invokeMethodSafely(sMethodConnectNetwork, wifiManager, config, null);
         }
     }
 

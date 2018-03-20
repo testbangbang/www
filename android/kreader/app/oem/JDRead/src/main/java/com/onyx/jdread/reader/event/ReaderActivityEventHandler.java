@@ -7,8 +7,6 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.api.device.epd.UpdateMode;
-import com.onyx.android.sdk.api.device.epd.UpdateScheme;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.DialogMessage;
 import com.onyx.jdread.R;
@@ -18,9 +16,9 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
+import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.manager.ManagerActivityUtils;
-import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.personal.dialog.ExportDialog;
 import com.onyx.jdread.personal.event.ExportToEmailEvent;
 import com.onyx.jdread.personal.event.ExportToImpressionEvent;
@@ -62,6 +60,7 @@ import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.receiver.ReaderScreenStateReceive;
 import com.onyx.jdread.reader.request.ReaderBaseRequest;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 import com.onyx.jdread.setting.common.AssociateDialogHelper;
 import com.onyx.jdread.setting.common.ExportHelper;
 import com.onyx.jdread.setting.event.BindEmailEvent;
@@ -231,9 +230,7 @@ public class ReaderActivityEventHandler {
             startMainActivity();
             readerViewBack.getContext().finish();
         }else {
-            if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key,false)) {
-                EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION_QUALITY, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
-            }
+            ReaderViewUtil.applyFastModeByConfig();
             new GetViewSettingAction(event.getReaderViewInfo()).execute(readerViewModel.getReaderDataHolder(), null);
         }
     }
@@ -536,6 +533,9 @@ public class ReaderActivityEventHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSystemBarBackToSettingEvent(SystemBarBackToSettingEvent event) {
         ManagerActivityUtils.startSettingsActivity(readerViewBack.getContext());
+        if (readerSettingMenuDialog != null && readerSettingMenuDialog.isShowing()) {
+            readerSettingMenuDialog.dismiss();
+        }
     }
 
     @Subscribe
@@ -547,11 +547,8 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onSpeedRefreshChangeEvent(SpeedRefreshChangeEvent event) {
-        if (JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false)) {
-            EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
-        } else {
-            EpdController.clearSystemUpdateModeAndScheme();
-        }
+        EpdController.applyApplicationFastMode(getClass().getSimpleName(),
+                JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false), true);
     }
 
     private void showSingleLineDialog(ShowSignMessageEvent event,Activity activity){

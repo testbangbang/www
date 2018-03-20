@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.GiftCenterBinding;
@@ -18,6 +17,7 @@ import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.main.model.NoneResultModel;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.action.CheckGiftAction;
 import com.onyx.jdread.personal.action.GetGiftAction;
@@ -29,12 +29,10 @@ import com.onyx.jdread.personal.model.GiftPackageModel;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.util.Utils;
+import com.onyx.jdread.util.ViewCompatUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by li on 2017/12/29.
@@ -83,9 +81,7 @@ public class GiftCenterFragment extends BaseFragment {
                     giftPackageModel.loadGifts();
                     giftCenterAdapter.setData(data.gift ? giftPackageModel.getGiftBeans() : null);
                 }
-                if (data == null || !data.gift) {
-                    ToastUtil.showToast(R.string.gift_no_package);
-                }
+                updateContentView();
             }
         });
     }
@@ -96,6 +92,15 @@ public class GiftCenterFragment extends BaseFragment {
         binding.giftCenterRecycler.addItemDecoration(decoration);
         giftCenterAdapter = new GiftCenterAdapter();
         binding.giftCenterRecycler.setAdapter(giftCenterAdapter);
+    }
+
+    private void updateContentView() {
+        if (binding == null || binding.contentView == null) {
+            return;
+        }
+        binding.contentView.setVisibility(giftCenterAdapter.getDataCount() > 0 ? View.VISIBLE : View.GONE);
+        ViewCompatUtil.showNoneResultView(binding.noneResultView, giftCenterAdapter.getDataCount() <= 0,
+                new NoneResultModel(R.mipmap.ic_me_gift_none, ResManager.getString(R.string.gift_no_package)));
     }
 
     private void initListener() {

@@ -1,4 +1,4 @@
-package com.onyx.jdread.reader.request;
+package com.onyx.jdread.personal.request.cloud;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
