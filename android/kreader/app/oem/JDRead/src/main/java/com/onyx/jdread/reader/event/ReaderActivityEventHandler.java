@@ -397,19 +397,16 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToNativeEvent(ExportToNativeEvent event) {
-        // TODO: 2018/3/8 ExportAction
         export(ExportHelper.TYPE_NATIVE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToEmailEvent(ExportToEmailEvent event) {
-        // TODO: 2018/3/8 ExportAction
         export(ExportHelper.TYPE_EMAIL);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToImpressionEvent(ExportToImpressionEvent event) {
-        // TODO: 2018/3/8 ExportAction
         export(ExportHelper.TYPE_EVERNOTE);
     }
 
