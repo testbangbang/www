@@ -90,7 +90,7 @@
             <TextView
                 android:layout_width="@dimen/brightness_button_width"
                 android:layout_height="@dimen/brightness_button_height"
-                android:background="@drawable/rectangle_stroke_round"
+                android:background="@drawable/rectangle_small"
                 android:gravity="center"
                 android:onClick="@{()->systemBarPopModel.brightnessModel.closeBrightness()}"
                 android:text="@string/closed"
@@ -115,7 +115,7 @@
             <TextView
                 android:layout_width="@dimen/brightness_button_width"
                 android:layout_height="@dimen/brightness_button_height"
-                android:background="@drawable/rectangle_stroke_round"
+                android:background="@drawable/rectangle_small"
                 android:gravity="center"
                 android:onClick="@{()->systemBarPopModel.brightnessModel.maxBrightness()}"
                 android:text="@string/brightest_brightness"

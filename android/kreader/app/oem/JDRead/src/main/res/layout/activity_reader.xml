@@ -74,7 +74,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="118dp"
-                android:background="@drawable/rectangle_stroke_round"
+                android:background="@drawable/rectangle_small"
                 android:textSize="20sp"
                 android:text="@string/back_to_library"/>
 

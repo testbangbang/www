@@ -125,7 +125,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dialog_pay_order_confirm_pay_margin_top"
-                    android:background="@drawable/rectangle_stroke_round"
+                    android:background="@drawable/rectangle_small"
                     android:gravity="center"
                     android:onClick="@{()->orderModel.onConfirmPayClick()}"
                     android:padding="@dimen/dialog_pay_order_confirm_pay_padding"

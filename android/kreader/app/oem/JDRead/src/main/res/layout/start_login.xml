@@ -79,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/personal_logout_height"
             android:layout_marginTop="@dimen/start_login_login_margin_top"
-            android:background="@drawable/rectangle_stroke_corners"
+            android:background="@drawable/rectangle_small"
             android:enabled="@{loginViewModel.loginButtonEnabled}"
             android:gravity="center"
             android:onClick="@{()->loginViewModel.onLoginViewClick()}"
