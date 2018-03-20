@@ -70,19 +70,18 @@ public class ReaderTextModel {
     public void setDefaultTypeFace(String typeFace) {
         switch (typeFace) {
             case ReaderConfig.Typeface.TYPEFACE_ONE:
-                onTypefaceOneClick();
+                setCurrentTypeface(TypefaceOne);
                 break;
             case ReaderConfig.Typeface.TYPEFACE_TWO:
-                onTypefaceTwoClick();
+                setCurrentTypeface(TypefaceTwo);
                 break;
             case ReaderConfig.Typeface.TYPEFACE_THREE:
-                onTypefaceThreeClick();
+                setCurrentTypeface(TypefaceThree);
                 break;
             case ReaderConfig.Typeface.TYPEFACE_FOUR:
-                onTypefaceFourClick();
+                setCurrentTypeface(TypefaceFour);
                 break;
             default:
-                onTypefaceOneClick();
                 break;
         }
     }
