@@ -31,7 +31,7 @@ import com.onyx.jdread.setting.action.DownloadPackageAction;
 import com.onyx.jdread.setting.action.OnlineCheckSystemUpdateAction;
 import com.onyx.jdread.setting.action.SystemUpdateHistoryAction;
 import com.onyx.jdread.setting.dialog.CheckUpdateLoadingDialog;
-import com.onyx.jdread.setting.dialog.DialogMessage;
+import com.onyx.jdread.setting.dialog.DialogAlertMessage;
 import com.onyx.jdread.setting.dialog.SystemUpdateDialog;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.event.DelayEvent;
@@ -303,7 +303,7 @@ public class SystemUpdateFragment extends BaseFragment {
     private boolean checkBatteryForSystemUpgrade() {
         int minLimit = ResManager.getInteger(R.integer.system_update_min_battery_limit);
         if (!BatteryUtil.isPowerEnoughOrCharging(getContext().getApplicationContext(), minLimit)) {
-            final DialogMessage dialog = new DialogMessage(getContext());
+            final DialogAlertMessage dialog = new DialogAlertMessage(getContext());
             dialog.setMessage(String.format(ResManager.getString(R.string.power_too_low_to_upgrade), minLimit));
             dialog.setPositiveAction(new View.OnClickListener() {
                 @Override
