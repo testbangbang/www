@@ -176,4 +176,5 @@ public class Constants {
     public static final String DIVIDER = "_";
     public static final int MINUTE_STEP = 60;
     public static final int GET_DECRYPT_KEY_POINT = 6;
+    public static final int TEXT_FLAG_NULL = 0;
 }
