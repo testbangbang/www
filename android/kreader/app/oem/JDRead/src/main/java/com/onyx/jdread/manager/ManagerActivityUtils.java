@@ -8,6 +8,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.main.activity.LockScreenActivity;
 import com.onyx.jdread.main.activity.MainActivity;
 import com.onyx.jdread.main.activity.StartActivity;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.reader.ui.PreloadActivity;
 import com.onyx.jdread.reader.ui.SettingsActivity;
 import com.onyx.jdread.shop.event.MenuWifiSettingEvent;
@@ -83,9 +84,12 @@ public class ManagerActivityUtils {
         context.sendBroadcast(intent);
     }
 
-    public static void startSettingsActivity(Context context) {
+    public static void startSettingsActivity(Context context,long ebookId) {
         Intent intent = new Intent(context, SettingsActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if(ebookId != Integer.MAX_VALUE) {
+            intent.putExtra(Constants.SP_KEY_BOOK_ID, ebookId);
+        }
         context.startActivity(intent);
     }
 }

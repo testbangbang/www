@@ -10,6 +10,7 @@ import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
 import com.onyx.jdread.main.event.TabLongClickedEvent;
+import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.reader.actions.GotoPageAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
@@ -17,6 +18,7 @@ import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
+import com.onyx.jdread.reader.event.OpenBookDetailEvent;
 import com.onyx.jdread.reader.event.ShowReaderCatalogMenuEvent;
 import com.onyx.jdread.reader.menu.actions.ChangeChineseConvertTypeAction;
 import com.onyx.jdread.reader.menu.actions.GammaCorrectionAction;
@@ -83,7 +85,8 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBuyBookClickEvent(BuyBookClickEvent event) {
-        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(), "buyBook");
+        readerDataHolder.getEventBus().post(new OpenBookDetailEvent());
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
