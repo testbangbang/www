@@ -56,7 +56,7 @@ public class DeviceUtils {
     public static final int NEVER_SLEEP = Integer.MAX_VALUE;
 
     public static boolean isRk32xxDevice() {
-        return getSystemProperty("ro.board.platform").contains("3288");
+        return getSystemProperty("ro.board.platform").contains("3288") || getSystemProperty("ro.board.platform").contains("312x");
     }
 
     public static boolean isRkDevice() {
