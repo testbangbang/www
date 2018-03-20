@@ -3,6 +3,7 @@ package com.onyx.jdread.setting.common;
 import android.support.v4.app.FragmentActivity;
 
 import com.evernote.client.android.EvernoteSession;
+import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ZipUtils;
@@ -16,6 +17,7 @@ import com.onyx.jdread.manager.EvernoteManager;
 import com.onyx.jdread.personal.action.DeleteFileAction;
 import com.onyx.jdread.personal.action.ExportNoteAction;
 import com.onyx.jdread.personal.action.SaveContentAction;
+import com.onyx.jdread.personal.cloud.entity.jdbean.BookBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean;
@@ -26,6 +28,7 @@ import com.onyx.jdread.util.Utils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -167,5 +170,20 @@ public class ExportHelper {
     private void deleteTempFile(File file) {
         DeleteFileAction action = new DeleteFileAction(file);
         action.execute(PersonalDataBundle.getInstance(), null);
+    }
+
+    public static List<NoteBean> getNoteBean(List<Annotation> annotationList,String bookName,long ebookId){
+        List<NoteBean> result = new ArrayList<>();
+        for(Annotation annotation : annotationList){
+            NoteBean noteBean = new NoteBean();
+            noteBean.ebook = new BookBean();
+            noteBean.ebook.ebook_id = ebookId + "";
+            noteBean.ebook.author = "";
+            noteBean.ebook.info = annotation.getNote();
+            noteBean.ebook.name = bookName;
+            noteBean.checked = true;
+            result.add(noteBean);
+        }
+        return result;
     }
 }
