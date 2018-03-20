@@ -558,6 +558,7 @@
     <string name="a_month">一个月</string>
     <string name="three_months">三个月</string>
     <string name="one_year">一年</string>
+    <string name="year">年</string>
     <string name="monthly_vip">月度VIP(31天)</string>
     <string name="quarter_vip">季度VIP(91天)</string>
     <string name="year_vip">年度VIP(366天)</string>
@@ -567,4 +568,7 @@
     <string name="recharge_none_record">暂无充值记录</string>
     <string name="feedback_none_record">暂无反馈记录</string>
     <string name="catalog_loading">目录加载中...</string>
+    <string name="monthly">月度(31天)</string>
+    <string name="quarterly">季度(91天)</string>
+    <string name="annual">年度(366天)</string>
 </resources>
