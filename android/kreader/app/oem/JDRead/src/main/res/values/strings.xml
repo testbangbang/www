@@ -608,4 +608,5 @@
     <string name="annual">Membership year ( 366days )</string>
     <string name="exit_current_account">Will you exit your current account?</string>
     <string name="Delete_selected_book_from_shopp_cart">Delete the selected book from the shopping cart</string>
+    <string name="account_dangerous">Your account has security risks, please contact customer service: 950618.</string>
 </resources>

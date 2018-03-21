@@ -154,6 +154,6 @@ public class TimeUtils {
     }
 
     public static String getHourFormat(long time) {
-        return String.valueOf(time / (1000 * 3600 * 24));
+        return Utils.keepPoints(time * 1f / 3600);
     }
 }

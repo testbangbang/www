@@ -9,13 +9,17 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.ExportNoteResultBean;
 import com.onyx.jdread.personal.request.cloud.RxExportNoteRequest;
+import com.onyx.jdread.reader.data.MarkerBean;
 import com.onyx.jdread.reader.data.NotesDetailBean;
 import com.onyx.jdread.reader.data.ReadingData;
 import com.onyx.jdread.reader.data.ReadingDataResultBean;
 import com.onyx.jdread.personal.request.cloud.RxSyncReadingDataRequest;
 import com.onyx.jdread.reader.data.SyncNotesAndLineationRequestBean;
 import com.onyx.jdread.reader.data.SyncNotesResultBean;
+import com.onyx.jdread.reader.data.UpdateMakerRequestBean;
+import com.onyx.jdread.reader.data.UpdateMarkerResultBean;
 import com.onyx.jdread.reader.request.RxSyncNotesAndLineationRequest;
+import com.onyx.jdread.reader.request.RxUpdateMarkerRequest;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
 
@@ -48,10 +52,10 @@ public class ReadTest extends ApplicationTestCase<JDReadApplication> {
         readingData.length = "11";
         readingData.ebook_id = "4801444";
         readingData.end_chapter = "chapter1";
-        readingData.end_para_idx = "7";
+        readingData.end_para_idx = 7;
         readingData.end_time = "1514719078";
         readingData.start_chapter = "chapter00";
-        readingData.start_para_idx = "0";
+        readingData.start_para_idx = 0;
         readingData.start_time = "1514719066";
         readingDataList.add(readingData);
         String s = JSON.toJSONString(readingDataList);
@@ -141,6 +145,57 @@ public class ReadTest extends ApplicationTestCase<JDReadApplication> {
             @Override
             public void onNext(Object o) {
                 SyncNotesResultBean resultBean = rq.getResultBean();
+                assertNotNull(resultBean);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                assertNull(throwable);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testUpdateMaker() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        UpdateMakerRequestBean requestBean = new UpdateMakerRequestBean();
+        JDAppBaseInfo baseInfo = new JDAppBaseInfo();
+        baseInfo.setSign(baseInfo.getSignValue(CloudApiContext.NewBookDetail.BOOK_MARKER));
+
+        MarkerBean markerBean = new MarkerBean();
+        markerBean.ebook_id = 30190477;
+        markerBean.format = 1;
+        markerBean.import_book_id = "";
+        markerBean.version = (int) (System.currentTimeMillis() / 1000);
+
+        MarkerBean.ListBean listBean = new MarkerBean.ListBean();
+        listBean.action = "created";  //delete
+        listBean.data_type = 0; //1,书签；0阅读进度
+        listBean.created_at = baseInfo.getTime();
+        listBean.offset_in_para = 10;
+        listBean.force = 1;
+        //listBean.offset = 20;//pdf
+        listBean.para_idx = 0;
+        listBean.epub_chapter_title = "idagja";
+        listBean.percent = "6%";
+        List<MarkerBean.ListBean> list = new ArrayList<>();
+        list.add(listBean);
+        markerBean.list = list;
+
+        List<MarkerBean> markerBeanList = new ArrayList<>();
+        markerBeanList.add(markerBean);
+        String s = JSON.toJSONString(markerBeanList);
+        RequestBody body = RequestBody.create(MediaType.parse(Constants.PARSE_JSON_TYPE), s);
+        requestBean.body = body;
+        requestBean.baseInfo = baseInfo.getRequestParamsMap();
+
+        final RxUpdateMarkerRequest rq = new RxUpdateMarkerRequest(requestBean);
+        rq.execute(new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                UpdateMarkerResultBean resultBean = rq.getResultBean();
                 assertNotNull(resultBean);
                 countDownLatch.countDown();
             }
