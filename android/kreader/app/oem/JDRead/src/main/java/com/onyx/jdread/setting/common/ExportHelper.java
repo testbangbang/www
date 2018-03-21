@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import com.evernote.client.android.EvernoteSession;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ZipUtils;
 import com.onyx.jdread.JDReadApplication;
@@ -82,32 +83,32 @@ public class ExportHelper {
     }
 
     public void receiveData(int exportType, List<NoteBean> data) {
-        for (NoteBean bean : data) {
-            if (bean.checked) {
-                switch (exportType) {
-                    case TYPE_NATIVE:
-                        saveToLocal(bean);
-                        break;
-                    case TYPE_EMAIL:
-                        saveToTemp(bean);
-                        break;
-                    case TYPE_EVERNOTE:
-                        EvernoteManager.createNote(bean.ebook.name, bean.ebook.info);
-                        break;
-                }
-            }
+        switch (exportType) {
+            case TYPE_NATIVE:
+                saveToLocal(data);
+                break;
+            case TYPE_EMAIL:
+                saveToTemp(data);
+                break;
+            case TYPE_EVERNOTE:
+                //EvernoteManager.createNote(bean.ebook.name, bean.ebook.info);
+                break;
         }
     }
 
-    private void saveToLocal(NoteBean bean) {
+    private void saveToLocal(List<NoteBean> noteBeans) {
+        if(CollectionUtils.isNullOrEmpty(noteBeans)){
+            return;
+        }
         File nativePath = new File(Constants.NATIVIE_DIR);
         if (!nativePath.exists()) {
             nativePath.mkdirs();
         }
-        File file = new File(nativePath, "<<" + bean.ebook.name + ">>" +
+        String name = noteBeans.get(0).ebook.name;
+        File file = new File(nativePath, "<<" + name + ">>" +
                 ResManager.getString(R.string.read_note) + ".txt");
 
-        final SaveContentAction action = new SaveContentAction(file, bean.ebook.info);
+        final SaveContentAction action = new SaveContentAction(file, noteBeans);
         action.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -118,14 +119,18 @@ public class ExportHelper {
         });
     }
 
-    private void saveToTemp(NoteBean bean) {
+    private void saveToTemp(List<NoteBean> noteBeans) {
+        if(CollectionUtils.isNullOrEmpty(noteBeans)){
+            return;
+        }
         File tempDir = new File(Constants.EMAIL_DIR);
         if (!tempDir.exists()) {
             tempDir.mkdirs();
         }
-        File file = new File(tempDir, "<<" + bean.ebook.name + ">>" +
+        String name = noteBeans.get(0).ebook.name;
+        File file = new File(tempDir, "<<" + name + ">>" +
                 ResManager.getString(R.string.read_note) + ".txt");
-        SaveContentAction action = new SaveContentAction(file, bean.ebook.info);
+        SaveContentAction action = new SaveContentAction(file, noteBeans);
         action.execute(PersonalDataBundle.getInstance(), null);
     }
 
