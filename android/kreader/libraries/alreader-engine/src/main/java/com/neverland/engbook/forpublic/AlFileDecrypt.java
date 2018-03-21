@@ -1,25 +1,27 @@
 package com.neverland.engbook.forpublic;
 
+import com.neverland.engbook.level1.AlFilesBypassNative;
+
 /**
  * класс-заглушка ддя работы с зашифрованными файлами
  */
 public class AlFileDecrypt {
     private static final String str = "test text, simulating a file decryption";
 
-    /*private static final*/protected int size = str.length();
-    /*private*/protected int pos = 0;
+    /*private static final*/private int size = str.length();
+    /*private*/private int pos = 0;
 
-    public final int getSize() {
+    public int getSize() {
         return size;
     }
 
-    public final int open(String fileName, int mode) {
+    public int open(String fileName, int mode) {
         if (mode != 0)
             return TAL_RESULT.ERROR;
         return realOpen(fileName);
     }
 
-    public final int seek(int newPos) {
+    public int seek(int newPos) {
         if (pos >= 0 && pos < size)
             pos = newPos;
         return pos;
@@ -53,5 +55,9 @@ public class AlFileDecrypt {
 
     public String getOutFileExt() {
         return ".гтлтщцт";
+    }
+
+    public String getFileMD5() {
+        return AlFilesBypassNative.getMd5(str.getBytes());
     }
 }
