@@ -215,21 +215,22 @@ public class LayoutProviderUtils {
         int start = 0;
         ChapterInfo prevChapterInfo = null;
         prevChapterInfo = tocChapterNodeList.get(0);
-        int end = prevChapterInfo.getPosition();
+        int end = PagePositionUtils.getPosition(prevChapterInfo.getPosition());
         if(pagePosition >= start && pagePosition <= end){
             return prevChapterInfo;
         }
-        start = prevChapterInfo.getPosition();
+        start = PagePositionUtils.getPosition(prevChapterInfo.getPosition());
         ChapterInfo chapterInfo = null;
         for (int i = 1; i < size; i++) {
             chapterInfo = tocChapterNodeList.get(i);
-            if(pagePosition >= start && pagePosition < chapterInfo.getPosition()){
+            int chapterPosition = PagePositionUtils.getPosition(chapterInfo.getPosition());
+            if(pagePosition >= start && pagePosition < chapterPosition){
                 return prevChapterInfo;
             }
-            if(pagePosition == chapterInfo.getPosition()){
+            if(pagePosition == chapterPosition){
                 return chapterInfo;
             }
-            start = chapterInfo.getPosition() + 1;
+            start = chapterPosition + 1;
             prevChapterInfo = chapterInfo;
         }
         return chapterInfo;

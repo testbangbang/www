@@ -32,4 +32,8 @@ public class NetNovelLocation {
         return JSON.toJSONString(this);
     }
 
+    public int toIntegerPosition() {
+        return (chapterIndex & 0xFFFF) << 16 | (positionInChapter & 0xFFFF);
+    }
+
 }

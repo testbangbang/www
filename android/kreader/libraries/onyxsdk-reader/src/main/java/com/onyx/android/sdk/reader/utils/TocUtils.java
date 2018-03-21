@@ -26,15 +26,8 @@ public class TocUtils {
             if (entry.getChildren() != null) {
                 buildChapterNode(entry.getChildren(), tocChapterNodeList);
             } else {
-                try {
-                    int position = PagePositionUtils.getPosition(entry.getPosition());
-                    if (!tocChapterNodeList.contains(position)) {
-                        ChapterInfo chapterInfo = new ChapterInfo(entry.getTitle(),position);
-                        tocChapterNodeList.add(chapterInfo);
-                    }
-                }catch (Exception e) {
-                    break;
-                }
+                ChapterInfo chapterInfo = new ChapterInfo(entry.getTitle(),entry.getPosition());
+                tocChapterNodeList.add(chapterInfo);
             }
         }
     }
