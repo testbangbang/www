@@ -470,7 +470,7 @@
     <string name="dialog_pay_order_book_price">价格: %1$d阅豆</string>
     <string name="dialog_pay_order_book_price_rmb">价格: ￥%1$d.00</string>
     <string name="dialog_pay_order_cur_balance">当前余额: %1$d阅豆/%2$d代金券</string>
-    <string name="dialog_pay_order_pay_type">付款方式</string>
+    <string name="dialog_pay_order_pay_type">付款方式:</string>
     <string name="dialog_pay_order_cash">现金</string>
     <string name="dialog_pay_order_confirm_pay">确认支付</string>
     <string name="payment_order">订单支付</string>

@@ -144,6 +144,12 @@ public class TopUpDialog extends DialogFragment {
         PayOrderViewModel payOrderViewModel = getPayOrderViewModel();
         if (arguments != null) {
             payDialogType = arguments.getInt(Constants.PAY_DIALOG_TYPE);
+            String vip = arguments.getString(Constants.ORDER_FORM_VIP);
+            if (Constants.OPEN_VIP.equals(vip)) {
+                binding.payOrder.paymentRadioGroup.setVisibility(View.GONE);
+                binding.payOrder.priceYueDou.setVisibility(View.GONE);
+                binding.payOrder.vipPriceRmb.setVisibility(View.VISIBLE);
+            }
             if (payDialogType == Constants.PAY_DIALOG_TYPE_PAY_ORDER) {
                 GetOrderInfoResultBean.DataBean orderInfo = (GetOrderInfoResultBean.DataBean) arguments.getSerializable(Constants.ORDER_INFO);
                 payOrderViewModel.showPaymentLinearLayout.set(true);

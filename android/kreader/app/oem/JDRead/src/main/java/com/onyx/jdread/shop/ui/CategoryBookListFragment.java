@@ -375,6 +375,9 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void showOrCloseAllCatButton() {
+        if (getCategoryBookListViewModel().getCategoryItems().size() == 0) {
+            return;
+        }
         if (getCategoryBookListViewModel().sortButtonIsOpen.get()) {
             showOrCloseSortButton();
         }
