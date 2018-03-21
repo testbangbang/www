@@ -19,6 +19,7 @@ import com.onyx.jdread.databinding.FragmentCategoryBookListBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.action.SearchBookListAction;
 import com.onyx.jdread.shop.adapter.CategoryBookListAdapter;
@@ -147,6 +148,18 @@ public class CategoryBookListFragment extends BaseFragment {
         });
     }
 
+    private int getFilter() {
+        boolean justShowVip = categoryBookListBinding.subjectListShowVip.isChecked();
+        boolean justShowFree = categoryBookListBinding.subjectListShowFree.isChecked();
+        int filter = CloudApiContext.SearchBook.FILTER_DEFAULT;
+        if (justShowVip) {
+            filter = CloudApiContext.SearchBook.FILTER_VIP;
+        } else if (justShowFree) {
+            filter = CloudApiContext.SearchBook.FILTER_FREE;
+        }
+        return filter;
+    }
+
     private void setCategoryV3Data() {
         List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
         if (CollectionUtils.getSize(allCategoryItems) > levelTwoPosition) {
@@ -156,7 +169,7 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void resetLevelThreeData(List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelThreeDatas) {
-        for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo cateBean: levelThreeDatas){
+        for (CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo cateBean : levelThreeDatas) {
             cateBean.isSelect = false;
         }
     }
@@ -202,6 +215,24 @@ public class CategoryBookListFragment extends BaseFragment {
         recyclerViewCategoryList.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewCategoryList.setAdapter(categoryBookListAdapter);
         recyclerViewCategoryList.addItemDecoration(itemDecoration);
+        categoryBookListBinding.subjectListShowVip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                categoryBookListBinding.subjectListShowFree.setChecked(false);
+                saveFilterValue(categoryBookListBinding.subjectListShowVip.isChecked() ? CloudApiContext.SearchBook.FILTER_VIP : CloudApiContext.SearchBook.FILTER_DEFAULT);
+                getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
+                showOrCloseAllCatButton();
+            }
+        });
+        categoryBookListBinding.subjectListShowFree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                categoryBookListBinding.subjectListShowVip.setChecked(false);
+                saveFilterValue(categoryBookListBinding.subjectListShowFree.isChecked() ? CloudApiContext.SearchBook.FILTER_FREE : CloudApiContext.SearchBook.FILTER_DEFAULT);
+                getBooksData(getFinalCatId(), currentPage, sortkey, sortType);
+                showOrCloseAllCatButton();
+            }
+        });
     }
 
     private void hideOptionLayout() {
@@ -277,6 +308,11 @@ public class CategoryBookListFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initLibrary();
+        int intValue = JDPreferenceManager.getIntValue(Constants.SP_KEY_CATEGORY_LEVEL_ONE_ID, 0);
+        if (intValue == Constants.SP_KEY_CATEGORY_ID) {
+            categoryBookListBinding.filtrateFreeVip.setVisibility(View.VISIBLE);
+            categoryBookListBinding.bookPrice.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -433,7 +469,7 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void saveFilterValue(int filter) {
-        this.filter  = filter;
+        this.filter = filter;
         getBundle().putInt(CloudApiContext.SearchBook.FILTER, filter);
     }
 
@@ -441,6 +477,8 @@ public class CategoryBookListFragment extends BaseFragment {
         sortkey = getBundle().getInt(CloudApiContext.SearchBook.SORT_KEY, sortkey);
         sortType = getBundle().getInt(CloudApiContext.SearchBook.SORT_TYPE, sortType);
         filter = getBundle().getInt(CloudApiContext.SearchBook.FILTER, CloudApiContext.SearchBook.FILTER_DEFAULT);
+        categoryBookListBinding.subjectListShowVip.setChecked(filter == CloudApiContext.SearchBook.FILTER_VIP);
+        categoryBookListBinding.subjectListShowFree.setChecked(filter == CloudApiContext.SearchBook.FILTER_FREE);
     }
 
     @Override

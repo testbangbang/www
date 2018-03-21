@@ -5,9 +5,9 @@
 
         <import type="android.view.View" />
 
-        <import type="com.onyx.jdread.util.Utils"/>
+        <import type="com.onyx.jdread.util.Utils" />
 
-        <import type="com.onyx.android.sdk.utils.StringUtils"/>
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
 
         <variable
             name="model"
@@ -72,7 +72,7 @@
                 android:text="@string/consideration"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font"
-                android:visibility="@{StringUtils.isNullOrEmpty(model.systemUpdateData.noticeMessage) ? View.GONE : View.VISIBLE}"/>
+                android:visibility="@{StringUtils.isNullOrEmpty(model.systemUpdateData.noticeMessage) ? View.GONE : View.VISIBLE}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -107,7 +107,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
                     android:visibility="@{model.systemUpdateData.showProgress ? View.VISIBLE : View.GONE}">
 
                     <TextView
@@ -119,10 +120,12 @@
 
                     <ProgressBar
                         style="@android:style/Widget.ProgressBar.Horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/update_progress_width"
+                        android:layout_height="@dimen/update_progress_height"
+                        android:layout_marginLeft="@dimen/update_progress_margin"
                         android:max="100"
-                        android:progress="@{model.systemUpdateData.progress}" />
+                        android:progress="@{model.systemUpdateData.progress}"
+                        android:progressDrawable="@drawable/progress_drawable" />
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>

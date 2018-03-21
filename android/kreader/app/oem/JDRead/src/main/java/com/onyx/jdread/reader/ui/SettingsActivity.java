@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.ui;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivitySettingsBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
@@ -22,10 +24,11 @@ import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
-import com.onyx.jdread.reader.event.FinishEvent;
 import com.onyx.jdread.setting.event.FinishSettingEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.ui.SettingFragment;
+import com.onyx.jdread.shop.event.TopBackEvent;
+import com.onyx.jdread.shop.ui.BookDetailFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -48,15 +51,39 @@ public class SettingsActivity extends AppCompatActivity {
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
     private Stack<String> fragmentStack;
     private Map<String, BaseFragment> childViewList = new HashMap<>();
+    private long ebookId = Integer.MAX_VALUE;
+    private Bundle bundle = new Bundle();
+    private boolean showTitle = true;
+    private BaseFragment currentFragment;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
+        getEbookId();
         initSystemBar();
         initTitleBar();
         initFragment();
-        pushChildViewToStack(SettingFragment.class.getName());
+        initView();
+    }
+
+    private void initView(){
+        if(ebookId != Integer.MAX_VALUE){
+            pushChildViewToStack(BookDetailFragment.class.getName());
+            binding.titleBar.getRoot().setVisibility(View.GONE);
+            showTitle = false;
+        }else {
+            pushChildViewToStack(SettingFragment.class.getName());
+        }
+    }
+
+    public void getEbookId(){
+        Intent intent = getIntent();
+        if(intent.hasExtra(Constants.SP_KEY_BOOK_ID)) {
+            ebookId = intent.getLongExtra(Constants.SP_KEY_BOOK_ID,Integer.MAX_VALUE);
+            bundle.putLong(Constants.SP_KEY_BOOK_ID, ebookId);
+        }
     }
 
     private void initTitleBar() {
@@ -155,7 +182,9 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void isShowTitle() {
-        binding.titleBar.getRoot().setVisibility(fragmentStack.size() <= 1 ? View.VISIBLE : View.GONE);
+        if(showTitle) {
+            binding.titleBar.getRoot().setVisibility(fragmentStack.size() <= 1 ? View.VISIBLE : View.GONE);
+        }
     }
 
     private void pushChildViewToStack(String childClassName) {
@@ -168,6 +197,8 @@ public class SettingsActivity extends AppCompatActivity {
         if (fragmentManager == null) {
             fragmentManager = getSupportFragmentManager();
         }
+        baseFragment.setBundle(bundle);
+        currentFragment = baseFragment;
         fragmentManager.beginTransaction().replace(R.id.setting_content_view, baseFragment).commitNowAllowingStateLoss();
     }
 
@@ -198,5 +229,12 @@ public class SettingsActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFinishSettingEvent(FinishSettingEvent event) {
         finish();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookDetailTopBackEvent(TopBackEvent event) {
+        if(currentFragment != null && currentFragment instanceof BookDetailFragment) {
+            finish();
+        }
     }
 }

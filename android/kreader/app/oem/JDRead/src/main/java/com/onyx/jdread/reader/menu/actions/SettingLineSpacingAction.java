@@ -17,17 +17,22 @@ public class SettingLineSpacingAction extends BaseReaderAction {
     private int lineSpacing;
     private ReaderTextStyle style;
     private int styleIndex;
+    private int settingType;
 
-    public SettingLineSpacingAction(ReaderTextStyle style, int lineSpacing,int styleIndex) {
+    public SettingLineSpacingAction(ReaderTextStyle style, int lineSpacing,int styleIndex,int settingType) {
         this.lineSpacing = lineSpacing;
         this.style = style;
         this.styleIndex = styleIndex;
+        this.settingType = settingType;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
-        ReaderTextStyle.Percentage oldLineSpacing = style.getLineSpacing();
-        style.setLineSpacing(ReaderConfig.getAdditionalSpacing(style.getFontFace(),styleIndex,lineSpacing));
+        int spacing = ReaderConfig.getAdditionalSpacing(style.getFontFace(),styleIndex,
+                lineSpacing,settingType);
+
+        style.setLineSpacing(ReaderTextStyle.Percentage.create(spacing));
+
         final SettingTextStyleRequest request = new SettingTextStyleRequest(readerDataHolder.getReader(),style,readerDataHolder.getSettingInfo());
         request.execute(new RxCallback() {
             @Override

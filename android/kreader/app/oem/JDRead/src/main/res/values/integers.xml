@@ -80,7 +80,7 @@
     <integer name="add_wifi_dialog_width">800</integer>
     <integer name="add_wifi_dialog_height">800</integer>
     <integer name="personal_book_filter_x">175</integer>
-    <integer name="personal_book_filter_y">60</integer>
+    <integer name="personal_book_filter_y">45</integer>
     <integer name="personal_book_row">5</integer>
     <integer name="personal_book_col">1</integer>
     <integer name="shop_cart_row">4</integer>
@@ -142,7 +142,7 @@
     <integer name="cloud_book_cover_height">377</integer>
     <integer name="add_wifi_dialog_x">0</integer>
     <integer name="add_wifi_dialog_y">30</integer>
-    <integer name="library_menu_offset_y">20</integer>
+    <integer name="library_menu_offset_y">4</integer>
     <integer name="search_row">6</integer>
     <integer name="search_chinese_content_length">35</integer>
     <integer name="search_alpha_content_length">65</integer>
@@ -185,11 +185,12 @@
     <integer name="default_toast_gravity">0x00000051</integer>
     <integer name="net_error_tip_goto_setting_start">3</integer>
     <integer name="net_error_tip_goto_setting_end">9</integer>
-    <integer name="personal_book_dropdown_menu">770</integer>
+    <integer name="personal_book_dropdown_menu">768</integer>
     <integer name="read_vip_max_year">5</integer>
     <integer name="hint_search_size_per_page">5</integer>
     <item name="radio_crop_width" type="integer" format="float">0.66</item>
     <item name="no_crop_percent" type="integer" format="float">0.92</item>
     <item name="two_point_zero" type="integer" format="float">2.0</item>
     <integer name="view_directory_page_text_view_max_lines">25</integer>
+    <integer name="system_update_min_battery_limit">30</integer>
 </resources>

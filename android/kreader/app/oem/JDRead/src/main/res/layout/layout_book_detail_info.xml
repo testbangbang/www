@@ -32,13 +32,13 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    thumbnail="@{bookDetailViewModel.bookDetailResultBean.data.coverBitmap}"
                     android:id="@+id/book_detail_cover"
                     android:layout_width="@dimen/layout_book_detail_cover_width"
                     android:layout_height="@dimen/layout_book_detail_cover_height"
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/book_default_cover"
-                    bind:cover="@{bookDetailViewModel.bookDetailResultBean.data.large_image_url}" />
+                    android:src="@{bookDetailViewModel.bookDetailResultBean.data.coverDefault}" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -137,7 +137,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/book_detail_discount_margin_left"
-                            android:background="@drawable/rectangle_stroke_dark"
+                            android:background="@drawable/rectangle_small"
                             android:paddingLeft="@dimen/book_detail_discount_padding_left_and_right"
                             android:paddingRight="@dimen/book_detail_discount_padding_left_and_right"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.data.promotion}"
@@ -201,7 +201,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/rectangle_stroke_corners"
+                        android:background="@drawable/rectangle_small"
                         android:gravity="center"
                         android:onClick="@{()->bookDetailViewModel.onNowReadClick()}"
                         android:padding="@dimen/book_detail_button_padding"
@@ -220,7 +220,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/rectangle_stroke_corners"
+                        android:background="@drawable/rectangle_small"
                         android:gravity="center"
                         android:onClick="@{()->bookDetailViewModel.onDownBookClick()}"
                         android:padding="@dimen/book_detail_button_padding"

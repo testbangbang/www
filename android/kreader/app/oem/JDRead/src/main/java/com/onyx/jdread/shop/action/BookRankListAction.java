@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
@@ -54,6 +55,7 @@ public class BookRankListAction extends BaseAction<ShopDataBundle> {
         requestBean.setAppBaseInfo(appBaseInfo);
         RxRequestBookRankList request = new RxRequestBookRankList();
         request.setRequestBean(requestBean);
+        RxRequestBookRankList.setAppContext(JDReadApplication.getInstance());
         request.execute(new RxCallback<RxRequestBookRankList>() {
 
             @Override

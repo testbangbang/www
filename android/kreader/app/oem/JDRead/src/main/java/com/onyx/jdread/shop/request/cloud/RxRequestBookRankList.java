@@ -4,10 +4,12 @@ import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BookRankListRequestBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.ViewHelper;
 
 import retrofit2.Call;
 
@@ -42,8 +44,14 @@ public class RxRequestBookRankList extends RxBaseCloudRequest {
     }
 
     private void checkResult() {
-        if (resultBean != null && resultBean.result_code != 0) {
-            ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));
+        if (resultBean != null) {
+            if (BaseResultBean.checkSuccess(resultBean.result_code)) {
+                if (resultBean.data != null) {
+                    ViewHelper.saveBitmapCover(resultBean.data, getAppContext());
+                }
+            } else {
+                ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));
+            }
         }
     }
 

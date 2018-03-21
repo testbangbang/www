@@ -6,7 +6,7 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetVipGoodsListResultBean;
 
 /**
- * Created by onyx on 2018/3/17.
+ * Created by lmb on 2018/3/17.
  */
 
 public class TextConversionUtils {

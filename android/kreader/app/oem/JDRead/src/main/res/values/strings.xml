@@ -68,7 +68,7 @@
     <string name="already_latest_version">It is the latest version</string>
     <string name="check_update">Check update</string>
     <string name="download_update_package">Download the update package</string>
-    <string name="downloading">Downloading %d</string>
+    <string name="downloading">%d</string>
     <string name="update_application_not_install">Update the application is not installed, please upgrade the latest system</string>
     <string name="wifi_pass_book_prompt_top">Enter the address below in the browser or scan the QR code below：</string>
     <string name="wifi_pass_book_prompt_bottom_1">Mobile upload Android phone only</string>
@@ -495,8 +495,9 @@
     <string name="speed_refresh_key">speed_refresh_key</string>
     <string name="forgot_psw">Forgot psw</string>
     <string name="dialog_pay_order_book_price">Price: %1$d Read Bean</string>
+    <string name="dialog_pay_order_book_price_rmb">Price: ￥%1$d.00</string>
     <string name="dialog_pay_order_cur_balance">Balance: %1$d Read Bean/%2$d Voucher</string>
-    <string name="dialog_pay_order_pay_type">Payment:</string>
+    <string name="dialog_pay_order_pay_type">Payment</string>
     <string name="dialog_pay_order_cash">Cash</string>
     <string name="dialog_pay_order_confirm_pay">Confirm Payment</string>
     <string name="payment_order">Payment Order</string>
@@ -597,4 +598,14 @@
     <string name="consumption_none_record">No consumption record</string>
     <string name="recharge_none_record">No recharge record</string>
     <string name="feedback_none_record">No feedback record</string>
+    <string name="monthly_vip">Monthly VIP ( 31days )</string>
+    <string name="quarter_vip">Quarterly VIP ( 91days )</string>
+    <string name="year_vip">Annual VIP ( 366days )</string>
+    <string name="catalog_loading">Loading...</string>
+    <string name="power_too_low_to_upgrade">The power is less than %d%%, please upgrade after connecting the power supply</string>
+    <string name="monthly">Member monthly ( 31days )</string>
+    <string name="quarterly">Member quarterly ( 91days )</string>
+    <string name="annual">Membership year ( 366days )</string>
+    <string name="exit_current_account">Will you exit your current account?</string>
+    <string name="Delete_selected_book_from_shopp_cart">Delete the selected book from the shopping cart</string>
 </resources>

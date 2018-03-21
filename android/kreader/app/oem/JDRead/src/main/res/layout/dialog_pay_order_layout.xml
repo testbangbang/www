@@ -11,6 +11,7 @@
 
         <import type="android.view.View" />
 
+        <import type="com.onyx.jdread.shop.utils.PriceConversionUtil" />
     </data>
 
     <LinearLayout
@@ -33,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{orderModel.orderInfo.desc}"
+                android:text="@{PriceConversionUtil.changeText(orderModel.orderInfo.desc)}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_size_17" />
 
@@ -41,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dialog_pay_order_item_margin_top"
-                android:text="@{@string/dialog_pay_order_book_price(orderModel.orderInfo.pay_amount)}"
+                android:text="@{@string/dialog_pay_order_book_price_rmb(PriceConversionUtil.formatRMB(orderModel.orderInfo.pay_amount))}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/font_size_17" />
 
@@ -71,6 +72,7 @@
                     android:textSize="@dimen/font_size_17" />
 
                 <RadioGroup
+                    android:visibility="gone"
                     android:id="@+id/payment_radio_group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -125,7 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dialog_pay_order_confirm_pay_margin_top"
-                    android:background="@drawable/rectangle_stroke_round"
+                    android:background="@drawable/rectangle_small"
                     android:gravity="center"
                     android:onClick="@{()->orderModel.onConfirmPayClick()}"
                     android:padding="@dimen/dialog_pay_order_confirm_pay_padding"

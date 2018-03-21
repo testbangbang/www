@@ -35,6 +35,7 @@ import com.onyx.jdread.main.action.ClearNotBelongsToMyBooksAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
@@ -75,6 +76,7 @@ import com.onyx.jdread.reader.data.ReadingData;
 import com.onyx.jdread.reader.data.ReadingDataResultBean;
 import com.onyx.jdread.setting.action.AutoCheckUpdateAction;
 import com.onyx.jdread.setting.model.SettingBundle;
+import com.onyx.jdread.setting.ui.DeviceInformationFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
 import com.onyx.jdread.shop.ui.NetWorkErrorFragment;
@@ -423,14 +425,21 @@ public class MainActivity extends AppCompatActivity {
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
+            if (functionBarItem.getStackList().isLastOne()) {
+                return;
+            }
             FragmentBarModel barModel = popCurrentChildView(functionBarItem);
             if (isNetWorkFragment(currentFragment.getClass().getName()) || isNetWorkFragment(barModel.getName())) {
                 barModel = functionBarItem.getStackList().popChildView();
             }
             switchCurrentFragment(barModel.getBaseFragment(), barModel.getBaseFragment().getBundle());
         }
+
         if (currentFragment != null && currentFragment.getClass().getName().equals(LibraryFragment.class.getName())) {
             LibraryDataBundle.getInstance().getEventBus().post(new BackToRootFragment());
+        }
+        if (currentFragment != null) {
+            currentFragment.afterPopup();
         }
     }
 
@@ -557,6 +566,17 @@ public class MainActivity extends AppCompatActivity {
     public void onWifiStateChangeEvent(WifiStateChangeEvent event) {
         if (systemBarPopupWindowModel != null) {
             systemBarPopupWindowModel.updateWifi();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.REQUEST_CODE) {
+            if (DeviceInformationFragment.class.getName().equals(currentChildViewName)) {
+                DeviceInformationFragment fragment = (DeviceInformationFragment) currentFragment;
+                fragment.isShowDialog(true);
+            }
         }
     }
 

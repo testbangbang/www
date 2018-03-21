@@ -12,6 +12,7 @@ import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.menu.event.ReaderErrorEvent;
 import com.onyx.jdread.reader.request.InitFirstPageViewRequest;
 import com.onyx.jdread.reader.request.PreloadNextScreenRequest;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -50,6 +51,7 @@ public class InitPageViewAction extends BaseReaderAction {
                 readerDataHolder.getEventBus().post(new InitPageViewInfoEvent(request.getReaderViewInfo()));
                 ReaderActivityEventHandler.updateReaderViewInfo(readerDataHolder,request);
                 if(!readerDataHolder.isPreload()) {
+                    ReaderViewUtil.applyFastModeByConfig();
                     PreloadNextScreenRequest preloadNextScreenRequest = new PreloadNextScreenRequest(readerDataHolder.getReader());
                     preloadNextScreenRequest.execute(null);
                 }

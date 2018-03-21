@@ -16,11 +16,12 @@
         android:padding="@dimen/banner_subject_model_item_padding">
 
         <ImageView
+            thumbnail="@{bookBean.coverBitmap}"
             android:id="@+id/image_cover"
             android:layout_width="@dimen/item_book_detail_recommend_width"
             android:layout_height="@dimen/item_book_detail_recommend_height"
             android:scaleType="fitXY"
-            bind:cover="@{bookBean.image_url}" />
+            android:src="@{bookBean.coverDefault}" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 

@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/rectangle_stroke_round"
+            android:background="@drawable/rectangle_small"
             android:onClick="@{()->viewModel.onVipButtonClick()}"
             android:paddingBottom="@dimen/book_detail_margin"
             android:paddingLeft="@dimen/renew_vip_button_padding_left_and_right"
