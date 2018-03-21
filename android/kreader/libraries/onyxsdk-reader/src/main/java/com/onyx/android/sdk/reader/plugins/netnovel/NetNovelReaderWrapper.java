@@ -36,6 +36,7 @@ public class NetNovelReaderWrapper {
     private ReaderDocumentOptions documentOptions;
 
     private NetNovelBook book;
+    private String bookId;
 
     List<NetNovelChapter> chapterList;
     private HashMap<String, NetNovelChapter> chapterMap = new HashMap<>();
@@ -61,6 +62,8 @@ public class NetNovelReaderWrapper {
         if (book == null) {
             return false;
         }
+
+        bookId = FileUtils.getBaseName(path);
 
         chapterList = book.getChapterFlattenList();
         if (chapterList.size() <= 0) {
@@ -100,7 +103,7 @@ public class NetNovelReaderWrapper {
     }
 
     public String getInitPosition() {
-        return new NetNovelLocation(chapterList.get(0).id, 0, 0).toJson();
+        return new NetNovelLocation(bookId, chapterList.get(0).id, 0, 0).toJson();
     }
 
     public boolean gotoPosition(String position) throws ReaderException {
@@ -171,7 +174,7 @@ public class NetNovelReaderWrapper {
     }
 
     public String getPositionOfPageNumber(int pageNumber) {
-        return new NetNovelLocation(chapterList.get(pageNumber).id, pageNumber, 0).toJson();
+        return new NetNovelLocation(bookId, chapterList.get(pageNumber).id, pageNumber, 0).toJson();
     }
 
     public int getPageNumberOfPosition(String position) {
@@ -180,11 +183,11 @@ public class NetNovelReaderWrapper {
     }
 
     public String getScreenStartPosition() {
-        return new NetNovelLocation(currentChapterId, getCurrentChapterIndex(), alReaderWrapper.getScreenStartPosition()).toJson();
+        return new NetNovelLocation(bookId, currentChapterId, getCurrentChapterIndex(), alReaderWrapper.getScreenStartPosition()).toJson();
     }
 
     public String getScreenEndPosition() {
-        return new NetNovelLocation(currentChapterId, getCurrentChapterIndex(), alReaderWrapper.getScreenEndPosition()).toJson();
+        return new NetNovelLocation(bookId, currentChapterId, getCurrentChapterIndex(), alReaderWrapper.getScreenEndPosition()).toJson();
     }
 
     public int comparePosition(String pos1, String pos2) {
@@ -206,7 +209,7 @@ public class NetNovelReaderWrapper {
         for (int i = 0; i < chapterList.size(); i++) {
             NetNovelChapter ch = chapterList.get(i);
             ReaderDocumentTableOfContentEntry entry = ReaderDocumentTableOfContentEntry.createEntry(ch.title, i,
-                    new NetNovelLocation(ch.id, i, 0).toJson());
+                    new NetNovelLocation(bookId, ch.id, i, 0).toJson());
             toc.getRootEntry().addChildEntry(entry);
         }
         return true;
@@ -224,7 +227,8 @@ public class NetNovelReaderWrapper {
     private boolean openChapter(String chapterId) throws ReaderException {
         String path = new File(bookDirectory, chapterId).getAbsolutePath();
         if (!FileUtils.fileExist(path)) {
-            throw ReaderException.netNovelChapterNotFound(chapterId);
+            NetNovelLocation location = new NetNovelLocation(bookId, chapterId, -1, 0);
+            throw ReaderException.netNovelChapterNotFound(location.toJson());
         }
 
         if (currentChapterId != null) {
