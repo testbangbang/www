@@ -44,7 +44,6 @@ import com.raizlabs.android.dbflow.structure.database.AndroidDatabase;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by hehai on 17-12-6.
@@ -108,6 +107,10 @@ public class JDReadApplication extends MultiDexApplication {
                 if (data != null && StringUtils.isNotBlank(data.getPath())) {
                     File file = new File(data.getPath());
                     if (SupportType.getDocumentExtension().contains(FileUtils.getFileExtension(file))) {
+                        mtpBuffer.add(data.getPath());
+                    }
+
+                    if (file.isDirectory()) {
                         mtpBuffer.add(data.getPath());
                     }
 

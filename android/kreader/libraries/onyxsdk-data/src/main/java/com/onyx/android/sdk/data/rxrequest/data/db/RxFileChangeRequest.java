@@ -1,15 +1,14 @@
 package com.onyx.android.sdk.data.rxrequest.data.db;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.db.ContentDatabase;
-import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.model.MetadataCollection;
-import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.data.model.Metadata_Table;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
@@ -43,9 +42,6 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
         try {
             for (String path : pathList) {
                 File file = new File(path);
-                if (!extensionFilterSet.contains(FileUtils.getFileExtension(file))) {
-                    continue;
-                }
                 modifyMetadataByPath(file);
             }
             database.setTransactionSuccessful();
@@ -57,7 +53,7 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
     }
 
     private void modifyMetadataByPath(File file) {
-        if (file.exists()) {
+        if (file.exists() && file.isFile()) {
             Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
             if (metadata == null || !metadata.hasValidId()) {
                 metadata = Metadata.createFromFile(file, true);
@@ -65,9 +61,20 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
                 getDataProvider().saveMetadata(getAppContext(), metadata);
             }
         } else {
-            Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
-            getDataProvider().removeMetadata(getAppContext(), metadata);
-            getDataProvider().deleteMetadataCollectionByDocId(getAppContext(), metadata.getIdString());
+            QueryArgs queryArgs = new QueryArgs();
+            queryArgs.conditionGroup.and(QueryBuilder.matchLike(Metadata_Table.nativeAbsolutePath.withTable(), file.getAbsolutePath()));
+            List<Metadata> metadataList = getDataProvider().findMetadataByQueryArgs(getAppContext(), queryArgs);
+            DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
+            database.beginTransaction();
+            try {
+                for (Metadata metadata : metadataList) {
+                    getDataProvider().removeMetadata(getAppContext(), metadata);
+                    getDataProvider().deleteMetadataCollectionByDocId(getAppContext(), metadata.getIdString());
+                }
+                database.setTransactionSuccessful();
+            } finally {
+                database.endTransaction();
+            }
         }
     }
 }
