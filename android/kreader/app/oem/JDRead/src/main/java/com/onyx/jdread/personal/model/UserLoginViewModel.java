@@ -65,6 +65,7 @@ public class UserLoginViewModel {
 
     public void onLoginViewClick() {
         if (incAndCheckCount()) {
+            retrievePassword();
             return;
         }
         getEventBus().post(new HideSoftWindowEvent());
@@ -87,7 +88,6 @@ public class UserLoginViewModel {
     private boolean incAndCheckCount() {
         count++;
         if (count > ERROR_LOGIN_LIMIT) {
-            retrievePassword();
             count = 0;
             return true;
         }
