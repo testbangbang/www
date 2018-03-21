@@ -30,6 +30,7 @@ public class NetNovelReaderWrapper {
     private AlReaderWrapper alReaderWrapper;
     private ReaderCallback callback;
     private int viewWidth, viewHeight;
+    private ReaderTextStyle style;
 
     private File bookDirectory;
     private ReaderDocumentOptions documentOptions;
@@ -216,6 +217,7 @@ public class NetNovelReaderWrapper {
     }
 
     public void setStyle(ReaderTextStyle style) {
+        this.style = style;
         alReaderWrapper.setStyle(style);
     }
 
@@ -235,6 +237,9 @@ public class NetNovelReaderWrapper {
         alReaderWrapper = new AlReaderWrapper(context, pluginOptions);
         alReaderWrapper.setBookCallback(callback);
         alReaderWrapper.setViewSize(viewWidth, viewHeight);
+        if (style != null) {
+            alReaderWrapper.setStyle(style);
+        }
         if (alReaderWrapper.openDocument(new AlFileDecryptNetNovel(context, path), createDocumentOptions(0)) == AlReaderWrapper.NO_ERROR) {
             currentChapterId = chapterId;
             return true;
