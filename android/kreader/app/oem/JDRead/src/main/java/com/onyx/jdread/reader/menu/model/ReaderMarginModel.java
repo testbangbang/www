@@ -98,6 +98,7 @@ public class ReaderMarginModel {
         SettingLineSpacingEvent event = new SettingLineSpacingEvent();
         event.margin = ReaderConfig.customLineSpacing.get(lineSpacing);
         event.styleIndex = settingInfo.settingStyle;
+        event.settingType = settingInfo.settingType;
         getEventBus().post(event);
     }
 
