@@ -16,7 +16,6 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.personal.action.LoginOutAction;
 import com.onyx.jdread.personal.adapter.PersonalAdapter;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.common.LoginHelper;
@@ -79,18 +78,6 @@ public class PersonalFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 showLogin("");
-            }
-        });
-
-        binding.personalLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
-                    ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
-                    return;
-                }
-                LoginOutAction loginOutAction = new LoginOutAction(binding);
-                loginOutAction.execute(PersonalDataBundle.getInstance(), null);
             }
         });
     }
@@ -191,5 +178,14 @@ public class PersonalFragment extends BaseFragment {
         if (!binding.getIsLogin()) {
             initData();
         }
+    }
+
+    public void updateLoginState(boolean isLogin) {
+        binding.setIsLogin(isLogin);
+    }
+
+    @Override
+    public void afterPopup() {
+        updateLoginState(JDReadApplication.getInstance().getLogin());
     }
 }

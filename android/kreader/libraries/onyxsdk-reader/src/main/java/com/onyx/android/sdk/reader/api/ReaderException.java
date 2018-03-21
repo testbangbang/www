@@ -17,6 +17,7 @@ public class ReaderException extends Exception {
     public static final int FILE_READ_ONLY = 9;
     public static final int NO_REVIEW_DATA = 10;
     public static final int DATA_EXCEPTION = 11;
+    public static final int NET_NOVEL_CHAPTER_NOT_FOUND = 100;
     public static final int ACTIVATION_FAILED = 0xff;
 
     public ReaderException(int theCode, String theMessage) {
@@ -82,6 +83,10 @@ public class ReaderException extends Exception {
 
     static public ReaderException outOfRange() {
         return exceptionFromCode(OUT_OF_RANGE, "Out of range.");
+    }
+
+    static public ReaderException netNovelChapterNotFound(final String chapterId) {
+        return exceptionFromCode(NET_NOVEL_CHAPTER_NOT_FOUND, chapterId);
     }
 
     static public ReaderException activationFailed(final String message) {

@@ -34,6 +34,7 @@ import com.onyx.android.sdk.reader.plugins.images.ImagesReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.jeb.JEBReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfJniWrapper;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
+import com.onyx.android.sdk.reader.plugins.netnovel.NetNovelReaderPlugin;
 import com.onyx.android.sdk.reader.reflow.ImageReflowManager;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -100,7 +101,9 @@ public class ReaderHelper {
     }
 
     public boolean selectPlugin(final Context context, final DocumentInfo documentInfo, final ReaderPluginOptions pluginOptions) {
-        if (NeoPdfReaderPlugin.accept(documentInfo.getBookPath())) {
+        if (NetNovelReaderPlugin.accept(documentInfo.getBookPath())) {
+            plugin = new NetNovelReaderPlugin(context, pluginOptions);
+        } else if (NeoPdfReaderPlugin.accept(documentInfo.getBookPath())) {
             plugin = new NeoPdfReaderPlugin(context, pluginOptions);
         } else if (AlReaderPlugin.accept(documentInfo.getBookPath())) {
             plugin = new AlReaderPlugin(context, pluginOptions);

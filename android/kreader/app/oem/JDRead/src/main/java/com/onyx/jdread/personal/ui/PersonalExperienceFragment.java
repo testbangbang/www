@@ -15,14 +15,18 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalExperienceBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
+import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ResManager;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.model.TitleBarModel;
+import com.onyx.jdread.personal.action.LoginOutAction;
 import com.onyx.jdread.personal.action.RecommendUserAction;
 import com.onyx.jdread.personal.adapter.PersonalExperienceAdapter;
 import com.onyx.jdread.personal.cloud.entity.jdbean.RecommendItemBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
+import com.onyx.jdread.personal.event.LoginOutSuccessEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
@@ -118,10 +122,48 @@ public class PersonalExperienceFragment extends BaseFragment {
                 }
             }
         });
+
+        binding.personalLoginGout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LibraryDeleteDialog.DialogModel model = new LibraryDeleteDialog.DialogModel();
+                final LibraryDeleteDialog dialog = new LibraryDeleteDialog.Builder(JDReadApplication.getInstance(), model).create();
+
+                model.message.set(ResManager.getString(R.string.exit_current_account));
+                model.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+                    @Override
+                    public void onClicked() {
+                        dialog.dismiss();
+                    }
+                });
+                model.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+                    @Override
+                    public void onClicked() {
+                        loginOut();
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }
+        });
+    }
+
+    private void loginOut() {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
+            return;
+        }
+        LoginOutAction loginOutAction = new LoginOutAction();
+        loginOutAction.execute(PersonalDataBundle.getInstance(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
+        viewEventCallBack.viewBack();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoginOutSuccessEvent(LoginOutSuccessEvent event) {
         viewEventCallBack.viewBack();
     }
 }
