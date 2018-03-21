@@ -400,7 +400,6 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
     public void onRecommendItemClickEvent(RecommendItemClickEvent event) {
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
         ResultBookBean bookBean = event.getBookBean();
@@ -663,7 +662,6 @@ public class BookDetailFragment extends BaseFragment {
         }
 
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
 
@@ -729,7 +727,6 @@ public class BookDetailFragment extends BaseFragment {
 
     private void downLoadWholeBook() {
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
         nowReadButton.setEnabled(false);
@@ -794,7 +791,6 @@ public class BookDetailFragment extends BaseFragment {
 
     private void addToCart(long ebookId) {
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
         final AddOrDeleteCartAction addOrDeleteCartAction = new AddOrDeleteCartAction(new String[]{String.valueOf(ebookId)}, Constants.CART_TYPE_ADD);
@@ -831,7 +827,6 @@ public class BookDetailFragment extends BaseFragment {
         }
 
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
 
