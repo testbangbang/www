@@ -183,4 +183,9 @@ public class PersonalFragment extends BaseFragment {
     public void updateLoginState(boolean isLogin) {
         binding.setIsLogin(isLogin);
     }
+
+    @Override
+    public void afterPopup() {
+        updateLoginState(JDReadApplication.getInstance().getLogin());
+    }
 }

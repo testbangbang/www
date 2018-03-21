@@ -434,12 +434,12 @@ public class MainActivity extends AppCompatActivity {
             }
             switchCurrentFragment(barModel.getBaseFragment(), barModel.getBaseFragment().getBundle());
         }
+
         if (currentFragment != null && currentFragment.getClass().getName().equals(LibraryFragment.class.getName())) {
             LibraryDataBundle.getInstance().getEventBus().post(new BackToRootFragment());
         }
-        if (currentFragment != null && PersonalFragment.class.getName().equals(currentChildViewName)) {
-            PersonalFragment fragment = (PersonalFragment) currentFragment;
-            fragment.updateLoginState(JDReadApplication.getInstance().getLogin());
+        if (currentFragment != null) {
+            currentFragment.afterPopup();
         }
     }
 
