@@ -603,8 +603,9 @@
     <string name="year_vip">Annual VIP ( 366days )</string>
     <string name="catalog_loading">Loading...</string>
     <string name="power_too_low_to_upgrade">The power is less than %d%%, please upgrade after connecting the power supply</string>
-    <string name="monthly">Member monthly ( 31days )</string>
-    <string name="quarterly">Member quarterly ( 91days )</string>
-    <string name="annual">Membership year ( 366days )</string>
+    <string name="monthly">JDReadVIP monthly ( 31days )</string>
+    <string name="quarterly">JDReadVIP quarterly ( 91days )</string>
+    <string name="annual">JDReadVIP year ( 366days )</string>
     <string name="Delete_selected_book_from_shopp_cart">Delete the selected book from the shopping cart</string>
+    <string name="no_score">No score</string>
 </resources>

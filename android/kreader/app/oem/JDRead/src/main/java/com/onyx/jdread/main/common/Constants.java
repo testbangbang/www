@@ -182,4 +182,5 @@ public class Constants {
     public static final int TEXT_FLAG_NULL = 0;
     public static final String ORDER_FORM_VIP = "jdread_vip";
     public static final String OPEN_VIP = "open_vip";
+    public static final double SCORE = 0.0;
 }

@@ -198,7 +198,7 @@ public class BookDetailFragment extends BaseFragment {
         });
     }
 
-    public void safeCloseLoadingDialog(){
+    public void safeCloseLoadingDialog() {
         if (bookDetailLoadingFinished && metadataLoadingFinished) {
             hideLoadingDialog();
         }
@@ -272,7 +272,6 @@ public class BookDetailFragment extends BaseFragment {
                     if (bookDetailResultBean.result_code != Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
                         return;
                     }
-
                     if (bookDetailBean != null && (bookDetailBean.ebook_id == bookDetailResultBean.data.ebook_id)) {
                         BookDetailResultBean.DetailBean newData = bookDetailResultBean.data;
                         newData.bookExtraInfoBean = bookDetailBean.bookExtraInfoBean;
@@ -281,6 +280,11 @@ public class BookDetailFragment extends BaseFragment {
                         bookDetailBean = newData;
                     } else {
                         bookDetailBean = bookDetailResultBean.data;
+                        float star = bookDetailBean.star;
+                        if (star == Constants.SCORE) {
+                            bookDetailBinding.bookDetailInfo.bookDetailGrayStars.setVisibility(View.VISIBLE);
+                            bookDetailBinding.bookDetailInfo.bookDetailWhiteStars.setVisibility(View.GONE);
+                        }
                     }
 
                     if (!shouldDownloadWholeBook) {
@@ -421,9 +425,9 @@ public class BookDetailFragment extends BaseFragment {
         if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
         } else if (bookDetailBean != null) {
-            if (ViewHelper.isCanNowRead(bookDetailBean)){
+            if (ViewHelper.isCanNowRead(bookDetailBean)) {
                 tryDownload(bookDetailBean, true);
-            } else if (!StringUtils.isNullOrEmpty(bookDetailBean.format) && Constants.BOOK_FORMAT_PDF.equals(bookDetailBean.format.trim()) ){
+            } else if (!StringUtils.isNullOrEmpty(bookDetailBean.format) && Constants.BOOK_FORMAT_PDF.equals(bookDetailBean.format.trim())) {
                 goViewDirectoryFragment(bookDetailBean.catalog);
             }
         }
@@ -644,7 +648,7 @@ public class BookDetailFragment extends BaseFragment {
         } else if (DownLoadHelper.isDownloaded(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_button_now_read));
             ToastUtil.showToastNoReuse(getContext(), ResManager.getString(R.string.download_finished));
-        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState) ) {
+        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_tip_download_pause));
         }
     }

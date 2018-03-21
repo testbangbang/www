@@ -53,6 +53,12 @@
         <item name="android:maxHeight">@dimen/rating_bar_style_max_height</item>
     </style>
 
+    <style name="RatingStarStyle" parent="Widget.AppCompat.RatingBar">
+        <item name="android:progressDrawable">@drawable/book_detail_gray_stars</item>
+        <item name="android:minHeight">@dimen/rating_bar_style_min_height</item>
+        <item name="android:maxHeight">@dimen/rating_bar_style_max_height</item>
+    </style>
+
     <style name="BookDialog" parent="android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
