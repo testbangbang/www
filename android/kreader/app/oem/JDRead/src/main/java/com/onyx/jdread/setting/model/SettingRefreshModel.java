@@ -1,27 +1,26 @@
 package com.onyx.jdread.setting.model;
 
-import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import android.databinding.ObservableBoolean;
+
 import com.onyx.android.sdk.reader.device.ReaderDeviceManager;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 
-import java.util.regex.Pattern;
+import java.util.Observable;
 
 /**
  * Created by li on 2017/12/21.
  */
 
-public class SettingRefreshModel {
+public class SettingRefreshModel extends Observable {
     private String[] refreshPages;
     private String currentRefreshPage;
     public static final String REFRESH_RATE = "refresh_rate";
-    private boolean isSpeedRefresh;
+    public final ObservableBoolean isSpeedRefresh = new ObservableBoolean(false);
 
     public SettingRefreshModel() {
-        isSpeedRefresh = JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false);
+        isSpeedRefresh.set(JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false));
     }
 
     public int getCurrentRefreshPage() {
@@ -39,13 +38,5 @@ public class SettingRefreshModel {
 
     public int[] getRefreshValues() {
         return ResManager.getIntArray(R.array.device_setting_refresh_values);
-    }
-
-    public boolean isSpeedRefresh() {
-        return isSpeedRefresh;
-    }
-
-    public void setSpeedRefresh(boolean speedRefresh) {
-        isSpeedRefresh = speedRefresh;
     }
 }
