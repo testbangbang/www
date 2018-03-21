@@ -64,8 +64,9 @@ public class UserLoginViewModel {
     }
 
     public void onLoginViewClick() {
-        count++;
-        checkCount();
+        if (incAndCheckCount()) {
+            return;
+        }
         getEventBus().post(new HideSoftWindowEvent());
         UserLoginAction userLoginAction = new UserLoginAction(JDReadApplication.getInstance(), account.get(), password.get(), false);
         userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
@@ -83,11 +84,14 @@ public class UserLoginViewModel {
         });
     }
 
-    private void checkCount() {
+    private boolean incAndCheckCount() {
+        count++;
         if (count > ERROR_LOGIN_LIMIT) {
             retrievePassword();
             count = 0;
+            return true;
         }
+        return false;
     }
 
     public void onDeleteAccountViewClick() {
