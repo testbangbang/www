@@ -517,7 +517,9 @@ public class FileBlockInfo {
         //three
         if (i < lastItem) {
             FileBlockInfo threeFileBlockInfo = blockInfos.get(lastItem);
-            textDataStart = fileBlockInfo.getParagraphInfos().get(fileBlockInfo.getParagraphInfos().size() - 1).startOffset;
+            int start = fileBlockInfo.getParagraphInfos().get(fileBlockInfo.getParagraphInfos().size() - 1).startOffset;
+            int len = fileBlockInfo.getParagraphInfos().get(fileBlockInfo.getParagraphInfos().size() - 1).length;
+            textDataStart = start + len;
             result.threeBlock = setFileBlockInfo(fileBlockInfo.blockSize, threeFileBlockInfo.blockSize,
                     textDataStart, oneParagraphNumber + fileBlockInfo.paragraphNumber,
                     oneParagraphNumber + fileBlockInfo.paragraphNumber + threeFileBlockInfo.paragraphNumber,

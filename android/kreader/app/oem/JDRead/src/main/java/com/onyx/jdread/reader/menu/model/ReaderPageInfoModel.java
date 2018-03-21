@@ -10,6 +10,7 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.GotoPageAction;
 import com.onyx.jdread.reader.actions.GotoPositionAction;
@@ -93,6 +94,9 @@ public class ReaderPageInfoModel {
     }
 
     public void nextChapter() {
+        if(!checkLoadingState()){
+            return;
+        }
         if (hasChapterInfo) {
             prepareGotoChapter(readerDataHolder, false);
         } else {
@@ -100,7 +104,18 @@ public class ReaderPageInfoModel {
         }
     }
 
+    private boolean checkLoadingState(){
+        if(!readerDataHolder.getReaderViewInfo().isLoadComplete()){
+            ToastUtil.showToast(ResManager.getString(R.string.reader_loading));
+            return false;
+        }
+        return true;
+    }
+
     public void previousChapter() {
+        if(!checkLoadingState()){
+            return;
+        }
         if (hasChapterInfo) {
             prepareGotoChapter(readerDataHolder, true);
         } else {
