@@ -319,17 +319,17 @@ public class LayoutProviderUtils {
         return layoutManager.getNavigator().getPositionByPageNumber(total - 1);
     }
 
-    static public String nextPage(final ReaderLayoutManager layoutManager) {
+    static public String nextPage(final ReaderLayoutManager layoutManager) throws ReaderException {
         String currentPagePosition = layoutManager.getCurrentPagePosition();
         return layoutManager.getNavigator().nextPage(currentPagePosition);
     }
 
-    static public String prevPage(final ReaderLayoutManager layoutManager) {
+    static public String prevPage(final ReaderLayoutManager layoutManager) throws ReaderException {
         String currentPagePosition = layoutManager.getCurrentPagePosition();
         return layoutManager.getNavigator().prevPage(currentPagePosition);
     }
 
-    static public String nextScreen(final ReaderLayoutManager layoutManager) {
+    static public String nextScreen(final ReaderLayoutManager layoutManager) throws ReaderException {
         PageInfo pageInfo = layoutManager.getPageManager().getFirstVisiblePage();
         if (pageInfo == null) {
             return null;
@@ -338,7 +338,7 @@ public class LayoutProviderUtils {
         return layoutManager.getNavigator().nextScreen(pageInfo.getName());
     }
 
-    static public String prevScreen(final ReaderLayoutManager layoutManager) {
+    static public String prevScreen(final ReaderLayoutManager layoutManager) throws ReaderException {
         PageInfo pageInfo = layoutManager.getPageManager().getFirstVisiblePage();
         if (pageInfo == null) {
             return null;

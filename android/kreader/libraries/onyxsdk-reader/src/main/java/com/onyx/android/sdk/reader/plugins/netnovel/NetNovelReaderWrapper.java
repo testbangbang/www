@@ -9,7 +9,7 @@ import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
-import com.onyx.android.sdk.reader.api.ReaderError;
+import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.plugins.alreader.AlReaderWrapper;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -47,7 +47,7 @@ public class NetNovelReaderWrapper {
         alReaderWrapper = new AlReaderWrapper(context, pluginOptions);
     }
 
-    public boolean openDocument(final String path,  final ReaderDocumentOptions documentOptions) {
+    public boolean openDocument(final String path,  final ReaderDocumentOptions documentOptions) throws ReaderException {
         bookDirectory = new File(path).getParentFile();
         this.documentOptions = documentOptions;
 
@@ -102,7 +102,7 @@ public class NetNovelReaderWrapper {
         return new NetNovelLocation(chapterList.get(0).id, 0, 0).toJson();
     }
 
-    public boolean gotoPosition(String position) {
+    public boolean gotoPosition(String position) throws ReaderException {
         NetNovelLocation location = NetNovelLocation.createFromJSON(position);
         if (!openChapter(location.chapterId)) {
             return false;
@@ -111,7 +111,7 @@ public class NetNovelReaderWrapper {
         return gotoPositionInChapter(location.positionInChapter);
     }
 
-    public boolean gotoPage(int page) {
+    public boolean gotoPage(int page) throws ReaderException {
         if (page < 0 || page >= chapterList.size()) {
             return false;
         }
@@ -124,7 +124,7 @@ public class NetNovelReaderWrapper {
         return gotoPositionInChapter(0);
     }
 
-    public boolean nextPage() {
+    public boolean nextPage() throws ReaderException {
         if (!alReaderWrapper.isLastPage()) {
             return alReaderWrapper.nextPage();
         }
@@ -132,7 +132,7 @@ public class NetNovelReaderWrapper {
         return nextChapter();
     }
 
-    public boolean prevPage() {
+    public boolean prevPage() throws ReaderException {
         if (!alReaderWrapper.isFirstPage()) {
             return alReaderWrapper.prevPage();
         }
@@ -219,7 +219,7 @@ public class NetNovelReaderWrapper {
         alReaderWrapper.setStyle(style);
     }
 
-    private boolean openChapter(String chapterId) {
+    private boolean openChapter(String chapterId) throws ReaderException {
         if (currentChapterId != null) {
             if (currentChapterId.compareTo(chapterId) == 0) {
                 return true;
@@ -229,7 +229,7 @@ public class NetNovelReaderWrapper {
 
         String path = new File(bookDirectory, chapterId).getAbsolutePath();
         if (!FileUtils.fileExist(path)) {
-            throw ReaderError.netNovelChapterNotFound(chapterId);
+            throw ReaderException.netNovelChapterNotFound(chapterId);
         }
 
         alReaderWrapper = new AlReaderWrapper(context, pluginOptions);
@@ -318,7 +318,7 @@ public class NetNovelReaderWrapper {
         return getCurrentChapterIndex() == chapterList.size() - 1;
     }
 
-    private boolean nextChapter() {
+    private boolean nextChapter() throws ReaderException {
         if (isLastChapter()) {
             return false;
         }
@@ -326,7 +326,7 @@ public class NetNovelReaderWrapper {
         return openChapter(chapterList.get(getCurrentChapterIndex() + 1).id);
     }
 
-    private boolean previousChapter() {
+    private boolean previousChapter() throws ReaderException {
         if (isFirstChapter()) {
             return false;
         }
