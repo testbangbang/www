@@ -9,7 +9,7 @@ import android.view.View;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.update.dialog.DialogMessage;
+import com.onyx.android.update.dialog.DialogAlertMessage;
 import com.onyx.android.update.upgrade.RxFirmwareLocalUpdateRequest;
 
 /**
@@ -54,7 +54,7 @@ public class SystemUpgradeActivity extends AppCompatActivity {
     }
 
     private void showUpgradeFailedDialog() {
-        final DialogMessage dialog = new DialogMessage(this);
+        final DialogAlertMessage dialog = new DialogAlertMessage(this);
         dialog.setMessage(getString(R.string.system_upgrade_fail_message));
         dialog.setPositiveAction(new View.OnClickListener() {
             @Override

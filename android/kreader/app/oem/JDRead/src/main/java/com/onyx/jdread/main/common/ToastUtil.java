@@ -33,7 +33,7 @@ public class ToastUtil {
     private static float radius = ResManager.getInteger(R.integer.toast_view_shadow_radius);
     private static float dx = ResManager.getInteger(R.integer.toast_view_shadow_dx);
     private static float dy = ResManager.getInteger(R.integer.toast_view_shadow_dy);
-    private static float textSize = ResManager.getDimension(R.dimen.level_one_heading_font);
+    private static float textSize = ResManager.getDimension(R.dimen.level_two_heading_font);
 
     public static void showOffsetToast(String message, int offsetY) {
         showToast(JDReadApplication.getInstance(), message, offsetY);

@@ -7,4 +7,5 @@ package com.onyx.jdread.reader.menu.event;
 public class SettingLineSpacingEvent {
     public int margin;
     public int styleIndex;
+    public int settingType;
 }
