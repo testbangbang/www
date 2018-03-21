@@ -17,6 +17,10 @@ public class CollectionUtils {
         return list == null || list.size() <= 0;
     }
 
+    static public boolean isEmpty(final Collection list) {
+        return list != null && list.size() <= 0;
+    }
+
     static public boolean isNullOrEmpty(final Map map) {
         return map == null || map.size() <= 0;
     }
