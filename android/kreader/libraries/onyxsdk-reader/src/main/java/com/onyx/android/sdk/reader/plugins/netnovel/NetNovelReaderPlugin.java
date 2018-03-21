@@ -251,27 +251,27 @@ public class NetNovelReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public boolean gotoPosition(String position) {
+    public boolean gotoPosition(String position) throws ReaderException {
         return getPluginImpl().gotoPosition(position);
     }
 
     @Override
-    public boolean gotoPage(int page) {
+    public boolean gotoPage(int page) throws ReaderException {
         return getPluginImpl().gotoPage(page);
     }
 
     @Override
-    public String nextScreen(String position) {
+    public String nextScreen(String position) throws ReaderException {
         return nextPage(position);
     }
 
     @Override
-    public String prevScreen(String position) {
+    public String prevScreen(String position) throws ReaderException {
         return prevPage(position);
     }
 
     @Override
-    public String nextPage(String position) {
+    public String nextPage(String position) throws ReaderException {
         if (!getPluginImpl().nextPage()) {
             return null;
         }
@@ -279,7 +279,7 @@ public class NetNovelReaderPlugin implements ReaderPlugin,
     }
 
     @Override
-    public String prevPage(String position) {
+    public String prevPage(String position) throws ReaderException {
         if (!getPluginImpl().prevPage()) {
             return null;
         }
