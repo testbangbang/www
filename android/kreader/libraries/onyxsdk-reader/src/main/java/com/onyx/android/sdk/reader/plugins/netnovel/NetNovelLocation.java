@@ -7,6 +7,8 @@ import com.alibaba.fastjson.JSON;
  */
 
 public class NetNovelLocation {
+    public String type = "netnovel";
+    public String bookId;
     public String chapterId;
     public int chapterIndex;
     public int positionInChapter;
@@ -15,7 +17,8 @@ public class NetNovelLocation {
 
     }
 
-    public NetNovelLocation(String chapterId, int chapterIndex, int positionInChapter) {
+    public NetNovelLocation(String bookId, String chapterId, int chapterIndex, int positionInChapter) {
+        this.bookId = bookId;
         this.chapterId = chapterId;
         this.chapterIndex = chapterIndex;
         this.positionInChapter = positionInChapter;
