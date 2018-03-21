@@ -26,6 +26,7 @@ public class ReaderConfig {
     public static final String BOOK_READING_TIME = "readingTime";
     public static final String BOOK_READING_START_TIME = "startTime";
     public static final String BOOK_READING_ID = "cloudID";
+    public static final String BR = "\r\n";
 
     public static class Typeface {
         public static final String TYPEFACE_ONE = TYPEFACE_ROOT_PATH + "FZHei-B01.TTF";
