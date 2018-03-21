@@ -127,7 +127,7 @@ public class AlBookEng{
 	private int screenWidth;
 	private int screenHeight;
 
-	private AlEngineOptions engOptions = null;
+	public AlEngineOptions engOptions = null;
 	public final AlBookState openState = new AlBookState();
 
 	private final AlEngineNotifyForUI notifyUI = new AlEngineNotifyForUI();
