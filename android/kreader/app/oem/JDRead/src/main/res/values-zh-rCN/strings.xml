@@ -68,7 +68,7 @@
     <string name="already_latest_version">已是最新版本</string>
     <string name="check_update">检查更新</string>
     <string name="download_update_package">下载更新包</string>
-    <string name="downloading">正在下载 %d</string>
+    <string name="downloading">%d</string>
     <string name="update_application_not_install">更新应用没有安装，请升级最新的系统</string>
     <string name="wifi_pass_book_prompt_top">在浏览器中输入以下地址或扫描下方二维码：</string>
     <string name="wifi_pass_book_prompt_bottom_1">手机上传仅限Android手机</string>
@@ -573,4 +573,5 @@
     <string name="quarterly">会员  季度 ( 91天 )</string>
     <string name="annual">会员  年度 ( 366天 )</string>
     <string name="power_too_low_to_upgrade">电量不足%d%%，请连接电源后升级</string>
+    <string name="exit_current_account">是否退出当前账号？</string>
 </resources>
