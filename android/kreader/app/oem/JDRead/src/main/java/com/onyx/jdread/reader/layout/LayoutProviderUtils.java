@@ -215,21 +215,22 @@ public class LayoutProviderUtils {
         int start = 0;
         ChapterInfo prevChapterInfo = null;
         prevChapterInfo = tocChapterNodeList.get(0);
-        int end = prevChapterInfo.getPosition();
+        int end = PagePositionUtils.getPosition(prevChapterInfo.getPosition());
         if(pagePosition >= start && pagePosition <= end){
             return prevChapterInfo;
         }
-        start = prevChapterInfo.getPosition();
+        start = PagePositionUtils.getPosition(prevChapterInfo.getPosition());
         ChapterInfo chapterInfo = null;
         for (int i = 1; i < size; i++) {
             chapterInfo = tocChapterNodeList.get(i);
-            if(pagePosition >= start && pagePosition < chapterInfo.getPosition()){
+            int chapterPosition = PagePositionUtils.getPosition(chapterInfo.getPosition());
+            if(pagePosition >= start && pagePosition < chapterPosition){
                 return prevChapterInfo;
             }
-            if(pagePosition == chapterInfo.getPosition()){
+            if(pagePosition == chapterPosition){
                 return chapterInfo;
             }
-            start = chapterInfo.getPosition() + 1;
+            start = chapterPosition + 1;
             prevChapterInfo = chapterInfo;
         }
         return chapterInfo;
@@ -405,17 +406,17 @@ public class LayoutProviderUtils {
         return layoutManager.getNavigator().getPositionByPageNumber(total - 1);
     }
 
-    static public String nextPage(final ReaderLayoutManager layoutManager) {
+    static public String nextPage(final ReaderLayoutManager layoutManager) throws ReaderException {
         String currentPagePosition = layoutManager.getCurrentPagePosition();
         return layoutManager.getNavigator().nextPage(currentPagePosition);
     }
 
-    static public String prevPage(final ReaderLayoutManager layoutManager) {
+    static public String prevPage(final ReaderLayoutManager layoutManager) throws ReaderException {
         String currentPagePosition = layoutManager.getCurrentPagePosition();
         return layoutManager.getNavigator().prevPage(currentPagePosition);
     }
 
-    static public String nextScreen(final ReaderLayoutManager layoutManager) {
+    static public String nextScreen(final ReaderLayoutManager layoutManager) throws ReaderException {
         PageInfo pageInfo = layoutManager.getPageManager().getFirstVisiblePage();
         if (pageInfo == null) {
             return null;
@@ -424,7 +425,7 @@ public class LayoutProviderUtils {
         return layoutManager.getNavigator().nextScreen(pageInfo.getName());
     }
 
-    static public String prevScreen(final ReaderLayoutManager layoutManager) {
+    static public String prevScreen(final ReaderLayoutManager layoutManager) throws ReaderException {
         PageInfo pageInfo = layoutManager.getPageManager().getFirstVisiblePage();
         if (pageInfo == null) {
             return null;

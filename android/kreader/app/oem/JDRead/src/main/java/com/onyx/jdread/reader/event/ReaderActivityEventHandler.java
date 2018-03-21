@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.plugins.netnovel.NetNovelLocation;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.DialogMessage;
 import com.onyx.jdread.R;
@@ -194,6 +196,11 @@ public class ReaderActivityEventHandler {
     @Subscribe
     public void onShowLastPageEvent(ShowLastPageEvent event) {
         readerViewModel.setIsShowLastPage(true);
+    }
+
+    @Subscribe
+    public void onLoadingEvent(LoadingEvent event){
+        ToastUtil.showToast(ResManager.getString(R.string.reader_loading));
     }
 
     @Subscribe
@@ -497,6 +504,17 @@ public class ReaderActivityEventHandler {
     public void onReaderErrorEvent(ReaderErrorEvent event) {
         String[] errors = ReaderErrorEvent.getThrowableStringRep(event.throwable);
         ReaderErrorEvent.printThrowable(errors);
+        if (event.throwable instanceof ReaderException) {
+            ReaderException exception = (ReaderException)event.throwable;
+            if (exception.getCode() == ReaderException.NET_NOVEL_CHAPTER_NOT_FOUND) {
+                try {
+                    NetNovelLocation location = NetNovelLocation.createFromJSON(exception.getMessage());
+                    long bookId = Long.parseLong(location.bookId);
+                    ManagerActivityUtils.startSettingsActivity(readerViewBack.getContext(), bookId);
+                } catch (Throwable tr) {
+                }
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

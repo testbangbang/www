@@ -6,16 +6,14 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.library.view.DashLineItemDivider;
-import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.RefreshBinding;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
@@ -25,7 +23,6 @@ import com.onyx.jdread.setting.event.SpeedRefreshChangeEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingRefreshModel;
 import com.onyx.jdread.setting.model.SettingTitleModel;
-import com.onyx.jdread.util.ScreenUtils;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -68,14 +65,13 @@ public class RefreshFragment extends BaseFragment {
         titleModel.setViewHistory(false);
         titleModel.setTitle(ResManager.getString(R.string.page_refresh));
         binding.refreshTitleBar.setTitleModel(titleModel);
-
         settingRefreshModel = SettingBundle.getInstance().getSettingRefreshModel();
-        settingRefreshModel.setSpeedRefresh(JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false));
+        settingRefreshModel.isSpeedRefresh.set(JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false));
+        binding.setRefreshModel(settingRefreshModel);
         int currentRefreshPage = settingRefreshModel.getCurrentRefreshPage();
         settingRefreshModel.setCurrentPageRefreshPage(currentRefreshPage);
         refreshAdapter.setCurrentPage(currentRefreshPage);
         refreshAdapter.setData(settingRefreshModel.getRefreshPages(), settingRefreshModel.getRefreshValues());
-        binding.refreshCheckBox.setChecked(settingRefreshModel.isSpeedRefresh());
     }
 
     private void initView() {
@@ -87,12 +83,13 @@ public class RefreshFragment extends BaseFragment {
     }
 
     private void initListener() {
-        binding.refreshCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        binding.refreshCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                JDPreferenceManager.setBooleanValue(R.string.speed_refresh_key, isChecked);
-                settingRefreshModel.setSpeedRefresh(isChecked);
-                ToastUtil.showToast(isChecked ? ResManager.getString(R.string.speed_refresh_is_opened) : ResManager.getString(R.string.speed_refresh_is_closed));
+            public void onClick(View v) {
+                boolean isSpeed = JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false);
+                settingRefreshModel.isSpeedRefresh.set(!isSpeed);
+                JDPreferenceManager.setBooleanValue(R.string.speed_refresh_key, !isSpeed);
+                ToastUtil.showToast(!isSpeed ? ResManager.getString(R.string.speed_refresh_is_opened) : ResManager.getString(R.string.speed_refresh_is_closed));
             }
         });
 
@@ -111,6 +108,6 @@ public class RefreshFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSpeedRefreshChangeEvent(SpeedRefreshChangeEvent event) {
-        binding.refreshCheckBox.setChecked(JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false));
+        settingRefreshModel.isSpeedRefresh.set(JDPreferenceManager.getBooleanValue(R.string.speed_refresh_key, false));
     }
 }

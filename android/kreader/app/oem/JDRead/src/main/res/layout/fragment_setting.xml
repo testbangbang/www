@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/setting_device_detail_describe_margin_top"
-                android:src="@mipmap/ic_setting_more" />
+                android:src="@mipmap/ic_setting_main" />
         </LinearLayout>
 
         <View

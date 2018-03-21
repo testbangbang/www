@@ -49,4 +49,9 @@ public class AlFilesBypassDecrypt extends AlFilesBypass {
     public String getDecriptFileExt() {
         return decrypt.getOutFileExt();
     }
+
+    @Override
+    public String getFileMD5() {
+        return decrypt.getFileMD5();
+    }
 }

@@ -14,6 +14,7 @@ import com.neverland.engbook.forpublic.AlBookProperties;
 import com.neverland.engbook.forpublic.AlCurrentPosition;
 import com.neverland.engbook.forpublic.AlEngineNotifyForUI;
 import com.neverland.engbook.forpublic.AlEngineOptions;
+import com.neverland.engbook.forpublic.AlFileDecrypt;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.neverland.engbook.forpublic.AlPublicProfileOptions;
@@ -69,6 +70,8 @@ public class AlReaderWrapper {
      static String DEFAULT_FONT_NAME = "Serif";
 
     private String filePath;
+    private AlFileDecrypt fileDecrypt;
+
     private AlBookEng bookEng;
     private AlEngineOptions engineOptions;
     private AlPublicProfileOptions profile = new AlPublicProfileOptions();
@@ -128,10 +131,32 @@ public class AlReaderWrapper {
         return NO_ERROR;
     }
 
+    public long openDocument(final AlFileDecrypt file,  final ReaderDocumentOptions documentOptions) {
+        fileDecrypt = file;
+        AlBookOptions bookOpt = new AlBookOptions();
+        bookOpt.codePage = documentOptions.getCodePage();
+        bookOpt.codePageDefault = documentOptions.getCodePageFallback();
+        bookOpt.formatOptions = 0;
+        bookOpt.readPosition = documentOptions.getReadPosition();
+        bookOpt.decryptObj = file;
+        if (bookEng.openBook("dummy.txt", bookOpt) != TAL_RESULT.OK) {
+            return ERROR_FILE_INVALID;
+        }
+        if (!bookEng.isBookOpened()) {
+            return ERROR_FILE_INVALID;
+        }
+        setChineseConvertType(documentOptions.getChineseConvertType());
+        return NO_ERROR;
+    }
+
     public void updateDocumentOptions(ReaderDocumentOptions documentOptions, ReaderPluginOptions pluginOptions) {
         int readPosition = getScreenStartPosition();
         closeDocument();
-        openDocument(filePath, documentOptions);
+        if (filePath != null) {
+            openDocument(filePath, documentOptions);
+        } else if (fileDecrypt != null) {
+            openDocument(fileDecrypt, documentOptions);
+        }
         gotoPosition(readPosition);
     }
 

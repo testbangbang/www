@@ -13,9 +13,9 @@ import com.onyx.android.update.R;
 /**
  * Created by suicheng on 2018/3/20.
  */
-public class DialogMessage extends AlertDialog {
+public class DialogAlertMessage extends AlertDialog {
 
-    public DialogMessage(@NonNull Context context) {
+    public DialogAlertMessage(@NonNull Context context) {
         super(context, R.style.CustomDialogStyle);
     }
 
@@ -33,7 +33,7 @@ public class DialogMessage extends AlertDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_message, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_alert_message, null);
         view.findViewById(R.id.button_positive).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

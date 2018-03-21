@@ -129,4 +129,8 @@ public class BaseFragment extends Fragment {
     public LoadingDialog.DialogModel getLoadingModel() {
         return loadingModel;
     }
+
+    public void afterPopup() {
+
+    }
 }

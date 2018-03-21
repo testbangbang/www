@@ -619,7 +619,7 @@
     <dimen name="radio_button_size">20dp</dimen>
     <dimen name="radio_button_inside_margin">5dp</dimen>
     <dimen name="radio_button_inside_size">7dp</dimen>
-    <dimen name="toast_height">55dp</dimen>
+    <dimen name="toast_height">45dp</dimen>
     <dimen name="toast_offset_y">427dp</dimen>
     <dimen name="dash_Line_length">2dp</dimen>
     <dimen name="dash_space_length">2dp</dimen>
@@ -629,10 +629,15 @@
     <dimen name="view_directory_page_text_view_height">538dp</dimen>
     <dimen name="view_directory_page_text_view_indicator_margin_top">22dp</dimen>
     <dimen name="view_directory_page_text_view_margin_right">20dp</dimen>
+    <dimen name="update_progress_margin">20dp</dimen>
+    <dimen name="update_progress_width">365dp</dimen>
+    <dimen name="update_progress_height">6dp</dimen>
     <dimen name="dialog_message_layout_width">380dp</dimen>
     <dimen name="dialog_message_layout_height">190dp</dimen>
     <dimen name="dialog_message_text_size">20sp</dimen>
     <dimen name="dialog_message_text_padding">24dp</dimen>
     <dimen name="dialog_message_button_text_size">21sp</dimen>
     <dimen name="dialog_message_button_padding">12dp</dimen>
+    <dimen name="personal_login_out_drawable_padding">6dp</dimen>
+    <dimen name="personal_login_out_margin_right">20dp</dimen>
 </resources>

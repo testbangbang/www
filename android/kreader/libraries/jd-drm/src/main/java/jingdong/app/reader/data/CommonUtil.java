@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
 
-import com.onyx.jdread.JDReadApplication;
-
 public final class CommonUtil {
     private static final String TAG = CommonUtil.class.getSimpleName();
 
@@ -34,7 +32,7 @@ public final class CommonUtil {
     private static boolean isHaveGranted(final Context context, String permissionStr) {
         PackageManager pm = context.getPackageManager();
         boolean permission = (PackageManager.PERMISSION_GRANTED ==
-                pm.checkPermission(permissionStr, JDReadApplication.getInstance().getPackageName()));
+                pm.checkPermission(permissionStr, context.getPackageName()));
         return permission;
     }
 }

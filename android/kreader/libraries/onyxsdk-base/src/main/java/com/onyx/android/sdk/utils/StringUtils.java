@@ -32,6 +32,18 @@ public class StringUtils {
         return !isNotBlank(string);
     }
 
+    static public boolean isInteger(final String string) {
+        if (isNullOrEmpty(string)) {
+            return false;
+        }
+        for (int i = 0; i < string.length(); i++) {
+            if (!Character.isDigit(string.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     static public String utf16le(final byte [] data) {
         String string = "";
         if (data == null) {

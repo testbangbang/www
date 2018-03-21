@@ -15,4 +15,5 @@ include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
         ':app:oem:JDRead',
         ':app:oem:apkupdate',
         ':app:common:OnyxPinyinIME',
-        ':libraries:evernote-service'
+        ':libraries:evernote-service',
+        ':libraries:jd-drm'

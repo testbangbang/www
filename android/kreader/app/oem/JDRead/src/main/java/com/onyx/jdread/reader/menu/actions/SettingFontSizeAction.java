@@ -16,16 +16,22 @@ import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 public class SettingFontSizeAction extends BaseReaderAction {
     private int styleIndex;
     private ReaderTextStyle style;
+    private int settingType;
 
-    public SettingFontSizeAction(ReaderTextStyle style,int styleIndex) {
+    public SettingFontSizeAction(ReaderTextStyle style,int styleIndex,int settingType) {
         this.styleIndex = styleIndex;
         this.style = style;
+        this.settingType = settingType;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, RxCallback baseCallback) {
         ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
-        style.setLineSpacing(ReaderConfig.getAdditionalSpacing(style.getFontFace(),styleIndex));
+
+        int spacing = ReaderConfig.getAdditionalSpacing(style.getFontFace(),styleIndex,
+                presetStyle.getLineSpacing().getPercent(),settingType);
+
+        style.setLineSpacing(ReaderTextStyle.Percentage.create(spacing));
         style.setFontSize(presetStyle.getFontSize());
         style.setPageMargin(presetStyle.getPageMargin());
         style.setParagraphSpacing(presetStyle.getParagraphSpacing());
