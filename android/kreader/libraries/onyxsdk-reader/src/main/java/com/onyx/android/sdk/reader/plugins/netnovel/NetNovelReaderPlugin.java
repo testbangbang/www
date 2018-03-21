@@ -396,7 +396,7 @@ public class NetNovelReaderPlugin implements ReaderPlugin,
 
     @Override
     public boolean saveOptions() {
-        return false;
+        return true;
     }
 
     @Override
