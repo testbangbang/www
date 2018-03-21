@@ -222,16 +222,16 @@ public class NetNovelReaderWrapper {
     }
 
     private boolean openChapter(String chapterId) throws ReaderException {
+        String path = new File(bookDirectory, chapterId).getAbsolutePath();
+        if (!FileUtils.fileExist(path)) {
+            throw ReaderException.netNovelChapterNotFound(chapterId);
+        }
+
         if (currentChapterId != null) {
             if (currentChapterId.compareTo(chapterId) == 0) {
                 return true;
             }
             alReaderWrapper.closeDocument();
-        }
-
-        String path = new File(bookDirectory, chapterId).getAbsolutePath();
-        if (!FileUtils.fileExist(path)) {
-            throw ReaderException.netNovelChapterNotFound(chapterId);
         }
 
         alReaderWrapper = new AlReaderWrapper(context, pluginOptions);
