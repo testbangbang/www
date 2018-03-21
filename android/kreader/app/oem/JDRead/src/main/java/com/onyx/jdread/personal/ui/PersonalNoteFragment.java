@@ -51,6 +51,7 @@ public class PersonalNoteFragment extends BaseFragment {
     private PersonalNoteAdapter personalNoteAdapter;
     private GPaginator paginator;
     private ExportHelper exportHelper;
+    private boolean isItemChecked = false;
 
     @Nullable
     @Override
@@ -72,6 +73,14 @@ public class PersonalNoteFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         Utils.ensureUnregister(PersonalDataBundle.getInstance().getEventBus(), this);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            binding.personalNoteCheckAll.setChecked(false);
+        }
     }
 
     private void initView() {
@@ -113,7 +122,7 @@ public class PersonalNoteFragment extends BaseFragment {
                 List<NoteBean> data = personalNoteAdapter.getData();
                 if (data != null && data.size() > 0) {
                     for (NoteBean bean : data) {
-                        bean.checked = !bean.checked;
+                        bean.checked = !binding.personalNoteCheckAll.isChecked();
                     }
                     setExportText(data.get(0).checked);
                     binding.personalNoteCheckAll.setChecked(data.get(0).checked);
@@ -125,6 +134,10 @@ public class PersonalNoteFragment extends BaseFragment {
         binding.personalNoteCheckAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isItemChecked && !isChecked) {
+                    isItemChecked = false;
+                    return;
+                }
                 List<NoteBean> data = personalNoteAdapter.getData();
                 if (data != null && data.size() > 0) {
                     for (NoteBean bean : data) {
@@ -162,6 +175,7 @@ public class PersonalNoteFragment extends BaseFragment {
                         }
                     }
                 }
+                isItemChecked = true;
                 binding.personalNoteCheckAll.setChecked(data.size() == list.size());
                 setExportText(list.size() != 0);
             }
