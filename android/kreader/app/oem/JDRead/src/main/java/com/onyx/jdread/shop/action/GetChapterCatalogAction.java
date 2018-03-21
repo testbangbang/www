@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.GetChapterGroupInfoRequestBean;
@@ -41,6 +42,7 @@ public class GetChapterCatalogAction extends BaseAction<ShopDataBundle> {
         String sign = String.format(CloudApiContext.BookShopURI.GET_CHAPTER_CATALOG, String.valueOf(bookID));
         appBaseInfo.setSign(appBaseInfo.getSignValue(sign));
         baseRequestBean.setBaseInfo(appBaseInfo);
+        baseRequestBean.withCookie = JDReadApplication.getInstance().getLogin();
         baseRequestBean.bookId = bookID;
         baseRequestBean.bookName = bookName;
         final RxRequestGetChapterCatalog rq = new RxRequestGetChapterCatalog();
