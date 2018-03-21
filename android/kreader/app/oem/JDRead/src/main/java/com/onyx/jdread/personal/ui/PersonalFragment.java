@@ -83,7 +83,7 @@ public class PersonalFragment extends BaseFragment {
     }
 
     private void initData() {
-        int currentReadTime = JDReadApplication.getInstance().getCurrentReadTime();
+        long currentReadTime = JDReadApplication.getInstance().getCurrentReadTime();
         binding.setReadTime(String.valueOf(currentReadTime / Constants.MINUTE_STEP));
         binding.setIsLogin(JDReadApplication.getInstance().getLogin());
         binding.setIsSignToday(PersonalDataBundle.getInstance().isTodaySign());

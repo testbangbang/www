@@ -38,7 +38,7 @@ public class ReadTimeBroadcastReceive extends BroadcastReceiver {
         readingData.length = String.valueOf(length);
         syncReadingData(readingData);
 
-        int currentReadTime = JDReadApplication.getInstance().getCurrentReadTime();
+        long currentReadTime = JDReadApplication.getInstance().getCurrentReadTime();
         long total = length + currentReadTime;
         String s = TimeUtils.getDate(System.currentTimeMillis()) + Constants.DIVIDER + total;
         JDPreferenceManager.setStringValue(ReaderConfig.BOOK_READING_TIME, s);

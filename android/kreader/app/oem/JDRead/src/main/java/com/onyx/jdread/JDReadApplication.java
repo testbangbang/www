@@ -208,19 +208,19 @@ public class JDReadApplication extends MultiDexApplication {
     }
 
     public boolean canSignForRead() {
-        int currentReadTime = getCurrentReadTime();
+        long currentReadTime = getCurrentReadTime();
         return (currentReadTime / Constants.MINUTE_STEP) >= SIGN_FOR_READING_MIN;
     }
 
-    public int getCurrentReadTime() {
-        int current = 0;
+    public long getCurrentReadTime() {
+        long current = 0;
         String currentLength = JDPreferenceManager.getStringValue(ReaderConfig.BOOK_READING_TIME, "");
         if (StringUtils.isNotBlank(currentLength) && currentLength.contains(Constants.DIVIDER)) {
             int index = currentLength.lastIndexOf(Constants.DIVIDER);
             String currentDay = currentLength.substring(0, index);
             if (TimeUtils.getDate(System.currentTimeMillis()).equals(currentDay)) {
                 String time = currentLength.substring(index + 1);
-                current = PagePositionUtils.getPosition(time);
+                current = Utils.getLongTime(time);
             }
         }
         return current;
