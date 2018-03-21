@@ -88,11 +88,6 @@ public class CategoryBookListViewModel extends BaseObservable {
         return bookList;
     }
 
-    public void setBookList(List<ResultBookBean> bookList) {
-        this.bookList = bookList;
-        notifyChange();
-    }
-
     public void addBookList(List<ResultBookBean> list, boolean clear) {
         if (clear) {
             getEnsureBookList().clear();
