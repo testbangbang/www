@@ -16,11 +16,31 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/experience_title_bar"
-            layout="@layout/title_bar"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/experience_title_bar"
+                layout="@layout/title_bar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/personal_login_gout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/level_one_heading_font"
+                android:gravity="center_vertical"
+                android:drawablePadding="@dimen/personal_login_out_drawable_padding"
+                android:textColor="@android:color/black"
+                android:layout_marginRight="@dimen/personal_login_out_margin_right"
+                android:text="@string/log_out"
+                android:drawableLeft="@mipmap/ic_me_quit"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

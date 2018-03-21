@@ -1,15 +1,21 @@
 package com.onyx.jdread.shop.request.cloud;
 
+import android.graphics.Bitmap;
+
+import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.jdread.R;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.GetBookDetailRequestBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.ViewHelper;
 
 import java.util.List;
 
@@ -51,8 +57,19 @@ public class RxRequestBookDetail extends RxBaseCloudRequest {
     }
 
     private void checkResult() {
-        if (bookDetailResultBean != null && bookDetailResultBean.result_code != 0) {
-            ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(bookDetailResultBean.message));
+        if (bookDetailResultBean != null) {
+            if (BaseResultBean.checkSuccess(bookDetailResultBean.result_code)) {
+                if (bookDetailResultBean.data != null) {
+                    CloseableReference<Bitmap> refBitmap = ViewHelper.getRefBitmap(bookDetailResultBean.data.large_image_url, getAppContext());
+                    if (refBitmap != null) {
+                        bookDetailResultBean.data.coverBitmap.set(refBitmap);
+                    } else {
+                        bookDetailResultBean.data.coverDefault.set(R.mipmap.ic_cloud_default_cover);
+                    }
+                }
+            } else {
+                ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(bookDetailResultBean.message));
+            }
         }
     }
 

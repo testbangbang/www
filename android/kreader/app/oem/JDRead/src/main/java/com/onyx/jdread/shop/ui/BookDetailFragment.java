@@ -65,6 +65,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetChapterStartIdResult;
+import com.onyx.jdread.shop.cloud.entity.jdbean.GetChaptersContentResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetOrderInfoResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.UpdateBean;
@@ -209,6 +210,7 @@ public class BookDetailFragment extends BaseFragment {
         ebookId = 0;
         downloadTaskState = 0;
         localPath = "";
+        setAuthorUnderline(false);
     }
 
     private void initView() {
@@ -362,12 +364,25 @@ public class BookDetailFragment extends BaseFragment {
                 BookModelBooksResultBean booksResultBean = action.getBooksResultBean();
                 if (booksResultBean != null && booksResultBean.data != null) {
                     if (booksResultBean.data.items != null && booksResultBean.data.items.size() > Constants.SHOP_MAIN_INDEX_ONE) {
-                        bookDetailBinding.bookDetailInfo.bookDetailAuthor.setEnabled(true);
-                        bookDetailBinding.bookDetailInfo.bookDetailAuthor.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+                        setAuthorUnderline(true);
+                    } else {
+                        setAuthorUnderline(false);
                     }
                 }
             }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                setAuthorUnderline(false);
+            }
         });
+    }
+
+    private void setAuthorUnderline(boolean enabled) {
+        bookDetailBinding.bookDetailInfo.bookDetailAuthor.setEnabled(enabled);
+        bookDetailBinding.bookDetailInfo.bookDetailAuthor.getPaint().setFlags(enabled ? Paint.UNDERLINE_TEXT_FLAG : Constants.TEXT_FLAG_NULL);
+        bookDetailBinding.bookDetailInfo.bookDetailAuthor.invalidate();
     }
 
     private void getRecommendData() {
@@ -385,6 +400,7 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
     public void onRecommendItemClickEvent(RecommendItemClickEvent event) {
         if (checkWifiDisconnected()) {
+            checkWifi("");
             return;
         }
         ResultBookBean bookBean = event.getBookBean();
@@ -647,6 +663,7 @@ public class BookDetailFragment extends BaseFragment {
         }
 
         if (checkWifiDisconnected()) {
+            checkWifi("");
             return;
         }
 
@@ -712,6 +729,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void downLoadWholeBook() {
         if (checkWifiDisconnected()) {
+            checkWifi("");
             return;
         }
         nowReadButton.setEnabled(false);
@@ -776,6 +794,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void addToCart(long ebookId) {
         if (checkWifiDisconnected()) {
+            checkWifi("");
             return;
         }
         final AddOrDeleteCartAction addOrDeleteCartAction = new AddOrDeleteCartAction(new String[]{String.valueOf(ebookId)}, Constants.CART_TYPE_ADD);
@@ -812,6 +831,7 @@ public class BookDetailFragment extends BaseFragment {
         }
 
         if (checkWifiDisconnected()) {
+            checkWifi("");
             return;
         }
 
@@ -893,7 +913,9 @@ public class BookDetailFragment extends BaseFragment {
                 if (isViewDirectory) {
                     isViewDirectoryTryDownload = false;
                     hideLoadingDialog();
-                    openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
+                    if (DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+                        openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
+                    }
                 }
             }
         });
@@ -1069,10 +1091,19 @@ public class BookDetailFragment extends BaseFragment {
 
     private void getChapterContent(String type, String ids, boolean can_try) {
         GetChaptersContentAction getChaptersContentAction = new GetChaptersContentAction(ebookId, bookDetailBean.name, type, ids, can_try);
-        getChaptersContentAction.execute(getShopDataBundle(), new RxCallback() {
+        getChaptersContentAction.execute(getShopDataBundle(), new RxCallback<GetChaptersContentAction>() {
             @Override
-            public void onNext(Object o) {
+            public void onNext(GetChaptersContentAction action) {
+                GetChaptersContentResultBean resultBean = action.getResultBean();
+                if (GetChaptersContentResultBean.checkSuccess(resultBean)) {
+                    ToastUtil.showToast(ResManager.getString(R.string.download_finished));
+                }
+            }
 
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                ToastUtil.showToast(ResManager.getString(R.string.download_fail));
             }
         });
     }

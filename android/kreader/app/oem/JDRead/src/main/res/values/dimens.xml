@@ -632,4 +632,12 @@
     <dimen name="update_progress_margin">20dp</dimen>
     <dimen name="update_progress_width">365dp</dimen>
     <dimen name="update_progress_height">6dp</dimen>
+    <dimen name="dialog_message_layout_width">380dp</dimen>
+    <dimen name="dialog_message_layout_height">190dp</dimen>
+    <dimen name="dialog_message_text_size">20sp</dimen>
+    <dimen name="dialog_message_text_padding">24dp</dimen>
+    <dimen name="dialog_message_button_text_size">21sp</dimen>
+    <dimen name="dialog_message_button_padding">12dp</dimen>
+    <dimen name="personal_login_out_drawable_padding">6dp</dimen>
+    <dimen name="personal_login_out_margin_right">20dp</dimen>
 </resources>

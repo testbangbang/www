@@ -56,7 +56,7 @@
                 <ImageView
                     style="@style/ReaderTitleBarStyle"
                     android:onClick="@{()->readerTitleBarModel.searchContextClick()}"
-                    android:src="@mipmap/ic_read_search"
+                    android:src="@mipmap/ic_shelf_search"
                     android:visibility="@{readerTitleBarModel.isSearchContext?View.VISIBLE:View.GONE}" />
 
                 <ImageView

@@ -425,6 +425,9 @@ public class MainActivity extends AppCompatActivity {
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup();
         if (functionBarItem != null) {
+            if (functionBarItem.getStackList().isLastOne()) {
+                return;
+            }
             FragmentBarModel barModel = popCurrentChildView(functionBarItem);
             if (isNetWorkFragment(currentFragment.getClass().getName()) || isNetWorkFragment(barModel.getName())) {
                 barModel = functionBarItem.getStackList().popChildView();
@@ -433,6 +436,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if (currentFragment != null && currentFragment.getClass().getName().equals(LibraryFragment.class.getName())) {
             LibraryDataBundle.getInstance().getEventBus().post(new BackToRootFragment());
+        }
+        if (currentFragment != null && PersonalFragment.class.getName().equals(currentChildViewName)) {
+            PersonalFragment fragment = (PersonalFragment) currentFragment;
+            fragment.updateLoginState(JDReadApplication.getInstance().getLogin());
         }
     }
 

@@ -25,6 +25,7 @@ import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.dialog.ReaderBaseDialog;
 import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.event.GotoPageEvent;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuDialogHandler;
@@ -42,7 +43,7 @@ import com.onyx.jdread.setting.model.BrightnessModel;
  * Created by huxiaomao on 17/5/10.
  */
 
-public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSettingViewBack{
+public class ReaderSettingMenuDialog extends ReaderBaseDialog implements ReaderSettingViewBack{
     private static final String TAG = ReaderSettingMenuDialog.class.getSimpleName();
     private ReaderSettingMenuBinding binding;
     private ReaderDataHolder readerDataHolder;
@@ -88,7 +89,6 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
     public void show() {
         super.show();
         DeviceUtils.adjustFullScreenStatus(this.getWindow(),true);
-        ReaderViewUtil.applyFastModeByConfig();
     }
 
     private void initView() {
@@ -245,7 +245,6 @@ public class ReaderSettingMenuDialog extends OnyxBaseDialog implements ReaderSet
     public void dismiss() {
         readerSettingMenuDialogHandler.unregisterListener();
         super.dismiss();
-        ReaderViewUtil.clearFastModeByConfig();
     }
 
     @Override
