@@ -55,6 +55,9 @@ public class ReaderDocumentCoverAction extends BaseReaderAction {
 
             @Override
             public void onFinally() {
+                if (request.getCover() != null && request.getCover().getBitmap() != null) {
+                    request.getCover().getBitmap().recycle();
+                }
                 closeDocument(readerDataHolder);
             }
         });

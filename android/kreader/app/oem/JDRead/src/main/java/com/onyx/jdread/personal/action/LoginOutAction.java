@@ -10,6 +10,7 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.JDPreferenceManager;
 import com.onyx.jdread.personal.cloud.entity.jdbean.LoginOutErrorBean;
 import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.event.LoginOutSuccessEvent;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 
@@ -22,11 +23,6 @@ import jd.wjlogin_sdk.model.FailResult;
  */
 
 public class LoginOutAction extends BaseAction {
-    private PersonalBinding binding;
-
-    public LoginOutAction(PersonalBinding binding) {
-        this.binding = binding;
-    }
 
     @Override
     public void execute(final PersonalDataBundle dataBundle, RxCallback rxCallback) {
@@ -34,8 +30,8 @@ public class LoginOutAction extends BaseAction {
         helper.exitLogin(new OnCommonCallback() {
             @Override
             public void onSuccess() {
-                binding.setIsLogin(false);
                 JDReadApplication.getInstance().setLogin(false);
+                dataBundle.getEventBus().post(new LoginOutSuccessEvent());
                 LoginHelper.clearUserInfo();
             }
 

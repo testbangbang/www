@@ -37,6 +37,8 @@ public class UserLoginViewModel {
     public final ObservableField<Boolean> showRegister = new ObservableField<>(false);
     public final ObservableField<Boolean> showRetrieve = new ObservableField<>(false);
     private EventBus eventBus;
+    private final int ERROR_LOGIN_LIMIT = 3;
+    private int count = 0;
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -62,12 +64,17 @@ public class UserLoginViewModel {
     }
 
     public void onLoginViewClick() {
+        if (incAndCheckCount()) {
+            retrievePassword();
+            return;
+        }
         getEventBus().post(new HideSoftWindowEvent());
         UserLoginAction userLoginAction = new UserLoginAction(JDReadApplication.getInstance(), account.get(), password.get(), false);
         userLoginAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 getEventBus().post(new UserLoginEvent(account.get(), password.get()));
+                count = 0;
             }
 
             @Override
@@ -78,6 +85,15 @@ public class UserLoginViewModel {
         });
     }
 
+    private boolean incAndCheckCount() {
+        count++;
+        if (count > ERROR_LOGIN_LIMIT) {
+            count = 0;
+            return true;
+        }
+        return false;
+    }
+
     public void onDeleteAccountViewClick() {
         account.set("");
     }
@@ -85,6 +101,8 @@ public class UserLoginViewModel {
     public void cleanInput() {
         account.set("");
         password.set("");
+        errorMessage.set("");
+        count = 0;
         backToLogin();
     }
 

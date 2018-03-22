@@ -70,6 +70,7 @@ public class CategoryBookListFragment extends BaseFragment {
     private int catLevel;
     private int catTwoId;
     private int filter = CloudApiContext.SearchBook.FILTER_DEFAULT;
+    private static int levelThreeDataSize;
 
     @Nullable
     @Override
@@ -155,6 +156,11 @@ public class CategoryBookListFragment extends BaseFragment {
         if (CollectionUtils.getSize(allCategoryItems) > levelTwoPosition) {
             List<CategoryListResultBean.CategoryBeanLevelOne.CategoryBeanLevelTwo> levelThreeDatas = allCategoryItems.get(levelTwoPosition).sub_category;
             getCategoryBookListViewModel().setCategoryItems(levelThreeDatas);
+            levelThreeDataSize = levelThreeDatas.size();
+            if (levelThreeDataSize == 0) {
+                categoryBookListBinding.layoutTitleBar.titleBarRightTitle2.setTextColor(getResources().getColor(R.color.divider_color));
+                getTitleBarViewModel().rightText2IconId.set(R.mipmap.ic_shelf_unfold_gray_down);
+            }
         }
     }
 
@@ -393,6 +399,9 @@ public class CategoryBookListFragment extends BaseFragment {
     }
 
     private void showOrCloseAllCatButton() {
+        if (levelThreeDataSize == 0) {
+            return;
+        }
         if (getCategoryBookListViewModel().sortButtonIsOpen.get()) {
             showOrCloseSortButton();
         }

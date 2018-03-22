@@ -7,6 +7,9 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.reader.api.ReaderException;
+import com.onyx.android.sdk.reader.plugins.netnovel.NetNovelLocation;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.DialogMessage;
 import com.onyx.jdread.R;
@@ -19,10 +22,12 @@ import com.onyx.jdread.main.event.SystemBarClickedEvent;
 import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.manager.ManagerActivityUtils;
+import com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean;
 import com.onyx.jdread.personal.dialog.ExportDialog;
 import com.onyx.jdread.personal.event.ExportToEmailEvent;
 import com.onyx.jdread.personal.event.ExportToImpressionEvent;
 import com.onyx.jdread.personal.event.ExportToNativeEvent;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.reader.actions.AddAnnotationAction;
 import com.onyx.jdread.reader.actions.AnnotationCopyToClipboardAction;
 import com.onyx.jdread.reader.actions.CheckAnnotationAction;
@@ -63,15 +68,19 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
 import com.onyx.jdread.reader.utils.ReaderViewUtil;
 import com.onyx.jdread.setting.common.AssociateDialogHelper;
 import com.onyx.jdread.setting.common.ExportHelper;
+import com.onyx.jdread.setting.event.AssociatedEmailToolsEvent;
 import com.onyx.jdread.setting.event.BindEmailEvent;
 import com.onyx.jdread.setting.event.BrightnessChangeEvent;
 import com.onyx.jdread.setting.event.SpeedRefreshChangeEvent;
+import com.onyx.jdread.setting.view.AssociatedEmailDialog;
 import com.onyx.jdread.setting.view.OnyxDigitalClock;
 import com.onyx.jdread.util.BroadcastHelper;
 import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 /**
  * Created by huxiaomao on 2017/12/26.
@@ -88,6 +97,7 @@ public class ReaderActivityEventHandler {
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
     private ReaderScreenStateReceive readerScreenStateReceive;
     private boolean lostFocus = false;
+    private SystemBarPopupWindow systemBarPopupWindow;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -187,6 +197,11 @@ public class ReaderActivityEventHandler {
     @Subscribe
     public void onShowLastPageEvent(ShowLastPageEvent event) {
         readerViewModel.setIsShowLastPage(true);
+    }
+
+    @Subscribe
+    public void onLoadingEvent(LoadingEvent event){
+        ToastUtil.showToast(ResManager.getString(R.string.reader_loading));
     }
 
     @Subscribe
@@ -390,18 +405,30 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToNativeEvent(ExportToNativeEvent event) {
-        // TODO: 2018/3/8 ExportAction
-
+        export(ExportHelper.TYPE_NATIVE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToEmailEvent(ExportToEmailEvent event) {
-        // TODO: 2018/3/8 ExportAction
+        export(ExportHelper.TYPE_EMAIL);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportToImpressionEvent(ExportToImpressionEvent event) {
-        // TODO: 2018/3/8 ExportAction
+        export(ExportHelper.TYPE_EVERNOTE);
+    }
+
+    public void export(int type){
+        List<Annotation> annotationList = readerViewModel.getReaderDataHolder().getReaderUserDataInfo().getAnnotationList();
+        List<NoteBean> noteBeans = ExportHelper.getNoteBean(annotationList,readerViewModel.getReaderDataHolder().getBookName(),
+                readerViewModel.getReaderDataHolder().getDocumentInfo().getCloudId());
+        exportHelper.exportNote(type,noteBeans);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAssociatedEmailToolsEvent(AssociatedEmailToolsEvent event){
+        AssociatedEmailDialog.DialogModel model = new AssociatedEmailDialog.DialogModel(PersonalDataBundle.getInstance().getEventBus());
+        AssociateDialogHelper.showBindEmailDialog(model, readerViewBack.getContext());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -478,6 +505,17 @@ public class ReaderActivityEventHandler {
     public void onReaderErrorEvent(ReaderErrorEvent event) {
         String[] errors = ReaderErrorEvent.getThrowableStringRep(event.throwable);
         ReaderErrorEvent.printThrowable(errors);
+        if (event.throwable instanceof ReaderException) {
+            ReaderException exception = (ReaderException)event.throwable;
+            if (exception.getCode() == ReaderException.NET_NOVEL_CHAPTER_NOT_FOUND) {
+                try {
+                    NetNovelLocation location = NetNovelLocation.createFromJSON(exception.getMessage());
+                    long bookId = Long.parseLong(location.bookId);
+                    ManagerActivityUtils.startSettingsActivity(readerViewBack.getContext(), bookId);
+                } catch (Throwable tr) {
+                }
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -539,13 +577,19 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSystemBarClickedEvent(SystemBarClickedEvent event) {
+        if(isLostFocus()){
+            return;
+        }
         if (systemBarPopupWindowModel == null) {
             systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
         } else {
             systemBarPopupWindowModel.brightnessModel.updateLight();
             systemBarPopupWindowModel.updateRefreshMode();
         }
-        SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(readerViewBack.getContext(), systemBarPopupWindowModel);
+        if(systemBarPopupWindow != null && systemBarPopupWindow.isShowing()){
+            systemBarPopupWindow.dismiss();
+        }
+        systemBarPopupWindow = new SystemBarPopupWindow(readerViewBack.getContext(), systemBarPopupWindowModel);
         systemBarPopupWindow.show(readerSettingMenuDialog.findViewById(R.id.reader_setting_system_bar));
     }
 

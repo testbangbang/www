@@ -59,7 +59,7 @@ public interface ReaderNavigator {
      * @param position
      * @return
      */
-    public boolean gotoPosition(final String position);
+    public boolean gotoPosition(final String position) throws ReaderException;
 
     /**
      * goto specified page
@@ -67,29 +67,29 @@ public interface ReaderNavigator {
      * @param page
      * @return
      */
-    public boolean gotoPage(final int page);
+    public boolean gotoPage(final int page) throws ReaderException;
 
     /**
      * Navigate to next screen.
      */
-    public String nextScreen(final String position);
+    public String nextScreen(final String position) throws ReaderException;
 
     /**
      * Navigate to previous screen.
      */
-    public String prevScreen(final String position);
+    public String prevScreen(final String position) throws ReaderException;
 
     /**
      * Navigate to next page.
      * @return
      */
-    public String nextPage(final String position);
+    public String nextPage(final String position) throws ReaderException;
 
     /**
      * Navigate to previous page.
      * @return
      */
-    public String prevPage(final String position);
+    public String prevPage(final String position) throws ReaderException;
 
     /**
      * at document beginning

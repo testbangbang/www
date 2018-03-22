@@ -7,4 +7,6 @@ package com.onyx.jdread.reader.menu.event;
 public class ReaderSettingTypefaceEvent {
     public String typeFace;
     public int styleIndex;
+    public int settingType;
+    public int currentLineSpacing;
 }

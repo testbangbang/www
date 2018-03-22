@@ -18,7 +18,7 @@
             android:id="@+id/item_preference_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_small"
+            android:background="@drawable/text_stroke_background"
             android:padding="@dimen/item_preference_padding"
             android:text="@{type}"
             android:textColor="@android:color/black"

@@ -26,6 +26,7 @@ public class ReaderConfig {
     public static final String BOOK_READING_TIME = "readingTime";
     public static final String BOOK_READING_START_TIME = "startTime";
     public static final String BOOK_READING_ID = "cloudID";
+    public static final String BR = "\r\n";
 
     public static class Typeface {
         public static final String TYPEFACE_ONE = TYPEFACE_ROOT_PATH + "FZHei-B01.TTF";
@@ -381,27 +382,12 @@ public class ReaderConfig {
         return JDPreferenceManager.getIntValue(ReaderConfig.SETTING_STYLE_KEY,DEFAULT_PRESET_STYLE);
     }
 
-    public static ReaderTextStyle.Percentage getTypefaceFourSpacingLine(int styleIndex){
-        ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
-        int spacing = getTypefaceFourExtendHeight(styleIndex);
-        return ReaderTextStyle.Percentage.create(presetStyle.getLineSpacing().getPercent() + spacing);
-    }
-
-    public static ReaderTextStyle.Percentage getAdditionalSpacing(String faceType,int styleIndex){
-        if(faceType.equals(ReaderConfig.Typeface.TYPEFACE_FOUR)){
-            return ReaderConfig.getTypefaceFourSpacingLine(styleIndex);
-        }else {
-            ReaderTextStyle presetStyle = ReaderConfig.presetStyle.get(styleIndex);
-            return presetStyle.getLineSpacing();
-        }
-    }
-
-    public static ReaderTextStyle.Percentage getAdditionalSpacing(String faceType,int styleIndex,int spacing){
+    public static int getAdditionalSpacing(String faceType,int styleIndex,int spacing,int settingType){
         if(faceType.equals(ReaderConfig.Typeface.TYPEFACE_FOUR)){
             int typefaceFourExtendHeight = ReaderConfig.getTypefaceFourExtendHeight(styleIndex);
             spacing += typefaceFourExtendHeight;
         }
-        return ReaderTextStyle.Percentage.create(spacing);
+        return spacing;
     }
 
     public static int getTypefaceFourExtendHeight(int styleIndex){

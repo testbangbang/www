@@ -70,19 +70,18 @@ public class ReaderTextModel {
     public void setDefaultTypeFace(String typeFace) {
         switch (typeFace) {
             case ReaderConfig.Typeface.TYPEFACE_ONE:
-                onTypefaceOneClick();
+                setCurrentTypeface(TypefaceOne);
                 break;
             case ReaderConfig.Typeface.TYPEFACE_TWO:
-                onTypefaceTwoClick();
+                setCurrentTypeface(TypefaceTwo);
                 break;
             case ReaderConfig.Typeface.TYPEFACE_THREE:
-                onTypefaceThreeClick();
+                setCurrentTypeface(TypefaceThree);
                 break;
             case ReaderConfig.Typeface.TYPEFACE_FOUR:
-                onTypefaceFourClick();
+                setCurrentTypeface(TypefaceFour);
                 break;
             default:
-                onTypefaceOneClick();
                 break;
         }
     }
@@ -156,6 +155,7 @@ public class ReaderTextModel {
         currentSettingType.set(settingInfo.settingType);
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
         event.styleIndex = settingInfo.settingStyle;
+        event.settingType = currentSettingType.get();
         eventBus.post(event);
     }
 
@@ -187,6 +187,13 @@ public class ReaderTextModel {
         ReaderSettingTypefaceEvent event = new ReaderSettingTypefaceEvent();
         event.typeFace = typeface;
         event.styleIndex = currentFontSize.get();
+        event.settingType = currentSettingType.get();
+        if(settingInfo.settingType == ReaderConfig.SETTING_TYPE_CUSTOM){
+            event.currentLineSpacing = ReaderConfig.customLineSpacing.get(settingInfo.customLineSpacing);
+        }else {
+            event.currentLineSpacing = ReaderConfig.presetStyle.get(currentFontSize.get()).getLineSpacing().getPercent();
+        }
+
         eventBus.post(event);
     }
 
@@ -220,6 +227,7 @@ public class ReaderTextModel {
         settingInfo.settingStyle = style;
         ReaderSettingFontSizeEvent event = new ReaderSettingFontSizeEvent();
         event.styleIndex = style;
+        event.settingType = currentSettingType.get();
         eventBus.post(event);
     }
 

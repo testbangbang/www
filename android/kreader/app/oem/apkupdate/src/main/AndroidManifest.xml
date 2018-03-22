@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:sharedUserId="android.uid.system"
     package="com.onyx.android.update">
 
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -51,6 +52,14 @@
         <activity
             android:name=".MainActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SystemUpgradeActivity"
+            android:theme="@style/ActivityFullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

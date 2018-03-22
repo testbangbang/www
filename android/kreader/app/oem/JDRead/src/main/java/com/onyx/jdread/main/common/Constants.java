@@ -180,4 +180,7 @@ public class Constants {
     public static final int GET_DECRYPT_KEY_POINT = 6;
     public static final int SP_KEY_CATEGORY_ID = 5272;
     public static final int TEXT_FLAG_NULL = 0;
+    public static final String ORDER_FORM_VIP = "jdread_vip";
+    public static final String OPEN_VIP = "open_vip";
+    public static final float SCORE = 0.0f;
 }

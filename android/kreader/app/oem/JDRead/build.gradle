@@ -80,6 +80,8 @@ dependencies {
     compile project(':libraries:alreader-engine')
     compile project(':libraries:onyxsdk-reader')
     compile project(':libraries:evernote-service')
+    compile project(':libraries:jd-drm')
+
     compile "org.apache.lucene:lucene-core:$rootProject.lucenecoreVersion"
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"

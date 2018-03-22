@@ -10,6 +10,7 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.R;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.reader.actions.GotoPageAction;
 import com.onyx.jdread.reader.actions.GotoPositionAction;
@@ -93,6 +94,9 @@ public class ReaderPageInfoModel {
     }
 
     public void nextChapter() {
+        if(!checkLoadingState()){
+            return;
+        }
         if (hasChapterInfo) {
             prepareGotoChapter(readerDataHolder, false);
         } else {
@@ -100,7 +104,18 @@ public class ReaderPageInfoModel {
         }
     }
 
+    private boolean checkLoadingState(){
+        if(!readerDataHolder.getReaderViewInfo().isLoadComplete()){
+            ToastUtil.showToast(ResManager.getString(R.string.reader_loading));
+            return false;
+        }
+        return true;
+    }
+
     public void previousChapter() {
+        if(!checkLoadingState()){
+            return;
+        }
         if (hasChapterInfo) {
             prepareGotoChapter(readerDataHolder, true);
         } else {
@@ -157,29 +172,31 @@ public class ReaderPageInfoModel {
         }
         int currentPagePosition = PagePositionUtils.getPosition(readerDataHolder.getCurrentPagePosition());
         ChapterInfo chapterInfo = tocChapterNodeList.get(0);
-        if (back && currentPagePosition <= chapterInfo.getPosition()) {
+        int chapterPosition = PagePositionUtils.getPosition(chapterInfo.getPosition());
+        if (back && currentPagePosition <= chapterPosition) {
             ToastUtil.showToast(readerDataHolder.getAppContext(), R.string.first_chapter);
             return;
         }
 
         chapterInfo = tocChapterNodeList.get(tocChapterNodeList.size() - 1);
-        if (!back && currentPagePosition >= chapterInfo.getPosition()) {
+        chapterPosition = PagePositionUtils.getPosition(chapterInfo.getPosition());
+        if (!back && currentPagePosition >= chapterPosition) {
             ToastUtil.showToast(readerDataHolder.getAppContext(), R.string.last_chapter);
             return;
         }
 
-        int chapterPosition;
+        String dstPosition;
         if (back) {
-            chapterPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
+            dstPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
         } else {
-            chapterPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
+            dstPosition = getChapterPositionByPage(currentPagePosition, back, tocChapterNodeList);
         }
-        gotoPosition(readerDataHolder, chapterPosition, true);
+        gotoPosition(readerDataHolder, dstPosition, true);
     }
 
-    public static int getChapterPositionByPage(int pagePosition, boolean back, List<ChapterInfo> tocChapterNodeList) {
+    public static String getChapterPositionByPage(int pagePosition, boolean back, List<ChapterInfo> tocChapterNodeList) {
         if (tocChapterNodeList.size() <= 0) {
-            return pagePosition;
+            return null;
         }
 
         int i;
@@ -187,28 +204,28 @@ public class ReaderPageInfoModel {
 
         for (i = 0; i < size; i++) {
             ChapterInfo nextChapter = tocChapterNodeList.get(i);
-            if (pagePosition < nextChapter.getPosition()) {
+            int chapterPosition = PagePositionUtils.getPosition(nextChapter.getPosition());
+            if (pagePosition < chapterPosition) {
                 if (!back) {
                     return nextChapter.getPosition();
                 }
 
                 int index = i - 2; // goto previous chapter
                 if (index <= 0) {
-                    return 0;
+                    return null;
                 }
                 return tocChapterNodeList.get(index).getPosition();
             }
         }
 
-        return pagePosition;
+        return null;
     }
 
-    private void gotoPosition(final ReaderDataHolder readerDataHolder, Object object, final boolean abortPendingTasks) {
-        if (object == null) {
+    private void gotoPosition(final ReaderDataHolder readerDataHolder, String position, final boolean abortPendingTasks) {
+        if (position == null) {
             return;
         }
-        int page = (int) object;
-        new GotoPositionAction(page).execute(readerDataHolder, new RxCallback() {
+        new GotoPositionAction(position).execute(readerDataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 readerDataHolder.getEventBus().post(new UpdateProgressEvent());

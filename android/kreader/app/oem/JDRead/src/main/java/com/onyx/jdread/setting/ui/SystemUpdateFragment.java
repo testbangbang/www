@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.libsetting.util.BatteryUtil;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
@@ -27,12 +28,11 @@ import com.onyx.jdread.main.event.TitleBarRightTitleEvent;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.action.CheckApkUpdateAction;
 import com.onyx.jdread.setting.action.DownloadPackageAction;
-import com.onyx.jdread.setting.action.LocalUpdateSystemAction;
 import com.onyx.jdread.setting.action.OnlineCheckSystemUpdateAction;
 import com.onyx.jdread.setting.action.SystemUpdateHistoryAction;
 import com.onyx.jdread.setting.dialog.CheckUpdateLoadingDialog;
+import com.onyx.jdread.setting.dialog.DialogAlertMessage;
 import com.onyx.jdread.setting.dialog.SystemUpdateDialog;
-import com.onyx.jdread.setting.dialog.SystemUpdateTipDialog;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.event.DelayEvent;
 import com.onyx.jdread.setting.event.ExecuteUpdateEvent;
@@ -40,7 +40,6 @@ import com.onyx.jdread.setting.model.DeviceConfigData;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingUpdateModel;
 import com.onyx.jdread.setting.model.SystemUpdateData;
-import com.onyx.jdread.setting.request.RxFirmwareLocalUpdateRequest;
 import com.onyx.jdread.setting.utils.UpdateUtil;
 import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.BookInfoDialog;
@@ -301,30 +300,33 @@ public class SystemUpdateFragment extends BaseFragment {
         return updateZipFile.exists();
     }
 
+    private boolean checkBatteryForSystemUpgrade() {
+        int minLimit = ResManager.getInteger(R.integer.system_update_min_battery_limit);
+        if (!BatteryUtil.isPowerEnoughOrCharging(getContext().getApplicationContext(), minLimit)) {
+            final DialogAlertMessage dialog = new DialogAlertMessage(getContext());
+            dialog.setMessage(String.format(ResManager.getString(R.string.power_too_low_to_upgrade), minLimit));
+            dialog.setPositiveAction(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+            return false;
+        }
+        return true;
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExecuteUpdateEvent(ExecuteUpdateEvent event) {
         if (isApkExist()) {
             UpdateUtil.startUpdateApkActivity(JDReadApplication.getInstance(), downloadPath);
             return;
         }
-        final SystemUpdateTipDialog dialog = new SystemUpdateTipDialog();
-        dialog.show(getActivity().getFragmentManager(), "");
-        LocalUpdateSystemAction action = new LocalUpdateSystemAction();
-        action.execute(SettingBundle.getInstance(), new RxCallback<RxFirmwareLocalUpdateRequest>() {
-            @Override
-            public void onNext(RxFirmwareLocalUpdateRequest request) {
-                if (!request.isSuccess()) {
-                    ToastUtil.showToast(request.getFailString());
-                }
-            }
-
-            @Override
-            public void onFinally() {
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
-        });
+        if (!checkBatteryForSystemUpgrade()) {
+            return;
+        }
+        UpdateUtil.startSystemUpgradeActivity(getContext().getApplicationContext(), UpdateUtil.getUpdateZipFile().getAbsolutePath());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -399,7 +401,7 @@ public class SystemUpdateFragment extends BaseFragment {
             return;
         }
         updateHistoryDialog = new BookInfoDialog(JDReadApplication.getInstance());
-        updateHistoryDialog.setTitle(ResManager.getString(R.string.view_history_version));
+        updateHistoryDialog.setTitle(ResManager.getString(R.string.history_update_record));
         updateHistoryDialog.setContent(content);
         updateHistoryDialog.setCloseListener(new View.OnClickListener() {
             @Override

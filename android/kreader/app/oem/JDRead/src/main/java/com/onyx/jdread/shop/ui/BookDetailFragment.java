@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -198,7 +199,7 @@ public class BookDetailFragment extends BaseFragment {
         });
     }
 
-    public void safeCloseLoadingDialog(){
+    public void safeCloseLoadingDialog() {
         if (bookDetailLoadingFinished && metadataLoadingFinished) {
             hideLoadingDialog();
         }
@@ -272,7 +273,6 @@ public class BookDetailFragment extends BaseFragment {
                     if (bookDetailResultBean.result_code != Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
                         return;
                     }
-
                     if (bookDetailBean != null && (bookDetailBean.ebook_id == bookDetailResultBean.data.ebook_id)) {
                         BookDetailResultBean.DetailBean newData = bookDetailResultBean.data;
                         newData.bookExtraInfoBean = bookDetailBean.bookExtraInfoBean;
@@ -281,6 +281,11 @@ public class BookDetailFragment extends BaseFragment {
                         bookDetailBean = newData;
                     } else {
                         bookDetailBean = bookDetailResultBean.data;
+                        int compare = Float.compare(bookDetailBean.star, Constants.SCORE);
+                        if (compare == 0) {
+                            bookDetailBinding.bookDetailInfo.bookDetailGrayStars.setVisibility(View.VISIBLE);
+                            bookDetailBinding.bookDetailInfo.bookDetailWhiteStars.setVisibility(View.GONE);
+                        }
                     }
 
                     if (!shouldDownloadWholeBook) {
@@ -400,7 +405,6 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
     public void onRecommendItemClickEvent(RecommendItemClickEvent event) {
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
         ResultBookBean bookBean = event.getBookBean();
@@ -422,9 +426,9 @@ public class BookDetailFragment extends BaseFragment {
         if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
         } else if (bookDetailBean != null) {
-            if (ViewHelper.isCanNowRead(bookDetailBean)){
+            if (ViewHelper.isCanNowRead(bookDetailBean)) {
                 tryDownload(bookDetailBean, true);
-            } else if (!StringUtils.isNullOrEmpty(bookDetailBean.format) && Constants.BOOK_FORMAT_PDF.equals(bookDetailBean.format.trim()) ){
+            } else if (!StringUtils.isNullOrEmpty(bookDetailBean.format) && Constants.BOOK_FORMAT_PDF.equals(bookDetailBean.format.trim())) {
                 goViewDirectoryFragment(bookDetailBean.catalog);
             }
         }
@@ -645,7 +649,7 @@ public class BookDetailFragment extends BaseFragment {
         } else if (DownLoadHelper.isDownloaded(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_button_now_read));
             ToastUtil.showToastNoReuse(getContext(), ResManager.getString(R.string.download_finished));
-        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState) ) {
+        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_tip_download_pause));
         }
     }
@@ -663,7 +667,6 @@ public class BookDetailFragment extends BaseFragment {
         }
 
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
 
@@ -729,7 +732,6 @@ public class BookDetailFragment extends BaseFragment {
 
     private void downLoadWholeBook() {
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
         nowReadButton.setEnabled(false);
@@ -794,7 +796,6 @@ public class BookDetailFragment extends BaseFragment {
 
     private void addToCart(long ebookId) {
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
         final AddOrDeleteCartAction addOrDeleteCartAction = new AddOrDeleteCartAction(new String[]{String.valueOf(ebookId)}, Constants.CART_TYPE_ADD);
@@ -831,7 +832,6 @@ public class BookDetailFragment extends BaseFragment {
         }
 
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
 

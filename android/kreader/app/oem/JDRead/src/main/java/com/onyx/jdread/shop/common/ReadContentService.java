@@ -19,6 +19,8 @@ import com.onyx.jdread.personal.cloud.entity.jdbean.SignForVoucherBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.VerifySignBean;
 import com.onyx.jdread.reader.data.ReadingDataResultBean;
+import com.onyx.jdread.reader.data.SyncNotesResultBean;
+import com.onyx.jdread.reader.data.UpdateMarkerResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BatchDownloadResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
@@ -205,4 +207,13 @@ public interface ReadContentService {
     @GET("net/{ebook_id}/catalog")
     Call<GetChapterCatalogResultBean> getChapterCatalog(@Path(CloudApiContext.BookDownLoad.EBOOK_ID) long bookId,
                                                         @QueryMap Map<String, String> baseInfoMap);
+
+    @POST("{ebook_id}/notes")
+    Call<SyncNotesResultBean> syncNoteAndLineation(@Path(CloudApiContext.BookDownLoad.EBOOK_ID) long bookId,
+                                                   @QueryMap Map<String, String> baseInfoMap,
+                                                   @Body RequestBody requestBody);
+
+    @POST(CloudApiContext.NewBookDetail.BOOK_MARKER)
+    Call<UpdateMarkerResultBean> updateMaker(@QueryMap Map<String, String> baseInfo,
+                                             @Body RequestBody body);
 }

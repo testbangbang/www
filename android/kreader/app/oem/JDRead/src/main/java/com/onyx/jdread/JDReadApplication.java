@@ -44,7 +44,6 @@ import com.raizlabs.android.dbflow.structure.database.AndroidDatabase;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by hehai on 17-12-6.
@@ -108,6 +107,10 @@ public class JDReadApplication extends MultiDexApplication {
                 if (data != null && StringUtils.isNotBlank(data.getPath())) {
                     File file = new File(data.getPath());
                     if (SupportType.getDocumentExtension().contains(FileUtils.getFileExtension(file))) {
+                        mtpBuffer.add(data.getPath());
+                    }
+
+                    if (file.isDirectory()) {
                         mtpBuffer.add(data.getPath());
                     }
 
@@ -208,19 +211,19 @@ public class JDReadApplication extends MultiDexApplication {
     }
 
     public boolean canSignForRead() {
-        int currentReadTime = getCurrentReadTime();
+        long currentReadTime = getCurrentReadTime();
         return (currentReadTime / Constants.MINUTE_STEP) >= SIGN_FOR_READING_MIN;
     }
 
-    public int getCurrentReadTime() {
-        int current = 0;
+    public long getCurrentReadTime() {
+        long current = 0;
         String currentLength = JDPreferenceManager.getStringValue(ReaderConfig.BOOK_READING_TIME, "");
         if (StringUtils.isNotBlank(currentLength) && currentLength.contains(Constants.DIVIDER)) {
             int index = currentLength.lastIndexOf(Constants.DIVIDER);
             String currentDay = currentLength.substring(0, index);
             if (TimeUtils.getDate(System.currentTimeMillis()).equals(currentDay)) {
                 String time = currentLength.substring(index + 1);
-                current = PagePositionUtils.getPosition(time);
+                current = Utils.getLongTime(time);
             }
         }
         return current;

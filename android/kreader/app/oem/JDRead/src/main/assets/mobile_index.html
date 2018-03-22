@@ -90,7 +90,7 @@
 
 			function upload(file) {
 				var xhr = new XMLHttpRequest();
-				xhr.open('post', '/api/upload');
+				xhr.open('post', '/upload');
 				xhr.onload = function () {
 					console.log(xhr.responseText);
 				};

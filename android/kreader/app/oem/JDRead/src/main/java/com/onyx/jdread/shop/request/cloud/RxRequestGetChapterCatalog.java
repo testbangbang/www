@@ -96,7 +96,8 @@ public class RxRequestGetChapterCatalog extends RxBaseCloudRequest {
                     if (!FileUtils.fileExist(path)) {
                         FileUtils.mkdirs(path);
                     }
-                    FileUtils.saveContentToFile(JSONObjectParseUtils.toJson(data), new File(path, String.valueOf(requestBean.bookId)));
+                    File dstFile = new File(path, String.valueOf(requestBean.bookId) + ".jdnovel");
+                    FileUtils.saveContentToFile(JSONObjectParseUtils.toJson(data), dstFile);
                 }
             } else {
                 ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));

@@ -30,7 +30,7 @@ public class StackList<T> {
     }
 
     public T popChildView(){
-        if(stack.size() <= 1){
+        if(isLastOne()){
             return stack.peek();
         }
         stack.pop();
@@ -38,7 +38,7 @@ public class StackList<T> {
     }
 
     public T remainLastStack() {
-        if (stack.size() <= 1) {
+        if (isLastOne()) {
             return stack.peek();
         }
         T last = stack.getLast();
@@ -53,5 +53,9 @@ public class StackList<T> {
 
     public T getLast() {
         return stack.getLast();
+    }
+
+    public boolean isLastOne() {
+        return stack.size() <= 1;
     }
 }

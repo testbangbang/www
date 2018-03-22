@@ -66,6 +66,8 @@ public class CloudApiContext {
         public static final String TYPE = "type";
         public static final String BOOK_LIST = "bookList";
         public static final String GET_TOKEN = "genToken";
+        public static final String SYNC_NOTES = "%s/notes";
+        public static final String BOOK_MARKER = "ebook/marker";
     }
 
     public static class BookShopURI {
