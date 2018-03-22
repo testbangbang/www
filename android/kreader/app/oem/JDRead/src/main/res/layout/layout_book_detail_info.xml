@@ -12,6 +12,7 @@
             name="bookDetailViewModel"
             type="com.onyx.jdread.shop.model.BookDetailViewModel" />
 
+        <import type="com.onyx.jdread.shop.utils.ScoreTransformationUtils" />
     </data>
 
     <LinearLayout
@@ -32,8 +33,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    thumbnail="@{bookDetailViewModel.bookDetailResultBean.data.coverBitmap}"
                     android:id="@+id/book_detail_cover"
+                    thumbnail="@{bookDetailViewModel.bookDetailResultBean.data.coverBitmap}"
                     android:layout_width="@dimen/layout_book_detail_cover_width"
                     android:layout_height="@dimen/layout_book_detail_cover_height"
                     android:adjustViewBounds="true"
@@ -72,7 +73,7 @@
                             android:orientation="horizontal">
 
                             <RatingBar
-                                android:id="@+id/book_detail_rating_bar"
+                                android:id="@+id/book_detail_white_stars"
                                 style="@style/RatingBarStyle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -81,11 +82,23 @@
                                 android:numStars="5"
                                 android:rating="@{bookDetailViewModel.bookDetailResultBean.data.star}" />
 
+                            <RatingBar
+                                android:id="@+id/book_detail_gray_stars"
+                                style="@style/RatingStarStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:isIndicator="true"
+                                android:numStars="5"
+                                android:rating="5"
+                                android:visibility="gone" />
+
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/book_detail_sub_info_margin_left"
-                                android:text="@{@string/book_detail_star(bookDetailViewModel.bookDetailResultBean.data.star)}"
+                                android:text="@{ScoreTransformationUtils.changeText(bookDetailViewModel.bookDetailResultBean.data.star)}"
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/level_three_heading_font" />
 

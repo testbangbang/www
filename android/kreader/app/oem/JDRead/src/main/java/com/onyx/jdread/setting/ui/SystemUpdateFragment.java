@@ -401,7 +401,7 @@ public class SystemUpdateFragment extends BaseFragment {
             return;
         }
         updateHistoryDialog = new BookInfoDialog(JDReadApplication.getInstance());
-        updateHistoryDialog.setTitle(ResManager.getString(R.string.view_history_version));
+        updateHistoryDialog.setTitle(ResManager.getString(R.string.history_update_record));
         updateHistoryDialog.setContent(content);
         updateHistoryDialog.setCloseListener(new View.OnClickListener() {
             @Override

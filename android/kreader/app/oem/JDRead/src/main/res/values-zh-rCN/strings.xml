@@ -569,10 +569,12 @@
     <string name="recharge_none_record">暂无充值记录</string>
     <string name="feedback_none_record">暂无反馈记录</string>
     <string name="catalog_loading">目录加载中...</string>
-    <string name="monthly">会员  月度 ( 31天 )</string>
-    <string name="quarterly">会员  季度 ( 91天 )</string>
-    <string name="annual">会员  年度 ( 366天 )</string>
+    <string name="monthly">京东读书VIP  月度 ( 31天 )</string>
+    <string name="quarterly">京东读书VIP  季度 ( 91天 )</string>
+    <string name="annual">京东读书VIP  年度 ( 366天 )</string>
     <string name="power_too_low_to_upgrade">电量不足%d%%，请连接电源后升级</string>
+    <string name="no_score">暂无评分</string>
+    <string name="history_update_record">历史更新记录</string>
     <string name="exit_current_account">是否退出当前账号？</string>
     <string name="account_dangerous">您的账号存在安全风险，请联系客服:950618解决</string>
 </resources>
