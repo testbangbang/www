@@ -186,9 +186,6 @@ public class BookVIPReadFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVipButtonClickEvent(VipButtonClickEvent event) {
-        if (checkWifiDisconnected()) {
-            return;
-        }
         if (getViewEventCallBack() != null) {
             String buttonContent = event.buttonContent;
             if (!StringUtils.isNullOrEmpty(buttonContent)) {
