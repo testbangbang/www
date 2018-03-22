@@ -610,4 +610,5 @@
     <string name="Delete_selected_book_from_shopp_cart">Delete the selected book from the shopping cart</string>
     <string name="no_score">No score</string>
     <string name="history_update_record">History update record</string>
+    <string name="account_dangerous">Your account has security risks, please contact customer service: 950618.</string>
 </resources>

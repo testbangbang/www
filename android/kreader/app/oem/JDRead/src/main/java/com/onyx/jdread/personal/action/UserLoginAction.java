@@ -5,7 +5,6 @@ import android.content.Context;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.main.common.Constants;
@@ -100,7 +99,9 @@ public class UserLoginAction extends BaseAction {
             @Override
             public void onFail(FailResult failResult, PicDataInfo picDataInfo) {
                 RxCallback.invokeFinally(rxCallback);
-                dataBundle.getEventBus().post(new UserLoginResultEvent(failResult.getMessage(), failResult.getReplyCode()));
+                String message = Constants.RESULT_CODE_ERROR.equals(failResult.getReplyCode() + "")
+                        ? ResManager.getString(R.string.account_dangerous) : failResult.getMessage();
+                dataBundle.getEventBus().post(new UserLoginResultEvent(message, failResult.getReplyCode()));
             }
 
             @Override

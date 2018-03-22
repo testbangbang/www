@@ -13,7 +13,8 @@ public class ScoreTransformationUtils {
     private static String totalscore;
 
     public static String changeText(float score) {
-        if (score == Constants.SCORE) {
+        int compare = Float.compare(score, Constants.SCORE);
+        if (compare == 0) {
             totalscore = NOSCORE;
         } else {
             totalscore = String.valueOf(score);
