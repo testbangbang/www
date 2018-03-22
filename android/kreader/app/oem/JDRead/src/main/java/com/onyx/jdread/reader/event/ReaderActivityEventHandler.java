@@ -427,6 +427,9 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAssociatedEmailToolsEvent(AssociatedEmailToolsEvent event){
+        if (lostFocus) {
+            return;
+        }
         AssociatedEmailDialog.DialogModel model = new AssociatedEmailDialog.DialogModel(PersonalDataBundle.getInstance().getEventBus());
         AssociateDialogHelper.showBindEmailDialog(model, readerViewBack.getContext());
     }
