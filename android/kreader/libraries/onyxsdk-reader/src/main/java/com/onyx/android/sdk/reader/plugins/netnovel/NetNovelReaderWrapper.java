@@ -1,6 +1,8 @@
 package com.onyx.android.sdk.reader.plugins.netnovel;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 
@@ -33,6 +35,7 @@ public class NetNovelReaderWrapper {
     private Context context;
     private ReaderPluginOptions pluginOptions;
     private AlReaderWrapper alReaderWrapper;
+
     private ReaderCallback callback;
     private int viewWidth, viewHeight;
     private ReaderTextStyle style;
@@ -52,7 +55,7 @@ public class NetNovelReaderWrapper {
 
     public NetNovelReaderWrapper(final Context context, final ReaderPluginOptions pluginOptions) {
         this.context = context;
-        this.pluginOptions = pluginOptions;
+        this.pluginOptions = createSyncLoadingPluginOptions(pluginOptions);
         alReaderWrapper = new AlReaderWrapper(context, pluginOptions);
     }
 
@@ -341,6 +344,40 @@ public class NetNovelReaderWrapper {
         }
 
         return false;
+    }
+
+    private ReaderPluginOptions createSyncLoadingPluginOptions(final ReaderPluginOptions options) {
+        return new ReaderPluginOptions() {
+            @Override
+            public AssetManager getAssetManager() {
+                return options.getAssetManager();
+            }
+
+            @Override
+            public Resources getResources() {
+                return options.getResources();
+            }
+
+            @Override
+            public List<String> getFontDirectories() {
+                return options.getFontDirectories();
+            }
+
+            @Override
+            public float getScreenDensity() {
+                return options.getScreenDensity();
+            }
+
+            @Override
+            public boolean isSyncLoading() {
+                return true;
+            }
+
+            @Override
+            public boolean isLoadAllImages() {
+                return options.isLoadAllImages();
+            }
+        };
     }
 
     private ReaderDocumentOptions createDocumentOptions(final int initPosition) {
