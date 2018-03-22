@@ -47,6 +47,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/ratingbar_light_settings_margin"
                 android:layout_marginRight="@dimen/ratingbar_light_settings_margin"
+                android:paddingTop="@dimen/ratingbar_light_top_bottom_padding"
+                android:paddingBottom="@dimen/ratingbar_light_top_bottom_padding"
                 android:max="@{brightnessModel.maxLight}"
                 android:numStars="@{brightnessModel.numStar}"
                 android:progress="@{brightnessModel.progress}"

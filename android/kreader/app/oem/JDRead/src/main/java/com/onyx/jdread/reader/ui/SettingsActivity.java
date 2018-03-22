@@ -20,6 +20,7 @@ import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
 import com.onyx.jdread.main.event.UpdateTimeFormatEvent;
+import com.onyx.jdread.main.event.WifiStateChangeEvent;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.main.model.TitleBarModel;
@@ -129,6 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
         } else {
             systemBarPopupWindowModel.brightnessModel.updateLight();
             systemBarPopupWindowModel.updateRefreshMode();
+            systemBarPopupWindowModel.updateWifi();
         }
         systemBarPopupWindow = new SystemBarPopupWindow(this, systemBarPopupWindowModel);
         systemBarPopupWindow.show(binding.settingSystemBar.getRoot());
@@ -236,6 +238,13 @@ public class SettingsActivity extends AppCompatActivity {
     public void onBookDetailTopBackEvent(TopBackEvent event) {
         if(currentFragment != null && currentFragment instanceof BookDetailFragment) {
             finish();
+        }
+    }
+
+    @Subscribe
+    public void onWifiStateChangeEvent(WifiStateChangeEvent event) {
+        if (systemBarPopupWindowModel != null) {
+            systemBarPopupWindowModel.updateWifi();
         }
     }
 }

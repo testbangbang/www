@@ -494,6 +494,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             systemBarPopupWindowModel.brightnessModel.updateLight();
             systemBarPopupWindowModel.updateRefreshMode();
+            systemBarPopupWindowModel.updateWifi();
         }
         SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(this, systemBarPopupWindowModel);
         systemBarPopupWindow.show(binding.mainSystemBar.getRoot());
