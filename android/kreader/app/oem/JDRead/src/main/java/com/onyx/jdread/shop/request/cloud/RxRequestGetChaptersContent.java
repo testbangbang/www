@@ -1,5 +1,7 @@
 package com.onyx.jdread.shop.request.cloud;
 
+import com.liulishuo.filedownloader.model.FileDownloadStatus;
+import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -9,15 +11,19 @@ import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.GetChapterGroupInfoRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.GetChaptersContentResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.ReadContentService;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.DownLoadHelper;
 
 import java.io.File;
 import java.util.List;
 
 import retrofit2.Call;
+
+import static com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils.getDataProvider;
 
 /**
  * Created by jackdeng on 2018/3/9.
@@ -72,8 +78,29 @@ public class RxRequestGetChaptersContent extends RxBaseCloudRequest {
                         FileUtils.saveContentToFile(JSONObjectParseUtils.toJson(dataBean), file);
                     }
                 }
+                BookExtraInfoBean extraInfo = new BookExtraInfoBean();
+                extraInfo.downLoadState = FileDownloadStatus.completed;
+                extraInfo.localPath = requestBean.localPath;
+                updataBookInfo(extraInfo);
             } else {
                 ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));
+            }
+        }
+    }
+
+    public void updataBookInfo(BookExtraInfoBean extraInfo) {
+        if (extraInfo != null) {
+            Metadata findMeta = getDataProvider().findMetadataByIdString(getAppContext(), extraInfo.localPath);
+            BookExtraInfoBean findExtraInfoBean = JSONObjectParseUtils.toBean(findMeta.getDownloadInfo(), BookExtraInfoBean.class);
+            if (findMeta != null && findMeta.hasValidId() && findExtraInfoBean != null) {
+                findExtraInfoBean.percentage = DownLoadHelper.DOWNLOAD_PERCENT_FINISH;
+                findExtraInfoBean.downLoadState = extraInfo.downLoadState;
+                findExtraInfoBean.localPath = extraInfo.localPath;
+                findExtraInfoBean.totalSize = extraInfo.totalSize;
+                findExtraInfoBean.isNetBookDownLoad = true;
+                findMeta.setDownloadInfo(JSONObjectParseUtils.toJson(findExtraInfoBean));
+                findMeta.setSize((long) extraInfo.totalSize);
+                getDataProvider().updateMetadata(getAppContext(), findMeta);
             }
         }
     }

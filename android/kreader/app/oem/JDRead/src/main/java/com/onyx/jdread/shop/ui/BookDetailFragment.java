@@ -141,6 +141,7 @@ public class BookDetailFragment extends BaseFragment {
     private boolean bookDetailLoadingFinished = true;
     private boolean metadataLoadingFinished = true;
     private boolean isViewDirectoryTryDownload;
+    private boolean isNetBookDownLoad;
 
     @Nullable
     @Override
@@ -423,6 +424,15 @@ public class BookDetailFragment extends BaseFragment {
                 return;
             }
         }
+        if (ViewHelper.isNetBook(bookDetailBean.book_type)) {
+            if (DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+                openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
+            } else {
+                tryDownload(bookDetailBean, true);
+            }
+            return;
+        }
+
         if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
         } else if (bookDetailBean != null) {
@@ -756,16 +766,18 @@ public class BookDetailFragment extends BaseFragment {
     private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean, int openType) {
         DocumentInfo documentInfo = new DocumentInfo();
         DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
-        if (detailBean.bookExtraInfoBean != null && detailBean.bookExtraInfoBean.isWholeBookDownLoad) {
-            securityInfo.setKey(detailBean.bookExtraInfoBean.key);
-            securityInfo.setRandom(detailBean.bookExtraInfoBean.random);
+        if (detailBean.bookExtraInfoBean != null) {
+            if(detailBean.bookExtraInfoBean.isWholeBookDownLoad) {
+                securityInfo.setKey(detailBean.bookExtraInfoBean.key);
+                securityInfo.setRandom(detailBean.bookExtraInfoBean.random);
+            }
+            documentInfo.setWholeBookDownLoad(detailBean.bookExtraInfoBean.isWholeBookDownLoad);
         }
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setOpenType(openType);
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
         documentInfo.setBookName(detailBean.name);
-        documentInfo.setWholeBookDownLoad(detailBean.bookExtraInfoBean.isWholeBookDownLoad);
         documentInfo.setCloudId(detailBean.ebook_id);
         OpenBookHelper.openBook(super.getContext(), documentInfo);
     }
@@ -825,6 +837,17 @@ public class BookDetailFragment extends BaseFragment {
         }
         if (bookDetailBean.bookExtraInfoBean == null) {
             bookDetailBean.bookExtraInfoBean = new BookExtraInfoBean();
+        }
+
+        if (ViewHelper.isNetBook(bookDetailBean.book_type)) {
+            if (DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+                openBook(localPath, bookDetailBean, isViewDirectory ? DocumentInfo.OPEN_BOOK_CATALOG : DocumentInfo.OPEN_BOOK);
+            } else {
+                bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = false;
+                bookDetailBean.bookExtraInfoBean.isNetBookDownLoad = true;
+                getNetBookDirectory(JDReadApplication.getInstance().getLogin(), isViewDirectory);
+            }
+            return;
         }
         if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean, isViewDirectory ? DocumentInfo.OPEN_BOOK_CATALOG : DocumentInfo.OPEN_BOOK);
@@ -926,11 +949,12 @@ public class BookDetailFragment extends BaseFragment {
             localPath = extraInfoBean.localPath;
             downloadTaskState = extraInfoBean.downLoadState;
             isWholeBookDownLoad = extraInfoBean.isWholeBookDownLoad;
+            isNetBookDownLoad = extraInfoBean.isNetBookDownLoad;
             if (bookDetailBean != null) {
                 bookDetailBean.bookExtraInfoBean = extraInfoBean;
                 bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = isWholeBookDownLoad;
             }
-            if (isWholeBookAlreadyDownload() && JDReadApplication.getInstance().getLogin()) {
+            if (!isNetBookDownLoad && isWholeBookAlreadyDownload() && JDReadApplication.getInstance().getLogin()) {
                 hideNowReadButton();
                 showShopCartView(false);
                 buyBookButton.setText(ResManager.getString(R.string.book_detail_button_now_read));
@@ -1067,7 +1091,7 @@ public class BookDetailFragment extends BaseFragment {
     public void onBuyBookSuccessEvent(BuyBookSuccessEvent event) {
         if (event != null && event.isNetBook) {
             ToastUtil.showToast(ResManager.getString(R.string.buy_book_success));
-            getNetBookDirectory();
+            getNetBookDirectory(false, false);
         } else {
             String msg = ResManager.getString(R.string.buy_book_success) + bookDetailBean.name + ResManager.getString(R.string.book_detail_tip_book_add_to_bookself);
             bookDetailBean.isAlreadyBuy = true;
@@ -1076,27 +1100,36 @@ public class BookDetailFragment extends BaseFragment {
         }
     }
 
-    public void getNetBookDirectory() {
+    public void getNetBookDirectory(final boolean canTry, final boolean isViewDirectory) {
         GetChapterCatalogAction chapterCatalogAction = new GetChapterCatalogAction(ebookId, bookDetailBean.name);
         chapterCatalogAction.execute(getShopDataBundle(), new RxCallback<GetChapterCatalogAction>() {
             @Override
             public void onNext(GetChapterCatalogAction catalogAction) {
                 String chapterIds = catalogAction.getChapterIds();
                 if (!StringUtils.isNullOrEmpty(chapterIds)) {
-                    getChapterContent(CloudApiContext.BookDownLoad.CHAPTER_CONTENT_TYPE_CHAPTER, chapterIds, false);
+                    getChapterContent(CloudApiContext.BookDownLoad.CHAPTER_CONTENT_TYPE_CHAPTER, chapterIds, canTry, isViewDirectory);
                 }
             }
         });
     }
 
-    private void getChapterContent(String type, String ids, boolean can_try) {
+    private void getChapterContent(String type, String ids, boolean can_try, final boolean isViewDirectory) {
         GetChaptersContentAction getChaptersContentAction = new GetChaptersContentAction(ebookId, bookDetailBean.name, type, ids, can_try);
+        localPath = CommonUtils.getJDNetBooksPath() + bookDetailBean.ebook_id + "_" + bookDetailBean.name + File.separator + bookDetailBean.ebook_id + Constants.NET_BOOK_SUFFIX;
+        getChaptersContentAction.setLocalPath(localPath);
+        insertBookDetail(bookDetailBean, localPath);
         getChaptersContentAction.execute(getShopDataBundle(), new RxCallback<GetChaptersContentAction>() {
             @Override
             public void onNext(GetChaptersContentAction action) {
                 GetChaptersContentResultBean resultBean = action.getResultBean();
                 if (GetChaptersContentResultBean.checkSuccess(resultBean)) {
                     ToastUtil.showToast(ResManager.getString(R.string.download_finished));
+                    downloadTaskState = FileDownloadStatus.completed;
+                    if (isViewDirectory) {
+                        if (DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+                            openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
+                        }
+                    }
                 }
             }
 

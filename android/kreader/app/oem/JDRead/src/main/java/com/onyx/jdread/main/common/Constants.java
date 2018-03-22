@@ -183,4 +183,5 @@ public class Constants {
     public static final String ORDER_FORM_VIP = "jdread_vip";
     public static final String OPEN_VIP = "open_vip";
     public static final float SCORE = 0.0f;
+    public static final String NET_BOOK_SUFFIX = ".jdnovel";
 }

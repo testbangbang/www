@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.jdread.main.common.CommonUtils;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.GetChapterGroupInfoRequestBean;
@@ -96,7 +97,7 @@ public class RxRequestGetChapterCatalog extends RxBaseCloudRequest {
                     if (!FileUtils.fileExist(path)) {
                         FileUtils.mkdirs(path);
                     }
-                    File dstFile = new File(path, String.valueOf(requestBean.bookId) + ".jdnovel");
+                    File dstFile = new File(path, String.valueOf(requestBean.bookId) + Constants.NET_BOOK_SUFFIX);
                     FileUtils.saveContentToFile(JSONObjectParseUtils.toJson(data), dstFile);
                 }
             } else {
