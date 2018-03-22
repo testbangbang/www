@@ -34,6 +34,7 @@ public class ReaderTextModel {
     private ObservableInt currentSettingType = new ObservableInt(ReaderConfig.DEFAULT_SETTING_TYPE);
     private EventBus eventBus;
     private SettingInfo settingInfo;
+    private ObservableField<String> settingTitle = new ObservableField<>();
 
     public ReaderTextModel(EventBus eventBus, ReaderTextStyle style, SettingInfo settingInfo) {
         this.eventBus = eventBus;
@@ -49,6 +50,15 @@ public class ReaderTextModel {
             setDefaultLanguage(chineseConvertType);
             this.settingInfo = settingInfo;
         }
+    }
+
+
+    public ObservableField<String> getSettingTitle() {
+        return settingTitle;
+    }
+
+    public void setSettingTitle(String settingTitle) {
+        this.settingTitle.set(settingTitle);
     }
 
     public ObservableInt getCurrentSettingType() {

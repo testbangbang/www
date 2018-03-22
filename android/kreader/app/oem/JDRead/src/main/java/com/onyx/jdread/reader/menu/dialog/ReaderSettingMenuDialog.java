@@ -21,6 +21,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
+import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainBundle;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
@@ -149,6 +150,10 @@ public class ReaderSettingMenuDialog extends ReaderBaseDialog implements ReaderS
     private void initTextBar(){
         binding.readerSettingTextSettingBar.setReaderTextModel(new ReaderTextModel(readerDataHolder.getEventBus(),
                 readerDataHolder.getStyleCopy(),readerDataHolder.getSettingInfo()));
+        if(!readerDataHolder.supportScalable()){
+            binding.readerSettingTextSettingBar.getReaderTextModel().setSettingTitle(ResManager.getString(R.string.reader_setting));
+            binding.readerSettingTextSettingBar.getReaderTextModel().setIsPdf(true);
+        }
     }
 
     private void initImageBar(){
