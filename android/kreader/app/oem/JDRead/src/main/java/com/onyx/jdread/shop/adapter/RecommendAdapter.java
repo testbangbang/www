@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.RecommendItemBinding;
 import com.onyx.jdread.main.common.ResManager;
@@ -80,7 +79,7 @@ public class RecommendAdapter extends PageAdapter<PageRecyclerView.ViewHolder, R
             return;
         }
         int position = (int) tag;
-        if (eventBus != null && getItemVMList() != null) {
+        if (eventBus != null && getItemVMList() != null && getItemVMList().size() > position) {
             eventBus.post(new RecommendItemClickEvent(getItemVMList().get(position)));
         }
     }
