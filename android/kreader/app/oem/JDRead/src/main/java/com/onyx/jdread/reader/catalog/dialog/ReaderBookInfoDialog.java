@@ -34,6 +34,7 @@ import com.onyx.jdread.reader.common.ReaderUserDataInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.event.EditNoteClickEvent;
+import com.onyx.jdread.reader.event.OpenBookDetailEvent;
 import com.onyx.jdread.reader.menu.common.ReaderBookInfoDialogConfig;
 
 import org.greenrobot.eventbus.EventBus;
@@ -146,6 +147,11 @@ public class ReaderBookInfoDialog extends Dialog implements PageRecyclerView.OnP
         binding.bookInfoCatalogContent.bindTree(node.nodes, new TreeRecyclerView.Callback() {
             @Override
             public void onTreeNodeClicked(TreeRecyclerView.TreeNode node) {
+                if(node.pagePosition < 0){
+                    eventBus.post(new OpenBookDetailEvent());
+                    ReaderBookInfoDialog.this.dismiss();
+                    return;
+                }
                 ReaderDocumentTableOfContentEntry entry = (ReaderDocumentTableOfContentEntry) node.getTag();
                 if (entry == null) {
                     return;
