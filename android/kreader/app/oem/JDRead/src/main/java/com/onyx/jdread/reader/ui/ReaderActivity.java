@@ -17,6 +17,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityReaderBinding;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.model.MainBundle;
+import com.onyx.jdread.reader.actions.CloseDocumentAction;
 import com.onyx.jdread.reader.actions.OpenDocumentAction;
 import com.onyx.jdread.reader.actions.ParserOpenDocumentInfoAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
@@ -24,6 +25,7 @@ import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.data.PageTurningDetector;
 import com.onyx.jdread.reader.data.PageTurningDirection;
+import com.onyx.jdread.reader.event.CloseDocumentEvent;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.model.SelectMenuModel;
@@ -120,7 +122,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         binding.buttonBackToLibrary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReaderActivity.this.finish();
+                readerViewModel.getReaderDataHolder().getEventBus().post(new CloseDocumentEvent());
             }
         });
 
