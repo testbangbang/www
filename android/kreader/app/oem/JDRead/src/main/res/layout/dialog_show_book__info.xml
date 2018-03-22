@@ -18,8 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rectangle_stroke_corners"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/book_info_contain_padding_bottom">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -55,7 +54,7 @@
             <com.onyx.jdread.reader.ui.view.PageTextView
                 android:id="@+id/book_info_web_view"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/subject_list_category_items_container_height"
+                android:layout_height="@dimen/setting_device_detail_setting_height"
                 android:layout_marginLeft="@dimen/book_copyright_item_margin_top"
                 android:layout_marginRight="@dimen/book_copyright_item_margin_top"
                 android:layout_marginTop="@dimen/function_bar_item_indicator_width"
@@ -72,6 +71,7 @@
                 android:layout_marginRight="@dimen/book_copyright_item_margin_top"
                 android:gravity="right"
                 android:paddingBottom="@dimen/book_comment_indicator_padding"
+                android:layout_marginTop="@dimen/reader_title_buy_padding_left"
                 android:text="@{@string/book_comment_indicator_value(viewModel.currentPage,viewModel.totalPage)}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />

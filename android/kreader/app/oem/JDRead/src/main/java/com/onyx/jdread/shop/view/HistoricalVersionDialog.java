@@ -20,16 +20,16 @@ import com.onyx.jdread.util.Utils;
  * Created by lmb on 2018/3/22.
  */
 
-public class VipInstructionsDialog extends Dialog {
+public class HistoricalVersionDialog extends Dialog {
 
     private DialogBookInfoViewModel infoViewModel = new DialogBookInfoViewModel();
     private View.OnClickListener closeListener;
 
-    public VipInstructionsDialog(@NonNull Context context) {
+    public HistoricalVersionDialog(@NonNull Context context) {
         this(context, 0);
     }
 
-    public VipInstructionsDialog(@NonNull Context context, int themeResId) {
+    public HistoricalVersionDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setCanceledOnTouchOutside(false);
@@ -77,8 +77,8 @@ public class VipInstructionsDialog extends Dialog {
         WindowManager.LayoutParams attributes = window.getAttributes();
         int screenWidth = Utils.getScreenWidth(JDReadApplication.getInstance());
         int screenHeight = Utils.getScreenHeight(JDReadApplication.getInstance());
-        attributes.width = (int) (screenWidth * Utils.getValuesFloat(R.integer.vip_instructions_dialog_width));
-        attributes.height = (int) (screenHeight * Utils.getValuesFloat(R.integer.vip_instructions_dialog_height));
+        attributes.width = (int) (screenWidth * Utils.getValuesFloat(R.integer.historical_version_dialog_width));
+        attributes.height = (int) (screenHeight * Utils.getValuesFloat(R.integer.historical_version_dialog_height));
         window.setAttributes(attributes);
         window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         super.show();
