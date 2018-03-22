@@ -964,7 +964,7 @@ public class BookDetailFragment extends BaseFragment {
         LayoutBookBatchDownloadBinding batchDownloadBinding = LayoutBookBatchDownloadBinding.inflate(LayoutInflater.from(getActivity()), null, false);
         batchDownloadBinding.setViewModel(getBookBatchDownloadViewModel());
         if (batchDownloadDialog == null) {
-            batchDownloadDialog = new BookInfoDialog(JDReadApplication.getInstance(), R.style.CustomDialogStyle);
+            batchDownloadDialog = new   BookInfoDialog(JDReadApplication.getInstance(), R.style.CustomDialogStyle);
             batchDownloadDialog.setView(batchDownloadBinding.getRoot());
             batchDownloadBinding.closeDialog.setOnClickListener(new View.OnClickListener() {
                 @Override

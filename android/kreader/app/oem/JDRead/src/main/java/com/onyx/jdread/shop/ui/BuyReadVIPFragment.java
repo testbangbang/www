@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -13,6 +14,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.BuyReadVipBinding;
+import com.onyx.jdread.databinding.DialogVipNoticeBinding;
 import com.onyx.jdread.library.view.DashLineItemDivider;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
@@ -22,6 +24,7 @@ import com.onyx.jdread.personal.action.UserInfoAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfo;
 import com.onyx.jdread.personal.dialog.TopUpDialog;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.reader.ui.view.HTMLReaderWebView;
 import com.onyx.jdread.shop.action.GetOrderInfoAction;
 import com.onyx.jdread.shop.action.GetVipGoodListAction;
 import com.onyx.jdread.shop.adapter.BuyReadVipAdapter;
@@ -34,9 +37,11 @@ import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.event.VipButtonClickEvent;
 import com.onyx.jdread.shop.event.VipGoodItemClickEvent;
 import com.onyx.jdread.shop.model.BuyReadVipModel;
+import com.onyx.jdread.shop.model.DialogBookInfoViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.utils.ViewHelper;
 import com.onyx.jdread.shop.view.BookInfoDialog;
+import com.onyx.jdread.shop.view.VipInstructionsDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -49,10 +54,9 @@ import org.greenrobot.eventbus.ThreadMode;
 public class BuyReadVIPFragment extends BaseFragment {
     private BuyReadVipBinding binding;
     private BuyReadVipAdapter adapter;
-
-    private BookInfoDialog vipNoticeDialog;
     private TopUpDialog topUpDialog;
     private boolean isVipBuying = false;
+    private VipInstructionsDialog vipinstructionsDialog;
 
     @Nullable
     @Override
@@ -143,18 +147,35 @@ public class BuyReadVIPFragment extends BaseFragment {
     }
 
     private void showVipNoticeDialog() {
-        if (ViewHelper.dialogIsShowing(vipNoticeDialog)) {
+        if (ViewHelper.dialogIsShowing(vipinstructionsDialog)) {
             return;
         }
-        vipNoticeDialog = ViewHelper.showNoticeDialog(getActivity(),
-                ResManager.getString(R.string.read_vip_instructions),
-                ResManager.getUriOfRawName("joyread_notice.html"), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ViewHelper.dismissDialog(vipNoticeDialog);
-                        vipNoticeDialog = null;
-                    }
-                });
+        final DialogVipNoticeBinding infoBinding = DialogVipNoticeBinding.inflate(LayoutInflater.from(JDReadApplication.getInstance()), null, false);
+        final DialogBookInfoViewModel infoViewModel = new DialogBookInfoViewModel();
+        infoViewModel.title.set(ResManager.getString(R.string.read_vip_instructions));
+        infoBinding.setViewModel(infoViewModel);
+        infoBinding.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewHelper.dismissDialog(vipinstructionsDialog);
+                vipinstructionsDialog = null;
+            }
+        });
+        vipinstructionsDialog = new VipInstructionsDialog(JDReadApplication.getInstance(), R.style.CustomDialogStyle);
+        vipinstructionsDialog.setView(infoBinding.getRoot());
+        infoBinding.infoWebView.setCallParentPageFinishedMethod(false);
+        infoBinding.infoWebView.loadUrl(ResManager.getUriOfRawName("joyread_notice.html"));
+        infoBinding.infoWebView.registerOnOnPageChangedListener(new HTMLReaderWebView.OnPageChangedListener() {
+            @Override
+            public void onPageChanged(int totalPage, int curPage) {
+                infoViewModel.currentPage.set(curPage);
+                infoViewModel.totalPage.set(totalPage);
+            }
+        });
+        WebSettings settings = infoBinding.infoWebView.getSettings();
+        settings.setSupportZoom(false);
+        settings.setTextZoom(Constants.WEB_VIEW_TEXT_ZOOM);
+        vipinstructionsDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -285,7 +306,7 @@ public class BuyReadVIPFragment extends BaseFragment {
 
     private void hideAllDialog() {
         hideLoadingDialog();
-        ViewHelper.dismissDialog(vipNoticeDialog);
+        ViewHelper.dismissDialog(vipinstructionsDialog);
         ViewHelper.dismissDialog(topUpDialog);
     }
 }

@@ -193,4 +193,6 @@
     <item name="two_point_zero" type="integer" format="float">2.0</item>
     <integer name="view_directory_page_text_view_max_lines">25</integer>
     <integer name="system_update_min_battery_limit">30</integer>
+    <item name="book_info_dialog_width" type="integer" format="float">0.84</item>
+    <item name="book_info_dialog_height" type="integer" format="float">0.73</item>
 </resources>
