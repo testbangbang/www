@@ -245,6 +245,10 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onShowReaderCatalogMenuEvent(ShowReaderCatalogMenuEvent event) {
+        if(!readerViewModel.getReaderDataHolder().getReaderViewInfo().isLoadComplete()){
+            ToastUtil.showToast(ResManager.getString(R.string.reader_loading));
+            return;
+        }
         Activity activity = readerViewBack.getContext();
         if (activity == null) {
             return;

@@ -156,7 +156,7 @@ public class ReaderBookInfoModel {
     }
 
     public void onTabCatalogClick() {
-        if (rootNodes.size() > 0) {
+        if (rootNodes != null && rootNodes.size() > 0) {
             setIsEmpty(false);
         } else {
             setIsEmpty(true);
