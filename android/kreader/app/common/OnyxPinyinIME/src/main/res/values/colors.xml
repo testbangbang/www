@@ -22,6 +22,6 @@
     <color name="recommended_candidate_color">#ffe35900</color>
     <color name="footnote_color">#ff343233</color>
     <color name="composing_color">#ff000000</color>
-    <color name="composing_color_hl">@android:color/white</color>
+    <color name="composing_color_hl">#ff777777</color>
     <color name="composing_color_idle">#ff777777</color>
 </resources>
