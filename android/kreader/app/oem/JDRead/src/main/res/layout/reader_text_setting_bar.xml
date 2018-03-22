@@ -181,23 +181,22 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:background="@drawable/imagebtn_bg"
-                        android:clickable="true"
                         android:gravity="right"
-                        android:onClick="@{()->readerTextModel.onBackPDFClick()}"
                         android:visibility="@{readerTextModel.isPdf?View.VISIBLE:View.GONE}">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:src="@mipmap/ic_title_back" />
 
                         <TextView
                             style="@style/ReaderTextSettingFormatStyle"
                             android:layout_height="match_parent"
                             android:layout_marginRight="5dp"
+                            android:clickable="true"
                             android:gravity="center"
-                            android:text="@string/reader_reset_pdf" />
+                            android:onClick="@{()->readerTextModel.onBackPDFClick()}"
+                            android:text="@{readerTextModel.settingTitle}" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@mipmap/ic_read_next" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

@@ -9,6 +9,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
+import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.main.event.TabLongClickedEvent;
 import com.onyx.jdread.manager.ManagerActivityUtils;
 import com.onyx.jdread.reader.actions.GotoPageAction;
@@ -154,7 +155,8 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingMenuItemBackPdfEvent(ReaderSettingMenuItemBackPdfEvent event) {
-        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(), "BackPdf");
+        readerDataHolder.getEventBus().post(new SystemBarBackToSettingEvent());
+        closeDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
