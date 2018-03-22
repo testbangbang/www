@@ -3,22 +3,25 @@ package com.onyx.jdread.personal.request.local;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxBaseDBRequest;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.jdread.personal.cloud.entity.jdbean.NoteBean;
+import com.onyx.jdread.reader.menu.common.ReaderConfig;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by li on 2018/3/14.
  */
 
 public class RxSaveContentRequest extends RxBaseDBRequest {
-    private String content;
+    private List<NoteBean> noteBeans;
     private File file;
     private boolean result;
 
-    public RxSaveContentRequest(DataManager dm, File file, String content) {
+    public RxSaveContentRequest(DataManager dm, File file, List<NoteBean> noteBeans) {
         super(dm);
         this.file = file;
-        this.content = content;
+        this.noteBeans = noteBeans;
     }
 
     @Override
@@ -26,7 +29,10 @@ public class RxSaveContentRequest extends RxBaseDBRequest {
         if (file.exists()) {
             file.delete();
         }
-        result = FileUtils.saveContentToFile(content, file);
+        for (NoteBean noteBean : noteBeans) {
+            result = FileUtils.appendContentToFile(noteBean.ebook.info, file);
+            FileUtils.appendContentToFile(ReaderConfig.BR + ReaderConfig.BR,file);
+        }
         return this;
     }
 

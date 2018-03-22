@@ -97,6 +97,7 @@ public class ReaderActivityEventHandler {
     private SystemBarPopupWindow.SystemBarPopupModel systemBarPopupWindowModel;
     private ReaderScreenStateReceive readerScreenStateReceive;
     private boolean lostFocus = false;
+    private SystemBarPopupWindow systemBarPopupWindow;
 
     public ReaderActivityEventHandler(ReaderViewModel readerViewModel, ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
@@ -576,13 +577,19 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSystemBarClickedEvent(SystemBarClickedEvent event) {
+        if(isLostFocus()){
+            return;
+        }
         if (systemBarPopupWindowModel == null) {
             systemBarPopupWindowModel = new SystemBarPopupWindow.SystemBarPopupModel();
         } else {
             systemBarPopupWindowModel.brightnessModel.updateLight();
             systemBarPopupWindowModel.updateRefreshMode();
         }
-        SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(readerViewBack.getContext(), systemBarPopupWindowModel);
+        if(systemBarPopupWindow != null && systemBarPopupWindow.isShowing()){
+            systemBarPopupWindow.dismiss();
+        }
+        systemBarPopupWindow = new SystemBarPopupWindow(readerViewBack.getContext(), systemBarPopupWindowModel);
         systemBarPopupWindow.show(readerSettingMenuDialog.findViewById(R.id.reader_setting_system_bar));
     }
 

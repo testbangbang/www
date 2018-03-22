@@ -25,7 +25,6 @@ import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.data.PageTurningDetector;
 import com.onyx.jdread.reader.data.PageTurningDirection;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
-import com.onyx.jdread.reader.menu.common.ReaderConfig;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.model.SelectMenuModel;
 
@@ -192,6 +191,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
                 @Override
                 public void surfaceCreated(SurfaceHolder surfaceHolder) {
                     readerViewModel.clearSurfaceView(binding.readerPageView);
+                    updateView();
                 }
 
                 @Override
@@ -206,6 +206,13 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
             };
         }
         return surfaceHolderCallback;
+    }
+
+    private void updateView(){
+        if (readerActivityEventHandler != null && readerActivityEventHandler.isLostFocus()) {
+            readerActivityEventHandler.setLostFocus(false);
+            readerActivityEventHandler.updatePageView();
+        }
     }
 
     private void registerListener() {
@@ -226,10 +233,6 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         DeviceUtils.setFullScreenOnResume(this,true);
         if (readerActivityEventHandler != null) {
             readerActivityEventHandler.updateTimeFormat();
-        }
-        if (readerActivityEventHandler != null && readerActivityEventHandler.isLostFocus()) {
-            readerActivityEventHandler.setLostFocus(false);
-            readerActivityEventHandler.updatePageView();
         }
     }
 

@@ -55,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Bundle bundle = new Bundle();
     private boolean showTitle = true;
     private BaseFragment currentFragment;
+    private SystemBarPopupWindow systemBarPopupWindow;
 
 
     @Override
@@ -129,7 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
             systemBarPopupWindowModel.brightnessModel.updateLight();
             systemBarPopupWindowModel.updateRefreshMode();
         }
-        SystemBarPopupWindow systemBarPopupWindow = new SystemBarPopupWindow(this, systemBarPopupWindowModel);
+        systemBarPopupWindow = new SystemBarPopupWindow(this, systemBarPopupWindowModel);
         systemBarPopupWindow.show(binding.settingSystemBar.getRoot());
     }
 
