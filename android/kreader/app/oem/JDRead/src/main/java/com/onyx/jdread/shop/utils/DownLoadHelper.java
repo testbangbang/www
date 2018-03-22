@@ -63,7 +63,6 @@ public class DownLoadHelper {
         if (task != null) {
             OnyxDownloadManager.getInstance().removeTask(tag);
         }
-        OnyxDownloadManager.getInstance().removeTask(tag);
         DownloadAction downloadAction = new DownloadAction(JDReadApplication.getInstance(), downloadUrl, path, tag);
         downloadAction.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
@@ -98,12 +97,17 @@ public class DownLoadHelper {
                 bookStatus = ResManager.getString(R.string.download_paused);
                 break;
             case FileDownloadStatus.error:
+            case FileDownloadStatus.pending:
+            case FileDownloadStatus.warn:
                 bookStatus = ResManager.getString(R.string.wait_download);
                 break;
             case FileDownloadStatus.progress:
                 bookStatus = ResManager.getString(R.string.is_downloading);
                 break;
             case FileDownloadStatus.started:
+                bookStatus = ResManager.getString(R.string.started);
+                break;
+            case FileDownloadStatus.connected:
                 bookStatus = ResManager.getString(R.string.started);
                 break;
             case FileDownloadStatus.completed:

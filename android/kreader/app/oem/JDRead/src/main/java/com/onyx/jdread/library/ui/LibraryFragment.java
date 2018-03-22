@@ -76,6 +76,7 @@ import com.onyx.jdread.personal.ui.PersonalBookFragment;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
+import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
@@ -595,7 +596,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     public void onDownloadError(DataModel item) {
-        item.bookStatus.set(ResManager.getString(R.string.download_fail));
+        item.bookStatus.set(DownLoadHelper.getBookStatus(item.downloadStatus.get()));
         item.showDownloadProgress.set(false);
         final DataModel dataModel = item;
         new Handler().postDelayed(new Runnable() {
@@ -611,8 +612,10 @@ public class LibraryFragment extends BaseFragment {
     public void onDownloadFinishEvent(DownloadFinishEvent event) {
         for (DataModel item : libraryDataBundle.getLibraryViewDataModel().items) {
             if (event.tag.equals(item.downLoadTaskTag)) {
+                BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
                 final DataModel dataModel = item;
-                if (event.getThrowable() == null) {
+                dataModel.downloadStatus.set(task.getStatus());
+                if (DownLoadHelper.isDownloaded(task.getStatus())) {
                     onDownloadFinish(dataModel);
                 } else {
                     onDownloadError(dataModel);
@@ -620,6 +623,16 @@ public class LibraryFragment extends BaseFragment {
             }
         }
         JDReadApplication.getInstance().setNotifyLibraryData(true);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadStartEvent(DownloadStartEvent event) {
+        for (DataModel item : libraryDataBundle.getLibraryViewDataModel().items) {
+            if (event.tag.equals(item.downLoadTaskTag)) {
+                item.bookStatus.set(DownLoadHelper.getBookStatus(FileDownloadStatus.started));
+                item.downloadStatus.set(FileDownloadStatus.started);
+            }
+        }
     }
 
     private void onDownloadFinish(final DataModel dataModel) {
@@ -702,14 +715,14 @@ public class LibraryFragment extends BaseFragment {
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookName(dataModel.title.get());
         documentInfo.setWholeBookDownLoad(dataModel.isWholeBookDownLoad.get());
-        if(StringUtils.isNotBlank(dataModel.cloudId.get())) {
+        if (StringUtils.isNotBlank(dataModel.cloudId.get())) {
             documentInfo.setCloudId(Integer.parseInt(dataModel.cloudId.get()));
         }
         OpenBookHelper.openBook(getContext(), documentInfo);
     }
 
     private void download(DataModel dataModel) {
-        if (DownLoadHelper.isDownloading(dataModel.downloadStatus.get())) {
+        if (DownLoadHelper.isDownloading(dataModel.downloadStatus.get())||DownLoadHelper.isStarted(dataModel.downloadStatus.get())||DownLoadHelper.isConnected(dataModel.downloadStatus.get())) {
             DownLoadHelper.stopDownloadingTask(dataModel.downLoadTaskTag);
         } else {
             reDownload(dataModel);
