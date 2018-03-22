@@ -277,21 +277,24 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
             }
         }
 
-        if (coverMETAIID != null) {
-            coverName = coverMETAIID;
-        } else
-        if (coverITEM_hrefImage != null) {
-            coverName = coverITEM_hrefImage;
-        }
 
-        if (noUseCover || coverName == null || imageFIRST == null || coverName.contentEquals(imageFIRST)) {
-            if (imageFIRST != null && par0.size() > 1)
-                par0.get(1).paragraph |= AlStyles.SL_COVER;
-            removeCover();
-        }
+        if (!scanCover) {
+            if (coverMETAIID != null) {
+                coverName = coverMETAIID;
+            } else
+            if (coverITEM_hrefImage != null) {
+                coverName = coverITEM_hrefImage;
+            }
 
-        if (imageFIRST != null) {
-            coverName = imageFIRST;
+            if (noUseCover || coverName == null || imageFIRST == null || coverName.contentEquals(imageFIRST)) {
+                if (imageFIRST != null && par0.size() > 1)
+                    par0.get(1).paragraph |= AlStyles.SL_COVER;
+                removeCover();
+            }
+
+            if (imageFIRST != null) {
+                coverName = imageFIRST;
+            }
         }
 
         super.prepareCustom();
@@ -688,7 +691,11 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
 
                                     if (href.indexOf(META_NAME_COVER) != -1) {
                                         if (a.type.startsWith("image/")) {
-                                            coverITEM_hrefImage = file;
+                                            if (scanCover) {
+                                                coverITEM_hrefImage = file;
+                                                coverName = coverITEM_hrefImage;
+                                                foundCover = true;
+                                            }
                                         } else if (a.type.startsWith(META_NAME_XMLHTML)) {
                                             coverITEM_hrefXML = file;
                                         }
