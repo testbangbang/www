@@ -19,6 +19,7 @@ import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.event.SystemBarBackToSettingEvent;
 import com.onyx.jdread.main.event.SystemBarClickedEvent;
+import com.onyx.jdread.main.event.WifiStateChangeEvent;
 import com.onyx.jdread.main.receiver.ScreenStateReceive;
 import com.onyx.jdread.main.view.SystemBarPopupWindow;
 import com.onyx.jdread.manager.ManagerActivityUtils;
@@ -588,6 +589,7 @@ public class ReaderActivityEventHandler {
         } else {
             systemBarPopupWindowModel.brightnessModel.updateLight();
             systemBarPopupWindowModel.updateRefreshMode();
+            systemBarPopupWindowModel.updateWifi();
         }
         if(systemBarPopupWindow != null && systemBarPopupWindow.isShowing()){
             systemBarPopupWindow.dismiss();
@@ -643,5 +645,12 @@ public class ReaderActivityEventHandler {
     @Subscribe
     public void onOpenBookDetailEvent(OpenBookDetailEvent event){
         openSetting(readerViewModel.getReaderDataHolder().getDocumentInfo().getCloudId());
+    }
+
+    @Subscribe
+    public void onWifiStateChangeEvent(WifiStateChangeEvent event) {
+        if (systemBarPopupWindowModel != null) {
+            systemBarPopupWindowModel.updateWifi();
+        }
     }
 }
