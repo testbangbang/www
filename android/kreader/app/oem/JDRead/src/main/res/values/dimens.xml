@@ -640,4 +640,5 @@
     <dimen name="dialog_message_button_padding">12dp</dimen>
     <dimen name="personal_login_out_drawable_padding">6dp</dimen>
     <dimen name="personal_login_out_margin_right">20dp</dimen>
+    <dimen name="rectangle_stroke_gray_width">2px</dimen>
 </resources>

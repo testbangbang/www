@@ -57,6 +57,7 @@ public class DataModel extends BaseObservable {
     public final ObservableList<DataModel> childList = new ObservableArrayList<>();
     public Object downLoadTaskTag;
     private EventBus eventBus;
+    private long lastClickTime = 0;
 
     public DataModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -81,6 +82,10 @@ public class DataModel extends BaseObservable {
     }
 
     public void itemClicked() {
+        if (System.currentTimeMillis() - lastClickTime < 500) {
+            return;
+        }
+        lastClickTime = System.currentTimeMillis();
         ItemClickEvent event = new ItemClickEvent(this, true);
         eventBus.post(event);
     }
