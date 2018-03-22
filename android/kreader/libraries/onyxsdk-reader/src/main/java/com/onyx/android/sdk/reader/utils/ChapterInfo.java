@@ -6,26 +6,18 @@ package com.onyx.android.sdk.reader.utils;
 
 public class ChapterInfo {
     private String title;
-    private int position;
+    private String position;
 
-    public ChapterInfo(String title, int position) {
+    public ChapterInfo(String title, String position) {
         this.title = title;
         this.position = position;
     }
 
-    public int getPosition() {
+    public String getPosition() {
         return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
     }
 
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 }

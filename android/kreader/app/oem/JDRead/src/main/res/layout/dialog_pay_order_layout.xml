@@ -39,12 +39,23 @@
                 android:textSize="@dimen/font_size_17" />
 
             <TextView
+                android:id="@+id/price_yue_dou"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dialog_pay_order_item_margin_top"
+                android:text="@{@string/dialog_pay_order_book_price(orderModel.orderInfo.pay_amount)}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_17" />
+
+            <TextView
+                android:id="@+id/vip_price_rmb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dialog_pay_order_item_margin_top"
                 android:text="@{@string/dialog_pay_order_book_price_rmb(PriceConversionUtil.formatRMB(orderModel.orderInfo.pay_amount))}"
                 android:textColor="@android:color/black"
-                android:textSize="@dimen/font_size_17" />
+                android:textSize="@dimen/font_size_17"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/pay_order_balance"
@@ -72,7 +83,6 @@
                     android:textSize="@dimen/font_size_17" />
 
                 <RadioGroup
-                    android:visibility="gone"
                     android:id="@+id/payment_radio_group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -16,8 +16,6 @@ public class BookModelBooksResultBean {
 
         public int total_page;
         public int total;
-        public int page;
-        public int page_size;
         public List<ResultBookBean> items;
     }
 }

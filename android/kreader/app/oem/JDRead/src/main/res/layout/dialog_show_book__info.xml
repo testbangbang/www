@@ -52,11 +52,12 @@
             android:id="@+id/book_info_web_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/shop_dialog_content_height"
-            android:clickable="true"
-            android:maxLines="14"
             android:layout_marginLeft="@dimen/book_copyright_contain_padding"
             android:layout_marginRight="@dimen/book_copyright_contain_padding"
             android:layout_marginTop="@dimen/book_copyright_contain_padding"
+            android:clickable="true"
+            android:maxLines="14"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_three_heading_font"
             bind:bookInfoWebView="@{viewModel.content}" />
 

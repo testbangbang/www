@@ -1,7 +1,10 @@
 package com.onyx.android.sdk.reader.plugins.netnovel;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderCallback;
@@ -11,11 +14,15 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContentEntry;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.host.impl.ReaderSelectionImpl;
+import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.android.sdk.reader.plugins.alreader.AlReaderWrapper;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,14 +35,18 @@ public class NetNovelReaderWrapper {
     private Context context;
     private ReaderPluginOptions pluginOptions;
     private AlReaderWrapper alReaderWrapper;
+
     private ReaderCallback callback;
     private int viewWidth, viewHeight;
     private ReaderTextStyle style;
+
+    private boolean aborted = false;
 
     private File bookDirectory;
     private ReaderDocumentOptions documentOptions;
 
     private NetNovelBook book;
+    private String bookId;
 
     List<NetNovelChapter> chapterList;
     private HashMap<String, NetNovelChapter> chapterMap = new HashMap<>();
@@ -44,8 +55,18 @@ public class NetNovelReaderWrapper {
 
     public NetNovelReaderWrapper(final Context context, final ReaderPluginOptions pluginOptions) {
         this.context = context;
-        this.pluginOptions = pluginOptions;
+        this.pluginOptions = createSyncLoadingPluginOptions(pluginOptions);
         alReaderWrapper = new AlReaderWrapper(context, pluginOptions);
+    }
+
+    public void setAborted(boolean abort) {
+        aborted = abort;
+        alReaderWrapper.setAborted(abort);
+    }
+
+    public void abortBookLoading() {
+        aborted = true;
+        alReaderWrapper.abortBookLoading();
     }
 
     public boolean openDocument(final String path,  final ReaderDocumentOptions documentOptions) throws ReaderException {
@@ -62,6 +83,8 @@ public class NetNovelReaderWrapper {
             return false;
         }
 
+        bookId = FileUtils.getBaseName(path);
+
         chapterList = book.getChapterFlattenList();
         if (chapterList.size() <= 0) {
             return false;
@@ -73,7 +96,7 @@ public class NetNovelReaderWrapper {
             chapterIndexMap.put(chapter.id, i);
         }
 
-        return openChapter(chapterList.get(0).id);
+        return openChapter(chapterList.get(0).id, true);
     }
 
     public void close() {
@@ -91,6 +114,15 @@ public class NetNovelReaderWrapper {
         this.viewHeight = viewHeight;
     }
 
+    public ReaderTextStyle getStyle() {
+        return alReaderWrapper.getStyle();
+    }
+
+    public void setStyle(ReaderTextStyle style) {
+        this.style = style;
+        alReaderWrapper.setStyle(style);
+    }
+
     public int getTotalPage() {
         return chapterMap.size();
     }
@@ -100,16 +132,12 @@ public class NetNovelReaderWrapper {
     }
 
     public String getInitPosition() {
-        return new NetNovelLocation(chapterList.get(0).id, 0, 0).toJson();
+        return new NetNovelLocation(bookId, chapterList.get(0).id, 0, 0).toJson();
     }
 
     public boolean gotoPosition(String position) throws ReaderException {
         NetNovelLocation location = NetNovelLocation.createFromJSON(position);
-        if (!openChapter(location.chapterId)) {
-            return false;
-        }
-
-        return gotoPositionInChapter(location.positionInChapter);
+        return gotoLocation(location);
     }
 
     public boolean gotoPage(int page) throws ReaderException {
@@ -118,7 +146,7 @@ public class NetNovelReaderWrapper {
         }
 
         NetNovelChapter chapter = chapterList.get(page);
-        if (!openChapter(chapter.id)) {
+        if (!openChapter(chapter.id, false)) {
             return false;
         }
 
@@ -171,7 +199,7 @@ public class NetNovelReaderWrapper {
     }
 
     public String getPositionOfPageNumber(int pageNumber) {
-        return new NetNovelLocation(chapterList.get(pageNumber).id, pageNumber, 0).toJson();
+        return new NetNovelLocation(bookId, chapterList.get(pageNumber).id, pageNumber, 0).toJson();
     }
 
     public int getPageNumberOfPosition(String position) {
@@ -180,11 +208,11 @@ public class NetNovelReaderWrapper {
     }
 
     public String getScreenStartPosition() {
-        return new NetNovelLocation(currentChapterId, getCurrentChapterIndex(), alReaderWrapper.getScreenStartPosition()).toJson();
+        return getScreenStartLocation().toJson();
     }
 
     public String getScreenEndPosition() {
-        return new NetNovelLocation(currentChapterId, getCurrentChapterIndex(), alReaderWrapper.getScreenEndPosition()).toJson();
+        return new NetNovelLocation(bookId, currentChapterId, getCurrentChapterIndex(), alReaderWrapper.getScreenEndPosition()).toJson();
     }
 
     public int comparePosition(String pos1, String pos2) {
@@ -206,22 +234,93 @@ public class NetNovelReaderWrapper {
         for (int i = 0; i < chapterList.size(); i++) {
             NetNovelChapter ch = chapterList.get(i);
             ReaderDocumentTableOfContentEntry entry = ReaderDocumentTableOfContentEntry.createEntry(ch.title, i,
-                    new NetNovelLocation(ch.id, i, 0).toJson());
+                    new NetNovelLocation(bookId, ch.id, i, 0).toJson());
             toc.getRootEntry().addChildEntry(entry);
         }
         return true;
     }
 
-    public ReaderTextStyle getStyle() {
-        return alReaderWrapper.getStyle();
+    public ReaderSelection selectWordOnScreen(PointF point, ReaderTextSplitterImpl readerTextSplitter) {
+        return alReaderWrapper.selectWordOnScreen(point, readerTextSplitter);
     }
 
-    public void setStyle(ReaderTextStyle style) {
-        this.style = style;
-        alReaderWrapper.setStyle(style);
+    public ReaderSelection selectTextOnScreen(PointF start, PointF end) {
+        return alReaderWrapper.selectTextOnScreen(start, end);
     }
 
-    private boolean openChapter(String chapterId) throws ReaderException {
+    public ReaderSelection selectTextOnScreen(String startPosition, String endPosition) {
+        NetNovelLocation start = NetNovelLocation.createFromJSON(startPosition);
+        NetNovelLocation end = NetNovelLocation.createFromJSON(endPosition);
+        return alReaderWrapper.selectTextOnScreen(start.positionInChapter, end.positionInChapter);
+    }
+
+    public boolean search(final String text, final List<ReaderSelection> list) {
+        NetNovelLocation locationBackup = getScreenStartLocation();
+
+        try {
+            for (int i = 0; i < chapterList.size(); i++) {
+                if (aborted) {
+                    return true;
+                }
+
+                NetNovelChapter ch = chapterList.get(i);
+                if (!isChapterReady(ch.id)) {
+                    break;
+                }
+
+                try {
+                    if (!openChapter(ch.id, false)) {
+                        return false;
+                    }
+                    ArrayList<ReaderSelection> l = new ArrayList<>();
+                    alReaderWrapper.search(text, l);
+                    for (ReaderSelection selection : l) {
+                        list.add(new ReaderSelectionImpl(selection.getRectangles(),
+                                new NetNovelLocation(bookId, ch.id, i, Integer.parseInt(selection.getEndPosition())).toJson(),
+                                selection.getLeftText(),
+                                selection.getPageName(),
+                                new NetNovelLocation(bookId, ch.id, i, Integer.parseInt(selection.getPagePosition())).toJson(),
+                                selection.getRightText(),
+                                new NetNovelLocation(bookId, ch.id, i, Integer.parseInt(selection.getStartPosition())).toJson(),
+                                selection.getText()));
+                    }
+                } catch (ReaderException e) {
+                    return false;
+                }
+            }
+            return true;
+        } finally {
+            try {
+                gotoLocation(locationBackup);
+            } catch (ReaderException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private NetNovelLocation getScreenStartLocation() {
+        return new NetNovelLocation(bookId, currentChapterId, getCurrentChapterIndex(), alReaderWrapper.getScreenStartPosition());
+    }
+
+    private boolean gotoLocation(NetNovelLocation location) throws ReaderException {
+        if (!openChapter(location.chapterId, false)) {
+            return false;
+        }
+
+        return gotoPositionInChapter(location.positionInChapter);
+    }
+
+    private boolean isChapterReady(String chapterId) {
+        String path = new File(bookDirectory, chapterId).getAbsolutePath();
+        return FileUtils.fileExist(path);
+    }
+
+    private boolean openChapter(String chapterId, boolean enableCallback) throws ReaderException {
+        if (!isChapterReady(chapterId)) {
+            NetNovelLocation location = new NetNovelLocation(bookId, chapterId, -1, 0);
+            throw ReaderException.netNovelChapterNotFound(location.toJson());
+        }
+
         if (currentChapterId != null) {
             if (currentChapterId.compareTo(chapterId) == 0) {
                 return true;
@@ -230,12 +329,11 @@ public class NetNovelReaderWrapper {
         }
 
         String path = new File(bookDirectory, chapterId).getAbsolutePath();
-        if (!FileUtils.fileExist(path)) {
-            throw ReaderException.netNovelChapterNotFound(chapterId);
-        }
 
         alReaderWrapper = new AlReaderWrapper(context, pluginOptions);
-        alReaderWrapper.setBookCallback(callback);
+        if (enableCallback) {
+            alReaderWrapper.setBookCallback(callback);
+        }
         alReaderWrapper.setViewSize(viewWidth, viewHeight);
         if (style != null) {
             alReaderWrapper.setStyle(style);
@@ -246,6 +344,40 @@ public class NetNovelReaderWrapper {
         }
 
         return false;
+    }
+
+    private ReaderPluginOptions createSyncLoadingPluginOptions(final ReaderPluginOptions options) {
+        return new ReaderPluginOptions() {
+            @Override
+            public AssetManager getAssetManager() {
+                return options.getAssetManager();
+            }
+
+            @Override
+            public Resources getResources() {
+                return options.getResources();
+            }
+
+            @Override
+            public List<String> getFontDirectories() {
+                return options.getFontDirectories();
+            }
+
+            @Override
+            public float getScreenDensity() {
+                return options.getScreenDensity();
+            }
+
+            @Override
+            public boolean isSyncLoading() {
+                return true;
+            }
+
+            @Override
+            public boolean isLoadAllImages() {
+                return options.isLoadAllImages();
+            }
+        };
     }
 
     private ReaderDocumentOptions createDocumentOptions(final int initPosition) {
@@ -328,13 +460,13 @@ public class NetNovelReaderWrapper {
             return false;
         }
 
-        return openChapter(chapterList.get(getCurrentChapterIndex() + 1).id);
+        return openChapter(chapterList.get(getCurrentChapterIndex() + 1).id, false);
     }
 
     private boolean previousChapter() throws ReaderException {
         if (isFirstChapter()) {
             return false;
         }
-        return openChapter(chapterList.get(getCurrentChapterIndex() - 1).id);
+        return openChapter(chapterList.get(getCurrentChapterIndex() - 1).id, false);
     }
 }

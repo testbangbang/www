@@ -12,10 +12,10 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.R;
 import com.onyx.jdread.personal.event.RequestFailedEvent;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.SearchBooksRequestBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BaseResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelBooksResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -86,11 +86,14 @@ public class RxRequestSearchBooks extends RxBaseCloudRequest {
     }
 
     private boolean checkRequestResult() {
-        if (resultBean != null && resultBean.result_code != 0) {
-            ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));
-            return false;
+        if (resultBean != null) {
+            if (BaseResultBean.checkSuccess(resultBean.result_code)) {
+                return true;
+            } else {
+                ShopDataBundle.getInstance().getEventBus().post(new RequestFailedEvent(resultBean.message));
+            }
         }
-        return true;
+        return false;
     }
 
     private Call<BookModelBooksResultBean> getCall(ReadContentService getCommonService) {

@@ -148,4 +148,12 @@ public class Utils {
     public static String addPercent(String str) {
         return str + "%";
     }
+
+    public static long getLongTime(String str) {
+        try {
+            return Long.parseLong(str);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }

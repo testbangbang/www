@@ -8,12 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.libsetting.util.BatteryUtil;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
+import com.onyx.android.sdk.data.utils.DownloadListener;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -51,7 +55,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by li on 2017/12/22.
@@ -107,10 +110,22 @@ public class SystemUpdateFragment extends BaseFragment {
                 } else if (JDReadApplication.getInstance().getString(R.string.upgrade_immediately).equals(systemUpdateData.getUpdateDes())) {
                     showDialog();
                 } else {
-                    checkSystemUpdate();
+                    checkSystemUpdate(null);
                 }
             }
         });
+    }
+
+    private void restoreDownloading() {
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(UpdateUtil.APK_UPDATE_TAG);
+        if (task == null) {
+            task = OnyxDownloadManager.getInstance().getTask(UpdateUtil.SYSTEM_UPDATE_TAG);
+        }
+        if (task != null) {
+            DownloadListener listener = (DownloadListener) task.getListener();
+            listener.setBaseCallback(callback);
+            systemUpdateData.setShowProgress(true);
+        }
     }
 
     private void downloadUpdatePackage() {
@@ -120,6 +135,7 @@ public class SystemUpdateFragment extends BaseFragment {
         }
         systemUpdateData.setShowProgress(true);
         downloadPackageAction = new DownloadPackageAction(downloadUrl, downloadPath, tag);
+        downloadPackageAction.setRestart(true);
         downloadPackageAction.execute(callback);
     }
 
@@ -144,11 +160,31 @@ public class SystemUpdateFragment extends BaseFragment {
         if (systemUpdateData == null || settingUpdateModel == null) {
             return;
         }
-        systemUpdateData.setProgress(success ? 100 : 0);
         systemUpdateData.setShowProgress(false);
+        systemUpdateData.setProgress(0);
         systemUpdateData.setShowDownloaded(success);
         systemUpdateData.setUpdateDes(ResManager.getString(success ? R.string.upgrade_immediately : R.string.download_update_package));
         settingUpdateModel.setDownloaded(success);
+    }
+
+    private boolean isPackageDownloading() {
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(UpdateUtil.APK_UPDATE_TAG);
+        if (task != null) {
+            return !isApkExist();
+        }
+        task = OnyxDownloadManager.getInstance().getTask(UpdateUtil.SYSTEM_UPDATE_TAG);
+        return task != null && !isUpdateZipExist();
+    }
+
+    private void checkPackageDownloading() {
+        if (!isWifiDisconnected() && isPackageDownloading()) {
+            checkSystemUpdate(new RxCallback() {
+                @Override
+                public void onNext(Object o) {
+                    restoreDownloading();
+                }
+            });
+        }
     }
 
     private void initData() {
@@ -163,12 +199,15 @@ public class SystemUpdateFragment extends BaseFragment {
         if (!isApkExist() && !isUpdateZipExist() && settingUpdateModel.isDownloaded()) {
             settingUpdateModel.setDownloaded(false);
         } else if (StringUtils.isNotBlank(systemUpdateData.getNoticeMessage())) {
-            binding.setModel(settingUpdateModel);
-            return;
+            if (!isUpdatedFileExist()) {
+                checkPackageDownloading();
+                binding.setModel(settingUpdateModel);
+                return;
+            }
         }
         List<DeviceConfigData> deviceConfigDataList = SettingBundle.getInstance().getDeviceConfigModel().getDeviceConfigDataList();
         if (StringUtils.isNotBlank(deviceConfigDataList.get(deviceConfigDataList.size() - 1).getUpdateRecord())) {
-            checkSystemUpdate();
+            checkSystemUpdate(null);
             systemUpdateData.setShowDownloaded(true);
             systemUpdateData.setUpdateDes(ResManager.getString(R.string.upgrade_immediately));
             systemUpdateData.setVersionTitle(ResManager.getString(R.string.updatable_version));
@@ -182,7 +221,7 @@ public class SystemUpdateFragment extends BaseFragment {
         binding.setModel(settingUpdateModel);
     }
 
-    private void checkSystemUpdate() {
+    private void checkSystemUpdate(final RxCallback callback) {
         if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
             ToastUtil.showToast(ResManager.getString(R.string.wifi_no_connected));
             return;
@@ -198,21 +237,18 @@ public class SystemUpdateFragment extends BaseFragment {
                     if (StringUtils.isNullOrEmpty(changeLog)) {
                         changeLog = resultFirmware.buildDisplayId;
                     }
-                    downloadUrl = resultFirmware.getUrl();
-                    downloadPath = UpdateUtil.getUpdateZipFile().getAbsolutePath();
-                    tag = UpdateUtil.SYSTEM_UPDATE_TAG;
-                    systemUpdateData.setUpdateDes(isUpdateZipExist() ? ResManager.getString(R.string.upgrade_immediately) : ResManager.getString(R.string.download_update_package));
-                    systemUpdateData.setVersionTitle(ResManager.getString(R.string.updatable_version));
                     String fingerprint = resultFirmware.fingerprint;
-                    Log.i(TAG, "checkSystemUpdate: " + fingerprint);
                     String[] split = fingerprint.split("/");
                     String versionTime = getVersionTime(split);
+                    Log.i(TAG, "checkSystemUpdate: " + fingerprint);
                     Log.i(TAG, "system current version: " + settingUpdateModel.getDownloadVersion());
-                    systemUpdateData.setVersion(UpdateUtil.VERSION_LAUNCHER + versionTime);
-                    systemUpdateData.setNoticeMessage(changeLog);
+                    updateDownloadInfo(resultFirmware.getUrl(), UpdateUtil.getUpdateZipFile().getAbsolutePath(),
+                            UpdateUtil.SYSTEM_UPDATE_TAG);
+                    updateSystemUpdateData(isUpdateZipExist(), versionTime, changeLog);
                     checkAction.hideLoadingDialog(SettingBundle.getInstance());
+                    RxCallback.invokeNext(callback, checkAction);
                 } else {
-                    checkApkUpdate();
+                    checkApkUpdate(callback);
                 }
             }
 
@@ -222,6 +258,19 @@ public class SystemUpdateFragment extends BaseFragment {
                 ToastUtil.showToast(R.string.network_or_server_error);
             }
         });
+    }
+
+    private void updateDownloadInfo(String url, String path, String downloadTag) {
+        downloadUrl = url;
+        downloadPath = path;
+        tag = downloadTag;
+    }
+
+    private void updateSystemUpdateData(boolean updatedFileExist, String versionTime, String changeLog) {
+        systemUpdateData.setUpdateDes(updatedFileExist ? ResManager.getString(R.string.upgrade_immediately) : ResManager.getString(R.string.download_update_package));
+        systemUpdateData.setVersionTitle(ResManager.getString(R.string.updatable_version));
+        systemUpdateData.setVersion(UpdateUtil.VERSION_LAUNCHER + versionTime);
+        systemUpdateData.setNoticeMessage(changeLog);
     }
 
     private String getVersionTime(String[] split) {
@@ -237,43 +286,24 @@ public class SystemUpdateFragment extends BaseFragment {
         return versionTime;
     }
 
-    private void checkApkUpdate() {
+    private void checkApkUpdate(final RxCallback callback) {
         apkUpdateAction = new CheckApkUpdateAction();
         apkUpdateAction.execute(SettingBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 ApplicationUpdate applicationUpdate = SettingBundle.getInstance().getApplicationUpdate();
-                if (applicationUpdate != null) {
-                    Map<String, List<String>> changeLogs = applicationUpdate.changeLogs;
-                    String[] downloadUrlList = applicationUpdate.downloadUrlList;
-                    String language = getResources().getConfiguration().locale.toString();
-                    String message = "";
-                    if (changeLogs != null && changeLogs.size() > 0) {
-                        List<String> messageList = changeLogs.get(language);
-                        for (int i = 0; i < messageList.size(); i++) {
-                            message += messageList.get(i);
-                            message += "\n";
-                        }
-                    }
-                    if (downloadUrlList == null || downloadUrlList.length <= 0) {
-                        apkUpdateAction.showLoadingDialog(SettingBundle.getInstance(), R.string.already_latest_version);
-                        return;
-                    }
-                    downloadUrl = downloadUrlList[0];
-                    downloadPath = UpdateUtil.getApkUpdateFile();
-                    tag = UpdateUtil.APK_UPDATE_TAG;
-                    systemUpdateData.setUpdateDes(isApkExist() ? ResManager.getString(R.string.upgrade_immediately) : ResManager.getString(R.string.download_update_package));
-                    systemUpdateData.setVersionTitle(ResManager.getString(R.string.updatable_version));
-                    Log.i(TAG, "checkApkUpdate: " + applicationUpdate.versionName);
-                    String versionTime = applicationUpdate.versionName.substring(applicationUpdate.versionName.lastIndexOf("-") + 1, applicationUpdate.versionName.length());
-                    Log.i(TAG, "apk current version: " + settingUpdateModel.getDownloadVersion());
-                    systemUpdateData.setVersion(UpdateUtil.VERSION_LAUNCHER + versionTime);
-                    systemUpdateData.setNoticeMessage(message);
-                    apkUpdateAction.hideLoadingDialog(SettingBundle.getInstance());
-                } else {
+                if (applicationUpdate == null || StringUtils.isNullOrEmpty(applicationUpdate.getFirstDownloadUrl())) {
                     apkUpdateAction.showLoadingDialog(SettingBundle.getInstance(), R.string.already_latest_version);
-                    DelayEvent delayEvent = new DelayEvent(2000);
+                    new DelayEvent(2000).post();
+                    return;
                 }
+                Log.i(TAG, "checkApkUpdate: " + applicationUpdate.versionName);
+                Log.i(TAG, "apk current version: " + settingUpdateModel.getDownloadVersion());
+                updateDownloadInfo(applicationUpdate.getFirstDownloadUrl(), UpdateUtil.getApkUpdateFile(),
+                        UpdateUtil.APK_UPDATE_TAG);
+                updateSystemUpdateData(isApkExist(), applicationUpdate.getVersionName("-"), applicationUpdate.getChangeLog());
+                apkUpdateAction.hideLoadingDialog(SettingBundle.getInstance());
+                RxCallback.invokeNext(callback, apkUpdateAction);
             }
 
             @Override
@@ -291,13 +321,16 @@ public class SystemUpdateFragment extends BaseFragment {
     }
 
     private boolean isApkExist() {
-        File apkUpdateFile = new File(UpdateUtil.getApkUpdateFile());
-        return apkUpdateFile.exists();
+        return FileUtils.fileExist(UpdateUtil.getApkUpdateFile());
     }
 
     private boolean isUpdateZipExist() {
         File updateZipFile = UpdateUtil.getUpdateZipFile();
         return updateZipFile.exists();
+    }
+
+    private boolean isUpdatedFileExist(){
+        return isApkExist() || isUpdateZipExist();
     }
 
     private boolean checkBatteryForSystemUpgrade() {
@@ -354,10 +387,9 @@ public class SystemUpdateFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToDeviceConfigFragment(BackToDeviceConfigFragment event) {
-        if (!systemUpdateData.getShowDownloaded()) {
+        if (!isPackageDownloading() && !systemUpdateData.getShowDownloaded()) {
             systemUpdateData.setNoticeMessage("");
         }
-
         viewEventCallBack.viewBack();
     }
 
@@ -401,7 +433,7 @@ public class SystemUpdateFragment extends BaseFragment {
             return;
         }
         updateHistoryDialog = new BookInfoDialog(JDReadApplication.getInstance());
-        updateHistoryDialog.setTitle(ResManager.getString(R.string.view_history_version));
+        updateHistoryDialog.setTitle(ResManager.getString(R.string.history_update_record));
         updateHistoryDialog.setContent(content);
         updateHistoryDialog.setCloseListener(new View.OnClickListener() {
             @Override
@@ -415,7 +447,7 @@ public class SystemUpdateFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
-        if (!systemUpdateData.getShowDownloaded()) {
+        if (!isPackageDownloading() && !systemUpdateData.getShowDownloaded()) {
             systemUpdateData.setNoticeMessage("");
         }
     }

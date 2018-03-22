@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,6 +141,7 @@ public class BookDetailFragment extends BaseFragment {
     private boolean bookDetailLoadingFinished = true;
     private boolean metadataLoadingFinished = true;
     private boolean isViewDirectoryTryDownload;
+    private boolean isNetBookDownLoad;
 
     @Nullable
     @Override
@@ -198,7 +200,7 @@ public class BookDetailFragment extends BaseFragment {
         });
     }
 
-    public void safeCloseLoadingDialog(){
+    public void safeCloseLoadingDialog() {
         if (bookDetailLoadingFinished && metadataLoadingFinished) {
             hideLoadingDialog();
         }
@@ -272,7 +274,6 @@ public class BookDetailFragment extends BaseFragment {
                     if (bookDetailResultBean.result_code != Integer.valueOf(Constants.RESULT_CODE_SUCCESS)) {
                         return;
                     }
-
                     if (bookDetailBean != null && (bookDetailBean.ebook_id == bookDetailResultBean.data.ebook_id)) {
                         BookDetailResultBean.DetailBean newData = bookDetailResultBean.data;
                         newData.bookExtraInfoBean = bookDetailBean.bookExtraInfoBean;
@@ -281,6 +282,14 @@ public class BookDetailFragment extends BaseFragment {
                         bookDetailBean = newData;
                     } else {
                         bookDetailBean = bookDetailResultBean.data;
+                        int compare = Float.compare(bookDetailBean.star, Constants.SCORE);
+                        if (compare == 0) {
+                            bookDetailBinding.bookDetailInfo.bookDetailGrayStars.setVisibility(View.VISIBLE);
+                            bookDetailBinding.bookDetailInfo.bookDetailWhiteStars.setVisibility(View.GONE);
+                        } else {
+                            bookDetailBinding.bookDetailInfo.bookDetailGrayStars.setVisibility(View.GONE);
+                            bookDetailBinding.bookDetailInfo.bookDetailWhiteStars.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     if (!shouldDownloadWholeBook) {
@@ -400,7 +409,6 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
     public void onRecommendItemClickEvent(RecommendItemClickEvent event) {
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
         ResultBookBean bookBean = event.getBookBean();
@@ -419,12 +427,21 @@ public class BookDetailFragment extends BaseFragment {
                 return;
             }
         }
+        if (ViewHelper.isNetBook(bookDetailBean.book_type)) {
+            if (DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+                openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
+            } else {
+                tryDownload(bookDetailBean, true);
+            }
+            return;
+        }
+
         if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
         } else if (bookDetailBean != null) {
-            if (ViewHelper.isCanNowRead(bookDetailBean)){
+            if (ViewHelper.isCanNowRead(bookDetailBean)) {
                 tryDownload(bookDetailBean, true);
-            } else if (!StringUtils.isNullOrEmpty(bookDetailBean.format) && Constants.BOOK_FORMAT_PDF.equals(bookDetailBean.format.trim()) ){
+            } else if (!StringUtils.isNullOrEmpty(bookDetailBean.format) && Constants.BOOK_FORMAT_PDF.equals(bookDetailBean.format.trim())) {
                 goViewDirectoryFragment(bookDetailBean.catalog);
             }
         }
@@ -645,7 +662,7 @@ public class BookDetailFragment extends BaseFragment {
         } else if (DownLoadHelper.isDownloaded(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_button_now_read));
             ToastUtil.showToastNoReuse(getContext(), ResManager.getString(R.string.download_finished));
-        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState) ) {
+        } else if (DownLoadHelper.isError(downLoadState) || DownLoadHelper.isPause(downLoadState)) {
             button.setText(ResManager.getString(R.string.book_detail_tip_download_pause));
         }
     }
@@ -663,7 +680,6 @@ public class BookDetailFragment extends BaseFragment {
         }
 
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
 
@@ -729,7 +745,6 @@ public class BookDetailFragment extends BaseFragment {
 
     private void downLoadWholeBook() {
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
         nowReadButton.setEnabled(false);
@@ -754,16 +769,18 @@ public class BookDetailFragment extends BaseFragment {
     private void openBook(String localPath, BookDetailResultBean.DetailBean detailBean, int openType) {
         DocumentInfo documentInfo = new DocumentInfo();
         DocumentInfo.SecurityInfo securityInfo = new DocumentInfo.SecurityInfo();
-        if (detailBean.bookExtraInfoBean != null && detailBean.bookExtraInfoBean.isWholeBookDownLoad) {
-            securityInfo.setKey(detailBean.bookExtraInfoBean.key);
-            securityInfo.setRandom(detailBean.bookExtraInfoBean.random);
+        if (detailBean.bookExtraInfoBean != null) {
+            if(detailBean.bookExtraInfoBean.isWholeBookDownLoad) {
+                securityInfo.setKey(detailBean.bookExtraInfoBean.key);
+                securityInfo.setRandom(detailBean.bookExtraInfoBean.random);
+            }
+            documentInfo.setWholeBookDownLoad(detailBean.bookExtraInfoBean.isWholeBookDownLoad);
         }
         securityInfo.setUuId(DrmTools.getHardwareId(Build.SERIAL));
         documentInfo.setOpenType(openType);
         documentInfo.setSecurityInfo(securityInfo);
         documentInfo.setBookPath(localPath);
         documentInfo.setBookName(detailBean.name);
-        documentInfo.setWholeBookDownLoad(detailBean.bookExtraInfoBean.isWholeBookDownLoad);
         documentInfo.setCloudId(detailBean.ebook_id);
         OpenBookHelper.openBook(super.getContext(), documentInfo);
     }
@@ -794,7 +811,6 @@ public class BookDetailFragment extends BaseFragment {
 
     private void addToCart(long ebookId) {
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
         final AddOrDeleteCartAction addOrDeleteCartAction = new AddOrDeleteCartAction(new String[]{String.valueOf(ebookId)}, Constants.CART_TYPE_ADD);
@@ -825,13 +841,23 @@ public class BookDetailFragment extends BaseFragment {
         if (bookDetailBean.bookExtraInfoBean == null) {
             bookDetailBean.bookExtraInfoBean = new BookExtraInfoBean();
         }
+
+        if (ViewHelper.isNetBook(bookDetailBean.book_type)) {
+            if (DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+                openBook(localPath, bookDetailBean, isViewDirectory ? DocumentInfo.OPEN_BOOK_CATALOG : DocumentInfo.OPEN_BOOK);
+            } else {
+                bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = false;
+                bookDetailBean.bookExtraInfoBean.isNetBookDownLoad = true;
+                getNetBookDirectory(JDReadApplication.getInstance().getLogin(), isViewDirectory);
+            }
+            return;
+        }
         if (!isWholeBookDownLoad && DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
             openBook(localPath, bookDetailBean, isViewDirectory ? DocumentInfo.OPEN_BOOK_CATALOG : DocumentInfo.OPEN_BOOK);
             return;
         }
 
         if (checkWifiDisconnected()) {
-            checkWifi("");
             return;
         }
 
@@ -926,11 +952,12 @@ public class BookDetailFragment extends BaseFragment {
             localPath = extraInfoBean.localPath;
             downloadTaskState = extraInfoBean.downLoadState;
             isWholeBookDownLoad = extraInfoBean.isWholeBookDownLoad;
+            isNetBookDownLoad = extraInfoBean.isNetBookDownLoad;
             if (bookDetailBean != null) {
                 bookDetailBean.bookExtraInfoBean = extraInfoBean;
                 bookDetailBean.bookExtraInfoBean.isWholeBookDownLoad = isWholeBookDownLoad;
             }
-            if (isWholeBookAlreadyDownload() && JDReadApplication.getInstance().getLogin()) {
+            if (!isNetBookDownLoad && isWholeBookAlreadyDownload() && JDReadApplication.getInstance().getLogin()) {
                 hideNowReadButton();
                 showShopCartView(false);
                 buyBookButton.setText(ResManager.getString(R.string.book_detail_button_now_read));
@@ -1067,7 +1094,7 @@ public class BookDetailFragment extends BaseFragment {
     public void onBuyBookSuccessEvent(BuyBookSuccessEvent event) {
         if (event != null && event.isNetBook) {
             ToastUtil.showToast(ResManager.getString(R.string.buy_book_success));
-            getNetBookDirectory();
+            getNetBookDirectory(false, false);
         } else {
             String msg = ResManager.getString(R.string.buy_book_success) + bookDetailBean.name + ResManager.getString(R.string.book_detail_tip_book_add_to_bookself);
             bookDetailBean.isAlreadyBuy = true;
@@ -1076,27 +1103,36 @@ public class BookDetailFragment extends BaseFragment {
         }
     }
 
-    public void getNetBookDirectory() {
+    public void getNetBookDirectory(final boolean canTry, final boolean isViewDirectory) {
         GetChapterCatalogAction chapterCatalogAction = new GetChapterCatalogAction(ebookId, bookDetailBean.name);
         chapterCatalogAction.execute(getShopDataBundle(), new RxCallback<GetChapterCatalogAction>() {
             @Override
             public void onNext(GetChapterCatalogAction catalogAction) {
                 String chapterIds = catalogAction.getChapterIds();
                 if (!StringUtils.isNullOrEmpty(chapterIds)) {
-                    getChapterContent(CloudApiContext.BookDownLoad.CHAPTER_CONTENT_TYPE_CHAPTER, chapterIds, false);
+                    getChapterContent(CloudApiContext.BookDownLoad.CHAPTER_CONTENT_TYPE_CHAPTER, chapterIds, canTry, isViewDirectory);
                 }
             }
         });
     }
 
-    private void getChapterContent(String type, String ids, boolean can_try) {
+    private void getChapterContent(String type, String ids, boolean can_try, final boolean isViewDirectory) {
         GetChaptersContentAction getChaptersContentAction = new GetChaptersContentAction(ebookId, bookDetailBean.name, type, ids, can_try);
+        localPath = getNetBookLoaclPath(bookDetailBean);
+        getChaptersContentAction.setLocalPath(localPath);
+        insertBookDetail(bookDetailBean, localPath);
         getChaptersContentAction.execute(getShopDataBundle(), new RxCallback<GetChaptersContentAction>() {
             @Override
             public void onNext(GetChaptersContentAction action) {
                 GetChaptersContentResultBean resultBean = action.getResultBean();
                 if (GetChaptersContentResultBean.checkSuccess(resultBean)) {
                     ToastUtil.showToast(ResManager.getString(R.string.download_finished));
+                    downloadTaskState = FileDownloadStatus.completed;
+                    if (isViewDirectory) {
+                        if (DownLoadHelper.isDownloaded(downloadTaskState) && fileIsExists(localPath)) {
+                            openBook(localPath, bookDetailBean, DocumentInfo.OPEN_BOOK_CATALOG);
+                        }
+                    }
                 }
             }
 
@@ -1106,6 +1142,14 @@ public class BookDetailFragment extends BaseFragment {
                 ToastUtil.showToast(ResManager.getString(R.string.download_fail));
             }
         });
+    }
+
+    private String getNetBookLoaclPath(BookDetailResultBean.DetailBean bookDetailBean){
+        String path = "";
+        if (bookDetailBean != null) {
+            path = CommonUtils.getJDNetBooksPath() + bookDetailBean.ebook_id + "_" + bookDetailBean.name + File.separator + bookDetailBean.ebook_id + Constants.NET_BOOK_SUFFIX;
+        }
+        return path;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

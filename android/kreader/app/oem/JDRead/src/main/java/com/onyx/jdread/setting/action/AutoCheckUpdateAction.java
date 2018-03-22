@@ -70,7 +70,7 @@ public class AutoCheckUpdateAction extends BaseAction {
     }
 
     private boolean isUpdateExist() {
-        return FileUtils.fileExist(UpdateUtil.APK_PATH) || UpdateUtil.getUpdateZipFile().exists();
+        return FileUtils.fileExist(UpdateUtil.getApkUpdateFile()) || UpdateUtil.getUpdateZipFile().exists();
     }
 
     private void checkApkUpdate(SettingBundle bundle) {

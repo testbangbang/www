@@ -28,7 +28,7 @@
             android:id="@+id/task_receive"
             android:layout_width="@dimen/item_personal_task_receive_width"
             android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_small"
+            android:background="@drawable/text_selector"
             android:enabled="@{Utils.isEquals(bean.taskStatus, @string/allow_get)}"
             android:gravity="center"
             android:padding="@dimen/item_personal_task_receive_padding"

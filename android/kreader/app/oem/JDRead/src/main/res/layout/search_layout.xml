@@ -25,7 +25,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:hint="@string/search_view_hint"
-                android:imeOptions="actionSearch"
+                android:imeOptions="actionNone"
                 android:inputType="text"
                 android:paddingRight="@dimen/custom_search_view_drawable_padding"
                 android:textSize="@dimen/level_two_heading_font" />

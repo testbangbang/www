@@ -6,6 +6,10 @@
         <variable
             name="recyclerEnable"
             type="boolean" />
+
+        <variable
+            name="refreshModel"
+            type="com.onyx.jdread.setting.model.SettingRefreshModel"/>
     </data>
 
     <LinearLayout
@@ -86,11 +90,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true">
 
-                    <CheckBox
+                    <ImageView
                         android:id="@+id/refresh_check_box"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/toggle_selector"
+                        android:src="@{refreshModel.isSpeedRefresh?@drawable/ic_setting_switch_on:@drawable/ic_setting_switch_off}"
                         android:button="@null" />
 
                     <LinearLayout

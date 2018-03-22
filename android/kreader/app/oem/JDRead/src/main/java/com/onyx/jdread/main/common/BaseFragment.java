@@ -113,7 +113,7 @@ public class BaseFragment extends Fragment {
     }
 
     public boolean checkContentEmpty(List data) {
-        boolean contentIsEmpty = CollectionUtils.isNullOrEmpty(data);
+        boolean contentIsEmpty = CollectionUtils.isEmpty(data);
         if (contentIsEmpty) {
             ToastUtil.showToast(ResManager.getString(R.string.empty_result));
         }

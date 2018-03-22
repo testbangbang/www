@@ -7,10 +7,10 @@ package com.onyx.jdread.reader.data;
 public class ReadingData {
     public String length;
     public String end_time;
-    public String end_para_idx;
+    public int end_para_idx;
     public String end_chapter;
     public String start_time;
     public String ebook_id;
-    public String start_para_idx;
+    public int start_para_idx;
     public String start_chapter;
 }

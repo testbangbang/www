@@ -26,28 +26,46 @@
             android:layout_height="wrap_content"
             bind:titleBarViewModel="@{bookDetailViewModel.titleBarViewModel}" />
 
-        <com.onyx.android.sdk.ui.view.PageRecyclerView
-            android:id="@+id/recycler_view_comments"
-            commentItems="@{bookDetailViewModel.commentItems}"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/book_detail_margin"
-            android:layout_marginRight="@dimen/book_detail_margin"
-            android:layout_marginTop="@dimen/book_detail_margin"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/fragment_content_padding_bottom"
+            android:paddingLeft="@dimen/fragment_content_padding"
+            android:paddingRight="@dimen/fragment_content_padding">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
-            android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
-            android:layout_marginTop="@dimen/category_book_list_recycle_view_indicator_margin_top"
-            android:gravity="right"
-            android:text="@{@string/book_comment_indicator_value(bookDetailViewModel.currentPage,bookDetailViewModel.totalPage)}"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_size_17" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
+                <com.onyx.android.sdk.ui.view.PageRecyclerView
+                    android:id="@+id/recycler_view_comments"
+                    commentItems="@{bookDetailViewModel.commentItems}"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical" />
+
+                <TextView
+                    android:id="@+id/no_comments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:drawableTop="@mipmap/ic_bookstore_comment_none"
+                    android:text="@string/empty_library_comments"
+                    android:textSize="@dimen/level_two_heading_font" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/category_book_list_recycle_view_indicator_margin_top"
+                android:gravity="right"
+                android:text="@{@string/book_comment_indicator_value(bookDetailViewModel.currentPage,bookDetailViewModel.totalPage)}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/font_size_17" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </layout>

@@ -1,6 +1,9 @@
 package com.onyx.android.sdk.reader.utils;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.reader.plugins.netnovel.NetNovelLocation;
 import com.onyx.android.sdk.utils.StringUtils;
 
 /**
@@ -31,11 +34,16 @@ public class PagePositionUtils {
     }
 
     public static int getPosition(final String position) {
-        try {
+        if (StringUtils.isInteger(position)) {
             return Integer.parseInt(position);
-        } catch (Exception e) {
-            return 0;
         }
+
+        int pos = getIntegerPositionFromJSON(position);
+        if (pos >= 0) {
+            return pos;
+        }
+
+        return 0;
     }
 
     public static String fromPosition(int position) {
@@ -44,6 +52,26 @@ public class PagePositionUtils {
 
     public static boolean isValidPosition(final String position) {
         return StringUtils.isNotBlank(position);
+    }
+
+    private static int getIntegerPositionFromJSON(String json) {
+        if (StringUtils.isNullOrEmpty(json)) {
+            return -1;
+        }
+        try {
+            JSONObject jsonObject = JSON.parseObject(json);
+            if (jsonObject.containsKey("type")) {
+                String type = jsonObject.getString("type");
+                if (type.compareTo("netnovel") == 0) {
+                    NetNovelLocation location = NetNovelLocation.createFromJSON(json);
+                    if (location != null) {
+                        return location.toIntegerPosition();
+                    }
+                }
+            }
+        } catch (Throwable tr) {
+        }
+        return -1;
     }
 
 }
