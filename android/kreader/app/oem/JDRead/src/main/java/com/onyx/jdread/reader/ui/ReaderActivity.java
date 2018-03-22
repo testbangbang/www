@@ -27,6 +27,7 @@ import com.onyx.jdread.reader.data.PageTurningDirection;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 import com.onyx.jdread.reader.model.SelectMenuModel;
+import com.onyx.jdread.reader.utils.ReaderViewUtil;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -210,6 +211,8 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
 
     private void updateView(){
         if (readerActivityEventHandler != null && readerActivityEventHandler.isLostFocus()) {
+            ReaderViewUtil.applyFastModeByConfig();
+            ReaderViewUtil.clearFastModeByConfig();
             readerActivityEventHandler.setLostFocus(false);
             readerActivityEventHandler.updatePageView();
         }
