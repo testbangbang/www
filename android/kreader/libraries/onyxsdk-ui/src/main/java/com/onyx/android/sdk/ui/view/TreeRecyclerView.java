@@ -39,6 +39,7 @@ public class TreeRecyclerView extends PageRecyclerView {
         private String title;
         private String description;
         private Object tag;
+        public int pagePosition = -1;
 
         public TreeNode(TreeNode parent, String title, String description, Object tag) {
             this.parent = parent;
@@ -289,7 +290,11 @@ public class TreeRecyclerView extends PageRecyclerView {
                     }
                 }
             });
-
+            if(node.pagePosition < 0){
+                textViewTitle.setTextColor(0xFF808080);
+            }else{
+                textViewTitle.setTextColor(Color.BLACK);
+            }
             textViewTitle.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

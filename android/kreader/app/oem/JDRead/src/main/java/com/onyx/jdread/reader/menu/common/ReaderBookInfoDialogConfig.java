@@ -34,28 +34,32 @@ public class ReaderBookInfoDialogConfig {
         Node node = new Node();
         if (toc != null && toc.getRootEntry().getChildren() != null) {
             for (ReaderDocumentTableOfContentEntry entry : toc.getRootEntry().getChildren()) {
-                ArrayList<TreeRecyclerView.TreeNode> nodes = buildTreeNode(null, entry);
+                String pagePosition = entry.getPosition();
+                int childPagePosition = -1;
+                if(StringUtils.isNotBlank(pagePosition)){
+                    childPagePosition = PagePositionUtils.getPagePosition(pagePosition);
+                }
+                ArrayList<TreeRecyclerView.TreeNode> nodes = buildTreeNode(null, entry,childPagePosition);
                 node.nodes.addAll(nodes);
             }
         }
         return node;
     }
 
-    private static ArrayList<TreeRecyclerView.TreeNode> buildTreeNode(TreeRecyclerView.TreeNode parent, ReaderDocumentTableOfContentEntry entry) {
+    private static ArrayList<TreeRecyclerView.TreeNode> buildTreeNode(TreeRecyclerView.TreeNode parent, ReaderDocumentTableOfContentEntry entry,int position) {
         String pageName = PagePositionUtils.getPageNumberForDisplay(entry.getPageName());
         TreeRecyclerView.TreeNode node = new TreeRecyclerView.TreeNode(parent, entry.getTitle(), pageName, entry);
         ArrayList<TreeRecyclerView.TreeNode> nodes = new ArrayList<>();
         if (entry.getChildren() != null) {
             for (ReaderDocumentTableOfContentEntry child : entry.getChildren()) {
-                String position = child.getPosition();
-                if(StringUtils.isNotBlank(position)){
-                    int pagePosition = PagePositionUtils.getPosition(position);
-                    if(pagePosition >= 0) {
-                        nodes.addAll(buildTreeNode(node, child));
-                    }
+                String pagePosition = child.getPosition();
+                if(StringUtils.isNotBlank(pagePosition)){
+                    int childPagePosition = PagePositionUtils.getPagePosition(pagePosition);
+                    nodes.addAll(buildTreeNode(node, child,childPagePosition));
                 }
             }
         }else{
+            node.pagePosition = position;
             nodes.add(node);
         }
         return nodes;

@@ -46,6 +46,19 @@ public class PagePositionUtils {
         return 0;
     }
 
+    public static int getPagePosition(final String position) {
+        if (StringUtils.isInteger(position)) {
+            return Integer.parseInt(position);
+        }
+
+        int pos = getIntegerPositionFromJSON(position);
+        if (pos >= 0) {
+            return pos;
+        }
+
+        return -1;
+    }
+
     public static String fromPosition(int position) {
         return String.valueOf(position);
     }
