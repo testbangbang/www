@@ -223,7 +223,7 @@ public class ViewHelper {
         infoViewModel.title.set(title);
         infoBinding.setViewModel(infoViewModel);
         infoBinding.setListener(closeListener);
-        final BookInfoDialog dialog = new BookInfoDialog(context.getApplicationContext());
+        final BookInfoDialog dialog = new BookInfoDialog(context.getApplicationContext(),R.style.CustomDialogStyle);
         dialog.setView(infoBinding.getRoot());
         infoBinding.infoWebView.setCallParentPageFinishedMethod(false);
         infoBinding.infoWebView.loadUrl(url);

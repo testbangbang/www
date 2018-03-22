@@ -46,7 +46,7 @@ import com.onyx.jdread.setting.model.SettingUpdateModel;
 import com.onyx.jdread.setting.model.SystemUpdateData;
 import com.onyx.jdread.setting.utils.UpdateUtil;
 import com.onyx.jdread.shop.utils.ViewHelper;
-import com.onyx.jdread.shop.view.BookInfoDialog;
+import com.onyx.jdread.shop.view.HistoricalVersionDialog;
 import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.util.Utils;
 
@@ -72,7 +72,7 @@ public class SystemUpdateFragment extends BaseFragment {
     private CheckApkUpdateAction apkUpdateAction;
     private DownloadPackageAction downloadPackageAction;
 
-    private BookInfoDialog updateHistoryDialog;
+    private HistoricalVersionDialog updateHistoryDialog;
 
     @Nullable
     @Override
@@ -432,7 +432,7 @@ public class SystemUpdateFragment extends BaseFragment {
             ToastUtil.showToast(emptyTipId);
             return;
         }
-        updateHistoryDialog = new BookInfoDialog(JDReadApplication.getInstance());
+        updateHistoryDialog = new HistoricalVersionDialog(JDReadApplication.getInstance(), R.style.CustomDialogStyle);
         updateHistoryDialog.setTitle(ResManager.getString(R.string.history_update_record));
         updateHistoryDialog.setContent(content);
         updateHistoryDialog.setCloseListener(new View.OnClickListener() {
