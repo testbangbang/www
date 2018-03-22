@@ -14,11 +14,14 @@ public class DelayEvent {
 
     public DelayEvent(long millisecond) {
         this.delayTime = millisecond;
+    }
+
+    public void post() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 EventBus.getDefault().post(DelayEvent.this);
             }
-        }, millisecond);
+        }, delayTime);
     }
 }

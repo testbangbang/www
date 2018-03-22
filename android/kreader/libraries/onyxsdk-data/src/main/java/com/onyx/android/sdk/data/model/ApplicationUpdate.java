@@ -77,6 +77,10 @@ public class ApplicationUpdate extends BaseData {
         return "";
     }
 
+    public String getVersionName(String indexStartText) {
+        return versionName.substring(versionName.lastIndexOf(indexStartText) + 1, versionName.length());
+    }
+
     public static ApplicationUpdate create(Context context) {
         ApplicationUpdate appUpdate = new ApplicationUpdate();
         appUpdate.versionCode = PackageUtils.getAppVersionCode(context);
