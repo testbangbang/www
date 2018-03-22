@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -164,8 +165,8 @@ public class CommentFragment extends BaseFragment {
             public void onNext(BookCommentListAction action) {
                 BookCommentsResultBean.DataBean dataBean = action.getbookCommentsBean();
                 updateContentView(dataBean);
-                if (dataBean != null) {
-                    checkContentEmpty(dataBean.comments);
+                if (dataBean.comments != null && dataBean.comments.size() > 0) {
+                    bookCommentBinding.noComments.setVisibility(View.GONE);
                 }
             }
         });

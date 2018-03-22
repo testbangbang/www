@@ -577,4 +577,5 @@
     <string name="history_update_record">历史更新记录</string>
     <string name="exit_current_account">是否退出当前账号？</string>
     <string name="account_dangerous">您的账号存在安全风险，请联系客服:950618解决</string>
+    <string name="empty_library_comments">暂无评论</string>
 </resources>
