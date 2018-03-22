@@ -285,6 +285,9 @@ public class BookDetailFragment extends BaseFragment {
                         if (compare == 0) {
                             bookDetailBinding.bookDetailInfo.bookDetailGrayStars.setVisibility(View.VISIBLE);
                             bookDetailBinding.bookDetailInfo.bookDetailWhiteStars.setVisibility(View.GONE);
+                        } else {
+                            bookDetailBinding.bookDetailInfo.bookDetailGrayStars.setVisibility(View.GONE);
+                            bookDetailBinding.bookDetailInfo.bookDetailWhiteStars.setVisibility(View.VISIBLE);
                         }
                     }
 
