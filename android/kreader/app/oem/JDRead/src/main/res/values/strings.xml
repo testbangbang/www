@@ -611,4 +611,5 @@
     <string name="no_score">No score</string>
     <string name="history_update_record">History update record</string>
     <string name="account_dangerous">Your account has security risks, please contact customer service: 950618.</string>
+    <string name="empty_library_comments">No comments</string>
 </resources>
