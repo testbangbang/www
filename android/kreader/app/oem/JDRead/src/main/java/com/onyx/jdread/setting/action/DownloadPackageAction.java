@@ -24,10 +24,16 @@ public class DownloadPackageAction {
     private String filePath;
     private Object tag;
 
+    private boolean restart = false;
+
     public DownloadPackageAction(String url, String filePath, Object tag) {
         this.url = url;
         this.filePath = filePath;
         this.tag = tag;
+    }
+
+    public void setRestart(boolean restart) {
+        this.restart = restart;
     }
 
     public void execute(BaseCallback callback) {
@@ -43,6 +49,9 @@ public class DownloadPackageAction {
             getTask(tag).reuse();
             getTask(tag).start();
             return;
+        }
+        if (restart) {
+            removeDownloadTask();
         }
         if (isTaskDownloading(tag)) {
             return;
