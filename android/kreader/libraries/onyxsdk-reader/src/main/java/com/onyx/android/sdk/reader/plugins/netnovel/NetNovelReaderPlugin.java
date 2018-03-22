@@ -33,10 +33,12 @@ import com.onyx.android.sdk.reader.api.ReaderTextSplitter;
 import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.api.ReaderViewOptions;
+import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,6 +62,8 @@ public class NetNovelReaderPlugin implements ReaderPlugin,
 
     private NetNovelReaderWrapper impl;
     private ReaderViewOptions readerViewOptions;
+
+    private List<ReaderSelection> searchResults = new ArrayList<>();
 
     public NetNovelReaderPlugin(Context context, ReaderPluginOptions pluginOptions) {
         this.context = context;
@@ -108,12 +112,15 @@ public class NetNovelReaderPlugin implements ReaderPlugin,
 
     @Override
     public boolean searchInPage(int currentPage, ReaderSearchOptions options, boolean clear) {
-        return false;
+        if (clear){
+            searchResults.clear();
+        }
+        return getPluginImpl().search(options.pattern(), searchResults);
     }
 
     @Override
     public List<ReaderSelection> searchResults() {
-        return null;
+        return searchResults;
     }
 
     @Override
@@ -147,17 +154,17 @@ public class NetNovelReaderPlugin implements ReaderPlugin,
 
     @Override
     public void abortCurrentJob() {
-
+        getPluginImpl().setAborted(true);
     }
 
     @Override
     public void clearAbortFlag() {
-
+        getPluginImpl().setAborted(false);
     }
 
     @Override
     public void abortBookLoadingJob() {
-
+        getPluginImpl().abortBookLoading();
     }
 
     @Override
@@ -456,12 +463,16 @@ public class NetNovelReaderPlugin implements ReaderPlugin,
 
     @Override
     public ReaderSelection selectOnScreen(ReaderHitTestArgs start, ReaderHitTestArgs end, ReaderHitTestOptions hitTestOptions) {
-        return null;
+        if (hitTestOptions.isSelectingWord()) {
+            return getPluginImpl().selectWordOnScreen(start.point, ReaderTextSplitterImpl.sharedInstance());
+        } else {
+            return getPluginImpl().selectTextOnScreen(start.point, end.point);
+        }
     }
 
     @Override
     public ReaderSelection selectOnScreen(String pagePosition, String startPosition, String endPosition) {
-        return null;
+        return getPluginImpl().selectTextOnScreen(startPosition, endPosition);
     }
 
     @Override
