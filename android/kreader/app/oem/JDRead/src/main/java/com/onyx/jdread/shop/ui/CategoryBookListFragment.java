@@ -129,6 +129,18 @@ public class CategoryBookListFragment extends BaseFragment {
         booksAction.execute(getShopDataBundle(), new RxCallback<SearchBookListAction>() {
 
             @Override
+            public void onSubscribe() {
+                super.onSubscribe();
+                getCategoryBookListViewModel().showIndicatorView.set(false);
+            }
+
+            @Override
+            public void onFinally() {
+                super.onFinally();
+                getCategoryBookListViewModel().showIndicatorView.set(true);
+            }
+
+            @Override
             public void onNext(SearchBookListAction action) {
                 BookModelBooksResultBean booksResultBean = action.getBooksResultBean();
                 if (booksResultBean != null && booksResultBean.data != null) {

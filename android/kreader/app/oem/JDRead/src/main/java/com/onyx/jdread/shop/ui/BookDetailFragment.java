@@ -1118,7 +1118,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void getChapterContent(String type, String ids, boolean can_try, final boolean isViewDirectory) {
         GetChaptersContentAction getChaptersContentAction = new GetChaptersContentAction(ebookId, bookDetailBean.name, type, ids, can_try);
-        localPath = CommonUtils.getJDNetBooksPath() + bookDetailBean.ebook_id + "_" + bookDetailBean.name + File.separator + bookDetailBean.ebook_id + Constants.NET_BOOK_SUFFIX;
+        localPath = getNetBookLoaclPath(bookDetailBean);
         getChaptersContentAction.setLocalPath(localPath);
         insertBookDetail(bookDetailBean, localPath);
         getChaptersContentAction.execute(getShopDataBundle(), new RxCallback<GetChaptersContentAction>() {
@@ -1142,6 +1142,14 @@ public class BookDetailFragment extends BaseFragment {
                 ToastUtil.showToast(ResManager.getString(R.string.download_fail));
             }
         });
+    }
+
+    private String getNetBookLoaclPath(BookDetailResultBean.DetailBean bookDetailBean){
+        String path = "";
+        if (bookDetailBean != null) {
+            path = CommonUtils.getJDNetBooksPath() + bookDetailBean.ebook_id + "_" + bookDetailBean.name + File.separator + bookDetailBean.ebook_id + Constants.NET_BOOK_SUFFIX;
+        }
+        return path;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

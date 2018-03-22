@@ -183,6 +183,7 @@
         </FrameLayout>
 
         <TextView
+            android:visibility="@{viewModel.showIndicatorView ? View.VISIBLE : View.INVISIBLE}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
