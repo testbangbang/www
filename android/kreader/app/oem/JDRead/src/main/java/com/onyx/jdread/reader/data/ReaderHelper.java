@@ -127,7 +127,7 @@ public class ReaderHelper {
 
     public void setFileMd5(DocumentInfo documentInfo){
         try {
-            if (StringUtils.isNotBlank(getDocumentOptions().getMd5())) {
+            if (getDocumentOptions() != null && StringUtils.isNotBlank(getDocumentOptions().getMd5())) {
                 documentMd5 = getDocumentOptions().getMd5();
             } else {
                 documentMd5 = FileUtils.computeMD5(new File(documentInfo.getBookPath()));
