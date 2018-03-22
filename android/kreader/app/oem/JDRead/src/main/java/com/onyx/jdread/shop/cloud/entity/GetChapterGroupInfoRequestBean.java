@@ -7,5 +7,6 @@ package com.onyx.jdread.shop.cloud.entity;
 public class GetChapterGroupInfoRequestBean extends BaseShopRequestBean{
     public long bookId;
     public String bookName;
+    public String localPath;
     public boolean withCookie;
 }

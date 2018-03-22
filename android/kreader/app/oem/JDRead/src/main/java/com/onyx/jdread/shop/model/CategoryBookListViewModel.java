@@ -36,6 +36,7 @@ public class CategoryBookListViewModel extends BaseObservable {
     public final ObservableBoolean sortKeyNewestSelected =new ObservableBoolean();
     public final ObservableBoolean sortKeyPriceSelected =new ObservableBoolean();
     public final ObservableInt contentPage = new ObservableInt(0);
+    public final ObservableBoolean showIndicatorView =new ObservableBoolean();
 
     public CategoryBookListViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -86,11 +87,6 @@ public class CategoryBookListViewModel extends BaseObservable {
             bookList = new ArrayList<>();
         }
         return bookList;
-    }
-
-    public void setBookList(List<ResultBookBean> bookList) {
-        this.bookList = bookList;
-        notifyChange();
     }
 
     public void addBookList(List<ResultBookBean> list, boolean clear) {

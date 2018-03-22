@@ -22,6 +22,7 @@ public class GetChaptersContentAction extends BaseAction<ShopDataBundle> {
 
     private long bookID;
     public String bookName;
+    public String localPath;
     public String type;
     public String ids;
     public boolean can_try;
@@ -33,6 +34,10 @@ public class GetChaptersContentAction extends BaseAction<ShopDataBundle> {
         this.type = type;
         this.ids = ids;
         this.can_try = can_try;
+    }
+
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
     }
 
     public GetChaptersContentResultBean getResultBean() {
@@ -54,6 +59,7 @@ public class GetChaptersContentAction extends BaseAction<ShopDataBundle> {
         baseRequestBean.setBaseInfo(appBaseInfo);
         baseRequestBean.bookId = bookID;
         baseRequestBean.bookName = bookName;
+        baseRequestBean.localPath = localPath;
         baseRequestBean.withCookie = JDReadApplication.getInstance().getLogin();
         final RxRequestGetChaptersContent rq = new RxRequestGetChaptersContent();
         rq.setRequestBean(baseRequestBean);
