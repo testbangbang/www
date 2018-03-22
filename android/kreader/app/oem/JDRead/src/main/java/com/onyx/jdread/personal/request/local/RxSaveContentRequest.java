@@ -31,7 +31,6 @@ public class RxSaveContentRequest extends RxBaseDBRequest {
         }
         for (NoteBean noteBean : noteBeans) {
             result = FileUtils.appendContentToFile(noteBean.ebook.info, file);
-            FileUtils.appendContentToFile(ReaderConfig.BR + ReaderConfig.BR,file);
         }
         return this;
     }

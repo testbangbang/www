@@ -185,14 +185,13 @@ public class ExportHelper {
             noteBean.ebook = new BookBean();
             noteBean.ebook.ebook_id = ebookId + "";
             noteBean.ebook.author = "";
-            String noteTitle = ResManager.getString(R.string.reader_note);
-            String quoteTitle = ResManager.getString(R.string.reader_content);
-            noteTitle += ReaderConfig.BR;
-            noteTitle += annotation.getNote();
-            quoteTitle += ReaderConfig.BR;
-            quoteTitle += annotation.getQuote();
-            noteBean.ebook.info = noteTitle + quoteTitle;
-            noteBean.ebook.name = bookName;
+
+            String note = annotation.getNote();
+            if(StringUtils.isNotBlank(note)){
+                note += ReaderConfig.BR + ReaderConfig.BR;
+            }
+            noteBean.ebook.info = note + annotation.getQuote() + ReaderConfig.BR + ReaderConfig.BR + ReaderConfig.BR;
+            noteBean.ebook.name = "bookName";
             noteBean.checked = true;
             result.add(noteBean);
         }
