@@ -359,6 +359,9 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void removeLastParentLibrary() {
+        if (!isMultiSelectionMode()){
+            libraryDataBundle.getLibraryViewDataModel().clearSelectedData();
+        }
         libraryDataBundle.getLibraryViewDataModel().libraryPathList.remove(libraryDataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
         setTitle();
         showMangeMenu();
