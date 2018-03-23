@@ -35,6 +35,7 @@ public class HistoricalVersionDialog extends Dialog {
         setCanceledOnTouchOutside(false);
 
         DialogBookInfoBinding infoBinding = DialogBookInfoBinding.inflate(LayoutInflater.from(getContext()), null, false);
+        infoBinding.pagesNumber.setVisibility(View.GONE);
         infoBinding.setViewModel(infoViewModel);
         infoBinding.bookInfoWebView.setOnPagingListener(new PageTextView.OnPagingListener() {
             @Override

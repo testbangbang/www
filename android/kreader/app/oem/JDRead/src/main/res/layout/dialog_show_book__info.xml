@@ -64,14 +64,15 @@
                 bind:bookInfoWebView="@{viewModel.content}" />
 
             <TextView
+                android:id="@+id/pages_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/book_info_web_view"
                 android:layout_marginLeft="@dimen/book_copyright_item_margin_top"
                 android:layout_marginRight="@dimen/book_copyright_item_margin_top"
+                android:layout_marginTop="@dimen/reader_title_buy_padding_left"
                 android:gravity="right"
                 android:paddingBottom="@dimen/book_comment_indicator_padding"
-                android:layout_marginTop="@dimen/reader_title_buy_padding_left"
                 android:text="@{@string/book_comment_indicator_value(viewModel.currentPage,viewModel.totalPage)}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
