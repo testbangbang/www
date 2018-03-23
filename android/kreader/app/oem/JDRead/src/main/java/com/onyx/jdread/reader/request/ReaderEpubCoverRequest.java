@@ -40,10 +40,8 @@ public class ReaderEpubCoverRequest extends ReaderBaseRequest {
 
         try {
             cover = ReaderBitmapImpl.create(width, height, Bitmap.Config.ARGB_8888);
-            BitmapUtils.scaleToFitCenter(bmp, cover.getBitmap());
-
+            //BitmapUtils.scaleToFitCenter(bmp, cover.getBitmap());
             ImageUtils.applyGammaCorrection(cover.getBitmap(), 150.0f, null);
-
             getReader().getReaderHelper().setFileMd5(getReader().getDocumentInfo());
             ThumbnailUtils.insertThumbnail(getAppContext(), ContentSdkDataUtils.getDataProvider(), documentPath, getReader().getReaderHelper().getDocumentMd5(), cover.getBitmap());
             return this;
