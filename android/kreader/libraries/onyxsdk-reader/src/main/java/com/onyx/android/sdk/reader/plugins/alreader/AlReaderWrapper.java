@@ -114,6 +114,21 @@ public class AlReaderWrapper {
         bookEng.activateDeviceDRM(deviceId, certificate);
     }
 
+    public Bitmap scanCover(final String path) {
+        AlBookOptions bookOpt = new AlBookOptions();
+        bookOpt.needCoverData = true;
+        AlBookProperties bookProperties = bookEng.scanMetaData(path, bookOpt);
+        if (bookProperties == null || bookProperties.coverImageData == null) {
+            return null;
+        }
+        try {
+            return BitmapFactory.decodeByteArray(bookProperties.coverImageData, 0,
+                    bookProperties.coverImageData.length);
+        } catch (Throwable tr) {
+            return null;
+        }
+    }
+
     public long openDocument(final String path,  final ReaderDocumentOptions documentOptions) {
         filePath = path;
         AlBookOptions bookOpt = new AlBookOptions();

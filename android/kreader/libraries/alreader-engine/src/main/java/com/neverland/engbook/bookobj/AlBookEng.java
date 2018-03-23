@@ -2518,6 +2518,10 @@ public class AlBookEng{
 		}
 
 		bookOptions.formatOptions &= ~AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG;
+
+		bookOptions.applicationDirectory = applicationDirectory;
+
+		formatMetaData.scanCover = true;
 		formatMetaData.initState(bookOptions, activeFile, preferences);
 		formatMetaData.prepareAll();
 

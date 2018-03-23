@@ -112,6 +112,9 @@ public abstract class AlFormat {
 
     public String coverName = null;
 
+    public boolean scanCover;
+    public boolean foundCover;
+
     public AlOneTable			currentTable = new AlOneTable();
     protected AlOneTableCell	currentCell = new AlOneTableCell();
     protected AlOneTableRow		currentRow = new AlOneTableRow();
@@ -171,7 +174,7 @@ public abstract class AlFormat {
     }
 
     public boolean isBookLoadingAborted() {
-        return isBookLoadingAborted.get();
+        return isBookLoadingAborted.get() || (scanCover && foundCover);
     }
 
     public void abortBookLoading() {

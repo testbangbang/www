@@ -9,6 +9,9 @@ import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.request.OpenDocumentRequest;
 import com.onyx.jdread.reader.request.ReaderDocumentCoverRequest;
+import com.onyx.jdread.reader.request.ReaderEpubCoverRequest;
+
+import java.util.Locale;
 
 /**
  * Created by huxiaomao on 2018/1/25.
@@ -26,6 +29,40 @@ public class ReaderDocumentCoverAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
+        String path = readerDataHolder.getDocumentInfo().getBookPath();
+        if (isEpub(path)) {
+            final ReaderEpubCoverRequest request = new ReaderEpubCoverRequest(readerDataHolder.getReader(), width, height);
+            request.execute(new RxCallback() {
+                @Override
+                public void onNext(Object o) {
+                    if (baseCallback != null) {
+                        baseCallback.onNext(request.getCover().getBitmap());
+                    }
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    readCoverByOpenDocument(readerDataHolder, baseCallback);
+                }
+
+                @Override
+                public void onFinally() {
+                    if (request.getCover() != null && request.getCover().getBitmap() != null) {
+                        request.getCover().getBitmap().recycle();
+                    }
+                }
+            });
+            return;
+        }
+
+        readCoverByOpenDocument(readerDataHolder, baseCallback);
+    }
+
+    private boolean isEpub(String path) {
+        return path.toLowerCase(Locale.getDefault()).endsWith(".epub");
+    }
+
+    private void readCoverByOpenDocument(final ReaderDataHolder readerDataHolder, final RxCallback baseCallback) {
         BaseOptions options = new BaseOptions();
         OpenDocumentRequest request = new OpenDocumentRequest(readerDataHolder.getReader(), options, readerDataHolder.getEventBus());
         OpenDocumentRequest.setAppContext(readerDataHolder.getAppContext());
