@@ -6,6 +6,7 @@ import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.event.PersonalErrorEvent;
 import com.onyx.jdread.shop.cloud.entity.BookCommentsRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.common.JDAppBaseInfo;
@@ -56,6 +57,8 @@ public class BookCommentListAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void onSubscribe() {
+                bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
+                bookDetailViewModel.setCommentItems(new ArrayList<CommentEntity>());
                 showLoadingDialog(shopDataBundle, R.string.loading);
                 invokeSubscribe(rxCallback);
             }
@@ -80,6 +83,7 @@ public class BookCommentListAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void onError(Throwable throwable) {
+                bookDetailViewModel.setBookDetailResultBean(new BookDetailResultBean());
                 bookDetailViewModel.setCommentItems(new ArrayList<CommentEntity>());
                 PersonalErrorEvent.onErrorHandle(throwable, getClass().getSimpleName(), shopDataBundle.getEventBus());
                 invokeError(rxCallback, throwable);
