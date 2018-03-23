@@ -691,8 +691,8 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
 
                                     if (href.indexOf(META_NAME_COVER) != -1) {
                                         if (a.type.startsWith("image/")) {
+                                            coverITEM_hrefImage = file;
                                             if (scanCover) {
-                                                coverITEM_hrefImage = file;
                                                 coverName = coverITEM_hrefImage;
                                                 foundCover = true;
                                             }
