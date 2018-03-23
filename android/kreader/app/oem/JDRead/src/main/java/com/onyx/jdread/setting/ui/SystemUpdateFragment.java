@@ -24,6 +24,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SystemUpdateBinding;
 import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
+import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ResManager;
 import com.onyx.jdread.main.common.ToastUtil;
@@ -36,7 +37,6 @@ import com.onyx.jdread.setting.action.OnlineCheckSystemUpdateAction;
 import com.onyx.jdread.setting.action.SystemUpdateHistoryAction;
 import com.onyx.jdread.setting.dialog.CheckUpdateLoadingDialog;
 import com.onyx.jdread.setting.dialog.DialogAlertMessage;
-import com.onyx.jdread.setting.dialog.SystemUpdateDialog;
 import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.event.DelayEvent;
 import com.onyx.jdread.setting.event.ExecuteUpdateEvent;
@@ -71,7 +71,6 @@ public class SystemUpdateFragment extends BaseFragment {
     private SettingUpdateModel settingUpdateModel;
     private CheckApkUpdateAction apkUpdateAction;
     private DownloadPackageAction downloadPackageAction;
-
     private HistoricalVersionDialog updateHistoryDialog;
 
     @Nullable
@@ -315,9 +314,28 @@ public class SystemUpdateFragment extends BaseFragment {
     }
 
     private void showDialog() {
-        SystemUpdateDialog dialog = new SystemUpdateDialog();
-        dialog.setEventBus(SettingBundle.getInstance().getEventBus());
-        dialog.show(getActivity().getFragmentManager(), "");
+        LibraryDeleteDialog.DialogModel model = new LibraryDeleteDialog.DialogModel();
+        model.message.set(getString(R.string.will_execute_update));
+        model.positiveText.set(ResManager.getString(R.string.execute_immediately));
+        model.negativeText.set(ResManager.getString(R.string.later_to_say));
+        LibraryDeleteDialog.Builder builder = new LibraryDeleteDialog.Builder(JDReadApplication.getInstance(), model);
+        final LibraryDeleteDialog librarydeletedialog = builder.create();
+
+        model.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                librarydeletedialog.dismiss();
+            }
+        });
+
+        model.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                SettingBundle.getInstance().getEventBus().post(new ExecuteUpdateEvent());
+                librarydeletedialog.dismiss();
+            }
+        });
+        librarydeletedialog.show();
     }
 
     private boolean isApkExist() {
